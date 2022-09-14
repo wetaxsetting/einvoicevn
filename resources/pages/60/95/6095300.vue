@@ -881,6 +881,7 @@ export default {
        {  field: "SHDCLQUAN",  width: 100,  title: ("Số hóa đơn"),  alignment: "left",  type: "text",  group1: ("Reference"),},
        {  field: "NLHDCLQUAN",  width: 100,  title: ("Ngày lập hóa đơn"),  alignment: "left",  type: "text",  group1: ("Reference"),},
        {  field: "GCHU",  width: 100,  title: ("Lý do"),  alignment: "left",  type: "text",  group1: ("Reference"),},
+       {  field: "FILE_INTEGRITY",  width: 100,  title: ("Cấu trúc file nguyên vẹn"),  alignment: "center",  type: "text",},
        {  field: "SIGNINGTIME_NBAN",  width: 300,  title: ("signingtime_nban"),  alignment: "left",  type: "text",},
        {  field: "SIGNINGTIME_CQT",  width: 300,  title: ("signingtime_cqt"),  alignment: "left",  type: "text",},
        {  field: "CUSTOMFIELD1",  width: 300,  title: ("customfield1"),  alignment: "left",  type: "text",},

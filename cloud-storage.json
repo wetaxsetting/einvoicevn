@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "hiwin-246107",
+  "private_key_id": "e315c1501f0f50aa42b2e8c3500d97650ff5ae7d",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDEyojlu1NVNjEo\n1ocJqgc26lT+viOyyQq+dNCs8woyx7WsQEkOFizldgE2eE9Bz6PyDMlx5i5xCy9K\n5y+fBtj2GOlPj8VpH0HIuH6vP1ZIs5RmNwM6m2oAHyMJZKNvC0E8Son26HwJAu1M\naONRSZckGONkIrsHr6Rp7JJ+/0CL54qagj5mtxKKZqJlF0Rboc8jp1LKRbsjBWeg\nnohsz9xtWT7T6sYqmtGwaYwdOpYPkrQx65476QHovVaAtd1JHHz/PCsFJIQc4jmt\nt+jNm3NBYvxnHsn+6LFBmnGm3ClqHsZCmRfxP7+/s2YHBcjwgvrlYNm9Gp3MBt57\nSjpju0yvAgMBAAECggEACskvB6hkwN7fguV/MUBodNITJoM1Ya8zL40ngtMvU+ku\nQ+qiFmuQumLlXh7p+SlwSuv4fo2nLfr29JwHOCgf7B0hbILsxv43lNDH4MMP75wo\nHhIV0ziBbtBGE1W4v3VWdf9/4FCNu9C1QOLe0q294vSaQfrFVX6C/GtC/ELxPrmx\nY+/hyxC5lIjMBTaHBUSzFKNXubZd4vsglDw0pTHytyC9bl5VQS/NCvKUSRNIX7p0\n9ONCBB8967RZfQiXBaOikgCooyQmYx8oWB/xwn2l7xc1NcGSlhpq2elGPzeexMB9\nl8/giRJztmwYG+3QeUPg5uaTaSyCrvja/Z18iDiYAQKBgQD1IXcIF9/ZhsMJ1dAf\n4uS3w+kwqAkFLG55EV2QcArSqCZe0S4EUubxzoBcuqUXIbm1PG0WwR8jOqB5mpvW\nI8maq4C168nohGdmn92cBryeqr2rLtc4on01prfNjvp1SzecI25jA/uecZePn7Yt\nMW6cLnKXz2H1mnuYjpgdb29XLwKBgQDNhFsyG1jjHbJhZXmVqYHFLRx33fRUXtsY\ny+th78GfpQYT9VsAmA4V2fSkk6XtUyI2T5BIPI1JqNHNZ/L34Lc3ctxWnCYLZekw\nCmlGVOGmo2SVSOad7XP3lyucE3jwPuJvqME0AQI4noO15yyD3Y7Mjnyhu42e0qVc\nRQkxpK4CgQKBgQCw4Xb81g1m74EpRamqeJTFrY5E19u6afdFUSyMnuyQWVlmrdZg\ntFmFPpcNUnjyGhnhFzs4Yh5P02wck13DxYsiGoMDwqKtL21VdiH5Bjtw2o+GSIRw\nj39+CVEz+OntXVtBRafPtv4HtLvCnWJddf/0nud9d92d1d09lhdZliFnbQKBgGg9\nfugOWOpxkJ24E5BmtqylMfBWguwcZLLSE6TMMABieo+6/hpyBYrtzxl+zkVuykaT\n2pHZLKy01R2DYQh7UVLtjnbboqxbV4iHb1g+C2ozK/xQSrDF1PE7GuKCOfBZZQ7P\noJdY/6BqPlIQXFLSGPEGQI7kC3QIUdlYJs6oQZ6BAoGAZMtRizbwaXF6A1fk15su\nGCv8dfKdWNmbaQqc5pza9Jt47AhsSlXb+RySTlOpTm57BQ3nwtAUBHFZ7lloGNn0\ne2QQehPYtz5fgpkkeTwhEPfSy66zBl3p3ohcfiNCosvMB7BQ9uIsjJcALlru/lNC\nhMUAb7tsVdv5aVzEBsych3U=\n-----END PRIVATE KEY-----\n",
+  "client_email": "cloud-storage@hiwin-246107.iam.gserviceaccount.com",
+  "client_id": "116189587220097615345",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/cloud-storage%40hiwin-246107.iam.gserviceaccount.com"
+}

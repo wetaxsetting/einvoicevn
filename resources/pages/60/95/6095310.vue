@@ -1,0 +1,4034 @@
+<!-- ================================================================= BEGIN DESIGN LAYOUT======================================================================================= -->
+<template>
+  <v-container fluid v-resize="onResize" class="pa-2">
+    <v-row no-gutters class="pl-2">
+      <v-col v-show="showHilden" cols="12" :lg="showHilden ? 4 : 0">
+        <v-card class="pa-2">
+          <v-row dense>
+            <v-col md="4">
+              <BaseInput
+               style="margin-top:22px;"
+                :label="$t('so_tk')"
+                v-model="so_tk"
+                @keyPressEnter="onSearch"
+              />
+            </v-col>
+        <v-col md="4">
+              <v-file-input
+              
+                ref="refFile"
+                prepend-icon="mdi-paperclip"
+                :label="$t('attach_file')"
+                @change="changeFile"
+                v-model="file"
+              ></v-file-input>
+            </v-col>  
+            <v-col md="4" class="d-flex justify-end">
+              <BaseButton
+                icon_type="search"
+                btn_type="icon"
+                :btn_text="$t('search')"
+                :disabled="isProcessing"
+                @onclick="onSearch"
+              />
+              <BaseButton
+                icon_type="view"
+                btn_type="icon"
+                :btn_text="$t('view')"
+                :disabled="isProcessing"
+                @onclick="onClickButton()"
+              />
+              <BaseButton
+                btn_type="icon"
+                icon_type="delete"
+                :btn_text="$t('delete')"
+                @onclick="onDelete()"
+              />
+              <BaseButton
+                btn_type="icon"
+                icon_type="save"
+                :btn_text="$t('save')"
+                @onclick="onSave()"
+              />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <BaseGridView
+                ref="grdAPTKHQReview"
+                :header="grdHeader"
+                sel_procedure="EI_SEL_6090310_SEL_TEI_ECUS_DECLARE"
+                :multiselect="true"
+                :headertype="1"
+                :filter_paras="[this.so_tk]"
+                upd_procedure="EI_UPD_6090310_TEI_ECUS_DECLARE"
+                :editable="true"
+                :update_paras="['PK']"
+                :height="limitHeight"
+                @cellDblClick="onDblClickCell"
+              />
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+      <v-col class="pa-1" cols="12" :lg="showHilden ? 8 : 12">
+        <v-row>
+          <v-col md="2" class="d-flex justify-start">
+            <div class="d-flex">
+              <BaseButton
+                btn_type="icon"
+                icon_type="hide_search_panel"
+                :btn_text="$t('hide_search_panel')"
+                v-if="showHilden"
+                mdi-icon="mdi-backburger"
+                @onclick="showHilden = !showHilden"
+              />
+              <BaseButton
+                btn_type="icon"
+                icon_type="show_search_panel"
+                :btn_text="$t('show_search_panel')"
+                v-else
+                mdi-icon="mdi-forwardburger"
+                @onclick="showHilden = !showHilden"
+              />
+              <!-- <v-btn icon tile :color="currentTheme" >
+                <v-icon v-if="showHilden" @onclick="showHilden=!showHilden" >mdi-skip-previous</v-icon>
+                <v-icon v-else  @onclick="showHilden=!showHilden">mdi-skip-next</v-icon>
+              </v-btn> -->
+            </div>
+          </v-col>
+          <v-col md="2"
+            ><v-text-field
+              clearable
+              dense
+              hide-details
+              :label="$t('So_to_khai')"
+              v-model="so_tk"
+            ></v-text-field
+          ></v-col>
+          <v-col md="2">
+            <v-text-field
+              clearable
+              dense
+              hide-details
+              :label="$t('ngay_dang_ky')"
+              v-model="ngay_dk"
+            ></v-text-field
+          ></v-col>
+          <v-col md="2"
+            ><v-text-field
+              clearable
+              dense
+              hide-details
+              :label="$t('so_van_don')"
+              v-model="van_don"
+            ></v-text-field>
+          </v-col>
+          <v-col md="2"
+            ><v-text-field
+              clearable
+              dense
+              hide-details
+              :label="$t('so_luong')"
+              v-model="so_kien"
+            ></v-text-field>
+          </v-col>
+          <v-col md="2">
+            <v-text-field
+              clearable
+              dense
+              hide-details
+              :label="$t('tong_trong_luong_hang')"
+              v-model="tr_luong"
+            ></v-text-field
+          ></v-col>
+        </v-row>
+        <v-row>
+          <v-col md="2">
+            <v-text-field
+              clearable
+              dense
+              hide-details
+              :label="$t('so_luong_container')"
+              v-model="so_conteiner"
+            ></v-text-field
+          ></v-col>
+          <v-col md="2"
+            ><v-text-field
+              clearable
+              dense
+              hide-details
+              :label="$t('so_hoa_don')"
+              v-model="so_hdtm"
+            ></v-text-field>
+          </v-col>
+          <v-col md="2"
+            ><v-text-field
+              clearable
+              dense
+              hide-details
+              :label="$t('ngay_phat_hanh')"
+              v-model="ngay_hdtm"
+            ></v-text-field>
+          </v-col>
+          <v-col md="2"
+            ><v-text-field
+              clearable
+              dense
+              hide-details
+              :label="$t('phuong_thuc_thanh_toan')"
+              v-model="ma_pttt"
+            ></v-text-field>
+          </v-col>
+          <v-col md="2"
+            ><v-text-field
+              clearable
+              dense
+              hide-details
+              :label="$t('tong_gia_tri_hoa_don')"
+              v-model="ma_pl_gia_hdtm"
+            ></v-text-field>
+          </v-col>
+          <v-col md="2"
+            ><v-text-field
+              clearable
+              dense
+              hide-details
+              :label="$t('tong_gia_tri_tinh _thue')"
+              v-model="tongtgtt"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col md="2"
+            ><v-text-field
+              clearable
+              dense
+              hide-details
+              :label="$t('tong_he_so_phan_bo_tri_gia')"
+              v-model="tongtgkb"
+            ></v-text-field>
+          </v-col>
+          <v-col md="2"
+            ><v-text-field
+              clearable
+              dense
+              hide-details
+              :label="$t('thue_nk')"
+              v-model="tien_thue"
+            ></v-text-field>
+          </v-col>
+          <v-col md="2"
+            ><v-text-field
+              clearable
+              dense
+              hide-details
+              :label="$t('thue_cbpg')"
+              v-model="tien_thue2"
+            ></v-text-field>
+          </v-col>
+          <v-col md="2"
+            ><v-text-field
+              clearable
+              dense
+              hide-details
+              :label="$t('thue_gtgt')"
+              v-model="tien_thue3"
+            ></v-text-field>
+          </v-col>
+           <!-- <v-col md="2"
+            ><v-text-field
+              clearable
+              dense
+              hide-details
+              :label="$t('ma_cty')"
+              v-model="ma_cty"
+            ></v-text-field>
+          </v-col>
+          <v-col md="2"
+            ><v-text-field
+              clearable
+              dense
+              hide-details
+              :label="$t('ten_cty')"
+              v-model="ten_cty"
+            ></v-text-field>
+          </v-col> -->
+        </v-row>
+        <v-row>
+          <v-col md="12">
+            <BaseTabs @tabchanged="tabChanged" ref="tabs">
+              <BaseTab :name="$t('declare_cont')" tabname="cont" :eager="false">
+                <v-col>
+                  <BaseGridView
+                    :headertype="1"
+                    ref="declare_cont"
+                    :header="grdCont"
+                    :height="limitHeightmin"
+                    :multiselect="true"
+                    sel_procedure="EI_SEL_6090310_SEL_TEI_ECUS_DECLARE_CONTAINER"
+                    :filter_paras="[this.item_pk]"
+                  />
+                </v-col>
+              </BaseTab>
+              <BaseTab :name="$t('declare_item')" tabname="item" :eager="false">
+                <v-col>
+                  <BaseGridView
+                    :headertype="1"
+                    ref="declare_item"
+                    :height="limitHeightmin"
+                    :header="grdItem"
+                    sel_procedure="EI_SEL_6090310_SEL_TEI_ECUS_DECLARE_ITEM"
+                    :filter_paras="[this.item_pk]"
+                  />
+                </v-col>
+              </BaseTab>
+            </BaseTabs>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
+        <view-einvoice-pdf-dialog
+      ref="ViewEInvoicePDFDialog"
+      :src_pdfUrl="pdfUrl"
+    ></view-einvoice-pdf-dialog>
+  </v-container>
+</template>
+
+<!-- ================================================================= END DESIGN LAYOUT & BEGIN SCRIPT ========================================================================= --> 
+
+<script>
+import moment from "moment";
+import ViewEInvoicePDFDialog from "@/components/dialog/ViewEInvoicePDFDialog.vue";
+export default {
+  /*############### DEFAULT #######################*/
+  layout: "default",
+  middleware: "user",
+  /*############### components ####################*/
+  components: { "view-einvoice-pdf-dialog": ViewEInvoicePDFDialog },
+  /*############### data ##########################*/
+  data: () => ({
+    item_pk: 0,
+
+    file: null,
+    so_tk: "",
+    selected_company: "",
+    company_list: [],
+    selected_form_no: "",
+    form_no_list: [],
+    SERIAL_NO: "",
+    INVOICE_NO: "",
+    WEB_SITE: "",
+    selected_status: "",
+    status_list: [],
+    seller_no: "",
+    seller_name: "",
+    matracuu: "",
+    macqt: "",
+    date_from: new Date(),
+    date_to: new Date(),
+    dt_from: "",
+    dt_to: "",
+    pdfUrl: "",
+    tei_einvoice_cloud_pk: "",
+    form_no: "",
+    leftCols: 5,
+    showHilden: true,
+    so_tk: "",
+    ngay_dk: "",
+    van_don: "",
+    so_kien: "",
+    tr_luong: "",
+    so_conteiner: "",
+    so_hdtm: "",
+    ngay_hdtm: "",
+    ma_pttt: "",
+    ma_pl_gia_hdtm: "",
+    tongtgtt: "",
+    tongtgkb: "",
+    phi_vc: "",
+    tien_thue: "",
+    tien_thue2: "",
+    tien_thue3: "",
+    indexTab: 0,
+    ten_cty:"",
+    ma_cty:""
+  }),
+  /*############### created #######################*/
+  created() {
+    // this.getListCodes();
+  },
+  /*############### watch ######################*/
+  watch: {
+    indexTab(val) {
+      switch (val) {
+        case 0:
+          setTimeout(() => {
+            this.$refs.declare_cont.loadData();
+          }, 1000);
+          break;
+        case 1:
+          setTimeout((tabs) => {
+            this.$refs.declare_item.loadData();
+          }, 1000);
+          break;
+      }
+    },
+    
+  },
+  /*############### computed ######################*/
+  computed: {
+    user() {
+      return this.$store.getters["auth/user"];
+    },
+    limitHeight() {
+      if (this.windowHeight <= 768) {
+        return this.windowHeight * 0.62; //1366x768
+      } else {
+        return this.windowHeight * 0.73; //1920x1080
+      }
+    },
+    limitHeightmin() {
+      if (this.windowHeight <= 768) {
+        return this.windowHeight * 0.50; //1366x768
+      } else {
+        return this.windowHeight * 0.65; //1920x1080
+      }
+    },
+    gridHeight() {
+      return this.formContainerHeight - 250;
+    },
+    masterContainerHeight() {
+      return this.formContainerHeight - 250;
+    },
+
+    grdCont() {
+      return [
+        {
+          field: "PK",
+          width: 80,
+          title: this.$t("pk"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "DTOKHAIMD_VNACCSID",
+          width: 200,
+          title: this.$t("DTOKHAIMD_VNACCSID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "DTOKHAIMDID",
+          width: 200,
+          title: this.$t("DTOKHAIMDID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO",
+          width: 200,
+          title: this.$t("CONTAINER_NO"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO2",
+          width: 200,
+          title: this.$t("CONTAINER_NO2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO3",
+          width: 200,
+          title: this.$t("CONTAINER_NO3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO4",
+          width: 200,
+          title: this.$t("CONTAINER_NO4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO5",
+          width: 200,
+          title: this.$t("CONTAINER_NO5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO6",
+          width: 200,
+          title: this.$t("CONTAINER_NO6"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO7",
+          width: 200,
+          title: this.$t("CONTAINER_NO7"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO8",
+          width: 200,
+          title: this.$t("CONTAINER_NO8"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO9",
+          width: 200,
+          title: this.$t("CONTAINER_NO9"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO10",
+          width: 200,
+          title: this.$t("CONTAINER_NO10"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO11",
+          width: 200,
+          title: this.$t("CONTAINER_NO11"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO12",
+          width: 200,
+          title: this.$t("CONTAINER_NO12"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO13",
+          width: 200,
+          title: this.$t("CONTAINER_NO13"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO14",
+          width: 200,
+          title: this.$t("CONTAINER_NO14"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO15",
+          width: 200,
+          title: this.$t("CONTAINER_NO15"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO16",
+          width: 200,
+          title: this.$t("CONTAINER_NO16"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO17",
+          width: 200,
+          title: this.$t("CONTAINER_NO17"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO18",
+          width: 200,
+          title: this.$t("CONTAINER_NO18"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO19",
+          width: 200,
+          title: this.$t("CONTAINER_NO19"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO20",
+          width: 200,
+          title: this.$t("CONTAINER_NO20"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO21",
+          width: 200,
+          title: this.$t("CONTAINER_NO21"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO22",
+          width: 200,
+          title: this.$t("CONTAINER_NO22"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO23",
+          width: 200,
+          title: this.$t("CONTAINER_NO23"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO24",
+          width: 200,
+          title: this.$t("CONTAINER_NO24"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO25",
+          width: 200,
+          title: this.$t("CONTAINER_NO25"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO26",
+          width: 200,
+          title: this.$t("CONTAINER_NO26"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO27",
+          width: 200,
+          title: this.$t("CONTAINER_NO27"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO28",
+          width: 200,
+          title: this.$t("CONTAINER_NO28"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO29",
+          width: 200,
+          title: this.$t("CONTAINER_NO29"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO30",
+          width: 200,
+          title: this.$t("CONTAINER_NO30"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO31",
+          width: 200,
+          title: this.$t("CONTAINER_NO31"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO32",
+          width: 200,
+          title: this.$t("CONTAINER_NO32"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO33",
+          width: 200,
+          title: this.$t("CONTAINER_NO33"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO34",
+          width: 200,
+          title: this.$t("CONTAINER_NO34"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO35",
+          width: 200,
+          title: this.$t("CONTAINER_NO35"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO36",
+          width: 200,
+          title: this.$t("CONTAINER_NO36"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO37",
+          width: 200,
+          title: this.$t("CONTAINER_NO37"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO38",
+          width: 200,
+          title: this.$t("CONTAINER_NO38"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO39",
+          width: 200,
+          title: this.$t("CONTAINER_NO39"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO40",
+          width: 200,
+          title: this.$t("CONTAINER_NO40"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO41",
+          width: 200,
+          title: this.$t("CONTAINER_NO41"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO42",
+          width: 200,
+          title: this.$t("CONTAINER_NO42"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO43",
+          width: 200,
+          title: this.$t("CONTAINER_NO43"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO44",
+          width: 200,
+          title: this.$t("CONTAINER_NO44"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO45",
+          width: 200,
+          title: this.$t("CONTAINER_NO45"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO46",
+          width: 200,
+          title: this.$t("CONTAINER_NO46"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO47",
+          width: 200,
+          title: this.$t("CONTAINER_NO47"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO48",
+          width: 200,
+          title: this.$t("CONTAINER_NO48"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO49",
+          width: 200,
+          title: this.$t("CONTAINER_NO49"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CONTAINER_NO50",
+          width: 200,
+          title: this.$t("DToKhCONTAINER_NO50aiMDID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_KHAI_TRGIA",
+          width: 200,
+          title: this.$t("MA_KHAI_TRGIA"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "SO_TN_KHAI_TRGIA",
+          width: 200,
+          title: this.$t("SO_TN_KHAI_TRGIA"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_NT_GIA_CO_SO",
+          width: 200,
+          title: this.$t("MA_NT_GIA_CO_SO"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "GIA_CO_SO",
+          width: 200,
+          title: this.$t("GIA_CO_SO"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_KHOAN_DC",
+          width: 200,
+          title: this.$t("MA_KHOAN_DC"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_LOAI_DC",
+          width: 200,
+          title: this.$t("MA_LOAI_DC"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_NT_DC",
+          width: 200,
+          title: this.$t("MA_NT_DC"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TRIGIA_DC",
+          width: 200,
+          title: this.$t("TRIGIA_DC"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TONG_HS_PB_DC",
+          width: 200,
+          title: this.$t("TONG_HS_PB_DC"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_KHOAN_DC2",
+          width: 200,
+          title: this.$t("MA_KHOAN_DC2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_LOAI_DC2",
+          width: 200,
+          title: this.$t("MA_LOAI_DC2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_NT_DC2",
+          width: 200,
+          title: this.$t("MA_NT_DC2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TRIGIA_DC2",
+          width: 200,
+          title: this.$t("TRIGIA_DC2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TONG_HS_PB_DC2",
+          width: 200,
+          title: this.$t("TONG_HS_PB_DC2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_KHOAN_DC3",
+          width: 200,
+          title: this.$t("MA_KHOAN_DC3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_LOAI_DC3",
+          width: 200,
+          title: this.$t("MA_LOAI_DC3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_NT_DC3",
+          width: 200,
+          title: this.$t("MA_NT_DC3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TRIGIA_DC3",
+          width: 200,
+          title: this.$t("TRIGIA_DC3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TONG_HS_PB_DC3",
+          width: 200,
+          title: this.$t("TONG_HS_PB_DC3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_KHOAN_DC4",
+          width: 200,
+          title: this.$t("MA_KHOAN_DC4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_LOAI_DC4",
+          width: 200,
+          title: this.$t("MA_LOAI_DC4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_NT_DC4",
+          width: 200,
+          title: this.$t("MA_NT_DC4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TRIGIA_DC4",
+          width: 200,
+          title: this.$t("TRIGIA_DC4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TONG_HS_PB_DC4",
+          width: 200,
+          title: this.$t("TONG_HS_PB_DC4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_KHOAN_DC5",
+          width: 200,
+          title: this.$t("MA_KHOAN_DC5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_LOAI_DC5",
+          width: 200,
+          title: this.$t("MA_LOAI_DC5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_NT_DC5",
+          width: 200,
+          title: this.$t("MA_NT_DC5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TRIGIA_DC5",
+          width: 200,
+          title: this.$t("TRIGIA_DC5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TONG_HS_PB_DC5",
+          width: 200,
+          title: this.$t("TONG_HS_PB_DC5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "NOI_DUNG_KHAI_TRGIA",
+          width: 200,
+          title: this.$t("NOI_DUNG_KHAI_TRGIA"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "HS_PB_TRGIA",
+          width: 200,
+          title: this.$t("HS_PB_TRGIA"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_NGUOI_NOP_THUE",
+          width: 200,
+          title: this.$t("MA_NGUOI_NOP_THUE"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_LY_DO_BP",
+          width: 200,
+          title: this.$t("MA_LY_DO_BP"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_KTRA_ND",
+          width: 200,
+          title: this.$t("MA_KTRA_ND"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_VB_PQUY",
+          width: 200,
+          title: this.$t("MA_VB_PQUY"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_VB_PQUY2",
+          width: 200,
+          title: this.$t("MA_VB_PQUY2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_VB_PQUY3",
+          width: 200,
+          title: this.$t("MA_VB_PQUY3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_VB_PQUY4",
+          width: 200,
+          title: this.$t("MA_VB_PQUY4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_VB_PQUY5",
+          width: 200,
+          title: this.$t("MA_VB_PQUY5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_QLY_CHUNG",
+          width: 200,
+          title: this.$t("MA_QLY_CHUNG"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_BO_GIAO_THONG",
+          width: 200,
+          title: this.$t("MA_BO_GIAO_THONG"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_BO_CONG_THUONG",
+          width: 200,
+          title: this.$t("MA_BO_CONG_THUONG"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_LOAI_DINH_KEM",
+          width: 200,
+          title: this.$t("MA_LOAI_DINH_KEM"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "SO_DINH_KEM",
+          width: 200,
+          title: this.$t("SO_DINH_KEM"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_LOAI_DINH_KEM2",
+          width: 200,
+          title: this.$t("MA_LOAI_DINH_KEM2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "SO_DINH_KEM2",
+          width: 200,
+          title: this.$t("SO_DINH_KEM2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_LOAI_DINH_KEM3",
+          width: 200,
+          title: this.$t("MA_LOAI_DINH_KEM3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "SO_DINH_KEM3",
+          width: 200,
+          title: this.$t("SO_DINH_KEM3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TRUNG_CHUYEN_DIA_DIEM",
+          width: 200,
+          title: this.$t("TRUNG_CHUYEN_DIA_DIEM"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TRUNG_CHUYEN_NGAY_DEN",
+          width: 200,
+          title: this.$t("TRUNG_CHUYEN_NGAY_DEN"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TRUNG_CHUYEN_NGAY_KH",
+          width: 200,
+          title: this.$t("TRUNG_CHUYEN_NGAY_KH"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TRUNG_CHUYEN_DIA_DIEM2",
+          width: 200,
+          title: this.$t("TRUNG_CHUYEN_DIA_DIEM2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TRUNG_CHUYEN_NGAY_DEN2",
+          width: 200,
+          title: this.$t("TRUNG_CHUYEN_NGAY_DEN2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TRUNG_CHUYEN_NGAY_KH2",
+          width: 200,
+          title: this.$t("TRUNG_CHUYEN_NGAY_KH2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TRUNG_CHUYEN_DIA_DIEM3",
+          width: 200,
+          title: this.$t("TRUNG_CHUYEN_DIA_DIEM3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TRUNG_CHUYEN_NGAY_DEN3",
+          width: 200,
+          title: this.$t("TRUNG_CHUYEN_NGAY_DEN3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TRUNG_CHUYEN_NGAY_KH3",
+          width: 200,
+          title: this.$t("TRUNG_CHUYEN_NGAY_KH3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TRUNG_CHUYEN_DIEM_CUOI",
+          width: 200,
+          title: this.$t("TRUNG_CHUYEN_DIEM_CUOI"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TRUNG_CHUYEN_NGAY_KT",
+          width: 200,
+          title: this.$t("TRUNG_CHUYEN_NGAY_KT"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TRUNG_CHUYEN_GHI_CHU",
+          width: 200,
+          title: this.$t("TRUNG_CHUYEN_GHI_CHU"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_DIEM_XEP_HANG_LEN_XE",
+          width: 200,
+          title: this.$t("MA_DIEM_XEP_HANG_LEN_XE"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_DIEM_XEP_HANG_LEN_XE2",
+          width: 200,
+          title: this.$t("MA_DIEM_XEP_HANG_LEN_XE2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_DIEM_XEP_HANG_LEN_XE3",
+          width: 200,
+          title: this.$t("MA_DIEM_XEP_HANG_LEN_XE3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_DIEM_XEP_HANG_LEN_XE4",
+          width: 200,
+          title: this.$t("DToKhaiMDID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_DIEM_XEP_HANG_LEN_XE5",
+          width: 200,
+          title: this.$t("DToKhaiMDID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TEN_DIEM_XEP_HANG_LEN_XE",
+          width: 200,
+          title: this.$t("TEN_DIEM_XEP_HANG_LEN_XE"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "DIA_CHI_DIEM_XEP_HANG_LEN_XE",
+          width: 200,
+          title: this.$t("DIA_CHI_DIEM_XEP_HANG_LEN_XE"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_PL_BAO_CAO",
+          width: 200,
+          title: this.$t("MA_PL_BAO_CAO"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_PL_KTRA",
+          width: 200,
+          title: this.$t("MA_PL_KTRA"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_HANG_HOA_DD",
+          width: 200,
+          title: this.$t("MA_HANG_HOA_DD"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "GIO_DK",
+          width: 200,
+          title: this.$t("GIO_DK"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "NGAY_DK_SUA",
+          width: 200,
+          title: this.$t("NGAY_DK_SUA"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "GIO_DK_SUA",
+          width: 200,
+          title: this.$t("GIO_DK_SUA"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_PL_VB_PQUY",
+          width: 200,
+          title: this.$t("MA_PL_VB_PQUY"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "SO_KB_VB_PQUY",
+          width: 200,
+          title: this.$t("SO_KB_VB_PQUY"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_PL_VB_PQUY2",
+          width: 200,
+          title: this.$t("MA_PL_VB_PQUY2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "SO_KB_VB_PQUY2",
+          width: 200,
+          title: this.$t("SO_KB_VB_PQUY2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_PL_VB_PQUY3",
+          width: 200,
+          title: this.$t("MA_PL_VB_PQUY3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "SO_KB_VB_PQUY3",
+          width: 200,
+          title: this.$t("SO_KB_VB_PQUY3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_PL_VB_PQUY4",
+          width: 200,
+          title: this.$t("MA_PL_VB_PQUY4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "SO_KB_VB_PQUY4",
+          width: 200,
+          title: this.$t("SO_KB_VB_PQUY4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_PL_VB_PQUY5",
+          width: 200,
+          title: this.$t("MA_PL_VB_PQUY5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "SO_KB_VB_PQUY5",
+          width: 200,
+          title: this.$t("SO_KB_VB_PQUY5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_PL_VB_PQUY6",
+          width: 200,
+          title: this.$t("MA_PL_VB_PQUY6"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "SO_KB_VB_PQUY6",
+          width: 200,
+          title: this.$t("SO_KB_VB_PQUY6"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_PL_VB_PQUY7",
+          width: 200,
+          title: this.$t("MA_PL_VB_PQUY7"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "SO_KB_VB_PQUY7",
+          width: 200,
+          title: this.$t("SO_KB_VB_PQUY7"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_PL_NHAP_HS_PHAN_BO",
+          width: 200,
+          title: this.$t("MA_PL_NHAP_HS_PHAN_BO"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "HET_HAN_TAM_NHAP",
+          width: 200,
+          title: this.$t("HET_HAN_TAM_NHAP"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TEN_DD_LUU_KHO",
+          width: 200,
+          title: this.$t("TEN_DD_LUU_KHO"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_PL_CTHUC_TRGIA",
+          width: 200,
+          title: this.$t("MA_PL_CTHUC_TRGIA"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_PL_DC_GIA",
+          width: 200,
+          title: this.$t("MA_PL_DC_GIA"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "PP_DC_GIA_KHAI_TRGIA",
+          width: 200,
+          title: this.$t("PP_DC_GIA_KHAI_TRGIA"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_PL_NOP_THUE",
+          width: 200,
+          title: this.$t("MA_PL_NOP_THUE"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "SO_TRANG_TK",
+          width: 200,
+          title: this.$t("SO_TRANG_TK"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_QLY_USER",
+          width: 200,
+          title: this.$t("MA_QLY_USER"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_SAC_THUE",
+          width: 200,
+          title: this.$t("MA_SAC_THUE"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TEN_SAC_THUE",
+          width: 200,
+          title: this.$t("TEN_SAC_THUE"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TONG_THUE",
+          width: 200,
+          title: this.$t("TONG_THUE"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "SO_DONG_TONG_THUE",
+          width: 200,
+          title: this.$t("SO_DONG_TONG_THUE"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_SAC_THUE2",
+          width: 200,
+          title: this.$t("MA_SAC_THUE2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TEN_SAC_THUE2",
+          width: 200,
+          title: this.$t("TEN_SAC_THUE2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TONG_THUE2",
+          width: 200,
+          title: this.$t("TONG_THUE2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "SO_DONG_TONG_THUE2",
+          width: 200,
+          title: this.$t("SO_DONG_TONG_THUE2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_SAC_THUE3",
+          width: 200,
+          title: this.$t("MA_SAC_THUE3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TEN_SAC_THUE3",
+          width: 200,
+          title: this.$t("TEN_SAC_THUE3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TONG_THUE3",
+          width: 200,
+          title: this.$t("TONG_THUE3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "SO_DONG_TONG_THUE3",
+          width: 200,
+          title: this.$t("SO_DONG_TONG_THUE3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_SAC_THUE4",
+          width: 200,
+          title: this.$t("MA_SAC_THUE4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TEN_SAC_THUE4",
+          width: 200,
+          title: this.$t("TEN_SAC_THUE4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TONG_THUE4",
+          width: 200,
+          title: this.$t("TONG_THUE4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "SO_DONG_TONG_THUE4",
+          width: 200,
+          title: this.$t("SO_DONG_TONG_THUE4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_SAC_THUE5",
+          width: 200,
+          title: this.$t("MA_SAC_THUE5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TEN_SAC_THUE5",
+          width: 200,
+          title: this.$t("TEN_SAC_THUE5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TONG_THUE5",
+          width: 200,
+          title: this.$t("TONG_THUE5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "SO_DONG_TONG_THUE5",
+          width: 200,
+          title: this.$t("SO_DONG_TONG_THUE5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_SAC_THUE6",
+          width: 200,
+          title: this.$t("MA_SAC_THUE6"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TEN_SAC_THUE6",
+          width: 200,
+          title: this.$t("TEN_SAC_THUE6"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TONG_THUE6",
+          width: 200,
+          title: this.$t("TONG_THUE6"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "SO_DONG_TONG_THUE6",
+          width: 200,
+          title: this.$t("SO_DONG_TONG_THUE6"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "LAN_SUA",
+          width: 200,
+          title: this.$t("LAN_SUA"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "NGAY_KB_NOP_THUE",
+          width: 200,
+          title: this.$t("NGAY_KB_NOP_THUE"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "GIO_KB_NOP_THUE",
+          width: 200,
+          title: this.$t("GIO_KB_NOP_THUE"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TIEU_DE_KB_NOP_THUE",
+          width: 200,
+          title: this.$t("TIEU_DE_KB_NOP_THUE"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_MA_SAC_THUE",
+          width: 200,
+          title: this.$t("AN_HAN_MA_SAC_THUE"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_TEN_SAC_THUE",
+          width: 200,
+          title: this.$t("AN_HAN_TEN_SAC_THUE"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_NGAY_NOP_THUE",
+          width: 200,
+          title: this.$t("AN_HAN_NGAY_NOP_THUE"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_MA_SAC_THUE2",
+          width: 200,
+          title: this.$t("AN_HAN_MA_SAC_THUE2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_TEN_SAC_THUE2",
+          width: 200,
+          title: this.$t("AN_HAN_TEN_SAC_THUE2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_NGAY_NOP_THUE2",
+          width: 200,
+          title: this.$t("AN_HAN_NGAY_NOP_THUE2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_MA_SAC_THUE3",
+          width: 200,
+          title: this.$t("AN_HAN_MA_SAC_THUE3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_TEN_SAC_THUE3",
+          width: 200,
+          title: this.$t("AN_HAN_TEN_SAC_THUE3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_NGAY_NOP_THUE3",
+          width: 200,
+          title: this.$t("AN_HAN_NGAY_NOP_THUE3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_MA_SAC_THUE4",
+          width: 200,
+          title: this.$t("AN_HAN_MA_SAC_THUE4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_TEN_SAC_THUE4",
+          width: 200,
+          title: this.$t("AN_HAN_TEN_SAC_THUE4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_NGAY_NOP_THUE4",
+          width: 200,
+          title: this.$t("AN_HAN_NGAY_NOP_THUE4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_MA_SAC_THUE5",
+          width: 200,
+          title: this.$t("AN_HAN_MA_SAC_THUE5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_TEN_SAC_THUE5",
+          width: 200,
+          title: this.$t("AN_HAN_TEN_SAC_THUE5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_NGAY_NOP_THUE5",
+          width: 200,
+          title: this.$t("AN_HAN_NGAY_NOP_THUE5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_MA_SAC_THUE6",
+          width: 200,
+          title: this.$t("AN_HAN_MA_SAC_THUE6"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_TEN_SAC_THUE6",
+          width: 200,
+          title: this.$t("AN_HAN_TEN_SAC_THUE6"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_NGAY_NOP_THUE6",
+          width: 200,
+          title: this.$t("AN_HAN_NGAY_NOP_THUE6"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_MA_SAC_THUE_VAT",
+          width: 200,
+          title: this.$t("AN_HAN_MA_SAC_THUE_VAT"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_TEN_SAC_THUE_VAT",
+          width: 200,
+          title: this.$t("AN_HAN_TEN_SAC_THUE_VAT"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_NGAY_NOP_THUE_VAT",
+          width: 200,
+          title: this.$t("AN_HAN_NGAY_NOP_THUE_VAT"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_MA_SAC_THUE_VAT2",
+          width: 200,
+          title: this.$t("AN_HAN_MA_SAC_THUE_VAT2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_TEN_SAC_THUE_VAT2",
+          width: 200,
+          title: this.$t("AN_HAN_TEN_SAC_THUE_VAT2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_NGAY_NOP_THUE_VAT2",
+          width: 200,
+          title: this.$t("AN_HAN_NGAY_NOP_THUE_VAT2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_MA_SAC_THUE_VAT3",
+          width: 200,
+          title: this.$t("AN_HAN_MA_SAC_THUE_VAT3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_TEN_SAC_THUE_VAT3",
+          width: 200,
+          title: this.$t("AN_HAN_TEN_SAC_THUE_VAT3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_NGAY_NOP_THUE_VAT3",
+          width: 200,
+          title: this.$t("AN_HAN_NGAY_NOP_THUE_VAT3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_MA_SAC_THUE_VAT4",
+          width: 200,
+          title: this.$t("AN_HAN_MA_SAC_THUE_VAT4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_TEN_SAC_THUE_VAT4",
+          width: 200,
+          title: this.$t("AN_HAN_TEN_SAC_THUE_VAT4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_NGAY_NOP_THUE_VAT4",
+          width: 200,
+          title: this.$t("AN_HAN_NGAY_NOP_THUE_VAT4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_MA_SAC_THUE_VAT5",
+          width: 200,
+          title: this.$t("AN_HAN_MA_SAC_THUE_VAT5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_TEN_SAC_THUE_VAT5",
+          width: 200,
+          title: this.$t("AN_HAN_TEN_SAC_THUE_VAT5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_NGAY_NOP_THUE_VAT5",
+          width: 200,
+          title: this.$t("AN_HAN_NGAY_NOP_THUE_VAT5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_MA_SAC_THUE_VAT6",
+          width: 200,
+          title: this.$t("AN_HAN_MA_SAC_THUE_VAT6"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_TEN_SAC_THUE_VAT6",
+          width: 200,
+          title: this.$t("AN_HAN_TEN_SAC_THUE_VAT6"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "AN_HAN_NGAY_NOP_THUE_VAT6",
+          width: 200,
+          title: this.$t("DToKhaiAN_HAN_NGAY_NOP_THUE_VAT6MDID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TEN_TRUONG_DV_HQ",
+          width: 200,
+          title: this.$t("TEN_TRUONG_DV_HQ"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "NGAY_CAP_PHEP",
+          width: 200,
+          title: this.$t("NGAY_CAP_PHEP"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "GIO_CAP_PHEP",
+          width: 200,
+          title: this.$t("GIO_CAP_PHEP"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "NGAY_HOAN_THANH_KT",
+          width: 200,
+          title: this.$t("DToKhaiMDID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "GIO_HOAN_THANH_KT",
+          width: 200,
+          title: this.$t("DToKhaiMDID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_PL_SAU_TQ",
+          width: 200,
+          title: this.$t("DToKhaiMDID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "NGAY_DUYET_BP",
+          width: 200,
+          title: this.$t("DToKhaiMDID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "GIO_DUYET_BP",
+          width: 200,
+          title: this.$t("DToKhaiMDID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "NGAY_HOAN_THANH_KT_BP",
+          width: 200,
+          title: this.$t("DToKhaiMDID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "GIO_HOAN_THANH_KT_BP",
+          width: 200,
+          title: this.$t("DToKhaiMDID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "SO_NGAY_CHO_CAP_PHEP",
+          width: 200,
+          title: this.$t("DToKhaiMDID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TIEU_DE_THONG_QUAN",
+          width: 200,
+          title: this.$t("DToKhaiMDID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "NGAY_HUY_KB",
+          width: 200,
+          title: this.$t("DToKhaiMDID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "GIO_HUY_KB",
+          width: 200,
+          title: this.$t("DToKhaiMDID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "NGAY_XLY_TAY",
+          width: 200,
+          title: this.$t("DToKhaiMDID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "GIO_XLY_TAY",
+          width: 200,
+          title: this.$t("DToKhaiMDID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "NGAY_DK_DLIEU",
+          width: 200,
+          title: this.$t("DToKhaiMDID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "GIO_DK_DLIEU",
+          width: 200,
+          title: this.$t("DToKhaiMDID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "IS_KHOAN_DIEU_CHINH",
+          width: 200,
+          title: this.$t("DToKhaiMDID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "IS_KHOAN_DIEU_CHINH2",
+          width: 200,
+          title: this.$t("DToKhaiMDID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "IS_KHOAN_DIEU_CHINH3",
+          width: 200,
+          title: this.$t("DToKhaiMDID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "IS_KHOAN_DIEU_CHINH4",
+          width: 200,
+          title: this.$t("DToKhaiMDID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "IS_KHOAN_DIEU_CHINH5",
+          width: 200,
+          title: this.$t("DToKhaiMDID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "DEL_IF",
+          width: 200,
+          title: this.$t("DToKhaiMDID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CRT_BY",
+          width: 200,
+          title: this.$t("DToKhaiMDID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CRT_DT",
+          width: 200,
+          title: this.$t("DToKhaiMDID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MOD_BY",
+          width: 200,
+          title: this.$t("DToKhaiMDID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MOD_DT",
+          width: 200,
+          title: this.$t("DToKhaiMDID"),
+          alignment: "left",
+          type: "text",
+        },
+      ];
+    },
+    grdItem() {
+      return [
+        {
+          field: "PK",
+          width: 80,
+          title: this.$t("PK"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TEI_ECUS_DECLARE_PK",
+          width: 200,
+          title: this.$t("TEI_ECUS_DECLARE_PK"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "DHANGMDDKID",
+          width: 200,
+          title: this.$t("DHANGMDDKID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "DTOKHAIMDID",
+          width: 200,
+          title: this.$t("DTOKHAIMDID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "SOTK",
+          width: 200,
+          title: this.$t("SOTK"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_LH",
+          width: 200,
+          title: this.$t("MA_LH"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_HQ",
+          width: 200,
+          title: this.$t("MA_HQ"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "NAMDK",
+          width: 200,
+          title: this.$t("NAMDK"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_NPL_SP",
+          width: 200,
+          title: this.$t("MA_NPL_SP"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "STTHANG",
+          width: 200,
+          title: this.$t("STTHANG"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_HANGKB",
+          width: 200,
+          title: this.$t("MA_HANGKB"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_HANG",
+          width: 200,
+          title: this.$t("MA_HANG"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_PHU",
+          width: 200,
+          title: this.$t("MA_PHU"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TEN_HANG",
+          width: 200,
+          title: this.$t("TEN_HANG"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "DINHMUC",
+          width: 200,
+          title: this.$t("DINHMUC"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "NUOC_XX",
+          width: 200,
+          title: this.$t("NUOC_XX"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TEN_NUOC_XX",
+          width: 200,
+          title: this.$t("TEN_NUOC_XX"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_DVT",
+          width: 200,
+          title: this.$t("MA_DVT"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "LUONG",
+          width: 200,
+          title: this.$t("LUONG"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "DGIA_KB",
+          width: 200,
+          title: this.$t("DGIA_KB"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "DGIA_TT",
+          width: 200,
+          title: this.$t("DGIA_TT"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_DG",
+          width: 200,
+          title: this.$t("MA_DG"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TRIGIA_KB",
+          width: 200,
+          title: this.$t("TRIGIA_KB"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TRIGIA_TT",
+          width: 200,
+          title: this.$t("TRIGIA_TT"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TGKB_VND",
+          width: 200,
+          title: this.$t("TGKB_VND"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "LOAITSXNK",
+          width: 200,
+          title: this.$t("LOAITSXNK"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TS_XNK",
+          width: 200,
+          title: this.$t("TS_XNK"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TS_TTDB",
+          width: 200,
+          title: this.$t("TS_TTDB"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TS_VAT",
+          width: 200,
+          title: this.$t("TS_VAT"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_NT_THUE_XNK",
+          width: 200,
+          title: this.$t("MA_NT_THUE_XNK"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUE_XNK",
+          width: 200,
+          title: this.$t("THUE_XNK"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUE_TTDB",
+          width: 200,
+          title: this.$t("THUE_TTDB"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUE_VAT",
+          width: 200,
+          title: this.$t("THUE_VAT"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "PHU_THU",
+          width: 200,
+          title: this.$t("PHU_THU"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MIENTHUE",
+          width: 200,
+          title: this.$t("MIENTHUE"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TL_QUYDOI",
+          width: 200,
+          title: this.$t("TL_QUYDOI"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_THKE",
+          width: 200,
+          title: this.$t("MA_THKE"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CHOXULY",
+          width: 200,
+          title: this.$t("CHOXULY"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TYLE_THUKHAC",
+          width: 200,
+          title: this.$t("TYLE_THUKHAC"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TRIGIA_THUKHAC",
+          width: 200,
+          title: this.$t("TRIGIA_THUKHAC"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TEMPT",
+          width: 200,
+          title: this.$t("TEMPT"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "ISNOCO",
+          width: 200,
+          title: this.$t("ISNOCO"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_LOAI_CO",
+          width: 200,
+          title: this.$t("MA_LOAI_CO"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MAHANGSX",
+          width: 200,
+          title: this.$t("MAHANGSX"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TENHANGSX",
+          width: 200,
+          title: this.$t("TENHANGSX"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MAHSMORONG",
+          width: 200,
+          title: this.$t("MAHSMORONG"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "NHANHIEU",
+          width: 200,
+          title: this.$t("NHANHIEU"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "QUYCACH_PC",
+          width: 200,
+          title: this.$t("QUYCACH_PC"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THANHPHAN",
+          width: 200,
+          title: this.$t("THANHPHAN"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MODELNUMBER",
+          width: 200,
+          title: this.$t("MODELNUMBER"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "DLOAIHANGID",
+          width: 200,
+          title: this.$t("DLOAIHANGID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TEN_HANG_CHI_TIET",
+          width: 200,
+          title: this.$t("TEN_HANG_CHI_TIET"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_HTS",
+          width: 200,
+          title: this.$t("MA_HTS"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "DVT_HTS",
+          width: 200,
+          title: this.$t("DVT_HTS"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "LUONG_HTS",
+          width: 200,
+          title: this.$t("LUONG_HTS"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "DONGIA_HTS",
+          width: 200,
+          title: this.$t("DONGIA_HTS"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TEN_HANG_E",
+          width: 200,
+          title: this.$t("TEN_HANG_E"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "GHI_CHU",
+          width: 200,
+          title: this.$t("GHI_CHU"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "LUONG_Y",
+          width: 200,
+          title: this.$t("LUONG_Y"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "KHO_Y",
+          width: 200,
+          title: this.$t("KHO_Y"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TRI_GIA_Y",
+          width: 200,
+          title: this.$t("TRI_GIA_Y"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "LOAI_HANG",
+          width: 200,
+          title: this.$t("LOAI_HANG"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TS_XNK_MA_BT",
+          width: 200,
+          title: this.$t("TS_XNK_MA_BT"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TS_XNK_TD",
+          width: 200,
+          title: this.$t("TS_XNK_TD"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TS_TTDB_MA_BT",
+          width: 200,
+          title: this.$t("TS_TTDB_MA_BT"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TS_TTDB_TD",
+          width: 200,
+          title: this.$t("TS_TTDB_TD"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TS_VAT_MA_BT",
+          width: 200,
+          title: this.$t("TS_VAT_MA_BT"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TS_VAT_TD",
+          width: 200,
+          title: this.$t("TS_VAT_TD"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TS_MT_MA_BT",
+          width: 200,
+          title: this.$t("TS_MT_MA_BT"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TS_MT",
+          width: 200,
+          title: this.$t("TS_MT"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TS_MT_TD",
+          width: 200,
+          title: this.$t("TS_MT_TD"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUE_MT",
+          width: 200,
+          title: this.$t("THUE_MT"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MIENTHUE_SOVB",
+          width: 200,
+          title: this.$t("MIENTHUE_SOVB"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MIENTHUE_TS",
+          width: 200,
+          title: this.$t("MIENTHUE_TS"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MIENTHUE_TS_GIAM",
+          width: 200,
+          title: this.$t("MIENTHUE_TS_GIAM"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MIENTHUE_SO_DK",
+          width: 200,
+          title: this.$t("MIENTHUE_SO_DK"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MIENTHUE_SO_DONG",
+          width: 200,
+          title: this.$t("MIENTHUE_SO_DONG"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MIENTHUE_MA",
+          width: 200,
+          title: this.$t("MIENTHUE_MA"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MIENTHUE_THUE_GIAM",
+          width: 200,
+          title: this.$t("MIENTHUE_THUE_GIAM"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MIENTHUE_MA_NT_THUE_GIAM",
+          width: 200,
+          title: this.$t("MIENTHUE_MA_NT_THUE_GIAM"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_TINH_TRANG",
+          width: 200,
+          title: this.$t("MA_TINH_TRANG"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "IS_HANG_DONG_BO",
+          width: 200,
+          title: this.$t("IS_HANG_DONG_BO"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CHE_DO_UU_DAI",
+          width: 200,
+          title: this.$t("CHE_DO_UU_DAI"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TS_TV",
+          width: 200,
+          title: this.$t("TS_TV"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUE_TV",
+          width: 200,
+          title: this.$t("THUE_TV"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TS_TV_MA_BT",
+          width: 200,
+          title: this.$t("TS_TV_MA_BT"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TS_TV_TD",
+          width: 200,
+          title: this.$t("TS_TV_TD"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "QD_AP_HS_MA_HQ",
+          width: 200,
+          title: this.$t("QD_AP_HS_MA_HQ"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "QD_AP_HS_NGAY_QD",
+          width: 200,
+          title: this.$t("QD_AP_HS_NGAY_QD"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "QD_AP_HS_SO_QD",
+          width: 200,
+          title: this.$t("QD_AP_HS_SO_QD"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "QD_AP_GIA_MA_HQ",
+          width: 200,
+          title: this.$t("QD_AP_GIA_MA_HQ"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "QD_AP_GIA_NGAY_QD",
+          width: 200,
+          title: this.$t("QD_AP_GIA_NGAY_QD"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "QD_AP_GIA_SO_QD",
+          width: 200,
+          title: this.$t("QD_AP_GIA_SO_QD"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_DVT_TS_XNK_TD",
+          width: 200,
+          title: this.$t("MA_DVT_TS_XNK_TD"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_NT_TS_XNK_TD",
+          width: 200,
+          title: this.$t("MA_NT_TS_XNK_TD"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_NGOAI_HAN_NGHACH",
+          width: 200,
+          title: this.$t("MA_NGOAI_HAN_NGHACH"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_AP_DUNG_TS_TD",
+          width: 200,
+          title: this.$t("MA_AP_DUNG_TS_TD"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "LUONG2",
+          width: 200,
+          title: this.$t("LUONG2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_DVT2",
+          width: 200,
+          title: this.$t("MA_DVT2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TRIGIA_HDTM",
+          width: 200,
+          title: this.$t("TRIGIA_HDTM"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "DGIA_HDTM",
+          width: 200,
+          title: this.$t("DGIA_HDTM"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_NT_DGIA_HDTM",
+          width: 200,
+          title: this.$t("MA_NT_DGIA_HDTM"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "DVT_DGIA_HDTM",
+          width: 200,
+          title: this.$t("DVT_DGIA_HDTM"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_NT_TRIGIA_TT",
+          width: 200,
+          title: this.$t("MA_NT_TRIGIA_TT"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "SO_MUC_KHAI_DC",
+          width: 200,
+          title: this.$t("SO_MUC_KHAI_DC"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "SO_MUC_KHAI_DC2",
+          width: 200,
+          title: this.$t("SO_MUC_KHAI_DC2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "SO_MUC_KHAI_DC3",
+          width: 200,
+          title: this.$t("SO_MUC_KHAI_DC3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "SO_MUC_KHAI_DC4",
+          width: 200,
+          title: this.$t("SO_MUC_KHAI_DC4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "SO_MUC_KHAI_DC5",
+          width: 200,
+          title: this.$t("SO_MUC_KHAI_DC5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "STTHANG_TN_TX",
+          width: 200,
+          title: this.$t("STTHANG_TN_TX"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "HET_HAN_TN_TX",
+          width: 200,
+          title: this.$t("HET_HAN_TN_TX"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_MA_AP_DUNG",
+          width: 200,
+          title: this.$t("THUEKHAC_MA_AP_DUNG"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_MA_MIEN_GIAM",
+          width: 200,
+          title: this.$t("THUEKHAC_MA_MIEN_GIAM"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_THUE_GIAM",
+          width: 200,
+          title: this.$t("THUEKHAC_THUE_GIAM"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_MA_AP_DUNG2",
+          width: 200,
+          title: this.$t("THUEKHAC_MA_AP_DUNG2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_MA_MIEN_GIAM2",
+          width: 200,
+          title: this.$t("THUEKHAC_MA_MIEN_GIAM2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_THUE_GIAM2",
+          width: 200,
+          title: this.$t("THUEKHAC_THUE_GIAM2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_MA_AP_DUNG3",
+          width: 200,
+          title: this.$t("THUEKHAC_MA_AP_DUNG3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_MA_MIEN_GIAM3",
+          width: 200,
+          title: this.$t("THUEKHAC_MA_MIEN_GIAM3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_THUE_GIAM3",
+          width: 200,
+          title: this.$t("THUEKHAC_THUE_GIAM3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_MA_AP_DUNG4",
+          width: 200,
+          title: this.$t("THUEKHAC_MA_AP_DUNG4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_MA_MIEN_GIAM4",
+          width: 200,
+          title: this.$t("THUEKHAC_MA_MIEN_GIAM4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_THUE_GIAM4",
+          width: 200,
+          title: this.$t("THUEKHAC_THUE_GIAM4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_MA_AP_DUNG5",
+          width: 200,
+          title: this.$t("THUEKHAC_MA_AP_DUNG5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_MA_MIEN_GIAM5",
+          width: 200,
+          title: this.$t("THUEKHAC_MA_MIEN_GIAM5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_THUE_GIAM5",
+          width: 200,
+          title: this.$t("THUEKHAC_THUE_GIAM5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_VB_KHAC",
+          width: 200,
+          title: this.$t("MA_VB_KHAC"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_VB_KHAC2",
+          width: 200,
+          title: this.$t("MA_VB_KHAC2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_VB_KHAC3",
+          width: 200,
+          title: this.$t("MA_VB_KHAC3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_VB_KHAC4",
+          width: 200,
+          title: this.$t("MA_VB_KHAC4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_VB_KHAC5",
+          width: 200,
+          title: this.$t("MA_VB_KHAC5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "GUID",
+          width: 200,
+          title: this.$t("GUID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_PL_XAC_NHAN_GIA",
+          width: 200,
+          title: this.$t("MA_PL_XAC_NHAN_GIA"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_NT_TRIGIA_TT_S",
+          width: 200,
+          title: this.$t("MA_NT_TRIGIA_TT_S"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TRIGIA_TT_S",
+          width: 200,
+          title: this.$t("TRIGIA_TT_S"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "LUONG_TT",
+          width: 200,
+          title: this.$t("LUONG_TT"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_DVT_CHUAN",
+          width: 200,
+          title: this.$t("MA_DVT_CHUAN"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_NT_DGIA_TT",
+          width: 200,
+          title: this.$t("MA_NT_DGIA_TT"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "DVT_DGIA_TT",
+          width: 200,
+          title: this.$t("DVT_DGIA_TT"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_PL_TS_TNK",
+          width: 200,
+          title: this.$t("MA_PL_TS_TNK"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TEN_TS_TNK",
+          width: 200,
+          title: this.$t("TEN_TS_TNK"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_PL_NHAP_TNK",
+          width: 200,
+          title: this.$t("MA_PL_NHAP_TNK"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_PL_NHAP_TRGIA_TT",
+          width: 200,
+          title: this.$t("MA_PL_NHAP_TRGIA_TT"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_PL_NHAP_GIA_TT",
+          width: 200,
+          title: this.$t("MA_PL_NHAP_GIA_TT"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "DK_MIEN_GIAM_THUE",
+          width: 200,
+          title: this.$t("DK_MIEN_GIAM_THUE"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_TEN_KHOAN_MUC",
+          width: 200,
+          title: this.$t("THUEKHAC_TEN_KHOAN_MUC"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_TRGIA_TT",
+          width: 200,
+          title: this.$t("THUEKHAC_TRGIA_TT"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_LUONG_TT",
+          width: 200,
+          title: this.$t("THUEKHAC_LUONG_TT"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_MA_DVT_CHUAN",
+          width: 200,
+          title: this.$t("THUEKHAC_MA_DVT_CHUAN"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_TEN_TS",
+          width: 200,
+          title: this.$t("THUEKHAC_TEN_TS"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_SO_TIEN",
+          width: 200,
+          title: this.$t("THUEKHAC_SO_TIEN"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_DK_MIEN_GIAM_THUE",
+          width: 200,
+          title: this.$t("THUEKHAC_DK_MIEN_GIAM_THUE"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_TEN_KHOAN_MUC2",
+          width: 200,
+          title: this.$t("THUEKHAC_TEN_KHOAN_MUC2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_TRGIA_TT2",
+          width: 200,
+          title: this.$t("THUEKHAC_TRGIA_TT2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_LUONG_TT2",
+          width: 200,
+          title: this.$t("THUEKHAC_LUONG_TT2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_MA_DVT_CHUAN2",
+          width: 200,
+          title: this.$t("THUEKHAC_MA_DVT_CHUAN2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_TEN_TS2",
+          width: 200,
+          title: this.$t("THUEKHAC_TEN_TS2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_SO_TIEN2",
+          width: 200,
+          title: this.$t("THUEKHAC_SO_TIEN2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_DK_MIEN_GIAM_THUE2",
+          width: 200,
+          title: this.$t("THUEKHAC_DK_MIEN_GIAM_THUE2"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_TEN_KHOAN_MUC3",
+          width: 200,
+          title: this.$t("THUEKHAC_TEN_KHOAN_MUC3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_TRGIA_TT3",
+          width: 200,
+          title: this.$t("THUEKHAC_TRGIA_TT3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_LUONG_TT3",
+          width: 200,
+          title: this.$t("THUEKHAC_LUONG_TT3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_MA_DVT_CHUAN3",
+          width: 200,
+          title: this.$t("THUEKHAC_MA_DVT_CHUAN3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_TEN_TS3",
+          width: 200,
+          title: this.$t("THUEKHAC_TEN_TS3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_SO_TIEN3",
+          width: 200,
+          title: this.$t("THUEKHAC_SO_TIEN3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_DK_MIEN_GIAM_THUE3",
+          width: 200,
+          title: this.$t("THUEKHAC_DK_MIEN_GIAM_THUE3"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_TEN_KHOAN_MUC4",
+          width: 200,
+          title: this.$t("THUEKHAC_TEN_KHOAN_MUC4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_TRGIA_TT4",
+          width: 200,
+          title: this.$t("THUEKHAC_TRGIA_TT4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_LUONG_TT4",
+          width: 200,
+          title: this.$t("THUEKHAC_LUONG_TT4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_MA_DVT_CHUAN4",
+          width: 200,
+          title: this.$t("THUEKHAC_MA_DVT_CHUAN4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_TEN_TS4",
+          width: 200,
+          title: this.$t("THUEKHAC_TEN_TS4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_SO_TIEN4",
+          width: 200,
+          title: this.$t("THUEKHAC_SO_TIEN4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_DK_MIEN_GIAM_THUE4",
+          width: 200,
+          title: this.$t("THUEKHAC_DK_MIEN_GIAM_THUE4"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_TEN_KHOAN_MUC5",
+          width: 200,
+          title: this.$t("THUEKHAC_TEN_KHOAN_MUC5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_TRGIA_TT5",
+          width: 200,
+          title: this.$t("THUEKHAC_TRGIA_TT5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_LUONG_TT5",
+          width: 200,
+          title: this.$t("THUEKHAC_LUONG_TT5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_MA_DVT_CHUAN5",
+          width: 200,
+          title: this.$t("THUEKHAC_MA_DVT_CHUAN5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_TEN_TS5",
+          width: 200,
+          title: this.$t("THUEKHAC_TEN_TS5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_SO_TIEN5",
+          width: 200,
+          title: this.$t("THUEKHAC_SO_TIEN5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUEKHAC_DK_MIEN_GIAM_THUE5",
+          width: 200,
+          title: this.$t("THUEKHAC_DK_MIEN_GIAM_THUE5"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "LEPHI_DON_GIA",
+          width: 200,
+          title: this.$t("LEPHI_DON_GIA"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "LEPHI_SO_LUONG",
+          width: 200,
+          title: this.$t("LEPHI_SO_LUONG"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "LEPHI_MA_DVT_LUONG",
+          width: 200,
+          title: this.$t("LEPHI_MA_DVT_LUONG"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "LEPHI_SO_TIEN",
+          width: 200,
+          title: this.$t("LEPHI_SO_TIEN"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "BHIEM_DON_GIA",
+          width: 200,
+          title: this.$t("BHIEM_DON_GIA"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "BHIEM_SO_LUONG",
+          width: 200,
+          title: this.$t("BHIEM_SO_LUONG"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "BHIEM_MA_DVT_LUONG",
+          width: 200,
+          title: this.$t("BHIEM_MA_DVT_LUONG"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "BHIEM_SO_TIEN",
+          width: 200,
+          title: this.$t("BHIEM_SO_TIEN"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_HANG_QL_RIENG",
+          width: 200,
+          title: this.$t("MA_HANG_QL_RIENG"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TRIGIA_TT_M",
+          width: 200,
+          title: this.$t("TRIGIA_TT_M"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TS_PB",
+          width: 200,
+          title: this.$t("TS_PB"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "THUE_PB",
+          width: 200,
+          title: this.$t("THUE_PB"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TS_PB_MA_BT",
+          width: 200,
+          title: this.$t("TS_PB_MA_BT"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "TS_PB_TD",
+          width: 200,
+          title: this.$t("TS_PB_TD"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "SO_SIZE",
+          width: 200,
+          title: this.$t("SO_SIZE"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "SO_PO",
+          width: 200,
+          title: this.$t("SO_PO"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "SO_CO",
+          width: 200,
+          title: this.$t("SO_CO"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "DSCH810DETID",
+          width: 200,
+          title: this.$t("DSCH810DETID"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "ISUSED",
+          width: 200,
+          title: this.$t("ISUSED"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "IS_HETTON_TNTX",
+          width: 200,
+          title: this.$t("IS_HETTON_TNTX"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MA_LENHSX",
+          width: 200,
+          title: this.$t("MA_LENHSX"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "DEL_IF",
+          width: 200,
+          title: this.$t("DEL_IF"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CRT_BY",
+          width: 200,
+          title: this.$t("CRT_BY"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "CRT_DT",
+          width: 200,
+          title: this.$t("CRT_DT"),
+          alignment: "left",
+          type: "text",
+        },
+        {
+          field: "MOD_BY",
+          width: 200,
+          title: this.$t("MOD_BY"),
+          alignment: "left",
+          type: "text",
+        },
+      ];
+    },
+     grdHeader() {
+      return [      
+{field:"DTOKHAIMDID",width:100,title:this.$t("DToKhaiMDID"),alignment:"left",type:"text"},
+{field:"XORN",width:100,title:this.$t("XorN"),alignment:"left",type:"text"},
+{field:"SOTK",width:100,title:this.$t("SOTK"),alignment:"left",type:"text"},
+{field:"SOTK_DAU_TIEN",width:100,title:this.$t("SOTK_DAU_TIEN"),alignment:"left",type:"text"},
+{field:"SOTK_NHANH",width:100,title:this.$t("SOTK_NHANH"),alignment:"left",type:"text"},
+{field:"SOTK_TONG",width:100,title:this.$t("SOTK_TONG"),alignment:"left",type:"text"},
+{field:"SOTK_TN_TX",width:100,title:this.$t("SOTK_TN_TX"),alignment:"left",type:"text"},
+{field:"MA_LH",width:100,title:this.$t("MA_LH"),alignment:"left",type:"text"},
+{field:"MA_HQ",width:100,title:this.$t("MA_HQ"),alignment:"left",type:"text"},
+{field:"TEN_HQ",width:100,title:this.$t("TEN_HQ"),alignment:"left",type:"text"},
+{field:"NAMDK",width:100,title:this.$t("NAMDK"),alignment:"left",type:"text"},
+{field:"NGAY_DK",width:100,title:this.$t("NGAY_DK"),alignment:"left",type:"text"},
+{field:"MA_DV",width:100,title:this.$t("MA_DV"),alignment:"left",type:"text"},
+{field:"MA_BC_DV",width:100,title:this.$t("MA_BC_DV"),alignment:"left",type:"text"},
+{field:"DIA_CHI_DV",width:100,title:this.$t("DIA_CHI_DV"),alignment:"left",type:"text"},
+{field:"SO_DT_DV",width:100,title:this.$t("SO_DT_DV"),alignment:"left",type:"text"},
+{field:"MA_DVUT",width:100,title:this.$t("MA_DVUT"),alignment:"left",type:"text"},
+{field:"DV_DT",width:100,title:this.$t("DV_DT"),alignment:"left",type:"text"},
+{field:"MA_BC_DT",width:100,title:this.$t("MA_BC_DT"),alignment:"left",type:"text"},
+{field:"MA_PTVT",width:100,title:this.$t("MA_PTVT"),alignment:"left",type:"text"},
+{field:"TEN_PTVT",width:100,title:this.$t("TEN_PTVT"),alignment:"left",type:"text"},
+{field:"NGAYKH",width:100,title:this.$t("NGAYKH"),alignment:"left",type:"text"},
+{field:"NGAYDEN",width:100,title:this.$t("NGAYDEN"),alignment:"left",type:"text"},
+{field:"VAN_DON",width:100,title:this.$t("VAN_DON"),alignment:"left",type:"text"},
+{field:"MA_CK",width:100,title:this.$t("MA_CK"),alignment:"left",type:"text"},
+{field:"TEN_CK",width:100,title:this.$t("TEN_CK"),alignment:"left",type:"text"},
+{field:"MA_CANGNN",width:100,title:this.$t("MA_CANGNN"),alignment:"left",type:"text"},
+{field:"CANGNN",width:100,title:this.$t("CANGNN"),alignment:"left",type:"text"},
+{field:"MA_GP",width:100,title:this.$t("MA_GP"),alignment:"left",type:"text"},
+{field:"SO_GP",width:100,title:this.$t("SO_GP"),alignment:"left",type:"text"},
+{field:"NGAY_GP",width:100,title:this.$t("NGAY_GP"),alignment:"left",type:"text"},
+{field:"NGAY_HHGP",width:100,title:this.$t("NGAY_HHGP"),alignment:"left",type:"text"},
+{field:"SO_HD",width:100,title:this.$t("SO_HD"),alignment:"left",type:"text"},
+{field:"TYGIA_USD",width:100,title:this.$t("TYGIA_USD"),alignment:"left",type:"text"},
+{field:"NGAY_HD",width:100,title:this.$t("NGAY_HD"),alignment:"left",type:"text"},
+{field:"NGAY_HHHD",width:100,title:this.$t("NGAY_HHHD"),alignment:"left",type:"text"},
+{field:"NUOC_XK",width:100,title:this.$t("NUOC_XK"),alignment:"left",type:"text"},
+{field:"NUOC_NK",width:100,title:this.$t("NUOC_NK"),alignment:"left",type:"text"},
+{field:"MA_GH",width:100,title:this.$t("MA_GH"),alignment:"left",type:"text"},
+{field:"SOHANG",width:100,title:this.$t("SOHANG"),alignment:"left",type:"text"},
+{field:"MA_PTTT",width:100,title:this.$t("MA_PTTT"),alignment:"left",type:"text"},
+{field:"MA_NT",width:100,title:this.$t("MA_NT"),alignment:"left",type:"text"},
+{field:"TYGIA_VND",width:100,title:this.$t("TYGIA_VND"),alignment:"left",type:"text"},
+{field:"MA_NT_TY_GIA_VND",width:100,title:this.$t("MA_NT_TY_GIA_VND"),alignment:"left",type:"text"},
+{field:"LEPHI_HQ",width:100,title:this.$t("LEPHI_HQ"),alignment:"left",type:"text"},
+{field:"BL_LPHQ",width:100,title:this.$t("BL_LPHQ"),alignment:"left",type:"text"},
+{field:"GIAYTO",width:100,title:this.$t("GIAYTO"),alignment:"left",type:"text"},
+{field:"TENCH",width:100,title:this.$t("TENCH"),alignment:"left",type:"text"},
+{field:"NGAY_KB",width:100,title:this.$t("NGAY_KB"),alignment:"left",type:"text"},
+{field:"USER_DK",width:100,title:this.$t("USER_DK"),alignment:"left",type:"text"},
+{field:"DDIEM_KH",width:100,title:this.$t("DDIEM_KH"),alignment:"left",type:"text"},
+{field:"PTHUC_KH",width:100,title:this.$t("PTHUC_KH"),alignment:"left",type:"text"},
+{field:"NGAY_KH",width:100,title:this.$t("NGAY_KH"),alignment:"left",type:"text"},
+{field:"USER_KH1",width:100,title:this.$t("USER_KH1"),alignment:"left",type:"text"},
+{field:"USER_KH2",width:100,title:this.$t("USER_KH2"),alignment:"left",type:"text"},
+{field:"USER_PCKH",width:100,title:this.$t("USER_PCKH"),alignment:"left",type:"text"},
+{field:"MA_PHI_BH",width:100,title:this.$t("MA_PHI_BH"),alignment:"left",type:"text"},
+{field:"MA_NT_PHI_BH",width:100,title:this.$t("MA_NT_PHI_BH"),alignment:"left",type:"text"},
+{field:"PHI_BH",width:100,title:this.$t("PHI_BH"),alignment:"left",type:"text"},
+{field:"SO_DK_PHI_BH",width:100,title:this.$t("SO_DK_PHI_BH"),alignment:"left",type:"text"},
+{field:"MA_PHI_VC",width:100,title:this.$t("MA_PHI_VC"),alignment:"left",type:"text"},
+{field:"MA_NT_PHI_VC",width:100,title:this.$t("MA_NT_PHI_VC"),alignment:"left",type:"text"},
+{field:"PHI_VC",width:100,title:this.$t("PHI_VC"),alignment:"left",type:"text"},
+{field:"NGAY_TH",width:100,title:this.$t("NGAY_TH"),alignment:"left",type:"text"},
+{field:"USER_TH",width:100,title:this.$t("USER_TH"),alignment:"left",type:"text"},
+{field:"TONGTGKB",width:100,title:this.$t("TONGTGKB"),alignment:"left",type:"text"},
+{field:"TONGTGTT",width:100,title:this.$t("TONGTGTT"),alignment:"left",type:"text"},
+{field:"MA_NT_TGTT",width:100,title:this.$t("MA_NT_TGTT"),alignment:"left",type:"text"},
+{field:"QUY_VND",width:100,title:this.$t("QUY_VND"),alignment:"left",type:"text"},
+{field:"TR_LUONG",width:100,title:this.$t("TR_LUONG"),alignment:"left",type:"text"},
+{field:"DVT_TR_LUONG",width:100,title:this.$t("DVT_TR_LUONG"),alignment:"left",type:"text"},
+{field:"SO_KIEN",width:100,title:this.$t("SO_KIEN"),alignment:"left",type:"text"},
+{field:"DVT_KIEN",width:100,title:this.$t("DVT_KIEN"),alignment:"left",type:"text"},
+{field:"KY_HIEU_SO_HIEU",width:100,title:this.$t("KY_HIEU_SO_HIEU"),alignment:"left",type:"text"},
+{field:"SO_CONTAINER",width:100,title:this.$t("SO_CONTAINER"),alignment:"left",type:"text"},
+{field:"SO_CONTAINER40",width:100,title:this.$t("SO_CONTAINER40"),alignment:"left",type:"text"},
+{field:"SO_CONTAINER45",width:100,title:this.$t("SO_CONTAINER45"),alignment:"left",type:"text"},
+{field:"NGUOINHAP",width:100,title:this.$t("NGUOINHAP"),alignment:"left",type:"text"},
+{field:"NGAYNHAP",width:100,title:this.$t("NGAYNHAP"),alignment:"left",type:"text"},
+{field:"PLUONG",width:100,title:this.$t("PLUONG"),alignment:"left",type:"text"},
+{field:"PASS_DK",width:100,title:this.$t("PASS_DK"),alignment:"left",type:"text"},
+{field:"PASS_KH",width:100,title:this.$t("PASS_KH"),alignment:"left",type:"text"},
+{field:"PASS_TH",width:100,title:this.$t("PASS_TH"),alignment:"left",type:"text"},
+{field:"PASS_GC",width:100,title:this.$t("PASS_GC"),alignment:"left",type:"text"},
+{field:"TTTK",width:100,title:this.$t("TTTK"),alignment:"left",type:"text"},
+{field:"PPT_GTGT",width:100,title:this.$t("PPT_GTGT"),alignment:"left",type:"text"},
+{field:"PPT_GTGTUT",width:100,title:this.$t("PPT_GTGTUT"),alignment:"left",type:"text"},
+{field:"DATRUYEN",width:100,title:this.$t("DATRUYEN"),alignment:"left",type:"text"},
+{field:"MA_DVKT",width:100,title:this.$t("MA_DVKT"),alignment:"left",type:"text"},
+{field:"THANHKHOAN",width:100,title:this.$t("THANHKHOAN"),alignment:"left",type:"text"},
+{field:"NGAY_THN_THX",width:100,title:this.$t("NGAY_THN_THX"),alignment:"left",type:"text"},
+{field:"PPT_GTGTKT",width:100,title:this.$t("PPT_GTGTKT"),alignment:"left",type:"text"},
+{field:"NGAY_GIAOTK",width:100,title:this.$t("NGAY_GIAOTK"),alignment:"left",type:"text"},
+{field:"NGAY_NHANTK",width:100,title:this.$t("NGAY_NHANTK"),alignment:"left",type:"text"},
+{field:"NGAY_LUUTK",width:100,title:this.$t("NGAY_LUUTK"),alignment:"left",type:"text"},
+{field:"NVPSINH",width:100,title:this.$t("NVPSINH"),alignment:"left",type:"text"},
+{field:"KIEMHOANK",width:100,title:this.$t("KIEMHOANK"),alignment:"left",type:"text"},
+{field:"MA_HDTM",width:100,title:this.$t("MA_HDTM"),alignment:"left",type:"text"},
+{field:"SO_TN_HDTM",width:100,title:this.$t("SO_TN_HDTM"),alignment:"left",type:"text"},
+{field:"SO_HDTM",width:100,title:this.$t("SO_HDTM"),alignment:"left",type:"text"},
+{field:"NGAY_HDTM",width:100,title:this.$t("NGAY_HDTM"),alignment:"left",type:"text"},
+{field:"MA_PL_GIA_HDTM",width:100,title:this.$t("MA_PL_GIA_HDTM"),alignment:"left",type:"text"},
+{field:"TONGTG_HDTM",width:100,title:this.$t("TONGTG_HDTM"),alignment:"left",type:"text"},
+{field:"NGAY_VANDON",width:100,title:this.$t("NGAY_VANDON"),alignment:"left",type:"text"},
+{field:"THUE",width:100,title:this.$t("THUE"),alignment:"left",type:"text"},
+{field:"HTKT",width:100,title:this.$t("HTKT"),alignment:"left",type:"text"},
+{field:"TYLE_KT",width:100,title:this.$t("TYLE_KT"),alignment:"left",type:"text"},
+{field:"DENNGAY_KH",width:100,title:this.$t("DENNGAY_KH"),alignment:"left",type:"text"},
+{field:"DAIDIEN_DN",width:100,title:this.$t("DAIDIEN_DN"),alignment:"left",type:"text"},
+{field:"NGUOIQDHTKT",width:100,title:this.$t("NGUOIQDHTKT"),alignment:"left",type:"text"},
+{field:"SO_PLTK",width:100,title:this.$t("SO_PLTK"),alignment:"left",type:"text"},
+{field:"XUAT_NPL_SP",width:100,title:this.$t("XUAT_NPL_SP"),alignment:"left",type:"text"},
+{field:"THANH_LY",width:100,title:this.$t("THANH_LY"),alignment:"left",type:"text"},
+{field:"SOTN",width:100,title:this.$t("SoTN"),alignment:"left",type:"text"},
+{field:"NGAYTN",width:100,title:this.$t("NgayTN"),alignment:"left",type:"text"},
+{field:"NAMTN",width:100,title:this.$t("NamTN"),alignment:"left",type:"text"},
+{field:"MAHQTN",width:100,title:this.$t("MaHQTN"),alignment:"left",type:"text"},
+{field:"TRANGTHAI",width:100,title:this.$t("TrangThai"),alignment:"left",type:"text"},
+{field:"TEN_DV_L1",width:100,title:this.$t("Ten_DV_L1"),alignment:"left",type:"text"},
+{field:"TEN_DV_L2",width:100,title:this.$t("Ten_DV_L2"),alignment:"left",type:"text"},
+{field:"TEN_DV_L3",width:100,title:this.$t("Ten_DV_L3"),alignment:"left",type:"text"},
+{field:"DV_DT_L2",width:100,title:this.$t("DV_DT_L2"),alignment:"left",type:"text"},
+{field:"DV_DT_L3",width:100,title:this.$t("DV_DT_L3"),alignment:"left",type:"text"},
+{field:"TEN_DVUT",width:100,title:this.$t("TEN_DVUT"),alignment:"left",type:"text"},
+{field:"TEN_DVKT",width:100,title:this.$t("TEN_DVKT"),alignment:"left",type:"text"},
+{field:"TR_LUONG_NET",width:100,title:this.$t("TR_LUONG_Net"),alignment:"left",type:"text"},
+{field:"DTOKHAIMDIDTEMPT",width:100,title:this.$t("DToKhaiMDIDTempt"),alignment:"left",type:"text"},
+{field:"CT_HDTM_BC",width:100,title:this.$t("CT_HDTM_BC"),alignment:"left",type:"text"},
+{field:"CT_HDTM_BS",width:100,title:this.$t("CT_HDTM_BS"),alignment:"left",type:"text"},
+{field:"CT_HDONTM_BC",width:100,title:this.$t("CT_HDonTM_BC"),alignment:"left",type:"text"},
+{field:"CT_HDONTM_BS",width:100,title:this.$t("CT_HDonTM_BS"),alignment:"left",type:"text"},
+{field:"CT_BK_BC",width:100,title:this.$t("CT_BK_BC"),alignment:"left",type:"text"},
+{field:"CT_BK_BS",width:100,title:this.$t("CT_BK_BS"),alignment:"left",type:"text"},
+{field:"CT_VD_BC",width:100,title:this.$t("CT_VD_BC"),alignment:"left",type:"text"},
+{field:"CT_VD_BS",width:100,title:this.$t("CT_VD_BS"),alignment:"left",type:"text"},
+{field:"CT_THEM1_TEN",width:100,title:this.$t("CT_Them1_Ten"),alignment:"left",type:"text"},
+{field:"CT_THEM1_BC",width:100,title:this.$t("CT_Them1_BC"),alignment:"left",type:"text"},
+{field:"CT_THEM1_BS",width:100,title:this.$t("CT_Them1_BS"),alignment:"left",type:"text"},
+{field:"CT_THEM2_TEN",width:100,title:this.$t("CT_Them2_Ten"),alignment:"left",type:"text"},
+{field:"CT_THEM2_BC",width:100,title:this.$t("CT_Them2_BC"),alignment:"left",type:"text"},
+{field:"CT_THEM2_BS",width:100,title:this.$t("CT_Them2_BS"),alignment:"left",type:"text"},
+{field:"CT_THEM3_TEN",width:100,title:this.$t("CT_Them3_Ten"),alignment:"left",type:"text"},
+{field:"CT_THEM3_BC",width:100,title:this.$t("CT_Them3_BC"),alignment:"left",type:"text"},
+{field:"CT_THEM3_BS",width:100,title:this.$t("CT_Them3_BS"),alignment:"left",type:"text"},
+{field:"MA_PHU_MAX",width:100,title:this.$t("MA_PHU_Max"),alignment:"left",type:"text"},
+{field:"THANH_LY_BACKUP",width:100,title:this.$t("THANH_LY_BackUp"),alignment:"left",type:"text"},
+{field:"ISNHANHS",width:100,title:this.$t("IsNhanHS"),alignment:"left",type:"text"},
+{field:"HESONHANTGTT",width:100,title:this.$t("HeSoNhanTGTT"),alignment:"left",type:"text"},
+{field:"ISPHANBO",width:100,title:this.$t("isPhanBo"),alignment:"left",type:"text"},
+{field:"MA_NT_THUE",width:100,title:this.$t("MA_NT_THUE"),alignment:"left",type:"text"},
+{field:"TONGTIENTHUE",width:100,title:this.$t("TongTienThue"),alignment:"left",type:"text"},
+{field:"TONGTIENTHUEKH",width:100,title:this.$t("TongTienThueKH"),alignment:"left",type:"text"},
+{field:"TONGTIENTHUETH",width:100,title:this.$t("TongTienThueTH"),alignment:"left",type:"text"},
+{field:"HESOCIFDN",width:100,title:this.$t("HeSoCIFDN"),alignment:"left",type:"text"},
+{field:"ISUSEHESOCIFDN",width:100,title:this.$t("isUseHeSoCIFDN"),alignment:"left",type:"text"},
+{field:"TTTK_HQ",width:100,title:this.$t("TTTK_HQ"),alignment:"left",type:"text"},
+{field:"SOHDXK",width:100,title:this.$t("SoHDXK"),alignment:"left",type:"text"},
+{field:"NGAYDKNHAPHANG",width:100,title:this.$t("NgayDKNhapHang"),alignment:"left",type:"text"},
+{field:"KDT_WAITING",width:100,title:this.$t("KDT_WAITING"),alignment:"left",type:"text"},
+{field:"KDT_REFERENCES",width:100,title:this.$t("KDT_REFERENCES"),alignment:"left",type:"text"},
+{field:"KDT_LASTINFO",width:100,title:this.$t("KDT_LASTINFO"),alignment:"left",type:"text"},
+{field:"ISNEWINFOMATION",width:100,title:this.$t("IsNewInfomation"),alignment:"left",type:"text"},
+{field:"DTOKHAIMDID_ERP",width:100,title:this.$t("DToKhaiMDID_ERP"),alignment:"left",type:"text"},
+{field:"DVAN_DONID",width:100,title:this.$t("DVan_DonID"),alignment:"left",type:"text"},
+{field:"MA_HQ_CK",width:100,title:this.$t("MA_HQ_CK"),alignment:"left",type:"text"},
+{field:"MESSAGEID",width:100,title:this.$t("MessageID"),alignment:"left",type:"text"},
+{field:"LYDOHUY",width:100,title:this.$t("LyDoHuy"),alignment:"left",type:"text"},
+{field:"TINHTRANG_NOCO",width:100,title:this.$t("TinhTrang_NoCO"),alignment:"left",type:"text"},
+{field:"TINHTRANG_HUY",width:100,title:this.$t("TinhTrang_HUY"),alignment:"left",type:"text"},
+{field:"PRETOKHAIID",width:100,title:this.$t("PreToKhaiID"),alignment:"left",type:"text"},
+{field:"PHIENBAN_TK",width:100,title:this.$t("PhienBan_TK"),alignment:"left",type:"text"},
+{field:"NEXTTOKHAIID",width:100,title:this.$t("NextToKhaiID"),alignment:"left",type:"text"},
+{field:"HUONGDANPL",width:100,title:this.$t("HuongDanPL"),alignment:"left",type:"text"},
+{field:"CHUYEN_CUA_KHAU",width:100,title:this.$t("Chuyen_Cua_Khau"),alignment:"left",type:"text"},
+{field:"NOI_DUNG_CHUYEN_CUA_KHAU",width:100,title:this.$t("Noi_Dung_Chuyen_Cua_Khau"),alignment:"left",type:"text"},
+{field:"LYDOSUA",width:100,title:this.$t("LyDoSua"),alignment:"left",type:"text"},
+{field:"TTTK_HUY",width:100,title:this.$t("TTTK_HUY"),alignment:"left",type:"text"},
+{field:"MA_MID",width:100,title:this.$t("Ma_MID"),alignment:"left",type:"text"},
+{field:"NGAY_HOANTHANH",width:100,title:this.$t("NGAY_HOANTHANH"),alignment:"left",type:"text"},
+{field:"THUETUYETDOI",width:100,title:this.$t("ThueTuyetDoi"),alignment:"left",type:"text"},
+{field:"ISDADUYET",width:100,title:this.$t("IsDaDuyet"),alignment:"left",type:"text"},
+{field:"NGUOIDUYET",width:100,title:this.$t("NguoiDuyet"),alignment:"left",type:"text"},
+{field:"NGAYDUYET",width:100,title:this.$t("NgayDuyet"),alignment:"left",type:"text"},
+{field:"GHICHUDUYET",width:100,title:this.$t("GhiChuDuyet"),alignment:"left",type:"text"},
+{field:"ISEXPORT",width:100,title:this.$t("IsExport"),alignment:"left",type:"text"},
+{field:"ISSIGN",width:100,title:this.$t("IsSign"),alignment:"left",type:"text"},
+{field:"SIGNDATA",width:100,title:this.$t("SignData"),alignment:"left",type:"text"},
+{field:"SOHSTK",width:100,title:this.$t("SoHSTK"),alignment:"left",type:"text"},
+{field:"HDGCID",width:100,title:this.$t("HDGCID"),alignment:"left",type:"text"},
+{field:"SO_HD_CT",width:100,title:this.$t("SO_HD_CT"),alignment:"left",type:"text"},
+{field:"NGAY_HD_CT",width:100,title:this.$t("NGAY_HD_CT"),alignment:"left",type:"text"},
+{field:"NGAY_HHHD_CT",width:100,title:this.$t("NGAY_HHHD_CT"),alignment:"left",type:"text"},
+{field:"DIA_DIEM_GIAO_HANG",width:100,title:this.$t("DIA_DIEM_GIAO_HANG"),alignment:"left",type:"text"},
+{field:"NGAY_GIAO_HANG",width:100,title:this.$t("NGAY_GIAO_HANG"),alignment:"left",type:"text"},
+{field:"MA_NGUOI_CHI_DINH_CT",width:100,title:this.$t("MA_NGUOI_CHI_DINH_CT"),alignment:"left",type:"text"},
+{field:"TEN_NGUOI_CHI_DINH_CT",width:100,title:this.$t("TEN_NGUOI_CHI_DINH_CT"),alignment:"left",type:"text"},
+{field:"ISTOKHAICT",width:100,title:this.$t("IsToKhaiCT"),alignment:"left",type:"text"},
+{field:"DEXUATKHAC",width:100,title:this.$t("DeXuatKhac"),alignment:"left",type:"text"},
+{field:"ISTOKHAINHO",width:100,title:this.$t("IsToKhaiNho"),alignment:"left",type:"text"},
+{field:"HUY_MA_LY_DO",width:100,title:this.$t("HUY_MA_LY_DO"),alignment:"left",type:"text"},
+{field:"HUY_MA_LOAI",width:100,title:this.$t("HUY_MA_LOAI"),alignment:"left",type:"text"},
+{field:"HUY_TRANGTHAI",width:100,title:this.$t("HUY_TrangThai"),alignment:"left",type:"text"},
+{field:"HUY_SOTN",width:100,title:this.$t("HUY_SOTN"),alignment:"left",type:"text"},
+{field:"HUY_NAMTN",width:100,title:this.$t("HUY_NAMTN"),alignment:"left",type:"text"},
+{field:"HUY_NGAYTN",width:100,title:this.$t("HUY_NgayTN"),alignment:"left",type:"text"},
+{field:"HUY_MESSAGEID",width:100,title:this.$t("HUY_MessageID"),alignment:"left",type:"text"},
+{field:"HUY_ISSIGN",width:100,title:this.$t("HUY_IsSign"),alignment:"left",type:"text"},
+{field:"HUY_SIGNDATA",width:100,title:this.$t("HUY_SignData"),alignment:"left",type:"text"},
+{field:"TUYEN_VAN_CHUYEN",width:100,title:this.$t("TUYEN_VAN_CHUYEN"),alignment:"left",type:"text"},
+{field:"TEN_NGUOI_NHAN_HANG",width:100,title:this.$t("Ten_Nguoi_Nhan_Hang"),alignment:"left",type:"text"},
+{field:"MA_NGUOI_NHAN_HANG",width:100,title:this.$t("Ma_Nguoi_Nhan_Hang"),alignment:"left",type:"text"},
+{field:"TEN_NGUOI_GIAO_HANG",width:100,title:this.$t("Ten_Nguoi_Giao_Hang"),alignment:"left",type:"text"},
+{field:"MA_NGUOI_GIAO_HANG",width:100,title:this.$t("Ma_Nguoi_Giao_Hang"),alignment:"left",type:"text"},
+{field:"ISTQDT",width:100,title:this.$t("IsTQDT"),alignment:"left",type:"text"},
+{field:"KIEUPHANBO",width:100,title:this.$t("KieuPhanBo"),alignment:"left",type:"text"},
+{field:"CHON",width:100,title:this.$t("Chon"),alignment:"left",type:"text"},
+{field:"THONGTINPHANHOI",width:100,title:this.$t("ThongTinPhanHoi"),alignment:"left",type:"text"},
+{field:"PHI_KHAC",width:100,title:this.$t("PHI_KHAC"),alignment:"left",type:"text"},
+{field:"TEN_PHI_KHAC",width:100,title:this.$t("TEN_PHI_KHAC"),alignment:"left",type:"text"},
+{field:"HUYKB",width:100,title:this.$t("HuyKB"),alignment:"left",type:"text"},
+{field:"NGAY_BAT_DAU",width:100,title:this.$t("NGAY_BAT_DAU"),alignment:"left",type:"text"},
+{field:"NGAY_KET_THUC",width:100,title:this.$t("NGAY_KET_THUC"),alignment:"left",type:"text"},
+{field:"HUY_KDT_REFERENCES",width:100,title:this.$t("HUY_KDT_REFERENCES"),alignment:"left",type:"text"},
+{field:"HUY_KDT_WAITING",width:100,title:this.$t("HUY_KDT_WAITING"),alignment:"left",type:"text"},
+{field:"HUY_KDT_LASTINFO",width:100,title:this.$t("HUY_KDT_LASTINFO"),alignment:"left",type:"text"},
+{field:"ISUSEHESOI",width:100,title:this.$t("isUseHeSoI"),alignment:"left",type:"text"},
+{field:"NGAY_THUC_XN",width:100,title:this.$t("NGAY_THUC_XN"),alignment:"left",type:"text"},
+{field:"PLUONG_NOIDUNG",width:100,title:this.$t("PLUONG_NOIDUNG"),alignment:"left",type:"text"},
+{field:"IS_TRINH_KY",width:100,title:this.$t("IS_TRINH_KY"),alignment:"left",type:"text"},
+{field:"HUY_IS_TRINH_KY",width:100,title:this.$t("HUY_IS_TRINH_KY"),alignment:"left",type:"text"},
+{field:"ISKHONG_VAN_DON",width:100,title:this.$t("IsKHONG_VAN_DON"),alignment:"left",type:"text"},
+{field:"IS_AN_HAN_THUE",width:100,title:this.$t("IS_AN_HAN_THUE"),alignment:"left",type:"text"},
+{field:"AN_HAN_THUE_LD",width:100,title:this.$t("AN_HAN_THUE_LD"),alignment:"left",type:"text"},
+{field:"AN_HAN_THUE_SN",width:100,title:this.$t("AN_HAN_THUE_SN"),alignment:"left",type:"text"},
+{field:"IS_DAM_BAO_THUE",width:100,title:this.$t("IS_DAM_BAO_THUE"),alignment:"left",type:"text"},
+{field:"DAM_BAO_THUE_HINH_THUC",width:100,title:this.$t("DAM_BAO_THUE_HINH_THUC"),alignment:"left",type:"text"},
+{field:"DAM_BAO_THUE_TRI_GIA",width:100,title:this.$t("DAM_BAO_THUE_TRI_GIA"),alignment:"left",type:"text"},
+{field:"DAM_BAO_THUE_NGAY_BD",width:100,title:this.$t("DAM_BAO_THUE_NGAY_BD"),alignment:"left",type:"text"},
+{field:"DAM_BAO_THUE_NGAY_KT",width:100,title:this.$t("DAM_BAO_THUE_NGAY_KT"),alignment:"left",type:"text"},
+{field:"DAM_BAO_MA_NG_HANG",width:100,title:this.$t("DAM_BAO_MA_NG_HANG"),alignment:"left",type:"text"},
+{field:"DAM_BAO_NAM_PHAT_HANH",width:100,title:this.$t("DAM_BAO_NAM_PHAT_HANH"),alignment:"left",type:"text"},
+{field:"DAM_BAO_KY_HIEU_CT",width:100,title:this.$t("DAM_BAO_KY_HIEU_CT"),alignment:"left",type:"text"},
+{field:"DAM_BAO_SO_CT",width:100,title:this.$t("DAM_BAO_SO_CT"),alignment:"left",type:"text"},
+{field:"MA_THOI_HAN_NOP_THUE",width:100,title:this.$t("MA_THOI_HAN_NOP_THUE"),alignment:"left",type:"text"},
+{field:"SO_CONTAINER_KHAC",width:100,title:this.$t("SO_CONTAINER_KHAC"),alignment:"left",type:"text"},
+{field:"NGAY_TAM_NHAP_HH",width:100,title:this.$t("NGAY_TAM_NHAP_HH"),alignment:"left",type:"text"},
+{field:"THONG_TU",width:100,title:this.$t("THONG_TU"),alignment:"left",type:"text"},
+{field:"MA_NGHIEP_VU",width:100,title:this.$t("MA_NGHIEP_VU"),alignment:"left",type:"text"},
+{field:"GUID1",width:100,title:this.$t("GUID1"),alignment:"left",type:"text"},
+{field:"NHOMTK",width:100,title:this.$t("NHOMTK"),alignment:"left",type:"text"},
+{field:"ISTEST",width:100,title:this.$t("ISTEST"),alignment:"left",type:"text"},
+{field:"ISVNACCS",width:100,title:this.$t("IsVNACCS"),alignment:"left",type:"text"},
+{field:"APP_NAME",width:100,title:this.$t("APP_NAME"),alignment:"left",type:"text"},
+{field:"ISVERSION2",width:100,title:this.$t("IsVersion2"),alignment:"left",type:"text"},
+{field:"TRANG_THAI_SAMSUNG",width:100,title:this.$t("TRANG_THAI_SAMSUNG"),alignment:"left",type:"text"},
+{field:"THANH_LY_KBT",width:100,title:this.$t("THANH_LY_KBT"),alignment:"left",type:"text"},
+{field:"SECSIONID",width:100,title:this.$t("SECSIONID"),alignment:"left",type:"text"},
+{field:"ISUYQUYEN",width:100,title:this.$t("IsUyQuyen"),alignment:"left",type:"text"},
+{field:"DSCH810AWBID",width:100,title:this.$t("DSCH810AWBID"),alignment:"left",type:"text"},
+{field:"IS_DUYET",width:100,title:this.$t("IS_DUYET"),alignment:"left",type:"text"},
+{field:"USER_DUYET",width:100,title:this.$t("USER_DUYET"),alignment:"left",type:"text"},
+{field:"ISTINHTHUE",width:100,title:this.$t("isTinhThue"),alignment:"left",type:"text"},
+{field:"ISCONGPHI",width:100,title:this.$t("isCongPhi"),alignment:"left",type:"text"},
+{field:"ISCONGCUOC",width:100,title:this.$t("isCongCuoc"),alignment:"left",type:"text"},
+{field:"IS_MOVE_TK",width:100,title:this.$t("IS_MOVE_TK"),alignment:"left",type:"text"},
+{field:"DTBTID",width:100,title:this.$t("DTBTID"),alignment:"left",type:"text"},
+{field:"MA_CUC_HQ",width:100,title:this.$t("MA_CUC_HQ"),alignment:"left",type:"text"},
+{field:"TEN_CUC_HQ",width:100,title:this.$t("TEN_CUC_HQ"),alignment:"left",type:"text"},
+{field:"LOAI_TBT",width:100,title:this.$t("Loai_TBT"),alignment:"left",type:"text"},
+{field:"SO_TBT",width:100,title:this.$t("SO_TBT"),alignment:"left",type:"text"},
+{field:"NGAY_TBT",width:100,title:this.$t("Ngay_TBT"),alignment:"left",type:"text"},
+{field:"NGAY_HH_TBT",width:100,title:this.$t("Ngay_HH_TBT"),alignment:"left",type:"text"},
+{field:"TONG_TH",width:100,title:this.$t("Tong_TH"),alignment:"left",type:"text"},
+{field:"TAIKHOAN",width:100,title:this.$t("TaiKhoan"),alignment:"left",type:"text"},
+{field:"TEN_KHOBAC",width:100,title:this.$t("Ten_KhoBac"),alignment:"left",type:"text"},
+{field:"TEN_DV",width:100,title:this.$t("TEN_DV"),alignment:"left",type:"text"},
+{field:"BAO_LANH_TEN_NH",width:100,title:this.$t("BAO_LANH_TEN_NH"),alignment:"left",type:"text"},
+{field:"BAO_LANH_MA_NH",width:100,title:this.$t("BAO_LANH_MA_NH"),alignment:"left",type:"text"},
+{field:"BAO_LANH_MA_A",width:100,title:this.$t("BAO_LANH_MA_A"),alignment:"left",type:"text"},
+{field:"BAO_LANH_KY_HIEU",width:100,title:this.$t("BAO_LANH_KY_HIEU"),alignment:"left",type:"text"},
+{field:"BAO_LANH_SO_CT",width:100,title:this.$t("BAO_LANH_SO_CT"),alignment:"left",type:"text"},
+{field:"BAO_LANH_TEN_LOAI",width:100,title:this.$t("BAO_LANH_TEN_LOAI"),alignment:"left",type:"text"},
+{field:"TRA_THAY_TEN_NH",width:100,title:this.$t("TRA_THAY_TEN_NH"),alignment:"left",type:"text"},
+{field:"TRA_THAY_MA_NH",width:100,title:this.$t("TRA_THAY_MA_NH"),alignment:"left",type:"text"},
+{field:"TRA_THAY_MA_A",width:100,title:this.$t("TRA_THAY_MA_A"),alignment:"left",type:"text"},
+{field:"TRA_THAY_KY_HIEU",width:100,title:this.$t("TRA_THAY_KY_HIEU"),alignment:"left",type:"text"},
+{field:"TRA_THAY_SO_CT",width:100,title:this.$t("TRA_THAY_SO_CT"),alignment:"left",type:"text"},
+{field:"TEN_SAC_THUE",width:100,title:this.$t("TEN_SAC_THUE"),alignment:"left",type:"text"},
+{field:"TIEU_MUC",width:100,title:this.$t("TIEU_MUC"),alignment:"left",type:"text"},
+{field:"TIEN_THUE",width:100,title:this.$t("TIEN_THUE"),alignment:"left",type:"text"},
+{field:"TIEN_THUE_MIEN",width:100,title:this.$t("TIEN_THUE_MIEN"),alignment:"left",type:"text"},
+{field:"TIEN_THUE_GIAM",width:100,title:this.$t("TIEN_THUE_GIAM"),alignment:"left",type:"text"},
+{field:"TIEN_THUE_NOP",width:100,title:this.$t("TIEN_THUE_NOP"),alignment:"left",type:"text"},
+{field:"TIEN_THUE_AN_DINH",width:100,title:this.$t("TIEN_THUE_AN_DINH"),alignment:"left",type:"text"},
+{field:"TIEN_THUE_CHENH",width:100,title:this.$t("TIEN_THUE_CHENH"),alignment:"left",type:"text"},
+{field:"TEN_SAC_THUE2",width:100,title:this.$t("TEN_SAC_THUE2"),alignment:"left",type:"text"},
+{field:"TIEU_MUC2",width:100,title:this.$t("TIEU_MUC2"),alignment:"left",type:"text"},
+{field:"TIEN_THUE2",width:100,title:this.$t("TIEN_THUE2"),alignment:"left",type:"text"},
+{field:"TIEN_THUE_MIEN2",width:100,title:this.$t("TIEN_THUE_MIEN2"),alignment:"left",type:"text"},
+{field:"TIEN_THUE_GIAM2",width:100,title:this.$t("TIEN_THUE_GIAM2"),alignment:"left",type:"text"},
+{field:"TIEN_THUE_NOP2",width:100,title:this.$t("TIEN_THUE_NOP2"),alignment:"left",type:"text"},
+{field:"TIEN_THUE_AN_DINH2",width:100,title:this.$t("TIEN_THUE_AN_DINH2"),alignment:"left",type:"text"},
+{field:"TIEN_THUE_CHENH2",width:100,title:this.$t("TIEN_THUE_CHENH2"),alignment:"left",type:"text"},
+{field:"TEN_SAC_THUE3",width:100,title:this.$t("TEN_SAC_THUE3"),alignment:"left",type:"text"},
+{field:"TIEU_MUC3",width:100,title:this.$t("TIEU_MUC3"),alignment:"left",type:"text"},
+{field:"TIEN_THUE3",width:100,title:this.$t("TIEN_THUE3"),alignment:"left",type:"text"},
+{field:"TIEN_THUE_MIEN3",width:100,title:this.$t("TIEN_THUE_MIEN3"),alignment:"left",type:"text"},
+{field:"TIEN_THUE_GIAM3",width:100,title:this.$t("TIEN_THUE_GIAM3"),alignment:"left",type:"text"},
+{field:"TIEN_THUE_NOP3",width:100,title:this.$t("TIEN_THUE_NOP3"),alignment:"left",type:"text"},
+{field:"TIEN_THUE_AN_DINH3",width:100,title:this.$t("TIEN_THUE_AN_DINH3"),alignment:"left",type:"text"},
+{field:"TIEN_THUE_CHENH3",width:100,title:this.$t("TIEN_THUE_CHENH3"),alignment:"left",type:"text"},
+{field:"TEN_SAC_THUE4",width:100,title:this.$t("TEN_SAC_THUE4"),alignment:"left",type:"text"},
+{field:"TIEU_MUC4",width:100,title:this.$t("TIEU_MUC4"),alignment:"left",type:"text"},
+{field:"TIEN_THUE4",width:100,title:this.$t("TIEN_THUE4"),alignment:"left",type:"text"},
+{field:"TIEN_THUE_MIEN4",width:100,title:this.$t("TIEN_THUE_MIEN4"),alignment:"left",type:"text"},
+{field:"TIEN_THUE_GIAM4",width:100,title:this.$t("TIEN_THUE_GIAM4"),alignment:"left",type:"text"},
+{field:"TIEN_THUE_NOP4",width:100,title:this.$t("TIEN_THUE_NOP4"),alignment:"left",type:"text"},
+{field:"TIEN_THUE_AN_DINH4",width:100,title:this.$t("TIEN_THUE_AN_DINH4"),alignment:"left",type:"text"},
+{field:"TIEN_THUE_CHENH4",width:100,title:this.$t("TIEN_THUE_CHENH4"),alignment:"left",type:"text"},
+{field:"TEN_SAC_THUE5",width:100,title:this.$t("TEN_SAC_THUE5"),alignment:"left",type:"text"},
+{field:"TIEU_MUC5",width:100,title:this.$t("TIEU_MUC5"),alignment:"left",type:"text"},
+{field:"TIEN_THUE5",width:100,title:this.$t("TIEN_THUE5"),alignment:"left",type:"text"},
+{field:"TIEN_THUE_MIEN5",width:100,title:this.$t("TIEN_THUE_MIEN5"),alignment:"left",type:"text"},
+{field:"TIEN_THUE_GIAM5",width:100,title:this.$t("TIEN_THUE_GIAM5"),alignment:"left",type:"text"},
+{field:"TIEN_THUE_NOP5",width:100,title:this.$t("TIEN_THUE_NOP5"),alignment:"left",type:"text"},
+{field:"TIEN_THUE_AN_DINH5",width:100,title:this.$t("TIEN_THUE_AN_DINH5"),alignment:"left",type:"text"},
+{field:"TIEN_THUE_CHENH5",width:100,title:this.$t("TIEN_THUE_CHENH5"),alignment:"left",type:"text"},
+{field:"TEN_SAC_THUE6",width:100,title:this.$t("TEN_SAC_THUE6"),alignment:"left",type:"text"},
+{field:"TIEU_MUC6",width:100,title:this.$t("TIEU_MUC6"),alignment:"left",type:"text"},
+{field:"TIEN_THUE6",width:100,title:this.$t("TIEN_THUE6"),alignment:"left",type:"text"},
+{field:"TIEN_THUE_MIEN6",width:100,title:this.$t("TIEN_THUE_MIEN6"),alignment:"left",type:"text"},
+{field:"TIEN_THUE_GIAM6",width:100,title:this.$t("TIEN_THUE_GIAM6"),alignment:"left",type:"text"},
+{field:"TIEN_THUE_NOP6",width:100,title:this.$t("TIEN_THUE_NOP6"),alignment:"left",type:"text"},
+{field:"TIEN_THUE_AN_DINH6",width:100,title:this.$t("TIEN_THUE_AN_DINH6"),alignment:"left",type:"text"},
+{field:"TIEN_THUE_CHENH6",width:100,title:this.$t("TIEN_THUE_CHENH6"),alignment:"left",type:"text"},
+{field:"TONG_TIEN_THUE",width:100,title:this.$t("TONG_TIEN_THUE"),alignment:"left",type:"text"},
+{field:"TONG_TIEN_THUE_MIEN",width:100,title:this.$t("TONG_TIEN_THUE_MIEN"),alignment:"left",type:"text"},
+{field:"TONG_TIEN_THUE_GIAM",width:100,title:this.$t("TONG_TIEN_THUE_GIAM"),alignment:"left",type:"text"},
+{field:"TONG_TIEN_THUE_NOP",width:100,title:this.$t("TONG_TIEN_THUE_NOP"),alignment:"left",type:"text"},
+{field:"TONG_TIEN_THUE_AN_DINH",width:100,title:this.$t("TONG_TIEN_THUE_AN_DINH"),alignment:"left",type:"text"},
+{field:"TONG_TIEN_THUE_CHENH",width:100,title:this.$t("TONG_TIEN_THUE_CHENH"),alignment:"left",type:"text"},
+{field:"TY_GIA",width:100,title:this.$t("TY_GIA"),alignment:"left",type:"text"},
+{field:"SO_NGAY_AN_HAN",width:100,title:this.$t("SO_NGAY_AN_HAN"),alignment:"left",type:"text"},
+{field:"NGAY_HET_HAN_TNTX",width:100,title:this.$t("NGAY_HET_HAN_TNTX"),alignment:"left",type:"text"},
+{field:"LAI_PHAT_CHAM_NOP",width:100,title:this.$t("LAI_PHAT_CHAM_NOP"),alignment:"left",type:"text"},
+{field:"BAO_LANH_NAM_CT",width:100,title:this.$t("BAO_LANH_NAM_CT"),alignment:"left",type:"text"},
+{field:"TRA_THAY_NAM_CT",width:100,title:this.$t("TRA_THAY_NAM_CT"),alignment:"left",type:"text"},
+{field:"LOAI_TOKHAI",width:100,title:this.$t("LOAI_TOKHAI"),alignment:"left",type:"text"},
+      ];
+    },
+  },
+  /*############### mounted #######################*/
+  mounted() {
+    //this.$refs.grdAPTKHQReview.loadData();
+  },
+
+  /*############### methods #######################*/
+  methods: {
+  
+    onDblClickCell(cell) {
+      
+      this.so_tk = cell.data.SOTK;
+      this.ngay_dk = cell.data.NGAY_DK;
+      this.van_don = cell.data.VAN_DON;
+      this.so_kien = cell.data.SO_KIEN;
+      this.tr_luong = cell.data.TR_LUONG;
+      this.so_conteiner = cell.data.SO_CONTEINER;
+      this.so_hdtm = cell.data.SO_HDTM;
+      this.ngay_hdtm = cell.data.NGAY_HDTM;
+      this.ma_pttt = cell.data.MA_PTTT;
+      this.ma_pl_gia_hdtm = cell.data.MA_PL_GIA_HDTM;
+      this.tongtgtt = cell.data.TONGTGTT;
+      this.tongtgkb = cell.data.TONGTGKB;
+      this.phi_vc = cell.data.PHI_VC;
+      this.tien_thue = cell.data.TIEN_THUE;
+      this.tien_thue2 = cell.data.TIEN_THUE2;
+      this.tien_thue3 = cell.data.TIEN_THUE3;
+      this.item_pk = cell.data.PK;
+       switch (this.$refs.tabs.getActiveTabIndex()){
+        case 0:
+          setTimeout(() => {
+            this.$refs.declare_cont.loadData();
+          }, 1000);
+        break;
+        case 1:
+          setTimeout((tabs) => {
+             this.$refs.declare_item.loadData();
+          }, 1000);
+        break;
+      }
+      
+    },
+     
+    async tabChanged(val) {
+      this.indexTab = val;
+    },
+    toggleLeft() {
+      this.showLeft = this.showLeft ? false : true;
+      this.leftCols = !this.showLeft ? 0 : 5;
+      this.btnIconType = !this.showLeft ? "skip_next" : "skip_prev";
+    },
+    async changeFile(file) {
+      // console.log("file",file)
+      if (file == "" || file == "undefined" || file == null) {
+        return;
+      }
+      this.file = file;
+
+      // if (!this.selected_company) {
+      //   return this.showNotification(
+      //     "warning",
+      //     this.$t("please_select_your_company_firstly"),
+      //     "",
+      //     5000
+      //   );
+      // }
+      if (this.file.type != "text/xml") {
+        // if (!this.tei_einvoice_cloud_pk) {
+        return this.showNotification(
+          "warning",
+          this.$t("please_upload_by_xml_file_only"),
+          "",
+          5000
+        );
+        // }
+      }
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("user_pk", this.user.PK);
+      const res = await this.$axios({
+        method: "post",
+        url: "/dso/importtkhqfile",
+        data: formData,
+      });
+      if (res.data.success) {
+        this.onSearch();
+        return this.showNotification(
+          "success",
+          this.$t("upload_file_successfull"),
+          "",
+          5000
+        );
+      }
+
+      return this.showNotification("error", res.message, "", 5000);
+    },
+    onClickButton() {
+      this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+    },
+    async onCellClick({ column, data, rowIndex, rowType }) {
+      // console.log(data)
+    },
+
+    async onSearch() {
+      this.$refs.grdAPTKHQReview.loadData();
+
+      //const abc=  await this._callProcedure("EI_SEL_6090310_SEL_TEI_ECUS_DECLARE",[""]);
+      // console.log(abc)
+    },
+    onDelete() {
+      this.$refs.grdAPTKHQReview.onSetMarkedDelete(true);
+    },
+    async onSave() {
+      let requireCol = [];
+      let validate = this.$refs.grdAPTKHQReview.onCheckValid(requireCol);
+      if (validate) {
+        this.$refs.grdAPTKHQReview.saveData();
+      }
+    },
+    // async getListCodes() {
+    //   const dso_company_list = {
+    //     type: "list",
+    //     selpro: "ac_sel_6010025_compbyuser_v2",
+    //     para: [this.user.USER_ID],
+    //   };
+
+    //   this.company_list = await this._dsoCall(
+    //     dso_company_list,
+    //     "select",
+    //     false
+    //   );
+    //   //console.log(this.company_list)
+    //   this.selected_company = this.company_list[0].TCO_COMPANY_PK;
+    // },
+    // changedFromDate(obj) {
+    //   let date_from = moment(obj.value).format("YYYYMMDD");
+    //   this.dt_from = date_from;
+    // },
+    // changedToDate(obj) {
+    //   let date_to = moment(obj.value).format("YYYYMMDD");
+    //   this.dt_to = date_to;
+    // },
+  },
+};
+/*==================================================================== END export default  ========================================================================================*/
+</script>
+<!-- ================================================================= END SCRIPT  ============================================================================================== -->
+  

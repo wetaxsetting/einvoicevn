@@ -1,0 +1,3322 @@
+<template>
+    <v-card ref="basegridview" :height="limitHeight" :id="'gridview_' + idKey" v-resize="_onMyResize" color="transparent" outlined
+            :style="{
+        width: '100%', 'min-height': heightZoneMin,  position: 'relative', overflow: 'auto',
+        display: 'inline-block', 'vertical-align': 'top',padding: '5px',
+    }">
+        <v-row no-gutters align="center" justify="center" >
+            <v-col cols="12">
+                <v-row no-gutters align="center" justify="center">
+                    <v-tooltip top >
+                        <template v-slot:activator="{ on }">
+                            <v-btn :id="'gridviewSetting_' + idKey" depressed icon v-on="on" v-show="gridSetting" class="mx-1 blue--text"
+                                style="height: 15px !important; width: 15px !important"
+                                @click="myGridSettingClick"
+                            >
+                            <v-icon small > mdi-cog-box</v-icon>
+                            </v-btn>
+                        </template>
+                        <span>{{ $t("grid_setting") }}</span>
+                    </v-tooltip>    
+
+                    <v-tooltip top >
+                        <template v-slot:activator="{ on }">
+                            <v-btn :id="'gridviewExport_' + idKey" depressed icon v-on="on"   class="mx-1 green--text" 
+                                style="height: 15px !important; width: 15px !important"
+                                @click="myGridOnExport"
+                            >
+                            <v-icon small >mdi-microsoft-excel</v-icon>
+                            </v-btn>
+                        </template>
+                        <span>{{ $t("export_excel") }}</span>
+                    </v-tooltip>   
+
+                    <v-tooltip top v-if="exportexcel2">
+                        <template v-slot:activator="{ on }">
+                            <v-btn :id="'gridviewExport2_' + idKey" depressed icon v-on="on"   class="mx-1 green--text" 
+                                style="height: 15px !important; width: 15px !important"
+                                @click="exportexcel2"
+                            >
+                            <v-icon small >mdi-microsoft-excel</v-icon>
+                            </v-btn>
+                        </template>
+                        <span>{{ $t("export_excel_2") }}</span>
+                    </v-tooltip>   
+
+                    <v-tooltip top >
+                        <template v-slot:activator="{ on }">
+                            <v-btn :id="'gridviewFilter_' + idKey" depressed icon v-on="on"  class="mx-1"  :class=" gridFilterList.filter(q => q['add'] == true).length > 0 ? 'red--text' : 'black--text' "
+                                style="height: 15px !important; width: 15px !important"
+                                @click="myGridOnOpenFilter"
+                            >
+                            <v-icon small >mdi-magnify-expand</v-icon>
+                            </v-btn>
+                        </template>
+                        <span>{{ $t("grid_filter") }}</span>
+                    </v-tooltip>   
+                    
+                    <v-tooltip top >
+                        <template v-slot:activator="{ on }">
+                            <v-btn :id="'gridviewSet_' + idKey" depressed icon v-on="on"  class="mx-1 blue white--text" 
+                                style="height: 17px !important; width: 17px !important"
+                                @click="gridShowSetData = !gridShowSetData"
+                            >
+                            <v-icon small >mdi-auto-download</v-icon>
+                            </v-btn>
+                        </template>
+                        <span>{{ $t("set_panel") }}</span>
+                    </v-tooltip>   
+
+                    <v-spacer></v-spacer>
+                    <!-- v-if="reportList && reportList.length > 0" -->
+                    <table style="width: 250px; height: 25px !important" v-if="reportList && reportList.length > 0">
+                        <tr>
+                            <td>
+                                <BaseSelect item-value="PK" item-text="REPORT_NAME" :label="$t('report')" :lstData="reportList" v-model="selectedPrintReport"> </BaseSelect>
+                            </td>
+                            <td style="width: 30px !important">
+                                <v-row no-gutters>
+                                    <v-col cols="12" lg="12" v-if="isProcessReport" class="px-1">
+                                        <v-progress-circular color="blue darken-1" indeterminate size="20"></v-progress-circular>
+                                    </v-col>
+                                    <v-col cols="12" lg="12" v-show="!isProcessReport">
+                                        <v-tooltip top>
+                                            <template v-slot:activator="{ on }">
+                                                <v-btn :id="'gridviewExport_' + idKey"
+                                                       depressed
+                                                       icon
+                                                       color="#3766c4"
+                                                       v-on="on"
+                                                       style="height: 15px !important; width: 15px !important"
+                                                       @click="onPrintReport"
+                                                       v-bind:disabled.sync="isProcessReport">
+                                                    <v-icon> mdi-printer</v-icon>
+                                                </v-btn>
+                                            </template>
+                                            <span>{{ $t("print") }}</span>
+                                        </v-tooltip>
+
+                                    </v-col>
+                                </v-row>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <v-spacer></v-spacer>
+                    <span style="color: red!important; font-weight: 550; font-size: 12px">{{ `${records} ${$t('records')}`  }}</span>
+                </v-row>
+            </v-col>
+
+
+        </v-row>
+
+        <v-row no-gutters v-show="gridShowSetData" style="background-color: #e8e9eb !important">
+            <v-col cols="12" md="3" v-show="gridSetColText && gridSetColText.length > 0">
+                <v-card class="d-flex px-1 py-1 mx-1 my-1" outlined>
+                    <BaseSelect item-value="CODE" item-text="NAME" :label="$t('text_column')"  :lstData="gridSetColText" v-model="gridSetColTextSelected"  null
+                        style="width: 25% !important" class="justify-start"
+                    > </BaseSelect>
+                    <BaseInput :label="$t('value')" v-model="gridSetColTextVal" class="justify-space-around px-1" style="min-width: 50% !important" ></BaseInput>
+                    <BaseButton btn_type="icon" icon_type="set" :btn_text="$t('set')" @onclick="_onSetGrid('TEXT')" class="justify-end" />
+                </v-card>
+            </v-col>
+
+            <v-col cols="12" md="3" v-show="gridSetColList && gridSetColList.length > 0" >
+                <v-card class="d-flex px-1 py-1 mx-1 my-1" outlined>
+                    <BaseSelect item-value="CODE" item-text="NAME" :label="$t('list_column')"  :lstData="gridSetColList" v-model="gridSetColListSelected"  null
+                        style="width: 25% !important" class="justify-start"
+                    > </BaseSelect>
+                    <BaseSelect item-value="CODE" item-text="NAME" :label="$t('value')"  :lstData="gridSetColListVals" v-model="gridSetColListVal" null
+                        class="justify-space-around px-1" style="min-width: 50% !important" 
+                    > </BaseSelect>
+                    <BaseButton btn_type="icon" icon_type="set" :btn_text="$t('set')" @onclick="_onSetGrid('LIST')" class="justify-end" />
+                </v-card>
+            </v-col>
+
+            <v-col cols="12" md="3" v-show="gridSetColFlag && gridSetColFlag.length > 0" >
+                <v-card class="d-flex px-1 py-1 mx-1 my-1" outlined>
+                    <BaseSelect item-value="CODE" item-text="NAME" :label="$t('flag_column')"  :lstData="gridSetColFlag" v-model="gridSetColFlagSelected" null
+                        style="width: 25% !important" class="justify-start"
+                    > </BaseSelect>
+                    <BaseSelect item-value="CODE" item-text="NAME" :label="$t('value')"  :lstData="gridSetColYN" v-model="gridSetColFlagVal" null
+                        class="justify-space-around px-1" style="min-width: 50% !important" 
+                    > </BaseSelect>
+                    <BaseButton btn_type="icon" icon_type="set" :btn_text="$t('set')" @onclick="_onSetGrid('FLAG')" class="justify-end" />
+                </v-card>
+            </v-col>
+
+            <v-col cols="12" md="3" v-show="gridSetColDate &&  gridSetColDate.length > 0">
+                <v-card class="d-flex px-1 py-1 mx-1 my-1" outlined>
+                    <BaseSelect item-value="CODE" item-text="NAME" :label="$t('date_column')"  :lstData="gridSetColDate" v-model="gridSetColDateSelected" null
+                        style="width: 25% !important" class="justify-start"
+                    > </BaseSelect>
+                    <BaseDatePicker v-model="gridSetColDateVal" null :label="$t('value')" class="justify-space-around px-1"  style="min-width: 50% !important"  :clearable="false" ></BaseDatePicker>
+                    <BaseButton btn_type="icon" icon_type="set" :btn_text="$t('set')" @onclick="_onSetGrid('DATE')" class="justify-end" />
+                </v-card>
+            </v-col>
+
+            <v-col cols="12" md="3" v-show="gridSetColMonth &&  gridSetColMonth.length > 0">
+                <v-card class="d-flex px-1 py-1 mx-1 my-1" outlined>
+                    <BaseSelect item-value="CODE" item-text="NAME" :label="$t('month_column')"  :lstData="gridSetColMonth" v-model="gridSetColMonthSelected" null
+                        style="width: 25% !important" class="justify-start"
+                    > </BaseSelect>
+                    <BaseDatePicker v-model="gridSetColMonthVal" null month :label="$t('value')" class="justify-space-around px-1"  style="min-width: 50% !important"  :clearable="false" ></BaseDatePicker>
+                    <BaseButton btn_type="icon" icon_type="set" :btn_text="$t('set')" @onclick="_onSetGrid('MONTH')" class="justify-end" />
+                </v-card>
+            </v-col>
+
+            <v-col cols="12" md="3" v-show="gridSetColTime &&  gridSetColTime.length > 0">
+                <v-card class="d-flex px-1 py-1 mx-1 my-1" outlined>
+                    <BaseSelect item-value="CODE" item-text="NAME" :label="$t('time_column')"  :lstData="gridSetColTime" v-model="gridSetColTimeSelected" null
+                        style="width: 25% !important" class="justify-start"
+                    > </BaseSelect>
+                    <JqxMaskedInput  :mask="'##:##'" v-model="gridSetColTimeVal" :height="31" :label="$t('value')" class="justify-space-around mx-1"  style="min-width: 50% !important"> </JqxMaskedInput>
+                    <BaseButton btn_type="icon" icon_type="set" :btn_text="$t('set')" @onclick="_onSetGrid('TIME')" class="justify-end" />
+                </v-card>
+            </v-col>
+
+        </v-row>
+
+        <!-- <div :style="{
+                width: '100%', height: limitHeight, 'min-height': heightZoneMin,  position: 'relative', overflow: 'auto',
+                display: 'inline-block', 'vertical-align': 'top',padding: '5px', }"
+            ref="basegridview" :id="'gridview_' + idKey" v-resize="_onMyResize"
+        > -->
+        <span @contextmenu="contextmenuMenu($event)"
+              @mousedown="mousedown($event)">
+            <jqxgrid ref="myGrid" 
+                     @rowclick="myGridOnRowClick($event)"
+                     @cellselect="myGridOnCellSelect($event)"
+                     @cellclick="myGridOnCellClick($event)"
+                     @cellbeginedit="cellBeginEditEvent($event)"
+                     @cellendedit="cellEndEditEvent($event)"
+                       @rowselect="myGridOnRowSelect($event,'select')"
+                     @rowunselect="myGridOnRowSelect($event,'unselect')"
+                     @sort="myGridOnSort($event)"
+                     :handlekeyboardnavigation="handlekeyboardnavigation"
+                     :width="'100%'" :height="'95%'"
+                     :columns="columns" :columngroups="columngroups"
+                     :editable="editable" :editmode="'dblclick'"
+                     :showstatusbar="showstatusbar" :statusbarheight="statusbarheight"
+                     :showaggregates="showaggregates" :altrows="altrows"
+                     :columnsresize="true" :virtualmode="false"
+                     :rendergridrows="rendergridrows" :enabletooltips="true"
+                     :selectionmode="gridSelectionMode"
+                     :rowsheight="rowsheight"
+                     :sortable="true"
+                     :clipboard="true"
+            >
+            </jqxgrid>
+        </span>
+        <!-- </div> -->
+        <CustomGridDialog ref="customGridDialog"
+                          @callback="customGridCallback"
+                          :menu_cd="menu_cd" :grid_id="id"
+                          :customTables="customTables"
+                          :currentCols="currentCols"></CustomGridDialog>
+        <ReportManagement :menu_cd="menu_cd" :grid_id="id" ref="ReportManagement"></ReportManagement>
+
+        <ColumnDisplay ref="columnDisplay" :menu_cd="menu_cd" :id="id" :header="gridDefaultColumns" @callBack="applyLocalHeader"></ColumnDisplay>
+
+        <jqxmenu ref="myMenu" @itemclick="myMenuOnItemClick($event)" :width="200" :mode="'popup'" :autoOpenPopup="false">
+            <ul style="color:dodgerblue;">
+                <li v-for="(item, idx) in contextMenuItems" :key="idx" :id="item.id">{{ $t(item.text) }}</li>
+                <!-- <li id="export_to_excel">{{$t('export_to_excel')}}</li>
+                <li id="export_to_pdf">{{$t('export_to_pdf')}}</li>
+                <li id="export_to_csv">{{$t('export_to_csv')}}</li>
+                <li id="print">{{$t('print')}}</li> -->
+            </ul>
+        </jqxmenu>
+
+        <jqxmenu ref="myMenuSetting" @itemclick="myMenuSettingOnItemClick($event)" :width="200" :mode="'popup'" :autoOpenPopup="false" z-index="900">
+            <ul>
+                <li id="refresh"> {{$t('refresh')}} </li>
+                <li id="resize_column"> {{$t('resize_column')}} </li>
+                <li id="column_display"  v-if="$attrs.hasOwnProperty('allow-cookie') && !!menu_cd && !!id" > {{$t('column_display')}} </li>
+                <li id="report_template" v-if="user.SYSADMIN_YN == 'Y' && !!menu_cd && !!id"> {{$t('report_template')}} </li>
+                <li v-if="!!!fixselectionmode">
+                    {{$t('selection_mode')}}
+                    <ul>
+                        <li id="checkbox"> {{$t('check_box')}}  </li>
+                        <li id="singlerow"> {{$t('single_row')}}  </li>
+                        <li id="multiplerows"> {{$t('multiple_rows')}}  </li>
+                        <li id="singlecell"> {{$t('single_cell')}}  </li>
+                        <li id="multiplecells"> {{$t('multiple_cells')}}  </li>
+                    </ul>
+                </li>
+            </ul>
+        </jqxmenu>
+
+        <v-dialog v-model="gridFilterDialog" max-width="800" max-height="600"  z-index="900">
+            <v-card  :height="600">
+                <v-card-title class="headline primary-gradient white--text py-2 px-2">
+                    <span>{{ $t("grid_filter") }}</span>
+                    <v-spacer></v-spacer>
+                    <BaseButton :icon_color="'white'" btn_type="icon" icon_type="close_dialog" mdi-icon="mdi-close-thick" :btn_text="$t('close')" @onclick="gridFilterDialog = false"  />
+                </v-card-title>
+                <v-card-actions class="px-6 py-1">
+                    <v-row no-gutters>
+                        <v-spacer></v-spacer>
+                        <BaseButton btn_type="default" icon_type="confirm" :btn_text="$t('apply_filter')"  @onclick="applyFilter"  />
+                        <BaseButton btn_type="default" icon_type="cancel" :btn_text="$t('clear_filter')"  @onclick="clearFilter"  />
+                    </v-row>
+                </v-card-actions>
+                <v-card-text>
+                    <v-row no-gutters v-for="(item, idx) in  gridFilterList" :key="idx" align="center" justify="start">
+                        <v-col cols="12" md="1" class="px-1 py-1"> 
+                            <BaseButton btn_type="icon" icon_type="add" :btn_text="$t('add')"  @onclick="gridFilterList[idx]['add'] = true; addMoreFilter(idx)" v-if="gridFilterList[idx]['add'] == false"  /> 
+                            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')"  @onclick="gridFilterList.splice(idx,1)" v-else /> 
+                        </v-col>
+                        <v-col cols="12" md="3" class="px-1 py-1" v-show="gridFilterList[idx]['add'] == true" > 
+                            <BaseSelect :outlined="true" item-value="CODE" item-text="NAME" :label="$t('column')" 
+                                :lstData="columnNameList" 
+                                :value="gridFilterList[idx]['column']" @input="gridFilterList[idx]['column'] = $event" 
+                                @change="changeFilterType(idx)"
+                            > </BaseSelect>
+                        </v-col>
+                        <v-col cols="12" md="2" v-show="gridFilterList[idx]['add'] == true">
+                            <BaseSelect :outlined="true" 
+                                item-value="CODE" 
+                                item-text="NAME" 
+                                :label="$t('condition')" 
+                                :lstData="getFilterCondition(gridFilterList[idx]['type'])" 
+                                :value="gridFilterList[idx]['condition']" @input="gridFilterList[idx]['condition'] = $event" 
+                                class="px-1 py-1"
+                            > </BaseSelect>
+                        </v-col>
+                        <v-col cols="12" md="6" v-show="gridFilterList[idx]['add'] == true" > 
+                            <!-- dropdownlist -->
+                            <BaseSelect :outlined="true" :key_all="'ALL'" :text_all="$t('select_all')"
+                                v-if="gridFilterList[idx]['type'] == 'dropdownlist'" 
+                                :item-value=" gridFilterDropDownList[ gridFilterList[idx]['column'] ] ?  gridFilterDropDownList[ gridFilterList[idx]['column'] ] ['valueExpr'] : 'CODE'" 
+                                :item-text="gridFilterDropDownList[ gridFilterList[idx]['column'] ] ? gridFilterDropDownList[ gridFilterList[idx]['column'] ] ['displayExpr'] : 'NAME'" 
+                                :label="$t('value')" 
+                                :lstData="gridFilterDropDownList[ gridFilterList[idx]['column'] ] ? gridFilterDropDownList[ gridFilterList[idx]['column'] ] ['dataSource'] : [] " 
+                                :value="gridFilterList[idx]['value']" @input="gridFilterList[idx]['value'] = $event" 
+                                class="px-1 py-1"
+                            > </BaseSelect>
+
+                            <!-- checkbox -->
+                            <BaseSelect :outlined="true" 
+                                v-if="gridFilterList[idx]['type'] == 'checkbox'" 
+                                item-value="CODE" 
+                                item-text="NAME" 
+                                :label="$t('value')" 
+                                :lstData="gridFilterDropDownList['CHECK_BOX'] ['dataSource'] " 
+                                :value="gridFilterList[idx]['value']" @input="gridFilterList[idx]['value'] = $event" 
+                                class="px-1 py-1"
+                            > </BaseSelect>
+                            <!-- string -->
+                            <!--BaseInput :outlined="true" :label="$t('value')" v-if="gridFilterList[idx]['type'] == 'string'"
+                                :value="gridFilterList[idx]['value']" @input="gridFilterList[idx]['value'] = $event" 
+                                class="px-1 py-1"
+                            > </BaseInput -->
+                            
+                            <v-row no-gutters v-if="gridFilterList[idx]['type'] == 'string'"  class="px-0 py-0">
+                                <v-col cols="12" :md="gridFilterList[idx]['condition']=='BETWEEN'?6:12"  class="px-1 py-1">
+                                    <BaseInput :outlined="true" :label="$t('value')" v-if="gridFilterList[idx]['type'] == 'string'"
+                                        :value="gridFilterList[idx]['value']" @input="gridFilterList[idx]['value'] = $event" 
+                                    > </BaseInput>
+                                </v-col>
+
+                                <v-col cols="12" md="6"  class="px-1 py-1" v-show="gridFilterList[idx]['condition']=='BETWEEN'">
+                                    <BaseInput :outlined="true" :label="$t('to_value')" v-if="gridFilterList[idx]['type'] == 'string'"
+                                        :value="gridFilterList[idx]['tovalue']" @input="gridFilterList[idx]['tovalue'] = $event" 
+                                    > </BaseInput>
+                                </v-col>
+
+                            </v-row>
+
+                            <!-- date picker -->
+                            <v-row no-gutters v-if="gridFilterList[idx]['type'] == 'datetimeinput'"  class="px-0 py-0">
+                                <v-col cols="12" md="6"  class="px-1 py-1">
+                                    <BaseDatePicker :outlined="true" :label="$t('from_dt')" null v-if="gridFilterList[idx]['type'] == 'datetimeinput'"
+                                        :value="gridFilterList[idx]['value']" @input="gridFilterList[idx]['value'] = $event" 
+                                    ></BaseDatePicker>
+                                </v-col>
+                                <v-col cols="12" md="6"  class="px-1 py-1">
+                                    <BaseDatePicker :outlined="true" :label="$t('to_dt')" null v-if="gridFilterList[idx]['type'] == 'datetimeinput'"
+                                        :value="gridFilterList[idx]['tovalue']" @input="gridFilterList[idx]['tovalue'] = $event" 
+                                    ></BaseDatePicker>
+                                </v-col>
+                            </v-row>
+                            <!-- number-->
+                            <v-row no-gutters v-if="gridFilterList[idx]['type'] == 'numeric'"  class="px-0 py-0">
+                                <v-col cols="12" md="6"  class="px-1 py-1">
+                                    <BaseInput :outlined="true" :label="$t('value')" v-if="gridFilterList[idx]['type'] == 'numeric'"
+                                        :value="gridFilterList[idx]['value']" @input="gridFilterList[idx]['value'] = $event" 
+                                        number="2"
+                                    > </BaseInput>
+                                </v-col>
+                                <v-col cols="12" md="6"  class="px-1 py-1">
+                                    <BaseInput :outlined="true" :label="$t('to_value')" v-if="gridFilterList[idx]['type'] == 'numeric'"
+                                        :value="gridFilterList[idx]['tovalue']" @input="gridFilterList[idx]['tovalue'] = $event" 
+                                        number="2"
+                                    > </BaseInput>
+                                </v-col>
+                            </v-row>
+                            
+                        </v-col>
+                    </v-row>
+                </v-card-text>
+                
+            </v-card>
+        </v-dialog>
+
+    </v-card>
+</template>
+
+<script>
+    //import XLSX from 'exceljs/lib/xlsx';
+    import listToTree from "list-to-tree-lite";
+    import CustomGridDialog from "@/components/dialog/CustomGridDialog.vue";
+    import ReportManagement from "@/components/dialog/GridReportManagement.vue";
+    import ColumnDisplay from "@/components/dialog/GridColumnSetting.vue";
+    import moment from "moment"
+    import lodash from "lodash"
+    import ExcelJS from "exceljs";
+    import Cookies from "js-cookie";
+    
+    export default {
+        components: { CustomGridDialog, ReportManagement, ColumnDisplay },
+        props: {
+            header: {
+                type: Array
+            },
+            sel_procedure: {
+                type: String,
+            },
+            upd_procedure: {
+                type: String,
+            },
+            update_paras: {
+                type: Array,
+            },
+            filter_paras: {
+                type: Array,
+            },
+            max_height: {
+                type: Number,
+            },
+            per_height: {
+                type: Number,
+                default: 100,
+            },
+            editable: {
+                type: Boolean,
+                default: true,
+            },
+            showstatusbar: {
+                type: Boolean,
+                default: false,
+            },
+            showaggregates: {
+                type: Boolean,
+                default: false,
+            },
+            altrows: {
+                type: Boolean,
+                default: true,
+            },
+            virtualmode: {
+                type: Boolean,
+                default: true,
+            },
+            autoresize: {
+                type: Boolean,
+                default: true,
+            },
+
+            //vng-207 20211127
+            //function apply for hr style
+            headertype: { type: Number, default: 0 },
+            id: { type: String, default: null },
+            customTables: { type: Array, default: null },
+            menu_cd: { type: String, default: null },
+            height: { type: Number, default: null },
+            multiselect: { type: Boolean, default: false },
+            selectionmode: { type: String, default: null },
+            fixselectionmode: {type: String, default: null},
+            status2: { type: Object },
+            setting: { type: Boolean, default: null },
+            tco_company_pk: { type: Number, default: null },
+            rowsheight: { type: Number, default: 32 },
+            autoheight: { type: Boolean, default: false },
+            statusbarheight: { type: Number, default: 32 },
+            //cho hr
+            autocheckbox: { type: Boolean, default: true },
+            autotranslate: { type: Boolean, default: true },
+            exportexcel2:{type: Function, default: null},
+            showaggregatestop:{
+                type: Boolean,
+                default: false,
+            },
+        },
+        data() {
+            return {
+                sheets: [{
+                    name: "Sheet1",
+                    data: [{
+                        c: 2
+                    }]
+                }],
+                idKey: this._generatekey(),
+                heightZoneMin: 100,
+                constTimeDblClick: 300,
+                lastCellClick: null,
+                lastCellTimeCllick: null,
+                cancelCellClick: false,
+                columns: [],
+                columngroups: [{
+                    text: 'Default Group',
+                    name: 'defaultGroup'
+                }],
+                divWidthSupport: 1000,
+                divHeightSupport: 500,
+                dataAdapter: {
+                    localdata: [],
+                    datafields: []
+                },
+                hidden_text: '',
+                dataList: [],
+                datafields: [],
+                dropdown_value: '',
+                selectedrowindex: -1,
+
+                cellClassStatus2: function (row, columnfield, value, rowdata) {
+                    if (rowdata._rowstatus == 'u') {
+                        return "cellUpdate";
+                    }
+                    if (rowdata._rowstatus == 'i') {
+                        return "cellInsert";
+                    }
+                    if (rowdata._rowstatus == 'd') {
+                        return "cellDelete";
+                    }
+                },
+
+
+
+                //vng-207 20211127
+                //function apply for hr style
+                headerCreating: false,
+                columnsTmp: [],
+                customCols: [],
+                currentCols: [],
+                gridSelectionMode: null,
+                gridSetting: false,
+                records: 0,
+                currentLang: null,
+                reportList: [],
+                selectedPrintReport: null,
+                isProcessReport: false,
+                search_para: [],
+                cellEditing: { row: -1, col: -1 },
+                cellEntering: false,
+                changingSelection: false,
+                gridFilterDialog:false,
+                gridFilterList:[],
+                firstFilter:false,
+                columnNameList:[],
+                gridFilterDropDownList:{},
+                gridFilterCondition:{},
+
+                gridDatas: [],
+                gridFilteredDatas: [],
+                gridCookie: null,
+                gridDefaultColumns:[],
+
+                gridShowSetData: false,
+                gridSetColYN:[],
+                gridSetColFlag:[],
+                gridSetColFlagSelected:null,
+                gridSetColFlagVal:null,
+                gridSetColList:[],
+                gridSetColListSelected: null,
+                gridSetColListVals:[],
+                gridSetColListVal: null,
+                gridSetColText:[],
+                gridSetColTextSelected:null,
+                gridSetColTextVal:null,
+                gridSetColDate:[],
+                gridSetColDateSelected: null,
+                gridSetColDateVal: null,
+                gridSetColMonth:[],
+                gridSetColMonthSelected:null,
+                gridSetColMonthVal: null,
+                gridSetColTime:[],
+                gridSetColTimeSelected:null,
+                gridSetColTimeVal: null,
+                aggregates:null,
+                summaryTypes:null
+            };
+        },
+        watch: {
+            header(val) {
+                if (!!val) {
+                    setTimeout(() => {
+                        this._updateHeader();
+                    }, 500);
+                }
+            },
+            _waitingChangeLang(val) {
+                if (!val && this.autotranslate) {
+                    this.rebuildHeader();
+                }
+            },
+            tco_company_pk(val) {
+                if (!!val) {
+                    this.onSearchReportList();
+                }
+            },
+            userSavedTheme: {
+                handler: function (val) {
+                    try {
+                        if (val["selectMode"] && val["selectMode"] != this.gridSelectionMode) {
+                            this.changingSelection = true;
+                            this.gridUpdate();
+                        }
+                    } catch { }
+                },
+                deep: true
+            },
+
+            //vng-207 set grid function
+            gridSetColTextSelected(val) {
+                this.gridSetColTextVal = null;
+            },
+
+            gridSetColListSelected(val) {
+                //lookup list value
+                this.gridSetColListVals = [];
+                let colHeader = this.columns.find( q=> q["datafield"] == val );
+                if(colHeader && colHeader.hasOwnProperty("lookup")) {
+                    this.gridSetColListVals = [...colHeader.lookup.dataSource];
+                    this.gridSetColListVals = this.gridSetColListVals.map(q => {
+                        q["CODE"] = q.hasOwnProperty("PK") ? q["PK"] : q["CODE"];
+                        q["NAME"] = q.hasOwnProperty("TEXT") ? q["TEXT"] : q["NAME"];
+                        return q;
+                    })
+                }
+
+                this.gridSetColListVal = null;
+            },
+
+            gridSetColFlagSelected(val){
+                this.gridSetColFlagVal = null;
+            },
+
+            gridSetColDateSelected(val) {
+                this.gridSetColDateVal = null;
+            },
+
+            gridSetColTimeSelected(val) {
+                this.gridSetColTimeVal = null;
+            }
+
+        },
+        computed: {
+            limitHeight() {
+                if (!!this.height) return this.height;
+
+                try {
+                    if (this.max_height) {
+                        if (this.max_height > 0) {
+                            this.heightZoneMin = "0px";
+                            this.heightGridZone = this.max_height;
+                            return this.max_height + "px";
+                        }
+                    }
+                } catch (error) { }
+                if (!this.per_height) {
+                    this.per_height = 100;
+                }
+                var zone = ((this.windowHeight - 150) / 100) * this.per_height;
+                this.heightGridZone = zone - 27;
+                this.heightZoneMin = "100px";
+                return zone + "px";
+            },
+            autoresizecolumn() {
+                if (this.headertype == 0) {
+                    return this.autoresize;
+                }
+
+                return false;
+            },
+            user: function () {
+                return this.$store.getters["auth/user"];
+            },
+            contextMenuItems() {
+                let menu = [];
+                if (!!this.customTables && this.customTables.length > 0 && !!this.menu_cd && this.user.SYSADMIN_YN == 'Y') {
+                    menu.push({ id: "add_column", text: `${this.$t("add_column")}`, icon: null, });
+                }
+                menu.push({ id: "resize_column", text: this.$t("resize_column"), icon: "mdi-refresh", });
+                menu.push({ id: "export_to_excel", text: this.$t("export_to_excel"), icon: "mdi-excel", });
+                menu.push({ id: "print", text: this.$t("print"), icon: "mdi-print", });
+
+                return menu;
+            },
+            userSavedTheme() {
+                if (this.user.USER_THEME) {
+                    const theme = JSON.parse(this.user.USER_THEME);
+                    return theme && Object.keys(theme).length ? theme : null;
+                }
+                return null;
+            },
+            cookieId: function() {
+                return ( this.id && this.menu_cd) ? `${this.user.PK}_grid_${this.menu_cd}_${this.id}` : undefined;
+            },
+        },
+        mounted() {
+            //console.log(XLSX)
+            /*document.addEventListener('contextmenu', (event) => {
+                if (!event.ctrlKey) { //press crontrol key and right click to show chrome context menu
+                    event.preventDefault()
+                }
+            });
+            */
+
+            //console.log(this.$refs.myGrid)
+        },
+
+        created() {
+            this.gridSetColYN = [
+                {CODE: true, NAME: this.$t('yes')},
+                {CODE: false, NAME: this.$t('no')},
+            ];
+            if(this.menu_cd && this.id) {
+                let _gridCookie = Cookies.get(this.cookieId);
+                if(_gridCookie){
+                    //renew cookie
+                    Cookies.set(this.cookieId, _gridCookie );
+                    this.gridCookie = JSON.parse(_gridCookie);
+                }
+            }
+            
+
+            setTimeout(() => {
+                //this.onSearchReportList();
+                this._updateHeader();
+            }, 50);
+        },
+
+        methods: {
+            isRightClick: function (event) {
+                let rightclick;
+                if (!event) event = window.event;
+                if (event.which) rightclick = (event.which == 3);
+                else if (event.button) rightclick = (event.button == 2);
+                return rightclick;
+            },
+            contextmenuMenu: function (e) {
+                e.preventDefault();
+            },
+            mousedown: function (event) {
+                let rightClick = this.isRightClick(event) || jqx.mobile.isTouchDevice();
+                if (rightClick) {
+                    this.$refs.myMenu.open(parseInt(event.clientX), parseInt(event.clientY));
+                    return false;
+                }
+            },
+
+            rendergridrows(params) {
+                const datarows = this.getDataSource();
+                let data = datarows.filter((x) => {
+                    return x.boundindex >= params.startindex && x.boundindex <= params.endindex;
+                })
+                return data;
+            },
+            myGridOnCellSelect(event) {
+                this.selectedrowindex = event.args.rowindex;
+            },
+            getDataSource() {
+                return this.$refs.myGrid.getrows();
+            },
+           myGridOnRowSelect(e, type) {
+                this.selectedrowindex = e.args.rowindex;
+                const selectedRowsData = this.getSelectedRows();
+                e.selectedRowsData = selectedRowsData;
+                this.$emit("onSelectionChanged", e, type);
+                this.$emit("onSelectionDataChanged", e.selectedRowsData, type);
+            },
+            getSelectedRows() {
+                let rowindexes = this.$refs.myGrid.getselectedrowindexes();
+                let rows = [];
+                if (rowindexes && rowindexes.length > 0) {
+                    for (let i = 0; i < rowindexes.length; i++) {
+                        rows.push(this.$refs.myGrid.getrowdata(rowindexes[i]));
+                    }
+                }
+                return rows;
+            },
+            deleteRows() {
+                if (this.selectedrowindex >= 0) {
+                    let row = this.$refs.myGrid.getrowdata(this.selectedrowindex);
+                    row._rowstatus = "d";
+                    if (row.PK) {
+                        this.dataAdapter.localdata.filter((x) => {
+                            if (x.PK == row.PK) {
+                                x._rowstatus = "d";
+                                return;
+                            }
+                        })
+                        this.reFresh();
+                    }
+                }
+            },
+            unDeleteRows() {
+                if (this.selectedrowindex >= 0) {
+                    let row = this.$refs.myGrid.getrowdata(this.selectedrowindex);
+                    if (row._rowstatus != "i") {
+                        row._rowstatus = "";
+                        if (row.PK) {
+                            this.dataAdapter.localdata.filter((x) => {
+                                if (x.PK == row.PK) {
+                                    x._rowstatus = "";
+                                    return;
+                                }
+                            })
+                            this.reFresh();
+                        }
+                    }
+                }
+            },
+            myGridOnCellDblClick(event) {
+                // console.log(event)
+            },
+            saveData() {
+                setTimeout(() => {
+                    this._onSave();
+                }, 200);
+            },
+            async _onSave() {
+                if (
+                    this.sel_procedure &&
+                    this.upd_procedure &&
+                    this.filter_paras &&
+                    this.update_paras
+                ) {
+                    this.dataList = this.$refs.myGrid.getrows()
+                    // console.log(this.dataList)
+                    // return;
+                    let dso = {
+                        type: "grid",
+                        selpro: this.sel_procedure,
+                        updpro: this.upd_procedure,
+                        para: this.filter_paras,
+                        elname: ["_rowstatus"],
+                        data: this.dataList,
+                    };
+                    dso.elname = dso.elname.concat(this.update_paras);
+                    //console.log(dso)
+                    this._onSaveWithDSO(dso);
+                } else {
+                    this._console(
+                        "sel_procedure || upd_procedure || filter_paras || update_paras is undefined!"
+                    );
+                    alert(this.$t("this_grid_data_miss_paras_can_not_save"));
+                }
+            },
+            async _onSaveWithDSO(_dso, notify = true) {
+                let that = this;
+                this.isProcessing = true;
+                this.$refs.myGrid.showloadelement();
+
+                this.gridDatas = [];
+                this.gridFilteredDatas = [];
+                //build data for checkbox cols
+                let dataToSave = [..._dso.data];
+                let checkboxCols = this.columns.filter(q => q.columntype == "checkbox");
+                let dateBoxCols = this.columns.filter(q => q.columntype == "datetimeinput");
+                let monthCols = this.columns.filter(q => q.columntype == "month");
+                let colchecks = checkboxCols.map(q => q["datafield"]);
+                let coldates = dateBoxCols.map(q => q["datafield"]);
+                let colmonths = monthCols.map(q => q["datafield"]);
+
+
+                for (let i = 0; i < dataToSave.length; i++) {
+                    let data = dataToSave[i];
+                    if (data._rowstatus != null && data._rowstatus != undefined && data._rowstatus != "") {
+                        colchecks.forEach(q => {
+                            data[q] = data[q] == true || data[q] == 'Y' || data[q] == "true" ? "Y" : "N";
+                        })
+                        coldates.forEach(q => {
+                            data[q] = this._formatDateToSave(data[q]);
+                        })
+                        colmonths.forEach(q => {
+                            let monthFormat = that.curLang.MONTH_FORMAT.toUpperCase();
+
+                            if (!!data[q]) {
+                                const d = moment(data[q], monthFormat);
+                                const newval = d.format("YYYYMM");
+                                data[q] = newval;
+                            }
+
+                        })
+                    }
+                }
+
+                _dso.data = dataToSave;
+
+                if (this.$attrs.hasOwnProperty("allow-save-custom")) {
+                    if (_dso.elname.findIndex(q => q == "ADDDITION_PARA") < 0) {
+                        _dso.elname.push("ADDDITION_PARA");
+                    }
+                    _dso.data.forEach(x => {
+                        this.customCols.forEach(q => {
+                            x[q["FIELD_ID"]] = !!x[q["FIELD_ID"]] ? x[q["FIELD_ID"]] : null;
+                        })
+                        try {
+                            Object.defineProperty(x, 'ADDDITION_PARA', {
+                                get: function () {
+                                    let lstUpd = [];
+                                    let str = "";
+                                    that.customTables.forEach(x => {
+                                        let s = `${x}:`;
+                                        let idx = 0;
+                                        that.customCols.forEach(q => {
+                                            if (q["TABLE_NAME"] == x && q["EDITABLE_YN"] == "Y") {
+                                                let columnGrid = !!q["FIELD_ALIAS"] ? q["FIELD_ALIAS"] : q["FIELD_ID"]
+                                                if (idx++ == 0) {
+                                                    s += ` ${q["FIELD_ID"]} = '${this[columnGrid] != null && this[columnGrid] != undefined && this[columnGrid] != "" ? this[columnGrid] : ''}' `;
+                                                } else {
+                                                    s += ` , ${q["FIELD_ID"]} = '${this[columnGrid] != null && this[columnGrid] != undefined && this[columnGrid] != "" ? this[columnGrid] : ''}' `;
+                                                }
+                                            }
+                                        });
+                                        lstUpd.push(s);
+                                    })
+                                    str = lstUpd.join('|');
+                                    return str;
+                                }
+                            })
+                        } catch { }
+                    })
+                }
+
+                const result = await this._dsoCall(_dso, "update", notify);
+                let isSuccess = false;
+                if (result) {
+                    this.$emit("callSaveResult", true);
+
+                    this.onGridCalculate(result);
+
+                    this.setDataSource(result);
+
+                    if(this.gridFilterList && this.gridFilterList.filter(q=> q["add"] == true).length > 0) {
+                        this.$nextTick( () => {
+                            this.clearFilterState();
+                            this.applyFilter();
+                        })
+                        
+                    }
+                    isSuccess = true;
+                } else {
+                    this.$emit("callSaveResult", false);
+                    this.rowCount(0);
+                }
+                this.isProcessing = false;
+                this.$refs.myGrid.hideloadelement();
+                return isSuccess;
+            },
+            myGridOnRowClick(event) {
+                if (event.args.rightclick) {
+                    this.$refs.myGrid.selectrow(event.args.rowindex);
+                    let scrollTop = window.scrollY;
+                    let scrollLeft = window.scrollX;
+                    this.$refs.myMenu.open(parseInt(event.args.originalEvent.clientX) + 5 + scrollLeft, parseInt(event.args.originalEvent.clientY) + 5 + scrollTop);
+                    return false;
+                }
+            },
+
+            myGridSettingClick(event) {
+                let scrollTop = window.scrollY;
+                let scrollLeft = window.scrollX;
+
+                let x = (parseInt(event.x) + 5 + scrollLeft + 200) > window.outerWidth ? (parseInt(event.x) + 5 + scrollLeft - 200) : (parseInt(event.x) + 5 + scrollLeft);
+                this.$refs.myMenuSetting.open(x, parseInt(event.y) + 5 + scrollTop);
+            },
+            
+
+            myGridOnCellClick(e) {
+                //console.log(event)
+                let nowClickTime = this._getTimeSpan();
+                if (this.lastCellClick &&
+                    this.lastCellClick.args.columnindex == e.args.columnindex &&
+                    this.lastCellClick.args.rowindex == e.args.rowindex &&
+                    (
+                        nowClickTime - this.lastCellTimeCllick <
+                        this.constTimeDblClick
+                    )
+                ) {
+                    this.cancelCellClick = true;
+                    this.$emit("cellDblClick", {
+                        data: e.args.row.bounddata,
+                        column: e.args.column,
+                        columnindex: e.args.columnindex,
+                        rowindex: e.args.rowindex,
+                        value: e.args.value
+                    });
+                    this.$emit("cellDblClickData", e.args.row.bounddata);
+                } else {
+                    this.lastCellClick = e;
+                    this.lastCellTimeCllick = this._getTimeSpan();
+                    this.cancelCellClick = false;
+                    window.setTimeout(this._onCellClick, this.constTimeDblClick);
+                }
+            },
+
+            myGridOnOpenFilter(){
+                if(!this.firstFilter && this.columns) {
+                    let dropdownlists = this.columns.filter(q => q["columntype"] == "dropdownlist");
+                    dropdownlists.forEach(q => {
+                        this.gridFilterDropDownList[q["datafield"]] = {
+                            dataSource: q["lookup"]["dataSource"],
+                            valueExpr:  q["lookup"]["valueExpr"],
+                            displayExpr:  q["lookup"]["displayExpr"],
+                        }
+                    });
+                    this.gridFilterDropDownList["CHECK_BOX"] = {
+                        dataSource: [
+                            { CODE: 'ALL', NAME: this.$t("select_all")},
+                            { CODE: 'Y', NAME: this.$t("yes")},
+                            { CODE: 'N', NAME: this.$t("no")}
+                        ],
+                        valueExpr:  "CODE",
+                        displayExpr: "NAME",
+                    }
+
+                    this.gridFilterCondition = {
+                        LIST:[
+                            { CODE: 'EQUAL', NAME: this.$t("equal")}
+                        ],
+                        DATE: [
+                            { CODE: 'BETWEEN', NAME: this.$t("between")}
+                        ],
+                        STRING: [
+                            { CODE: 'CONTAIN', NAME: this.$t("contain")},
+                            { CODE: 'NOT_CONTAIN', NAME: this.$t("not_contain")},
+                            { CODE: 'BETWEEN', NAME: this.$t("between")}
+                        ],
+                        NUMBER: [
+                            { CODE: 'BETWEEN', NAME: this.$t("between")},
+                            { CODE: 'EQUAL', NAME: this.$t("equal")}
+                        ],
+                    };
+
+                    try {  
+                        this.columnNameList = this.columns.filter(q => q["datafield"] != "_rowstatus" && q["datafield"] != "_rowstatusUnMarked").map( q => { return {  CODE:q["datafield"], NAME: q["caption"]   } });
+                        this.gridFilterList.push({ 
+                            add: true, 
+                            column: this.columns[0]["datafield"], 
+                            type:null,
+                            condition:null,
+                            value: '', 
+                            tovalue: '' 
+                        });
+                        
+                        this.addMoreFilter(0);
+
+                    } catch{}
+                    this.firstFilter = true;
+                }
+                
+                this.gridFilterDialog = true;
+            },
+
+            addMoreFilter(idx) {
+                try {
+                    this.gridFilterList.push({ add: false, column: null, value: '', tovalue:'', type: null, condition:null});
+                    let addedCols = this.gridFilterList.map( q => { return q["column"]});
+                    this.gridFilterList[this.gridFilterList.length - 1]["column"] = this.columnNameList.filter( q => !addedCols.includes(q["CODE"]))[0]["CODE"];
+                } catch (e){ console.log(e.message)}
+            },
+            getFilterCondition(type) {
+                let key = "";
+                switch(type) {
+                    case 'dropdownlist' : 
+                    case 'checkbox' : key = "LIST"; break;
+                    case 'datetimeinput' : key = "DATE"; break;
+                    case 'numeric' : key = "NUMBER"; break;
+                    case 'string' : key = "STRING"; break;
+                }
+                return this.gridFilterCondition[key];
+            },
+            changeFilterType(idx){
+                this.$nextTick( () => {
+                    let col = this.gridFilterList[idx]["column"];
+                    let header = this.columns.find(q => q["datafield"] == col );
+                    if(header) this.gridFilterList[idx]["type"] = header["columntype"] ==undefined ? 'string' :( header["columntype"] == "" ? ( header["formatFloat"] ? "numeric" : "string"  ) : header["columntype"] );
+                });
+            },
+            applyFilter(){
+                let that = this;
+                
+                this.applyFilterState();
+
+                if(!this.gridDatas || this.gridDatas.length == 0) {
+                    this.gridDatas = [...this.$refs.myGrid.getrows()] ;
+                    this.gridFilteredDatas = [...this.$refs.myGrid.getrows()] ;
+                } else {
+                    this.gridFilteredDatas = [...this.gridDatas];
+                }
+                let filters = this.gridFilterList.filter(q => q["add"] == true);
+                let uniqueColFilters = Array.from(new Set(Array.from(filters, x => x["column"])));
+                
+                
+
+                uniqueColFilters.forEach(col => {
+                    let cols = filters.filter( q => q["column"] == col);
+                    //console.log(cols);
+                    that.gridFilteredDatas = that.gridFilteredDatas.filter(q => {
+                        let b = false;
+                        for(let i = 0; i< cols.length; i++) {
+                            let bTmp = false;
+                            let _col = cols[i]["column"];
+                            let _type = cols[i]["type"];
+                            let _condition = cols[i]["condition"];
+                            let _value =  cols[i]["value"];
+                            let _tovalue = cols[i]["tovalue"];
+
+                            switch(_type) {
+                                case 'string' : {
+                                    try {
+                                        _value = _value ? _value.toUpperCase() : "";
+                                        let cellVal =  q[_col] ? String(q[_col]).toUpperCase() : "";
+                                        if(_condition == "CONTAIN") {
+                                            if( q[_col] && cellVal.includes( _value ) ) bTmp = true;
+                                            else bTmp = false;
+                                        } else if(_condition == "NOT_CONTAIN") {
+                                            if( q[_col] && cellVal.includes( _value ) ) bTmp = false;
+                                            else bTmp = true;
+                                        } else if(_condition == "BETWEEN") {
+                                            if((q[_col] >= _value && q[_col] <= _tovalue)) {
+                                                bTmp = true;
+                                            } else {
+                                                bTmp = false;
+                                            }
+                                        }
+                                    }
+                                    catch(e){  }
+                                    break;
+                                }
+                                case 'dropdownlist': {
+                                    if(_condition == 'EQUAL') {
+                                        let cellVal =  q[_col];
+                                        if (_value == "ALL") return true;
+                                        else {
+                                            if(cellVal && cellVal == _value) bTmp = true;
+                                            else bTmp = false;
+                                        }
+                                    }
+                                    break;
+                                }
+                                case 'checkbox': {
+                                    if(_condition == 'EQUAL') {
+                                        let cellVal =  q[_col] == "Y" ||  q[_col] == true ? 'Y' : 'N';
+                                        if (_value == "ALL") return true;
+                                        else {
+                                            if(cellVal == _value) bTmp = true;
+                                            else bTmp = false;
+                                        }
+                                    }
+                                    break;
+                                }
+                                case 'numeric': {
+                                    if(_condition == 'EQUAL') {
+                                        if(q[_col] &&  q[_col]  == _value) bTmp = true;
+                                        else bTmp = false;
+                                    } else if(_condition == 'BETWEEN') {
+                                        _value = this.isNullOrEmpty(_value) ?  -9999999999999 : _value;
+                                        _tovalue = this.isNullOrEmpty(_tovalue) ?  9999999999999 : _tovalue;
+
+                                        if((!!q[_col] && q[_col] >= _value && q[_col] <= _tovalue)   || (q[_col] == null && _value <=0 && _tovalue >=0 )) {
+                                            bTmp = true;
+                                        } else {
+                                            bTmp = false;
+                                        }
+                                    }
+                                    break;
+                                }
+                                case 'datetimeinput': {
+                                    let cellValue = Number(this.isNullOrEmpty(q[_col]) ? 19700101 :  that._formatDateToSave(q[_col]));
+                                    _value = this.isNullOrEmpty(_value) ?  19700101 : Number(_value);
+                                    _tovalue = this.isNullOrEmpty(_tovalue) ?  21001231 : Number(_tovalue);
+                                    if( cellValue >=  _value &&  cellValue <= _tovalue) bTmp = true;
+                                    else bTmp = false;
+                                    break;
+                                }
+                                default: {
+                                    bTmp = true;
+                                }
+                            }
+
+                            b = b || bTmp;
+                        }
+
+                        return b;
+                    })
+
+                });
+
+               if(that.gridFilteredDatas ) {
+                    this.$nextTick( () => {
+                        let idx_count=0
+                        that.gridFilteredDatas.forEach(e => {
+                            idx_count+=1
+                            e.INDEX=idx_count
+                        });
+                        this.setDataSource(that.gridFilteredDatas);
+                    });
+                }
+
+                
+                this.gridFilterDialog = false;
+            },
+            applyFilterState(){
+                if(this.gridFilteredDatas && this.gridFilteredDatas.filter(q => q["_rowstatus"] != "" && q["_rowstatus"] != null).length >0) {
+                    this.gridFilteredDatas = [...this.$refs.myGrid.getrows()];
+                    for( let i = 0; i < this.gridDatas.length ; i++) {
+                        let data = this.gridDatas[i];
+                        for(let j = 0; j < this.gridFilteredDatas.length; j++) {
+                            let filteredData = this.gridFilteredDatas[j];
+                            if(filteredData["UNIQUEID"] == data["UNIQUEID"]) {
+                                this.gridDatas[i] = { ...filteredData };
+                            }
+                        }
+                    }
+                }
+            },
+            clearFilter(){
+                this.gridFilterList = [];
+                this.addMoreFilter(0);
+                this.applyFilter();
+
+                this.gridFilterDialog = false;
+            },
+            clearFilterState(){
+                if(this.gridFilteredDatas && this.gridFilteredDatas.filter(q => q["_rowstatus"] != "" && q["_rowstatus"] != null).length >0) {
+                    this.gridFilteredDatas = [...this.$refs.myGrid.getrows()];
+
+                    for( let i = 0; i < this.gridFilteredDatas.length ; i++) {
+                       this.gridFilteredDatas[i]["_rowstatus"] = "";
+                    }
+                }
+            },
+
+            async myGridOnExport(_handleData){
+                let that = this;
+                let gridDatas = _handleData && _handleData.length > 0 ? [..._handleData] : [...this.$refs.myGrid.getrows()] ;
+                if(gridDatas.length <=0) {
+                    this.showNotification("warning", this.$t("no_data_to_export"), '');
+                    return;
+                }
+
+                this.$refs.myGrid.showloadelement();
+
+                await this.wait(500);
+
+                let displayedHeader  = lodash.cloneDeep( this.columnsTmp.filter( q=> (q["visible"] && q["visible"] != false) && (q["hidden"] == undefined || q["hidden"] == false) ) );
+                
+                if(this.gridCookie) {
+                    displayedHeader = displayedHeader.map( (q,idx) => {
+                        q["index"] = idx+1;
+                        return q;
+                    });
+
+                    let updateHeader = ( _header ) =>{
+                        let header = [..._header];
+                        for(let i = 0; i< header.length; i++) {
+                            let localColumn = that.gridCookie.find( q => q["datafield"] == header[i]["datafield"]);
+                            if(localColumn) {
+                                header[i]["index"] = localColumn["index"];
+                            }
+                        }
+                        if(header["columns"] && header["columns"].length > 0 ) {
+                           header["columns"] = updateHeader(header["columns"] );
+                        }
+                        header = header.sort((a, b) => a.index >= b.index ? 1 : -1);
+                        return header;
+                    };
+
+                    displayedHeader = updateHeader(displayedHeader);
+                }
+
+                let displayedHeaderField = [];
+                let maxHeaderRow = 0;
+                let maxHeaderColumn = 0;
+                let excelHeader = [];
+                let colIdx = 0;
+                //let rowIdx = 0;
+
+                //============================FIND THE MAX COL/ROW OF HEADER===============================
+                let findMaxHeader = function (columns, rowIdx) {
+                    maxHeaderRow = rowIdx;
+                    columns.forEach(q => {
+                        let cols = q["columns"];
+                        if(!!cols) {
+                            findMaxHeader(cols, rowIdx + 1);
+                        } else {
+                            ++maxHeaderColumn;
+                        }
+                    })
+                };
+                findMaxHeader(displayedHeader, 1);
+
+                //=========================================================================================
+
+                //==================================GENERATE HEADER========================================
+                for(let i = 0; i< maxHeaderRow; i++) {
+                    excelHeader[i] = [];
+                }
+
+                let buildHeader = function(columns, rowIdx) {
+                    columns.forEach(q => {
+                        let cols = q["columns"];
+                        if(!!cols) {
+                            excelHeader[rowIdx][colIdx] = q["text"];
+                            buildHeader(cols, rowIdx + 1);
+                        } else {
+                            for(let i = 0; i < maxHeaderRow ; i++){
+                                if(i == rowIdx) {
+                                    excelHeader[i][colIdx] = q["text"];
+                                    if(q["datafield"] && q["datafield"] !=undefined){
+                                        displayedHeaderField.push(q["datafield"])
+                                    }
+                                } else {
+                                    excelHeader[i][colIdx] = excelHeader[i][colIdx] ? excelHeader[i][colIdx] : "";
+                                }
+                            }
+                            colIdx++;
+                        }
+                    })
+                };
+                buildHeader(displayedHeader, 0);
+                //=========================================================================================
+
+                //==================================GENERATE DATA==========================================
+                let exportData = this.buildDataToExport( gridDatas, displayedHeaderField );
+
+                await this.exportExceljs(excelHeader, exportData);
+
+                this.$refs.myGrid.hideloadelement();
+            },
+
+            buildDataToExport(data, displayedHeaderField){
+                let dataDisplay = [...data];//[...this.$refs.myGrid.getrows()];
+                let returnData = [];
+                let that = this;
+
+                let checkboxCols = this.columns.filter(q => q.columntype == "checkbox");
+                let dateBoxCols = this.columns.filter(q => q.columntype == "datetimeinput");
+                let monthCols = this.columns.filter(q => q.columntype == "month");
+                let listCols = this.columns.filter(q => q.hasOwnProperty('lookup') );
+
+                let colchecks = checkboxCols.map(q => q["dataField"]);
+                let coldates = dateBoxCols.map(q => q["dataField"]);
+                let colmonths = monthCols.map(q => q["dataField"]);
+                let colLists = listCols.map(q => q["dataField"]);
+
+                for (let i = 0; i < dataDisplay.length; i++) {
+                    let data = dataDisplay[i];
+                    let _data = [];
+                    for(let j = 0; j< displayedHeaderField.length; j++) {
+                        let _col = displayedHeaderField[j];
+                        let _cellValue = data[ _col ];
+
+                        if(colchecks.includes(_col)) {
+                            _cellValue =_cellValue == true || _cellValue == 'Y' ? 'Y' : 'N';
+                        }
+
+                        if(coldates.includes(_col)) {
+                            _cellValue =  this._formatDateForPicker(_cellValue);
+                        }
+
+                        if(colmonths.includes(_col)) {
+                            let monthFormat = that.curLang.MONTH_FORMAT.toUpperCase();
+                            if (!!_cellValue) {
+                                const d = moment(_cellValue, "YYYYMM");
+                                if (d.isValid()) {
+                                    const newval = d.format(monthFormat);
+                                    _cellValue = newval;
+                                }
+                            }
+                        }
+                        if(colLists.includes(_col)) {
+                            let listObj  = listCols.find(q => q["dataField"] == _col);
+                            if(listObj) {
+                                let _dataSource = listObj["lookup"]["dataSource"];
+                                let _key = listObj["lookup"]["valueExpr"];
+                                let _name = listObj["lookup"]["displayExpr"]; 
+
+                                try { _cellValue = _dataSource.find( q => q[_key] ==  _cellValue)[_name] ;} catch (e){ }
+                            }
+                        }
+
+                        _data.push(_cellValue);
+                    }
+                    returnData.push(_data);
+                }
+                
+                return returnData;
+            },
+
+
+            async exportExceljs(excelHeader, exportData){
+                let workbook = new ExcelJS.Workbook();
+                let worksheet = workbook.addWorksheet("Sheet1");
+                let headerTitle = {};
+                //default sheet 1
+                workbook.getWorksheet(1);
+
+                let fileExportName = "";
+
+                try {
+                    fileExportName = document
+                    .getElementById("appBar")
+                    .getElementsByClassName("v-chip--active")[0]
+                    .getElementsByClassName("v-chip__content")[0].innerText;
+                } catch (error) {
+                    fileExportName = "DATA_EXPORT";
+                }
+
+                headerTitle = {
+                    TITLE: fileExportName,
+                    CREATE_ID: this.user.USER_ID,
+                    CREATE_NAME: this.user.USER_NAME,
+                    CREATE_DT: moment().format("YYYY-MM-DD hh-mm-ss")
+                }
+
+                worksheet = this.buildExportSheet( worksheet, excelHeader, exportData, headerTitle);
+
+                await workbook.xlsx.writeBuffer()
+                .then(function(buffer) {
+                    saveAs( new Blob([buffer], { type: "application/octet-stream", }),fileExportName.replace(/\s+/g, "_") +  "-" + moment().format("YYYY-MM-DD-hh-mm-ss") +  ".xlsx");
+                });
+            },
+
+
+            
+
+            applyLocalHeader(){
+                let _gridCookie = Cookies.get(this.cookieId);
+                if(_gridCookie){
+                    this.gridCookie = JSON.parse(_gridCookie);
+                    this._updateHeader();
+                } else {
+                    this.columns = lodash.cloneDeep(this.gridDefaultColumns);
+                    this.gridUpdate();
+                }
+               
+            },
+            _onCellClick() {
+                if (!this.cancelCellClick) {
+                    this.cancelCellClick = true;
+                    this.$emit("cellClick", {
+                        data: this.lastCellClick.args.row.bounddata,
+                        column: this.lastCellClick.args.column,
+                        columnindex: this.lastCellClick.args.columnindex,
+                        rowindex: this.lastCellClick.args.rowindex,
+                        value: this.lastCellClick.args.value
+                    });
+                    this.$emit("cellClickData", this.lastCellClick.args.row.bounddata);
+                }
+            },
+            _getTimeSpan() {
+                const today = new Date();
+                return today.getTime();
+            },
+            exportExcel() {
+                var wb = XLSX.utils.book_new();
+                wb.Props = {
+                    Title: "Export to from datagrid",
+                    Subject: "Export to excel",
+                    Author: "Genuwin Solution",
+                    CreatedDate: new Date()
+                };
+
+                wb.SheetNames.push("Sheet1");
+                const datarows = this.getDataSource();
+                const columns = this.$refs.myGrid.columns.records;
+                // console.log(columns)
+                let header = [];
+                columns.forEach((e) => {
+                    if (e.hasOwnProperty("text")) {
+                        header.push(e.text);
+                    }
+                });
+                let ws_data = [];
+                datarows.forEach((x) => {
+                    let row = [];
+                    columns.forEach((y) => {
+                        if (y.hasOwnProperty("datafield")) {
+                            row.push(x[y.datafield]);
+                        }
+                    });
+                    ws_data.push(row);
+                });
+
+                ws_data.unshift(header);
+                //console.log(ws_data)
+                var ws = XLSX.utils.aoa_to_sheet(ws_data);
+                wb.Sheets["Sheet1"] = ws;
+                var wbout = XLSX.write(wb, {
+                    bookType: 'xlsx',
+                    type: 'binary'
+                });
+                const data = this.s2ab(wbout);
+                this._ExcelSaveAs(data, 'export.xlsx');
+            },
+            exportPdf() {
+                var wb = XLSX.utils.book_new();
+                wb.Props = {
+                    Title: "Export to from datagrid",
+                    Subject: "Export to excel",
+                    Author: "Genuwin Solution",
+                    CreatedDate: new Date()
+                };
+
+                wb.SheetNames.push("Sheet1");
+                const datarows = this.getDataSource();
+                const columns = this.$refs.myGrid.columns.records;
+                // console.log(columns)
+                let header = [];
+                columns.forEach((e) => {
+                    if (e.hasOwnProperty("text")) {
+                        header.push(e.text);
+                    }
+                });
+                let ws_data = [];
+                datarows.forEach((x) => {
+                    let row = [];
+                    columns.forEach((y) => {
+                        if (y.hasOwnProperty("datafield")) {
+                            row.push(x[y.datafield]);
+                        }
+                    });
+                    ws_data.push(row);
+                });
+
+                ws_data.unshift(header);
+                //console.log(ws_data)
+                var ws = XLSX.utils.aoa_to_sheet(ws_data);
+                wb.Sheets["Sheet1"] = ws;
+                var wbout = XLSX.write(wb, {
+                    bookType: 'xlsx',
+                    type: 'binary'
+                });
+                const data = this.s2ab(wbout);
+                this._ExcelSaveAs(data, 'export.pdf');
+            },
+            s2ab(s) {
+                var buf = new ArrayBuffer(s.length);
+                var view = new Uint8Array(buf);
+                for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+                return buf;
+            },
+            myMenuOnItemClick(event) {
+                let args = event.args;
+                if (args.id == 'resize_column') {
+                    this.$refs.myGrid.autoresizecolumns();
+                } else if (args.id == 'add_column') {
+                    this.openCustomGrid();
+                } else if (args.id == 'export_to_excel') {
+                    let dataList = this.$refs.myGrid.getrows();
+                    if (dataList.length <= 0) {
+                        this.showNotification("warning", this.$t("no_data_found"), '');
+                    } else {
+                        this.exportExcel();
+                    }
+                    //this.$refs.myGrid.exportdata('xls', 'erp-export-data');
+                } else if (args.id == 'export_to_pdf') {
+                    // this.$refs.myGrid.exportdata('pdf', 'erp-export-data');
+                } else if (args.id == 'export_to_csv') {
+                    // this.$refs.myGrid.exportdata('csv', 'erp-export-data');
+                } else if (args.id == 'print') {
+                    let gridContent = this.$refs.myGrid.exportdata('html');
+                    let newWindow = window.open('', '', 'width=800, height=500'),
+                        document = newWindow.document.open(),
+                        pageContent =
+                            '<!DOCTYPE html>\n' +
+                            '<html>\n' +
+                            '<head>\n' +
+                            '<meta charset="utf-8" />\n' +
+                            '<title>' + this.$t('print_data_grid') + '</title>\n' +
+                            '</head>\n' +
+                            '<body>\n' + gridContent + '\n</body>\n</html>';
+                    document.write(pageContent);
+                    document.close();
+                    newWindow.print();
+                }
+                this.$refs.myMenu.close();
+            },
+            myMenuSettingOnItemClick(event) {
+                let args = event.args;
+                switch (args.id) {
+                    case 'refresh': this.rebuildHeader(); break;
+                    case 'resize_column': this.resizeColumns(); break;
+                    case 'column_display': this.$refs.columnDisplay.dialogIsShow = true; break;
+                    case 'checkbox': {
+                        this.gridSelectionMode = 'checkbox';
+                        this.rebuildHeader();
+                        break;
+                    }
+                    case 'singlerow': {
+                        this.gridSelectionMode = 'singlerow';
+                        this.rebuildHeader();
+                        break;
+                    }
+                    case 'multiplerows': {
+                        this.gridSelectionMode = 'multiplerowsextended';
+                        this.rebuildHeader();
+                        break;
+                    }
+                    case 'singlecell': {
+                        this.gridSelectionMode = 'singlecell';
+                        this.rebuildHeader();
+                        break;
+                    }
+                    case 'multiplecells': {
+                        this.gridSelectionMode = 'multiplecellsextended';
+                        this.rebuildHeader();
+                        break;
+                    }
+                    case 'report_template': {
+                        this.$refs.ReportManagement.dialogIsShow = true;
+                        break;
+                    }
+                    default: {
+                        //this.rebuildHeader();
+                    }
+                }
+
+                this.$refs.myMenuSetting.close();
+            },
+            openCustomGrid() {
+                this.$refs.customGridDialog.dialogIsShow = true;
+            },
+            customGridCallback() {
+
+            },
+            getControl() {
+                return this.$refs.myGrid;
+            },
+            scrollTo(p_rowindex) {
+                this.$refs.myGrid.ensurerowvisible(p_rowindex);
+            },
+            rightClickRow(event) { },
+            _onMyResize() {
+                this.divWidthSupport = this.$refs.basegridview.clientWidth;
+                this.divHeightSupport = this.$refs.basegridview.clientHeight;
+            },
+            _generatekey() {
+                var c = function () {
+                    return (((1 + Math.random()) * 16) | 0)
+                };
+                return ("" + c() + c() + "-" + c() + "-" + c())
+            },
+            _generateNumber() {
+                var c = function () {
+                    return (((1 + Math.random()) * 16) | 0)
+                };
+                return Number("" + c() + c() + c() + c() + c() + c() + c() + c())
+            },
+            _measureElementWidth(text) {
+                var min = 0;
+                try {
+                    min = text.length * 10;
+                    if (min > 200) {
+                        min = 200;
+                    }
+                } catch (err) { }
+                if (min < 50) {
+                    min = 50;
+                }
+                return min + 20
+            },
+            async _updateHeader() {
+                this.columns = [];
+                this.columngroups = [{
+                    text: 'Default Group',
+                    name: 'defaultGroup'
+                }];
+
+                await this._rebuildHeader(this.headertype);
+                let headerTmp = [...this.columnsTmp];
+                this._processHeader(headerTmp);
+
+                //column from local - vng-207
+                this.gridDefaultColumns = lodash.cloneDeep(this.columns);
+                if(this.gridCookie) {
+                    this.columns = this.columns.map( (q,idx) => {
+                        q["index"] = idx+1;
+                        return q;
+                    });
+
+                    for(let i = 0; i< this.columns.length; i++) {
+                        let localColumn = this.gridCookie.find( q => q["datafield"] == this.columns[i]["datafield"]);
+                        if(localColumn) {
+                            this.columns[i]["hidden"] = localColumn["hidden"];
+                            this.columns[i]["index"] = localColumn["index"];
+                        }
+                    }
+
+                    this.columns = this.columns.sort((a, b) => a.index >= b.index ? 1 : -1);
+                }
+
+                this.gridUpdate();
+            },
+            _processHeader(header, group = null) {
+                let objs = header;
+                let that = this;
+                this.gridSetColList = [];
+                this.gridSetColListVals = [];
+
+                let firstShowColumn = this.header.findIndex( q => q["visible"] == true || q["visible"] == undefined);
+                let firstColAggregates =  this.header.find( q => q.hasOwnProperty("summaryType"));
+               // let _aggregates = firstColAggregates ? firstColAggregates.summaryType : null;
+                that.summaryTypes=firstColAggregates ? firstColAggregates.summaryType : "";
+
+                if (objs instanceof Array) {
+                    for( let idx = 0; idx<objs.length; idx++ ) {
+                        let entry= objs[idx];
+                        entry.cellclassname = !!entry["cellclassname"] ? entry["cellclassname"] : that.cellClassStatus2;
+                        
+                        if(that.showaggregates) {
+                            let emptyColumnStr='';
+                            entry.aggregatesrenderer = function (aggregates, column, element) {
+                                 let arrayAggregate = that.summaryTypes.split(',');
+                                if(firstShowColumn == idx) {
+                                    let headerStr='';
+                                    let aggregatesName=""
+                                    if(arrayAggregate.length<=1){
+                                       headerStr= `<div style="background-color: #f6f7cb;width:100%;height:100%;">
+                                                     <span style="position: absolute !important; top:50% !important; left:5px!important; transform: translateY(-50%) !important;color:red"><b>${ that.$t('total') }</b></span>
+                                                 </div>`
+                                    }else
+                                    {
+                                        arrayAggregate.forEach((e,i) => {
+                                        switch(e){
+                                            case 'sum':aggregatesName='total'
+                                            break;
+                                            case 'min':aggregatesName='min'
+                                            break;
+                                            case 'max':aggregatesName='max'
+                                            break;
+                                            case 'avg':aggregatesName='average (x)'
+                                            break;
+                                            case 'range':aggregatesName='range (r)'
+                                            break;
+                                            case 'stdev':aggregatesName='stdev.s (σ)'
+                                            break;
+                                            case 'r/x':aggregatesName='R/X (%)'
+                                            break;
+                                            case '3/x':aggregatesName='3σ/X (%)'
+                                            break;
+                                        }
+                                        if(i%2==1){
+                                         headerStr=headerStr+`<div style="background-color: #eef09d;width:100%;height:auto;border-bottom:0.5px solid #a7a7a7"">
+                                                            <span style="color:red"><b>${ that.$t(aggregatesName)}</b></span>
+                                                             </div>`
+                                       
+                                        }else{
+                                        headerStr=headerStr+`<div style="background-color: #f6f7cb;width:100%;height:auto;border-bottom:0.5px solid #a7a7a7"">
+                                                       <span style="color:red"><b>${ that.$t(aggregatesName)}</b></span>
+                                                        </div>`
+                                       
+                                        }
+                                       
+                                        });
+                                    }
+                                        
+                                     return headerStr;
+                                } 
+                                 if(arrayAggregate.length<=1){
+                                     emptyColumnStr= `<div style="background-color: #f6f7cb;width:100%;height:100%;">
+                                                     <span style="position: absolute !important; top:50% !important; left:5px!important; transform: translateY(-50%) !important;color:red"><b>  &nbsp;  </b></span>
+                                                 </div>`
+                                 }else{
+                                 arrayAggregate.forEach((e,i) => {
+                                 if(i%2==1){
+                                     emptyColumnStr=emptyColumnStr+`<div style="background-color: #eef09d;width:100%;height:auto;border-bottom:0.5px solid #a7a7a7"">
+                                                          <span style="color:red"><b>  &nbsp;  </b></span>
+                                                           </div>`
+                                 }else{
+                                     emptyColumnStr=emptyColumnStr+`<div style="background-color: #f6f7cb;width:100%;height:auto;border-bottom:0.5px solid #a7a7a7"">
+                                                          <span style="color:red"><b>  &nbsp;  </b></span>
+                                                           </div>`
+                                 }
+                                  
+                                  })
+                                 }
+                               
+                                return emptyColumnStr;
+                            }
+                            
+                        }
+
+                        if (entry.hasOwnProperty("columns")) {
+                            var g = that._generatekey();
+                            if (entry.hasOwnProperty("caption")) {
+                                entry.text = entry.caption;
+                            } else {
+                                entry.text = '_';
+                            }
+                            if (group) {
+                                that.columngroups.push({
+                                    text: entry.text,
+                                    parentgroup: group,
+                                    align: 'center',
+                                    name: g
+                                })
+                            } else {
+                                that.columngroups.push({
+                                    text: entry.text,
+                                    align: 'center',
+                                    name: g
+                                })
+                            }
+                            entry.columns = that._processHeader(entry.columns, g);
+                        } else if (entry.hasOwnProperty("dataField")) {
+                            entry.align = 'center';
+                            entry.cellsalign = 'left';
+                            entry.editable = false;
+                            try { entry.columntype = entry.dataType; } catch { }
+
+                            let keys = Object.keys(entry);
+                            keys.forEach(key => {
+                                switch (key) {
+                                    case "dataField": { entry.datafield = entry[key]; break; }
+                                    case "alignment": { entry.cellsalign = entry[key]; break; }
+                                    case "visible": { entry.hidden = !entry[key]; break; }
+                                    case "caption": {
+                                        entry.text = entry[key];
+                                        entry.width = !!entry.width ? entry.width : that._measureElementWidth(entry.text);
+                                        break;
+                                    }
+                                    case "allowEditing": { entry.editable = entry[key]; break; }
+                                    case "lookup":
+                                    case "dataType": {
+                                        //vng-207 init set function 
+                                        if ((entry.editable || entry.allowEditing ) && (!entry.hidden || entry.visible) ) {
+                                            if (entry[key] == "list" || entry.hasOwnProperty("lookup")) {
+                                                that.gridSetColList.push( {CODE: entry.datafield, NAME:entry.text });
+                                            }  else if(entry[key] == "checkbox") {
+                                                that.gridSetColFlag.push( {CODE: entry.datafield, NAME:entry.text });
+                                            } else if(entry[key] == "date" || entry[key] == "datetimeinput") {
+                                                that.gridSetColDate.push( {CODE: entry.datafield, NAME:entry.text });
+                                            } else if(entry[key] == "month") {
+                                                that.gridSetColMonth.push( {CODE: entry.datafield, NAME:entry.text });
+                                            } else if(entry[key] == "time") {
+                                                that.gridSetColTime.push( {CODE: entry.datafield, NAME:entry.text });
+                                            } else {
+                                                that.gridSetColText.push( {CODE: entry.datafield, NAME:entry.text });
+                                            } 
+                                        }
+                                        
+
+                                        if (entry[key] == "list" || entry.hasOwnProperty("lookup")) {
+                                            entry.columntype = 'dropdownlist';
+                                            entry.cellsrenderer = function (row, datafield, value, defaultHtml) {
+                                                let element = $(defaultHtml)
+                                                try {
+                                                    let _key = entry.lookup.valueExpr;
+                                                    let _text = entry.lookup.displayExpr;
+                                                    let item = entry.lookup.dataSource.find(q => q[_key] == value);
+
+                                                    if (item) {
+                                                        element[0].innerText = item[_text];
+                                                    }
+                                                } catch (_e) {
+                                                    console.log(_e.message);
+                                                }
+                                                return element[0].outerHTML;
+                                            }
+                                            entry.createeditor = function (row, value, editor, cellText) {
+                                                let stateIndex = -1;
+                                                try {
+                                                    let _key = entry.lookup.valueExpr;
+                                                    stateIndex = entry.lookup.dataSource.findIndex(q => q[_key] == value);
+                                                } catch (_e) {
+                                                    console.log("createeditor", _e.message);
+                                                }
+                                                editor.jqxDropDownList({
+                                                    autoOpen: false,
+                                                    enableBrowserBoundsDetection: true,
+                                                    selectedIndex: stateIndex,
+                                                    source: entry.lookup.dataSource,
+                                                    displayMember: entry.lookup.displayExpr,
+                                                    valueMember: entry.lookup.valueExpr,
+                                                });
+                                            }
+                                            entry.initeditor = function (row, value, editor, cellText) {
+                                                let stateIndex = -1;
+                                                let displayVal = null;
+                                                try {
+                                                    let _key = entry.lookup.valueExpr;
+                                                    let _text = entry.lookup.displayExpr;
+                                                    stateIndex = entry.lookup.dataSource.findIndex(q => q[_key] == value);
+                                                    let item = entry.lookup.dataSource[stateIndex];
+                                                    displayVal = item[_text];
+                                                } catch (_e) {
+                                                    console.log("initeditor", _e.message);
+                                                }
+                                                editor.jqxDropDownList({
+                                                    autoOpen: false,
+                                                    selectedIndex: stateIndex
+                                                });
+                                                try {
+                                                    editor.jqxDropDownList('setContent', displayVal);
+                                                } catch {
+                                                    editor.jqxDropDownList('setContent', value);
+                                                }
+                                            }
+                                            entry.cellvaluechanging = function (rowIndex, datafield, columntype, oldvalue, newvalue) {
+                                                let item = null;
+                                                try {
+                                                    let _key = entry.lookup.valueExpr;
+                                                    let _text = entry.lookup.displayExpr;
+                                                    item = entry.lookup.dataSource.find(obj => obj[_text] === newvalue);
+                                                    return item[_key];
+                                                } catch (_e) {
+                                                    console.log(_e.message);
+                                                    return oldvalue;
+                                                }
+                                            }
+                                        }
+
+                                        if (entry[key] == "date" || entry[key] == "datetimeinput") {
+                                            entry.columntype = 'datetimeinput';
+                                            entry.cellsformat = that.curLang.DATE_FORMAT;
+                                            entry.cellsalign = "center";
+                                            entry.cellsrenderer = function (row, datafield, value, defaultHtml) {
+                                                let rowData = that.$refs.myGrid.getrowdata(row);
+                                                let element = $(defaultHtml)
+                                                const d = that._formatDate(value)
+                                                element[0].innerText = d
+                                                const d2 = that._formatDateForPicker(value)
+                                                rowData[datafield] = d2;
+                                                return element[0].outerHTML;
+                                            }
+                                        }
+
+                                        if (entry[key] == "month") {
+                                            let monthFormat = that.curLang.MONTH_FORMAT.toUpperCase();
+                                            let monthDisplay = that.curLang.MONTH_FORMAT.toUpperCase().replace(/[^0-9a-zA-Z]/g, "");
+                                            let mask = monthFormat.replace(/[a-zA-Z]/g, "#");
+
+                                            entry.createeditor = function (row, value, editor, cellText) {
+                                                let _valTmp =  (!!value ? value : "").replace(/[^0-9]/g, "");
+                                                setTimeout(() => {
+                                                    
+                                                    try {
+                                                        if (String.fromCharCode(that.cellEditing.keyCode).match(/(\w|\s)/g) || that.cellEditing.keyCode == 96) { //96 Numpad0
+                                                            if (!!!that.cellEditing.oldvalue) {
+                                                                _valTmp = monthFormat.replace(/[a-zA-Z]/g, "_");
+                                                                _valTmp = _valTmp.replace(_valTmp.charAt(0), that.cellEditing.key);
+                                                            } else {
+                                                                _valTmp = value.replace(value.charAt(0), that.cellEditing.key);
+                                                            }
+                                                        }
+                                                    } catch (eee) { console.log(eee.message) }
+
+                                                    const d = moment(_valTmp, monthFormat);
+                                                    const newval = !!that.cellEditing.oldvalue ? d.format(monthDisplay) : _valTmp;
+                                                    editor.jqxMaskedInput({
+                                                        mask: mask, value: newval
+                                                    });
+
+                                                }, 10);
+                                            }
+                                            entry.initeditor = function (row, value, editor, cellText) {
+                                                const d = moment(value, monthFormat);
+                                                const newval = d.format(monthDisplay);
+                                                editor.jqxMaskedInput({
+                                                    mask: mask, value: newval
+                                                });
+                                            }
+                                            entry.cellvaluechanging = function (rowIndex, datafield, columntype, oldvalue, newvalue) {
+                                                try {
+                                                    const d = moment(newvalue, monthDisplay);
+
+                                                    if (!d.isValid()) {
+                                                        if (newvalue.replace(/[^0-9]/g, "") == "") {
+                                                            return "";
+                                                        } else {
+                                                            that.showNotification("warning", that.$t("not_valid_month"), '');
+                                                            return !!!oldvalue ? "" : oldvalue;
+                                                        }
+                                                    }
+                                                    const newval = d.format(monthFormat);
+
+                                                    return newval;
+                                                } catch {
+                                                    that.showNotification("warning", that.$t("not_valid_month"), '');
+                                                    return !!!oldvalue ? "" : oldvalue;
+                                                }
+                                            }
+
+                                        }
+                                        if (entry[key] == "time") {
+                                            let mask = "##:##";
+
+                                            entry.createeditor = function (row, value, editor, cellText) {
+                                                let newval = (!!value ? value : "").replace(/[^0-9]/g, "");
+                                                setTimeout(() => {
+                                                    try {
+                                                        if (String.fromCharCode(that.cellEditing.keyCode).match(/(\w|\s)/g) || that.cellEditing.keyCode == 96) {
+                                                            newval = newval.replace(newval.charAt(0), that.cellEditing.key);
+                                                        }
+                                                    } catch (eee) { console.log(eee.message) }
+
+                                                    editor.jqxMaskedInput({
+                                                        mask: mask, value: newval
+                                                    });
+                                                }, 10);
+
+                                            }
+                                            entry.initeditor = function (row, value, editor, cellText) {
+                                                let newval = (!!value ? value : "").replace(/[^0-9]/g, "");
+                                                editor.jqxMaskedInput({
+                                                    mask: mask, value: newval
+                                                });
+                                            }
+                                            entry.cellvaluechanging = function (rowIndex, datafield, columntype, oldvalue, newvalue) {
+                                                if (newvalue.replace(/[^0-9]/g, "") == "") {
+                                                    return "";
+                                                } else {
+                                                    let time = newvalue.split(":");
+                                                    let hh = time[0];
+                                                    let mm = time[1];
+                                                    if (isNaN(hh) || isNaN(mm)) {
+                                                        that.showNotification("warning", that.$t("not_valid_time"), '');
+                                                        return !!!oldvalue ? "" : oldvalue;
+                                                    } else {
+                                                        if (Number(hh) > 23 || Number(mm) > 59) {
+                                                            that.showNotification("warning", that.$t("not_valid_time"), '');
+                                                            return !!!oldvalue ? "" : oldvalue;
+                                                        }
+                                                    }
+                                                    return newvalue;
+                                                }
+                                            }
+
+                                        }
+
+                                        //vng-207 hình chưa chạy ổn nên ẩn do hàm render ko update dc cái rowsheight
+                                        //, autoheight, autorowheight thì lại mất border last row, text trong cell thì cái trên cái dưới
+                                        if (entry[key] == "imageBlob") {
+                                            entry.cellsalign = "center";
+                                            entry.cellsrenderer = function (row, datafield, value, defaultHtml) {
+                                                let url = value ? that._getImageUrlFromBuffer(value) : "noImage";
+
+                                                return `<img style="position: absolute !important; left: 50%; transform: translateX(-50%)" height="${that.rowsheight}"  src="${url}" />`;
+                                            }
+                                        }
+
+
+                                        if (entry[key] == "html") {
+                                            entry.cellsrenderer = !!entry["cellsrenderer"] ? entry["cellsrenderer"] : null;
+                                        }
+
+
+                                        break;
+                                    }
+                                }
+                            });
+
+                            if (entry.hasOwnProperty("formatFloat")) {
+                                entry.cellsformat = 'f' + entry.formatFloat;
+                                entry.columntype = 'numeric'
+                                entry.cellsalign = 'right';
+                            }
+
+                            if (entry.hasOwnProperty("summaryType")) {
+                                let summaryTypeArray=this.summaryTypes.split(',')
+                                let tempArr=[]
+                                // summaryTypeArray.forEach(e => {
+                                //     tempArr.push(e)
+                                // });
+                                entry.aggregates = tempArr;
+                                if (entry.hasOwnProperty("summaryType")) {
+                                    entry.cellsformat = 'f' + entry.formatFloat;
+                                } else {
+                                    entry.cellsformat = 'f0';
+                                }
+                                entry.columntype = 'numeric'
+                                entry.cellsalign = 'right';
+                               
+                                entry.aggregatesrenderer = function (aggregates, column, element, summaryData) {
+                                    var renderstring=''
+                                if(summaryTypeArray.length<=1){
+                                   if(that.aggregates!=null){
+                                       const calc = that._formatNumber(that.aggregates[column.datafield][summaryTypeArray[0]], entry.formatFloat)  ?  that._formatNumber(that.aggregates[column.datafield][summaryTypeArray[0]], entry.formatFloat)  : '';
+                                       renderstring= `<div style="background-color: #f6f7cb;width:100%;height:100%;">
+                                                            <span style="position: absolute !important; top:50% !important; right:4px!important; transform: translateY(-50%) !important; color:red"><b>${calc}</b></span>
+                                                        </div>`;
+                                   }
+                                      
+                                                        
+                                }else{
+                                     if(that.aggregates!=null){
+                                          for (let i = 0; i < summaryTypeArray.length; i++) {
+                                       const e = summaryTypeArray[i];
+                                       
+                                         let calc = that._formatNumber(that.aggregates[column.datafield][e], entry.formatFloat)  ?  that._formatNumber(that.aggregates[column.datafield][e], entry.formatFloat) : '-';
+                                            if(i%2==1){
+                                                 renderstring =renderstring+
+                                                        `<div style="background-color: #eef09d;width:100%;height:auto;border-bottom:0.25px solid #a7a7a7"">
+                                                            <span style="color:red"><p>${calc}</p></span>
+                                                        </div>`;
+                                            }else{
+                                                 renderstring =renderstring+
+                                                        `<div style="background-color: #f6f7cb;width:100%;height:auto;border-bottom:0.25px solid #a7a7a7"">
+                                                            <span style="color:red"><p>${calc}</p></span>
+                                                        </div>`;
+                                            }
+                                           
+                                             }
+                                     }
+                                   
+                                }
+                                   
+                                    return renderstring;
+                                }
+                            }
+                            if (group) {
+                                entry.columngroup = group;
+                            }
+                            that.columns.push(entry)
+                        }
+                    }
+                }
+                
+                return objs;
+            },
+            gridUpdate() {
+                if (this.$refs.myGrid == undefined) {
+                    return;
+                }
+                let that = this;
+                //debugger;
+                if (!!this.gridSelectionMode && !this.changingSelection) {
+                    this.$refs.myGrid.selectionmode = this.gridSelectionMode;
+                } else {
+                    if (this.selectionmode == null) {
+                        this.gridSelectionMode = "singlecell";
+                        if (this.userSavedTheme != null) {
+                            this.gridSelectionMode = this.userSavedTheme.selectMode ? this.userSavedTheme.selectMode : this.gridSelectionMode;
+                        }
+                    } else {
+                        this.gridSelectionMode = !!this.selectionmode ? this.selectionmode : 'singlecell'
+                    }
+                    this.$refs.myGrid.selectionmode = this.gridSelectionMode;
+                }
+
+                this.$refs.myGrid.showloadelement();
+                this.$refs.myGrid.beginupdate();
+                this.$refs.myGrid.setOptions({
+                    source: new jqx.dataAdapter(that.dataAdapter),
+                    columns: that.columns,
+                    columngroups: that.columngroups
+                });
+                this.$refs.myGrid.endupdate();
+                this.$refs.myGrid.hideloadelement();
+                if (this.autoresizecolumn) {
+                    setTimeout(() => {
+                        that.$refs.myGrid.autoresizecolumns();
+                    }, 500);
+                }
+                this.changingSelection = false;
+            },
+            loadData(p_filter_paras = null) {
+                this.isProcessing = true;
+                if (p_filter_paras) {
+                    this._onLoad(p_filter_paras);
+                } else {
+                    let that = this;
+                    this.$nextTick(() => {
+                        that._onLoad(that.filter_paras);
+                    });
+                }
+
+            },
+            async _onLoad(p_filter_paras) {
+                if (this.sel_procedure) {
+                    let dso = {
+                        type: "grid",
+                        selpro: this.sel_procedure,
+                        para: p_filter_paras,
+                    };
+                    this.onLoadWithDSO(dso);
+                }
+            },
+            async onLoadWithDSO(_dso) {
+                let that = this;
+                this.isProcessing = true;
+                this.$refs.myGrid.showloadelement();
+                this.search_para = _dso.para;
+                const result = await this._dsoCall(_dso, "select");
+                if (result) {
+                    let resTmp = [...result];
+                    resTmp = resTmp.map( (q,idx) => {
+                        let timeKey = that._getTimeSpan() + "";
+                        let keyID = timeKey.substr(timeKey.length - 5);
+                        let o = Object.assign({}, q);
+                        o.UNIQUEID = keyID * 10000 + idx;
+                        o.INDEX=idx+1;
+                        return o;
+                    } );
+
+                    this.onGridCalculate(resTmp);
+                                       
+                    this.setDataSource(resTmp);
+                    this.gridDatas = [...resTmp];
+
+                    if(this.gridFilterList && this.gridFilterList.filter(q=> q["add"] == true).length > 0) {
+                        this.$nextTick(() => {
+                            this.applyFilter();
+                        });
+                    }
+                    
+                    setTimeout(() => {
+                        
+                        if (this.gridSelectionMode == 'checkbox' && !!this.autocheckbox) {
+                            this.$refs.myGrid.selectallrows();
+                            //console.log("selectallrows")
+                        }
+                    }, 500);
+
+                     //vng-207 20220831 reload header sum top
+                     if(this.showaggregatestop)
+                     {
+                        await this._rebuildHeader( this.headertype );
+                        this.rebuildHeader();
+                     }
+
+                } else {
+                    this.rowCount(0);
+                    this.Clear();
+                }
+                this.$refs.myGrid.hideloadelement();
+                this.isProcessing = false;
+            },
+
+            onGridCalculate(datas) {
+                this.aggregates={}
+                for (let _hdi = 0; _hdi < this.header.length; _hdi++) {
+                    const hdItem = this.header[_hdi];
+                    
+                    let tempObj={}
+                    let summaryArray=[]
+                    if(hdItem.summaryType!=null){
+                        try {
+                            summaryArray=this.summaryTypes.split(',')
+                            summaryArray.forEach(e => {
+                                tempObj[e]=this._gridCalculation(e,hdItem.field,datas)
+                            });
+                            this.aggregates[hdItem.field]=tempObj
+                        } catch (error) {
+                            console.log(error)
+                        }
+                    }
+                }
+            },
+
+            setDataSource(result) {
+                this.headerProcessed = null;
+                this.editCellHistory = {};
+                let that = this;
+
+                //build data for checkbox cols
+                let res = result;
+                let dataToSave = [...result];
+                //debugger;
+                let checkboxCols = this.columns.filter(q => q.columntype == "checkbox");
+                let dateBoxCols = this.columns.filter(q => q.columntype == "datetimeinput");
+                let monthCols = this.columns.filter(q => q.columntype == "month");
+                let colchecks = checkboxCols.map(q => q["dataField"]);
+                let coldates = dateBoxCols.map(q => q["dataField"]);
+                let colmonths = monthCols.map(q => q["dataField"]);
+
+                for (let i = 0; i < dataToSave.length; i++) {
+                    let data = dataToSave[i];
+                    data["_rowstatus"] = !!data["_rowstatus"] ? data["_rowstatus"] : "";
+                    data["_rowstatusUnMarked"] = !!data["_rowstatusUnMarked"] ? data["_rowstatusUnMarked"] : "";
+                    colchecks.forEach(q => {
+                        data[q] = data[q] == true || data[q] == 'Y' ? true : false;
+                        //console.log(" data[q]", data[q]);
+                    })
+                    coldates.forEach(q => {
+                        data[q] = this._formatDateForPicker(data[q]);
+                    })
+                    colmonths.forEach(q => {
+                        let monthFormat = that.curLang.MONTH_FORMAT.toUpperCase();
+                        if (!!data[q]) {
+                            const d = moment(data[q], "YYYYMM");
+                            if (d.isValid()) {
+                                const newval = d.format(monthFormat);
+                                data[q] = newval;
+                            }
+                        }
+
+                    })
+                }
+                res = dataToSave;
+
+                //console.log(res);
+
+                //console.log("dataToView", dataToSave)
+                this.dataAdapter = {
+                    localdata: [...res],
+                    datatype: 'json',
+                }
+                this.$nextTick(() => {
+                    that.gridUpdate()
+                });
+                this.rowCount(res.length);
+                this.$emit("setDataSource");
+            },
+            rowCount(value) {
+                this.records = value;
+                this.$emit("rowCount", value);
+            },
+            handlekeyboardnavigation: function (event) {
+                if (!this.cellEntering && String.fromCharCode(event.keyCode).match(/(\w|\s)/g) || event.keyCode == 96) {
+                    setTimeout(() => {
+                        this.cellEditing["key"] = event.key;
+                        this.cellEditing["keyCode"] = event.keyCode;
+                    }, 5);
+                    this.cellEntering = true;
+                }
+            },
+
+            cellBeginEditEvent: function (event) {
+                this.cellEditing = { row: event.args.rowindex, col: event.args.datafield, oldvalue: event.args.value };
+            },
+            cellEndEditEvent: function (event) {
+                this.cellEditing = { row: -1, col: -1 };
+                this.cellEntering = false;
+                let that = this;
+
+                let rowData = this.$refs.myGrid.getrowdata(event.args.rowindex);
+                if (event.args.columntype == 'numeric') {
+                    let isnumValue = !isNaN(event.args.value) || event.args.value == null;
+                    let isnumOldvalue = !isNaN(event.args.oldvalue) || event.args.oldvalue == null;
+                    if (isnumValue && isnumOldvalue) {
+                        let newVal = Number(event.args.value);
+                        let oldVal = Number(event.args.oldvalue);
+                        if (newVal.toFixed(10) != oldVal.toFixed(10) && rowData._rowstatus != "i" && rowData._rowstatus != "d") {
+                            rowData._rowstatus = 'u';
+                            this.$refs.myGrid.setcellvalue(event.args.rowindex, '_rowstatus', 'u');
+                        }
+                        //set lai data do prototype  number ko format
+                        this.$refs.myGrid.setcellvalue(event.args.rowindex, event.args.datafield, event.args.value == null || event.args.value == "" ? null : newVal);
+                    }
+                } else if (event.args.columntype == 'datetimeinput') {
+                    if (this._formatDate(event.args.value) != event.args.oldvalue && rowData._rowstatus != "i" && rowData._rowstatus != "d") {
+                        rowData._rowstatus = 'u';
+                        this.$refs.myGrid.setcellvalue(event.args.rowindex, '_rowstatus', 'u');
+                    }
+                } else if (event.args.value != event.args.oldvalue && rowData._rowstatus != "i" && rowData._rowstatus != "d") {
+                    if (!(this.isNullOrEmpty(event.args.value) && this.isNullOrEmpty(event.args.oldvalue))) {
+                        rowData._rowstatus = 'u';
+                        this.$refs.myGrid.setcellvalue(event.args.rowindex, '_rowstatus', 'u');
+                    }
+                }
+
+                //status2 for attendance (HR)
+                if (this.status2) {
+                    let cellActive = event.args.datafield;
+                    let _status2 = this.status2[cellActive];
+                    if (_status2) {
+                        let _rowstatus2 = rowData["_rowstatus2"];
+                        if (!_rowstatus2) {
+                            rowData["_rowstatus2"] = null;
+                            _rowstatus2 = null;
+                        }
+                        let lstStatus2 = _rowstatus2 ? _rowstatus2.split('-') : [];
+
+                        if (lstStatus2.indexOf(String(_status2)) <= -1) {
+                            lstStatus2.push(String(_status2));
+                        }
+                        try {
+                            this.$nextTick(() => {
+                                rowData["_rowstatus2"] = lstStatus2.sort().join("-");
+                            });
+                        } catch (e) { console.log(e.message) }
+                    }
+                }
+                this.$nextTick(() => {
+                    //build data for checkbox cols
+                    let checkboxCols = this.columns.filter(q => q.columntype == "checkbox");
+                    let dateBoxCols = this.columns.filter(q => q.columntype == "datetimeinput");
+                    let monthCols = this.columns.filter(q => q.columntype == "month");
+                    let colchecks = checkboxCols.map(q => q["datafield"]);
+                    let coldates = dateBoxCols.map(q => q["datafield"]);
+                    let colmonths = monthCols.map(q => q["datafield"]);
+
+
+                    let data = lodash.cloneDeep(rowData);;
+                    if (data._rowstatus != null && data._rowstatus != undefined && data._rowstatus != "") {
+                        colchecks.forEach(q => {
+                            data[q] = data[q] == true || data[q] == 'Y' || data[q] == "true" ? "Y" : "N";
+                        })
+                        coldates.forEach(q => {
+                            data[q] = this._formatDateToSave(data[q]);
+                        })
+                        colmonths.forEach(q => {
+                            let monthFormat = that.curLang.MONTH_FORMAT.toUpperCase();
+
+                            if (!!data[q]) {
+                                const d = moment(data[q], monthFormat);
+                                const newval = d.format("YYYYMM");
+                                data[q] = newval;
+                            }
+
+                        })
+                    }
+
+                    this.$emit("row-updated", event.args, data);
+                });
+                // if (rowData._rowstatus == 'u') {
+                //     this.$emit("row-updated", event.args, rowData);
+                // }
+            },
+            myGridOnSort: function (event) { },
+            myGridOnFilter: function (event) {
+                try { this.rowCount(this.$refs.myGrid.getdisplayrows().length) }
+                catch { }
+                this.$emit("filtered", event, this.$refs.myGrid.getdisplayrows());
+            },
+            getCell: function (p_rowindex, p_datafield) {
+                return this.$refs.myGrid.getcell(p_rowindex, p_datafield);
+            },
+            getRowData(p_rowindex) {
+                return this.$refs.myGrid.getrowdata(p_rowindex);
+            },
+            addRow(p_rowdata = null, p_position = 0) {
+                if (p_rowdata) {
+                    p_rowdata._rowstatus = "i"
+                } else {
+                    p_rowdata = {
+                        _rowstatus: "i"
+                    }
+                }
+                this.$refs.myGrid.addrow(null, p_rowdata, p_position);
+                this.scrollTo(0)
+            },
+            addRowStruct(p_rowdata = null, p_position = 0) {
+                this.addRow(p_rowdata, p_position);
+            },
+            removeSortBtnOnClick() {
+                this.gridUpdate();
+            },
+            Clear() {
+                try { this.$refs.myGrid.clearselection(); } catch { }
+                this.rowCount(0);
+                this.dataAdapter.localdata = [];
+                this.gridUpdate();
+            },
+            autoMakeSEQ(p_datafield, startIndex = 1) {
+                if (startIndex < 1) {
+                    return;
+                }
+                let rowsdata = this.$refs.myGrid.getrows();
+                for (let i = 0; i < rowsdata.length; i++) {
+                    rowsdata[i][p_datafield] = i + startIndex;
+                    rowsdata[i]._rowstatus = rowsdata[i]._rowstatus !== "i" && rowsdata[i]._rowstatus !== "d" ?
+                        "u" :
+                        rowsdata[i]._rowstatus;
+                }
+                this.setDataSource(rowsdata);
+                this.gridUpdate();
+            },
+            setCellValue(p_datafield, p_value, p_pk, p_field_name = "PK") {
+                let rowsdata = this.$refs.myGrid.getrows();
+                let idx = rowsdata.findIndex((d) => d[p_field_name] == p_pk);
+                if (idx >= 0) {
+                    rowsdata[idx][p_datafield] = p_value;
+                    rowsdata[idx]._rowstatus = rowsdata[idx]._rowstatus !== "i" && rowsdata[idx]._rowstatus !== "d" ?
+                        "u" :
+                        rowsdata[idx]._rowstatus;
+                    this.setDataSource(rowsdata);
+                    this.gridUpdate();
+                }
+            },
+            getCellValue(p_datafield, p_rowindex) {
+                let rowsdata = this.$refs.myGrid.getrows();
+                if (p_rowindex < rowsdata.length) {
+                    return rowsdata[p_rowindex][p_datafield];
+                }
+                return "Invalid cell refer!";
+            },
+            setCellSelected(p_datafield, p_value) {
+                 let selectionMode = this.$refs.myGrid.selectionmode;                
+                let rowindexes = [];
+                if (selectionMode == "singlecell" || selectionMode == "multiplecells" || selectionMode == "multiplecellsextended") {
+                    let selecteds = this.$refs.myGrid.getselectedcells();
+                    rowindexes = Array.from(new Set(Array.from(selecteds, x => x["rowindex"])));
+                } else {
+                    rowindexes = this.$refs.myGrid.getselectedrowindexes();
+                }
+                
+                if (rowindexes.length >= 0) {
+                    let rowsdata = this.$refs.myGrid.getrows();
+                    rowindexes.forEach(q => {
+                        rowsdata[q][p_datafield] = p_value;
+                        rowsdata[q]._rowstatus = rowsdata[q]._rowstatus !== "i" && rowsdata[q]._rowstatus !== "d" ? "u" : rowsdata[q]._rowstatus
+                    });
+                    this.setDataSource(rowsdata)
+                    this.gridUpdate();
+                }
+            },
+            setValueColumn(p_column, p_value, isUpdateStatus = true) {
+                this.dataAdapter.localdata.map((x) => {
+                    x[p_column] = p_value;
+                    //console.log(x[p_column])
+                    if (isUpdateStatus) {
+                        x._rowstatus = x._rowstatus !== "i" && x._rowstatus !== "d" ? "u" : x._rowstatus;
+                    }
+                });
+                this.gridUpdate();
+            },
+            setValueColumnIfNull(p_column, p_value, isUpdateStatus = true) {
+                this.dataAdapter.localdata.map((x) => {
+                    //console.log(x[p_column])
+                    if (x[p_column] == "" || x[p_column] == null || x[p_column] == undefined) {
+                        x[p_column] = p_value;
+                        if (isUpdateStatus) {
+                            x._rowstatus = x._rowstatus !== "i" && x._rowstatus !== "d" ? "u" : x._rowstatus;
+                        }
+                    }
+                });
+                this.gridUpdate();
+            },
+            reFresh() {
+                this.gridUpdate();
+            },
+
+            //vng-207 20211127
+            //=======================================================================================FUNCTION APPLY FOR HR STYLE===============================================================================
+
+            async onSearchReportList() {
+                if (this.id == null) return;
+                let dsoReportList = {
+                    type: 'grid',
+                    selpro: 'sys_sel_report_mng_list_v2',
+                    para: [this.menu_cd, this.id, this.tco_company_pk],
+                };
+
+                const result = await this._dsoCall(dsoReportList, 'select', false);
+
+                if (result) {
+                    this.reportList = result;
+                }
+
+            },
+
+            rebuildHeader() {
+                this._updateHeader();
+                try {this.$refs.myGrid.render();} catch (e){}
+                
+            },
+            async _rebuildHeader(headerType = 0) {
+                if (this.setting != null) { //vng-207 hien cai dong setting cho grid hr
+                    this.gridSetting = this.setting;
+                } else {
+                    if (headerType == 1) {
+                        this.gridSetting = true;
+                    }
+                }
+
+                this.columnsTmp = [];
+                if (!!this.menu_cd && !!this.id) {
+                    this.customCols = await this._getCustomField(this.user.PK, !!this.tco_company_pk ? this.tco_company_pk : this.user.TCO_COMPANY_PK, this.menu_cd, '', this.id);
+                }
+                let _header = [...this.header];
+                this.currentCols = headerType == 1 ? _header.map(q => q["field"]) : _header.map(q => q["dataField"])
+
+
+                if (headerType == 0) {
+                    if (this.header && !this.headerCreating) {
+                        this.headerCreating = true;
+                        if (this.customCols && this.customCols.length > 0) {
+                            this.customCols.forEach(col => {
+                                if (_header.findIndex(x => x["dataField"] == col["FIELD_ID"]) < 0) {
+                                    if (col["FIELD_TYPE"] == "TEXT") {
+                                        _header.push({ caption: this.$t(col["FIELD_NAME"]), dataField: !!col["FIELD_ALIAS"] ? col["FIELD_ALIAS"] : col["FIELD_ID"], allowEditing: col["EDITABLE_YN"] == 'Y', dataType: "string", isAdditionColumn: true });
+                                    } else if (col["FIELD_TYPE"] == "DATE") {
+                                        _header.push({ caption: this.$t(col["FIELD_NAME"]), dataField: !!col["FIELD_ALIAS"] ? col["FIELD_ALIAS"] : col["FIELD_ID"], allowEditing: col["EDITABLE_YN"] == 'Y', dataType: "date", isAdditionColumn: true },);
+                                    } else if (col["FIELD_TYPE"] == "LIST") {
+                                        _header.push({ caption: this.$t(col["FIELD_NAME"]), dataField: !!col["FIELD_ALIAS"] ? col["FIELD_ALIAS"] : col["FIELD_ID"], allowEditing: col["EDITABLE_YN"] == 'Y', dataType: "", lookup: { valueExpr: 'CODE', displayExpr: 'NAME', dataSource: col.dataSource }, isAdditionColumn: true });
+                                    } else if (col["FIELD_TYPE"] == "BOOLEAN") {
+                                        _header.push({ caption: this.$t(col["FIELD_NAME"]), dataField: !!col["FIELD_ALIAS"] ? col["FIELD_ALIAS"] : col["FIELD_ID"], allowEditing: col["EDITABLE_YN"] == 'Y', dataType: "checkbox", isAdditionColumn: true },);
+                                    }
+                                }
+                            });
+                        }
+
+                        this.columnsTmp = _header;
+                    }
+
+                } else {
+                    if (this.header && !this.headerCreating) {
+                        this.headerCreating = true;
+
+                        if(this.showaggregatestop){
+                            let sumHeaders = [];
+                            this.header.forEach( q => {
+                                let keys = Object.keys(q);
+                                let groups = keys.filter(q=> q.includes("group"));
+                                let groupName = q["title"];
+                                let maxGroupIdx = 1;
+
+                                if(groups.length > 0){
+                                    let idxs = groups.map(g => {
+                                        return Number( g.replace("group", "") );
+                                    });
+                                    maxGroupIdx = Math.max(...idxs) +1;
+                                }
+                                let sumheader = {isAdditionColumn : true};
+                                keys.forEach(k => {
+                                    sumheader[k] = q[k];
+                                    if(k =="title") {
+                                        sumheader["title"] = q["field"] == "INDEX" ? this.$t("total") : "" ;
+                                        try{
+                                            if(q.hasOwnProperty("summaryType")) {
+                                                //console.log(this.aggregates);
+                                                sumheader["title"] =this._formatNumber( this.aggregates[q.field]["sum"], q["formatFloat"] ? 0 : q["formatFloat"] );
+                                            }
+                                        }catch{}
+                                    }
+                                    
+                                })
+
+                                sumheader["group"+maxGroupIdx]=this.$t(groupName);
+                                sumHeaders.push(sumheader);
+                            });
+
+                            _header = [...sumHeaders];
+                        }
+
+                        if (this.customCols && this.customCols.length > 0) {
+                            this.customCols.forEach(col => {
+                                if (_header.findIndex(x => x["field"] == col["FIELD_ID"]) < 0) {
+                                    let obj = {};
+                                    if (col["FIELD_TYPE"] == "TEXT") {
+                                        obj = { title: this.$t(col["FIELD_NAME"]), field: !!col["FIELD_ALIAS"] ? col["FIELD_ALIAS"] : col["FIELD_ID"], editable: col["EDITABLE_YN"] == 'Y', type: "", isAdditionColumn: true };
+                                    } else if (col["FIELD_TYPE"] == "DATE") {
+                                        obj = { title: this.$t(col["FIELD_NAME"]), field: !!col["FIELD_ALIAS"] ? col["FIELD_ALIAS"] : col["FIELD_ID"], editable: col["EDITABLE_YN"] == 'Y', type: "date", isAdditionColumn: true };
+                                    } else if (col["FIELD_TYPE"] == "LIST") {
+                                        obj = { title: this.$t(col["FIELD_NAME"]), field: !!col["FIELD_ALIAS"] ? col["FIELD_ALIAS"] : col["FIELD_ID"], editable: col["EDITABLE_YN"] == 'Y', type: "list", datasource: { KEY: 'CODE', VALUE: 'NAME', data: col.dataSource }, isAdditionColumn: true }
+                                    } else if (col["FIELD_TYPE"] == "BOOLEAN") {
+                                        obj = { title: this.$t(col["FIELD_NAME"]), field: !!col["FIELD_ALIAS"] ? col["FIELD_ALIAS"] : col["FIELD_ID"], editable: col["EDITABLE_YN"] == 'Y', type: "boolean", isAdditionColumn: true }
+                                    } else if (col["FIELD_TYPE"] == "NUMBER") {
+                                        obj = { title: this.$t(col["FIELD_NAME"]), field: !!col["FIELD_ALIAS"] ? col["FIELD_ALIAS"] : col["FIELD_ID"], editable: col["EDITABLE_YN"] == 'Y', type: "", format: "###,###,###.##" , isAdditionColumn: true}
+                                    }
+
+                                    if (!!col["HEADER_1"]) { obj["group1"] = this.$t(col["HEADER_1"]) };
+                                    if (!!col["HEADER_2"]) { obj["group2"] = this.$t(col["HEADER_2"]) };
+                                    _header.push(obj);
+                                }
+                            });
+                        }
+                        this.mergecolumn = [];
+                        // let obj = JSON.stringify(_header);
+                        // let tempHeader = JSON.parse(obj);
+                        let tempHeader = lodash.cloneDeep(_header);
+                        _header.forEach(x => {
+                            let idxTemp = tempHeader.findIndex(q => q.field === x.field && !q.added);
+                            if (idxTemp >= 0) {
+                                let column = { visible: true, width: x.width ? x.width : 100 };
+                                const xKeys = Object.keys(x);
+                                if (xKeys.includes("group1")) {
+                                    let groupCols = tempHeader.filter(q => q.group1 === x.group1);
+                                    groupCols.forEach(q => {
+                                        let idxTemp2 = tempHeader.findIndex(w => w.field === q.field && !w.added);
+                                        tempHeader[idxTemp2].added = true;
+                                    });
+                                    column = this.buildColumn(xKeys, groupCols, 1);
+                                } else {
+                                    column = this.buildColumn(xKeys, x);
+                                    tempHeader[idxTemp].added = true;
+                                }
+                                this.columnsTmp.push(column);
+                            }
+                        });
+
+                    }
+                }
+
+                try {
+                    this.columnsTmp.push({ caption: "__", dataField: "_rowstatus", hidden: true });
+                    this.columnsTmp.push({ caption: "__", dataField: "_rowstatus2", hidden: true });
+                    this.columnsTmp.push({ caption: "___", dataField: "_rowstatusUnMarked", hidden: true });
+                } catch { }
+                //console.log(this.columnsTmp);
+
+                this.headerCreating = false;
+            },
+
+            buildColumn(keys, headers, level = 0) {
+                let column = { visible: true, allowEditing: false };
+                let isLast = !keys.some(x => x.includes("group" + level));
+                if (isLast) {
+                    column.width = headers.width ? headers.width : 100;
+                    keys.forEach(key => {
+                        switch (key) {
+                            case "title": { column.caption = this.autotranslate && !!!headers["isAdditionColumn"] ? this.$t(headers[key].toLowerCase()) : String(headers[key]); break; }
+                            case "fixed": { column.pinned = headers[key]; break; }
+                            case "hidden": { 
+                                column.hidden = headers[key]; 
+                                column.visible = !headers[key];  
+                                break; 
+                            }
+                            case "visible": { 
+                                if(!headers.hasOwnProperty("hidden")) {
+                                    column.hidden = !headers[key]; 
+                                }
+                                column.visible = headers[key];  
+                                break; 
+                            }
+                            case "field": { column.dataField = headers[key]; break; }
+                            case "editable": { column.allowEditing = headers[key]; break; }
+                            case "type": {
+                                column.dataType = headers[key];
+                                switch (headers.type) {
+                                    case "boolean": { column.dataType = 'checkbox'; break; }
+                                    case "date": { column.format = this.curLang.DATE_FORMAT; break; }
+                                }
+
+                                if (headers[key] === "number") {
+                                    column.columntype = 'numeric'
+                                    column.cellsalign = 'right';
+                                    column.formatFloat = '0';
+                                    column.cellsformat = 'f0';
+                                }
+                                if (headers[key] === "date") { column.alignment = "center"; }
+                                break;
+                            }
+                            case "format": {
+                                let format = headers["format"];
+                                if (format.endsWith(".##") || format.endsWith(".###") || format.endsWith(".###") || format.endsWith(".#") || format.endsWith("###")) {
+                                    column.formatFloat = format.substring(format.indexOf('.') + 1).length;
+                                    column.cellsformat = 'f' + column.formatFloat;
+                                    column.columntype = 'numeric'
+                                    column.cellsalign = 'right';
+                                }
+                                break;
+                            }
+                            case "datasource": {
+                                const datasource = headers[key];
+                                column.lookup = { dataSource: datasource.data, valueExpr: datasource.KEY, displayExpr: datasource.VALUE };
+                                break;
+                            }
+                            default: { column[key] = headers[key]; break; }
+                        }
+
+                    });
+                } else {
+                    let subHeaders = headers.filter(x => x["group" + level] === headers[0]["group" + level]);
+                    column.columns = [];
+                    column.caption = headers[0]["group" + level];
+                    let tempHeader = [...subHeaders];
+                    subHeaders.forEach(x => {
+                        let idxTemp = tempHeader.findIndex(q => q.field === x.field && !q["added" + level]);
+                        if (idxTemp >= 0) {
+                            let col = { visible: true, width: x.width ? x.width : 100 };
+                            const xKeys = Object.keys(x);
+                            if (xKeys.includes("group" + (level + 1))) {
+                                let groupCols = tempHeader.filter(q => q["group" + (level + 1)] === x["group" + (level + 1)]);
+                                groupCols.forEach(q => {
+                                    let idxTemp2 = tempHeader.findIndex(w => w.field === q.field && !w["added" + level]);
+                                    tempHeader[idxTemp2]["added" + level] = true;
+                                });
+                                col = this.buildColumn(xKeys, groupCols, (level + 1));
+                            } else {
+                                col = this.buildColumn(xKeys, x);
+                                tempHeader[idxTemp]["added" + level] = true;
+                            }
+                            column.columns.push(col);
+                        }
+                    });
+                }
+                return column;
+            },
+            isNullOrEmpty(str) {
+                return str == null || str == "";
+            },
+            refresh() {
+                this.reFresh();
+            },
+            onClear() {
+                try { this.$refs.myGrid.clearselection(); } catch { }
+                this.rowCount(0);
+                this.dataAdapter.localdata = [];
+                this.gridUpdate();
+            },
+            setColumnsHidden(colNames, isHidden) {
+                if (colNames && colNames.length > 0) {
+                    for (let i = 0; i < this.columns.length; i++) {
+                        let column = this.columns[i];
+                        colNames.forEach(q => {
+                            if (column.datafield == q) {
+                                column.hidden = isHidden;
+                            }
+                        })
+                    }
+                }
+
+                this.gridUpdate();
+            },
+            getData() {
+                return this.$refs.myGrid.getrows();
+            },
+            onSelectedData() {
+                let selectionMode = this.$refs.myGrid.selectionmode;
+                let rowindexes = [];
+                if (selectionMode == "singlecell" || selectionMode == "multiplecells" || selectionMode == "multiplecellsextended") {
+                    let selecteds = this.$refs.myGrid.getselectedcells();
+                    rowindexes = Array.from(new Set(Array.from(selecteds, x => x["rowindex"])));
+                } else {
+                    rowindexes = this.$refs.myGrid.getselectedrowindexes();
+                }
+
+                if (rowindexes.length <= 0) {
+                    this.showNotification("warning", this.$t("no_row_selected"), '');
+                    return;
+                }
+                let returnList = [];
+
+                if (selectionMode.startsWith("single")) {
+                    return this.$refs.myGrid.getrowdata(rowindexes[0]);
+                } else {
+                    rowindexes.forEach(q => {
+                        returnList.push(this.$refs.myGrid.getrowdata(q));
+                    });
+                    return returnList;
+                }
+            },
+
+            onSelectedIndex() {
+                let selectionMode = this.$refs.myGrid.selectionmode;
+                let rowindexes = [];
+                if (selectionMode == "singlecell" || selectionMode == "multiplecells" || selectionMode == "multiplecellsextended") {
+                    let selecteds = this.$refs.myGrid.getselectedcells();
+                    rowindexes = Array.from(new Set(Array.from(selecteds, x => x["rowindex"])));
+                } else {
+                    rowindexes = this.$refs.myGrid.getselectedrowindexes();
+                }
+
+                if (rowindexes.length <= 0) {
+                    this.showNotification("warning", this.$t("no_row_selected"), '');
+                    return;
+                }
+
+                if (selectionMode.startsWith("single")) {
+                    return rowindexes[0];
+                } else {
+                    return rowindexes;
+                }
+            },
+
+            onSetStatus2(rowIdx, column) {
+                let rowData = this.$refs.myGrid.getrowdata(rowIdx);
+                if (this.status2) {
+                    let cellActive = column;
+                    let _status2 = this.status2[cellActive];
+                    if (_status2) {
+                        let _rowstatus2 = rowData["_rowstatus2"];
+                        let lstStatus2 = _rowstatus2 ? _rowstatus2.split('-') : [];
+
+                        if (lstStatus2.indexOf(String(_status2)) <= -1) {
+                            lstStatus2.push(String(_status2));
+                        }
+                        try {
+                            this.$refs.myGrid.setcellvalue(rowIdx, '_rowstatus2', lstStatus2.sort().join("-"));
+                        } catch (e) { console.log(e.message) }
+                    }
+                }
+            },
+
+            onSetAll(column, value, isUpdateStatus) {
+                let dataList = this.$refs.myGrid.getrows();
+                dataList = dataList.map((x) => {
+                    x[column] = value;
+                    if (isUpdateStatus) { x._rowstatus = x._rowstatus !== "i" && x._rowstatus !== "d" ? "u" : x._rowstatus; }
+                    return x;
+                });
+                this.setDataSource(dataList);
+            },
+            onSet(column, value, isUpdateStatus = true, rowindex = null) {
+                let selectionMode = this.$refs.myGrid.selectionmode;
+                let rowindexes = [];
+                if (rowindex == null) {
+                    if (selectionMode == "singlecell" || selectionMode == "multiplecells" || selectionMode == "multiplecellsextended") {
+                        let selecteds = this.$refs.myGrid.getselectedcells();
+                        rowindexes = Array.from(new Set(Array.from(selecteds, x => x["rowindex"])));
+                    } else {
+                        rowindexes = this.$refs.myGrid.getselectedrowindexes();
+                    }
+                } else {
+                    rowindexes.push(rowindex);
+                }
+
+                if (rowindexes.length > 0) {
+                    rowindexes.forEach(idx => {
+                        let rowData = this.$refs.myGrid.getrowdata(idx);
+                        let oldValue = rowData[column];
+                        this.$refs.myGrid.setcellvalue(idx, column, value);
+                        //dataList[idx][column] = value;
+                        if (isUpdateStatus) {
+                            let rowstatus = rowData._rowstatus !== "i" && rowData._rowstatus !== "d" ? "u" : rowData._rowstatus;
+                            //dataList[idx]._rowstatus = dataList[idx]._rowstatus !== "i" && dataList[idx]._rowstatus !== "d" ? "u" : dataList[idx]._rowstatus;
+                            this.$refs.myGrid.setcellvalue(idx, '_rowstatus', rowstatus);
+
+                            this.onSetStatus2(idx, column);
+                        }
+                        this.$emit("cell-changed"
+                                    , { rowindex: idx, datafield: column, oldvalue: oldValue, value: value, row: this.$refs.myGrid.getrowdata(idx) }  
+                                    , this.$refs.myGrid.getrowdata(idx) 
+                        );
+                    })
+                    //this.setDataSource(dataList);
+                } else {
+                    this.showNotification("warning", this.$t("please_select_row"), '');
+                    return false;
+                }
+            },
+            onCheckValid(requireCols) {
+                let valid = true;
+                let dataList = this.$refs.myGrid.getrows();
+                if (requireCols) {
+                    for (let i = 0; i < requireCols.length; i++) {
+                        for (let j = 0; j < dataList.length; j++) {
+                            let cell = eval(`dataList[${j}].` + requireCols[i]);
+                            if (cell === null || cell === '' || cell === undefined) {
+                                valid = false;
+                                this.showNotification("danger", `Field ${this.$t(requireCols[i], "COLUMN")} at row ${j + 1} must not empty!`, "", 3000);
+                            }
+                        }
+                    }
+                }
+                return valid;
+            },
+            resizeColumns() {
+                this.$refs.myGrid.autoresizecolumns();
+            },
+            onAdd(data, isLastRow = false) {
+                let dataList = this.$refs.myGrid.getrows();
+                let struct = !!this.update_paras ? [...this.update_paras] : [];
+                if (dataList.length > 0) {
+                    let keys = Object.keys(dataList[0]);
+                    struct = keys;
+                }
+                let listPKs = dataList.map(x => x.PK);
+                let minPK = Math.min(...listPKs);
+                minPK = (minPK === Infinity || minPK > 0) ? 0 : minPK;
+
+                let _data = this._initObject(struct);
+                if (data) {
+                    let keys = Object.keys(data);
+                    keys.forEach(q => {
+                        _data[q] = data[q];
+                    })
+
+                    _data.PK = --minPK;
+                    _data._rowstatus = 'i';
+                }
+                else {
+                    _data.PK = --minPK;
+                    _data._rowstatus = 'i';
+                }
+
+
+                if (!isLastRow) {
+                    this.$refs.myGrid.addrow(null, _data, 0);
+                    //dataList.unshift(_data);
+                } else {
+                    this.$refs.myGrid.addrow(null, _data, dataList.length);
+                    //dataList.push(_data);
+                }
+                //this.setDataSource(dataList);
+
+                try { this.rowCount(this.$refs.myGrid.getrows().length); } catch { }
+            },
+
+            onAdds(datas, isLastRow = false) {
+                let dataList = this.$refs.myGrid.getrows();
+                let struct = !!this.update_paras ? [...this.update_paras] : [];
+                if (dataList.length > 0) {
+                    let keys = Object.keys(dataList[0]);
+                    struct = keys;
+                }
+                let listPKs = dataList.map(x => x.PK);
+                let minPK = Math.min(...listPKs);
+                minPK = (minPK === Infinity || minPK > 0) ? 0 : minPK;
+
+                if (datas) {
+                    datas = datas.map(data => {
+                        let _data = this._initObject(struct);
+                        let keys = Object.keys(data);
+                        keys.forEach(q => {
+                            _data[q] = data[q];
+                        })
+
+                        _data.PK = --minPK;
+                        _data._rowstatus = 'i';
+                        return _data
+                    });
+
+                    if (!isLastRow) {
+                        this.$refs.myGrid.addrow(null, datas, 0);
+                        //dataList.unshift(_data);
+                    } else {
+                        this.$refs.myGrid.addrow(null, datas);
+                        //dataList.push(_data);
+                    }
+                }
+
+                try { this.rowCount(this.$refs.myGrid.getrows().length); } catch { }
+                //this.setDataSource(dataList);
+            },
+
+
+            async onSearch(dso, autoresize = false) {
+                try { this.$refs.myGrid.clearselection(); } catch { }
+                await this.onLoadWithDSO(dso);
+                if (autoresize) {
+                    this.resizeColumns();
+                }
+                return true;
+            },
+            async onDelete(dso, notify = true) {
+                let selectionMode = this.$refs.myGrid.selectionmode;
+                let rowindexes = [];
+                if (selectionMode == "singlecell" || selectionMode == "multiplecells" || selectionMode == "multiplecellsextended") {
+                    let selecteds = this.$refs.myGrid.getselectedcells();
+                    rowindexes = Array.from(new Set(Array.from(selecteds, x => x["rowindex"])));
+                } else {
+                    rowindexes = this.$refs.myGrid.getselectedrowindexes();
+                }
+
+
+                if (rowindexes.length > 0) {
+                    rowindexes.forEach(idx => {
+                        this.$refs.myGrid.setcellvalue(idx, '_rowstatus', 'd');
+                    })
+
+                    let dataList = this.$refs.myGrid.getrows();
+                    if (dataList.findIndex(x => x._rowstatus === "d") >= 0) {
+                        try { this.$refs.myGrid.clearselection(); } catch { }
+                        return await this.onSave(dso, notify);
+                    }
+                } else {
+                    this.showNotification("warning", this.$t("please_select_row"), '');
+                    return false;
+                }
+            },
+            onSetMarkedDelete(isMarked = true) {
+                let selectionMode = this.$refs.myGrid.selectionmode;
+                let rowindexes = [];
+                if (selectionMode == "singlecell" || selectionMode == "multiplecells" || selectionMode == "multiplecellsextended") {
+                    let selecteds = this.$refs.myGrid.getselectedcells();
+                    rowindexes = Array.from(new Set(Array.from(selecteds, x => x["rowindex"])));
+                } else {
+                    rowindexes = this.$refs.myGrid.getselectedrowindexes();
+                }
+
+                rowindexes.forEach(idx => {
+                    let rowData = this.$refs.myGrid.getrowdata(idx);
+                    if (isMarked) {
+                        this.$refs.myGrid.setcellvalue(idx, '_rowstatusUnMarked', rowData._rowstatus);
+                        this.$refs.myGrid.setcellvalue(idx, '_rowstatus', 'd');
+                    } else {
+                        this.$refs.myGrid.setcellvalue(idx, '_rowstatus', rowData._rowstatusUnMarked);
+                        this.$refs.myGrid.setcellvalue(idx, '_rowstatusUnMarked', null);
+                    }
+
+                })
+            },
+            async onSave(dso, notify = true) {
+                let dataList = this.$refs.myGrid.getrows();
+                if (dataList.findIndex(q => q["_rowstatus"] != undefined && q["_rowstatus"] != "" && q["_rowstatus"] != null) < 0) {
+                    if (notify) {
+                        this.showNotification("warning", this.$t("no_row_changes"), '');
+                    }
+                    return
+                }
+                dso.data = dataList;
+                return await this._onSaveWithDSO(dso, notify);
+            },
+
+            async onPrintReport() {
+                this.isProcessReport = true;
+
+                let selectionMode = this.$refs.myGrid.selectionmode;
+                let rowindexes = [];
+                let datas = this.$refs.myGrid.getrows();
+                let dataList = [];
+
+                if (datas && datas.length <= 0) {
+                    this.showNotification("warning", this.$t("no_data"), '');
+                    this.isProcessReport = false;
+                    return;
+                }
+
+                if (selectionMode == "singlecell" || selectionMode == "multiplecells" || selectionMode == "multiplecellsextended") {
+                    let selecteds = this.$refs.myGrid.getselectedcells();
+                    rowindexes = Array.from(new Set(Array.from(selecteds, x => x["rowindex"])));
+                } else {
+                    rowindexes = this.$refs.myGrid.getselectedrowindexes();
+                }
+
+                rowindexes.forEach(q => {
+                    dataList.push(this.$refs.myGrid.getrowdata(q));
+                });
+
+
+                let report = this.reportList.find(q => q["PK"] == this.selectedPrintReport);
+                let file_name = report ? `${report["REPORT_NAME"]}.${report["FILE_TYPE"]}` : null;
+
+                let pkList = [];
+                let dataCombobox = [];
+                let dsoDetailSetting = {
+                    type: 'process',
+                    updpro: 'sys_sel_report_detail',
+                    para: [this.selectedPrintReport]
+                };
+
+                const result = await this._dsoCall(dsoDetailSetting, 'process', false);
+
+                if (result) {
+                    if (result.some(q => q["USE_GRID_DATA"] == 'Y')) {
+
+                        let keys = dataList.length > 0 ? Object.keys(dataList[0]) : [];
+
+                        let headerTmp = ([...this.columnsTmp]).filter(q => q.hasOwnProperty('lookup'));
+                        dataCombobox = headerTmp.map(q => { return { datafield: q["datafield"], lookup: q["lookup"] } })
+
+                        for (let i = 0; i < dataList.length; i++) {
+                            for (let j = 0; j < keys.length; j++) {
+                                let key = keys[j];
+                                let isList = dataCombobox.findIndex(q => q["datafield"] == key) >= 0;
+                                if (isList) {
+                                    let list = dataCombobox.find(q => q["datafield"] == key);
+                                    let dataSource = list["lookup"]["dataSource"];
+                                    let displayExpr = list["lookup"]["displayExpr"];
+                                    let valueExpr = list["lookup"]["valueExpr"];
+
+                                    let val = dataSource.find(q => q[valueExpr] == dataList[i][key]);
+
+                                    if (val) dataList[i][key] = val[displayExpr];
+                                }
+                            }
+                        }
+                    }
+
+
+                }
+
+                if (report && !!report["TABLE_COLUMN_PK"]) {
+                    let colName = report["TABLE_COLUMN_PK"];
+
+                    rowindexes.forEach(q => {
+                        let _data = this.$refs.myGrid.getrowdata(q)
+                        pkList.push(_data[colName.toUpperCase()]);
+                    });
+                }
+
+
+                let model = {
+                    PK: this.selectedPrintReport,
+                    para: this.search_para,
+                    data: dataList,
+                    selected: pkList.join(',')
+                };
+
+                //console.log(model);
+
+                const res = await this.$axios.$post("/dso/makereport2", { responseType: "blob", model: model, rtnURL: 'Y' });
+
+                if (res) {
+                    let _url = res;
+                    var tag_a = document.createElement("a");
+                    document.body.appendChild(tag_a);
+                    tag_a.style = "display: none";
+                    tag_a.target = "_blank";
+                    tag_a.href = _url;
+                    tag_a.download = file_name;
+                    tag_a.click();
+                    window.URL.revokeObjectURL(_url);
+                    tag_a.remove();
+                } else {
+                    this.showNotification("danger", this.$t("fail_to_export_report"), "", 4000);
+                }
+
+                this.isProcessReport = false;
+
+            },
+
+            _onSetGrid(type) {
+                let setCol = null;
+                let setVal = null;
+                switch(type) {
+                    case 'LIST' : {
+                        setCol = this.gridSetColListSelected;
+                        setVal = this.gridSetColListVal;
+                        break;
+                    }
+                    case 'FLAG' : {
+                        setCol = this.gridSetColFlagSelected;
+                        setVal = this.gridSetColFlagVal;
+                        break;
+                    }
+                    case 'DATE' : {
+                        setCol = this.gridSetColDateSelected;
+                        setVal = this.gridSetColDateVal;
+                        break;
+                    }
+                    case 'MONTH' : {
+                        setCol = this.gridSetColMonthSelected;
+                        setVal = this.gridSetColMonthVal;
+                        break;
+                    }
+                    case 'TIME' : {
+                        setCol = this.gridSetColTimeSelected;
+                        setVal = this.gridSetColTimeVal;
+                        break;
+                    }
+                    case 'TEXT' : {
+                        setCol = this.gridSetColTextSelected;
+                        setVal = this.gridSetColTextVal;
+                        break;
+                    }
+                }
+                if(setCol !="" && setCol != null){
+                    if(type == "MONTH") {
+                        setVal = this._formatDate(setVal, 'month', this.curLang.MONTH_FORMAT.toUpperCase());
+                    }
+                    if(type == "TIME") {
+                        let time = setVal.split(":");
+                        let hh = time[0];
+                        let mm = time[1];
+                        if (isNaN(hh) || isNaN(mm)) {
+                            this.showNotification("warning", this.$t("not_valid_time"), '');
+                            return ;
+                        } else {
+                            if (Number(hh) > 23 || Number(mm) > 59) {
+                                this.showNotification("warning", this.$t("not_valid_time"), '');
+                                return ;
+                            }
+                        }
+                    }
+                    this.onSet(setCol, setVal)
+                } else {
+                    this.showNotification("warning", this.$t("please_select_column"), "", 1000);
+                }
+                
+            },
+            _gridCalculation(formulaType,column,data){
+                let columnValue=data.map(a => (isNaN(a[column]) || a[column] == null) ? 0 : parseFloat(a[column]) );
+                let value=0;
+                switch(formulaType){
+                    case 'sum':
+                        value= this._Total(columnValue)
+                    break;
+                    case 'min':
+                        value=  this._Min(columnValue)
+                    break;
+                    case 'max':
+                       value= this._Max(columnValue)
+                    break;
+                    case 'avg':
+                        value=  this._Average(columnValue)
+                    break;
+                    case 'range':
+                        value=this._Range(columnValue)
+                    break;
+                    case 'stdev':
+                      value=this._Stdev(columnValue)
+                    break;
+                    case 'r/x':
+                        value=this._Range(columnValue)/this._Average(columnValue)*100
+                       
+                    break;
+                    case '3/x':
+                       value=3*this._Stdev(columnValue)/this._Average(columnValue)*100
+                    break;
+                }
+                return value;
+            }
+            //=======================================================================================END FUNCTION APPLY FOR HR STYLE===============================================================================
+            //=====================================================================================================================================================================================================
+
+        },
+
+    }
+</script>
+
+<style>
+        /* .jqx-grid-content div:first-of-type > div[role=row] {
+        height: 25px !important;
+    }
+    .jqx-grid-content div:first-of-type > div[role=row] > .jqx-grid-cell div {
+        margin-top: 4px !important;
+    } */
+
+        .jqx-grid-cell-pinned {
+            background-color: white !important;
+        }
+
+        /* Đã di chuyển 2 class này sang file _color.css để có thể apply màu lên khi customize theme */
+        /*
+    .jqx-widget-header {
+        background: rgb(1, 196, 254) !important;
+        background: linear-gradient(90deg, rgb(1, 196, 254) 0%, rgb(0, 125, 254) 100%) !important;
+    }
+
+    .jqx-widget-header .jqx-widget-header,
+    .jqx-widget-header .jqx-grid-columngroup-header {
+        background: transparent !important;
+        color: white !important;
+        border-color: white !important;
+    }
+    */
+
+        .jqx-grid-column-header {
+            z-index: 0 !important;
+        }
+
+        .cellUpdate {
+            background-color: #cfe3ff !important;
+            color: black !important;
+        }
+
+        .cellInsert {
+            background-color: #dcfae2 !important;
+            color: black !important;
+        }
+
+        .cellDelete {
+            background-color: #ffb8b8 !important;
+            color: black !important;
+        }
+
+        .jqx-grid-cell-alt {
+            background: #ffffff;
+        }
+
+        .jqx-fill-state-hover {
+            background-color: #e6e6e6;
+        }
+
+        .jqx-maskedinput {
+            border-top: 0px !important;
+            border-right: 0px !important;
+            border-left: 0px !important;
+            border-bottom: 1px solid grey !important;
+        }
+</style>

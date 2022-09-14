@@ -114,7 +114,12 @@ let EiExcelHandler = {
         companyName = 'Samil'
         break;
       case "3603512483":
-        companyName = 'Otm'
+        if( einvoiceMasterData[0].INVOICE_DESC=='DN14'){
+          companyName = 'Otm_PXK'
+        }else{
+          companyName = 'Otm'
+        }
+        
         break;
       case "3603139991":
         companyName = 'Kukil'
@@ -131,11 +136,621 @@ let EiExcelHandler = {
       case "0304248595":
         companyName = 'Genuwin'
         break;
+      case "3700860461":
+        if( einvoiceMasterData[0].INVOICE_DESC!=='DN14'){
+          companyName = 'Ottogi_PXK'
+        }else{
+          companyName = 'Ottogi'
+        }
+        break;
+      case "3700860461-002":
+        if( einvoiceMasterData[0].INVOICE_DESC!=='DN14'){
+          companyName = 'Ottogi_CNBN_PXK'
+        }else{
+          companyName = 'Ottogi_CNBN'
+        }
+    
+        break;
       default:
         break;
     }
-   // companyName = 'Genuwin'
+    //companyName = 'Ottogi_CNBN_PXK'
     switch (companyName) {
+        //////// *****************Ottogi_CNBN_PXK*********************\\\\\\\\\
+        case "Ottogi_CNBN_PXK":
+          masterDataArray = []
+  
+  
+          if (convertYn == "Y") {
+            reportPath = 'report/60/95/einvoices_template/Ottogi_CNBN_PXK/Ottogi_CNBN_PXK_convert.xlsx'
+            reportSheet = "PXKNB.BD."
+            masterDataArray.push(
+              { Cell: `G13`, Info: [`convert`], Type: 2 },
+              { Cell: `B37`, Info: [`CONVERT_NAME`], Type: 1 },
+              { Cell: `B38`, Info: [`CONVERT_DATE`], Type: 1 },
+            )
+          } else {
+            reportPath = 'report/60/95/einvoices_template/Ottogi_CNBN_PXK/Ottogi_CNBN_PXK.xlsx'
+            reportSheet = "PXKNB.BD."
+          }
+  
+  
+          bgPath = require("assets/images/einvoices_logo/Ottogi_CNBN_PXK/bg.png")
+          logos = [
+            { start: 1, width: 0.99 * dpi, height: 0.99 * dpi, logoStartCount: 1.2, logoPath: require("assets/images/einvoices_logo/Ottogi_CNBN_PXK/companylogo.png") },
+  
+          ]
+  
+          //mảng data của master
+          masterDataArray.push(
+            { Cell: `AA12`, Info: [`TEMPLATECODE`, `INVOICESERIALNO`], Type: 1 },
+            { Cell: `Z13`, Info: [`INVOICENUMBER`], Type: 1 },
+            { Cell: `G14`, Info: [`dateString`], Type: 2 },
+            { Cell: `X14`, Info: [`page`], Type: 2 },
+            { Cell: `A43`, Info: [`footer`], Type: 2 },
+  
+            { Cell: `F2`, Info: [`SELLER_NAME`], Type: 1 },
+            { Cell: `H3`, Info: [`SELLER_TAXCODE`], Type: 1 },
+            { Cell: `H4`, Info: [`SELLER_ADDRESS`], Type: 1 },
+            { Cell: `H5`, Info: [`SELLER_TEL`], Type: 1 },
+            { Cell: `I6`, Info: [`SELLER_ACCOUNTNO`], Type: 1 },
+  
+            { Cell: `H16`, Info: [`ATTRIBUTE_01`], Type: 1 },
+            { Cell: `Y16`, Info: [`ATTRIBUTE_02`], Type: 1 },
+            { Cell: `C17`, Info: [`ATTRIBUTE_03`], Type: 1 },
+           // { Cell: `I5`, Info: [`ATTRIBUTE_04`], Type: 1 },
+            { Cell: `G18`, Info: [`ATTRIBUTE_05`], Type: 1 },
+            { Cell: `Y18`, Info: [`ATTRIBUTE_06`], Type: 1 },
+            { Cell: `G19`, Info: [`ATTRIBUTE_07`], Type: 1 },
+            { Cell: `F20`, Info: [`ATTRIBUTE_08`], Type: 1 },
+            { Cell: `F21`, Info: [`ATTRIBUTE_09`], Type: 1 },
+  
+            { Cell: `Z27`, Info: [`amount_total`], Type: 2 },
+  
+            { Cell: `D39`, Info: [`CQT_MCCQT_ID`], Type: 1 },
+            { Cell: `W41`, Info: [`MATRACUU`], Type: 1 },
+  
+            { Cell: `V38`, Info: [`SIGNEDBY`], Type: 3 },
+            { Cell: `V39`, Info: [`SIGNEDDATE`], Type: 3 },
+  
+          )
+          // //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
+          // //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
+  
+          //cấu trúc dòng detail
+          // thin//dotted//dashDot//hair//dashDotDot//slantDashDot//mediumDashed//mediumDashDotDot//mediumDashDot//medium//double//thick
+          detailCellFormat = [
+            { startCell: 2, endCell: 2, cellType: 2, cellBorder: "dotted", field: "STT" },//từ cell bắt đầu tới cell kết thúc, type 2: cell đầu tiên
+            { startCell: 3, endCell: 14, cellType: 3, cellBorder: "dotted", field: "ITEM_NAME" },//từ cell bắt đầu tới cell kết thúc, type 3: cell kế tiếp cell đầu tiên,
+            { startCell: 16, endCell: 17, cellType: 1, cellBorder: "dotted", field: "BLANK" },//type 1: còn lại
+            { startCell: 18, endCell: 19, cellType: 1, cellBorder: "dotted", field: "ITEM_UOM" },//type 1: còn lại
+            { startCell: 20, endCell: 21, cellType: 1, cellBorder: "dotted", field: "QTY" },//type 1: còn lại
+            { startCell: 22, endCell: 23, cellType: 1, cellBorder: "dotted", field: "BLANK" },//type 1: còn lại
+            { startCell: 24, endCell: 25, cellType: 1, cellBorder: "dotted", field: "U_PRICE" },//type 1: còn lại
+            { startCell: 26, endCell: 28, cellType: 1, cellBorder: "dotted", field: "NET_TR_AMT" },//type 1: còn lại
+          ]
+          backgroundCell = 8
+          backgroundWidth = 300
+          backgroundHeight = 200
+  
+          signCell = { start: 24, end: 26 }
+          signBoxCell = "V"
+          signByCell = { start: 22, end: 29 }
+          countFromEndDetailToSignBox = 10
+  
+          _sourceRow = 26
+          _sourceRow_2 = 26
+          _sourceRow_3 = 26
+          headerRowCount = 25
+  
+  
+          lastPageRowsHeight = 18
+  
+          break;
+        //////// *****************Ottogi_CNBN_PXK*********************\\\\\\\\\
+  
+      //////// *****************Ottogi_PXK*********************\\\\\\\\\
+      case "Ottogi_PXK":
+        masterDataArray = []
+
+
+        if (convertYn == "Y") {
+          reportPath = 'report/60/95/einvoices_template/Ottogi_PXK/Ottogi_PXK_convert.xlsx'
+          reportSheet = "PXKNB.BD."
+          masterDataArray.push(
+            { Cell: `G13`, Info: [`convert`], Type: 2 },
+            { Cell: `B37`, Info: [`CONVERT_NAME`], Type: 1 },
+            { Cell: `B38`, Info: [`CONVERT_DATE`], Type: 1 },
+          )
+        } else {
+          reportPath = 'report/60/95/einvoices_template/Ottogi_PXK/Ottogi_PXK.xlsx'
+          reportSheet = "PXKNB.BD."
+        }
+
+
+        bgPath = require("assets/images/einvoices_logo/Ottogi_PXK/bg.png")
+        logos = [
+          { start: 1, width: 0.99 * dpi, height: 0.99 * dpi, logoStartCount: 1.2, logoPath: require("assets/images/einvoices_logo/Ottogi_PXK/companylogo.png") },
+
+        ]
+
+        //mảng data của master
+        masterDataArray.push(
+          { Cell: `AA12`, Info: [`TEMPLATECODE`, `INVOICESERIALNO`], Type: 1 },
+          { Cell: `Z13`, Info: [`INVOICENUMBER`], Type: 1 },
+          { Cell: `G14`, Info: [`dateString`], Type: 2 },
+          { Cell: `X14`, Info: [`page`], Type: 2 },
+          { Cell: `A43`, Info: [`footer`], Type: 2 },
+
+          { Cell: `F2`, Info: [`SELLER_NAME`], Type: 1 },
+          { Cell: `W4`, Info: [`SELLER_TAXCODE`], Type: 1 },
+          { Cell: `H3`, Info: [`SELLER_ADDRESS`], Type: 1 },
+          { Cell: `H4`, Info: [`SELLER_TEL`], Type: 1 },
+          { Cell: `I5`, Info: [`SELLER_ACCOUNTNO`], Type: 1 },
+
+          { Cell: `H16`, Info: [`ATTRIBUTE_01`], Type: 1 },
+          { Cell: `Y16`, Info: [`ATTRIBUTE_02`], Type: 1 },
+          { Cell: `C17`, Info: [`ATTRIBUTE_03`], Type: 1 },
+         // { Cell: `I5`, Info: [`ATTRIBUTE_04`], Type: 1 },
+          { Cell: `G18`, Info: [`ATTRIBUTE_05`], Type: 1 },
+          { Cell: `Y18`, Info: [`ATTRIBUTE_06`], Type: 1 },
+          { Cell: `G19`, Info: [`ATTRIBUTE_07`], Type: 1 },
+          { Cell: `F20`, Info: [`ATTRIBUTE_08`], Type: 1 },
+          { Cell: `F21`, Info: [`ATTRIBUTE_09`], Type: 1 },
+
+          { Cell: `Z27`, Info: [`amount_total`], Type: 2 },
+
+          { Cell: `D39`, Info: [`CQT_MCCQT_ID`], Type: 1 },
+          { Cell: `W41`, Info: [`MATRACUU`], Type: 1 },
+
+          { Cell: `V38`, Info: [`SIGNEDBY`], Type: 3 },
+          { Cell: `V39`, Info: [`SIGNEDDATE`], Type: 3 },
+
+        )
+        // //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
+        // //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
+
+        //cấu trúc dòng detail
+        // thin//dotted//dashDot//hair//dashDotDot//slantDashDot//mediumDashed//mediumDashDotDot//mediumDashDot//medium//double//thick
+        detailCellFormat = [
+          { startCell: 2, endCell: 2, cellType: 2, cellBorder: "dotted", field: "STT" },//từ cell bắt đầu tới cell kết thúc, type 2: cell đầu tiên
+          { startCell: 3, endCell: 14, cellType: 3, cellBorder: "dotted", field: "ITEM_NAME" },//từ cell bắt đầu tới cell kết thúc, type 3: cell kế tiếp cell đầu tiên,
+          { startCell: 16, endCell: 17, cellType: 1, cellBorder: "dotted", field: "BLANK" },//type 1: còn lại
+          { startCell: 18, endCell: 19, cellType: 1, cellBorder: "dotted", field: "ITEM_UOM" },//type 1: còn lại
+          { startCell: 20, endCell: 21, cellType: 1, cellBorder: "dotted", field: "QTY" },//type 1: còn lại
+          { startCell: 22, endCell: 23, cellType: 1, cellBorder: "dotted", field: "BLANK" },//type 1: còn lại
+          { startCell: 24, endCell: 25, cellType: 1, cellBorder: "dotted", field: "U_PRICE" },//type 1: còn lại
+          { startCell: 26, endCell: 28, cellType: 1, cellBorder: "dotted", field: "NET_TR_AMT" },//type 1: còn lại
+        ]
+        backgroundCell = 8
+        backgroundWidth = 300
+        backgroundHeight = 200
+
+        signCell = { start: 24, end: 26 }
+        signBoxCell = "V"
+        signByCell = { start: 22, end: 29 }
+        countFromEndDetailToSignBox = 10
+
+        _sourceRow = 26
+        _sourceRow_2 = 26
+        _sourceRow_3 = 26
+        headerRowCount = 25
+
+
+        lastPageRowsHeight = 18
+
+        break;
+      //////// *****************Ottogi_PXK*********************\\\\\\\\\
+
+      //////// *****************Ottogi_CNBN*********************\\\\\\\\\
+      case "Ottogi_CNBN":
+        masterDataArray = []
+        switch (einvoiceMasterData[0].TEMPLATECODE) {
+          case "1":
+            if (convertYn == "Y") {
+              reportPath = 'report/60/95/einvoices_template/Ottogi_CNBN/Ottogi_CNBN_convert_1.xlsx'
+              reportSheet = "GTGT.BD.Convert"
+              masterDataArray.push(
+                { Cell: `G13`, Info: [`convert`], Type: 2 },
+                { Cell: `B38`, Info: [`CONVERT_NAME`], Type: 1 },
+                { Cell: `B39`, Info: [`CONVERT_DATE`], Type: 1 },
+              )
+            } else {
+              reportPath = 'report/60/95/einvoices_template/Ottogi_CNBN/Ottogi_CNBN_1.xlsx'
+              reportSheet = "GTGT.BD.Convert"
+            }
+
+
+            bgPath = require("assets/images/einvoices_logo/Ottogi_CNBN/bg.png")
+            logos = [
+              { start: 1, width: 0.99 * dpi, height: 0.99 * dpi, logoStartCount: 1.2, logoPath: require("assets/images/einvoices_logo/Ottogi_CNBN/companylogo.png") },
+
+            ]
+
+            //mảng data của master
+            masterDataArray.push(
+              { Cell: `AA12`, Info: [`TEMPLATECODE`, `INVOICESERIALNO`], Type: 1 },
+              { Cell: `Z13`, Info: [`INVOICENUMBER`], Type: 1 },
+              { Cell: `G14`, Info: [`dateString`], Type: 2 },
+              { Cell: `W14`, Info: [`page`], Type: 2 },
+              { Cell: `A44`, Info: [`footer`], Type: 2 },
+
+              { Cell: `F2`, Info: [`SELLER_NAME`], Type: 1 },
+              { Cell: `I3`, Info: [`SELLER_TAXCODE`], Type: 1 },
+              { Cell: `H4`, Info: [`SELLER_ADDRESS`], Type: 1 },
+              { Cell: `H5`, Info: [`SELLER_TEL`], Type: 1 },
+              { Cell: `H6`, Info: [`SELLER_ACCOUNTNO`], Type: 1 },
+              // { Cell: `J4`, Info: [`SELLER_FAX`], Type: 1 },
+              // { Cell: `H5`, Info: [`SELLER_BANKNO`], Type: 1 },
+              //{ Cell: `F6`, Info: [`SELLER_BANKNAME`], Type: 1 },
+
+              { Cell: `Q16`, Info: [`BUYER`], Type: 1 },
+              { Cell: `J17`, Info: [`BUYERLEGALNAME`], Type: 1 },
+              { Cell: `H18`, Info: [`BUYERTAXCODE`], Type: 1 },
+              { Cell: `G19`, Info: [`BUYERADDRESS`], Type: 1 },
+              { Cell: `M21`, Info: [`PAYMENTMETHODCK`], Type: 1 },
+              { Cell: `Y21`, Info: [`BUYERACCOUNTNO`], Type: 1 },
+              // { Cell: `N19`, Info: [`BUYER_BANK_NAME`], Type: 1 },
+              //{ Cell: `C21`, Info: [`BUYERPONO`], Type: 1 },
+              // { Cell: `E19`, Info: [`CURRENCYCODEUSD`], Type: 1 },
+              //{ Cell: `N19`, Info: [`EXCHANGERATE`], Type: 1 },
+
+              //{ Cell: `C26`, Info: [`lb_amount_trans`], Type: 2 },
+              //  { Cell: `E29`, Info: [`amount_trans`], Type: 2 },
+              { Cell: `Z26`, Info: [`amount_net`], Type: 2 },
+              { Cell: `I27`, Info: [`TAXRATE`], Type: 1 },
+              { Cell: `Z27`, Info: [`amount_vat`], Type: 2 },//VAT Amount: 
+              { Cell: `Z28`, Info: [`amount_total`], Type: 2 },
+              // { Cell: `H29`, Info: [`read_price`], Type: 2 },
+              { Cell: `J29`, Info: [`read_price`], Type: 2 },
+
+              { Cell: `F40`, Info: [`CQT_MCCQT_ID`], Type: 1 },
+              { Cell: `U42`, Info: [`MATRACUU`], Type: 1 },
+
+              { Cell: `U39`, Info: [`SIGNEDBY`], Type: 3 },
+              { Cell: `U40`, Info: [`SIGNEDDATE`], Type: 3 },
+
+            )
+            // //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
+            // //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
+
+            //cấu trúc dòng detail
+            // thin//dotted//dashDot//hair//dashDotDot//slantDashDot//mediumDashed//mediumDashDotDot//mediumDashDot//medium//double//thick
+            detailCellFormat = [
+              { startCell: 2, endCell: 2, cellType: 2, cellBorder: "dotted", field: "STT" },//từ cell bắt đầu tới cell kết thúc, type 2: cell đầu tiên
+              { startCell: 3, endCell: 16, cellType: 3, cellBorder: "dotted", field: "ITEM_NAME" },//từ cell bắt đầu tới cell kết thúc, type 3: cell kế tiếp cell đầu tiên,
+              { startCell: 17, endCell: 19, cellType: 1, cellBorder: "dotted", field: "ITEM_UOM" },//type 1: còn lại
+              { startCell: 20, endCell: 22, cellType: 1, cellBorder: "dotted", field: "QTY" },//type 1: còn lại
+              { startCell: 23, endCell: 25, cellType: 1, cellBorder: "dotted", field: "U_PRICE" },//type 1: còn lại
+              { startCell: 26, endCell: 28, cellType: 1, cellBorder: "dotted", field: "NET_TR_AMT" },//type 1: còn lại
+            ]
+            backgroundCell = 8
+            backgroundWidth = 300
+            backgroundHeight = 200
+
+            signCell = { start: 23, end: 26 }
+            signBoxCell = "U"
+            signByCell = { start: 21, end: 29 }
+            countFromEndDetailToSignBox = 12
+
+            _sourceRow = 25
+            _sourceRow_2 = 25
+            _sourceRow_3 = 25
+            headerRowCount = 24
+
+
+            lastPageRowsHeight = 18
+            break;
+          case "01GTKT0/001":
+            if (convertYn == "Y") {
+              reportPath = 'report/60/95/einvoices_template/Ottogi_CNBN/Ottogi_CNBN_convert.xlsx'
+              reportSheet = "GTGT.BD.Convert"
+              masterDataArray.push(
+                { Cell: `G13`, Info: [`convert`], Type: 2 },
+                { Cell: `B38`, Info: [`CONVERT_NAME`], Type: 1 },
+                { Cell: `B39`, Info: [`CONVERT_DATE`], Type: 1 },
+              )
+            } else {
+              reportPath = 'report/60/95/einvoices_template/Ottogi_CNBN/Ottogi_CNBN.xlsx'
+              reportSheet = "GTGT.BD.Convert"
+            }
+
+
+            bgPath = require("assets/images/einvoices_logo/Ottogi_CNBN/bg.png")
+            logos = [
+              { start: 1, width: 0.99 * dpi, height: 0.99 * dpi, logoStartCount: 1.2, logoPath: require("assets/images/einvoices_logo/Ottogi_CNBN/companylogo.png") },
+
+            ]
+
+            //mảng data của master
+            masterDataArray.push(
+              { Cell: `AA10`, Info: [`TEMPLATECODE`], Type: 1 },
+              { Cell: `AA12`, Info: [`INVOICESERIALNO`], Type: 1 },
+              { Cell: `Z13`, Info: [`INVOICENUMBER`], Type: 1 },
+              { Cell: `G14`, Info: [`dateString`], Type: 2 },
+              { Cell: `W14`, Info: [`page`], Type: 2 },
+              { Cell: `A44`, Info: [`footer`], Type: 2 },
+
+              { Cell: `F2`, Info: [`SELLER_NAME`], Type: 1 },
+              { Cell: `I3`, Info: [`SELLER_TAXCODE`], Type: 1 },
+              { Cell: `H4`, Info: [`SELLER_ADDRESS`], Type: 1 },
+              { Cell: `H5`, Info: [`SELLER_TEL`], Type: 1 },
+              { Cell: `H6`, Info: [`SELLER_ACCOUNTNO`], Type: 1 },
+              // { Cell: `J4`, Info: [`SELLER_FAX`], Type: 1 },
+              // { Cell: `H5`, Info: [`SELLER_BANKNO`], Type: 1 },
+              //{ Cell: `F6`, Info: [`SELLER_BANKNAME`], Type: 1 },
+
+              { Cell: `Q16`, Info: [`BUYER`], Type: 1 },
+              { Cell: `J17`, Info: [`BUYERLEGALNAME`], Type: 1 },
+              { Cell: `H18`, Info: [`BUYERTAXCODE`], Type: 1 },
+              { Cell: `G19`, Info: [`BUYERADDRESS`], Type: 1 },
+              { Cell: `M21`, Info: [`PAYMENTMETHODCK`], Type: 1 },
+              { Cell: `Y21`, Info: [`BUYERACCOUNTNO`], Type: 1 },
+              // { Cell: `N19`, Info: [`BUYER_BANK_NAME`], Type: 1 },
+              //{ Cell: `C21`, Info: [`BUYERPONO`], Type: 1 },
+              // { Cell: `E19`, Info: [`CURRENCYCODEUSD`], Type: 1 },
+              //{ Cell: `N19`, Info: [`EXCHANGERATE`], Type: 1 },
+
+              //{ Cell: `C26`, Info: [`lb_amount_trans`], Type: 2 },
+              //  { Cell: `E29`, Info: [`amount_trans`], Type: 2 },
+              { Cell: `Z26`, Info: [`amount_net`], Type: 2 },
+              { Cell: `I27`, Info: [`TAXRATE`], Type: 1 },
+              { Cell: `Z27`, Info: [`amount_vat`], Type: 2 },//VAT Amount: 
+              { Cell: `Z28`, Info: [`amount_total`], Type: 2 },
+              // { Cell: `H29`, Info: [`read_price`], Type: 2 },
+              { Cell: `J29`, Info: [`read_price`], Type: 2 },
+
+              // { Cell: `D36`, Info: [`CQT_MCCQT_ID`], Type: 1 },
+              { Cell: `F40`, Info: [`MATRACUU`], Type: 1 },
+
+              { Cell: `U39`, Info: [`SIGNEDBY`], Type: 3 },
+              { Cell: `U40`, Info: [`SIGNEDDATE`], Type: 3 },
+
+            )
+            // //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
+            // //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
+
+            //cấu trúc dòng detail
+            // thin//dotted//dashDot//hair//dashDotDot//slantDashDot//mediumDashed//mediumDashDotDot//mediumDashDot//medium//double//thick
+            detailCellFormat = [
+              { startCell: 2, endCell: 2, cellType: 2, cellBorder: "dotted", field: "STT" },//từ cell bắt đầu tới cell kết thúc, type 2: cell đầu tiên
+              { startCell: 3, endCell: 16, cellType: 3, cellBorder: "dotted", field: "ITEM_NAME" },//từ cell bắt đầu tới cell kết thúc, type 3: cell kế tiếp cell đầu tiên,
+              { startCell: 17, endCell: 19, cellType: 1, cellBorder: "dotted", field: "ITEM_UOM" },//type 1: còn lại
+              { startCell: 20, endCell: 22, cellType: 1, cellBorder: "dotted", field: "QTY" },//type 1: còn lại
+              { startCell: 23, endCell: 25, cellType: 1, cellBorder: "dotted", field: "U_PRICE" },//type 1: còn lại
+              { startCell: 26, endCell: 28, cellType: 1, cellBorder: "dotted", field: "NET_TR_AMT" },//type 1: còn lại
+            ]
+            backgroundCell = 8
+            backgroundWidth = 300
+            backgroundHeight = 200
+
+            signCell = { start: 23, end: 26 }
+            signBoxCell = "U"
+            signByCell = { start: 21, end: 29 }
+            countFromEndDetailToSignBox = 12
+
+            _sourceRow = 25
+            _sourceRow_2 = 25
+            _sourceRow_3 = 25
+            headerRowCount = 24
+
+
+            lastPageRowsHeight = 18
+            break;
+            break;
+
+          default:
+
+            break;
+        }
+        break;
+      //////// *****************Ottogi_CNBN*********************\\\\\\\\\
+
+
+      //////// *****************Ottogi*********************\\\\\\\\\
+      case "Ottogi":
+        masterDataArray = []
+        switch (einvoiceMasterData[0].TEMPLATECODE) {
+          case "1":
+            if (convertYn == "Y") {
+              reportPath = 'report/60/95/einvoices_template/Ottogi/Ottogi_convert_1.xlsx'
+              reportSheet = "GTGT.BD.Convert"
+              masterDataArray.push(
+                { Cell: `G13`, Info: [`convert`], Type: 2 },
+                { Cell: `B38`, Info: [`CONVERT_NAME`], Type: 1 },
+                { Cell: `B39`, Info: [`CONVERT_DATE`], Type: 1 },
+              )
+            } else {
+              reportPath = 'report/60/95/einvoices_template/Ottogi/Ottogi_1.xlsx'
+              reportSheet = "GTGT.BD.Convert"
+            }
+
+
+            bgPath = require("assets/images/einvoices_logo/Ottogi/bg.png")
+            logos = [
+              { start: 1, width: 0.99 * dpi, height: 0.99 * dpi, logoStartCount: 1.2, logoPath: require("assets/images/einvoices_logo/Ottogi/companylogo.png") },
+
+            ]
+
+            //mảng data của master
+            masterDataArray.push(
+              { Cell: `AA12`, Info: [`TEMPLATECODE`, `INVOICESERIALNO`], Type: 1 },
+              { Cell: `Z13`, Info: [`INVOICENUMBER`], Type: 1 },
+              { Cell: `G14`, Info: [`dateString`], Type: 2 },
+              { Cell: `W14`, Info: [`page`], Type: 2 },
+              { Cell: `A44`, Info: [`footer`], Type: 2 },
+
+              { Cell: `F2`, Info: [`SELLER_NAME`], Type: 1 },
+              { Cell: `W4`, Info: [`SELLER_TAXCODE`], Type: 1 },
+              { Cell: `H3`, Info: [`SELLER_ADDRESS`], Type: 1 },
+              { Cell: `H4`, Info: [`SELLER_TEL`], Type: 1 },
+              { Cell: `H5`, Info: [`SELLER_ACCOUNTNO`], Type: 1 },
+              // { Cell: `J4`, Info: [`SELLER_FAX`], Type: 1 },
+              // { Cell: `H5`, Info: [`SELLER_BANKNO`], Type: 1 },
+              //{ Cell: `F6`, Info: [`SELLER_BANKNAME`], Type: 1 },
+
+              { Cell: `Q16`, Info: [`BUYER`], Type: 1 },
+              { Cell: `J17`, Info: [`BUYERLEGALNAME`], Type: 1 },
+              { Cell: `H18`, Info: [`BUYERTAXCODE`], Type: 1 },
+              { Cell: `G19`, Info: [`BUYERADDRESS`], Type: 1 },
+              { Cell: `M21`, Info: [`PAYMENTMETHODCK`], Type: 1 },
+              { Cell: `Y21`, Info: [`BUYERACCOUNTNO`], Type: 1 },
+              // { Cell: `N19`, Info: [`BUYER_BANK_NAME`], Type: 1 },
+              //{ Cell: `C21`, Info: [`BUYERPONO`], Type: 1 },
+              // { Cell: `E19`, Info: [`CURRENCYCODEUSD`], Type: 1 },
+              //{ Cell: `N19`, Info: [`EXCHANGERATE`], Type: 1 },
+
+              //{ Cell: `C26`, Info: [`lb_amount_trans`], Type: 2 },
+              //  { Cell: `E29`, Info: [`amount_trans`], Type: 2 },
+              { Cell: `Z26`, Info: [`amount_net`], Type: 2 },
+              { Cell: `I27`, Info: [`TAXRATE`], Type: 1 },
+              { Cell: `Z27`, Info: [`amount_vat`], Type: 2 },//VAT Amount: 
+              { Cell: `Z28`, Info: [`amount_total`], Type: 2 },
+              // { Cell: `H29`, Info: [`read_price`], Type: 2 },
+              { Cell: `J29`, Info: [`read_price`], Type: 2 },
+
+              { Cell: `F40`, Info: [`CQT_MCCQT_ID`], Type: 1 },
+              { Cell: `U42`, Info: [`MATRACUU`], Type: 1 },
+
+              { Cell: `U39`, Info: [`SIGNEDBY`], Type: 3 },
+              { Cell: `U40`, Info: [`SIGNEDDATE`], Type: 3 },
+
+            )
+            // //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
+            // //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
+
+            //cấu trúc dòng detail
+            // thin//dotted//dashDot//hair//dashDotDot//slantDashDot//mediumDashed//mediumDashDotDot//mediumDashDot//medium//double//thick
+            detailCellFormat = [
+              { startCell: 2, endCell: 2, cellType: 2, cellBorder: "dotted", field: "STT" },//từ cell bắt đầu tới cell kết thúc, type 2: cell đầu tiên
+              { startCell: 3, endCell: 16, cellType: 3, cellBorder: "dotted", field: "ITEM_NAME" },//từ cell bắt đầu tới cell kết thúc, type 3: cell kế tiếp cell đầu tiên,
+              { startCell: 17, endCell: 19, cellType: 1, cellBorder: "dotted", field: "ITEM_UOM" },//type 1: còn lại
+              { startCell: 20, endCell: 22, cellType: 1, cellBorder: "dotted", field: "QTY" },//type 1: còn lại
+              { startCell: 23, endCell: 25, cellType: 1, cellBorder: "dotted", field: "U_PRICE" },//type 1: còn lại
+              { startCell: 26, endCell: 28, cellType: 1, cellBorder: "dotted", field: "NET_TR_AMT" },//type 1: còn lại
+            ]
+            backgroundCell = 8
+            backgroundWidth = 300
+            backgroundHeight = 200
+
+            signCell = { start: 23, end: 26 }
+            signBoxCell = "U"
+            signByCell = { start: 21, end: 29 }
+            countFromEndDetailToSignBox = 12
+
+            _sourceRow = 25
+            _sourceRow_2 = 25
+            _sourceRow_3 = 25
+            headerRowCount = 24
+
+
+            lastPageRowsHeight = 18
+            break;
+          case "01GTKT0/001":
+            if (convertYn == "Y") {
+              reportPath = 'report/60/95/einvoices_template/Ottogi/Ottogi_convert.xlsx'
+              reportSheet = "GTGT.BD.Convert"
+              masterDataArray.push(
+                { Cell: `G13`, Info: [`convert`], Type: 2 },
+                { Cell: `B38`, Info: [`CONVERT_NAME`], Type: 1 },
+                { Cell: `B39`, Info: [`CONVERT_DATE`], Type: 1 },
+              )
+            } else {
+              reportPath = 'report/60/95/einvoices_template/Ottogi/Ottogi.xlsx'
+              reportSheet = "GTGT.BD.Convert"
+            }
+
+
+            bgPath = require("assets/images/einvoices_logo/Ottogi/bg.png")
+            logos = [
+              { start: 1, width: 0.99 * dpi, height: 0.99 * dpi, logoStartCount: 1.2, logoPath: require("assets/images/einvoices_logo/Ottogi/companylogo.png") },
+
+            ]
+
+            //mảng data của master
+            masterDataArray.push(
+              { Cell: `AA10`, Info: [`TEMPLATECODE`], Type: 1 },
+              { Cell: `AA12`, Info: [`INVOICESERIALNO`], Type: 1 },
+              { Cell: `Z13`, Info: [`INVOICENUMBER`], Type: 1 },
+              { Cell: `G14`, Info: [`dateString`], Type: 2 },
+              { Cell: `W14`, Info: [`page`], Type: 2 },
+              { Cell: `A44`, Info: [`footer`], Type: 2 },
+
+              { Cell: `F2`, Info: [`SELLER_NAME`], Type: 1 },
+              { Cell: `W4`, Info: [`SELLER_TAXCODE`], Type: 1 },
+              { Cell: `H3`, Info: [`SELLER_ADDRESS`], Type: 1 },
+              { Cell: `H4`, Info: [`SELLER_TEL`], Type: 1 },
+              { Cell: `H5`, Info: [`SELLER_ACCOUNTNO`], Type: 1 },
+              // { Cell: `J4`, Info: [`SELLER_FAX`], Type: 1 },
+              // { Cell: `H5`, Info: [`SELLER_BANKNO`], Type: 1 },
+              //{ Cell: `F6`, Info: [`SELLER_BANKNAME`], Type: 1 },
+
+              { Cell: `Q16`, Info: [`BUYER`], Type: 1 },
+              { Cell: `J17`, Info: [`BUYERLEGALNAME`], Type: 1 },
+              { Cell: `H18`, Info: [`BUYERTAXCODE`], Type: 1 },
+              { Cell: `G19`, Info: [`BUYERADDRESS`], Type: 1 },
+              { Cell: `M21`, Info: [`PAYMENTMETHODCK`], Type: 1 },
+              { Cell: `Y21`, Info: [`BUYERACCOUNTNO`], Type: 1 },
+              // { Cell: `N19`, Info: [`BUYER_BANK_NAME`], Type: 1 },
+              //{ Cell: `C21`, Info: [`BUYERPONO`], Type: 1 },
+              // { Cell: `E19`, Info: [`CURRENCYCODEUSD`], Type: 1 },
+              //{ Cell: `N19`, Info: [`EXCHANGERATE`], Type: 1 },
+
+              //{ Cell: `C26`, Info: [`lb_amount_trans`], Type: 2 },
+              //  { Cell: `E29`, Info: [`amount_trans`], Type: 2 },
+              { Cell: `Z26`, Info: [`amount_net`], Type: 2 },
+              { Cell: `I27`, Info: [`TAXRATE`], Type: 1 },
+              { Cell: `Z27`, Info: [`amount_vat`], Type: 2 },//VAT Amount: 
+              { Cell: `Z28`, Info: [`amount_total`], Type: 2 },
+              // { Cell: `H29`, Info: [`read_price`], Type: 2 },
+              { Cell: `J29`, Info: [`read_price`], Type: 2 },
+
+              // { Cell: `D36`, Info: [`CQT_MCCQT_ID`], Type: 1 },
+              { Cell: `F40`, Info: [`MATRACUU`], Type: 1 },
+
+              { Cell: `U39`, Info: [`SIGNEDBY`], Type: 3 },
+              { Cell: `U40`, Info: [`SIGNEDDATE`], Type: 3 },
+
+            )
+            // //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
+            // //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
+
+            //cấu trúc dòng detail
+            // thin//dotted//dashDot//hair//dashDotDot//slantDashDot//mediumDashed//mediumDashDotDot//mediumDashDot//medium//double//thick
+            detailCellFormat = [
+              { startCell: 2, endCell: 2, cellType: 2, cellBorder: "dotted", field: "STT" },//từ cell bắt đầu tới cell kết thúc, type 2: cell đầu tiên
+              { startCell: 3, endCell: 16, cellType: 3, cellBorder: "dotted", field: "ITEM_NAME" },//từ cell bắt đầu tới cell kết thúc, type 3: cell kế tiếp cell đầu tiên,
+              { startCell: 17, endCell: 19, cellType: 1, cellBorder: "dotted", field: "ITEM_UOM" },//type 1: còn lại
+              { startCell: 20, endCell: 22, cellType: 1, cellBorder: "dotted", field: "QTY" },//type 1: còn lại
+              { startCell: 23, endCell: 25, cellType: 1, cellBorder: "dotted", field: "U_PRICE" },//type 1: còn lại
+              { startCell: 26, endCell: 28, cellType: 1, cellBorder: "dotted", field: "NET_TR_AMT" },//type 1: còn lại
+            ]
+            backgroundCell = 8
+            backgroundWidth = 300
+            backgroundHeight = 200
+
+            signCell = { start: 23, end: 26 }
+            signBoxCell = "U"
+            signByCell = { start: 21, end: 29 }
+            countFromEndDetailToSignBox = 12
+
+            _sourceRow = 25
+            _sourceRow_2 = 25
+            _sourceRow_3 = 25
+            headerRowCount = 24
+
+
+            lastPageRowsHeight = 18
+            break;
+            break;
+
+          default:
+
+            break;
+        }
+        break;
+      //////// *****************Ottogi*********************\\\\\\\\\
+
 
       //////// *****************Genuwin*********************\\\\\\\\\
       case "Genuwin":
@@ -191,7 +806,7 @@ let EiExcelHandler = {
               { Cell: `D15`, Info: [`BUYERACCOUNTNO`], Type: 1 },
               // { Cell: `N19`, Info: [`BUYER_BANK_NAME`], Type: 1 },
               //{ Cell: `C21`, Info: [`BUYERPONO`], Type: 1 },
-             // { Cell: `E19`, Info: [`CURRENCYCODEUSD`], Type: 1 },
+              // { Cell: `E19`, Info: [`CURRENCYCODEUSD`], Type: 1 },
               //{ Cell: `N19`, Info: [`EXCHANGERATE`], Type: 1 },
 
               //{ Cell: `C26`, Info: [`lb_amount_trans`], Type: 2 },

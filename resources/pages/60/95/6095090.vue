@@ -577,12 +577,12 @@ export default {
       //   error: this.OnErrorCallReUploadPDF,
       // });
      
-     //351913 265263
+     //351913 265263 304524  313069
         this.isProcessing=true
-     //this.pdfUrl = await this.pdfUrlGetter(351913);
-      // this.pdfUrl = await this.pdfUrlGetter(this.tei_einvoice_m_pk_row);
-      this.pdfUrl = await this.$axios.$post("/einvoice/einvoicepdfconvert", { tradecode:280 });
-    console.log(this.pdfUrl)
+    //this.pdfUrl = await this.pdfUrlGetter(385207);
+    this.pdfUrl = await this.pdfUrlGetter(this.tei_einvoice_m_pk_row);
+      //   this.pdfUrl = await this.$axios.$post("/einvoice/einvoicepdfconvert", { tradecode:this.tei_einvoice_m_pk_row });
+     
       this.$nextTick(() => {
         this.isProcessing=false
         this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
@@ -593,26 +593,7 @@ export default {
 
      return pdfUrlExcel
     },
-    // async OnSuccessCallReUploadPDF() {
-    //   let pdfFile = await this._callProcedure("EI_SEL_GET_PDF_FILE", [
-    //     this.tei_einvoice_m_pk_row,
-    //   ]);
-    //   //console.log(pdfFile)
-    //   let pdfFileBuffer = pdfFile[0].ATTACH_FILE_PDF.data;
-    //   const base64String = btoa(
-    //     String.fromCharCode(...new Uint8Array(pdfFileBuffer))
-    //   );
-    //   let pdfUrl =
-    //     "data:application/pdf;base64, " + encodeURI(base64String) + "";
-    //   this.pdfUrl = pdfUrl;
 
-    //   this.$nextTick(() => {
-    //     this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
-    //   });
-    // },
-    // OnErrorCallReUploadPDF(response) {
-    //   alert(response.msg + " - " + response.statusText);
-    // },
     onAfterLoad() {
       let gridArray = [];
       this.$nextTick(() => {

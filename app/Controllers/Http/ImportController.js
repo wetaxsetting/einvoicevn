@@ -101,7 +101,7 @@ class ImportController {
                     Utils.response(false, "missing_[tei_company_pk]_parameter", null)
                 );
             }
-            const root_directory = `${ROOT_DIR_FILES}/eiv/${tei_company_pk}`
+            const root_directory = `${ROOT_DIR_FILES}/eiv-ap/${tei_company_pk}`
             const file_path = await Utils.putFileRootPath(file, root_directory);
             console.log("file_path", file_path)
             if (file_path && file_path.indexOf(".xml") > 0) {
@@ -1330,18 +1330,17 @@ class ImportController {
             }
             // 'TES_FILE' 'TAC_FILES'
             let { import_info, table_nm, table_pk } = request.all();
-            let para = [table_pk, table_nm, '', '']; 
+            let para = [table_pk, table_nm, '', ''];
             // let { import_info, tes_file_pk } = request.all();
             // let para = [tes_file_pk, 'TES_FILE', '', ''];
 
-            var imp = new ImportHelper(p_language, p_crt_by); 
+            var imp = new ImportHelper(p_language, p_crt_by);
             if (DB_CONNECTION == "oracle") {
                 oracledb.fetchAsBuffer = [oracledb.BLOB];
-            } 
-            let sprod ="SYS_SEL_IMP_FILE";
-            if(table_nm == 'TAC_FILES')
-            {
-                sprod ="AC_SEL_IMP_TAC_FILES";
+            }
+            let sprod = "SYS_SEL_IMP_FILE";
+            if (table_nm == 'TAC_FILES') {
+                sprod = "AC_SEL_IMP_TAC_FILES";
             }
             const result = await DBService.callProcCursor(sprod, para, p_language, p_crt_by);
             // const result = await DBService.callProcCursor('SYS_SEL_IMP_FILE', para, p_language, p_crt_by);
@@ -1357,7 +1356,7 @@ class ImportController {
                 await fs.writeFileSync(tmp_file, buffer);
                 await imp.loadFile(tmp_file);
 
-                await imp.importDBData(import_info, p_language, p_crt_by, tmp_file, file_name,table_pk,table_nm);
+                await imp.importDBData(import_info, p_language, p_crt_by, tmp_file, file_name, table_pk, table_nm);
                 // await imp.importDBData(import_info, p_language, p_crt_by, tmp_file, file_name);
                 // let resultData = await imp.writeFile(); 
 

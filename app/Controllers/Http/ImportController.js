@@ -320,11 +320,12 @@ class ImportController {
             const jsonTToan = await transform(xmlContent, templateTToan);
             //console.log("jsonTToan",jsonTToan)
             let arrTToan = [];
-            if (jsonTToan.hasOwnProperty("TgTCThue")) {
-                arrTToan = [jsonTToan[0].TgTCThue, jsonTToan[0].TgTThue, jsonTToan[0].TTCKTMai, jsonTToan[0].TgTTTBSo, jsonTToan[0].TgTTTBChu];
-            } else {
-                arrTToan = [0, 0, 0, jsonTToan[0].TgTTTBSo, jsonTToan[0].TgTTTBChu];
-            }
+            // if (jsonTToan[0].hasOwnProperty("TgTCThue")) {
+            //     arrTToan = [jsonTToan[0].TgTCThue, jsonTToan[0].TgTThue, jsonTToan[0].TTCKTMai, jsonTToan[0].TgTTTBSo, jsonTToan[0].TgTTTBChu];
+            // } else {
+            //     arrTToan = [0, 0, 0, jsonTToan[0].TgTTTBSo, jsonTToan[0].TgTTTBChu];
+            // }
+            arrTToan = [jsonTToan[0].TgTCThue, jsonTToan[0].TgTThue, jsonTToan[0].TTCKTMai, jsonTToan[0].TgTTTBSo, jsonTToan[0].TgTTTBChu];
             const templateMCCQT = ['HDon', {
                 MCCQT: 'MCCQT'
             }]

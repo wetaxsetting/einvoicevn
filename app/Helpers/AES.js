@@ -30,8 +30,23 @@ class AES {
                 },
             ];
 
+            const X509CertificateNBan = [
+                "HDon/DSCKS/NBan/Signature/KeyInfo/X509Data",
+                {
+                    X509Certificate: "X509Certificate"
+                },
+            ];
+
             const Certificate = await transform(xmlContent, X509Certificate);
-            let cert = Certificate[0].X509Certificate
+            const CertificateNBan = await transform(xmlContent, X509CertificateNBan);
+            
+            let cert = ''
+            if(Certificate[0]==undefined){
+                cert= CertificateNBan[0].X509Certificate
+            }else{
+                cert= Certificate[0].X509Certificate
+            }
+           
 
             let getPublicKeyFromCert = (p_certificate) => {
                 try {

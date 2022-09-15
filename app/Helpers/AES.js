@@ -41,10 +41,13 @@ class AES {
             const CertificateNBan = await transform(xmlContent, X509CertificateNBan);
             
             let cert = ''
+            var signature = ''
             if(Certificate[0]==undefined){
                 cert= CertificateNBan[0].X509Certificate
+                signature=select(doc, "//*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']")[0]
             }else{
                 cert= Certificate[0].X509Certificate
+                signature=select(doc, "//*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']")[1]
             }
            
 
@@ -69,7 +72,7 @@ class AES {
 
             }
 
-            var signature = select(doc, "//*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']")[1]
+            
 
             var sig = new SignedXml()
 

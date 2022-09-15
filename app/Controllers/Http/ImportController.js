@@ -105,7 +105,7 @@ class ImportController {
             const file_path = await Utils.putFileRootPath(file, root_directory);
             console.log("file_path", file_path)
             if (file_path && file_path.indexOf(".xml") > 0) {
-                tei_einvoice_cloud_pk = await this.extractXMLContent(file_path, p_language, p_crt_by);
+                tei_einvoice_cloud_pk = await this.extractXMLContent(file_path, p_language, p_crt_by,file_name);
                 if (!isNaN(tei_einvoice_cloud_pk)) {
                     return response.send(
                         Utils.response(true, "upload_xml_file_sucessfull", { tei_einvoice_cloud_pk: tei_einvoice_cloud_pk })
@@ -138,10 +138,11 @@ class ImportController {
             return response.send(Utils.response(false, e.message, null));
         }
     }
-    async extractXMLContent(p_xml_path, p_language, p_crt_by) {
+    async extractXMLContent(p_xml_path, p_language, p_crt_by,file_name) {
         try {
             let AESs = new AES();
             let xmlIntegrity = await AESs.xmlDigitalSignatureVerifier(p_xml_path)
+            let einvoice_file_name=file_name
 
             const xmlContent = fs.readFileSync(p_xml_path, { encoding: 'utf8', flag: 'r' });
             //console.log(xmlContent)
@@ -386,6 +387,7 @@ class ImportController {
             //const master = await callAPI(_jwtToken, { proc: 'ei_upd_tei_einvoice_cloud', para: masterPara });
             masterPara = masterPara.concat(arrSigningTimeNBan).concat(arrSigningTimeCQT);
             masterPara = masterPara.concat([xmlIntegrity])
+            masterPara = masterPara.concat([einvoice_file_name])
             const master = await DBService.callProcCursor('ei_upd_tei_einvoice_cloud', masterPara, p_language, p_crt_by);
             console.log("master", master);
             if (master && master[0].PK > 0) {

@@ -105,7 +105,7 @@ class ImportController {
             const file_path = await Utils.putFileRootPath(file, root_directory);
             console.log("file_path", file_path)
             if (file_path && file_path.indexOf(".xml") > 0) {
-                tei_einvoice_cloud_pk = await this.extractXMLContent(file_path, p_language, p_crt_by,file_name);
+                tei_einvoice_cloud_pk = await this.extractXMLContent(file_path, p_language, p_crt_by, file_name);
                 if (!isNaN(tei_einvoice_cloud_pk)) {
                     return response.send(
                         Utils.response(true, "upload_xml_file_sucessfull", { tei_einvoice_cloud_pk: tei_einvoice_cloud_pk })
@@ -138,15 +138,30 @@ class ImportController {
             return response.send(Utils.response(false, e.message, null));
         }
     }
-    async extractXMLContent(p_xml_path, p_language, p_crt_by,file_name) {
+    async extractXMLContent(p_xml_path, p_language, p_crt_by, file_name) {
         try {
             let AESs = new AES();
             let xmlIntegrity = await AESs.xmlDigitalSignatureVerifier(p_xml_path)
-            let einvoice_file_name=file_name
+            let einvoice_file_name = file_name
 
             const xmlContent = fs.readFileSync(p_xml_path, { encoding: 'utf8', flag: 'r' });
+
+            let templateTTChungPath = 'HDon/DLHDon/TTChung';
+            let templateTTHDLQuanPath = 'HDon/DLHDon/TTChung/TTHDLQuan';
+            let templateNBanPath = 'HDon/DLHDon/NDHDon/NBan';
+            let templateNMuaPath = 'HDon/DLHDon/NDHDon/NMua';
+            let templateLTSuatPath = 'HDon/DLHDon/NDHDon/TToan/THTTLTSuat/LTSuat';
+            let templateTTKhacPath = 'HDon/DLHDon/TTChung/TTKhac/TTin';
+            let templateTToanPath = 'HDon/DLHDon/NDHDon/TToan';
+            let templateDSHHDVuPath = 'HDon/DLHDon/NDHDon/DSHHDVu/HHDVu';
+            let templateSigningTimeNBanPath = "HDon/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty";
+            let templateSigningTimeCQTPath = "HDon/DSCKS/CQT/Signature/Object/SignatureProperties/SignatureProperty";
+            let templateMCCQTPath = 'HDon';
+
+
+
             //console.log(xmlContent)
-            const templateTTChung = ['HDon/DLHDon/TTChung', {
+            let templateTTChung = [templateTTChungPath, {
                 PBan: 'PBan',
                 THDon: 'THDon',
                 KHMSHDon: 'KHMSHDon',
@@ -163,10 +178,46 @@ class ImportController {
                 MSTDVNUNLHDon: 'MSTDVNUNLHDon',
                 TDVNUNLHDon: 'TDVNUNLHDon',
                 DCDVNUNLHDon: 'DCDVNUNLHDon'
-            }]
-            const jsonTTChung = await transform(xmlContent, templateTTChung);
-            //console.log("jsonTTChung",jsonTTChung)
-            const templateTTKhac = ['HDon/DLHDon/TTChung/TTKhac/TTin', {
+            }];
+            let jsonTTChung = await transform(xmlContent, templateTTChung);
+            //console.log("jsonTTChung", jsonTTChung)
+            if (jsonTTChung.length == 0) {
+                templateTTChungPath = 'TDiep/DLieu/HDon/DLHDon/TTChung';
+                templateTTHDLQuanPath = 'TDiep/DLieu/HDon/DLHDon/TTChung/TTHDLQuan';
+                templateNBanPath = 'TDiep/DLieu/HDon/DLHDon/NDHDon/NBan';
+                templateNMuaPath = 'TDiep/DLieu/HDon/DLHDon/NDHDon/NMua';
+                templateLTSuatPath = 'TDiep/DLieu/HDon/DLHDon/NDHDon/TToan/THTTLTSuat/LTSuat';
+                templateTTKhacPath = 'TDiep/DLieu/HDon/DLHDon/TTChung/TTKhac/TTin';
+                templateTToanPath = 'TDiep/DLieu/HDon/DLHDon/NDHDon/TToan';
+                templateDSHHDVuPath = 'TDiep/DLieu/HDon/DLHDon/NDHDon/DSHHDVu/HHDVu';
+                templateSigningTimeNBanPath = "TDiep/DLieu/HDon/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty";
+                templateSigningTimeCQTPath = "TDiep/DLieu/HDon/DSCKS/CQT/Signature/Object/SignatureProperties/SignatureProperty";
+                templateMCCQTPath = 'TDiep/DLieu/HDon';
+
+                templateTTChung = [templateTTChungPath, {
+                    PBan: 'PBan',
+                    THDon: 'THDon',
+                    KHMSHDon: 'KHMSHDon',
+                    KHHDon: 'KHHDon',
+                    SHDon: 'SHDon',
+                    MHSo: 'MHSo',
+                    NLap: 'NLap',
+                    SBKe: 'SBKe',
+                    NBKe: 'NBKe',
+                    DVTTe: 'DVTTe',
+                    TGia: 'TGia',
+                    HTTToan: 'HTTToan',
+                    MSTTCGP: 'MSTTCGP',
+                    MSTDVNUNLHDon: 'MSTDVNUNLHDon',
+                    TDVNUNLHDon: 'TDVNUNLHDon',
+                    DCDVNUNLHDon: 'DCDVNUNLHDon'
+                }];
+
+                jsonTTChung = await transform(xmlContent, templateTTChung);
+
+            }
+
+            const templateTTKhac = [templateTTKhacPath, {
                 TTruong: 'TTruong',
                 DLieu: 'DLieu'
             }]
@@ -252,7 +303,7 @@ class ImportController {
                 }
             }
 
-            const templateTTHDLQuan = ['HDon/DLHDon/TTChung/TTHDLQuan', {
+            const templateTTHDLQuan = [templateTTHDLQuanPath, {
                 TCHDon: 'TCHDon',
                 LHDCLQuan: 'LHDCLQuan',
                 KHMSHDCLQuan: 'KHMSHDCLQuan',
@@ -266,7 +317,7 @@ class ImportController {
             const arrTTChung = [jsonTTChung[0].PBan, jsonTTChung[0].THDon, jsonTTChung[0].KHMSHDon, jsonTTChung[0].KHHDon, jsonTTChung[0].SHDon, jsonTTChung[0].MHSo, jsonTTChung[0].NLap, jsonTTChung[0].SBKe, jsonTTChung[0].NBKe,
                 jsonTTChung[0].DVTTe, jsonTTChung[0].TGia, jsonTTChung[0].HTTToan, jsonTTChung[0].MSTTCGP, jsonTTChung[0].MSTDVNUNLHDon, jsonTTChung[0].TDVNUNLHDon, jsonTTChung[0].DCDVNUNLHDon
             ]
-            const templateNBan = ['HDon/DLHDon/NDHDon/NBan', {
+            const templateNBan = [templateNBanPath, {
                 Ten: 'Ten',
                 MST: 'MST',
                 DChi: 'DChi',
@@ -283,7 +334,7 @@ class ImportController {
             const jsonNBan = await transform(xmlContent, templateNBan);
             const arrNBan = [jsonNBan[0].Ten, jsonNBan[0].MST, jsonNBan[0].DChi, jsonNBan[0].SDThoai, jsonNBan[0].DCTDTu, jsonNBan[0].STKNHang, jsonNBan[0].NNBSTKNHang, jsonNBan[0].TNHang, jsonNBan[0].Fax, jsonNBan[0].Website, jsonNBan[0].TTKhac];
             //console.log("jsonNBan",jsonNBan)
-            const templateNMua = ['HDon/DLHDon/NDHDon/NMua', {
+            const templateNMua = [templateNMuaPath, {
                 Ten: 'Ten',
                 MST: 'MST',
                 DChi: 'DChi',
@@ -297,7 +348,7 @@ class ImportController {
             const jsonNMua = await transform(xmlContent, templateNMua);
             //console.log("jsonNMua",jsonNMua)
             const arrNMua = [jsonNMua[0].Ten, jsonNMua[0].MST, jsonNMua[0].DChi, jsonNMua[0].SDThoai, jsonNMua[0].DCTDTu, jsonNMua[0].HVTNMHang, jsonNMua[0].STKNHang, jsonNMua[0].TNHang, jsonNMua[0].TTKhac];
-            const templateLTSuat = ['HDon/DLHDon/NDHDon/TToan/THTTLTSuat/LTSuat', {
+            const templateLTSuat = [templateLTSuatPath, {
                 TSuat: 'TSuat',
                 ThTien: 'ThTien',
                 TThue: 'TThue'
@@ -311,7 +362,7 @@ class ImportController {
                 arrLTSuat = ['', 0, 0];
             }
 
-            const templateTToan = ['HDon/DLHDon/NDHDon/TToan', {
+            const templateTToan = [templateTToanPath, {
                 TgTCThue: 'TgTCThue',
                 TgTThue: 'TgTThue',
                 TTCKTMai: 'TTCKTMai',
@@ -321,19 +372,14 @@ class ImportController {
             const jsonTToan = await transform(xmlContent, templateTToan);
             //console.log("jsonTToan",jsonTToan)
             let arrTToan = [];
-            // if (jsonTToan[0].hasOwnProperty("TgTCThue")) {
-            //     arrTToan = [jsonTToan[0].TgTCThue, jsonTToan[0].TgTThue, jsonTToan[0].TTCKTMai, jsonTToan[0].TgTTTBSo, jsonTToan[0].TgTTTBChu];
-            // } else {
-            //     arrTToan = [0, 0, 0, jsonTToan[0].TgTTTBSo, jsonTToan[0].TgTTTBChu];
-            // }
             arrTToan = [jsonTToan[0].TgTCThue, jsonTToan[0].TgTThue, jsonTToan[0].TTCKTMai, jsonTToan[0].TgTTTBSo, jsonTToan[0].TgTTTBChu];
-            const templateMCCQT = ['HDon', {
+            const templateMCCQT = [templateMCCQTPath, {
                 MCCQT: 'MCCQT'
             }]
             const jsonMCCQT = await transform(xmlContent, templateMCCQT);
             //console.log(jsonMCCQT)
             const arrMCCQT = [jsonMCCQT[0].MCCQT];
-            const templateDSHHDVu = ['HDon/DLHDon/NDHDon/DSHHDVu/HHDVu', {
+            const templateDSHHDVu = [templateDSHHDVuPath, {
                 TChat: 'TChat',
                 STT: 'STT',
                 MHHDVu: 'MHHDVu',
@@ -348,7 +394,7 @@ class ImportController {
             }]
 
             const templateSigningTimeNBan = [
-                "HDon/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty",
+                templateSigningTimeNBanPath,
                 {
                     SigningTimeNBan: "SigningTime"
                 },
@@ -360,7 +406,7 @@ class ImportController {
             ];
 
             const templateSigningTimeCQT = [
-                "HDon/DSCKS/CQT/Signature/Object/SignatureProperties/SignatureProperty",
+                templateSigningTimeCQTPath,
                 {
                     SigningTimeCQT: "SigningTime"
                 },
@@ -384,7 +430,6 @@ class ImportController {
             }
             masterPara = masterPara.concat([customField1, customField2, customField3, customField4, customField5, customField6, customField7, customField8, customField9, customField10]);
             //console.log("masterPara",masterPara)    
-            //const master = await callAPI(_jwtToken, { proc: 'ei_upd_tei_einvoice_cloud', para: masterPara });
             masterPara = masterPara.concat(arrSigningTimeNBan).concat(arrSigningTimeCQT);
             masterPara = masterPara.concat([xmlIntegrity])
             masterPara = masterPara.concat([einvoice_file_name])

@@ -219,6 +219,7 @@ module.exports = {
         //     })
         //   }
         // }
+        postcss: null,
     },
     /**
      * Vue Router config

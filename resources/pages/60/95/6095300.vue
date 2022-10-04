@@ -51,7 +51,8 @@
                 :btn_text="$t('save')"
                 @onclick="onSave()"
               />
-              <BaseButton btn_type="icon" icon_type="print" @onclick="onReport2"/>
+              <BaseButton btn_type="icon" icon_type="print" :btn_text="$t('detail_report')" @onclick="onReport"/>
+              <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('master_report')" @onclick="onReport2"/>
             </v-col>
           </v-row>
           <v-row>
@@ -441,38 +442,13 @@ export default {
   /*############### methods #######################*/
   methods: {
     async onReport() {
-      let report_path = "report/60/95/rpt_6095300.xlsx";
-      let hiddenCols = [];
-      let excel = [];
-      excel = [
-        {
-          sheet: 1,
-          // insertRange: [
-          //   {
-          //     range: "A3:AG3",
-          //   proc: "AC_RPT_6095300_M",
-          //     params: [
-          //         this.selected_company,
-          //         this.dt_from,
-          //         this.dt_to,
-          //         this.selected_form_no,
-          //         this.SERIAL_NO,
-          //         this.INVOICE_NO,
-          //         this.seller_name,
-          //         this.seller_no,
-          //         this.matracuu, // khong sai
-          //         this.macqt,
-          //         this.selected_status, // khong sai
-          //         this.WEB_SITE, // khong sai
-          //     ],
-          //   }, //header
-          // ],
-          insertRows: [
-            {
-              sequence: "continue",
-              startRow: 3,
-              proc: "AC_RPT_6095300_M",
-              params: [
+       let exceljs =  require("@/plugins/exceljs.js");
+        if(!!exceljs) {
+            exceljs = exceljs.default;
+        }
+         let report_path = "report/60/95/rpt_6095300_2.xlsx";
+
+             let dso =  {type: 'grid', selpro: 'AC_RPT_6095300_M_2', para: [
                   this.selected_company,
                   this.dt_from,
                   this.dt_to,
@@ -485,65 +461,45 @@ export default {
                   this.macqt,
                   this.selected_status, // khong sai
                   this.WEB_SITE, // khong sai
-              ],
-              dateColumns: [],
-              stringColumns: [
-      
-                "SALE_TAXCODE",
-                "BUYER_TAXCODE",
-              ],
-              total: [
-                     {   column: "SALE_TAXCODE", isDisplay: false, type: "SUM", text:  this.$t("total")  , isMerge: false   }, //"Total $[0]: $[1] record(s) "
-                      {   column: null, isDisplay: true, type: "SUM", text: "Total: $[1] record(s) ", isMerge: true, isGrandTotal: true , font: {  size: 15, bold: true }, merge:{ from:1, to:6 },  fill: { type: 'pattern', pattern:'solid',  fgColor:{argb:'f9ffa8'},  bgColor:{argb:'f9ffa8'}}    },
-                    ]
-              //   total:
-              // [
-              //     {
-              //         column: "SALE_TAXCODE"
-              //         , isDisplay: true
-              //         , type: "SUM"
-              //         , text: " "
-              //         , isMerge: true
-              //         , isGrandTotal: false
-              //          , font: {  name:'Times New Roman', size: 16, bold: true } 
-              //            // , merge: { from: 1, to: 5 }  
-              //             , fill: {
-              //               type: 'pattern',
-              //               pattern:'solid',
-              //               fgColor:{ argb: 'f5ff96'}, 
-              //               bgColor:{ argb: 'f5ff96'}
-              //             }
-              //         //, merge: { from: 1, to: 9 }
-              //     },
-              // ]
-            },
-          ],
-          hideColumns: hiddenCols,
-        },
-      ];
-      if (!report_path) {
-        this.salaryStatus = ("template_not_available");
-        return;
-      }
+              ] };
+            let datas = await this._dsoCall(dso, 'select', false);
+             if(datas && datas.length <= 0)  {
+                this.showNotification("warning", this.$t("no_data_found"), "", 4000);
+                return;
+            }
+            await exceljs.createWorkbook(this, report_path);
+            let worksheet = exceljs.worksheet();
+            exceljs.setWorksheet("Total");
 
-      const res = await this.$axios.$get("/dso/makereport", {
-        responseType: "blob",
-        params: {
-          template: report_path,
-          excel: JSON.stringify(excel),
-        },
-      });
-      if (res && res.size > 0) {
-        let blob = new Blob([res], {
-          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        });
-        let url = window.URL.createObjectURL(blob);
-        window.open(url);
-        this.salaryStatus = ("complete");
-      } else {
-        //this.showNotification( "danger", ("fail_to_export_report"),  "",  4000 );
-        this.salaryStatus = ("fail_to_export_report");
-      }
+            let startRow = 3;
+            let totalRow = startRow + datas.length;
+            let totalData = {TOTAL_TEXT: "GRAND TOTAL"};
+
+            let noneSumCols=['AMT_INCLUDE_VAT','AMT_VAT']
+            let keys = Object.keys(datas[0]);
+
+            keys.forEach(key => {
+                let vals = datas.map( q =>  (  isNaN(q[key]) ||  q[key]== null  ) ? 0 :  q[key]  );
+                let sumVal=0
+                let check=true
+                noneSumCols.forEach(e => {
+                  if(key==e){    
+                    let uniq = [...new Set(vals)]
+                     sumVal = this._Total(uniq);
+                     check=false
+                  }
+                });
+               if(check){
+                 sumVal = this._Total(vals);
+               }
+                totalData[key] = sumVal;
+            })
+           // console.log(totalData)
+            exceljs.insertRows(this,startRow, datas);
+            exceljs.insertRowData(this, totalRow, totalData);
+            //worksheet.mergeCells(`A${totalRow}:O${totalRow}`);
+
+            exceljs.dowloadWorkbook(this, "report_"+this.dt_from+"-"+this.dt_to+ ".xlsx");
     },
     async onReport2(){
         let exceljs =  require("@/plugins/exceljs.js");
@@ -553,11 +509,6 @@ export default {
          let report_path = "report/60/95/rpt_6095300.xlsx";
 
              let dso =  {type: 'grid', selpro: 'AC_RPT_6095300_M', para: [
-                  
-                  // 702,
-                  // 20220517,
-                  // 20220817,
-                  // 1,
                   this.selected_company,
                   this.dt_from,
                   this.dt_to,

@@ -2,7 +2,7 @@
   <template>
   <v-container fluid v-resize="onResize" class="pa-2">
     <v-row no-gutters class="pl-2">
-      <v-col v-show="showLeft" :cols="leftCols">
+      <v-col  :cols="12 - RightCols">
         <v-card class="pa-2">
           <v-row dense>
             <v-col md="4">
@@ -51,8 +51,12 @@
                 :btn_text="$t('save')"
                 @onclick="onSave()"
               />
-              <BaseButton btn_type="icon" icon_type="print" :btn_text="$t('detail_report')" @onclick="onReport2"/>
-              <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('master_report')" @onclick="onReport"/>
+              <BaseButton btn_type="icon" icon_type="print" :btn_text="$t('detail_report')" @onclick="onReport"/>
+              <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('master_report')" @onclick="onReport2"/>
+              <v-btn icon tile :color="currentTheme" @click="toggleRight">
+                  <v-icon v-if="!showRight">mdi-skip-previous</v-icon>
+                  <v-icon v-if="showRight">mdi-skip-next</v-icon>
+                </v-btn>
             </v-col>
           </v-row>
           <v-row>
@@ -188,15 +192,12 @@
           </v-row>
         </v-card>
       </v-col>
-      <v-col class="pa-1" :cols="12 - leftCols">
+      <v-col class="pa-1" v-show="showRight" :cols="RightCols">
         <v-card class="pa-1">
           <v-row>
             <v-col md="2" cols="12" class="text-right">
               <div class="d-flex">
-                <v-btn icon tile :color="currentTheme" @click="toggleLeft">
-                  <v-icon v-if="showLeft">mdi-skip-previous</v-icon>
-                  <v-icon v-if="!showLeft">mdi-skip-next</v-icon>
-                </v-btn>
+                
               </div>
             </v-col>
             <v-col md="2">
@@ -368,9 +369,9 @@ export default {
     tei_einvoice_cloud_pk: "",
     form_no: "",
     pdfUrlRow: "",
-    leftCols: 6,
+    RightCols: 5,
     selected_rows: [],
-    showLeft: true,
+    showRight: true,
     isShowReportDialog: false,
     item_serial_no: "",
     item_invoice_no: "",
@@ -631,10 +632,10 @@ export default {
       this.$refs.gridview.loadData();
      // console.log(cell);
     },
-    toggleLeft() {
-      this.showLeft = this.showLeft ? false : true;
-      this.leftCols = !this.showLeft ? 0 : 6;
-      this.btnIconType = !this.showLeft ? "skip_next" : "skip_prev";
+    toggleRight() {
+      this.showRight = this.showRight ? false : true;
+      this.RightCols = !this.showRight ? 0 : 5;
+      this.btnIconType = !this.showRight ? "skip_next" : "skip_prev";
     },
 
 

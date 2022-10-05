@@ -22,34 +22,87 @@ class AES {
 
             var doc = new dom().parseFromString(xml)
                 //console.log(doc)
+                let cert = ''
+                var signature = ''
+            let templateTTChungPath = 'HDon/DLHDon/TTChung';   
 
-            const X509Certificate = [
-                "HDon/DSCKS/CQT/Signature/KeyInfo/X509Data",
-                {
-                    X509Certificate: "X509Certificate"
-                },
-            ];
-
-            const X509CertificateNBan = [
-                "HDon/DSCKS/NBan/Signature/KeyInfo/X509Data",
-                {
-                    X509Certificate: "X509Certificate"
-                },
-            ];
-
-            const Certificate = await transform(xmlContent, X509Certificate);
-            const CertificateNBan = await transform(xmlContent, X509CertificateNBan);
-            
-            let cert = ''
-            var signature = ''
-            if(Certificate[0]==undefined){
-                cert= CertificateNBan[0].X509Certificate
-                signature=select(doc, "//*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']")[0]
+            let templateTTChung = [templateTTChungPath, {
+                PBan: 'PBan',
+                THDon: 'THDon',
+                KHMSHDon: 'KHMSHDon',
+                KHHDon: 'KHHDon',
+                SHDon: 'SHDon',
+                MHSo: 'MHSo',
+                NLap: 'NLap',
+                SBKe: 'SBKe',
+                NBKe: 'NBKe',
+                DVTTe: 'DVTTe',
+                TGia: 'TGia',
+                HTTToan: 'HTTToan',
+                MSTTCGP: 'MSTTCGP',
+                MSTDVNUNLHDon: 'MSTDVNUNLHDon',
+                TDVNUNLHDon: 'TDVNUNLHDon',
+                DCDVNUNLHDon: 'DCDVNUNLHDon'
+            }];
+            let jsonTTChung = await transform(xmlContent, templateTTChung);
+            //console.log("jsonTTChung", jsonTTChung)
+            if (jsonTTChung.length == 0) {
+                const X509Certificate = [
+                    "TDiep/DLieu/HDon/DSCKS/CQT/Signature/KeyInfo/X509Data",
+                    {
+                        X509Certificate: "X509Certificate"
+                    },
+                ];
+    
+                const X509CertificateNBan = [
+                    "TDiep/DLieu/HDon/DSCKS/NBan/Signature/KeyInfo/X509Data",
+                    {
+                        X509Certificate: "X509Certificate"
+                    },
+                ];
+    
+                const Certificate = await transform(xmlContent, X509Certificate);
+                const CertificateNBan = await transform(xmlContent, X509CertificateNBan);
+                
+                
+                if(Certificate[0]==undefined){
+                    cert= CertificateNBan[0].X509Certificate
+                    signature=select(doc, "//*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']")[0]
+                }else{
+                    cert= Certificate[0].X509Certificate
+                    signature=select(doc, "//*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']")[1]
+                }
+               
             }else{
-                cert= Certificate[0].X509Certificate
-                signature=select(doc, "//*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']")[1]
+                const X509Certificate = [
+                    "HDon/DSCKS/CQT/Signature/KeyInfo/X509Data",
+                    {
+                        X509Certificate: "X509Certificate"
+                    },
+                ];
+    
+                const X509CertificateNBan = [
+                    "HDon/DSCKS/NBan/Signature/KeyInfo/X509Data",
+                    {
+                        X509Certificate: "X509Certificate"
+                    },
+                ];
+    
+                const Certificate = await transform(xmlContent, X509Certificate);
+                const CertificateNBan = await transform(xmlContent, X509CertificateNBan);
+                
+                if(Certificate[0]==undefined){
+                    cert= CertificateNBan[0].X509Certificate
+                    signature=select(doc, "//*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']")[0]
+                }else{
+                    cert= Certificate[0].X509Certificate
+                    signature=select(doc, "//*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']")[1]
+                }
+               
             }
-           
+
+
+         
 
             let getPublicKeyFromCert = (p_certificate) => {
                 try {

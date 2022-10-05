@@ -51,8 +51,8 @@
                 :btn_text="$t('save')"
                 @onclick="onSave()"
               />
-              <BaseButton btn_type="icon" icon_type="print" :btn_text="$t('detail_report')" @onclick="onReport"/>
-              <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('master_report')" @onclick="onReport2"/>
+              <BaseButton btn_type="icon" icon_type="print" :btn_text="$t('detail_report')" @onclick="onReport2"/>
+              <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('master_report')" @onclick="onReport"/>
             </v-col>
           </v-row>
           <v-row>

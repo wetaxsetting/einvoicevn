@@ -5,13 +5,16 @@ const webpack = require("webpack");
 let _stop = false;
 
 module.exports = {
+    ssr: false,
     telemetry: false,
     /*
      ** Headers of the page
      */
     head: {
-        title: process.env.APP_URL_TITLE ? process.env.APP_URL_TITLE : process.env.APP_NAME,
-        titleTemplate: process.env.APP_URL_TITLE ? process.env.APP_URL_TITLE : process.env.APP_NAME,
+        title: process.env.APP_URL_TITLE ?
+            process.env.APP_URL_TITLE : process.env.APP_NAME,
+        titleTemplate: process.env.APP_URL_TITLE ?
+            process.env.APP_URL_TITLE : process.env.APP_NAME,
         // htmlAttrs: {
         //     lang: process.env.APP_LOCALE
         // },
@@ -21,12 +24,21 @@ module.exports = {
             {
                 hid: "description",
                 name: "description",
-                content: process.env.APP_URL_TITLE ? process.env.APP_URL_TITLE : process.env.APP_NAME,
+                content: process.env.APP_URL_TITLE ?
+                    process.env.APP_URL_TITLE : process.env.APP_NAME,
             },
             { property: "og:url", content: "" },
             { property: "og:type", content: "website" },
-            { property: "og:title", content: process.env.APP_URL_TITLE ? process.env.APP_URL_TITLE : process.env.APP_NAME },
-            { property: "og:description", content: process.env.APP_URL_TITLE ? process.env.APP_URL_TITLE : process.env.APP_NAME },
+            {
+                property: "og:title",
+                content: process.env.APP_URL_TITLE ?
+                    process.env.APP_URL_TITLE : process.env.APP_NAME,
+            },
+            {
+                property: "og:description",
+                content: process.env.APP_URL_TITLE ?
+                    process.env.APP_URL_TITLE : process.env.APP_NAME,
+            },
             { property: "fb:app_id", content: "" },
             {
                 property: "og:image",
@@ -35,17 +47,17 @@ module.exports = {
         ],
         script: [
             /* {
-              innerHTML: `const host_socket = "${process.env.SOCKET_SERVER}"; const g_analytics = "${process.env.G_ANALYTICS}"; const fb_page_id = "${process.env.FB_PAGE_ID}"`,
-            },
-            {
-                src: `https://www.googletagmanager.com/gtag/js?id=${process.env.G_ANALYTICS}`,
-            },
-            { src: "https://unpkg.com/xlsx/dist/shim.min.js" }, */
+                    innerHTML: `const host_socket = "${process.env.SOCKET_SERVER}"; const g_analytics = "${process.env.G_ANALYTICS}"; const fb_page_id = "${process.env.FB_PAGE_ID}"`,
+                  },
+                  {
+                      src: `https://www.googletagmanager.com/gtag/js?id=${process.env.G_ANALYTICS}`,
+                  },
+                  { src: "https://unpkg.com/xlsx/dist/shim.min.js" }, */
             { src: "https://unpkg.com/xlsx/dist/xlsx.full.min.js" },
             //{ src: "https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js" },
             /* {
-              src: "https://www.google.com/recaptcha/api.js?onload=vueRecaptchaApiLoaded&render=explicit"
-            } */
+                    src: "https://www.google.com/recaptcha/api.js?onload=vueRecaptchaApiLoaded&render=explicit"
+                  } */
         ],
         link: [{ rel: "icon", type: "image/x-icon", href: "/images/favicon.png" }],
         __dangerouslyDisableSanitizers: ["script"],
@@ -53,7 +65,7 @@ module.exports = {
     /*
      ** Customize the progress bar color
      */
-    loading: { color: "#007bff" },
+    loading: { color: "#007bff", height: "5px" },
     /**
      * Global css
      */
@@ -77,7 +89,7 @@ module.exports = {
         { src: "~/plugins/i18n.js" },
         { src: "~/plugins/vue-notifyjs", mode: "client" },
         { src: "~/plugins/devextreme-vue", mode: "client" },
-        { src: "~/plugins/jqwidgets", mode: "client" }
+        { src: "~/plugins/jqwidgets", mode: "client" },
     ],
     modules: ["@nuxtjs/axios"],
     buildModules: ["@nuxtjs/vuetify"],
@@ -194,6 +206,11 @@ module.exports = {
                         if (_stop == false) {
                             _stop = true;
                             console.log("Client compile is done !");
+                            if (process.env.NODE_ENV == "production") {
+                                setTimeout(() => {
+                                    process.exit(0);
+                                });
+                            }
                         } else {
                             console.log("Server compile is done !");
                             if (process.env.NODE_ENV == "production") {
@@ -259,9 +276,9 @@ module.exports = {
     env: {
         SITE_DOMAIN: process.env.APP_URL,
         DB_CONNECTION: process.env.DB_CONNECTION,
-        HAS_SURVEY: process.env.HAS_SURVEY,
         APP_NAME: process.env.APP_NAME,
-        APP_URL_TITLE: process.env.APP_URL_TITLE ? process.env.APP_URL_TITLE : process.env.APP_NAME,
+        APP_URL_TITLE: process.env.APP_URL_TITLE ?
+            process.env.APP_URL_TITLE : process.env.APP_NAME,
         DB_DATABASE: process.env.DB_DATABASE,
-    },
+    }
 };

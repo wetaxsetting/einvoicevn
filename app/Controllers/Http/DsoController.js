@@ -354,8 +354,8 @@ class DsoController {
                         const idleTime = (miliseconds - (_user_last_called[i].lastcalled ? _user_last_called[i].lastcalled : 0)) / 1000 / 60;
                         if (idleTime >= SESSION_TIMEOUT) {
                             //response.clearCookie('token')
-                            _user_last_called.splice(i, 1);
                             if (proc.toUpperCase() != "SYS_SEL_LANGUAGE") {
+                                _user_last_called.splice(i, 1);
                                 return response.send(
                                     Utils.response(false, "your_session_timeout_logout_and_login_to_continue", { lang: p_language })
                                 );
@@ -402,7 +402,7 @@ class DsoController {
                     if (CLEAR_CACHE_URL2 != "NOCLEAR") {
                         result2 = await Request.post(CLEAR_CACHE_URL2, {}, { headers: { Authorization: bearerToken } })
                     }
-                } catch (ex) {}
+                } catch (ex) { }
             }
             return response.send(
                 Utils.response(true, "Successfull call procedure", result)
@@ -444,8 +444,8 @@ class DsoController {
                                 (miliseconds - _user_last_called[i].lastcalled) / 1000 / 60;
                             if (idleTime >= API_SESSION_TIMEOUT) {
                                 //response.clearCookie('token')
-                                _user_last_called.splice(i, 1);
                                 if (proc.toUpperCase() != "SYS_SEL_LANGUAGE") {
+                                    _user_last_called.splice(i, 1);
                                     return response.send(
                                         Utils.response(
                                             false,
@@ -763,21 +763,21 @@ class DsoController {
             let dbDatas = {};
 
             paraKeys.forEach((key, idx) => {
-                dbParams += `:${key.startsWith("_")  ? key.replace("_","") : key }`;
+                dbParams += `:${key.startsWith("_") ? key.replace("_", "") : key}`;
                 if (idx < paraKeys.length - 1) dbParams += ","
                 dbDatas[key.startsWith("_") ? key.replace("_", "") : key] = params[key] == "byte-array" ? fileBuffer : params[key];
             });
 
             if (DB_CONNECTION == "oracle") {
                 result = await DBService.ExecuteSQLBlob(
-                    `BEGIN ${proc}(${dbParams},:p_language,:p_crt_by,:p_rtn_cur); END;`, {...dbDatas },
+                    `BEGIN ${proc}(${dbParams},:p_language,:p_crt_by,:p_rtn_cur); END;`, { ...dbDatas },
                     p_language,
                     p_crt_by,
                     _db2
                 );
             } else if (DB_CONNECTION == "mysql") {
                 result = await DBService.ExecuteSQLBlob(
-                    `call ${proc}(${dbParams},:p_language,:p_crt_by);`, {...dbDatas },
+                    `call ${proc}(${dbParams},:p_language,:p_crt_by);`, { ...dbDatas },
                     p_language,
                     p_crt_by,
                     _db2
@@ -826,16 +826,16 @@ class DsoController {
             if (DB_CONNECTION == "oracle") {
                 result = await DBService.ExecuteSQLBlob(
                     `BEGIN ${proc}(:p_tes_file_pk,:p_table_name,:p_master_table,:p_master_table_pk, :p_file_content,:p_file_name,:p_file_ext,:p_file_size,:p_file_type,:p_language,:p_crt_by,:p_rtn_cur); END;`, {
-                        p_tes_file_pk: params[0],
-                        p_table_name: params[1],
-                        p_master_table: params[2],
-                        p_master_table_pk: params[3],
-                        p_file_content: fileBuffer,
-                        p_file_name: file_name,
-                        p_file_ext: file_ext,
-                        p_file_size: file_size,
-                        p_file_type: file_type,
-                    },
+                    p_tes_file_pk: params[0],
+                    p_table_name: params[1],
+                    p_master_table: params[2],
+                    p_master_table_pk: params[3],
+                    p_file_content: fileBuffer,
+                    p_file_name: file_name,
+                    p_file_ext: file_ext,
+                    p_file_size: file_size,
+                    p_file_type: file_type,
+                },
                     p_language,
                     p_crt_by,
                     _db2
@@ -843,16 +843,16 @@ class DsoController {
             } else if (DB_CONNECTION == "mysql") {
                 result = await DBService.ExecuteSQLBlob(
                     `call ${proc}(:p_tes_file_pk,:p_table_name,:p_master_table,:p_master_table_pk, :p_file_content,:p_file_name,:p_file_ext,:p_file_size,:p_file_type,:p_language,:p_crt_by);`, {
-                        p_tes_file_pk: params[0],
-                        p_table_name: params[1],
-                        p_master_table: params[2],
-                        p_master_table_pk: params[3],
-                        p_file_content: fileBuffer,
-                        p_file_name: file_name,
-                        p_file_ext: file_ext,
-                        p_file_size: file_size,
-                        p_file_type: file_type,
-                    },
+                    p_tes_file_pk: params[0],
+                    p_table_name: params[1],
+                    p_master_table: params[2],
+                    p_master_table_pk: params[3],
+                    p_file_content: fileBuffer,
+                    p_file_name: file_name,
+                    p_file_ext: file_ext,
+                    p_file_size: file_size,
+                    p_file_type: file_type,
+                },
                     p_language,
                     p_crt_by,
                     _db2
@@ -908,17 +908,17 @@ class DsoController {
             if (DB_CONNECTION == "oracle") {
                 result = await DBService.ExecuteSQLBlob(
                     `BEGIN ${proc}(:p_tes_file_pk,:p_table_name,:p_master_table,:p_master_table_pk, :p_file_content,:p_file_name,:p_file_ext,:p_file_size,:p_file_type,:p_file_path,:p_language,:p_crt_by,:p_rtn_cur); END;`, {
-                        p_tes_file_pk: params[0],
-                        p_table_name: params[1],
-                        p_master_table: params[2],
-                        p_master_table_pk: params[3],
-                        p_file_content: fileBuffer,
-                        p_file_name: file_name,
-                        p_file_ext: file_ext,
-                        p_file_size: file_size,
-                        p_file_type: file_type,
-                        p_file_path: file_path,
-                    },
+                    p_tes_file_pk: params[0],
+                    p_table_name: params[1],
+                    p_master_table: params[2],
+                    p_master_table_pk: params[3],
+                    p_file_content: fileBuffer,
+                    p_file_name: file_name,
+                    p_file_ext: file_ext,
+                    p_file_size: file_size,
+                    p_file_type: file_type,
+                    p_file_path: file_path,
+                },
                     p_language,
                     p_crt_by,
                     _db2
@@ -926,17 +926,17 @@ class DsoController {
             } else if (DB_CONNECTION == "mysql") {
                 result = await DBService.ExecuteSQLBlob(
                     `call ${proc}(:p_tes_file_pk,:p_table_name,:p_master_table,:p_master_table_pk, :p_file_content,:p_file_name,:p_file_ext,:p_file_size,:p_file_type,:p_file_path,:p_language,:p_crt_by);`, {
-                        p_tes_file_pk: params[0],
-                        p_table_name: params[1],
-                        p_master_table: params[2],
-                        p_master_table_pk: params[3],
-                        p_file_content: fileBuffer,
-                        p_file_name: file_name,
-                        p_file_ext: file_ext,
-                        p_file_size: file_size,
-                        p_file_type: file_type,
-                        p_file_path: file_path,
-                    },
+                    p_tes_file_pk: params[0],
+                    p_table_name: params[1],
+                    p_master_table: params[2],
+                    p_master_table_pk: params[3],
+                    p_file_content: fileBuffer,
+                    p_file_name: file_name,
+                    p_file_ext: file_ext,
+                    p_file_size: file_size,
+                    p_file_type: file_type,
+                    p_file_path: file_path,
+                },
                     p_language,
                     p_crt_by,
                     _db2
@@ -1233,16 +1233,16 @@ class DsoController {
             const params = [...JSON.parse(para)];
             const result = await DBService.ExecuteSQLBlob(
                 `BEGIN vms_upd_tvm_obj_file(:p_action, :p_tvm_obj_file_pk, :p_tvm_obj_pk, :p_file_size, :p_file_name, :p_file_path, :p_file_ext, :p_file_type, :p_file_content, :p_language, :p_crt_by, :p_rtn_cur); END;`, {
-                    p_action: params[0],
-                    p_tvm_obj_file_pk: params[1],
-                    p_tvm_obj_pk: params[2],
-                    p_file_size: file_size,
-                    p_file_name: file_name,
-                    p_file_path: params[3],
-                    p_file_ext: file_ext,
-                    p_file_type: file_type,
-                    p_file_content: fileBuffer,
-                },
+                p_action: params[0],
+                p_tvm_obj_file_pk: params[1],
+                p_tvm_obj_pk: params[2],
+                p_file_size: file_size,
+                p_file_name: file_name,
+                p_file_path: params[3],
+                p_file_ext: file_ext,
+                p_file_type: file_type,
+                p_file_content: fileBuffer,
+            },
                 p_language,
                 p_crt_by
             );
@@ -1271,9 +1271,9 @@ class DsoController {
                 p_crt_by = user.USER_ID;
             }
             let path = `/resources/pages/${fileid.substr(0, 2)}/${fileid.substr(
-        2,
-        2
-      )}/${fileid}.vue`;
+                2,
+                2
+            )}/${fileid}.vue`;
             let filePath = Helpers.appRoot(path);
             let liner = new lineByLine(filePath);
 
@@ -1289,9 +1289,9 @@ class DsoController {
             }
             //process file in popup
             let popup_path = `/resources/pages/${fileid.substr(0, 2)}/${fileid.substr(
-        2,
-        2
-      )}/`;
+                2,
+                2
+            )}/`;
             popup_path = Helpers.appRoot(popup_path);
             let filenames = await Utils.readDir(popup_path);
             for (let i = 0; i < filenames.length; i++) {
@@ -1318,9 +1318,9 @@ class DsoController {
 
             //process file in /resources/components/part/...
             let part_path = `/resources/components/part/${fileid.substr(
-        0,
-        2
-      )}/${fileid.substr(2, 2)}/`;
+                0,
+                2
+            )}/${fileid.substr(2, 2)}/`;
             part_path = Helpers.appRoot(part_path);
             filenames = await Utils.readDir(part_path);
             for (let i = 0; i < filenames.length; i++) {

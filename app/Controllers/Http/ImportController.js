@@ -874,8 +874,101 @@ class ImportController {
           LOAI_TOKHAI: "LOAI_TOKHAI",
         },
       ];
-      const jsonDataDBTB = await transform(xmlContent, DataDBTB);
-      // console.log("jsonDataDBTB",jsonDataDBTB)
+      let jsonDataDBTB = await transform(xmlContent, DataDBTB);
+      /* Check DTBTs is empty */
+      //console.log("jsonDataDBTB",jsonDataDBTB);
+      //console.log(jsonDataDBTB.length);
+      if(jsonDataDBTB.length === 0) {
+        jsonDataDBTB = [
+          {
+            DTBTID: "",
+            MA_CUC_HQ: "",
+            TEN_CUC_HQ: "",
+            Loai_TBT: "",
+            SO_TBT: "",
+            Ngay_TBT: "",
+            Ngay_HH_TBT: "",
+            Tong_TH: "",
+            TaiKhoan: "",
+            Ten_KhoBac: "",
+            TEN_DV: "",
+            BAO_LANH_TEN_NH: "",
+            BAO_LANH_MA_NH: "",
+            BAO_LANH_MA_A: "",
+            BAO_LANH_KY_HIEU: "",
+            BAO_LANH_SO_CT: "",
+            BAO_LANH_TEN_LOAI: "",
+            TRA_THAY_TEN_NH: "",
+            TRA_THAY_MA_NH: "",
+            TRA_THAY_MA_A: "",
+            TRA_THAY_KY_HIEU: "",
+            TRA_THAY_SO_CT: "",
+            TEN_SAC_THUE: "",
+            TIEU_MUC: "",
+            TIEN_THUE: "",
+            TIEN_THUE_MIEN: "",
+            TIEN_THUE_GIAM: "",
+            TIEN_THUE_NOP: "",
+            TIEN_THUE_AN_DINH: "",
+            TIEN_THUE_CHENH: "",
+            TEN_SAC_THUE2: "",
+            TIEU_MUC2: "",
+            TIEN_THUE2: "",
+            TIEN_THUE_MIEN2: "",
+            TIEN_THUE_GIAM2: "",
+            TIEN_THUE_NOP2: "",
+            TIEN_THUE_AN_DINH2: "",
+            TIEN_THUE_CHENH2: "",
+            TEN_SAC_THUE3: "",
+            TIEU_MUC3: "",
+            TIEN_THUE3: "",
+            TIEN_THUE_MIEN3: "",
+            TIEN_THUE_GIAM3: "",
+            TIEN_THUE_NOP3: "",
+            TIEN_THUE_AN_DINH3: "",
+            TIEN_THUE_CHENH3: "",
+            TEN_SAC_THUE4: "",
+            TIEU_MUC4: "",
+            TIEN_THUE4: "",
+            TIEN_THUE_MIEN4: "",
+            TIEN_THUE_GIAM4: "",
+            TIEN_THUE_NOP4: "",
+            TIEN_THUE_AN_DINH4: "",
+            TIEN_THUE_CHENH4: "",
+            TEN_SAC_THUE5: "",
+            TIEU_MUC5: "",
+            TIEN_THUE5: "",
+            TIEN_THUE_MIEN5: "",
+            TIEN_THUE_GIAM5: "",
+            TIEN_THUE_NOP5: "",
+            TIEN_THUE_AN_DINH5: "",
+            TIEN_THUE_CHENH5: "",
+            TEN_SAC_THUE6: "",
+            TIEU_MUC6: "",
+            TIEN_THUE6: "",
+            TIEN_THUE_MIEN6: "",
+            TIEN_THUE_GIAM6: "",
+            TIEN_THUE_NOP6: "",
+            TIEN_THUE_AN_DINH6: "",
+            TIEN_THUE_CHENH6: "",
+            TONG_TIEN_THUE: "",
+            TONG_TIEN_THUE_MIEN: "",
+            TONG_TIEN_THUE_GIAM: "",
+            TONG_TIEN_THUE_NOP: "",
+            TONG_TIEN_THUE_AN_DINH: "",
+            TONG_TIEN_THUE_CHENH: "",
+            TY_GIA: "",
+            SO_NGAY_AN_HAN: "",
+            NGAY_HET_HAN_TNTX: "",
+            LAI_PHAT_CHAM_NOP: "",
+            BAO_LANH_NAM_CT: "",
+            TRA_THAY_NAM_CT: "",
+            LOAI_TOKHAI: ""
+          }
+        ]
+      };
+      //console.log("jsonDataDBTB-after",jsonDataDBTB);
+      /* #Check DTBTs is empty */
       const DataCont = [
         "Root/DTOKHAIMD_VNACCSs/DTOKHAIMD_VNACCS/Data",
         {
@@ -1338,7 +1431,7 @@ class ImportController {
       }
       masterPara = arrData.concat(arrDataDBTB);
 			masterPara = masterPara.concat([tei_company_pk]);
-
+      // console.log("masterPara", masterPara.toString());
       const xmlRelativePath = p_xml_path.replace(ROOT_DIR_FILES, "");
       masterPara = masterPara.concat(["", xmlRelativePath, "", ""]);
       const master = await DBService.callProcCursor("ei_upd_tei_ecus_declare", masterPara, p_language, p_crt_by);

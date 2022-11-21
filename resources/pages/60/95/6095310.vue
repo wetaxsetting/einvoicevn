@@ -4,7 +4,7 @@
     <v-row no-gutters class="pl-2">
       <v-col v-show="showHilden" cols="12" :lg="showHilden ? 4 : 0">
         <v-card class="pa-2">
-          <v-row dense>
+          <v-row dense align="center" justify="space-between">
             <v-col md="6">
               <BaseSelect style="margin-top: 22px" item-value="TCO_COMPANY_PK" item-text="PARTNER_NAME" :lstData="company_list" :label="$t('company')" v-model="selected_company" />
             </v-col>
@@ -14,7 +14,18 @@
             <v-col md="6">
               <v-file-input ref="refFile" prepend-icon="mdi-paperclip" :label="$t('attach_file')" @change="changeFile" v-model="file"></v-file-input>
             </v-col>
-            <v-col md="6" class="d-flex justify-end">
+            <v-col md="6">
+              <GwFlexBox>
+                <v-sheet width="45%">
+                  <BaseDatePicker default :label="$t('from_date')" v-model="ngayDKFrom" />
+                </v-sheet>
+                <div class="mx-2"></div>
+                <v-sheet width="45%">
+                  <BaseDatePicker default :label="$t('to_date')" v-model="ngayDKTo" />
+                </v-sheet>
+              </GwFlexBox>
+            </v-col>
+            <v-col md="12" class="d-flex justify-end">
               <BaseButton icon_type="search" btn_type="icon" :btn_text="$t('search')" :disabled="isProcessing" @onclick="onSearch" />
               <BaseButton icon_type="view" btn_type="icon" :btn_text="$t('view')" :disabled="isProcessing" @onclick="onClickButton()" />
               <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onDelete()" />
@@ -23,7 +34,7 @@
           </v-row>
           <v-row>
             <v-col>
-              <BaseGridView ref="grdAPTKHQReview" :header="grdHeader" sel_procedure="EI_SEL_6090310_SEL_TEI_ECUS_DECLARE" :multiselect="true" :headertype="1" :filter_paras="[this.so_tk]" upd_procedure="EI_UPD_6090310_TEI_ECUS_DECLARE" :editable="true" :update_paras="['PK']" :height="limitHeight" @cellDblClick="onDblClickCell" />
+              <BaseGridView ref="grdAPTKHQReview" :header="grdHeader" sel_procedure="EI_SEL_6090310_SEL_TEI_ECUS_DECLARE" :multiselect="true" :headertype="1" :filter_paras="[so_tk, ngayDKFrom, ngayDKTo]" upd_procedure="EI_UPD_6090310_TEI_ECUS_DECLARE" :editable="true" :update_paras="['PK']" :height="limitHeight" @cellDblClick="onDblClickCell" />
             </v-col>
           </v-row>
         </v-card>
@@ -158,6 +169,9 @@ export default {
     indexTab: 0,
     ten_cty: "",
     ma_cty: "",
+
+    ngayDKFrom: "",
+    ngayDKTo: ""
   }),
   /*############### created #######################*/
   created() {
@@ -187,9 +201,9 @@ export default {
     },
     limitHeight() {
       if (this.windowHeight <= 768) {
-        return this.windowHeight * 0.60; //1366x768
+        return this.windowHeight * 0.50; //1366x768
       } else {
-        return this.windowHeight * 0.70; //1920x1080
+        return this.windowHeight * 0.65; //1920x1080
       }
     },
     limitHeightmin() {

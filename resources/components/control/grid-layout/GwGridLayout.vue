@@ -2,7 +2,7 @@
   <GwTransition :transitionType="transition">
     <BaseWrapper :flat="isFlat" :color="color" :id="`gw-grid-layout-id-${keyID}`" :height="containerHeight ? containerHeight : height" v-show="visible">
       <v-container fluid :class="myContainerClass" v-resize="updateHeight" :style="`height: ${containerHeight ? containerHeight : height}px`">
-        <v-row :dense="rowAttrs.dense" :no-gutters="rowAttrs.noGutters" :align="rowAttrs.align" :justify="rowAttrs.justify">
+        <v-row :dense="rowAttrs.dense" :no-gutters="rowAttrs.noGutters" :align="rowAttrs.align" :justify="rowAttrs.justify" class="fill-height">
           <v-col v-for="(vnode) in renderSlots()" :key="vnode.data.slot" v-bind="renderColsAttrs(vnode.data)">
             <VNodeItem :nodeValue="vnode"></VNodeItem>
           </v-col>
@@ -70,7 +70,7 @@ export default {
     /* Set class css cho thẻ v-container */
     containerClass: String,
     /* Giá trị cho chiều cao (height) của container. Nếu như dùng "containerHeight" thì không dùng "percentHeight" và ngược lại. */
-    containerHeight: Number,
+    containerHeight: [ String, Number ],
     /* Loại bỏ padding & margin cho thẻ v-container */
     noPadding: Boolean,
     /* Khai báo là true nếu như dùng component này bên trong thẻ v-dialog */
@@ -132,6 +132,7 @@ export default {
 
   methods: {
     renderSlots() {
+      //console.log("renderSlots!");
       if(Object.values(this.$slots).length > 1) {
         return Object.values(this.$slots).map(item => item[0]);
       }
@@ -141,14 +142,19 @@ export default {
       })
     },
     renderColsAttrs(value) {
-      return {
+      const attrsDefault = {
         id: `column-${value.slot}`,
         lg: value.attrs?.colspan ? (value.attrs.colspan === "auto" ? (12 - this.colsValue.lg - (value.attrs?.offset ? value.$attrs.offset : 0)) : value.attrs.colspan) : this.colsValue.lg,
         md: value.attrs?.colspan ? (value.attrs.colspan === "auto" ? (12 - this.colsValue.md - (value.attrs?.offset ? value.$attrs.offset : 0)) : value.attrs.colspan) : this.colsValue.md,
         sm: value.attrs?.colspan ? (value.attrs.colspan === "auto" ? (12 - this.colsValue.sm - (value.attrs?.offset ? value.$attrs.offset : 0)) : value.attrs.colspan) : this.colsValue.sm,
         cols: this.colsValue.xs,
-        offset: value.attrs?.offset ? value.attrs.offset : 0
+        offset: value.attrs?.offset ? value.attrs.offset : 0     
       }
+      if(value?.attrs && value.attrs["align-self"]) {        
+        const alignSelfAttr = { "align-self": value.attrs["align-self"] }
+        return { ...attrsDefault, ...alignSelfAttr }
+      }
+      return attrsDefault;
     },
     updateHeight() {
       this.$emit("callBackHeight", this.height)

@@ -1,5 +1,5 @@
 <template>
-  <v-sheet v-bind="$attrs" tile :color="color ? color : null" class="overflow-y-overlay" :class="flat ? '' : 'elevation-3'" :width="width" :height="height">
+  <v-sheet v-bind="$attrs" tile :color="color ? color : null" :class="[flat ? '' : 'elevation-3', additionClasses]" :width="width" :height="height">
     <slot name="default"></slot>
   </v-sheet>
 </template>
@@ -24,6 +24,10 @@ export default {
     flat: {
       type: Boolean,
       default: true
+    },
+    additionClasses: {
+      type: String,
+      default: "overflow-y-auto"
     }
   }
 }

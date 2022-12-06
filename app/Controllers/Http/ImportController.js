@@ -457,7 +457,7 @@ class ImportController {
           }
           const detailPara = [master[0].PK, jsonDSHHDVu[i].TChat, jsonDSHHDVu[i].STT, jsonDSHHDVu[i].MHHDVu, jsonDSHHDVu[i].THHDVu, jsonDSHHDVu[i].DVTinh, jsonDSHHDVu[i].SLuong, jsonDSHHDVu[i].DGia, jsonDSHHDVu[i].ThTien, jsonDSHHDVu[i].TLCKhau, jsonDSHHDVu[i].STCKhau, jsonDSHHDVu[i].TSuat];
           const detail = await DBService.callProcCursor("ei_upd_tei_einvoiced_cloud", detailPara, p_language, p_crt_by);
-          console.log("detail", detail);
+          //console.log("detail", detail);
         }
         return master[0].PK;
       } else {

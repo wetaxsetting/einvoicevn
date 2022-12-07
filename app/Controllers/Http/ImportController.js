@@ -97,13 +97,20 @@ class ImportController {
       }
       const root_directory = `${ROOT_DIR_FILES}/eiv-ap/${tei_company_pk}`;
       const file_path = await Utils.putFileRootPath(file, root_directory);
-      console.log("file_path", file_path);
+      //console.log("file_path", file_path);
       if (file_path && file_path.indexOf(".xml") > 0) {
         tei_einvoice_cloud_pk = await this.extractXMLContent(file_path, p_language, p_crt_by, file_name);
         if (!isNaN(tei_einvoice_cloud_pk)) {
           return response.send(Utils.response(true, "upload_xml_file_sucessfull", { tei_einvoice_cloud_pk: tei_einvoice_cloud_pk }));
         } else {
           fs.unlinkSync(file_path);
+          Utils.Logger({
+            LVL: "error",
+            MODULE: "ImportController",
+            FUNC: "UploadFileToFolderEInvoice",
+            CONTENT: `file_name: ${file_name}, ermsg: ${tei_einvoice_cloud_pk}`,
+            CRT_BY: p_crt_by,
+          });
           return response.send(Utils.response(false, "upload_xml_file_failed", { file_name: file_name, ermsg: tei_einvoice_cloud_pk }));
         }
       } else if (file_path && file_path.indexOf(".pdf") > 0) {
@@ -216,7 +223,7 @@ class ImportController {
       let jsonTTKhac = null;
       try {
         jsonTTKhac = await transform(xmlContent, templateTTKhac);
-      } catch (e) {}
+      } catch (e) { }
       //console.log("jsonTTKhac", jsonTTKhac)
       let customField1 = "",
         customField2 = "",
@@ -450,7 +457,7 @@ class ImportController {
           }
           const detailPara = [master[0].PK, jsonDSHHDVu[i].TChat, jsonDSHHDVu[i].STT, jsonDSHHDVu[i].MHHDVu, jsonDSHHDVu[i].THHDVu, jsonDSHHDVu[i].DVTinh, jsonDSHHDVu[i].SLuong, jsonDSHHDVu[i].DGia, jsonDSHHDVu[i].ThTien, jsonDSHHDVu[i].TLCKhau, jsonDSHHDVu[i].STCKhau, jsonDSHHDVu[i].TSuat];
           const detail = await DBService.callProcCursor("ei_upd_tei_einvoiced_cloud", detailPara, p_language, p_crt_by);
-          console.log("detail", detail);
+          //console.log("detail", detail);
         }
         return master[0].PK;
       } else {
@@ -878,7 +885,7 @@ class ImportController {
       /* Check DTBTs is empty */
       //console.log("jsonDataDBTB",jsonDataDBTB);
       //console.log(jsonDataDBTB.length);
-      if(jsonDataDBTB.length === 0) {
+      if (jsonDataDBTB.length === 0) {
         jsonDataDBTB = [
           {
             DTBTID: "",
@@ -1430,7 +1437,7 @@ class ImportController {
         arrDataDBTB.push(e);
       }
       masterPara = arrData.concat(arrDataDBTB);
-			masterPara = masterPara.concat([tei_company_pk]);
+      masterPara = masterPara.concat([tei_company_pk]);
       // console.log("masterPara", masterPara.toString());
       const xmlRelativePath = p_xml_path.replace(ROOT_DIR_FILES, "");
       masterPara = masterPara.concat(["", xmlRelativePath, "", ""]);

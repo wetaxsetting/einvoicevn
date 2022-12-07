@@ -103,7 +103,7 @@ export default {
                     color_str = "success";
                     break;
                 case "pdf":
-                    icon_str = "mdi-file-pdf";
+                    icon_str = "mdi-file-pdf-box";
                     color_str = "error";
                     break;
                 case "process":

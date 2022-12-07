@@ -1,327 +1,153 @@
   <!-- ================================================================= BEGIN DESIGN LAYOUT======================================================================================= -->
   <template>
-  <v-container fluid v-resize="onResize" class="pa-2">
-    <v-row no-gutters class="pl-2">
+  <v-container fluid v-resize="onResize">
+    <v-row no-gutters>
       <v-col  :cols="12 - RightCols">
-        <v-card class="pa-2">
-          <v-row dense>
-            <v-col md="4">
-              <BaseSelect
-                :label="$t('company')"
-                v-model="selected_company"
-                :lstData="company_list"
-                item-text="PARTNER_NAME"
-                item-value="TCO_COMPANY_PK"
-              />
-            </v-col>
-            <v-col md="2">
-              <BaseDatePicker
-                default
-                :label="$t('date_from')"
-                v-model="dt_from"
-              />
-            </v-col>
-            <v-col md="2">
-              <BaseDatePicker default :label="$t('date_to')" v-model="dt_to" />
-            </v-col>
-            <v-col md="4" class="d-flex justify-end">
-              <BaseButton
-                icon_type="search"
-                btn_type="icon"
-                :btn_text="$t('search')"
-                :disabled="isProcessing"
-                @onclick="onSearch"
-              />
-              <BaseButton
-                icon_type="view"
-                btn_type="icon"
-                :btn_text="$t('view')"
-                :disabled="isProcessing"
-                @onclick="onClickButton()"
-              />
-              <BaseButton
-                btn_type="icon"
-                icon_type="delete"
-                :btn_text="$t('delete')"
-                @onclick="onDelete()"
-              />
-              <BaseButton
-                btn_type="icon"
-                icon_type="save"
-                :btn_text="$t('save')"
-                @onclick="onSave()"
-              />
-              <BaseButton btn_type="icon" icon_type="print" :btn_text="$t('detail_report')" @onclick="onReport"/>
-              <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('master_report')" @onclick="onReport2"/>
-              <v-btn icon tile :color="currentTheme" @click="toggleRight">
-                  <v-icon v-if="!showRight">mdi-skip-previous</v-icon>
-                  <v-icon v-if="showRight">mdi-skip-next</v-icon>
-                </v-btn>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col md="2">
-              <v-text-field
-                clearable
-                dense
-                hide-details
-                :label="$t('serial_no')"
-                v-model="SERIAL_NO"
-              ></v-text-field>
-            </v-col>
-            <v-col md="2">
-              <v-text-field
-                clearable
-                dense
-                hide-details
-                :label="$t('invoice_no')"
-                v-model="INVOICE_NO"
-              ></v-text-field>
-            </v-col>
-            <v-col md="2">
-              <v-text-field
-                clearable
-                dense
-                hide-details
-                :label="$t('Seller_code')"
-                v-model="seller_no"
-              ></v-text-field>
-            </v-col>
-            <v-col md="2">
-              <v-text-field
-                clearable
-                dense
-                hide-details
-                :label="$t('Seller_name')"
-                v-model="seller_name"
-              ></v-text-field>
-            </v-col>
-            <v-col md="2">
-              <BaseSelect
-                :label="$t('form_no')"
-                v-model="selected_form_no"
-                :lstData="form_no_list"
-                item-text="NAME"
-                item-value="CODE"
-              />
-            </v-col>
-            <v-col md="2">
-              <BaseSelect
-                :label="$t('ei_status')"
-                v-model="selected_status"
-                :lstData="status_list"
-                item-text="NAME"
-                item-value="CODE"
-              />
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col md="2">
-              <v-text-field
-                clearable
-                dense
-                hide-details
-                :label="$t('mtc')"
-                v-model="matracuu"
-              ></v-text-field>
-            </v-col>
-            <v-col sm="3" md="3">
-              <v-file-input
-                ref="refFile"
-                prepend-icon="mdi-paperclip"
-                :label="$t('attach_file')"
-                @change="changeFile"
-                v-model="file"
-              ></v-file-input>
-            </v-col>
-            <v-col md="3">
-              <v-text-field
-                clearable
-                dense
-                hide-details
-                :label="$t('website')"
-                v-model="WEB_SITE"
-              ></v-text-field>
-            </v-col>
-            <v-col md="3">
-              <v-text-field
-                clearable
-                dense
-                hide-details
-                :label="$t('mcqt')"
-                v-model="macqt"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <BaseGridView
-                :header="grd_header_m"
-                :setting="true"
-                :multiselect="true"
-                :headertype="1"
-                sel_procedure="EI_SEL_6090300_SEL_TEI_EINVOICE_CLOUD"
-                @onSelectionDataChanged="onGridSelectionChanged"
-                ref="grdAPInvoiceReview"
-                :height="limitHeight"
-                :autoresize="false"
-                :filter_paras="[
-                  this.selected_company,
-                  this.dt_from,
-                  this.dt_to,
-                  this.selected_form_no,
-                  this.SERIAL_NO,
-                  this.INVOICE_NO,
-                  this.seller_name,
-                  this.seller_no,
-                  this.matracuu, // khong sai
-                  this.macqt,
-                  this.selected_status, // khong sai
-                  this.WEB_SITE, // khong sai
-                ]"
-                @cellDblClick="onDblClickCell"
-                @cellClick="onCellClick"
-                upd_procedure="EI_UPD_6090300_EINVOICE_CLOUD"
-                :editable="true"
-                :update_paras="['PK']"
-                :menu_cd="'6095300'"
-                :id="'grdAPInvoiceReview'"
-                allow-cookie
-              />
-            </v-col>
-          </v-row>
-        </v-card>
+        <GwGridLayout
+      dense
+      flat
+      containerClass="py-0"
+      @callBackHeight="parentLayoutHeight = $event"
+    >
+      <!-- <BaseTabs @changed="tabChanged">
+      <BaseTab :name="$t('leak')" tabname="leak" :eager="true"> -->
+      <GwGridLayout
+        child
+        dense
+        flat
+        align="start"
+        colsPerRow="1"
+        containerClass="py-0 px-1"
+        percentHeight="95"
+        @callBackHeight="childrenLayoutHeight = $event"
+      >
+       <BaseSelect colspan="4"  :label="$t('company')"  v-model="selected_company"  :lstData="company_list"  item-text="PARTNER_NAME"  item-value="TCO_COMPANY_PK"/>
+       
+       <GwFlexBox colspan="4" class="d-flex justify-start align-center">
+        <v-sheet width="30%" class="mr-2">
+          <BaseSelect   :label="$t('date_type')"  v-model="date_type"  :lstData="date_type_list"  item-text="NAME"  item-value="CODE"/>
+        </v-sheet>
+        <v-sheet width="32%" class="mr-2">
+          <BaseDatePicker  default  :label="$t('date_from')"  v-model="dt_from"/>
+        </v-sheet>
+        <v-sheet width="32%" >
+          <BaseDatePicker  default :label="$t('date_to')" v-model="dt_to" />
+        </v-sheet>
+        
+       
+       
+       </GwFlexBox>
+       <GwFlexBox colspan="4" class="d-flex justify-end align-center">
+        <BaseButton  icon_type="search"  btn_type="icon"  :btn_text="$t('search')"  :disabled="isProcessing"  @onclick="onSearch"/>
+        <BaseButton  icon_type="pdf"  btn_type="icon"  :btn_text="$t('view_pdf')"  :disabled="isProcessing"  @onclick="onClickButton()"/>
+        <BaseButton  btn_type="icon"  icon_type="delete"  :btn_text="$t('delete')"  @onclick="onDelete()"/>
+        <BaseButton  btn_type="icon"  icon_type="save"  :btn_text="$t('save')"  @onclick="onSave()"/>
+        <BaseButton  btn_type="icon" icon_type="print" :btn_text="$t('detail_report')" @onclick="onReport"/>
+        <BaseButton  btn_type="icon" icon_type="excel" :btn_text="$t('master_report')" @onclick="onReport2"/>
+        <v-btn  icon tile :color="currentTheme" @click="toggleRight">
+          <v-icon v-if="!showRight">mdi-skip-previous</v-icon>
+          <v-icon v-if="showRight">mdi-skip-next</v-icon>
+        </v-btn>
+       </GwFlexBox>
+        
+        <BaseInput colspan="2" clearable  dense  hide-details  :label="$t('serial_no')"  v-model="SERIAL_NO"></BaseInput>
+        <BaseInput colspan="2" clearable  dense  hide-details  :label="$t('invoice_no')"  v-model="INVOICE_NO"></BaseInput>
+        <BaseInput colspan="2" clearable  dense  hide-details  :label="$t('Seller_code')"  v-model="seller_no"></BaseInput>
+        <BaseInput colspan="2" clearable  dense  hide-details  :label="$t('Seller_name')"  v-model="seller_name"></BaseInput>
+        <BaseSelect colspan="2" :label="$t('form_no')"  v-model="selected_form_no"  :lstData="form_no_list"  item-text="NAME"  item-value="CODE"/>
+        <BaseSelect colspan="2" :label="$t('ei_status')"  v-model="selected_status"  :lstData="status_list"  item-text="NAME"  item-value="CODE"/>
+        <BaseInput colspan="3" clearable  dense  hide-details  :label="$t('mtc')"  v-model="matracuu"></BaseInput>
+        <v-file-input class="pt-0 mt-0" colspan="3" ref="refFile"  prepend-icon="mdi-paperclip"  :label="$t('attach_file')"  @change="changeFile"  v-model="file"></v-file-input>
+        <BaseInput colspan="2" clearable  dense  hide-details  :label="$t('website')"  v-model="WEB_SITE"></BaseInput>
+        <BaseInput colspan="3" clearable  dense  hide-details  :label="$t('mcqt')"  v-model="macqt"></BaseInput>
+        <BaseSelect colspan="1"  :label="$t('file_integrity')"  v-model="file_integrity"  :lstData="file_integrity_list"  item-text="NAME"  item-value="CODE"/>
+        <BaseGridView
+          colspan="12"
+          :header="grd_header_m"
+          :setting="true"
+          :headertype="1"
+          sel_procedure="EI_SEL_6090300_SEL_TEI_EINVOICE_CLOUD"
+          @onSelectionDataChanged="onGridSelectionChanged"
+          ref="grdAPInvoiceReview"
+          :height="gridHeight"
+          :selectionmode="'singlerow'"
+          :autoresize="false"
+          :filter_paras="[
+            this.selected_company,
+            this.dt_from,
+            this.dt_to,
+            this.selected_form_no,
+            this.SERIAL_NO,
+            this.INVOICE_NO,
+            this.seller_name,
+            this.seller_no,
+            this.matracuu, // khong sai
+            this.macqt,
+            this.selected_status, // khong sai
+            this.WEB_SITE, // khong sai
+            this.file_integrity,
+            this.date_type
+          ]"
+          @cellDblClick="onDblClickCell"
+          @cellClick="onCellClick"
+          upd_procedure="EI_UPD_6090300_EINVOICE_CLOUD"
+          :editable="true"
+          :update_paras="['PK']"
+          :menu_cd="'6095300'"
+          :id="'grdAPInvoiceReview'"
+          allow-cookie
+        />
+      </GwGridLayout></GwGridLayout>
       </v-col>
-      <v-col class="pa-1" v-show="showRight" :cols="RightCols">
-        <v-card class="pa-1">
-          <v-row>
-            <v-col md="2" cols="12" class="text-right">
-              <div class="d-flex">
-                
-              </div>
-            </v-col>
-            <v-col md="2">
-              <v-text-field
-                clearable
-                dense
-                hide-details
-                :label="$t('item_serial_no')"
-                v-model="item_serial_no"
-              ></v-text-field>
-            </v-col>
-            <v-col md="2">
-              <v-text-field
-                clearable
-                dense
-                hide-details
-                :label="$t('item_invoice_no')"
-                v-model="item_invoice_no"
-              ></v-text-field>
-            </v-col>
-            <v-col md="2">
-              <v-text-field
-                clearable
-                dense
-                hide-details
-                :label="$t('invoice_date')"
-                v-model="item_invoice_date"
-              ></v-text-field>
-            </v-col>
-            <v-col md="2">
-              <v-text-field
-                clearable
-                dense
-                hide-details
-                :label="$t('sale_taxcode')"
-                v-model="item_sale_taxcode"
-              ></v-text-field>
-            </v-col>
-            <v-col md="2">
-              <v-text-field
-                clearable
-                dense
-                hide-details
-                :label="$t('sale_company_name')"
-                v-model="item_sale_company_name"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col md="2">
-              <v-text-field
-                clearable
-                dense
-                hide-details
-                :label="$t('sale_address')"
-                v-model="item_sale_address"
-              ></v-text-field>
-            </v-col>
-            <v-col md="2">
-              <v-text-field
-                clearable
-                dense
-                hide-details
-                :label="$t('amt_exclude_vat')"
-                v-model="item_exclude_vat"
-              ></v-text-field>
-            </v-col>
-            <v-col md="2">
-              <v-text-field
-                clearable
-                dense
-                hide-details
-                :label="$t('amt_vat')"
-                v-model="item_amt_vat"
-              ></v-text-field>
-            </v-col>
-            <v-col md="2">
-              <v-text-field
-                clearable
-                dense
-                hide-details
-                :label="$t('amt_include_vat')"
-                v-model="item_include_vat"
-              ></v-text-field>
-            </v-col>
-            <v-col md="2">
-              <v-text-field
-                clearable
-                dense
-                hide-details
-                :label="$t('so_hoa_don')"
-                v-model="item_so_hoa_don"
-              ></v-text-field>
-            </v-col>
-            <v-col md="2">
-              <v-text-field
-                clearable
-                dense
-                hide-details
-                :label="$t('ngay_lap_hoa_don')"
-                v-model="item_nlhd"
-              ></v-text-field>
-            </v-col>
-          </v-row>
+      <v-col  v-show="showRight" :cols="RightCols">
+          <GwGridLayout
+      dense
+      flat
+      containerClass="py-0"
+      @callBackHeight="parentLayoutHeight = $event"
+    >
+      <!-- <BaseTabs @changed="tabChanged">
+      <BaseTab :name="$t('leak')" tabname="leak" :eager="true"> -->
+      <GwGridLayout
+        child
+        dense
+        flat
+        align="start"
+        colsPerRow="1"
+        containerClass="py-0 px-1"
+        percentHeight="95"
+        @callBackHeight="childrenLayoutHeight = $event"
+      >
+      <BaseInput colspan="3" clearable  dense  hide-details  :label="$t('item_serial_no')"  v-model="item_serial_no"></BaseInput>
+      <BaseInput colspan="3" clearable  dense  hide-details  :label="$t('item_invoice_no')"  v-model="item_invoice_no"></BaseInput>
+      <BaseInput colspan="3" clearable  dense  hide-details  :label="$t('invoice_date')"  v-model="item_invoice_date"></BaseInput>
+      <BaseInput colspan="3" clearable  dense  hide-details  :label="$t('sale_taxcode')"  v-model="item_sale_taxcode"></BaseInput>
 
-          <v-row dense>
-            <v-col>
-              <BaseGridView
-                ref="gridview"
-                :autoresize="false"
-                :header="grd_header_d"
-                :setting="true"
-                :multiselect="true"
-                :headertype="1"
-                :height="limitHeightmin"
-                sel_procedure="EI_SEL_6090300_SEL_TEI_EINVOICED_LOUD"
-                :filter_paras="[this.item_pk]"
-                :menu_cd="'6095300'"
-                :id="'gridview'"
-                allow-cookie
-              />
-            </v-col>
-          </v-row>
-        </v-card>
+      <BaseInput colspan="6" clearable  dense  hide-details  :label="$t('sale_company_name')"  v-model="item_sale_company_name"></BaseInput>
+      <BaseInput colspan="6" clearable  dense  hide-details  :label="$t('sale_address')"  v-model="item_sale_address"></BaseInput>
+
+      <BaseInput colspan="2" clearable  dense  hide-details  :label="$t('amt_exclude_vat')" number="0" v-model="item_exclude_vat"></BaseInput>
+      <BaseInput colspan="2" clearable  dense  hide-details  :label="$t('amt_vat')" number="0" v-model="item_amt_vat"></BaseInput>
+      <BaseInput colspan="2" clearable  dense  hide-details  :label="$t('amt_include_vat')" number="0" v-model="item_include_vat"></BaseInput>
+      <BaseInput colspan="3" clearable  dense  hide-details  :label="$t('so_hoa_don')"  v-model="item_so_hoa_don"></BaseInput>
+      <BaseInput colspan="3" clearable  dense  hide-details  :label="$t('ngay_lap_hoa_don')"  v-model="item_nlhd"></BaseInput>
+      <BaseGridView
+        colspan="12"
+        ref="gridview"
+        :autoresize="false"
+        :header="grd_header_d"
+        :setting="true"
+        :multiselect="true"
+        :headertype="1"
+        :height="gridHeight"
+        sel_procedure="EI_SEL_6090300_SEL_TEI_EINVOICED_LOUD"
+        :filter_paras="[this.item_pk]"
+        :menu_cd="'6095300'"
+        :id="'gridview'"
+        allow-cookie
+      />
+      </GwGridLayout></GwGridLayout>
+      
       </v-col>
     </v-row>
      <view-einvoice-pdf-dialog
@@ -344,6 +170,12 @@ export default {
   components: { "view-einvoice-pdf-dialog": ViewEInvoicePDFDialog },
   /*############### data ##########################*/
   data: () => ({
+    parentLayoutHeight: 0,
+    childrenLayoutHeight: 0,
+    date_type:"invoice_date",
+    date_type_list:[{CODE:"invoice_date",NAME:"Invoice"},{CODE:"upload_date",NAME:"Upload"}],
+    file_integrity:"",
+    file_integrity_list:[{CODE:"",NAME:"None"},{CODE:"Yes",NAME:"Yes"},{CODE:"No",NAME:"No"}],
     grd_header_m:[],
     grd_header_d:[],
     item_pk: 0,
@@ -412,6 +244,12 @@ export default {
   computed: {
     user() {
       return this.$store.getters["auth/user"];
+    },
+    gridHeight() {
+      return this._calculateHeight(this.childrenLayoutHeight, 50);
+    },
+    cardHeight() {
+      return this._calculateHeight(this.childrenLayoutHeight, 90);
     },
     limitHeight() {
       if (this.windowHeight <= 768) {
@@ -617,19 +455,7 @@ export default {
             exceljs.dowloadWorkbook(this, "report_"+this.dt_from+"-"+this.dt_to+ ".xlsx");
     },
     onDblClickCell(cell) {
-      this.item_serial_no = cell.data.SERIAL_NO;
-      this.item_invoice_no = cell.data.INVOICE_NO;
-      this.item_invoice_date = cell.data.SERIAL_NO;
-      this.item_sale_taxcode = cell.data.SALE_TAXCODE;
-      this.item_sale_company_name = cell.data.SALE_COMPANY_NAME;
-      this.item_sale_address = cell.data.SALE_ADDRESS;
-      this.item_exclude_vat = cell.data.AMT_EXCLUDE_VAT;
-      this.item_amt_vat = cell.data.AMT_VAT;
-      this.item_include_vat = cell.data.AMT_INCLUDE_VAT;
-      this.item_nlhd = cell.data.NLHDCLQUAN;
-      this.item_so_hoa_don = cell.data.SHDCLQUAN;
-      this.item_pk = cell.data.PK;
-      this.$refs.gridview.loadData();
+     
      // console.log(cell);
     },
     toggleRight() {
@@ -736,6 +562,20 @@ export default {
       } else {
         this.pdfUrlRow = data.PDF_URL;
       }
+
+      this.item_serial_no = data.SERIAL_NO;
+      this.item_invoice_no = data.INVOICE_NO;
+      this.item_invoice_date = data.SERIAL_NO;
+      this.item_sale_taxcode = data.SALE_TAXCODE;
+      this.item_sale_company_name = data.SALE_COMPANY_NAME;
+      this.item_sale_address = data.SALE_ADDRESS;
+      this.item_exclude_vat = data.AMT_EXCLUDE_VAT;
+      this.item_amt_vat = data.AMT_VAT;
+      this.item_include_vat = data.AMT_INCLUDE_VAT;
+      this.item_nlhd = data.NLHDCLQUAN;
+      this.item_so_hoa_don = data.SHDCLQUAN;
+      this.item_pk = data.PK;
+      this.$refs.gridview.loadData();
     },
 
   async  onSearch() {
@@ -776,21 +616,21 @@ export default {
            }
 
            break;
-        // case "ei_status":
-        //   const dso_status_list = {
-        //     type: "list",
-        //     selpro: "AC_SEL_6095300_STATUS",
-        //     para: [this.selected_company],
-        //   };
-        //   this.status_list = await this._dsoCall(
-        //     dso_status_list,
-        //     "select",
-        //     false
-        //   );
-        //   if (this.status_list != null) {
-        //     this.selected_status = this.status_list[0].VAL;
-        //   }
-        //   break;
+        case "ei_status":
+          const dso_status_list = {
+            type: "list",
+            selpro: "AC_SEL_6095300_STATUS",
+            para: [this.selected_company],
+          };
+          this.status_list = await this._dsoCall(
+            dso_status_list,
+            "select",
+            false
+          );
+          if (this.status_list != null) {
+            this.selected_status = this.status_list[0].VAL;
+          }
+          break;
       }
     },
     changedFromDate(obj) {
@@ -803,69 +643,68 @@ export default {
     },
       grdHeader() {
       this.grd_header_m=[
-      	{  field: "INDEX",  width: 80,  title: ("stt"),  alignment: "right",  type: "number",}, 
-       {  field: "PDFYN",  width: 100,  title: ("pdf_yn"),  alignment: "left",  type: "text",},
-       {  field: "SO_NUMBER",  width: 80,  title: ("so_number"),  alignment: "right",  type: "number",},
-       {  field: "SERIAL_NO",  width: 100,  title: ("serial_no"),  alignment: "left",  type: "text",},
-       {  field: "INVOICE_NO",  width: 100,  title: ("invoice_no"),  alignment: "left",  type: "number",},
-       {  field: "INVOICE_DATE",  width: 100,  title: ("invoice_date"),  alignment: "left",  type: "text",},
-       {  field: "SALE_TAXCODE",  width: 100,  title: ("sale_taxcode"),  alignment: "left",  type: "text",},
-       {  field: "SALE_COMPANY_NAME",  width: 300,  title: ("sale_company_name"),  alignment: "left",  type: "text",},
-       {  field: "SALE_ADDRESS",  width: 300,  title: ("sale_address"),  alignment: "left",  type: "text",},
-       {  field: "AMT_EXCLUDE_VAT",  width: 100,  title: ("amt_exclude_vat"),  alignment: "right",  type: "number",},
-       {  field: "AMT_VAT",  width: 100,  title: ("amt_vat"),  alignment: "right",  type: "number",},
+      	{  field: "INDEX",  width: 80,  title: this.$t("stt"),  alignment: "right",  type: "number",visible:false}, 
+       {  field: "PDFYN",  width: 100,  title: this.$t("pdf_yn"),  alignment: "left",  type: "text",},
+       {  field: "SO_NUMBER",  width: 80,  title: this.$t("so_number"),  alignment: "right",  type: "number",},
+       {  field: "SERIAL_NO",  width: 100,  title: this.$t("serial_no"),  alignment: "left",  type: "text",},
+       {  field: "INVOICE_NO",  width: 100,  title: this.$t("invoice_no"),  alignment: "left",  type: "text",},
+       {  field: "INVOICE_DATE",  width: 100,  title: this.$t("invoice_date"),  alignment: "left",  type: "date",},
+       {  field: "SALE_TAXCODE",  width: 100,  title: this.$t("sale_taxcode"),  alignment: "left",  type: "text",},
+       {  field: "SALE_COMPANY_NAME",  width: 300,  title: this.$t("sale_company_name"),  alignment: "left",  type: "text",},
+       {  field: "SALE_ADDRESS",  width: 300,  title: this.$t("sale_address"),  alignment: "left",  type: "text",},
+       {  field: "AMT_EXCLUDE_VAT",  width: 100,  title: this.$t("amt_exclude_vat"),  alignment: "right",  type: "number",},
+       {  field: "AMT_VAT",  width: 100,  title: this.$t("amt_vat"),  alignment: "right",  type: "number",},
        {  field: "item11",  width: 100,  title: ("Chiết khấu thương mai"),  alignment: "right",  type: "number",},
        {  field: "item12",  width: 100,  title: ("Tổng phí"),  alignment: "right",  type: "number",},
-       {  field: "AMT_INCLUDE_VAT",  width: 100,  title: ("amt_include_vat"),  alignment: "right",  type: "number",},
-       {  field: "CURRENCY",  width: 100,  title: ("currency"),  alignment: "left",  type: "text",},
+       {  field: "AMT_INCLUDE_VAT",  width: 100,  title: this.$t("amt_include_vat"),  alignment: "right",  type: "number",},
+       {  field: "CURRENCY",  width: 100,  title: this.$t("currency"),  alignment: "left",  type: "text",},
        {  field: "item15",  width: 100,  title: ("Trạng thái hóa đơn"),  alignment: "left",  type: "text",},
        {  field: "item16",  width: 100,  title: ("Kết qủa kiểm tra"),  alignment: "left",  type: "text",},
        {  field: "item17",  width: 100,  title: ("Hóa đơn liên quan"),  alignment: "left",  type: "text",},
-       {  field: "EX_RATE",  width: 100,  title: ("Tỷ giá"),  alignment: "right",  type: "number",},
+       {  field: "EX_RATE",  width: 100,  title: this.$t("ex_rate"),  alignment: "right",  type: "number",},
        {  field: "item19",  width: 100,  title: ("Tổng tiền qui đổi"),  alignment: "left",  type: "text",},
-       {  field: "item20",  width: 100,  title: ("Website"),  alignment: "left",  type: "text",},
-       {  field: "MCCQT",  width: 300,  title: ("mccqt"),  alignment: "left",  type: "text",},
+       {  field: "item20",  width: 100,  title: this.$t("website"),  alignment: "left",  type: "text",},
+       {  field: "MCCQT",  width: 300,  title: this.$t("mccqt"),  alignment: "left",  type: "text",},
        {  field: "item22",  width: 100,  title: ("Mã tra cứu"),  alignment: "left",  type: "text",},
-       {  field: "TCHDON",  width: 100,  title: ("tchdon"),  alignment: "right",  type: "number",  group1: ("Reference"),},
-       {  field: "LHDCLQUAN",  width: 100,  title: ("lhdclquan"),  alignment: "right",  type: "number",  group1: ("Reference"),},
-       {  field: "KHMSHDCLQUAN",  width: 100,  title: ("Ký hiệu mẫu hóa đơn"),  alignment: "right",  type: "number",  group1: ("Reference"),},
-       {  field: "KHHDCLQUAN",  width: 100,  title: ("Ký hiệu hóa đơn"),  alignment: "right",  type: "number",  group1: ("Reference"),},
-       {  field: "SHDCLQUAN",  width: 100,  title: ("Số hóa đơn"),  alignment: "left",  type: "text",  group1: ("Reference"),},
-       {  field: "NLHDCLQUAN",  width: 100,  title: ("Ngày lập hóa đơn"),  alignment: "left",  type: "text",  group1: ("Reference"),},
-       {  field: "GCHU",  width: 100,  title: ("Lý do"),  alignment: "left",  type: "text",  group1: ("Reference"),},
-       {  field: "FILE_INTEGRITY",  width: 100,  title: ("Cấu trúc file nguyên vẹn"),  alignment: "center",  type: "text",},
-       {  field: "SIGNINGTIME_NBAN",  width: 300,  title: ("signingtime_nban"),  alignment: "left",  type: "text",},
-       {  field: "SIGNINGTIME_CQT",  width: 300,  title: ("signingtime_cqt"),  alignment: "left",  type: "text",},
-       {  field: "CUSTOMFIELD1",  width: 300,  title: ("customfield1"),  alignment: "left",  type: "text",},
-       {  field: "CUSTOMFIELD2",  width: 300,  title: ("customfield2"),  alignment: "left",  type: "text",},
-       {  field: "CUSTOMFIELD3",  width: 100,  title: ("customfield3"),  alignment: "left",  type: "text",},
-       {  field: "CUSTOMFIELD4",  width: 100,  title: ("customfield4"),  alignment: "left",  type: "text",},
-       {  field: "CUSTOMFIELD5",  width: 100,  title: ("customfield5"),  alignment: "left",  type: "text",},
-       {  field: "CUSTOMFIELD6",  width: 300,  title: ("customfield6"),  alignment: "left",  type: "text",},
-       {  field: "CUSTOMFIELD7",  width: 300,  title: ("customfield7"),  alignment: "left",  type: "text",},
-       {  field: "CUSTOMFIELD8",  width: 100,  title: ("customfield8"),  alignment: "left",  type: "text",},
-       {  field: "CUSTOMFIELD9",  width: 100,  title: ("customfield9"),  alignment: "left",  type: "text",},
-       {  field: "CUSTOMFIELD10", width: 100,  title: ("customfield10"),  alignment: "left",  type: "text",},
+       {  field: "TCHDON",  width: 100,  title: this.$t("tchdon"),  alignment: "right",  type: "number",  group1: ("Reference"),},
+       {  field: "LHDCLQUAN",  width: 100,  title: this.$t("lhdclquan"),  alignment: "right",  type: "number",  group1: ("Reference"),},
+       {  field: "KHMSHDCLQUAN",  width: 100,  title: this.$t("khmshdclquan"),  alignment: "right",  type: "number",  group1: ("Reference"),},
+       {  field: "KHHDCLQUAN",  width: 100,  title: this.$t("khhdclquan"),  alignment: "right",  type: "number",  group1: ("Reference"),},
+       {  field: "SHDCLQUAN",  width: 100,  title: this.$t("shdclquan"),  alignment: "left",  type: "text",  group1: ("Reference"),},
+       {  field: "NLHDCLQUAN",  width: 100,  title: this.$t("nlhdclquan"),  alignment: "left",  type: "text",  group1: ("Reference"),},
+       {  field: "GCHU",  width: 100,  title: this.$t("gchu"),  alignment: "left",  type: "text",  group1: ("Reference"),},
+       {  field: "FILE_INTEGRITY",  width: 100,  title: this.$t("file_integrity"),  alignment: "center",  type: "text",},
+       {  field: "SIGNINGTIME_NBAN",  width: 300,  title: this.$t("signingtime_nban"),  alignment: "left",  type: "text",},
+       {  field: "SIGNINGTIME_CQT",  width: 300,  title: this.$t("signingtime_cqt"),  alignment: "left",  type: "text",},
+       {  field: "CUSTOMFIELD1",  width: 300,  title: this.$t("customfield1"),  alignment: "left",  type: "text",},
+       {  field: "CUSTOMFIELD2",  width: 300,  title: this.$t("customfield2"),  alignment: "left",  type: "text",},
+       {  field: "CUSTOMFIELD3",  width: 100,  title: this.$t("customfield3"),  alignment: "left",  type: "text",},
+       {  field: "CUSTOMFIELD4",  width: 100,  title: this.$t("customfield4"),  alignment: "left",  type: "text",},
+       {  field: "CUSTOMFIELD5",  width: 100,  title: this.$t("customfield5"),  alignment: "left",  type: "text",},
+       {  field: "CUSTOMFIELD6",  width: 300,  title: this.$t("customfield6"),  alignment: "left",  type: "text",},
+       {  field: "CUSTOMFIELD7",  width: 300,  title: this.$t("customfield7"),  alignment: "left",  type: "text",},
+       {  field: "CUSTOMFIELD8",  width: 100,  title: this.$t("customfield8"),  alignment: "left",  type: "text",},
+       {  field: "CUSTOMFIELD9",  width: 100,  title: this.$t("customfield9"),  alignment: "left",  type: "text",},
+       {  field: "CUSTOMFIELD10", width: 100,  title: this.$t("customfield10"),  alignment: "left",  type: "text",},
       ];
     },
     grdHeader_detail() {
-      this.grd_header_d= [{  field: "STT",  width: 80,  title: ("no"),  alignment: "center",  type: "number",},
-      {  field: "TAI_EINVOICE_CLOUD_PK",  width: 150,  title: ("tai_einvoce_cloud_pk"),  alignment: "left",  type: "number",},
-      {  field: "TCHAT",  width: 80,  title: ("tchat"),  alignment: "center",  type: "number",},
-      {  field: "MHHDVU",  width: 200,  title: ("mhhdvu"),  alignment: "right",  type: "text",},
-      {  field: "THHDVU",  width: 250,  title: ("thhdvu"),  alignment: "right",  type: "text",},
-      {  field: "DVTINH",  width: 100,  title: ("dvtinh"),  alignment: "left",  type: "text",},
-      {  field: "SLUONG",  width: 90,  title: ("so_luong"),  alignment: "center",  type: "number",},
-      {  field: "DGIA",  width: 100,  title: ("dgia"),  alignment: "right",  type: "number",},
-      {  field: "TLCKHAU",  width: 80,  title: ("tlckhau"),  alignment: "center",  type: "number",},
-      {  field: "TSUAT",  width: 80,  title: ("tsuat"),  alignment: "center",  type: "number",}, 
-       {  field: "STCKHAU",  width: 80,  title: ("stckhau"),  alignment: "center",  type: "number",},
-        {  field: "THTIEN",  width: 80,  title: ("ThTien"),  alignment: "center",  type: "number",},
-      //   {  field: "DEL_IF",  width: 80,  title: ("del_if"),  alignment: "center",  type: "number",},
-      //   {  field: "CRT_BY",  width: 100,  title: ("crt_by"),  alignment: "left",  type: "text",},
-      //   {  field: "CRT_DT",  width: 150,  title: ("crt_dt"),  alignment: "left",  type: "date",},
-      //   {  field: "MOD_BY",  width: 100,  title: ("mod_by"),  alignment: "right",  type: "number",},
-      //   {  field: "MOD_DT",  width: 100,  title: ("mod_dt"),  alignment: "right",  type: "number",},
+      this.grd_header_d= [{  field: "STT",  width: 80,  title: this.$t("no"),  alignment: "center",  type: "number",},
+      {  field: "TCHAT",  width: 80,  title: this.$t("tchat"),  alignment: "center",  type: "number",},
+      {  field: "MHHDVU",  width: 200,  title: this.$t("mhhdvu"),  alignment: "left",  type: "text",},
+      {  field: "THHDVU",  width: 250,  title: this.$t("thhdvu"),  alignment: "left",  type: "text",},
+      {  field: "DVTINH",  width: 100,  title: this.$t("dvtinh"),  alignment: "left",  type: "text",},
+      {  field: "SLUONG",  width: 90,  title: this.$t("so_luong"),  alignment: "right",  type: "number",},
+      {  field: "DGIA",  width: 100,  title: this.$t("dgia"),  alignment: "right",  type: "number",},
+      {  field: "TLCKHAU",  width: 80,  title: this.$t("tlckhau"),  alignment: "right",  type: "number",},
+      {  field: "TSUAT",  width: 80,  title: this.$t("tsuat"),  alignment: "right",  type: "number",}, 
+       {  field: "STCKHAU",  width: 80,  title: this.$t("stckhau"),  alignment: "right",  type: "number",},
+        {  field: "THTIEN",  width: 80,  title: this.$t("ThTien"),  alignment: "right",  type: "number",},
+      //   {  field: "DEL_IF",  width: 80,  title: this.$t("del_if"),  alignment: "center",  type: "number",},
+      //   {  field: "CRT_BY",  width: 100,  title: this.$t("crt_by"),  alignment: "left",  type: "text",},
+      //   {  field: "CRT_DT",  width: 150,  title: this.$t("crt_dt"),  alignment: "left",  type: "date",},
+      //   {  field: "MOD_BY",  width: 100,  title: this.$t("mod_by"),  alignment: "right",  type: "number",},
+      //   {  field: "MOD_DT",  width: 100,  title: this.$t("mod_dt"),  alignment: "right",  type: "number",},
        ];
     },
   },

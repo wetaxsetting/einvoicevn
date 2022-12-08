@@ -5,6 +5,7 @@ const Helpers = use("Helpers");
 const ROOT_DIR_FILES = Env.get("ROOT_DIR_FILES", Helpers.tmpPath());
 const ImportHelper = use("App/Helpers/ImportHelper");
 const fs = use("fs");
+const encoding = require('encoding-japanese');
 const { transform } = require("camaro");
 const DB_CONNECTION = Env.get("DB_CONNECTION");
 const DBService = use("DBService");
@@ -133,11 +134,14 @@ class ImportController {
   }
   async extractXMLContent(p_xml_path, p_language, p_crt_by, file_name) {
     try {
+      var fileBuffer = fs.readFileSync(p_xml_path);
+      let xml_encoding=encoding.detect(fileBuffer)
+      if(xml_encoding=="UTF16"){xml_encoding="UTF16LE"}
       let AESs = new AES();
-      let xmlIntegrity = await AESs.xmlDigitalSignatureVerifier(p_xml_path);
+      let xmlIntegrity = await AESs.xmlDigitalSignatureVerifier(p_xml_path,xml_encoding);
       let einvoice_file_name = file_name;
-
-      const xmlContent = fs.readFileSync(p_xml_path, { encoding: "utf8", flag: "r" });
+      console.log(xmlIntegrity)
+      const xmlContent = fs.readFileSync(p_xml_path, { encoding: xml_encoding, flag: "r" });
 
       let templateTTChungPath = "HDon/DLHDon/TTChung";
       let templateTTHDLQuanPath = "HDon/DLHDon/TTChung/TTHDLQuan";

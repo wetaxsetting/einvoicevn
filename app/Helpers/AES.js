@@ -15,13 +15,16 @@ class AES {
     }
 
 
-    async xmlDigitalSignatureVerifier(file_path) {
+    async xmlDigitalSignatureVerifier(file_path,encoding) {
+        
         try {
-            const xmlContent = fs.readFileSync(file_path, { encoding: 'utf8', flag: 'r' });
-            var xml = fs.readFileSync(file_path).toString()
 
-            var doc = new dom().parseFromString(xml)
-                //console.log(doc)
+            var xmlContent=""
+            var xml=""
+            var doc=""
+                xmlContent = fs.readFileSync(file_path, { encoding: encoding, flag: 'r' });
+                xml = fs.readFileSync(file_path, { encoding: encoding, flag: 'r' }).toString()
+                doc = new dom().parseFromString(xml)
                 let cert = ''
                 var signature = ''
             let templateTTChungPath = 'HDon/DLHDon/TTChung';   

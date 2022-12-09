@@ -300,6 +300,7 @@ export default {
                   this.macqt,
                   this.selected_status, // khong sai
                   this.WEB_SITE, // khong sai
+                  this.date_type
               ] };
             let datas = await this._dsoCall(dso, 'select', false);
              if(datas && datas.length <= 0)  {
@@ -360,6 +361,7 @@ export default {
                   this.macqt,
                   this.selected_status, // khong sai
                   this.WEB_SITE, // khong sai
+                   this.date_type
               ] };
             let datas = await this._dsoCall(dso, 'select', false);
 

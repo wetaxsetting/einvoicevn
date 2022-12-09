@@ -523,7 +523,7 @@ export default {
         ],
       };
       let datas = await this._dsoCall(dso, "select", false);
-
+      this.showLoading = false;
       if (datas && datas.length <= 0) {
         this.showNotification("warning", this.$t("no_data_found"), "", 4000);
         return;
@@ -566,7 +566,6 @@ export default {
         this,
         "report_" + this.dt_from + "-" + this.dt_to + ".xlsx"
       );
-      this.showLoading = false;
     },
     async onReportDetails() {
       let exceljs = require("@/plugins/exceljs.js");
@@ -595,7 +594,7 @@ export default {
         ],
       };
       let datas = await this._dsoCall(dso, "select", false);
-
+      this.showLoading = false;
       if (datas && datas.length <= 0) {
         this.showNotification("warning", this.$t("no_data_found"), "", 4000);
         return;
@@ -690,7 +689,6 @@ export default {
         this,
         "report_" + this.dt_from + "-" + this.dt_to + ".xlsx"
       );
-      this.showLoading = false;
     },
     onDblClickCell(cell) {
       // console.log(cell);

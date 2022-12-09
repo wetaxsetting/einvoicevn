@@ -15,19 +15,16 @@ class AES {
     }
 
 
-    async xmlDigitalSignatureVerifier(file_path,encoding) {
-        
+    async xmlDigitalSignatureVerifier(file_path) {
         try {
+            const xmlContent = fs.readFileSync(file_path, { encoding: 'utf8', flag: 'r' });
+            var xml = fs.readFileSync(file_path).toString()
 
-            var xmlContent=""
-            var xml=""
-            var doc=""
-                xmlContent = fs.readFileSync(file_path, { encoding: encoding, flag: 'r' });
-                xml = fs.readFileSync(file_path, { encoding: encoding, flag: 'r' }).toString()
-                doc = new dom().parseFromString(xml)
-                let cert = ''
-                var signature = ''
-            let templateTTChungPath = 'HDon/DLHDon/TTChung';   
+            var doc = new dom().parseFromString(xml)
+            //console.log(doc)
+            let cert = ''
+            var signature = ''
+            let templateTTChungPath = 'HDon/DLHDon/TTChung';
 
             let templateTTChung = [templateTTChungPath, {
                 PBan: 'PBan',
@@ -56,56 +53,56 @@ class AES {
                         X509Certificate: "X509Certificate"
                     },
                 ];
-    
+
                 const X509CertificateNBan = [
                     "TDiep/DLieu/HDon/DSCKS/NBan/Signature/KeyInfo/X509Data",
                     {
                         X509Certificate: "X509Certificate"
                     },
                 ];
-    
+
                 const Certificate = await transform(xmlContent, X509Certificate);
                 const CertificateNBan = await transform(xmlContent, X509CertificateNBan);
-                
-                
-                if(Certificate[0]==undefined){
-                    cert= CertificateNBan[0].X509Certificate
-                    signature=select(doc, "//*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']")[0]
-                }else{
-                    cert= Certificate[0].X509Certificate
-                    signature=select(doc, "//*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']")[1]
+
+
+                if (Certificate[0] == undefined) {
+                    cert = CertificateNBan[0].X509Certificate
+                    signature = select(doc, "//*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']")[0]
+                } else {
+                    cert = Certificate[0].X509Certificate
+                    signature = select(doc, "//*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']")[1]
                 }
-               
-            }else{
+
+            } else {
                 const X509Certificate = [
                     "HDon/DSCKS/CQT/Signature/KeyInfo/X509Data",
                     {
                         X509Certificate: "X509Certificate"
                     },
                 ];
-    
+
                 const X509CertificateNBan = [
                     "HDon/DSCKS/NBan/Signature/KeyInfo/X509Data",
                     {
                         X509Certificate: "X509Certificate"
                     },
                 ];
-    
+
                 const Certificate = await transform(xmlContent, X509Certificate);
                 const CertificateNBan = await transform(xmlContent, X509CertificateNBan);
-                
-                if(Certificate[0]==undefined){
-                    cert= CertificateNBan[0].X509Certificate
-                    signature=select(doc, "//*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']")[0]
-                }else{
-                    cert= Certificate[0].X509Certificate
-                    signature=select(doc, "//*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']")[1]
+
+                if (Certificate[0] == undefined) {
+                    cert = CertificateNBan[0].X509Certificate
+                    signature = select(doc, "//*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']")[0]
+                } else {
+                    cert = Certificate[0].X509Certificate
+                    signature = select(doc, "//*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']")[1]
                 }
-               
+
             }
 
 
-         
+
 
             let getPublicKeyFromCert = (p_certificate) => {
                 try {
@@ -128,16 +125,16 @@ class AES {
 
             }
 
-            
+
 
             var sig = new SignedXml()
 
             let keyInfoProv = (cert) => {
                 return {
-                    getKeyInfo: function() {
+                    getKeyInfo: function () {
                         return `<X509Data><X509Certificate>${cert}</X509Certificate></X509Data>`
                     },
-                    getKey: function(keyInfo) {
+                    getKey: function (keyInfo) {
                         // return the public key in pem format
                         let pemPublicKey = getPublicKeyFromCert(cert)
                         return pemPublicKey
@@ -154,7 +151,7 @@ class AES {
 
             if (!res) {
                 console.log(sig.validationErrors)
-                    // return 'Error'
+                // return 'Error'
                 console.log(res)
                 return 'No'
 
@@ -193,12 +190,12 @@ class AES {
             publicKeyEncoding: {
                 type: 'spki',
                 format: 'pem'
-                    //format: 'der'
+                //format: 'der'
             },
             privateKeyEncoding: {
                 type: 'pkcs8',
                 format: 'pem'
-                    //format: 'der'
+                //format: 'der'
             }
         });
         //console.log('privateKey', privateKey)
@@ -226,7 +223,7 @@ class AES {
         return bytes.toString(CryptoJS.enc.Utf8)
     }
 
-    decrypt2(string, secret) {
+    decryptJava(string, secret) {
         //for java
         const iv = new Buffer.alloc(0)
         const key = secret
@@ -238,10 +235,10 @@ class AES {
     }
     decryptDotNet(encryptedText, key) {
         var alg = 'des-ede-cbc';
-        var key = new Buffer(key, 'utf-8');
-        var iv = new Buffer('QUJDREVGR0g=', 'base64'); //This is from c# cipher iv
+        var key = new Buffer.from(key, 'utf-8');
+        var iv = new Buffer.from('QUJDREVGR0g=', 'base64'); //This is from c# cipher iv
 
-        var encrypted = new Buffer(encryptedText, 'base64');
+        var encrypted = new Buffer.from(encryptedText, 'base64');
         var decipher = Crypto.createDecipheriv(alg, key, iv);
         var decoded = decipher.update(encrypted, 'binary', 'ascii');
         decoded += decipher.final('ascii');
@@ -276,17 +273,24 @@ class AES {
     }
         */
     }
-    encrypt2(string, secret) {
-        //for java
-        const iv = new Buffer.alloc(0);
-        const key = secret
-        const cipher = Crypto.createCipheriv('aes-128-ecb', new Buffer.from(key), new Buffer.from(iv))
+    encryptDotNet(string, secret) {
+        //for c#
+        var alg = 'des-ede-cbc';
+        var iv = new Buffer.from('QUJDREVGR0g=', 'base64'); //This is from c# cipher iv
+        var key = new Buffer.from(secret, 'utf-8');
+        const cipher = Crypto.createCipheriv(alg, key, iv)
         let crypted = cipher.update(string, 'utf-8', 'base64')
         crypted += cipher.final('base64')
         return crypted
     }
-
-
+    encryptJava(p_plaintext, p_secret) {
+        //https://stackoverflow.com/questions/60369148/how-do-i-replace-deprecated-crypto-createcipher-in-node-js        
+        let iv = Buffer.from(p_secret, 'utf-8');
+        let cipher = Crypto.createCipheriv('aes-128-cbc', Buffer.from(p_secret, 'utf-8'), iv);
+        let encrypted = cipher.update(p_plaintext);
+        encrypted = Buffer.concat([encrypted, cipher.final()]);
+        return encrypted.toString('hex');
+    }
 }
 
 module.exports = AES

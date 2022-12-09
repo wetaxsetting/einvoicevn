@@ -18,14 +18,15 @@ class Firebase {
     constructor() {
         this.Utils = use("Utils");
         this.Env = use("Env");
-        var serviceAccount = require(this.Env.get(
-            "FIREBASE_PATH",
-            "../../firebase-adminsdk.json"
-        ));
-        admin.initializeApp({
-            credential: admin.credential.cert(serviceAccount),
-            databaseURL: this.Env.get("DATABASE_URL"),
-        });
+        const firebase_path = this.Env.get("FIREBASE_PATH", "NO_FIREBASE_PATH");
+        if (firebase_path != "NO_FIREBASE_PATH") {
+            var serviceAccount = require(firebase_path);
+            admin.initializeApp({
+                credential: admin.credential.cert(serviceAccount),
+                databaseURL: this.Env.get("DATABASE_URL"),
+            });
+        }
+
     }
     async sendToDevice(registrationToken, payload, options) {
         try {
@@ -43,7 +44,7 @@ class Firebase {
             await admin
                 .messaging()
                 .sendToDevice(registrationToken, payload, options)
-                .then(function(response) {
+                .then(function (response) {
                     const error = response.results[0].error;
                     if (error) {
                         if (error.code == "messaging/registration-token-not-registered" || error.code != null) {
@@ -64,7 +65,7 @@ class Firebase {
                         });
                     }
                 })
-                .catch(function(error) {
+                .catch(function (error) {
                     utils.Logger({
                         LVL: "error",
                         MODULE: "Firebase",
@@ -122,67 +123,67 @@ class Firebase {
         }
     }
     async updateRTDB(p_node, p_data) {
-            try {
-                if (p_data.id) {
-                    return await admin
-                        .database()
-                        .ref(`/${p_node}/` + p_data.id)
-                        .set(p_data);
-                } else {
-                    const newKey = admin
-                        .database()
-                        .ref()
-                        .child(p_node)
-                        .push().key;
-                    return await admin
-                        .database()
-                        .ref(`/${p_node}/` + newKey)
-                        .set(p_data);
-                }
-                return "OK"
-            } catch (e) {
-                console.log(e)
-                return e.message
+        try {
+            if (p_data.id) {
+                return await admin
+                    .database()
+                    .ref(`/${p_node}/` + p_data.id)
+                    .set(p_data);
+            } else {
+                const newKey = admin
+                    .database()
+                    .ref()
+                    .child(p_node)
+                    .push().key;
+                return await admin
+                    .database()
+                    .ref(`/${p_node}/` + newKey)
+                    .set(p_data);
             }
+            return "OK"
+        } catch (e) {
+            console.log(e)
+            return e.message
         }
-        /*async getDrivers(p_location, p_radius) {
-                  try {
-                      let drivers = [];
-                      let drivers_distance = [];
+    }
+    /*async getDrivers(p_location, p_radius) {
+              try {
+                  let drivers = [];
+                  let drivers_distance = [];
 
-                      const refDrivers = admin.database().ref("/drivers")
-                      const geoFireDrivers = new GeoFire(refDrivers);
-                      const geoQuery = geoFireDrivers.query({ center: p_location, radius: p_radius })
+                  const refDrivers = admin.database().ref("/drivers")
+                  const geoFireDrivers = new GeoFire(refDrivers);
+                  const geoQuery = geoFireDrivers.query({ center: p_location, radius: p_radius })
 
-                      const onKeyEnteredRegistration = geoQuery.on("key_entered", function(key, location, distance) {
-                          // console.log(distance)
-                          // console.log(key + " entered the query. Hi " + location + "!")
-                          drivers.push(key)
-                          drivers_distance.push({ id: key, distance: Math.ceil(distance) })
-                      })
+                  const onKeyEnteredRegistration = geoQuery.on("key_entered", function(key, location, distance) {
+                      // console.log(distance)
+                      // console.log(key + " entered the query. Hi " + location + "!")
+                      drivers.push(key)
+                      drivers_distance.push({ id: key, distance: Math.ceil(distance) })
+                  })
 
-                      const onKeyExitedRegistration = geoQuery.on("key_exited", function(key, location) {
-                          // console.log(key + " migrated out of the query. Bye bye :(")
-                          let removeIndex = drivers.findIndex(x => x == key)
-                          let removeDriver = drivers_distance.findIndex(y => y.id == key)
-                          drivers.splice(removeIndex, 1)
-                          drivers_distance.splice(removeDriver, 1)
+                  const onKeyExitedRegistration = geoQuery.on("key_exited", function(key, location) {
+                      // console.log(key + " migrated out of the query. Bye bye :(")
+                      let removeIndex = drivers.findIndex(x => x == key)
+                      let removeDriver = drivers_distance.findIndex(y => y.id == key)
+                      drivers.splice(removeIndex, 1)
+                      drivers_distance.splice(removeDriver, 1)
 
-                      });
-                      let count = 0
-                      while (drivers.length == 0 && count < 4) {
-                          count++
-                          //console.log("wait1... "+count) 
-                          await this._sleep(1);
-                          //console.log("wait...end")
-                      }
-
-                      return { drivers: drivers, distance: drivers_distance }
-                  } catch (e) {
-                      console.log("Message sent error: " + e)
-                      return null
+                  });
+                  let count = 0
+                  while (drivers.length == 0 && count < 4) {
+                      count++
+                      //console.log("wait1... "+count) 
+                      await this._sleep(1);
+                      //console.log("wait...end")
                   }
-              }*/
+
+                  return { drivers: drivers, distance: drivers_distance }
+              } catch (e) {
+                  console.log("Message sent error: " + e)
+                  return null
+              }
+          }*/
     _sleep(seconds) {
         return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
     }

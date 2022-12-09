@@ -520,9 +520,9 @@ class DsoController {
                             const idleTime =
                                 (miliseconds - _user_last_called[i].lastcalled) / 1000 / 60;
                             if (idleTime >= API_SESSION_TIMEOUT) {
-                                //response.clearCookie('token')
-                                _user_last_called.splice(i, 1);
+                                //response.clearCookie('token')                                
                                 if (proc.toUpperCase() != "SYS_SEL_LANGUAGE") {
+                                    _user_last_called.splice(i, 1);
                                     return response.send(
                                         Utils.response(
                                             false,
@@ -1418,9 +1418,9 @@ class DsoController {
                             const idleTime =
                                 (miliseconds - _user_last_called[i].lastcalled) / 1000 / 60;
                             if (idleTime >= API_SESSION_TIMEOUT) {
-                                //response.clearCookie('token')
-                                _user_last_called.splice(i, 1);
+                                //response.clearCookie('token')                                
                                 if (proc.toUpperCase() != "SYS_SEL_LANGUAGE") {
+                                    _user_last_called.splice(i, 1);
                                     return response.send(
                                         Utils.response(
                                             false,

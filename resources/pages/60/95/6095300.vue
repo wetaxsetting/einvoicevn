@@ -42,8 +42,8 @@
         <BaseButton  icon_type="pdf"  btn_type="icon"  :btn_text="$t('view_pdf')"  :disabled="isProcessing"  @onclick="onClickButton()"/>
         <BaseButton  btn_type="icon"  icon_type="delete"  :btn_text="$t('delete')"  @onclick="onDelete()"/>
         <BaseButton  btn_type="icon"  icon_type="save"  :btn_text="$t('save')"  @onclick="onSave()"/>
-        <BaseButton  btn_type="icon" icon_type="print" :btn_text="$t('detail_report')" @onclick="onReport"/>
-        <BaseButton  btn_type="icon" icon_type="excel" :btn_text="$t('master_report')" @onclick="onReport2"/>
+        <BaseButton  btn_type="icon" icon_type="print" :btn_text="$t('detail_report')" @onclick="onReportDetails"/>
+        <BaseButton  btn_type="icon" icon_type="excel" :btn_text="$t('master_report')" @onclick="onReportMaster"/>
         <v-btn  icon tile :color="currentTheme" @click="toggleRight">
           <v-icon v-if="!showRight">mdi-skip-previous</v-icon>
           <v-icon v-if="showRight">mdi-skip-next</v-icon>
@@ -280,7 +280,7 @@ export default {
 
   /*############### methods #######################*/
   methods: {
-    async onReport() {
+    async onReportMaster() {
        let exceljs =  require("@/plugins/exceljs.js");
         if(!!exceljs) {
             exceljs = exceljs.default;
@@ -341,7 +341,7 @@ export default {
 
             exceljs.dowloadWorkbook(this, "report_"+this.dt_from+"-"+this.dt_to+ ".xlsx");
     },
-    async onReport2(){
+    async onReportDetails(){
         let exceljs =  require("@/plugins/exceljs.js");
         if(!!exceljs) {
             exceljs = exceljs.default;

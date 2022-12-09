@@ -198,7 +198,7 @@
               @onSelectionDataChanged="onGridSelectionChanged"
               ref="grdAPInvoiceReview"
               :height="gridHeight"
-              :selectionmode="'singlerow'"
+              :selectionmode="'singlecell'"
               :autoresize="false"
               :filter_paras="[
                 this.selected_company,

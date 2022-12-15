@@ -1,5 +1,5 @@
 <template>
-  <BaseWrapper :flat="true" :color="color" :id="`gw-flex-box-id-${keyID}`" class="d-flex" :additionClasses="flexClasses" :width="width" :height="height">
+  <BaseWrapper :flat="true" :color="color" :id="`gw-flex-box-id-${keyID}`" :class="visible ? 'd-flex' : 'd-none'" :additionClasses="flexClasses" :width="width" :height="height">
     <slot name="default"></slot>    
   </BaseWrapper>
 </template>
@@ -34,6 +34,10 @@ export default {
     noWrap: {
       type: Boolean,
       default: false
+    },
+    visible: {
+      type: Boolean,
+      default: true
     }
   },
 

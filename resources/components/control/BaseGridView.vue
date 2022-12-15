@@ -2,7 +2,7 @@
     <v-card ref="basegridview" :height="limitHeight" :id="'gridview_' + idKey" v-resize="_onMyResize" color="transparent" outlined
             :style="{
         width: '100%', 'min-height': heightZoneMin,  position: 'relative', overflow: 'auto',
-        display: 'inline-block', 'vertical-align': 'top',padding: '5px',
+        display: 'inline-block', 'vertical-align': 'top',padding: '2px',
     }">
         <v-row no-gutters align="center" justify="center" >
             <v-col cols="12">
@@ -66,8 +66,9 @@
                         </template>
                         <span>{{ $t("set_panel") }}</span>
                     </v-tooltip>   
-
+                    <span style="font-weight:bold; color: red" class="px-2">{{label}}</span>
                     <v-spacer></v-spacer>
+
                     <!-- v-if="reportList && reportList.length > 0" -->
                     <table style="width: 250px; height: 25px !important" v-if="reportList && reportList.length > 0">
                         <tr>
@@ -103,6 +104,7 @@
                     </table>
 
                     <v-spacer></v-spacer>
+                    <span style="color: black!important; font-weight: 550; font-size: 12px" class="px-2">{{ `${label2}`  }}</span>
                     <span style="color: red!important; font-weight: 550; font-size: 12px">{{ `${records} ${$t('records')}`  }}</span>
                 </v-row>
             </v-col>
@@ -175,6 +177,16 @@
                 </v-card>
             </v-col>
 
+            <v-col cols="12" md="3" v-show="gridSetColText && gridSetColText.length > 0">
+                <v-card class="d-flex px-1 py-1 mx-1 my-1" outlined>
+                    <BaseSelect item-value="CODE" item-text="NAME" :label="$t('dialog_column')"  :lstData="gridSetColDialog" v-model="gridSetColDialogSelected"  null
+                        style="width: 25% !important" class="justify-start"
+                    > </BaseSelect>
+                    <BaseInput :label="$t('value')" v-model="gridSetColDialogVal" class="justify-space-around px-1" style="min-width: 50% !important" readonly @click="_onOpenSetGridDialog" ></BaseInput>
+                    <BaseButton btn_type="icon" icon_type="set" :btn_text="$t('set')" @onclick="_onSetGrid('DIALOG')" class="justify-end" />
+                </v-card>
+            </v-col>
+
         </v-row>
 
         <!-- <div :style="{
@@ -184,27 +196,30 @@
         > -->
         <span @contextmenu="contextmenuMenu($event)"
               @mousedown="mousedown($event)">
-            <jqxgrid ref="myGrid" 
+            <jqxgrid ref="myGrid" :name="'myGrid_' + idKey"
                      @rowclick="myGridOnRowClick($event)"
                      @cellselect="myGridOnCellSelect($event)"
                      @cellclick="myGridOnCellClick($event)"
                      @cellbeginedit="cellBeginEditEvent($event)"
                      @cellendedit="cellEndEditEvent($event)"
-                       @rowselect="myGridOnRowSelect($event,'select')"
+                     @rowselect="myGridOnRowSelect($event,'select')"
                      @rowunselect="myGridOnRowSelect($event,'unselect')"
                      @sort="myGridOnSort($event)"
                      :handlekeyboardnavigation="handlekeyboardnavigation"
-                     :width="'100%'" :height="'95%'"
+                     :width="'100%'" :height="limitHeight-28"
                      :columns="columns" :columngroups="columngroups"
                      :editable="editable" :editmode="'dblclick'"
                      :showstatusbar="showstatusbar" :statusbarheight="statusbarheight"
                      :showaggregates="showaggregates" :altrows="altrows"
                      :columnsresize="true" :virtualmode="false"
-                     :rendergridrows="rendergridrows" :enabletooltips="true"
+                     :rendergridrows="rendergridrows" :enabletooltips="enableTooltip"
                      :selectionmode="gridSelectionMode"
                      :rowsheight="rowsheight"
+                     :columnsheight="columnsheight"
                      :sortable="true"
                      :clipboard="true"
+                     :cellhover="cellhover"
+
             >
             </jqxgrid>
         </span>
@@ -220,7 +235,12 @@
 
         <jqxmenu ref="myMenu" @itemclick="myMenuOnItemClick($event)" :width="200" :mode="'popup'" :autoOpenPopup="false">
             <ul style="color:dodgerblue;">
-                <li v-for="(item, idx) in contextMenuItems" :key="idx" :id="item.id">{{ $t(item.text) }}</li>
+                <li v-for="(item, idx) in contextMenuItems" :key="idx" :id="item.id">
+                    <span>{{ $t(item.text) }}</span>
+                    <ul v-if="item.menu && item.menu.length > 0">
+                        <li  v-for="(item2, idx2) in item.menu" :key="idx2" :id="item2.id">{{ $t(item2.text) }}</li>
+                    </ul>
+                </li>
                 <!-- <li id="export_to_excel">{{$t('export_to_excel')}}</li>
                 <li id="export_to_pdf">{{$t('export_to_pdf')}}</li>
                 <li id="export_to_csv">{{$t('export_to_csv')}}</li>
@@ -362,7 +382,19 @@
                 
             </v-card>
         </v-dialog>
+        <input type="file" v-show="false" ref="file" @change="selectedFile" :id="`uploadFile${idKey}`"/>
+        <button type="button" v-show="false" :id="`btnFileDelete${idKey}`" @click="deleteCellFile"></button>
+        <button type="button" v-show="false" :id="`btnFilePreview${idKey}`" @click="previewCellFile"></button>
 
+        <v-dialog v-model="cellPreviewDialog" :max-width="originWidth" :max-height="originHeight">
+            <v-card>
+                <v-container fluid>
+                <v-row no-gutters align="center" justify="center">
+                    <img :src="cellPreviewImd" :height="originHeight" :width="originWidth"/>
+                </v-row>
+                </v-container>
+            </v-card>
+        </v-dialog>
     </v-card>
 </template>
 
@@ -426,7 +458,14 @@
                 type: Boolean,
                 default: true,
             },
-
+            enableTooltip: {
+                type: Boolean,
+                default: true,
+            },
+            hideHeader: {
+                type: Boolean,
+                default: false,
+            },
             //vng-207 20211127
             //function apply for hr style
             headertype: { type: Number, default: 0 },
@@ -447,10 +486,19 @@
             autocheckbox: { type: Boolean, default: true },
             autotranslate: { type: Boolean, default: true },
             exportexcel2:{type: Function, default: null},
+            dialogCallback:{  type: Object  },
             showaggregatestop:{
                 type: Boolean,
                 default: false,
             },
+            onRowPrepared:{ type: Function, 
+                            default: null 
+                        },
+            label: { type: String, default: null },
+            columnsheight: { type: Number, default: 32 },
+            db2: { type: String, default: undefined},
+            checkMenu: { type: Boolean, default: true },
+            
         },
         data() {
             return {
@@ -547,8 +595,29 @@
                 gridSetColTime:[],
                 gridSetColTimeSelected:null,
                 gridSetColTimeVal: null,
+                gridSetColDialog:[],
+                gridSetColDialogEvents:{},
+                gridSetColDialogSelected:null,
+                gridSetColDialogVal:null,
+                
                 aggregates:null,
-                summaryTypes:null
+                summaryTypes:null,
+
+                cellPreviewDialog: false,
+                cellPreviewImd:null,
+                imageExtension:  ['jpg', 'jpeg', 'png', 'gif'],
+                cellJustify: {
+                    right: 'justify-end',
+                    center: 'justify-center',
+                    left: 'justify-start',
+                    around: 'justify-around',
+                    "space-between": 'justify-space-between'
+                },
+                originHeight: 400,
+                originWidth: 400,
+                orientation: "landscape",
+                no_image: require('@/assets/images/no_image.png'),
+
             };
         },
         watch: {
@@ -612,19 +681,38 @@
 
             gridSetColTimeSelected(val) {
                 this.gridSetColTimeVal = null;
-            }
+            },
 
+            gridSetColDialogSelected(val) {
+                this.gridSetColDialogVal = null;
+            },
+
+            dialogCallback(val) {
+                try {
+                    if(val) {
+                        let col = this.gridSetColDialogSelected;
+                        this.gridSetColDialogVal = val[this.gridSetColDialogEvents[col].pVALUE] ;
+                    }
+                }catch (e) { console.log(e.message)}
+            }
         },
         computed: {
             limitHeight() {
-                if (!!this.height) return this.height;
+                let _height = 0;
+                if (!!this.height) {
+                    _height =  this.height;
+                    try { this.$refs.myGrid.height = _height - 28;} catch{}
+                    return _height
+                } 
 
                 try {
                     if (this.max_height) {
                         if (this.max_height > 0) {
-                            this.heightZoneMin = "0px";
+                            this.heightZoneMin = 0;
                             this.heightGridZone = this.max_height;
-                            return this.max_height + "px";
+                            _height= this.max_height;
+                            try { this.$refs.myGrid.height = _height - 28;} catch{}
+                            return _height
                         }
                     }
                 } catch (error) { }
@@ -633,9 +721,13 @@
                 }
                 var zone = ((this.windowHeight - 150) / 100) * this.per_height;
                 this.heightGridZone = zone - 27;
-                this.heightZoneMin = "100px";
-                return zone + "px";
+                this.heightZoneMin = 100;
+                _height= zone;
+
+                try { this.$refs.myGrid.height = _height - 28;} catch{}
+                return _height
             },
+         
             autoresizecolumn() {
                 if (this.headertype == 0) {
                     return this.autoresize;
@@ -655,6 +747,17 @@
                 menu.push({ id: "export_to_excel", text: this.$t("export_to_excel"), icon: "mdi-excel", });
                 menu.push({ id: "print", text: this.$t("print"), icon: "mdi-print", });
 
+                menu.push({ 
+                    id: "selection_mode", text: this.$t("selection_mode"), icon: "mdi-checkbox-marked-outline",
+                    menu: [
+                        { id: "checkbox", text: this.$t("check_box") },
+                        { id: "singlerow", text: this.$t("single_row") },
+                        { id: "multiplerows", text: this.$t("multiple_rows") },
+                        { id: "singlecell", text: this.$t("single_cell") },
+                        { id: "multiplecells", text: this.$t("multiple_cells") },
+                    ]
+                });
+
                 return menu;
             },
             userSavedTheme() {
@@ -667,6 +770,10 @@
             cookieId: function() {
                 return ( this.id && this.menu_cd) ? `${this.user.PK}_grid_${this.menu_cd}_${this.id}` : undefined;
             },
+
+            label2: function(){
+                return this.$attrs.hasOwnProperty("label-right") ? this.$attrs["label-right"] : "";
+            }
         },
         mounted() {
             //console.log(XLSX)
@@ -702,6 +809,76 @@
         },
 
         methods: {
+            renewCss() {
+                try {
+                    let element = document.getElementsByName("myGrid_"+this.idKey);
+                    let gridContent = element[0].childNodes[0].childNodes[0].childNodes //.find(q => q.id.includes("contentjqxGrid"));
+                    let headerElement;
+                    for(let a of gridContent) {
+                        if($(a)[0].id.includes("contentjqxGrid")) {
+                            headerElement= $(a);
+                            break;
+                        }
+                    }
+
+                    if(headerElement) {
+                        let pinnedHeader = this.columns.filter(q => q["pinned"] == true );
+                        let headers = headerElement[0].childNodes[0].childNodes[0].cells;
+                        let headers2 = headerElement[0].childNodes[0].childNodes[0].childNodes;
+                            
+                        let headerGroup = [];
+
+                        for(let h of headers2 ) {
+                            if(h.className.indexOf( "jqx-grid-columngroup-header" ) >=0) {
+                                headerGroup.push(h);
+                            }
+                        }
+
+                        let idx = headers.length + headerGroup.length;
+                        let maxIdx = 200;
+                        let idxAllocated = 0;
+                        let allocateIdxPinned =0;
+                        let allocateGroupHeader = 0;
+                        while(idx>=0) {
+                            try {
+                                if(allocateIdxPinned < pinnedHeader.length) {
+                                    headers[idxAllocated++].style.zIndex = maxIdx--;
+                                    idx--;
+                                    allocateIdxPinned++;
+                                    continue;
+                                }
+
+                                if(allocateGroupHeader < headerGroup.length) {
+                                    headerGroup[allocateGroupHeader++].style.zIndex = maxIdx--;
+                                     idx--;
+                                    continue;
+                                }
+                                if(idxAllocated >= headers.length) break;
+
+
+                                headers[idxAllocated++].style.zIndex = maxIdx <= 0 ? 1 : maxIdx--;
+                                idx--;
+                            } catch(ee) {console.log(ee.message)}
+                            
+                        }
+                        if(this.hideHeader){
+                            headerElement[0].childNodes[0].style.height = 0;
+                        }
+
+                        // let idx = headers.length;
+                        // for(let h of headers) {
+                        //     h.style.zIndex = idx-- ;
+                        // }
+
+                        // let idx2 = headers.length;
+                        // for(let h of headers2) {
+                        //     h.style.zIndex = idx2-- ;
+                        // }
+                    }
+
+                } catch(e){ console.log(e.message)}
+            },
+
             isRightClick: function (event) {
                 let rightclick;
                 if (!event) event = window.event;
@@ -709,6 +886,7 @@
                 else if (event.button) rightclick = (event.button == 2);
                 return rightclick;
             },
+
             contextmenuMenu: function (e) {
                 e.preventDefault();
             },
@@ -790,6 +968,50 @@
                     this._onSave();
                 }, 200);
             },
+            cellhover: function (cellhtmlElement, x, y) {
+                let cell = this.$refs.myGrid.getcellatposition(x, y);
+
+                let value =  this.cellTooltipValue(cell);
+                cellhtmlElement.setAttribute("title", value);
+            },
+
+            cellTooltipValue( cell ) {
+                let _cellValue = cell.value;
+                try {
+                    let col =  this.columns.find(q => q.datafield == cell.column);
+                    
+                    if(col.columntype == "checkbox") {
+                        _cellValue == true || _cellValue == 'Y' ? 'Y' : 'N';
+                    }
+
+                    if(col.columntype == "datetimeinput") {
+                        _cellValue=  this._formatDateForPicker(_cellValue);
+                    }
+
+                    if(col.columntype == "month") {
+                        let monthFormat = that.curLang.MONTH_FORMAT.toUpperCase();
+                        if (!!_cellValue) {
+                            const d = moment(_cellValue, "YYYYMM");
+                            if (d.isValid()) {
+                                const newval = d.format(monthFormat);
+                                _cellValue = newval;
+                            }
+                        }
+                    }
+
+                    if(col.hasOwnProperty('lookup')) {
+                        let _dataSource = col["lookup"]["dataSource"];
+                        let _key = col["lookup"]["valueExpr"];
+                        let _name = col["lookup"]["displayExpr"]; 
+
+                        try { _cellValue = _dataSource.find( q => q[_key] ==  _cellValue)[_name] ;} catch (e){ }
+                    }
+                } catch {}
+                
+                
+                return _cellValue?  _cellValue.toString() : "";
+            },
+
             async _onSave() {
                 if (
                     this.sel_procedure &&
@@ -818,7 +1040,7 @@
                     alert(this.$t("this_grid_data_miss_paras_can_not_save"));
                 }
             },
-            async _onSaveWithDSO(_dso, notify = true) {
+            async _onSaveWithDSO(_dso, notify = true, delayNextCall = 0) {
                 let that = this;
                 this.isProcessing = true;
                 this.$refs.myGrid.showloadelement();
@@ -827,23 +1049,31 @@
                 this.gridFilteredDatas = [];
                 //build data for checkbox cols
                 let dataToSave = [..._dso.data];
-                let checkboxCols = this.columns.filter(q => q.columntype == "checkbox");
-                let dateBoxCols = this.columns.filter(q => q.columntype == "datetimeinput");
-                let monthCols = this.columns.filter(q => q.columntype == "month");
-                let colchecks = checkboxCols.map(q => q["datafield"]);
-                let coldates = dateBoxCols.map(q => q["datafield"]);
-                let colmonths = monthCols.map(q => q["datafield"]);
+                // let checkboxCols = this.columns.filter(q => q.columntype == "checkbox");
+                // let dateBoxCols = this.columns.filter(q => q.columntype == "datetimeinput");
+                // let monthCols = this.columns.filter(q => q.columntype == "month");
+                // let passwordCols = this.columns.filter(q => q.columntype == "password");
+                // let filecols = this.columns.filter(q => q.columntype == "file");
 
+                let colchecks = this.columns.filter(q => q.columntype == "checkbox").map(q => q["datafield"]);
+                let coldates =  this.columns.filter(q => q.columntype == "datetimeinput").map(q => q["datafield"]);
+                let colmonths = this.columns.filter(q => q.columntype == "month").map(q => q["datafield"]);
+                let colpasswords = this.columns.filter(q => q.columntype == "password").map(q => q["datafield"]);
+                let colfiles = this.columns.filter(q => q.columntype == "file");
 
-                for (let i = 0; i < dataToSave.length; i++) {
-                    let data = dataToSave[i];
+                
+
+                let promises = dataToSave.map( async(data, i) => {
+                    let _colchange = data["_colchange"] ? data["_colchange"] : [];
                     if (data._rowstatus != null && data._rowstatus != undefined && data._rowstatus != "") {
                         colchecks.forEach(q => {
                             data[q] = data[q] == true || data[q] == 'Y' || data[q] == "true" ? "Y" : "N";
-                        })
+                        });
+
                         coldates.forEach(q => {
                             data[q] = this._formatDateToSave(data[q]);
-                        })
+                        });
+
                         colmonths.forEach(q => {
                             let monthFormat = that.curLang.MONTH_FORMAT.toUpperCase();
 
@@ -853,11 +1083,46 @@
                                 data[q] = newval;
                             }
 
-                        })
+                        });
+
+
+                        colfiles.forEach(q => {
+                            let _col =  q["datafield"];
+                            let fileInfo = data[_col];
+
+                            if(!fileInfo) {
+                                let _blob = new Blob([], { type: "application/octet-stream", });//new Blob([buffer], { type: "application/octet-stream", });
+                                let _file = this.blobToFile(_blob, 'no_file') //tao file rong de khi update ko phai day lai file 
+
+                                fileInfo = {
+                                    name:'no_file',
+                                    size: 0,
+                                    extension:  '',
+                                    base64: null,
+                                    file: _file
+                                };
+                                data[_col] = fileInfo;
+                            }
+                        });
+
+                        
+                        let promise_hash_pass = colpasswords.map( async(q) => {
+                            if(that.isNullOrEmpty(data[q])) return;
+                            if(_colchange.includes(q)) {
+                                let hash = this._hash();
+                                const hashPassword = await hash.make(data[q]);
+                                data[q] = hashPassword;
+                            }
+                        });
+
+                        await Promise.all(promise_hash_pass);
                     }
-                }
+                } );
+
+                await Promise.all(promises);
 
                 _dso.data = dataToSave;
+                _dso.colfile = [...colfiles.map(q => q["datafield"])];
 
                 if (this.$attrs.hasOwnProperty("allow-save-custom")) {
                     if (_dso.elname.findIndex(q => q == "ADDDITION_PARA") < 0) {
@@ -894,8 +1159,7 @@
                         } catch { }
                     })
                 }
-
-                const result = await this._dsoCall(_dso, "update", notify);
+                const result = await this._dsoCall(_dso, "update", notify, '', this.db2, delayNextCall);
                 let isSuccess = false;
                 if (result) {
                     this.$emit("callSaveResult", true);
@@ -956,7 +1220,9 @@
                         column: e.args.column,
                         columnindex: e.args.columnindex,
                         rowindex: e.args.rowindex,
-                        value: e.args.value
+                        value: e.args.value,
+                        rowType: 'data',
+                        e: e
                     });
                     this.$emit("cellDblClickData", e.args.row.bounddata);
                 } else {
@@ -1418,7 +1684,9 @@
                         column: this.lastCellClick.args.column,
                         columnindex: this.lastCellClick.args.columnindex,
                         rowindex: this.lastCellClick.args.rowindex,
-                        value: this.lastCellClick.args.value
+                        value: this.lastCellClick.args.value,
+                        rowType: 'data',
+                        e: this.lastCellClick
                     });
                     this.$emit("cellClickData", this.lastCellClick.args.row.bounddata);
                 }
@@ -1517,38 +1785,68 @@
             },
             myMenuOnItemClick(event) {
                 let args = event.args;
-                if (args.id == 'resize_column') {
-                    this.$refs.myGrid.autoresizecolumns();
-                } else if (args.id == 'add_column') {
-                    this.openCustomGrid();
-                } else if (args.id == 'export_to_excel') {
-                    let dataList = this.$refs.myGrid.getrows();
-                    if (dataList.length <= 0) {
-                        this.showNotification("warning", this.$t("no_data_found"), '');
-                    } else {
-                        this.exportExcel();
+
+                switch (args.id) {
+                    //case 'refresh': this.rebuildHeader(); break;
+                    case 'resize_column': this.resizeColumns(); break;
+                    case 'add_column':  this.openCustomGrid(); break;
+                    case 'export_to_excel':  {
+                        let dataList = this.$refs.myGrid.getrows();
+                        if (dataList.length <= 0) {
+                            this.showNotification("warning", this.$t("no_data_found"), '');
+                        } else {
+                            this.exportExcel();
+                        }
+                        break;
                     }
-                    //this.$refs.myGrid.exportdata('xls', 'erp-export-data');
-                } else if (args.id == 'export_to_pdf') {
-                    // this.$refs.myGrid.exportdata('pdf', 'erp-export-data');
-                } else if (args.id == 'export_to_csv') {
-                    // this.$refs.myGrid.exportdata('csv', 'erp-export-data');
-                } else if (args.id == 'print') {
-                    let gridContent = this.$refs.myGrid.exportdata('html');
-                    let newWindow = window.open('', '', 'width=800, height=500'),
-                        document = newWindow.document.open(),
-                        pageContent =
-                            '<!DOCTYPE html>\n' +
-                            '<html>\n' +
-                            '<head>\n' +
-                            '<meta charset="utf-8" />\n' +
-                            '<title>' + this.$t('print_data_grid') + '</title>\n' +
-                            '</head>\n' +
-                            '<body>\n' + gridContent + '\n</body>\n</html>';
-                    document.write(pageContent);
-                    document.close();
-                    newWindow.print();
+                    case 'print': {
+                        let gridContent = this.$refs.myGrid.exportdata('html');
+                        let newWindow = window.open('', '', 'width=800, height=500'),
+                            document = newWindow.document.open(),
+                            pageContent =
+                                '<!DOCTYPE html>\n' +
+                                '<html>\n' +
+                                '<head>\n' +
+                                '<meta charset="utf-8" />\n' +
+                                '<title>' + this.$t('print_data_grid') + '</title>\n' +
+                                '</head>\n' +
+                                '<body>\n' + gridContent + '\n</body>\n</html>';
+                        document.write(pageContent);
+                        document.close();
+                        newWindow.print();
+                        break;
+                    }
+                    case 'checkbox': {
+                        this.gridSelectionMode = 'checkbox';
+                        this.rebuildHeader();
+                        break;
+                    }
+                    case 'singlerow': {
+                        this.gridSelectionMode = 'singlerow';
+                        this.rebuildHeader();
+                        break;
+                    }
+                    case 'multiplerows': {
+                        this.gridSelectionMode = 'multiplerowsextended';
+                        this.rebuildHeader();
+                        break;
+                    }
+                    case 'singlecell': {
+                        this.gridSelectionMode = 'singlecell';
+                        this.rebuildHeader();
+                        break;
+                    }
+                    case 'multiplecells': {
+                        this.gridSelectionMode = 'multiplecellsextended';
+                        this.rebuildHeader();
+                        break;
+                    }
+                    
+                    default: {
+                        //this.rebuildHeader();
+                    }
                 }
+                
                 this.$refs.myMenu.close();
             },
             myMenuSettingOnItemClick(event) {
@@ -1670,8 +1968,8 @@
             _processHeader(header, group = null) {
                 let objs = header;
                 let that = this;
-                this.gridSetColList = [];
-                this.gridSetColListVals = [];
+                // this.gridSetColList = [];
+                // this.gridSetColListVals = [];
 
                 let firstShowColumn = this.header.findIndex( q => q["visible"] == true || q["visible"] == undefined);
                 let firstColAggregates =  this.header.find( q => q.hasOwnProperty("summaryType"));
@@ -1682,7 +1980,10 @@
                     for( let idx = 0; idx<objs.length; idx++ ) {
                         let entry= objs[idx];
                         entry.cellclassname = !!entry["cellclassname"] ? entry["cellclassname"] : that.cellClassStatus2;
-                        
+                        if(that.onRowPrepared != null){
+                            entry.cellclassname = that.onRowPrepared;
+                            // console.log('[vng-154/dvg] > file: BaseGridView.vue > line 1694 > _processHeader > that.onRowPrepared', that.onRowPrepared);
+                        } 
                         if(that.showaggregates) {
                             let emptyColumnStr='';
                             entry.aggregatesrenderer = function (aggregates, column, element) {
@@ -1811,9 +2112,20 @@
                                             } else if(entry[key] == "time") {
                                                 that.gridSetColTime.push( {CODE: entry.datafield, NAME:entry.text });
                                             } else {
-                                                that.gridSetColText.push( {CODE: entry.datafield, NAME:entry.text });
+                                                if(entry.hasOwnProperty("dialog")) 
+                                                {
+                                                    that.gridSetColDialog.push( {CODE: entry.datafield, NAME:entry.text });
+                                                    that.gridSetColDialogEvents[entry.datafield] = entry.dialog;
+                                                } else {
+                                                    that.gridSetColText.push( {CODE: entry.datafield, NAME:entry.text });
+                                                }
+                                                
                                             } 
+
+                                            
                                         }
+
+                                       
                                         
 
                                         if (entry[key] == "list" || entry.hasOwnProperty("lookup")) {
@@ -1877,7 +2189,7 @@
                                                 try {
                                                     let _key = entry.lookup.valueExpr;
                                                     let _text = entry.lookup.displayExpr;
-                                                    item = entry.lookup.dataSource.find(obj => obj[_text] === newvalue);
+                                                    item = entry.lookup.dataSource.find(obj => obj[_text] == newvalue);
                                                     return item[_key];
                                                 } catch (_e) {
                                                     console.log(_e.message);
@@ -2004,12 +2316,63 @@
 
                                         }
 
+                                        if (entry[key] == "password") {
+                                            entry.cellsrenderer = function (row, datafield, value, defaultHtml) {
+                                                let element = $(defaultHtml)
+                                                let displayText = '';
+                                                try{
+                                                    for(let i = 0; i < ([...value].length > 10 ? 10 :[...value].length) ; i++){
+                                                        displayText+='•';
+                                                    }
+                                                }
+                                                catch
+                                                {
+                                                    displayText = "••••••";
+                                                }
+                                                element[0].innerText = displayText;
+                                                return element[0].outerHTML;
+                                            }
+                                            entry.createeditor= function (rowIndex, cellValue, editor, cellText, width, height) {
+                                                let displayText = '';
+                                                try  {
+                                                    let rowData = that.$refs.myGrid.getrowdata(rowIndex);
+                                                    let _colchange = rowData["_colchange"] ? rowData["_colchange"] : [];
+                                                    if(_colchange.includes(this.datafield))  displayText = cellValue;
+                                                }
+                                                catch(e){ console.log(e.message)}
+                                                editor.jqxInput({ value: displayText });
+                                            },
+                                            entry.initeditor= function (rowIndex, cellValue, editor, cellText, width, height) {
+                                                let displayText = '';
+                                                try  {
+                                                    let rowData = that.$refs.myGrid.getrowdata(rowIndex);
+                                                    let _colchange = rowData["_colchange"] ? rowData["_colchange"] : [];
+                                                    if(_colchange.includes(this.datafield))  displayText = cellValue;
+                                                }
+                                                catch(e){ console.log(e.message)}
+                                                editor.jqxInput({ value: displayText });
+                                            },
+                                            entry.cellvaluechanging = function (rowIndex, datafield, columntype, oldvalue, newvalue) {
+                                                if(that.isNullOrEmpty(newvalue)) return oldvalue;
+                                                try  {
+                                                    let rowData = that.$refs.myGrid.getrowdata(rowIndex);
+                                                    let _colchange = rowData["_colchange"] ? rowData["_colchange"] : [];
+                                                    if(!_colchange.includes(datafield))  _colchange.push(datafield);
+                                                    that.$refs.myGrid.setcellvalue(rowIndex, "_colchange", _colchange);
+                                                }
+                                                catch(e){
+                                                    console.log(e.message)
+                                                }
+                                                return newvalue;
+                                            }
+                                        }
+
                                         //vng-207 hình chưa chạy ổn nên ẩn do hàm render ko update dc cái rowsheight
                                         //, autoheight, autorowheight thì lại mất border last row, text trong cell thì cái trên cái dưới
                                         if (entry[key] == "imageBlob") {
                                             entry.cellsalign = "center";
                                             entry.cellsrenderer = function (row, datafield, value, defaultHtml) {
-                                                let url = value ? that._getImageUrlFromBuffer(value) : "noImage";
+                                                let url = value ? that._getImageUrlFromBuffer(value) : that.no_image;
 
                                                 return `<img style="position: absolute !important; left: 50%; transform: translateX(-50%)" height="${that.rowsheight}"  src="${url}" />`;
                                             }
@@ -2018,6 +2381,51 @@
 
                                         if (entry[key] == "html") {
                                             entry.cellsrenderer = !!entry["cellsrenderer"] ? entry["cellsrenderer"] : null;
+                                        }
+
+                                        if (entry[key] == "file") {
+                                            /*
+                                                accept list: https://en.wikipedia.org/wiki/Media_type
+                                                already suppoted: 
+                                                - "image/*"
+                                                - .doc: application/msword
+                                                - .docx: application/vnd.openxmlformats-officedocument.wordprocessingml.document: docx
+                                                - .pdf: application/pdf
+                                                - .xls: application/vnd.ms-excel
+                                                - .xlsx: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+                                            */
+
+                                            entry.cellsrenderer = function (row, datafield, value, defaultHtml) {
+                                                let openFileDialog = `document.getElementById('uploadFile${that.idKey}').setAttribute('accept', '${entry.accept ? entry.accept:''}'); document.getElementById('uploadFile${that.idKey}').click()`;
+                                                let deleteFile =`document.getElementById('btnFileDelete${that.idKey}').click()`;
+                                                let previewFile = `document.getElementById('btnFilePreview${that.idKey}').click()`;
+
+                                                let _justyfy = that.cellJustify[entry.cellsalign] ? that.cellJustify[entry.cellsalign] : that.cellJustify.left;
+
+                                                let _isHasFile = !!value;
+                                                let _file = "";//value instanceof Buffer ? "" : value?.name;
+                                                let _attachment = `<button class="v-icon mdi mdi-attachment light-green--text px-1" onclick="${openFileDialog}"></button>`;
+                                                let _remove =  `<button class="v-icon mdi mdi-delete-circle red--text px-1" ${!_isHasFile ? "disabled" :""} onclick="${deleteFile}" ></button>`;
+                                                let _preview  = `<button class="v-icon mdi mdi-file-find light-blue--text px-1" ${!_isHasFile ? "disabled" :""} onclick="${previewFile}"></button>`;
+
+                                                if(!value || value.size == 0) return `<div class="row fill-height row--dense align-center ${_justyfy} mx-1"> ${_attachment} </div>`;
+
+                                                if( that.imageExtension.includes( String(value.extension).toLowerCase() ) ) {
+                                                    _file = `<img height="${that.rowsheight}"  src="${value.base64}" />`;
+                                                }
+                                                if(entry.editable && that.editable ) {
+                                                    return `<div style="width: 100%" class="row fill-height row--dense align-center ${_justyfy} mx-1"> 
+                                                            ${_file} ${(_isHasFile ? ( _preview  + _remove) : "") + _attachment} 
+                                                        </div>`
+                                                    ;
+                                                } else {
+                                                    return `<div style="width: 100%" class="row fill-height row--dense align-center ${_justyfy} mx-1"> 
+                                                            ${_file}  ${(_isHasFile ? ( _preview  ) : "")}
+                                                        </div>`
+                                                    ;
+                                                }
+                                                
+                                            }
                                         }
 
 
@@ -2098,8 +2506,12 @@
                 if (this.$refs.myGrid == undefined) {
                     return;
                 }
+                setTimeout(() => {
+                    this.renewCss();
+                }, 50);
+                
+
                 let that = this;
-                //debugger;
                 if (!!this.gridSelectionMode && !this.changingSelection) {
                     this.$refs.myGrid.selectionmode = this.gridSelectionMode;
                 } else {
@@ -2130,26 +2542,37 @@
                 }
                 this.changingSelection = false;
             },
-            loadData(p_filter_paras = null) {
+             async loadData(p_filter_paras = null) {
                 this.isProcessing = true;
                 if (p_filter_paras) {
-                    this._onLoad(p_filter_paras);
+                    await this._onLoad(p_filter_paras);
                 } else {
-                    let that = this;
-                    this.$nextTick(() => {
-                        that._onLoad(that.filter_paras);
-                    });
+                    await this._onLoad(this.filter_paras);
                 }
 
             },
+            // loadData(p_filter_paras = null) {
+            //     this.isProcessing = true;
+            //     if (p_filter_paras) {
+            //         this._onLoad(p_filter_paras);
+            //     } else {
+            //         let that = this;
+            //         this.$nextTick(() => {
+            //             that._onLoad(that.filter_paras);
+            //         });
+            //     }
+
+            // },
+            
             async _onLoad(p_filter_paras) {
                 if (this.sel_procedure) {
+                    try { this.$refs.myGrid.clearselection(); } catch { }
                     let dso = {
                         type: "grid",
                         selpro: this.sel_procedure,
                         para: p_filter_paras,
                     };
-                    this.onLoadWithDSO(dso);
+                  await  this.onLoadWithDSO(dso);
                 }
             },
             async onLoadWithDSO(_dso) {
@@ -2157,7 +2580,7 @@
                 this.isProcessing = true;
                 this.$refs.myGrid.showloadelement();
                 this.search_para = _dso.para;
-                const result = await this._dsoCall(_dso, "select");
+                const result = await this._dsoCall(_dso, "select", true, '', this.db2, this.checkMenu);
                 if (result) {
                     let resTmp = [...result];
                     resTmp = resTmp.map( (q,idx) => {
@@ -2231,19 +2654,20 @@
 
                 //build data for checkbox cols
                 let res = result;
-                let dataToSave = [...result];
-                //debugger;
-                let checkboxCols = this.columns.filter(q => q.columntype == "checkbox");
-                let dateBoxCols = this.columns.filter(q => q.columntype == "datetimeinput");
-                let monthCols = this.columns.filter(q => q.columntype == "month");
-                let colchecks = checkboxCols.map(q => q["dataField"]);
-                let coldates = dateBoxCols.map(q => q["dataField"]);
-                let colmonths = monthCols.map(q => q["dataField"]);
+                let dataToDisplay = [...result];
 
-                for (let i = 0; i < dataToSave.length; i++) {
-                    let data = dataToSave[i];
+                let colchecks = this.columns.filter(q => q.columntype == "checkbox").map(q => q["datafield"]);
+                let coldates =  this.columns.filter(q => q.columntype == "datetimeinput").map(q => q["datafield"]);
+                let colmonths = this.columns.filter(q => q.columntype == "month").map(q => q["datafield"]);
+                let colpasswords = this.columns.filter(q => q.columntype == "password").map(q => q["datafield"]);
+                let colfiles = this.columns.filter(q => q.columntype == "file");
+
+                for (let i = 0; i < dataToDisplay.length; i++) {
+                    let data = dataToDisplay[i];
                     data["_rowstatus"] = !!data["_rowstatus"] ? data["_rowstatus"] : "";
+                    data["_rowstatus2"] = !!data["_rowstatus2"] ? data["_rowstatus2"] : "";
                     data["_rowstatusUnMarked"] = !!data["_rowstatusUnMarked"] ? data["_rowstatusUnMarked"] : "";
+                    data["_colchange"] = !!data["_colchange"] ? data["_colchange"] : [];
                     colchecks.forEach(q => {
                         data[q] = data[q] == true || data[q] == 'Y' ? true : false;
                         //console.log(" data[q]", data[q]);
@@ -2261,9 +2685,44 @@
                             }
                         }
 
-                    })
+                    });
+
+                    colfiles.forEach(q => {
+                        let _col =  q["datafield"];
+                        let _colName = q["datafield"] + "_NAME";
+                        
+                        if(data[_col]) {
+                            let _fileName = data[_colName] ?  data[_colName]  : "no_file";
+                            //console.log(data[_col]);
+                            let buffer = data[_col].data;
+                            let base64 = null;
+                            let _blob = new Blob([], { type: "application/octet-stream", });//new Blob([buffer], { type: "application/octet-stream", });
+                            let _file = this.blobToFile(_blob, _fileName) //tao file rong de khi update ko phai day lai file 
+
+                            let _extension = _file.name.slice((_file.name.lastIndexOf(".") - 1 >>> 0) + 2);
+
+                            if( this.imageExtension.includes( String(_extension).toLowerCase() ) ) {
+                                base64 = "data:image/png;base64,"+ this._arrayBufferToBase64(buffer);
+                            } else {
+                                base64 = 'data:application/octet-stream;base64,'+ this._arrayBufferToBase64(buffer);
+                            }
+
+                            
+                            let fileInfo = {
+                                name: _file.name,
+                                size: buffer.length,
+                                extension:  _extension,
+                                base64: base64,
+                                buffer: buffer,
+                                file: _file
+                            };
+
+                            //console.log(fileInfo);
+                            data[_col] = fileInfo;
+                        }
+                    });
                 }
-                res = dataToSave;
+                res = dataToDisplay;
 
                 //console.log(res);
 
@@ -2299,6 +2758,7 @@
                 this.cellEditing = { row: -1, col: -1 };
                 this.cellEntering = false;
                 let that = this;
+                let isUpdated = false;
 
                 let rowData = this.$refs.myGrid.getrowdata(event.args.rowindex);
                 if (event.args.columntype == 'numeric') {
@@ -2310,6 +2770,8 @@
                         if (newVal.toFixed(10) != oldVal.toFixed(10) && rowData._rowstatus != "i" && rowData._rowstatus != "d") {
                             rowData._rowstatus = 'u';
                             this.$refs.myGrid.setcellvalue(event.args.rowindex, '_rowstatus', 'u');
+
+                            isUpdated = true;
                         }
                         //set lai data do prototype  number ko format
                         this.$refs.myGrid.setcellvalue(event.args.rowindex, event.args.datafield, event.args.value == null || event.args.value == "" ? null : newVal);
@@ -2318,16 +2780,20 @@
                     if (this._formatDate(event.args.value) != event.args.oldvalue && rowData._rowstatus != "i" && rowData._rowstatus != "d") {
                         rowData._rowstatus = 'u';
                         this.$refs.myGrid.setcellvalue(event.args.rowindex, '_rowstatus', 'u');
+
+                        isUpdated = true;
                     }
                 } else if (event.args.value != event.args.oldvalue && rowData._rowstatus != "i" && rowData._rowstatus != "d") {
                     if (!(this.isNullOrEmpty(event.args.value) && this.isNullOrEmpty(event.args.oldvalue))) {
                         rowData._rowstatus = 'u';
                         this.$refs.myGrid.setcellvalue(event.args.rowindex, '_rowstatus', 'u');
+
+                        isUpdated = true;
                     }
                 }
 
                 //status2 for attendance (HR)
-                if (this.status2) {
+                if (this.status2 && isUpdated) {
                     let cellActive = event.args.datafield;
                     let _status2 = this.status2[cellActive];
                     if (_status2) {
@@ -2378,7 +2844,16 @@
                         })
                     }
 
-                    this.$emit("row-updated", event.args, data);
+                    try {
+                        let _colchange = data["_colchange"] ? data["_colchange"] : [];
+                        if(!_colchange.includes(event.args.datafield))  _colchange.push(event.args.datafield);
+                        this.$refs.myGrid.setcellvalue(event.args.rowindex, "_colchange", _colchange);
+                    } catch(e){
+                        console.log(e.message);
+                    }
+
+
+                    this.$emit("row-updated", event.args, data, isUpdated);
                 });
                 // if (rowData._rowstatus == 'u') {
                 //     this.$emit("row-updated", event.args, rowData);
@@ -2412,6 +2887,9 @@
             },
             removeSortBtnOnClick() {
                 this.gridUpdate();
+            },
+			ClearSel(){
+                try { this.$refs.myGrid.clearselection(); } catch { }
             },
             Clear() {
                 try { this.$refs.myGrid.clearselection(); } catch { }
@@ -2518,6 +2996,12 @@
             },
 
             rebuildHeader() {
+
+                let currData = this.$refs.myGrid.getrows();
+                if(currData && currData.length>0) {
+                    this.dataAdapter.localdata = [...currData];
+                }
+
                 this._updateHeader();
                 try {this.$refs.myGrid.render();} catch (e){}
                 
@@ -2654,6 +3138,7 @@
                     this.columnsTmp.push({ caption: "__", dataField: "_rowstatus", hidden: true });
                     this.columnsTmp.push({ caption: "__", dataField: "_rowstatus2", hidden: true });
                     this.columnsTmp.push({ caption: "___", dataField: "_rowstatusUnMarked", hidden: true });
+                    this.columnsTmp.push({ caption: "____", dataField: "_colchange", hidden: true });
                 } catch { }
                 //console.log(this.columnsTmp);
 
@@ -2759,6 +3244,11 @@
             },
             setColumnsHidden(colNames, isHidden) {
                 if (colNames && colNames.length > 0) {
+                    let currData = this.$refs.myGrid.getrows();
+                    if(currData && currData.length>0) {
+                        this.dataAdapter.localdata = [...currData];
+                    }
+                    
                     for (let i = 0; i < this.columns.length; i++) {
                         let column = this.columns[i];
                         colNames.forEach(q => {
@@ -2767,12 +3257,20 @@
                             }
                         })
                     }
-                }
 
-                this.gridUpdate();
+                    this.gridUpdate();
+                }
             },
             getData() {
                 return this.$refs.myGrid.getrows();
+            },
+            getDataDb(){
+                let datas = this.$refs.myGrid.getrows();
+                for(let idx = 0; idx < datas.length; idx++) {
+                    datas[idx] =  this._buildDataSaveDb(datas[idx]);
+                }
+              
+                return datas;
             },
             onSelectedData() {
                 let selectionMode = this.$refs.myGrid.selectionmode;
@@ -2844,47 +3342,105 @@
             onSetAll(column, value, isUpdateStatus) {
                 let dataList = this.$refs.myGrid.getrows();
                 dataList = dataList.map((x) => {
-                    x[column] = value;
-                    if (isUpdateStatus) { x._rowstatus = x._rowstatus !== "i" && x._rowstatus !== "d" ? "u" : x._rowstatus; }
+                    let _tempData =  {};
+                    _tempData[column] = value;
+                    _tempData =  this._buildDataInsert(_tempData);
+
+                    x[column] = _tempData[column];
+                    if (isUpdateStatus) { 
+                        x._rowstatus = x._rowstatus !== "i" && x._rowstatus !== "d" ? "u" : x._rowstatus; 
+                    }
+
                     return x;
                 });
                 this.setDataSource(dataList);
+
+                
+                for(let idx = 0 ; idx< this.$refs.myGrid.getrows().length; idx++) {
+                    let rowData = this.$refs.myGrid.getrowdata(idx);
+                    let oldValue = rowData[column];
+
+                    /*let _tempData =  {};
+                    _tempData[column] = value;
+                    _tempData =  this._buildDataInsert(_tempData);
+
+                    this.$refs.myGrid.setcellvalue(idx, column, _tempData[column]);
+
+                    //dataList[idx][column] = value;
+                    if (isUpdateStatus) {
+                        let rowstatus = rowData._rowstatus !== "i" && rowData._rowstatus !== "d" ? "u" : rowData._rowstatus;
+                        //dataList[idx]._rowstatus = dataList[idx]._rowstatus !== "i" && dataList[idx]._rowstatus !== "d" ? "u" : dataList[idx]._rowstatus;
+                        this.$refs.myGrid.setcellvalue(idx, '_rowstatus', rowstatus);
+
+                        this.onSetStatus2(idx, column);
+                    }
+
+                    let _colchange = rowData["_colchange"] ? rowData["_colchange"] : [];
+                    if(!_colchange.includes(column)) {
+                        _colchange.push(column);
+                        this.$refs.myGrid.setcellvalue(idx, "_colchange", _colchange);
+                    }*/
+                    
+                    this.$emit("cell-changed"
+                                , { rowindex: idx, datafield: column, oldvalue: oldValue, value: value, row: this.$refs.myGrid.getrowdata(idx) }  
+                                , this._buildDataSaveDb(this.$refs.myGrid.getrowdata(idx))
+                    );
+                }
+                return true;
             },
             onSet(column, value, isUpdateStatus = true, rowindex = null) {
-                let selectionMode = this.$refs.myGrid.selectionmode;
-                let rowindexes = [];
-                if (rowindex == null) {
-                    if (selectionMode == "singlecell" || selectionMode == "multiplecells" || selectionMode == "multiplecellsextended") {
-                        let selecteds = this.$refs.myGrid.getselectedcells();
-                        rowindexes = Array.from(new Set(Array.from(selecteds, x => x["rowindex"])));
-                    } else {
-                        rowindexes = this.$refs.myGrid.getselectedrowindexes();
-                    }
-                } else {
-                    rowindexes.push(rowindex);
-                }
-
-                if (rowindexes.length > 0) {
-                    rowindexes.forEach(idx => {
-                        let rowData = this.$refs.myGrid.getrowdata(idx);
-                        let oldValue = rowData[column];
-                        this.$refs.myGrid.setcellvalue(idx, column, value);
-                        //dataList[idx][column] = value;
-                        if (isUpdateStatus) {
-                            let rowstatus = rowData._rowstatus !== "i" && rowData._rowstatus !== "d" ? "u" : rowData._rowstatus;
-                            //dataList[idx]._rowstatus = dataList[idx]._rowstatus !== "i" && dataList[idx]._rowstatus !== "d" ? "u" : dataList[idx]._rowstatus;
-                            this.$refs.myGrid.setcellvalue(idx, '_rowstatus', rowstatus);
-
-                            this.onSetStatus2(idx, column);
+                try {
+                    let selectionMode = this.$refs.myGrid.selectionmode;
+                    let rowindexes = [];
+                    if (rowindex == null) {
+                        if (selectionMode == "singlecell" || selectionMode == "multiplecells" || selectionMode == "multiplecellsextended") {
+                            let selecteds = this.$refs.myGrid.getselectedcells();
+                            rowindexes = Array.from(new Set(Array.from(selecteds, x => x["rowindex"])));
+                        } else {
+                            rowindexes = this.$refs.myGrid.getselectedrowindexes();
                         }
-                        this.$emit("cell-changed"
-                                    , { rowindex: idx, datafield: column, oldvalue: oldValue, value: value, row: this.$refs.myGrid.getrowdata(idx) }  
-                                    , this.$refs.myGrid.getrowdata(idx) 
-                        );
-                    })
-                    //this.setDataSource(dataList);
-                } else {
-                    this.showNotification("warning", this.$t("please_select_row"), '');
+                    } else {
+                        rowindexes.push(rowindex);
+                    }
+
+                    if (rowindexes.length > 0) {
+                        rowindexes.forEach(idx => {
+                            let rowData = this.$refs.myGrid.getrowdata(idx);
+                            let oldValue = rowData[column];
+
+                            let _tempData =  {};
+                            _tempData[column] = value;
+                            _tempData =  this._buildDataInsert(_tempData);
+
+                            this.$refs.myGrid.setcellvalue(idx, column, _tempData[column]);
+                            //dataList[idx][column] = value;
+                            if (isUpdateStatus) {
+                                let rowstatus = rowData._rowstatus !== "i" && rowData._rowstatus !== "d" ? "u" : rowData._rowstatus;
+                                //dataList[idx]._rowstatus = dataList[idx]._rowstatus !== "i" && dataList[idx]._rowstatus !== "d" ? "u" : dataList[idx]._rowstatus;
+                                this.$refs.myGrid.setcellvalue(idx, '_rowstatus', rowstatus);
+
+                                this.onSetStatus2(idx, column);
+                            }
+
+                            let _colchange = rowData["_colchange"] ? rowData["_colchange"] : [];
+                            if(!_colchange.includes(column)) {
+                                _colchange.push(column);
+                                this.$refs.myGrid.setcellvalue(idx, "_colchange", _colchange);
+                            }
+                            
+                            this.$emit("cell-changed"
+                                        , { rowindex: idx, datafield: column, oldvalue: oldValue, value: value, row: this.$refs.myGrid.getrowdata(idx) }  
+                                        , this._buildDataSaveDb(this.$refs.myGrid.getrowdata(idx))
+                            );
+                        })
+                        //this.setDataSource(dataList);
+                        return true;
+                    } else {
+                        this.showNotification("warning", this.$t("please_select_row"), '');
+                        return false;
+                    }
+                }
+                catch{
                     return false;
                 }
             },
@@ -2933,6 +3489,7 @@
                     _data._rowstatus = 'i';
                 }
 
+                _data = this._buildDataInsert(_data);
 
                 if (!isLastRow) {
                     this.$refs.myGrid.addrow(null, _data, 0);
@@ -2967,6 +3524,8 @@
 
                         _data.PK = --minPK;
                         _data._rowstatus = 'i';
+
+                        _data = this._buildDataInsert(_data);
                         return _data
                     });
 
@@ -2981,6 +3540,71 @@
 
                 try { this.rowCount(this.$refs.myGrid.getrows().length); } catch { }
                 //this.setDataSource(dataList);
+            },
+
+            _buildDataInsert(data) {
+                if(data) {
+                    let _data = {...data};
+                    let colchecks = this.columns.filter(q => q.columntype == "checkbox").map(q => q["datafield"]);
+                    let coldates =  this.columns.filter(q => q.columntype == "datetimeinput").map(q => q["datafield"]);
+                    let colmonths = this.columns.filter(q => q.columntype == "month").map(q => q["datafield"]);
+                    
+                    colchecks.forEach(q => {
+                        _data[q] = _data[q] == true || _data[q] == 'Y' ? true : false;
+                    });
+
+                    coldates.forEach(q => {
+                        _data[q] = this._formatDateForPicker(_data[q]);
+                    })
+
+                    colmonths.forEach(q => {
+                        let monthFormat = this.curLang.MONTH_FORMAT.toUpperCase();
+                        if (!!_data[q] && _data[q].length == 6) {
+                            const d = moment(_data[q], "YYYYMM");
+                            if (d.isValid()) {
+                                const newval = d.format(monthFormat);
+                                _data[q] = newval;
+                            }
+                        }
+
+                    });
+                    //console.log("data",data);
+                    //console.log("_data", _data);
+
+                    return _data;
+                }
+                return data;
+            },
+
+            _buildDataSaveDb(data) {
+                if(data) {
+                    let _data = {...data};
+                    let colchecks = this.columns.filter(q => q.columntype == "checkbox").map(q => q["datafield"]);
+                    let coldates =  this.columns.filter(q => q.columntype == "datetimeinput").map(q => q["datafield"]);
+                    let colmonths = this.columns.filter(q => q.columntype == "month").map(q => q["datafield"]);
+                    
+                    colchecks.forEach(q => {
+                        _data[q] = _data[q] == true || _data[q] == 'Y' || _data[q] == "true" ? "Y" : "N";
+                    });
+
+                    coldates.forEach(q => {
+                        _data[q] = this._formatDateToSave(_data[q]);
+                    });
+
+                    colmonths.forEach(q => {
+                        let monthFormat = that.curLang.MONTH_FORMAT.toUpperCase();
+
+                        if (!!_data[q]) {
+                            const d = moment(_data[q], monthFormat);
+                            const newval = d.format("YYYYMM");
+                            _data[q] = newval;
+                        }
+
+                    });
+
+                    return _data;
+                }
+                return data;
             },
 
 
@@ -3040,7 +3664,7 @@
 
                 })
             },
-            async onSave(dso, notify = true) {
+            async onSave(dso, notify = true, delayNextCall = 0) {
                 let dataList = this.$refs.myGrid.getrows();
                 if (dataList.findIndex(q => q["_rowstatus"] != undefined && q["_rowstatus"] != "" && q["_rowstatus"] != null) < 0) {
                     if (notify) {
@@ -3049,7 +3673,7 @@
                     return
                 }
                 dso.data = dataList;
-                return await this._onSaveWithDSO(dso, notify);
+                return await this._onSaveWithDSO(dso, notify, delayNextCall);
             },
 
             async onPrintReport() {
@@ -3160,6 +3784,19 @@
 
             },
 
+            _onOpenSetGridDialog(){
+                try {
+                    this.gridSetColDialogEvents[this.gridSetColDialogSelected].show();
+                } catch{
+                    if(!!!this.gridSetColDialogSelected) {
+                        this.showNotification("warning", this.$t("please_select_column"), "");
+                    } else {
+                        this.showNotification("warning", this.$t("dialog_not_define"), "");
+                    }
+                }
+                return;
+            },
+
             _onSetGrid(type) {
                 let setCol = null;
                 let setVal = null;
@@ -3194,6 +3831,10 @@
                         setVal = this.gridSetColTextVal;
                         break;
                     }
+                    case 'DIALOG': {
+                        setCol = this.gridSetColDialogSelected;
+                        break;
+                    }
                 }
                 if(setCol !="" && setCol != null){
                     if(type == "MONTH") {
@@ -3213,13 +3854,38 @@
                             }
                         }
                     }
-                    this.onSet(setCol, setVal)
+
+                    if(type != "DIALOG") {
+                        this.onSet(setCol, setVal)
+                    } else {
+                        //set from dialog
+                        try {
+                            let _KEY = this.gridSetColDialogEvents[setCol].KEY;
+                            let _pKEY = this.gridSetColDialogEvents[setCol].pKEY;
+
+                            let _VALUE = this.gridSetColDialogEvents[setCol].VALUE;
+                            let _pVALUE = this.gridSetColDialogEvents[setCol].pVALUE;
+
+                            if(!this.gridSetColDialogVal || !this.dialogCallback) { //ko chon thi set lai null
+                                this.onSet(_KEY, null);
+                                this.onSet(_VALUE, null);
+                            } else {
+                                this.onSet(_KEY, this.dialogCallback[_pKEY]);
+                                this.onSet(_VALUE, this.dialogCallback[_pVALUE]);
+                            }
+                        } catch(e) {
+                            this.showNotification("error", this.$t("meet_error"), '');
+                        }
+                        
+                    }
+                    
                 } else {
                     this.showNotification("warning", this.$t("please_select_column"), "", 1000);
                 }
                 
             },
             _gridCalculation(formulaType,column,data){
+                if(!!!data || data.length==0) return 0;
                 let columnValue=data.map(a => (isNaN(a[column]) || a[column] == null) ? 0 : parseFloat(a[column]) );
                 let value=0;
                 switch(formulaType){
@@ -3250,7 +3916,125 @@
                     break;
                 }
                 return value;
-            }
+            },
+
+
+
+
+            //file management
+            async selectedFile(event) {
+                const files = event.target.files;
+                let that = this;
+                if (files[0] !== undefined) {
+                    that.$refs.myGrid.showloadelement();
+                    let extension = files[0].name.slice((files[0].name.lastIndexOf(".") - 1 >>> 0) + 2);
+                    
+
+                    let fileInfo = {
+                        name: files[0].name,
+                        size: files[0].size,
+                        extension:  extension
+                    };
+
+                    const fr = new FileReader();
+                    fr.readAsDataURL(files[0]);
+                    fr.addEventListener('load', () => {
+                        
+
+                        fileInfo.base64 = fr.result;
+                        fileInfo.file = files[0];
+
+                        this.onSet(this.lastCellClick.args.datafield, fileInfo);
+                        this.onSet(this.lastCellClick.args.datafield+"_NAME", fileInfo.name);
+                        this.onSet(this.lastCellClick.args.datafield+"_SIZE", fileInfo.size);
+
+                        that.$refs.myGrid.hideloadelement();
+                    });
+                }
+            },
+
+            async deleteCellFile(){
+                try {
+                    this.$refs.myGrid.showloadelement();
+                    let _blob = new Blob([], { type: "application/octet-stream", });//new Blob([buffer], { type: "application/octet-stream", });
+                    let _file = this.blobToFile(_blob, 'no_file') //tao file rong de khi update ko phai day lai file 
+                    let fileInfo = {
+                        name:'no_file',
+                        size: 0,
+                        extension:  '',
+                        base64: null,
+                        file: _file
+                    };
+
+                    this.onSet(this.lastCellClick.args.datafield, fileInfo);
+                    this.onSet(this.lastCellClick.args.datafield+"_NAME", null);
+                    this.onSet(this.lastCellClick.args.datafield+"_SIZE", null);
+                } catch{}
+                finally{
+                    this.$refs.myGrid.hideloadelement();
+                }
+            },
+
+            async previewCellFile(){
+                try {
+                    this.$refs.myGrid.showloadelement();
+                    let _col = this.lastCellClick.args.datafield;
+                    let _rowIdx = this.lastCellClick.args.rowindex;
+                    let rowData = this.$refs.myGrid.getrowdata(_rowIdx);
+                    let fileInfo = rowData[_col];
+
+                    if( fileInfo && fileInfo.size > 0) {
+                        if(this.imageExtension.includes(fileInfo.extension)) {
+                            await this.viewImage(fileInfo.base64);
+                            this.cellPreviewImd = fileInfo.base64;
+                        } else {
+                            let _blob = this._base64ToBlob(fileInfo.base64, 'application/octet-stream'); //new Blob([fileInfo.buffer], { type: 'application/octet-stream' });
+                            this._ExcelSaveAs(_blob, fileInfo.name)
+                        }
+                    }
+                } catch{}
+                finally{
+                    this.$refs.myGrid.hideloadelement();
+                }
+            },
+
+
+            getImageDimensions(file) {
+                return new Promise (function (resolved, rejected) {
+                    var i = new Image()
+                    i.onload = function(){
+                        resolved({w: i.width, h: i.height})
+                    };
+                    i.src = file
+                })
+            },
+
+            
+            async viewImage(file){
+                let dimensions = await this.getImageDimensions(file);
+                let maxWidth = window.screen.width * 0.8;
+                let maxHeight = window.screen.height * 0.8;
+
+                this.orientation = dimensions.w > dimensions.h ? "landscape" : "portrait";
+                this.originWidth = dimensions.w;
+                this.originHeight = dimensions.h;
+
+                if (this.orientation == "landscape") {
+                    if (dimensions.w > maxWidth) {
+                        let ratio = (maxWidth / dimensions.w).toFixed(2);
+                        this.originWidth = maxWidth;
+                        this.originHeight = Math.round(dimensions.h * ratio)
+                    }
+                } else {
+                    if (dimensions.h > maxHeight) {
+                        let ratio = (maxHeight / dimensions.h).toFixed(2);
+                        this.originHeight = maxHeight;
+                        this.originWidth = Math.round(dimensions.w * ratio)
+                    }
+                }
+                await this.wait(50);
+                this.cellPreviewDialog = true;
+            },
             //=======================================================================================END FUNCTION APPLY FOR HR STYLE===============================================================================
             //=====================================================================================================================================================================================================
 
@@ -3286,9 +4070,9 @@
     }
     */
 
-        .jqx-grid-column-header {
+        /* .jqx-grid-column-header {
             z-index: 0 !important;
-        }
+        } */
 
         .cellUpdate {
             background-color: #cfe3ff !important;

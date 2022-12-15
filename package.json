@@ -6,7 +6,7 @@
     "main": "index.js",
     "scripts": {
         "ok": "nodemon --watch app --watch config --watch start --watch .env -x node --max-old-space-size=16384 server.js",
-        "dev": "node --max-old-space-size=16384 server.js",
+        "dev": "nodemon --watch app --watch config --watch start --watch .env -x node --max-old-space-size=16384 server.js",
         "start": "set NODE_ENV=production node server.js",
         "build": "adonis nuxt:build",
         "test": "node ace test"
@@ -50,6 +50,7 @@
         "devextreme": "^20.2.4",
         "devextreme-vue": "^20.2.4",
         "docx-templates": "^4.6.0",
+        "encoding-japanese": "^2.0.0",
         "exceljs": "^3.9.0",
         "file-saver": "^2.0.2",
         "firebase": "^8.6.1",

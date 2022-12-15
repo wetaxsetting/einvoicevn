@@ -2,8 +2,8 @@ export default ({ app, $axios, env }, inject) => {
   inject('axiosCreate', () => {
     // Set config defaults when creating the instance
     const instance = $axios.create({
-      timeout: env.TIME_OUT ? env.TIME_OUT : 1,
-      baseURL: env.LOCAL_API_URL? env.LOCAL_API_URL : env.API_URL
+      timeout: env.TIME_OUT ? env.TIME_OUT : 10,
+      baseURL: env.LOCAL_API_URL ? env.LOCAL_API_URL : env.API_URL
     });
     return instance
   })

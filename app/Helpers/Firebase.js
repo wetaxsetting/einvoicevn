@@ -20,11 +20,13 @@ class Firebase {
         this.Env = use("Env");
         const firebase_path = this.Env.get("FIREBASE_PATH", "NO_FIREBASE_PATH");
         if (firebase_path != "NO_FIREBASE_PATH") {
-            var serviceAccount = require(firebase_path);
-            admin.initializeApp({
-                credential: admin.credential.cert(serviceAccount),
-                databaseURL: this.Env.get("DATABASE_URL"),
-            });
+            if (!admin.apps.length) {
+                var serviceAccount = require(firebase_path);
+                admin.initializeApp({
+                    credential: admin.credential.cert(serviceAccount),
+                    databaseURL: this.Env.get("DATABASE_URL"),
+                });
+            }
         }
 
     }

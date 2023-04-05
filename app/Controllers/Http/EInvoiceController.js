@@ -1027,10 +1027,9 @@ class EInvoiceController {
             }
 
             const authUserName = "GENUWIN"; // "GENUWIN";
-            //const authPassword = "e_GX4v@"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
-            const authPassword = "genuwin123"; // "e_GX4v@";
-            //const url = "https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon";
-            const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon";
+            const authPassword = "e_GX4v@"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+            const url = "https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon";
+            // const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon";
             //const url = "http://118.71.250.233/ftvan-hddt/hdon/cmahdon";
             const { proc, para } = request.all();
 
@@ -1509,9 +1508,9 @@ class EInvoiceController {
             const authUserName = "GENUWIN"; // "GENUWIN";
             const authPassword = "e_GX4v@"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
             //const authPassword = "genuwin123"; // "e_GX4v@";
-            //const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao";
-            let url =
-                "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+            const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+            // let url =
+            //     "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
             const agent = {
                 Agent: {
                     defaultPort: 443,
@@ -1527,15 +1526,15 @@ class EInvoiceController {
                     tenTBao = "";
 
                 // @TODO: _______________________________________________________
-                maTBao = "9999";
-                tenTBao = "Invoices are processing.";
-                // await DBService.ExecuteSQLBlob(
-                //     `BEGIN ei_upd_file_xml_ar(:tei_einvoice_ar_pk,:xml_sign,:issuer,:issueby,:issueto,:dn_name,:dn_mst,
-                //              :notafter,:notbefore,:serialnumber,:tradecode,:cqt_code,:p_language, :p_crt_by, :p_rtn_cur); END;`,
-                //     para_value,
-                //     p_language,
-                //     p_crt_by
-                //   );
+                // maTBao = "9999";
+                // tenTBao = "Invoices are processing.";
+                await DBService.ExecuteSQLBlob(
+                    `BEGIN ei_upd_file_xml_ar(:tei_einvoice_ar_pk,:xml_sign,:issuer,:issueby,:issueto,:dn_name,:dn_mst,
+                             :notafter,:notbefore,:serialnumber,:tradecode,:cqt_code,:p_language, :p_crt_by, :p_rtn_cur); END;`,
+                    para_value,
+                    p_language,
+                    p_crt_by
+                  );
                 const result = await DBService.callProcCursor(
                     "ei_upd_file_xml_v8", [para.tei_einvoice_m_pk[i], maTBao, tenTBao],
                     p_language,
@@ -1840,8 +1839,8 @@ class EInvoiceController {
             let dataJson = [];
             const authUserName = "GENUWIN"; // "GENUWIN";
             const authPassword = "genuwin123"; // "e_GX4v@";
-            //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon";
-            const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/dkyhddt/dkysdung";
+            const url = "https://tvan.fpt.com.vn/ftvan-hddt/dkyhddt/dkysdung";
+            // const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/dkyhddt/dkysdung";
             const { proc, para } = request.all();
 
             const agent = {
@@ -1958,9 +1957,8 @@ class EInvoiceController {
             const authPassword = "e_GX4v@"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
             // const authPassword = "genuwin123"; // "e_GX4v@";
 
-            // const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
-            let url =
-                "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+            const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+            // let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
 
             const { proc, para } = request.all();
 
@@ -2132,10 +2130,9 @@ class EInvoiceController {
                 p_crt_by = user.USER_ID;
             }
             const authUserName = "GENUWIN"; // "GENUWIN";
-            const authPassword = "genuwin123"; // "e_GX4v@";
-            //const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
-            const url =
-                "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
+            const authPassword = "e_GX4v@";//"genuwin123"; // "e_GX4v@";
+            const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
+            // const url =  "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
             const { proc, para } = request.all();
             const agent = {
                 Agent: {
@@ -2266,9 +2263,8 @@ class EInvoiceController {
             const authUserName = "GENUWIN"; // "GENUWIN";
             const authPassword = "e_GX4v@"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
 
-            //const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
-            let url =
-                "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+            const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+            // let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
 
             const { proc, para } = request.all();
 

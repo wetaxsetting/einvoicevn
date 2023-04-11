@@ -13,7 +13,7 @@ const EINVOICE_URL_API_CHECKING = Env.get("EINVOICE_URL_API_CHECKING");
 const EINVOICE_URL_API_INFORMADJUST_SEND = Env.get("EINVOICE_URL_API_INFORMADJUST_SEND");
 const EINVOICE_URL_API_INFORMADJUST_CHECK = Env.get("EINVOICE_URL_API_INFORMADJUST_CHECK");
 const EINVOICE_URL_API_DECLARATION_SEND = Env.get("EINVOICE_URL_API_DECLARATION_SEND");
-const EINVOICE_URL_API_DECLARATION_CHECK = Env.get("EINVOICE_URL_API_DECLARATION_CHECK");  
+const EINVOICE_URL_API_DECLARATION_CHECK = Env.get("EINVOICE_URL_API_DECLARATION_CHECK");
 const EINVOICE_URL_API_CONVERT = Env.get("EINVOICE_URL_API_DECLARATION_CHECK");
 const EINVOICE_URL_API_CONVERT_EINV = Env.get("EINVOICE_URL_API_CONVERT_EINV");
 const SMTP_SERVER = Env.get("SMTP_SERVER");
@@ -52,7 +52,7 @@ class EInvoiceController {
                 user_id: p_user_id,
                 password: p_user_pw,
             });
-            console.log("res.data",res.data);
+            console.log("res.data", res.data);
             console.log("res.data.data", res.data.data.token);
             return res.data.data.token;
         } catch (err) {
@@ -386,7 +386,7 @@ class EInvoiceController {
                     headers: { Authorization: `Bearer ${token}` },
                 };
                 const res = await Request.post(
-                    EINVOICE_URL_API_CONVERT_EINV, { invoices : invoices },
+                    EINVOICE_URL_API_CONVERT_EINV, { invoices: invoices },
                     config
                 );
                 console.log("convertInvoiceToXMLClient", res.data);
@@ -515,7 +515,7 @@ class EInvoiceController {
             }
 
             const { invoices } = request.all();
-            console.log( " invoices  ", invoices);
+            console.log(" invoices  ", invoices);
             //invoices = JSON.parse(invoices);
             let rtnXML = [];
             let objInvoice_M = {
@@ -608,10 +608,10 @@ class EInvoiceController {
             }
             const lastInvoiceNo = await DBService.callProcCursor(
                 "ei_sel_last_invoice_no", [
-                    invoices[0].master.saler_taxcode,
-                    invoices[0].master.serial_no,
-                    invoices[0].master.form_no,
-                ],
+                invoices[0].master.saler_taxcode,
+                invoices[0].master.serial_no,
+                invoices[0].master.form_no,
+            ],
                 "ENG",
                 p_crt_by,
                 "N"
@@ -872,15 +872,15 @@ class EInvoiceController {
                         TSuat: this.convertHtmlCode(invoices[i].detail[j].vat_rate),
                         TTKhac: {
                             TTin: [{
-                                    TTruong: "VATAmount",
-                                    KDLieu: "decimal",
-                                    DLieu: invoices[i].detail[j].vat_tr_amt,
-                                },
-                                {
-                                    TTruong: "Amount",
-                                    KDLieu: "decimal",
-                                    DLieu: invoices[i].detail[j].net_tr_amt,
-                                },
+                                TTruong: "VATAmount",
+                                KDLieu: "decimal",
+                                DLieu: invoices[i].detail[j].vat_tr_amt,
+                            },
+                            {
+                                TTruong: "Amount",
+                                KDLieu: "decimal",
+                                DLieu: invoices[i].detail[j].net_tr_amt,
+                            },
                             ],
                         },
                     });
@@ -1084,14 +1084,14 @@ class EInvoiceController {
                 }
                 const tradeCode = await Request.post(
                     url, { base64XML: Buffer.from(para[i].xml_signed).toString("base64") }, {
-                        agent,
-                        headers: {
-                            Authorization: "Basic " +
-                                Buffer.from(`${authUserName}:${authPassword}`).toString(
-                                    "base64"
-                                ),
-                        },
-                    }
+                    agent,
+                    headers: {
+                        Authorization: "Basic " +
+                            Buffer.from(`${authUserName}:${authPassword}`).toString(
+                                "base64"
+                            ),
+                    },
+                }
                 );
                 if (tradeCode && tradeCode.data) {
                     const para_value = {
@@ -1185,7 +1185,7 @@ class EInvoiceController {
             let jsonTTKhac = null;
             try {
                 jsonTTKhac = await transform(p_xml_content, templateTTKhac);
-            } catch (e) {}
+            } catch (e) { }
             //console.log("jsonTTKhac", jsonTTKhac)
             let customField1 = "",
                 customField2 = "",
@@ -1340,13 +1340,14 @@ class EInvoiceController {
                     STKNHang: "STKNHang",
                     TNHang: "TNHang",
                     TTKhac: "TTKhac",
+                    MKHang: "MKHang"
                 },
             ];
             const jsonNMua = await transform(p_xml_content, templateNMua);
             //console.log("jsonNMua",jsonNMua)
             const arrNMua = [
                 jsonNMua[0].Ten,
-                jsonNMua[0].MST,
+                jsonNMua[0].MST ? jsonNMua[0].MST : jsonNMua[0].MKHang,
                 jsonNMua[0].DChi,
                 jsonNMua[0].SDThoai,
                 jsonNMua[0].DCTDTu,
@@ -1854,12 +1855,12 @@ class EInvoiceController {
             };
             const tradeCode = await Request.post(
                 url, { base64XML: Buffer.from(para.xml_signed).toString("base64") }, {
-                    agent,
-                    headers: {
-                        Authorization: "Basic " +
-                            Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
-                    },
-                }
+                agent,
+                headers: {
+                    Authorization: "Basic " +
+                        Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
+                },
+            }
             );
 
             if (tradeCode && tradeCode.data) {
@@ -2146,12 +2147,12 @@ class EInvoiceController {
 
             const tradeCode = await Request.post(
                 url, { base64XML: Buffer.from(para.xml_signed).toString("base64") }, {
-                    agent,
-                    headers: {
-                        Authorization: "Basic " +
-                            Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
-                    },
-                }
+                agent,
+                headers: {
+                    Authorization: "Basic " +
+                        Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
+                },
+            }
             );
 
             if (tradeCode && tradeCode.data) {

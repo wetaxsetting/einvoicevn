@@ -135,10 +135,10 @@ class ImportController {
   async extractXMLContent(p_xml_path, p_language, p_crt_by, file_name) {
     try {
       var fileBuffer = fs.readFileSync(p_xml_path);
-      let xml_encoding=encoding.detect(fileBuffer)
-      if(xml_encoding=="UTF16"){xml_encoding="UTF16LE"}
+      let xml_encoding = encoding.detect(fileBuffer)
+      if (xml_encoding == "UTF16") { xml_encoding = "UTF16LE" }
       let AESs = new AES();
-      let xmlIntegrity = await AESs.xmlDigitalSignatureVerifier(p_xml_path,xml_encoding);
+      let xmlIntegrity = await AESs.xmlDigitalSignatureVerifier(p_xml_path, xml_encoding);
       let einvoice_file_name = file_name;
       console.log(xmlIntegrity)
       const xmlContent = fs.readFileSync(p_xml_path, { encoding: xml_encoding, flag: "r" });
@@ -352,11 +352,12 @@ class ImportController {
           STKNHang: "STKNHang",
           TNHang: "TNHang",
           TTKhac: "TTKhac",
+          MKHang: "MKHang"
         },
       ];
       const jsonNMua = await transform(xmlContent, templateNMua);
       //console.log("jsonNMua",jsonNMua)
-      const arrNMua = [jsonNMua[0].Ten, jsonNMua[0].MST, jsonNMua[0].DChi, jsonNMua[0].SDThoai, jsonNMua[0].DCTDTu, jsonNMua[0].HVTNMHang, jsonNMua[0].STKNHang, jsonNMua[0].TNHang, jsonNMua[0].TTKhac];
+      const arrNMua = [jsonNMua[0].Ten, jsonNMua[0].MST ? jsonNMua[0].MST : jsonNMua[0].MKHang, jsonNMua[0].DChi, jsonNMua[0].SDThoai, jsonNMua[0].DCTDTu, jsonNMua[0].HVTNMHang, jsonNMua[0].STKNHang, jsonNMua[0].TNHang, jsonNMua[0].TTKhac];
       const templateLTSuat = [
         templateLTSuatPath,
         {

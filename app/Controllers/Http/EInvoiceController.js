@@ -42,6 +42,7 @@ class EInvoiceController {
         let result = await EiExcel.getEinvoice(tradecode, p_language, p_crt_by)
         return response.send(result);
     }
+
     async callLogin(p_url, p_user_id, p_user_pw) {
         try {
             // console.log("p_url  ", p_url);
@@ -406,6 +407,7 @@ class EInvoiceController {
             return response.send(Utils.response(false, "error", e.message));
         }
     }
+
     async convertInvaliInvoiceToXML({ request, response, auth }) {
         try {
             var p_language = request.header("accept-language", "ENG");
@@ -2377,6 +2379,357 @@ class EInvoiceController {
             return response.send(Utils.response(false, "error", e.message));
         }
     }
+
+    async sendPITToTaxOffice({ request, response, auth }) {
+        try {
+            var p_language = request.header("accept-language", "ENG");
+            var p_crt_by = "";
+            const user = await auth.getUser();
+            if (user) {
+                p_crt_by = user.USER_ID;
+            }
+
+            const { proc, para } = request.all();
+
+            let rtnValue = [];
+            let res_data = [];
+            // checking ...
+            for (let i = 0; i < para.length; i++) {
+
+                const para_value = {
+                    master_pk:para[i].master_pk                  ,
+                    form_no:para[i].form_no                  ,
+                    serial_no:para[i].serial_no                ,
+                    invoice_date:para[i].invoice_date             ,
+                    company_name:para[i].company_name             ,
+                    company_taxcode:para[i].company_taxcode          ,
+                    company_address:para[i].company_address          ,
+                    payer_name:para[i].payer_name               ,
+                    payer_address:para[i].payer_address            ,
+                    payer_taxcode:para[i].payer_taxcode            ,
+                    payer_nation:para[i].payer_nation             ,
+                    payer_resident:para[i].payer_resident           ,
+                    id_passport_number:para[i].id_passport_number       ,
+                    place_of_issue:para[i].place_of_issue           ,
+                    date_of_issue:para[i].date_of_issue            ,
+                    income_amt :para[i].income_amt              ,
+                    income_time:para[i].income_time              ,
+                    income_amt_total:para[i].income_amt_total         ,
+                    income_amt_total_defuct:para[i].income_amt_total_defuct  ,
+                    income_amt_recv:para[i].income_amt_recv          ,
+                    income_type:para[i].income_type              ,
+                    income_time_yyyy:para[i].income_time_yyyy 
+                };
+                rtnValue = await DBService.ExecuteSQLBlob(
+                    `BEGIN ei_upd_file_pit_ar(  :master_pk,
+                                                :form_no,
+                                                :serial_no,
+                                                :invoice_date,
+                                                :company_name,
+                                                :company_taxcode,
+                                                :company_address,
+                                                :payer_name,
+                                                :payer_address,
+                                                :payer_taxcode,
+                                                :payer_nation,
+                                                :payer_resident,
+                                                :id_passport_number,
+                                                :place_of_issue,
+                                                :date_of_issue,
+                                                :income_amt,
+                                                :income_time,
+                                                :income_amt_total,
+                                                :income_amt_total_defuct,
+                                                :income_amt_recv,
+                                                :income_type,
+                                                :income_time_yyyy,
+                                                :p_language, 
+                                                :p_crt_by, 
+                                                :p_rtn_cur); END;`,
+                    para_value,
+                    p_language,
+                    p_crt_by
+                );
+                 
+                res_data.push(rtnValue.p_rtn_cur[0]);
+
+            }
+
+            return response.send(
+                Utils.response(
+                    true,
+                    `${para.length} invoices were sent successful.`,
+                    res_data
+                )
+            );
+        } catch (e) {
+            Utils.Logger({
+                LVL: "error",
+                MODULE: "EInvoiceController",
+                FUNC: "sendPITToTaxOffice",
+                CONTENT: e.message,
+            });
+            return response.send(Utils.response(false, "error", e.message));
+        }
+    }
+
+    async sendPOSToTaxOffice({ request, response, auth }) {
+        try {
+            var p_language = request.header("accept-language", "ENG");
+            var p_crt_by = "";
+            const user = await auth.getUser();
+            if (user) {
+                p_crt_by = user.USER_ID;
+            }
+
+            const { proc, para } = request.all();
+
+            let rtnValue = [];
+            let res_data = [];
+            // checking ...
+            for (let i = 0; i < para.length; i++) {
+                // console.log("para  ", para[i]);
+
+              const para_value = {
+                    master_pk:para[i].master_pk                  ,
+                    form_no:para[i].form_no                  ,
+                    serial_no:para[i].serial_no                ,
+                    invoice_date:para[i].invoice_date             ,
+                    currency:para[i].currency             ,
+                    exchange_rate:para[i].exchange_rate             ,
+                    payment_methods:para[i].payment_methods             ,
+                    seller_name:para[i].seller_name             ,
+                    seller_taxcode:para[i].seller_taxcode             ,
+                    seller_address:para[i].seller_address             ,
+                    seller_phone:para[i].seller_phone             ,
+                    seller_mail:para[i].seller_mail             ,
+                    seller_account:para[i].seller_account             ,
+                    seller_bank:para[i].seller_bank             ,
+                    seller_fax:para[i].seller_fax             ,
+                    seller_website:para[i].seller_website          ,
+                    buyer_name:para[i].buyer_name          ,
+                    buyer_taxcode:para[i].buyer_taxcode          ,
+                    buyer_address:para[i].buyer_address          ,
+                    buyer_code:para[i].buyer_code          ,
+                    buyer_phone:para[i].buyer_phone          ,
+                    buyer_mail:para[i].buyer_mail          ,
+                    buyer_for_name:para[i].buyer_for_name          ,
+                    buyer_account:para[i].buyer_account          ,
+                    buyer_of_name:para[i].buyer_of_name          ,
+                    vat_rate:para[i].vat_rate          ,
+                    net_amount:para[i].net_amount          ,
+                    vat_amount:para[i].vat_amount          ,
+                    total_net_amount:para[i].total_net_amount          ,
+                    total_vat_amount:para[i].total_vat_amount          ,
+                    free_name:para[i].free_name          ,
+                    free_amount:para[i].free_amount          ,
+                    total_free_amount:para[i].total_free_amount          ,
+                    total_amount_number:para[i].total_amount_number          ,
+                    total_amount_words:para[i].total_amount_words          ,
+                    create_by:para[i].create_by          ,
+                    create_date:para[i].create_date        
+                };
+
+                rtnValue = await DBService.ExecuteSQLBlob(
+                            `BEGIN ei_upd_file_pit_ar ( :master_pk,
+                                                        :form_no,
+                                                        :serial_no,
+                                                        :invoice_date,
+                                                        :company_name,
+                                                        :company_taxcode,
+                                                        :company_address,
+                                                        :payer_name,
+                                                        :payer_address,
+                                                        :payer_taxcode,
+                                                        :payer_nation,
+                                                        :payer_resident,
+                                                        :id_passport_number,
+                                                        :place_of_issue,
+                                                        :date_of_issue,
+                                                        :income_amt,
+                                                        :income_time,
+                                                        :income_amt_total,
+                                                        :income_amt_total_defuct,
+                                                        :income_amt_recv,
+                                                        :income_type,
+                                                        :income_time_yyyy,
+                                                        :p_language, 
+                                                        :p_crt_by, 
+                                                        :p_rtn_cur); END;`,
+                            para_value,
+                            p_language,
+                            p_crt_by
+                        );
+  
+                for(let j = 0; j < para[i].details.length; j++ )
+                {
+                    console.log(" para details  ", para[i].details[j]);
+                }
+            }
+
+            return response.send(
+                Utils.response(
+                    true,
+                    `${para.length} invoices were sent successful.`,
+                    res_data
+                )
+            );
+        } catch (e) {
+            Utils.Logger({
+                LVL: "error",
+                MODULE: "EInvoiceController",
+                FUNC: "sendPITToTaxOffice",
+                CONTENT: e.message,
+            });
+            return response.send(Utils.response(false, "error", e.message));
+        }
+    }
+
+    async sendPOSListToListTaxOffice({ request, response, auth }) {
+        try {
+            var p_language = request.header("accept-language", "ENG");
+            var p_crt_by = "";
+            const user = await auth.getUser();
+            if (user) {
+                p_crt_by = user.USER_ID;
+            }
+
+            const { proc, para } = request.all();
+
+            // let rtnValue = [];
+            let res_data = [];
+            let res_data_taxcode = [];
+            // checking ...
+            for (let i = 0; i < para.length; i++) {
+
+            // console.log("para  ", para[i]);
+            const para_value = {
+                    master_pk:para[i].master_pk,
+                    seller_name:para[i].seller_name,
+                    seller_taxcode:para[i].seller_taxcode,
+                    seller_address:para[i].seller_address,
+                    seller_phone:para[i].seller_phone,
+                    seller_mail:para[i].seller_mail,
+                    seller_account:para[i].seller_account,
+                    seller_bank:para[i].seller_bank,
+                    seller_fax:para[i].seller_fax,
+                    seller_website:para[i].seller_website,
+                    buyer_name:para[i].buyer_name,
+                    buyer_taxcode:para[i].buyer_taxcode,
+                    buyer_address:para[i].buyer_address,
+                    buyer_code:para[i].buyer_code,
+                    buyer_phone:para[i].buyer_phone,
+                    buyer_mail:para[i].buyer_mail,
+                    date_of_sales:para[i].date_of_sales,
+                    store_code:para[i].store_code,
+                    store_name:para[i].store_name,
+                    pos:para[i].pos,
+                    receipt_number:para[i].receipt_number,
+                    sales_category:para[i].sales_category,
+                    payment_type:para[i].payment_type,
+                    total_amount:para[i].total_amount,
+                    actual_sales:para[i].actual_sales,
+                    general_discount:para[i].general_discount,
+                    credit_card_discount:para[i].credit_card_discount,
+                    item_code:para[i].item_code,
+                    item_name:para[i].item_name,
+                    uom:para[i].uom,
+                    qty:para[i].qty,
+                    price:para[i].price    
+                };
+
+                const rtnValue = await DBService.ExecuteSQLBlob(
+                            `BEGIN ei_upd_file_pos_ar_list(     :master_pk, 
+                                                                :seller_name,      
+                                                                :seller_taxcode,             
+                                                                :seller_address,          
+                                                                :seller_phone,           
+                                                                :seller_mail,       
+                                                                :seller_account,         
+                                                                :seller_bank,       
+                                                                :seller_fax,        
+                                                                :seller_website,    
+                                                                :buyer_name, 
+                                                                :buyer_taxcode,     
+                                                                :buyer_address,   
+                                                                :buyer_code,  
+                                                                :buyer_phone,      
+                                                                :buyer_mail,   
+                                                                :date_of_sales,     
+                                                                :store_code,   
+                                                                :store_name,     
+                                                                :pos,    
+                                                                :receipt_number,         
+                                                                :sales_category,        
+                                                                :payment_type,        
+                                                                :total_amount,        
+                                                                :actual_sales,          
+                                                                :general_discount,          
+                                                                :credit_card_discount,         
+                                                                :item_code,         
+                                                                :item_name,         
+                                                                :uom,    
+                                                                :qty,       
+                                                                :price,
+                                                                :p_language, 
+                                                                :p_crt_by, 
+                                                                :p_rtn_cur
+                                                                ); END;`,
+                            para_value,
+                            p_language,
+                            p_crt_by
+                        );
+                // console.log(rtnValue.p_rtn_cur[0]);   
+                res_data.push(rtnValue.p_rtn_cur[0])                 
+            }
+
+            const para_value_taxcode = {
+                master_pk:para[0].master_pk,
+                seller_taxcode:para[0].seller_taxcode,
+                store_code:para[0].store_code,
+                pos:para[0].pos,
+                receipt_number:para[0].receipt_number,
+                date_of_sales:para[0].date_of_sales 
+            };
+
+            const rtnValue_re = await DBService.ExecuteSQLBlob(
+                `BEGIN ei_upd_inf_tax(              :master_pk, 
+                                                    :seller_taxcode,     
+                                                    :store_code,      
+                                                    :pos,    
+                                                    :receipt_number,         
+                                                    :date_of_sales,   
+                                                    :p_language, 
+                                                    :p_crt_by, 
+                                                    :p_rtn_cur
+                                                    ); END;`,
+                para_value_taxcode,
+                p_language,
+                p_crt_by
+            );
+
+            res_data_taxcode.push(rtnValue_re.p_rtn_cur[0])  
+            
+            console.log( "  rtnValue_re.p_rtn_cur[0] ", rtnValue_re.p_rtn_cur[0]);
+
+            return response.send(
+                Utils.response(
+                    true,
+                     `${res_data.length}` + `/` + `${para.length} rows were sent successful.`,
+                     res_data_taxcode
+                )
+            );
+        } catch (e) {
+            Utils.Logger({
+                LVL: "error",
+                MODULE: "EInvoiceController",
+                FUNC: "sendPITToTaxOffice",
+                CONTENT: e.message,
+            });
+            return response.send(Utils.response(false, "error", e.message));
+        }
+    }
+
 }
 
 module.exports = EInvoiceController;

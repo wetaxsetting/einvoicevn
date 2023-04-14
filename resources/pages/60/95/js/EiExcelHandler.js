@@ -1,6 +1,9 @@
 import moment from "moment"
 let EiExcelHandler = {
   getEinvoice: async (that, einvoicePk) => {
+
+    console.log("getEinvoice");
+
     let exceljs = null;
     let resultExcel = null;
     let companyTaxcode = 0
@@ -54,7 +57,7 @@ let EiExcelHandler = {
         5000
       );
     } else {
-      companyTaxcode = einvoiceMasterData[0].SELLER_TAXCODE.replace(/\s+/g, '')
+      companyTaxcode = einvoiceMasterData[0].SELLER_TAXCODE.replace(/\s+/g, '').replace(' ', '')
       convertYn = einvoiceMasterData[0].CONVERT_YN == "Y" ? "Y" : "N"
       cancelYn = einvoiceMasterData[0].CANCEL_YN == "Y" ? "Y" : "N"
     }
@@ -69,7 +72,7 @@ let EiExcelHandler = {
         masterDataArray.push({ Cell: `${msothueArray[i] + taxRow}`, Info: [e], Type: 2 }) //so thue
       }
     }
-
+    console.log("msThueCutter  ", msThueCutter);
     switch (companyTaxcode) {
       case "3600563401":
         companyName = 'Yupoong'
@@ -154,6 +157,7 @@ let EiExcelHandler = {
       default:
         break;
     }
+    console.log("companyName  ", companyName);
     //companyName = 'Ottogi_CNBN_PXK'
     switch (companyName) {
         //////// *****************Ottogi_CNBN_PXK*********************\\\\\\\\\
@@ -4270,6 +4274,8 @@ let EiExcelHandler = {
     }
     try {
       if (masterDataArray.length > 0)
+        console.log("masterDataArray  ", masterDataArray.length);
+
         exceljs = require("./EiExcelConverter.js");
       if (!!exceljs) { exceljs = exceljs.default; }
       resultExcel = await exceljs.ExcelBuilder(
@@ -4281,9 +4287,6 @@ let EiExcelHandler = {
     } catch (error) {
 
     }
-
-
-
 
     return resultExcel
 

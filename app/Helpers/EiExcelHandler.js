@@ -11,7 +11,7 @@ class EiExcelHandler {
   async getEinvoice(tradecode, p_language, p_crt_by, _db2 = "N") {
     try {
 
-
+      console.log("getEinvoice");
       let exceljs = new EiExcelConverter();
       let resultExcel = null;
       let companyTaxcode = 0

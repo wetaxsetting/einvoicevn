@@ -85,6 +85,7 @@ Route.group(() => {
     Route.get("importexcelfile", "ImportController.ImportExcelFile")
     Route.post("importeivfile", "ImportController.UploadFileToFolderEInvoice")
     Route.post("importtkhqfile", "ImportController.UploadFileToFolderTKHQ")
+    Route.post("converttopdf", "DsoController.ConvertToPdf");
 }).prefix("api/dso").middleware("user");
 
 Route.group(() => {

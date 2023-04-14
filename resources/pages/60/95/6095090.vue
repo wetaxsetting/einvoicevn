@@ -311,7 +311,7 @@ export default {
     tei_einvoice_m_PK: "",
     Count_Pk: 0,
     txtXMl_T: "",
-
+    itemPartner:"",
     txtSerial_Number: "",
     txtNOTBEFORE: "",
     txtNOTAFTER: "",
@@ -590,7 +590,7 @@ export default {
     },
     async pdfUrlGetter(pk){
      const pdfUrlExcel = await this.getEinvoice(this,pk)
-
+    console.log("pdfUrlExcel " , pdfUrlExcel);
      return pdfUrlExcel
     },
 

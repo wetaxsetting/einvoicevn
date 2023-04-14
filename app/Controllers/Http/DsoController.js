@@ -1261,6 +1261,57 @@ class DsoController {
         }
     }
 
+    async ConvertToPdf({ request, response, auth }) {
+        try {
+            var p_language = request.header("accept-language", "ENG");
+            const file = request.file("file");
+            // // console.log(file)
+            // const fileContent = await Utils.readFile(file.tmpPath);
+            // const file_size = file.size;
+            // const file_name = file.clientName;
+            // const file_ext = file.extname;
+            // const file_type = file.type;
+            // const fileBuffer = Buffer.from(fileContent);
+
+
+            let rtnFile = await Utils.excelToPdf(file.tmpPath);
+
+            const current = new Date();
+            const year = current.getFullYear()
+            let month = current.getMonth() + 1
+            let day = current.getDate()
+            if (day < 10) {
+                day = "0" + day
+            }
+            if (month < 10) {
+                month = "0" + month
+            }
+            const dir = _ROOT_DIR_FILES + '/pdf/' + year + '/' + month
+            if (!fs.existsSync(dir)) {
+                fs.mkdirSync(dir, { recursive: true }, err => { console.log(err) })
+            }
+            const unixtime = Date.now()
+            const rtnFile2 = rtnFile.replace(/\\/g, '/')
+            const fileName = '/pdf/' + year + '/' + month + "/rpt-" + unixtime + "-" + (rtnFile2.split("/").pop())
+            const destinationFile = dir + "/rpt-" + unixtime + "-" + (rtnFile2.split("/").pop())
+            await Utils.copyFile(rtnFile, destinationFile)
+            let token = AES.encrypt(fileName + "|" + year + month + day, APP_KEY)
+            token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l')
+            return response.send(APP_URL_LOCAL + "/api/dso/getfiletoken?file_name=" + fileName + "&token=" + token)
+
+
+        } catch (e) {
+            Utils.ConsoleLogError(e.message)
+            Utils.Logger({
+                LVL: "error",
+                MODULE: "DsoController",
+                FUNC: "ConvertPdf",
+                CONTENT: e.message,
+                CRT_BY: p_crt_by,
+            });
+            return response.send(Utils.response(false, e.message, null));
+        }
+    }
     async createDictionaryAuto({ request, response, auth }) {
         try {
             const { fileid, menu_cd, _db2 } = request.all();

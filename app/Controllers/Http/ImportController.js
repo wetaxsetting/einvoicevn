@@ -117,7 +117,7 @@ class ImportController {
       } else if (file_path && file_path.indexOf(".pdf") > 0) {
         const pdfRelativePath = file_path.replace(ROOT_DIR_FILES, "");
         const result = await DBService.callProcCursor("ei_upd_tei_einvoice_cloud_pdf_file", [tei_einvoice_cloud_pk, pdfRelativePath], p_language, p_crt_by);
-        return response.send(Utils.response(true, "upload_pdf_file_sucessfull", null));
+        return response.send(Utils.response(true, "upload_pdf_file_sucessfull", result));
       }
       return response.send(Utils.response(false, "failed_upload_file", file_path));
     } catch (e) {

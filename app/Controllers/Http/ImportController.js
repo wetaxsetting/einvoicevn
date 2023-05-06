@@ -140,7 +140,7 @@ class ImportController {
       let AESs = new AES();
       let xmlIntegrity = await AESs.xmlDigitalSignatureVerifier(p_xml_path, xml_encoding);
       let einvoice_file_name = file_name;
-      console.log(xmlIntegrity)
+      //console.log(xmlIntegrity)
       const xmlContent = fs.readFileSync(p_xml_path, { encoding: xml_encoding, flag: "r" });
 
       let templateTTChungPath = "HDon/DLHDon/TTChung";
@@ -414,30 +414,35 @@ class ImportController {
           TSuat: "TSuat",
         },
       ];
+      let arrSigningTimeNBan = ""
+      let arrSigningTimeCQT = [""]
+      //in case POS machine einvoice that há no signature
+      if (jsonTTChung[0].KHHDon.substr(3, 1) != "M") {
+        const templateSigningTimeNBan = [
+          templateSigningTimeNBanPath,
+          {
+            SigningTimeNBan: "SigningTime",
+          },
+        ];
+        const jsonSigningTimeNBan = await transform(xmlContent, templateSigningTimeNBan);
 
-      const templateSigningTimeNBan = [
-        templateSigningTimeNBanPath,
-        {
-          SigningTimeNBan: "SigningTime",
-        },
-      ];
-      const jsonSigningTimeNBan = await transform(xmlContent, templateSigningTimeNBan);
+        arrSigningTimeNBan = [jsonSigningTimeNBan[0].SigningTimeNBan];
 
-      const arrSigningTimeNBan = [jsonSigningTimeNBan[0].SigningTimeNBan];
+        const templateSigningTimeCQT = [
+          templateSigningTimeCQTPath,
+          {
+            SigningTimeCQT: "SigningTime",
+          },
+        ];
+        const jsonSigningTimeCQT = await transform(xmlContent, templateSigningTimeCQT);
 
-      const templateSigningTimeCQT = [
-        templateSigningTimeCQTPath,
-        {
-          SigningTimeCQT: "SigningTime",
-        },
-      ];
-      const jsonSigningTimeCQT = await transform(xmlContent, templateSigningTimeCQT);
-      let arrSigningTimeCQT = [];
-      if (jsonSigningTimeCQT && jsonSigningTimeCQT.length > 0) {
-        arrSigningTimeCQT = [jsonSigningTimeCQT[0].SigningTimeCQT];
-      } else {
-        arrSigningTimeCQT = [""];
+        if (jsonSigningTimeCQT && jsonSigningTimeCQT.length > 0) {
+          arrSigningTimeCQT = [jsonSigningTimeCQT[0].SigningTimeCQT];
+        } else {
+          arrSigningTimeCQT = [""];
+        }
       }
+
       let masterPara = arrTTChung.concat(arrNBan).concat(arrNMua).concat(arrLTSuat).concat(arrTToan).concat(arrMCCQT);
       const xmlRelativePath = p_xml_path.replace(ROOT_DIR_FILES, "");
       masterPara = masterPara.concat(["", xmlRelativePath, "", ""]);

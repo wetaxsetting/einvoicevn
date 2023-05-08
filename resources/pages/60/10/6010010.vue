@@ -525,7 +525,7 @@ export default {
     onAddDetail() {
       this.$refs.gridDetail.addRowStruct({
                           PK: '', 
-                          TAC_COMMCODE_MASTER_PK: this.$refs.gridMaster.getDataSource()[0].PK, 
+                          TAC_COMMCODE_MASTER_PK: this.acntId_Pk, 
                           ORD: '', 
                           DEF_YN: '', 
                           CODE: '', 

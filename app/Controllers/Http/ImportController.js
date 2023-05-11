@@ -141,7 +141,6 @@ class ImportController {
       if (xml_encoding == "UTF16") { xml_encoding = "UTF16LE" }
       let AESs = new AES();
       let xmlIntegrity = await AESs.xmlDigitalSignatureVerifierBillHaiPhongPort(p_xml_path, xml_encoding);
-      let einvoice_file_name = file_name;
       //console.log(xmlIntegrity)
       const xmlContent = fs.readFileSync(p_xml_path, { encoding: xml_encoding, flag: "r" });
       const templateInvoiceDataPath = "inv:invoice/inv:invoiceData";
@@ -326,7 +325,7 @@ class ImportController {
         , jsonUserDefines[0].signedDate
         , ''
         , xmlIntegrity
-        , filename
+        , file_name
       ]
       const master = await DBService.callProcCursor("ei_upd_tei_einvoice_cloud", masterPara, p_language, p_crt_by);
       console.log("master", master);

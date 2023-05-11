@@ -13,8 +13,6 @@ class AES {
         hash.update(p_string)
         return hash.digest('hex')
     }
-
-
     async xmlDigitalSignatureVerifier(file_path) {
         try {
             const xmlContent = fs.readFileSync(file_path, { encoding: 'utf8', flag: 'r' });
@@ -101,9 +99,6 @@ class AES {
 
             }
 
-
-
-
             let getPublicKeyFromCert = (p_certificate) => {
                 try {
                     const max_size = 64;
@@ -124,24 +119,8 @@ class AES {
                 }
 
             }
-
-
-
             var sig = new SignedXml()
 
-            let keyInfoProv = (cert) => {
-                return {
-                    getKeyInfo: function () {
-                        return `<X509Data><X509Certificate>${cert}</X509Certificate></X509Data>`
-                    },
-                    getKey: function (keyInfo) {
-                        // return the public key in pem format
-                        let pemPublicKey = getPublicKeyFromCert(cert)
-                        return pemPublicKey
-
-                    }
-                }
-            }
 
             sig.keyInfoProvider = keyInfoProv(cert) //this.KeyProvider(cert,p_publicKey)
 
@@ -162,6 +141,76 @@ class AES {
         } catch (error) {
             return error.message;
             console.log(error)
+        }
+    }
+
+    async xmlDigitalSignatureVerifierBillHaiPhongPort(file_path) {
+        try {
+            const xmlContent = fs.readFileSync(file_path, { encoding: 'utf8', flag: 'r' });
+            var xml = fs.readFileSync(file_path).toString()
+            let cert = ''
+            let signature = ''
+
+            const Signature = [
+                "inv:invoice/Signature",
+                {
+                    SignatureValue: "SignatureValue"
+                },
+            ];
+            const jsonSignature = await transform(xmlContent, Signature);
+            if (jsonSignature[0] !== undefined) {
+                signature = jsonSignature[0].SignatureValue
+            } else {
+                console.log("Cannot get signature from path [inv:invoice/Signature]")
+                return "No";
+            }
+
+            const X509Certificate = [
+                "inv:invoice/Signature/KeyInfo/X509Data",
+                {
+                    X509Certificate: "X509Certificate"
+                },
+            ];
+
+            const jsonCertificate = await transform(xmlContent, X509Certificate);
+
+            if (jsonCertificate[0] !== undefined) {
+                cert = jsonCertificate[0].X509Certificate
+            } else {
+                console.log("Cannot get certificate from path [inv:invoice/Signature/KeyInfo/X509Data]")
+                return "No";
+            }
+            var sig = new SignedXml()
+            sig.keyInfoProvider = this.keyInfoProv(cert) //this.KeyProvider(cert,p_publicKey)
+
+            sig.loadSignature(signature)
+            var res = sig.checkSignature(xml)
+
+            if (!res) {
+                console.log(sig.validationErrors)
+                // return 'Error'
+                console.log(res)
+                return 'No'
+
+            } else {
+                console.log(res)
+                return 'Yes'
+            }
+        } catch (error) {
+            return error.message;
+            console.log(error)
+        }
+    }
+    keyInfoProv(cert) {
+        return {
+            getKeyInfo: function () {
+                return `<X509Data><X509Certificate>${cert}</X509Certificate></X509Data>`
+            },
+            getKey: function (keyInfo) {
+                // return the public key in pem format
+                let pemPublicKey = getPublicKeyFromCert(cert)
+                return pemPublicKey
+            }
         }
     }
     getPublicKeyFromCert(p_certificate) {

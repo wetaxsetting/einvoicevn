@@ -132,6 +132,222 @@ class ImportController {
       return response.send(Utils.response(false, e.message, null));
     }
   }
+  async extractXMLContentBillHaiPhongPort(p_xml_path, p_language, p_crt_by, file_name) {
+    try {
+
+
+      var fileBuffer = fs.readFileSync(p_xml_path);
+      let xml_encoding = encoding.detect(fileBuffer)
+      if (xml_encoding == "UTF16") { xml_encoding = "UTF16LE" }
+      let AESs = new AES();
+      let xmlIntegrity = await AESs.xmlDigitalSignatureVerifierBillHaiPhongPort(p_xml_path, xml_encoding);
+      let einvoice_file_name = file_name;
+      //console.log(xmlIntegrity)
+      const xmlContent = fs.readFileSync(p_xml_path, { encoding: xml_encoding, flag: "r" });
+      const templateInvoiceDataPath = "inv:invoice/inv:invoiceData";
+      const templatePaymentMethodPath = "inv:invoice/inv:invoiceData/inv:payments/inv:payment";
+      const templateDeliveryPath = "inv:invoice/inv:invoiceData/inv:delivery";
+      const templateUserDefinesPath = "inv:invoice/inv:invoiceData/inv:userDefines";
+      const templateItemsPath = "inv:invoice/inv:invoiceData/inv:items/inv:item";
+
+      //console.log(xmlContent)  
+
+      let templateInvoiceData = [
+        templateInvoiceDataPath,
+        {
+          invoiceType: 'inv:invoiceType',
+          templateCode: 'inv:templateCode',
+          invoiceSeries: 'inv:invoiceSeries',
+          invoiceNumber: 'inv:invoiceNumber',
+          invoiceName: 'inv:invoiceName',
+          invoiceIssuedDate: 'inv:invoiceIssuedDate',
+          signedDate: 'inv:signedDate',
+          submittedDate: 'inv:submittedDate',
+          exchangeRate: 'inv:exchangeRate',
+          currencyCode: 'inv:currencyCode',
+          invoiceNote: 'inv:invoiceNote',
+          sellerLegalNam: 'inv:sellerLegalName',
+          sellerTaxCode: 'inv:sellerTaxCode',
+          sellerAddressLine: 'inv:sellerAddressLine',
+          sellerEmail: 'inv:sellerEmail',
+          sellerPhoneNumber: 'inv:sellerPhoneNumber',
+          sellerFaxNumber: 'inv:sellerFaxNumber',
+          sellerLegalNameFrn: 'inv:sellerBankAccName',
+          sellerBankName: 'inv:sellerBankName',
+          sellerBankAccount: 'inv:sellerBankAccount',
+          sellerContactPersonName: 'inv:sellerContactPersonName',
+          sellerSignedPersonName: 'inv:sellerSignedPersonName',
+          sellerSubmittedPersonName: 'inv:sellerSubmittedPersonName',
+          buyerDisplayName: 'inv:buyerDisplayName',
+          buyerLegalName: 'inv:buyerLegalName',
+          buyerTaxCode: 'inv:buyerTaxCode',
+          buyerAddressLine: 'inv:buyerAddressLine',
+          buyerPhoneNumber: 'inv:buyerPhoneNumber',
+          buyerEmail: 'inv:buyerEmail',
+          buyerBankName: 'inv:buyerBankName',
+          buyerBankAccount: 'inv:buyerBankAccount',
+          totalVATAmount: 'inv:totalVATAmount',
+          totalVATAmountFrn: 'inv:totalVATAmountFrn',
+          totalAmountWithVAT: 'inv:totalAmountWithVAT',
+          totalAmountWithVATFrn: 'inv:totalAmountWithVATFrn',
+          totalAmountWithVATInWords: 'inv:totalAmountWithVATInWords',
+          totalAmountWithVATInWordsFrn: 'inv:totalAmountWithVATInWordsFrn',
+          CHIET_KHAU: 'inv:CHIET_KHAU',
+          discountAmount: 'inv:discountAmount',
+          isDiscountAmtPos: 'inv:isDiscountAmtPos',
+          discountAmountFrn: 'inv:discountAmountFrn',
+          isDiscountAmtPosFrn: 'inv:isDiscountAmtPosFrn',
+          totalAmountWithoutVATNoneDiscount: 'inv:totalAmountWithoutVATNoneDiscount',
+          totalAmountWithoutVAT: 'inv:totalAmountWithoutVAT',
+          totalAmountWithoutVATFrn: 'inv:totalAmountWithoutVATFrn',
+        },
+      ];
+      let jsonInvoiceData = await transform(xmlContent, templateInvoiceData);
+      //console.log("jsonInvoiceData", jsonInvoiceData)
+      if (jsonInvoiceData.length == 0) {
+        console.log("dont know this xml format " + p_xml_path)
+      }
+
+      let templatePaymentMethod = [
+        templatePaymentMethodPath,
+        {
+          paymentMethodName: 'inv:paymentMethodName',
+        },
+      ];
+      let jsonPaymentMethod = await transform(xmlContent, templatePaymentMethod);
+      //console.log("jsonPaymentMethod", jsonPaymentMethod)
+
+      let templateDelivery = [
+        templateDeliveryPath,
+        {
+          containerNumber: 'inv:containerNumber',
+          deliveryOrderNumber: 'inv:deliveryOrderNumber'
+        },
+      ];
+      let jsonDelivery = await transform(xmlContent, templateDelivery);
+      //console.log("jsonDelivery", jsonDelivery)
+
+
+      let templateUserDefines = [
+        templateUserDefinesPath,
+        {
+          EXT_VARCHAR1: 'EXT_VARCHAR1',
+          EXT_VARCHAR2: 'EXT_VARCHAR2',
+          EXT_VARCHAR3: 'EXT_VARCHAR3',
+          EXT_VARCHAR4: 'EXT_VARCHAR4',
+          EXT_VARCHAR5: 'EXT_VARCHAR5',
+          EXT_VARCHAR6: 'EXT_VARCHAR6',
+          EXT_VARCHAR7: 'EXT_VARCHAR7',
+          EXT_VARCHAR8: 'EXT_VARCHAR8',
+          EXT_VARCHAR9: 'EXT_VARCHAR9',
+          EXT_DATE1: 'EXT_DATE1'
+        },
+      ];
+      let jsonUserDefines = await transform(xmlContent, templateUserDefines);
+      //console.log("jsonUserDefines", jsonUserDefines)
+
+      let templateItems = [
+        templateItemsPath,
+        {
+          lineNumber: 'inv:lineNumber',
+          itemCode: 'inv:itemCode',
+          itemName: 'inv:itemName',
+          unitCode: 'inv:unitCode',
+          unitName: 'inv:unitName',
+          quantity: 'inv:quantity',
+          unitPrice: 'inv:unitPrice',
+          itemTotalAmountWithoutVat: 'inv:itemTotalAmountWithoutVat',
+          ItemTotalAmountWithVat: 'inv:ItemTotalAmountWithVat',
+          vatAmount: 'inv:vatAmount'
+        },
+      ];
+      let jsonItems = await transform(xmlContent, templateItems);
+      //console.log("jsonItems", jsonItems)
+      let masterPara = ['', '', jsonInvoiceData[0].templateCode, jsonInvoiceData[0].invoiceSeries, jsonInvoiceData[0].invoiceNumber, jsonInvoiceData[0].invoiceIssuedDate
+        , ''
+        , ''
+        , jsonInvoiceData[0].currencyCode
+        , jsonInvoiceData[0].exchangeRate
+        , jsonPaymentMethod[0].paymentMethodName
+        , ''
+        , ''
+        , ''
+        , ''
+        , jsonInvoiceData[0].sellerLegalName
+        , jsonInvoiceData[0].sellerTaxCode
+        , jsonInvoiceData[0].sellerAddressLine
+        , jsonInvoiceData[0].sellerPhoneNumber
+        , jsonInvoiceData[0].sellerEmail
+        , ''
+        , jsonInvoiceData[0].sellerBankAccount
+        , jsonInvoiceData[0].sellerBankAccName
+        , jsonInvoiceData[0].sellerFaxNumber
+        , ''
+        , ''
+        , jsonInvoiceData[0].buyerLegalName
+        , jsonInvoiceData[0].buyerTaxCode
+        , jsonInvoiceData[0].buyerAddressLine
+        , jsonInvoiceData[0].buyerPhoneNumber
+        , jsonInvoiceData[0].buyerEmail
+        , ''
+        , jsonInvoiceData[0].buyerBankAccount
+        , jsonInvoiceData[0].buyerBankName
+        , ''
+        , 0
+        , jsonInvoiceData[0].totalAmountWithoutVAT
+        , jsonInvoiceData[0].totalVATAmount
+        , jsonInvoiceData[0].totalAmountWithoutVAT
+        , jsonInvoiceData[0].totalVATAmount
+        , jsonInvoiceData[0].discountAmount
+        , jsonInvoiceData[0].totalAmountWithVAT
+        , jsonInvoiceData[0].totalAmountWithVATInWords
+        , ''
+        , ''
+        , ''
+        , ''
+        , ''
+        , ''
+        , ''
+        , ''
+        , ''
+        , ''
+        , jsonInvoiceData[0].invoiceNote
+        , ''
+        , jsonUserDefines[0].EXT_VARCHAR1
+        , jsonUserDefines[0].EXT_VARCHAR2
+        , jsonUserDefines[0].EXT_VARCHAR3
+        , jsonUserDefines[0].EXT_VARCHAR4
+        , jsonUserDefines[0].EXT_VARCHAR5
+        , jsonUserDefines[0].EXT_VARCHAR6
+        , jsonUserDefines[0].EXT_VARCHAR7
+        , jsonUserDefines[0].EXT_VARCHAR8
+        , jsonUserDefines[0].EXT_VARCHAR9
+        , jsonUserDefines[0].EXT_DATE1
+        , jsonUserDefines[0].signedDate
+        , ''
+        , xmlIntegrity
+        , filename
+      ]
+      const master = await DBService.callProcCursor("ei_upd_tei_einvoice_cloud", masterPara, p_language, p_crt_by);
+      console.log("master", master);
+      if (master && master[0].PK > 0) {
+        //console.log(jsonItems)
+        for (let i = 0; i < jsonItems.length; i++) {
+          const detailPara = [master[0].PK, '1', jsonItems[i].lineNumber, jsonItems[i].itemCode, jsonItems[i].itemName, jsonItems[i].unitName, jsonItems[i].quantity, jsonItems[i].unitPrice, jsonItems[i].itemTotalAmountWithoutVat, '0', '0', '0'];
+          const detail = await DBService.callProcCursor("ei_upd_tei_einvoiced_cloud", detailPara, p_language, p_crt_by);
+          //console.log("detail", detail);
+        }
+        return master[0].PK;
+      } else {
+        if (master && master.length > 0) {
+          return master[0].STATUS;
+        }
+        return master.message;
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  }
   async extractXMLContent(p_xml_path, p_language, p_crt_by, file_name) {
     try {
       var fileBuffer = fs.readFileSync(p_xml_path);
@@ -215,6 +431,10 @@ class ImportController {
         ];
 
         jsonTTChung = await transform(xmlContent, templateTTChung);
+        if (jsonTTChung.length == 0) {
+          //Bien lai thu tien phi cang bien Hai Phong
+          return await this.extractXMLContentBillHaiPhongPort(p_xml_path, p_language, p_crt_by, file_name);
+        }
       }
 
       const templateTTKhac = [

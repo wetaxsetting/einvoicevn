@@ -196,7 +196,8 @@ class AES {
 
             if (jsonCertificate[0] !== undefined) {
                 cert = jsonCertificate[0].X509Certificate
-                signature = select(doc, "//*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']")[1]
+                signature = select(doc, "//*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']")[0]
+                console.log(signature)
             } else {
                 console.log("Cannot get certificate from path [inv:invoice/Signature/KeyInfo/X509Data]")
                 return "No";

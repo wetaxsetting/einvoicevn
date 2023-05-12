@@ -143,6 +143,7 @@ class ImportController {
       let xmlIntegrity = await AESs.xmlDigitalSignatureVerifierBillHaiPhongPort(p_xml_path, xml_encoding);
       //console.log(xmlIntegrity)
       const xmlContent = fs.readFileSync(p_xml_path, { encoding: xml_encoding, flag: "r" });
+      const xmlRelativePath = p_xml_path.replace(ROOT_DIR_FILES, "");
       const templateInvoiceDataPath = "inv:invoice/inv:invoiceData";
       const templatePaymentMethodPath = "inv:invoice/inv:invoiceData/inv:payments/inv:payment";
       const templateDeliveryPath = "inv:invoice/inv:invoiceData/inv:delivery";
@@ -303,7 +304,7 @@ class ImportController {
         , jsonInvoiceData[0].totalAmountWithVATInWords
         , ''
         , ''
-        , ''
+        , xmlRelativePath
         , ''
         , ''
         , ''
@@ -328,14 +329,14 @@ class ImportController {
         , xmlIntegrity
         , file_name
       ]
-      console.log("masterPara", masterPara)
+      //console.log("masterPara", masterPara)
       const master = await DBService.callProcCursor("ei_upd_tei_einvoice_cloud", masterPara, p_language, p_crt_by);
       console.log("master", master);
       if (master && master[0].PK > 0) {
         //console.log(jsonItems)
         for (let i = 0; i < jsonItems.length; i++) {
           const detailPara = [master[0].PK, '1', jsonItems[i].lineNumber, jsonItems[i].itemCode, jsonItems[i].itemName, jsonItems[i].unitName, jsonItems[i].quantity, jsonItems[i].unitPrice, jsonItems[i].itemTotalAmountWithoutVat, '0', '0', '0'];
-          console.log("detailPara", detailPara)
+          //console.log("detailPara", detailPara)
           const detail = await DBService.callProcCursor("ei_upd_tei_einvoiced_cloud", detailPara, p_language, p_crt_by);
           //console.log("detail", detail);
         }
@@ -368,6 +369,7 @@ class ImportController {
       let templateLTSuatPath = "HDon/DLHDon/NDHDon/TToan/THTTLTSuat/LTSuat";
       let templateTTKhacPath = "HDon/DLHDon/TTChung/TTKhac/TTin";
       let templateTToanPath = "HDon/DLHDon/NDHDon/TToan";
+      let templateLPhiPath = "HDon/DLHDon/NDHDon/TToan/DSLPhi/LPhi";
       let templateDSHHDVuPath = "HDon/DLHDon/NDHDon/DSHHDVu/HHDVu";
       let templateSigningTimeNBanPath = "HDon/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty";
       let templateSigningTimeCQTPath = "HDon/DSCKS/CQT/Signature/Object/SignatureProperties/SignatureProperty";
@@ -438,6 +440,34 @@ class ImportController {
           return await this.extractXMLContentBillHaiPhongPort(p_xml_path, p_language, p_crt_by, file_name);
         }
       }
+
+      const templateLPhi = [
+        templateLPhiPath,
+        {
+          TLPhi: "TLPhi",
+          TPhi: "TPhi",
+        },
+      ];
+
+      let jsonLPhi = [{
+        TLPhi: "",
+        TPhi: "0",
+      }];
+      try {
+        jsonLPhi = await transform(xmlContent, templateLPhi);
+        if (jsonLPhi == null || jsonLPhi == undefined || jsonLPhi.length == 0) {
+          jsonLPhi = [{
+            TLPhi: "",
+            TPhi: "0",
+          }];
+        }
+      } catch (e) {
+        jsonLPhi = [{
+          TLPhi: "",
+          TPhi: "0",
+        }];
+      }
+
 
       const templateTTKhac = [
         templateTTKhacPath,
@@ -667,7 +697,7 @@ class ImportController {
 
       let masterPara = arrTTChung.concat(arrNBan).concat(arrNMua).concat(arrLTSuat).concat(arrTToan).concat(arrMCCQT);
       const xmlRelativePath = p_xml_path.replace(ROOT_DIR_FILES, "");
-      masterPara = masterPara.concat(["", xmlRelativePath, "", ""]);
+      masterPara = masterPara.concat(["", xmlRelativePath, jsonLPhi[0].TLPhi, jsonLPhi[0].TPhi]);
       if (jsonTTHDLQuan && jsonTTHDLQuan.length > 0) {
         masterPara = masterPara.concat([jsonTTHDLQuan[0].TCHDon, jsonTTHDLQuan[0].LHDCLQuan, jsonTTHDLQuan[0].KHMSHDCLQuan, jsonTTHDLQuan[0].SHDCLQuan, jsonTTHDLQuan[0].NLHDCLQuan, jsonTTHDLQuan[0].GChu, ""]);
       } else {

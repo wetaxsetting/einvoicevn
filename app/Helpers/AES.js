@@ -192,6 +192,8 @@ class AES {
 
             const jsonCertificate = await transform(xmlContent, X509Certificate);
 
+            console.log(jsonCertificate)
+
             if (jsonCertificate[0] !== undefined) {
                 cert = jsonCertificate[0].X509Certificate
                 signature = select(doc, "//*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']")[0]

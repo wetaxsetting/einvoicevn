@@ -356,8 +356,7 @@ class ImportController {
       var fileBuffer = fs.readFileSync(p_xml_path);
       let xml_encoding = encoding.detect(fileBuffer)
       if (xml_encoding == "UTF16") { xml_encoding = "UTF16LE" }
-      let AESs = new AES();
-      let xmlIntegrity = await AESs.xmlDigitalSignatureVerifier(p_xml_path, xml_encoding);
+
       let einvoice_file_name = file_name;
       //console.log(xmlIntegrity)
       const xmlContent = fs.readFileSync(p_xml_path, { encoding: xml_encoding, flag: "r" });
@@ -440,6 +439,9 @@ class ImportController {
           return await this.extractXMLContentBillHaiPhongPort(p_xml_path, p_language, p_crt_by, file_name);
         }
       }
+
+      let AESs = new AES();
+      let xmlIntegrity = await AESs.xmlDigitalSignatureVerifier(p_xml_path, xml_encoding);
 
       const templateLPhi = [
         templateLPhiPath,

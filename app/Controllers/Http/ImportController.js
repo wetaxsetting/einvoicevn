@@ -165,13 +165,13 @@ class ImportController {
           exchangeRate: 'inv:exchangeRate',
           currencyCode: 'inv:currencyCode',
           invoiceNote: 'inv:invoiceNote',
-          sellerLegalNam: 'inv:sellerLegalName',
+          sellerLegalName: 'inv:sellerLegalName',
           sellerTaxCode: 'inv:sellerTaxCode',
           sellerAddressLine: 'inv:sellerAddressLine',
           sellerEmail: 'inv:sellerEmail',
           sellerPhoneNumber: 'inv:sellerPhoneNumber',
           sellerFaxNumber: 'inv:sellerFaxNumber',
-          sellerLegalNameFrn: 'inv:sellerBankAccName',
+          sellerBankAccName: 'inv:sellerBankAccName',
           sellerBankName: 'inv:sellerBankName',
           sellerBankAccount: 'inv:sellerBankAccount',
           sellerContactPersonName: 'inv:sellerContactPersonName',
@@ -322,7 +322,7 @@ class ImportController {
         , jsonUserDefines[0].EXT_VARCHAR8
         , jsonUserDefines[0].EXT_VARCHAR9
         , jsonUserDefines[0].EXT_DATE1
-        , jsonUserDefines[0].signedDate
+        , jsonInvoiceData[0].signedDate
         , ''
         , xmlIntegrity
         , file_name

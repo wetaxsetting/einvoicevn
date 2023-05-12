@@ -211,7 +211,7 @@ class AES {
             },
             getKey: function (keyInfo) {
                 // return the public key in pem format
-                let pemPublicKey = this.getPublicKeyFromCert(cert)
+                let pemPublicKey = getPublicKeyFromCert(cert)
                 return pemPublicKey
             }
         }

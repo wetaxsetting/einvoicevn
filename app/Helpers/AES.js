@@ -138,8 +138,9 @@ class AES {
                 console.log(res)
                 return 'Yes'
             }
-        } catch (error) {
-            return error.message;
+        } catch (e) {
+            console.error(e)
+            return e.message;
         }
     }
 
@@ -198,8 +199,9 @@ class AES {
                 console.log(res)
                 return 'Yes'
             }
-        } catch (error) {
-            return error.message;
+        } catch (e) {
+            console.error(e)
+            return e.message;
         }
     }
     keyInfoProv(cert) {

@@ -327,12 +327,14 @@ class ImportController {
         , xmlIntegrity
         , file_name
       ]
+      console.log("masterPara", masterPara)
       const master = await DBService.callProcCursor("ei_upd_tei_einvoice_cloud", masterPara, p_language, p_crt_by);
       console.log("master", master);
       if (master && master[0].PK > 0) {
         //console.log(jsonItems)
         for (let i = 0; i < jsonItems.length; i++) {
           const detailPara = [master[0].PK, '1', jsonItems[i].lineNumber, jsonItems[i].itemCode, jsonItems[i].itemName, jsonItems[i].unitName, jsonItems[i].quantity, jsonItems[i].unitPrice, jsonItems[i].itemTotalAmountWithoutVat, '0', '0', '0'];
+          console.log("detailPara", detailPara)
           const detail = await DBService.callProcCursor("ei_upd_tei_einvoiced_cloud", detailPara, p_language, p_crt_by);
           //console.log("detail", detail);
         }

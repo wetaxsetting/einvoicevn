@@ -122,7 +122,7 @@ class AES {
             var sig = new SignedXml()
 
 
-            sig.keyInfoProvider = keyInfoProv(cert) //this.KeyProvider(cert,p_publicKey)
+            sig.keyInfoProvider = this.keyInfoProv(cert) //this.KeyProvider(cert,p_publicKey)
 
 
             sig.loadSignature(signature)
@@ -140,7 +140,6 @@ class AES {
             }
         } catch (error) {
             return error.message;
-            console.log(error)
         }
     }
 
@@ -148,22 +147,24 @@ class AES {
         try {
             const xmlContent = fs.readFileSync(file_path, { encoding: 'utf8', flag: 'r' });
             var xml = fs.readFileSync(file_path).toString()
+            var doc = new dom().parseFromString(xml)
             let cert = ''
             let signature = ''
 
-            const Signature = [
-                "inv:invoice/Signature",
-                {
-                    SignatureValue: "SignatureValue"
-                },
-            ];
-            const jsonSignature = await transform(xmlContent, Signature);
-            if (jsonSignature[0] !== undefined) {
-                signature = jsonSignature[0].SignatureValue
-            } else {
-                console.log("Cannot get signature from path [inv:invoice/Signature]")
-                return "No";
-            }
+            // const Signature = [
+            //     "inv:invoice/Signature",
+            //     {
+
+            //         SignatureValue: "SignatureValue"
+            //     },
+            // ];
+            // const jsonSignature = await transform(xmlContent, Signature);
+            // if (jsonSignature[0] !== undefined) {
+            //     signature = jsonSignature[0].SignatureValue
+            // } else {
+            //     console.log("Cannot get signature from path [inv:invoice/Signature]")
+            //     return "No";
+            // }
 
             const X509Certificate = [
                 "inv:invoice/Signature/KeyInfo/X509Data",
@@ -176,6 +177,7 @@ class AES {
 
             if (jsonCertificate[0] !== undefined) {
                 cert = jsonCertificate[0].X509Certificate
+                signature = select(doc, "//*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']")[0]
             } else {
                 console.log("Cannot get certificate from path [inv:invoice/Signature/KeyInfo/X509Data]")
                 return "No";
@@ -198,7 +200,6 @@ class AES {
             }
         } catch (error) {
             return error.message;
-            console.log(error)
         }
     }
     keyInfoProv(cert) {
@@ -208,7 +209,7 @@ class AES {
             },
             getKey: function (keyInfo) {
                 // return the public key in pem format
-                let pemPublicKey = getPublicKeyFromCert(cert)
+                let pemPublicKey = this.getPublicKeyFromCert(cert)
                 return pemPublicKey
             }
         }

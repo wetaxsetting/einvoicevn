@@ -119,10 +119,26 @@ class AES {
                 }
 
             }
+
+
+
             var sig = new SignedXml()
 
+            let keyInfoProv = (cert) => {
+                return {
+                    getKeyInfo: function () {
+                        return `<X509Data><X509Certificate>${cert}</X509Certificate></X509Data>`
+                    },
+                    getKey: function (keyInfo) {
+                        // return the public key in pem format
+                        let pemPublicKey = getPublicKeyFromCert(cert)
+                        return pemPublicKey
 
-            sig.keyInfoProvider = this.keyInfoProv(cert) //this.KeyProvider(cert,p_publicKey)
+                    }
+                }
+            }
+
+            sig.keyInfoProvider = keyInfoProv(cert) //this.KeyProvider(cert,p_publicKey)
 
 
             sig.loadSignature(signature)
@@ -183,8 +199,46 @@ class AES {
                 console.log("Cannot get certificate from path [inv:invoice/Signature/KeyInfo/X509Data]")
                 return "No";
             }
+            let getPublicKeyFromCert = (p_certificate) => {
+                try {
+                    const max_size = 64;
+                    const yardstick = new RegExp(`.{${max_size}}`, 'g'); // /.{10}/g;
+                    const pieces = p_certificate.match(yardstick);
+                    const accumulated = (pieces.length * max_size);
+                    const modulo = p_certificate.length % accumulated;
+                    if (modulo) pieces.push(p_certificate.slice(accumulated));
+                    let certStr = ''
+                    pieces.forEach(e => {
+                        certStr += e += '\n'
+                    });
+
+                    let cert = `-----BEGIN CERTIFICATE-----\n${certStr}-----END CERTIFICATE-----`
+                    return Crypto.createPublicKey(cert).export({ type: 'spki', format: 'pem' })
+                } catch (error) {
+                    console.log(error)
+                }
+
+            }
+
+
+
             var sig = new SignedXml()
-            sig.keyInfoProvider = this.keyInfoProv(cert) //this.KeyProvider(cert,p_publicKey)
+
+            let keyInfoProv = (cert) => {
+                return {
+                    getKeyInfo: function () {
+                        return `<X509Data><X509Certificate>${cert}</X509Certificate></X509Data>`
+                    },
+                    getKey: function (keyInfo) {
+                        // return the public key in pem format
+                        let pemPublicKey = getPublicKeyFromCert(cert)
+                        return pemPublicKey
+
+                    }
+                }
+            }
+
+            sig.keyInfoProvider = keyInfoProv(cert) //this.KeyProvider(cert,p_publicKey)
 
             sig.loadSignature(signature)
             var res = sig.checkSignature(xml)

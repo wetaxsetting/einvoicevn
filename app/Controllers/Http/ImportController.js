@@ -154,6 +154,7 @@ class ImportController {
       let templateInvoiceData = [
         templateInvoiceDataPath,
         {
+          invoiceAppRecordId: 'inv:invoiceAppRecordId',
           invoiceType: 'inv:invoiceType',
           templateCode: 'inv:templateCode',
           invoiceSeries: 'inv:invoiceSeries',
@@ -262,7 +263,7 @@ class ImportController {
       ];
       let jsonItems = await transform(xmlContent, templateItems);
       //console.log("jsonItems", jsonItems)
-      let masterPara = ['', '', jsonInvoiceData[0].templateCode, jsonInvoiceData[0].invoiceSeries, jsonInvoiceData[0].invoiceNumber, jsonInvoiceData[0].invoiceIssuedDate
+      let masterPara = ['', '', jsonInvoiceData[0].templateCode, jsonInvoiceData[0].invoiceSeries, jsonInvoiceData[0].invoiceNumber, jsonInvoiceData[0].invoiceAppRecordId, jsonInvoiceData[0].invoiceIssuedDate
         , ''
         , ''
         , jsonInvoiceData[0].currencyCode

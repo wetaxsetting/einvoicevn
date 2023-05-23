@@ -570,7 +570,9 @@ export default {
             this.item_nlhd = data.NLHDCLQUAN;
             this.item_so_hoa_don = data.SHDCLQUAN;
             this.item_pk = data.PK;
-            this.$refs.gridview.loadData();
+            setTimeout(() => {
+                this.$refs.gridview.loadData();
+            }, 500);
         },
 
         async onSearch() {

@@ -151,8 +151,8 @@ class AES {
                 return 'Yes'
             }
         } catch (e) {
-            console.error(e)
-            return e.message;
+            console.error(e.message)
+            return "Invalid signature";
         }
     }
 

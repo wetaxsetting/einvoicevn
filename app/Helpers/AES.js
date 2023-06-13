@@ -85,14 +85,17 @@ class AES {
                         X509Certificate: "X509Certificate"
                     },
                 ];
-
+                console.log("c1")
                 const Certificate = await transform(xmlContent, X509Certificate);
+                console.log("c2",Certificate)                
                 const CertificateNBan = await transform(xmlContent, X509CertificateNBan);
-
+                console.log("c3",CertificateNBan)
                 if (Certificate[0] == undefined) {
+                    console.log("c4",CertificateNBan[0])
                     cert = CertificateNBan[0].X509Certificate
                     signature = select(doc, "//*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']")[0]
                 } else {
+                    console.log("c5",Certificate[0])
                     cert = Certificate[0].X509Certificate
                     signature = select(doc, "//*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']")[1]
                 }

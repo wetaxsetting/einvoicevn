@@ -570,7 +570,9 @@ export default {
             this.item_nlhd = data.NLHDCLQUAN;
             this.item_so_hoa_don = data.SHDCLQUAN;
             this.item_pk = data.PK;
-            this.$refs.gridview.loadData();
+            setTimeout(() => {
+                this.$refs.gridview.loadData();
+            }, 500);
         },
 
         async onSearch() {
@@ -1020,15 +1022,22 @@ export default {
                 {
                     field: "THTIEN",
                     width: 80,
-                    title: this.$t("ThTien"),
+                    title: this.$t("thtien"),
                     alignment: "right",
                     type: "number",
                 },
-                //   {  field: "DEL_IF",  width: 80,  title: this.$t("del_if"),  alignment: "center",  type: "number",},
-                //   {  field: "CRT_BY",  width: 100,  title: this.$t("crt_by"),  alignment: "left",  type: "text",},
-                //   {  field: "CRT_DT",  width: 150,  title: this.$t("crt_dt"),  alignment: "left",  type: "date",},
-                //   {  field: "MOD_BY",  width: 100,  title: this.$t("mod_by"),  alignment: "right",  type: "number",},
-                //   {  field: "MOD_DT",  width: 100,  title: this.$t("mod_dt"),  alignment: "right",  type: "number",},
+                {
+                    field: "TLPHI",
+                    width: 150,
+                    title: this.$t("tlphi"),
+                },
+                {
+                    field: "TPHI",
+                    width: 100,
+                    title: this.$t("tphi"),
+                    alignment: "right",
+                    type: "number",
+                },
             ];
         },
     },

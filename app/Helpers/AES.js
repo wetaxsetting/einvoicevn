@@ -13,8 +13,6 @@ class AES {
         hash.update(p_string)
         return hash.digest('hex')
     }
-
-
     async xmlDigitalSignatureVerifier(file_path) {
         try {
             const xmlContent = fs.readFileSync(file_path, { encoding: 'utf8', flag: 'r' });
@@ -101,9 +99,6 @@ class AES {
 
             }
 
-
-
-
             let getPublicKeyFromCert = (p_certificate) => {
                 try {
                     const max_size = 64;
@@ -159,9 +154,108 @@ class AES {
                 console.log(res)
                 return 'Yes'
             }
-        } catch (error) {
-            return error.message;
-            console.log(error)
+        } catch (e) {
+            console.error(e)
+            return e.message;
+        }
+    }
+
+    async xmlDigitalSignatureVerifierBillHaiPhongPort(file_path) {
+        try {
+            const xmlContent = fs.readFileSync(file_path, { encoding: 'utf8', flag: 'r' });
+            var xml = fs.readFileSync(file_path).toString()
+            var doc = new dom().parseFromString(xml)
+            let cert = ''
+            let signature = ''
+
+            const X509Certificate = [
+                "inv:invoice/Signature/KeyInfo/X509Data",
+                {
+                    X509Certificate: "X509Certificate"
+                },
+            ];
+
+            const jsonCertificate = await transform(xmlContent, X509Certificate);
+
+            //console.log(jsonCertificate)
+
+            if (jsonCertificate[0] !== undefined) {
+                cert = jsonCertificate[0].X509Certificate
+                signature = select(doc, "//*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']")[0]
+                //console.log(signature)
+            } else {
+                console.log("Cannot get certificate from path [inv:invoice/Signature/KeyInfo/X509Data]")
+                return "No";
+            }
+            let getPublicKeyFromCert = (p_certificate) => {
+                try {
+                    const max_size = 64;
+                    const yardstick = new RegExp(`.{${max_size}}`, 'g'); // /.{10}/g;
+                    const pieces = p_certificate.match(yardstick);
+                    const accumulated = (pieces.length * max_size);
+                    const modulo = p_certificate.length % accumulated;
+                    if (modulo) pieces.push(p_certificate.slice(accumulated));
+                    let certStr = ''
+                    pieces.forEach(e => {
+                        certStr += e += '\n'
+                    });
+
+                    let cert = `-----BEGIN CERTIFICATE-----\n${certStr}-----END CERTIFICATE-----`
+                    return Crypto.createPublicKey(cert).export({ type: 'spki', format: 'pem' })
+                } catch (error) {
+                    console.log(error)
+                }
+
+            }
+
+
+
+            var sig = new SignedXml()
+
+            let keyInfoProv = (cert) => {
+                return {
+                    getKeyInfo: function () {
+                        return `<X509Data><X509Certificate>${cert}</X509Certificate></X509Data>`
+                    },
+                    getKey: function (keyInfo) {
+                        // return the public key in pem format
+                        let pemPublicKey = getPublicKeyFromCert(cert)
+                        return pemPublicKey
+
+                    }
+                }
+            }
+
+            sig.keyInfoProvider = keyInfoProv(cert) //this.KeyProvider(cert,p_publicKey)
+
+            sig.loadSignature(signature)
+            var res = sig.checkSignature(xml)
+
+            if (!res) {
+                console.log(sig.validationErrors)
+                // return 'Error'
+                console.log(res)
+                return 'No'
+
+            } else {
+                console.log(res)
+                return 'Yes'
+            }
+        } catch (e) {
+            console.error(e)
+            return e.message;
+        }
+    }
+    keyInfoProv(cert) {
+        return {
+            getKeyInfo: function () {
+                return `<X509Data><X509Certificate>${cert}</X509Certificate></X509Data>`
+            },
+            getKey: function (keyInfo) {
+                // return the public key in pem format
+                let pemPublicKey = getPublicKeyFromCert(cert)
+                return pemPublicKey
+            }
         }
     }
     getPublicKeyFromCert(p_certificate) {

@@ -24,10 +24,10 @@
                   <v-col lg="2" sm="6" cols="12">
                     <v-select clearable dense hide-details outlined :label="$t('status')" v-model="lstStatus" :items="statusGroup" item-text="TEXT" item-value="PK" :text_all="$t('all')" ></v-select> 
                   </v-col>
-                  <v-col lg="1" cols="12" class="text-right">
-                    <div class="d-flex justify-end">
+                  <v-col lg="1" cols="12">
+                    <GwFlexBox justify="end">
                       <BaseButton icon_type="search" :btn_text="$t('search')" :disabled="isProcessing" @onclick="onClickButton('SEARCH_M')"/>
-                    </div>
+                    </GwFlexBox>
                   </v-col>
                 </v-row>
               </v-container>

@@ -1,7 +1,7 @@
 <template>
   <v-container fluid v-resize="onResize">
     <v-row>
-      <v-col md="4">
+      <v-col md="4" class="pl-4">
         <BaseSelect
           :label="$t('company')"
           v-model="company"
@@ -22,12 +22,12 @@
       <v-col md="3">
         <BaseDatePicker :label="$t('from_date')" v-model="from_date" start />
       </v-col>
-      <v-col md="3">
+      <v-col md="3" class="pr-5">
         <BaseDatePicker :label="$t('to_date')" v-model="to_date" today />
       </v-col>
     </v-row>
     <v-row>
-      <v-col md="2">
+      <v-col md="2" class="pl-4">
         <BaseSelect
           :label="$t('form_no')"
           v-model="form_no"

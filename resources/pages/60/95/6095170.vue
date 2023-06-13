@@ -1,92 +1,87 @@
 <template>
 <v-container fluid class="pa-0" v-resize="onResize">
-  <v-row class="pt-1" dense>
-    <v-col md="4">
+  <v-row class="pt-2" dense>
+    <v-col md="4" class="pl-3 pr-2">
       <BaseSelect :label="$t('company')" item-text="NAME" item-value="VAL" filter_off :lstData="companyList" v-model="company" />
     </v-col>
     <!-- <v-col md="1">
       </v-col> -->
-    <v-col md="2">
+    <v-col md="2" class="pl-3 pr-2">
       <BaseSelect :label="$t('choose_type_date')" v-model="itemChooseTypeDate" :lstData="lstChooseTypeDate" item-text="NAME" item-value="VAL" filter_off />
     </v-col>
     <!-- <v-col md="1">
       </v-col> -->
-
     <!-- Monthly -->
-
-    <v-col md="2" v-show="itemChooseTypeDate == '0'">
+    <v-col md="2" class="pl-3 pr-2" v-show="itemChooseTypeDate == '0'">
       <BaseDatePicker :label="$t('month')" v-model="month" month />
     </v-col>
-    <v-col md="1" v-show="itemChooseTypeDate == '0'">
+    <v-col md="1" class="pl-3 pr-2" v-show="itemChooseTypeDate == '0'">
       <BaseDatePicker :label="$t('from_date')" v-model="fromDate" />
     </v-col>
-    <v-col md="1" v-show="itemChooseTypeDate == '0'">
+    <v-col md="1" class="pl-3 pr-2" v-show="itemChooseTypeDate == '0'">
       <BaseDatePicker :label="$t('to_date')" v-model="toDate" />
     </v-col>
-
     <!-- As current -->
-
-    <v-col md="2" v-show="itemChooseTypeDate == '1'"> </v-col>
-    <v-col md="1" v-show="itemChooseTypeDate == '1'">
+    <v-col md="2" class="pl-3 pr-2" v-show="itemChooseTypeDate == '1'"> </v-col>
+    <v-col md="1" class="pl-3 pr-2" v-show="itemChooseTypeDate == '1'">
       <BaseDatePicker :label="$t('from_date')" v-model="fromDate" />
     </v-col>
-    <v-col md="1" v-show="itemChooseTypeDate == '1'">
+    <v-col md="1" class="pl-3 pr-2" v-show="itemChooseTypeDate == '1'">
       <BaseDatePicker :label="$t('to_date')" v-model="toDate" />
     </v-col>
-
     <!-- Year -->
 
-    <v-col md="2" v-show="itemChooseTypeDate == '2'">
+    <v-col md="2" class="pl-3 pr-2" v-show="itemChooseTypeDate == '2'">
       <BaseDatePicker :label="$t('year')" v-model="year" year />
     </v-col>
-    <v-col md="1" v-show="itemChooseTypeDate == '2'">
+    <v-col md="1" class="pl-3 pr-2" v-show="itemChooseTypeDate == '2'">
       <BaseDatePicker :label="$t('from_date')" v-model="fromDate" />
     </v-col>
-    <v-col md="1" v-show="itemChooseTypeDate == '2'">
+    <v-col md="1" class="pl-3 pr-2" v-show="itemChooseTypeDate == '2'">
       <BaseDatePicker :label="$t('to_date')" v-model="toDate" />
     </v-col>
 
     <!-- Quarter -->
 
-    <v-col md="1" v-show="itemChooseTypeDate == '3'">
+    <v-col md="1" class="pl-3 pr-2" v-show="itemChooseTypeDate == '3'">
       <BaseDatePicker :label="$t('year')" v-model="year" year />
     </v-col>
-    <v-col md="1" v-show="itemChooseTypeDate == '3'">
+    <v-col md="1" class="pl-3 pr-2" v-show="itemChooseTypeDate == '3'">
       <BaseSelect :label="$t('choose_type_quarter')" v-model="itemChooseTypeQuarter" :lstData="lstChooseTypeQuarter" item-text="NAME" item-value="VAL" filter_off />
     </v-col>
-    <v-col md="1" v-show="itemChooseTypeDate == '3'">
+    <v-col md="1" class="pl-3 pr-2" v-show="itemChooseTypeDate == '3'">
       <BaseDatePicker :label="$t('from_date')" v-model="fromDate" />
     </v-col>
-    <v-col md="1" v-show="itemChooseTypeDate == '3'">
+    <v-col md="1" class="pl-3 pr-2" v-show="itemChooseTypeDate == '3'">
       <BaseDatePicker :label="$t('to_date')" v-model="toDate" />
     </v-col>
   </v-row>
 
   <v-row class="pt-1" dense>
-    <v-col md="2">
+    <v-col md="2" class="pl-3 pr-2">
       <BaseSelect :label="$t('form_no')" item-text="NAME" item-value="VAL" filter_off :lstData="formList" v-model="lstForm" />
     </v-col>
     <!-- <v-col md="1">
       </v-col> -->
-    <v-col md="2">
+    <v-col md="2" class="pl-3 pr-2">
       <BaseSelect :label="$t('serial_no')" item-text="NAME" item-value="VAL" filter_off :lstData="serialList" v-model="lstSerial" />
     </v-col>
-    <v-col md="2">
+    <v-col md="2" class="pl-3 pr-2">
       <BaseInput :label="$t('invoice_no')" v-model="lstInvoiceNo" @keyPressEnter="onClickButton()" />
     </v-col>
-    <v-col md="2">
+    <v-col md="2" class="pl-3 pr-2">
       <BaseInput :label="$t('trade_code')" v-model="lstTradeCode" @keyPressEnter="onClickButton()" />
     </v-col>
-    <v-col md="2">
+    <v-col md="2" class="pl-3 pr-2">
       <BaseInput :label="$t('cqt_code')" v-model="lstCQTCode" @keyPressEnter="onClickButton()" />
     </v-col>
-    <v-col md="1" class="d-flex">
+    <v-col md="2" class="d-flex justify-end">
       <BaseButton icon_type="search" :btn_text="$t('search')" @onclick="onClickButton()" />
       <BaseButton icon_type="print" :btn_text="$t('print')" @onclick="onReport" />
     </v-col>
   </v-row>
 
-  <v-row no-gutters align="center" justify="start" class="mb-2">
+  <v-row no-gutters align="center" justify="start" class="pt-3">
     <v-col cols="12">
       <BaseGridView column-resizing-mode="widget" ref="gridview" :auto_load="false" select_mode="Single" :max_height="limitHeight" :header="this.headerGrid" sel_procedure="AC_SEL_6095170_1" :filter_paras="[
             this.fromDate,

@@ -31,7 +31,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col>
+      <v-col md="12">
         <BaseGridView
           ref="gridview"
           :header="this.headerGrid"

@@ -25,9 +25,9 @@
                     <v-select clearable dense hide-details outlined :label="$t('status')" v-model="lstStatus" :items="statusGroup" item-text="TEXT" item-value="PK" :text_all="$t('all')" ></v-select> 
                   </v-col>
                   <v-col cols="1" class="px-1 py-1">
-                    <div class="d-flex justify-end">
+                     <GwFlexBox class="justify-end">
                       <BaseButton  icon_type="search" :btn_text="$t('search')" :disabled="isProcessing" @onclick="onClickButton('SEARCH')"/>
-                    </div>
+                    </GwFlexBox>
                   </v-col>
                 </v-row>
               </v-container>

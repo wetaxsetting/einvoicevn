@@ -1,116 +1,81 @@
 <template>
   <v-container fluid v-resize="onResize">
-    <v-row>
-      <v-col md="4">
-        <BaseSelect
-          :label="$t('company')"
-          v-model="company"
-          :lstData="companyList"
-          item-text="TEXT"
-          item-value="PK"
-        />
-      </v-col>
-      <v-col md="3">
-        <BaseDatePicker :label="$t('from_date')" v-model="from_date" start />
-      </v-col>
-      <v-col md="3">
-        <BaseDatePicker :label="$t('to_date')" v-model="to_date" today />
-      </v-col>
-      <v-col md="2">
-        <BaseInput :label="$t('partner')" v-model="partner" />
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col md="3">
-        <BaseInput :label="$t('mail')" v-model="mail" />
-      </v-col>
-      <v-col md="3">
-        <BaseInput :label="$t('mail_cc')" v-model="mail_cc" />
-      </v-col>
-
-      <v-col md="6" class="d-flex justify-end">
-        <BaseButton
-          icon_type="search"
-          :btn_text="$t('search')"
-          @onclick="onClickButton('SEARCH')"
-        />
-        <BaseButton
-          icon_type="add"
-          :btn_text="$t('add')"
-          @onclick="onClickButton('NEW')"
-        />
-        <BaseButton
-          icon_type="save"
-          :btn_text="$t('save')"
-          @onclick="onClickButton('SAVE')"
-        />
-        <!-- <BaseButton
+    <v-row dense>
+      <GwFlexBox>
+        <v-col md="12" class="d-flex justify-end">
+          <BaseButton icon_type="search" :btn_text="$t('search')" @onclick="onClickButton('SEARCH')" />
+          <BaseButton icon_type="add" :btn_text="$t('add')" @onclick="onClickButton('NEW')" />
+          <BaseButton icon_type="save" :btn_text="$t('save')" @onclick="onClickButton('SAVE')" />
+          <!-- <BaseButton
           icon_type="excel"
           :btn_text="$t('print')"
           @onclick="onReport('PRINT')"
         /> -->
-      </v-col>
+        </v-col>
+      </GwFlexBox>
     </v-row>
 
-    <v-row> </v-row>
+    <v-row dense>
+      <v-col md="2" class="pl-2 pr-3">
+        <BaseSelect :label="$t('company')" v-model="company" :lstData="companyList" item-text="TEXT" item-value="PK" />
+      </v-col>
+      <v-col md="2" class="pl-3 pr-3">
+        <BaseDatePicker :label="$t('from_date')" v-model="from_date" start />
+      </v-col>
+      <v-col md="2" class="pl-3 pr-3">
+        <BaseDatePicker :label="$t('to_date')" v-model="to_date" today />
+      </v-col>
+      <v-col md="2" class="pl-3 pr-3">
+        <BaseInput :label="$t('partner')" v-model="partner" />
+      </v-col>
+      <v-col md="2" class="pl-3 pr-3">
+        <BaseInput :label="$t('mail')" v-model="mail" />
+      </v-col>
+      <v-col md="2" class="pl-3 pr-2">
+        <BaseInput :label="$t('mail_cc')" v-model="mail_cc" />
+      </v-col>
+    </v-row>
+    <v-row>
+
+    </v-row>
     <v-row no-gutters align="center" justify="start" class="mb-2">
       <v-col cols="12">
-        <BaseGridView
-          ref="gridview"
-          select_mode="Single"
-          :maxheight="limitHeight"
-          column-resizing-mode="widget"
-          @cellDblClick="openDialog"
-          sel_procedure="stacfrstac710003_s_02_node"
-          upd_procedure="stacfrstac710003_u_03_node"
-          :editable="false"
-          :header="this.headerQQ"
-          :filter_paras="[
+        <BaseGridView ref="gridview" select_mode="Single" :max_height="limitHeight" column-resizing-mode="widget"
+          @cellDblClick="openDialog" sel_procedure="stacfrstac710003_s_02_node" upd_procedure="stacfrstac710003_u_03_node"
+          :editable="false" :header="this.headerQQ" :filter_paras="[
             this.company,
             this.from_date,
             this.to_date,
             this.partner,
             this.mail,
             this.mail_cc,
-          ]"
-          :update_paras="[
-            'PK',
-            'RN',
-            'TCO_COMPANY_PK',
-            'PARTNER_PK',
-            'PARTNER_ID',
-            'PARTNER_NAME',
-            'PARTNER_LNAME',
-            'PARTNER_FNAME',
-            'EMAIL_ADDRESS',
-            'TAX_CODE',
-            'ADDR1',
-            'PHONE_NO',
-            'FAX_NO',
-            'VALID_FROM',
-            'VALID_TO',
-            'USE_YN',
-            'DESCRIPTION',
-            'TEI_CUSTOMER_PK',  
-            'EMAIL_ADDRES S_CC',
-            'CRT_BY',
-          ]"
-        />
+          ]" :update_paras="[
+  'PK',
+  'RN',
+  'TCO_COMPANY_PK',
+  'PARTNER_PK',
+  'PARTNER_ID',
+  'PARTNER_NAME',
+  'PARTNER_LNAME',
+  'PARTNER_FNAME',
+  'EMAIL_ADDRESS',
+  'TAX_CODE',
+  'ADDR1',
+  'PHONE_NO',
+  'FAX_NO',
+  'VALID_FROM',
+  'VALID_TO',
+  'USE_YN',
+  'DESCRIPTION',
+  'TEI_CUSTOMER_PK',
+  'EMAIL_ADDRES S_CC',
+  'CRT_BY',
+]" />
       </v-col>
-      <dynamic-dialog
-        ref="refDynamicDialog"
-        :companyPK="user.TCO_COMPANY_PK"
-        :header="dynamicHeader"
-        :listData="listData"
-        :nameLabel="nameLabel"
-        :dialogTitle="dialogTitle"
-        :procedure="procedure"
-        :moreParas="moreParas"
-        :codeLabel="codeLabel"
-        :autoSearch="autoSearch"
-        :multiSelectMode="multiSelectMode"
-        @returnData="onSelectItemInfoTO"
-      ></dynamic-dialog>
+      <dynamic-dialog ref="refDynamicDialog" :companyPK="user.TCO_COMPANY_PK" :header="dynamicHeader" :listData="listData"
+        :nameLabel="nameLabel" :dialogTitle="dialogTitle" :procedure="procedure" :moreParas="moreParas"
+        :codeLabel="codeLabel" :autoSearch="autoSearch" :multiSelectMode="multiSelectMode"
+        @returnData="onSelectItemInfoTO"></dynamic-dialog>
     </v-row>
   </v-container>
 </template>
@@ -184,16 +149,18 @@ export default {
   },
   mounted() {
     this.onSetHeader();
+    this.onResize();
+    
   },
   computed: {
-    limitHeight() {
-      if (this.$vuetify.breakpoint.smAndUp) {
-        return 610;
-      }
-    },
     user() {
       return this.$store.getters["auth/user"];
     },
+    limitHeight() {
+      if (this.$vuetify.breakpoint.smAndUp) { return 755 }
+      //return 450
+    },
+
   },
   watch: {
     selectedCompany(val) {
@@ -221,7 +188,7 @@ export default {
       this.mstData = {
         _rowstatus: "i",
         PK: "",
-        TCO_COMPANY_PK:"",
+        TCO_COMPANY_PK: "",
         PARTNER_ID: "",
         PARTNER_NAME: "",
         PARTNER_LNAME: "",
@@ -270,7 +237,7 @@ export default {
           break;
       }
     },
-    async onReport() {},
+    async onReport() { },
 
     BuildDynamicHeader() {
       let header = [];
@@ -423,14 +390,14 @@ export default {
       ];
       this.headerQQ = headerobj;
     },
-    onSelectItemInfo(item) {},
+    onSelectItemInfo(item) { },
 
     onSelectItemInfoTO(item) {
       console.log(item);
       for (let i = 0; i < item.length; i++) {
         this.$refs.gridview.addRowStruct({
           PK: item[i].PK,
-          TCO_COMPANY_PK:item[i].TCO_COMPANY_PK,
+          TCO_COMPANY_PK: item[i].TCO_COMPANY_PK,
           PARTNER_ID: item[i].PARTNER_ID,
           PARTNER_NAME: item[i].PARTNER_NAME,
           PARTNER_LNAME: item[i].PARTNER_LNAME,

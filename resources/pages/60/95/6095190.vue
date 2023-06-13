@@ -2,20 +2,11 @@
   <v-container fluid v-resize="onResize">
     <v-row dense justify="space-between">
       <v-col cols="12">
-        <v-card
-          outlined
-          class="pa-2"
-          :color="$vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-4'"
-        >
+        <v-card class="pa-2" :color="$vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-4'">
           <v-row class="py-0">
             <v-col md="2">
-              <BaseSelect
-                :label="$t('company')"
-                :lstData="company_list"
-                v-model="selected_company"
-                item-value="VAL"
-                item-text="NAME"
-              />
+              <BaseSelect :label="$t('company')" :lstData="company_list" v-model="selected_company" item-value="VAL"
+                item-text="NAME" />
             </v-col>
             <v-col md="1">
               <BaseDatePicker :label="$t('date')" default v-model="formDate" />
@@ -24,65 +15,31 @@
               <BaseDatePicker :label="$t('to')" default v-model="formTo" />
             </v-col>
             <v-col md="2">
-              <BaseSelect
-                :label="$t('form_no')"
-                item-text="NAME"
-                item-value="VAL"
-                :lstData="from_no_list"
-                v-model="selected_form_no"
-              />
+              <BaseSelect :label="$t('form_no')" item-text="NAME" item-value="VAL" :lstData="from_no_list"
+                v-model="selected_form_no" />
             </v-col>
             <v-col md="1">
-              <BaseSelect
-                :label="$t('serial_no')"
-                item-value="VAL"
-                item-text="NAME"
-                :lstData="serial_no_list"
-                v-model="selected_serial_no"
-              />
+              <BaseSelect :label="$t('serial_no')" item-value="VAL" item-text="NAME" :lstData="serial_no_list"
+                v-model="selected_serial_no" />
             </v-col>
             <v-col md="1">
-              <BaseSelect
-                :label="$t('status')"
-                item-value="VAL"
-                item-text="NAME"
-                :lstData="status_list"
-                v-model="selected_status"
-              />
+              <BaseSelect :label="$t('status')" item-value="VAL" item-text="NAME" :lstData="status_list"
+                v-model="selected_status" />
             </v-col>
             <v-col md="1">
-              <BaseSelect
-                :label="$t('trading_type')"
-                item-value="VAL"
-                item-text="NAME"
-                :lstData="trading_type_list"
-                v-model="selected_trading_type"
-              />
+              <BaseSelect :label="$t('trading_type')" item-value="VAL" item-text="NAME" :lstData="trading_type_list"
+                v-model="selected_trading_type" />
             </v-col>
-            <v-col md="3" class="d-flex justify-end">
-              <BaseButton
-                icon_type="search"
-                btn_type="icon"
-                @onclick="onClickButton()"
-              />
-              <BaseButton
-                :btn_text="$t('preview')"
-                @onclick="onPreview"
-                :disabled="isProcessing"
-              />
-              <BaseButton
-                :btn_text="$t('pdf')"
-                :disabled="isProcessing"
-                @onclick="onDownloadPdf"
-              />
+            <v-col md="3">
+              <GwFlexBox class="d-flex justify-end">
+                <BaseButton icon_type="search" btn_type="icon" @onclick="onClickButton()" />
+                <BaseButton :btn_text="$t('preview')" @onclick="onPreview" :disabled="isProcessing" />
+                <BaseButton :btn_text="$t('pdf')" :disabled="isProcessing" @onclick="onDownloadPdf" />
 
-              <BaseButton
-                :btn_text="$t('xml')"
-                :disabled="isProcessing"
-                @onclick="onDownloadXml"
-              />
-              <!-- <BaseButton icon_type="xml" />
+                <BaseButton :btn_text="$t('xml')" :disabled="isProcessing" @onclick="onDownloadXml" />
+                <!-- <BaseButton icon_type="xml" />
               <BaseButton icon_type="pdf" btn_type="icon" /> -->
+              </GwFlexBox>
             </v-col>
           </v-row>
           <v-row>
@@ -99,20 +56,10 @@
               <BaseInput :label="$t('trade_code')" />
             </v-col>
             <v-col md="1">
-              <BaseInput
-                :label="$t('amount')"
-                readonly
-                v-model="amount"
-                number
-              />
+              <BaseInput :label="$t('amount')" readonly v-model="amount" number />
             </v-col>
             <v-col md="1">
-              <BaseInput
-                :label="$t('vat_amount')"
-                readonly
-                v-model="vatAmount"
-                number
-              />
+              <BaseInput :label="$t('vat_amount')" readonly v-model="vatAmount" number />
             </v-col>
             <v-col md="1">
               <BaseInput :label="$t('total')" readonly v-model="total" number />
@@ -121,24 +68,12 @@
         </v-card>
       </v-col>
       <v-col cols="12">
-        <v-card
-          outlined
-          class="pa-2"
-          :color="$vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-4'"
-        >
+        <v-card outlined  :color="$vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-4'">
           <v-row>
             <v-col cols="12">
-              <BaseGridView
-                ref="gridview"
-                :selectionmode="'checkbox'"
-                :autocheckbox="false"
-                @onSelectionDataChanged="onGridSelectionChanged"
-                :header="this.headerGrid"
-                :setting="true"
-                :autoresize="false"
-                @cellClick="onCellClick"
-                :headertype="1"
-                sel_procedure="EI_SEL_6095190_DATA"
+              <BaseGridView ref="gridview" :selectionmode="'checkbox'" :autocheckbox="false"
+                @onSelectionDataChanged="onGridSelectionChanged" :header="this.headerGrid"  :height="limitHeight" :setting="true"
+                :autoresize="false" @cellClick="onCellClick" :headertype="1" sel_procedure="EI_SEL_6095190_DATA"
                 :filter_paras="[
                   this.formDate,
                   this.formTo,
@@ -151,14 +86,10 @@
                   this.selected_form_no,
                   this.cqtCode,
                   this.tradeCode,
-                ]"
-              />
+                ]" />
             </v-col>
           </v-row>
-          <view-einvoice-pdf-dialog
-            ref="ViewEInvoicePDFDialog"
-            :src_pdfUrl="pdfUrl"
-          ></view-einvoice-pdf-dialog>
+          <view-einvoice-pdf-dialog ref="ViewEInvoicePDFDialog" :src_pdfUrl="pdfUrl"></view-einvoice-pdf-dialog>
         </v-card>
       </v-col>
     </v-row>
@@ -220,26 +151,29 @@ export default {
     },
   },
 
-  mounted() {},
+  mounted() { },
 
   computed: {
     user() {
       return this.$store.getters["auth/user"];
     },
+    limitHeight() {
+      return this.windowHeight - 295;
+    },
   },
 
   methods: {
-  async onPreview(){
-      this.isProcessing=true
+    async onPreview() {
+      this.isProcessing = true
       this.pdfUrl = await this.pdfUrlGetter(this.tei_einvoice_m_pk_row);
       this.$nextTick(() => {
-        this.isProcessing=false
+        this.isProcessing = false
         this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
       });
     },
-     async pdfUrlGetter(pk){
-     const pdfUrlExcel = await this.getEinvoice(this,pk)
-     return pdfUrlExcel
+    async pdfUrlGetter(pk) {
+      const pdfUrlExcel = await this.getEinvoice(this, pk)
+      return pdfUrlExcel
     },
     onDownloadPdf() {
       let pkArr = "";
@@ -280,7 +214,7 @@ export default {
       pdfFile.forEach((e) => {
         this.downloadPDF("data:application/pdf;base64," + encodeURI(btoa(String.fromCharCode(...new Uint8Array(e.ATTACH_FILE_PDF.data)))) + "");
       });
-    
+
     },
     OnErrorCallReUploadPDFS(response) {
       alert(response.msg + " - " + response.statusText);

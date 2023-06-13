@@ -91,7 +91,7 @@ class AES {
                     
                     cert = CertificateNBan[0].X509Certificate
                     console.log("c4",cert)
-                    signature = select(doc, "//*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']")[0]
+                    signature = select(doc, "//*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']")[1]
                     console.log("c5",signature)
                 } else {
                     console.log("c6",Certificate[0])

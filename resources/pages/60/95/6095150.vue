@@ -1,34 +1,19 @@
 <template>
-  <v-container fluid v-resize="onResize" class="pa-2">
+  <v-container fluid v-resize="onResize" class="pa-0">
     <v-row dense justify="space-between">
       <v-col cols="12">
-        <v-card
-          outlined
-          class="pa-2"
-          :color="$vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-4'"
-        >
+        <v-card outlined class="pa-2" :color="$vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-4'">
           <v-row>
             <v-col md="2">
-              <BaseSelect
-                :label="$t('company')"
-                :lstData="company_list"
-                v-model="selected_company"
-                item-value="CODE"
-                item-text="NAME"
-              />
+              <BaseSelect :label="$t('company')" :lstData="company_list" v-model="selected_company" item-value="CODE"
+                item-text="NAME" />
             </v-col>
             <v-col md="1">
-              <BaseSelect
-                :label="$t('fiscal')"
-                :lstData="type_date_list"
-                v-model="selected_type_date"
-                item-text="NAME"
-                item-value="VAL"
-                filter_off
-              />
+              <BaseSelect :label="$t('fiscal')" :lstData="type_date_list" v-model="selected_type_date" item-text="NAME"
+                item-value="VAL" filter_off />
             </v-col>
             <!-- month -->
-            <v-col md="2" v-show="selected_type_date == '0'">
+            <v-col md="1" v-show="selected_type_date == '0'">
               <BaseDatePicker :label="$t('month')" v-model="month" month />
             </v-col>
             <v-col md="1" v-show="selected_type_date == '0'">
@@ -61,14 +46,8 @@
               <BaseDatePicker :label="$t('year')" v-model="year" year />
             </v-col>
             <v-col md="1" v-show="selected_type_date == '3'">
-              <BaseSelect
-                :label="$t('type_quarter')"
-                v-model="selected_type_quarter"
-                :lstData="type_quarter_list"
-                item-text="NAME"
-                item-value="VAL"
-                filter_off
-              />
+              <BaseSelect :label="$t('type_quarter')" v-model="selected_type_quarter" :lstData="type_quarter_list"
+                item-text="NAME" item-value="VAL" filter_off />
             </v-col>
             <v-col md="1" v-show="selected_type_date == '3'">
               <BaseDatePicker :label="$t('from_date')" v-model="from_date" />
@@ -77,92 +56,43 @@
               <BaseDatePicker :label="$t('to_date')" v-model="to_date" />
             </v-col>
             <v-col md="1">
-              <BaseSelect
-                null
-                :label="$t('biz_place')"
-                item-text="NAME"
-                item-value="VAL"
-                :lstData="biz_list"
-                v-model="selected_biz"
-              />
+              <BaseSelect null :label="$t('biz_place')" item-text="NAME" item-value="VAL" :lstData="biz_list"
+                v-model="selected_biz" />
+            </v-col>
+            <v-col md="2">
+              <BaseSelect :label="$t('form_no')" item-text="NAME" item-value="VAL" :lstData="form_no_list"
+                v-model="selected_form_no" />
             </v-col>
             <v-col md="1">
-              <BaseSelect
-                :label="$t('form_no')"
-                item-text="NAME"
-                item-value="VAL"
-                :lstData="form_no_list"
-                v-model="selected_form_no"
-              />
+              <BaseSelect :label="$t('ei_status')" item-value="VAL" item-text="NAME" :lstData="status_list"
+                v-model="selected_status" />
             </v-col>
             <v-col md="1">
-              <BaseSelect
-                :label="$t('ei_status')"
-                item-value="VAL"
-                item-text="NAME"
-                :lstData="status_list"
-                v-model="selected_status"
-              />
-            </v-col>
-            <v-col md="1">
-              <BaseSelect
-                :label="$t('tax_rate')"
-                item-value="VAL"
-                item-text="NAME"
-                :lstData="rate_list"
-                v-model="selected_rate"
-              />
+              <BaseSelect :label="$t('tax_rate')" item-value="VAL" item-text="NAME" :lstData="rate_list"
+                v-model="selected_rate" />
             </v-col>
 
             <v-col cols="1" class="d-flex justify-end">
-              <BaseButton
-                icon_type="search"
-                btn_type="icon"
-                @onclick="onClickButton()"
-              />
-              <BaseButton
-                btn_type="icon"
-                icon_type="print"
-                @onclick="onReport"
-              />
+              <BaseButton icon_type="search" btn_type="icon" @onclick="onClickButton()" />
+              <BaseButton btn_type="icon" icon_type="print" @onclick="onReport" />
             </v-col>
           </v-row>
           <v-row>
             <v-col md="1">
-              <BaseSelect
-                :label="$t('invoice_type')"
-                item-value="VAL"
-                item-text="NAME"
-                :lstData="invoice_list"
-                v-model="selected_invoice"
-              />
+              <BaseSelect :label="$t('invoice_type')" item-value="VAL" item-text="NAME" :lstData="invoice_list"
+                v-model="selected_invoice" />
             </v-col>
             <v-col md="1">
-              <BaseSelect
-                :label="$t('vat_type')"
-                item-value="VAL"
-                item-text="NAME"
-                :lstData="vat_list"
-                v-model="selected_vat"
-              />
+              <BaseSelect :label="$t('vat_type')" item-value="VAL" item-text="NAME" :lstData="vat_list"
+                v-model="selected_vat" />
             </v-col>
             <v-col md="1">
-              <BaseSelect
-                :label="$t('serial_no')"
-                item-value="VAL"
-                item-text="NAME"
-                :lstData="serial_list"
-                v-model="selected_serial"
-              />
+              <BaseSelect :label="$t('serial_no')" item-value="VAL" item-text="NAME" :lstData="serial_list"
+                v-model="selected_serial" />
             </v-col>
             <v-col md="2">
-              <BaseSelect
-                :label="$t('decision')"
-                item-value="VAL"
-                item-text="NAME"
-                :lstData="decision_list"
-                v-model="selected_decision"
-              ></BaseSelect>
+              <BaseSelect :label="$t('decision')" item-value="VAL" item-text="NAME" :lstData="decision_list"
+                v-model="selected_decision"></BaseSelect>
             </v-col>
             <v-col md="2">
               <BaseInput :label="$t('customer')" v-model="customer" />
@@ -180,21 +110,11 @@
         </v-card>
       </v-col>
       <v-col cols="12">
-        <v-card
-          outlined
-          class="pa-2"
-          :color="$vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-4'"
-        >
+        <v-card outlined class="pa-2" :color="$vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-4'">
           <v-row>
             <v-col cols="12">
-              <BaseGridView
-                ref="gridview"
-                :header="this.headerGrid"
-                :autoresize="false"
-                :headertype="1"
-                :height="limitHeight"
-                sel_procedure="EI_SEL_6095150_DATA"
-                :filter_paras="[
+              <BaseGridView ref="gridview" :header="this.headerGrid" :autoresize="false" :headertype="1"
+                :height="limitHeight" sel_procedure="EI_SEL_6095150_DATA" :filter_paras="[
                   this.selected_company,
                   this.selected_type_date,
                   this.from_date,
@@ -210,8 +130,7 @@
                   this.invoice_no,
                   this.selected_decision,
                   this.tax_key,
-                ]"
-              />
+                ]" />
             </v-col>
           </v-row>
         </v-card>

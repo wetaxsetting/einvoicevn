@@ -2,31 +2,20 @@
   <v-container fluid v-resize="onResize">
     <v-row>
       <v-col md="3">
-        <BaseSelect
-          :label="$t('company')"
-          :lstData="company_list"
-          v-model="selected_company"
-          item-value="VAL"
-          item-text="NAME"
-        />
+        <BaseSelect outlined :label="$t('company')" :lstData="company_list" v-model="selected_company" item-value="VAL" item-text="NAME"/>
       </v-col>
       <v-col md="2">
-        <BaseDatePicker :label="$t('from_date')" v-model="from_date" default />
+        <BaseDatePicker outlined :label="$t('from_date')" v-model="from_date" default />
       </v-col>
       <v-col md="2">
-        <BaseDatePicker :label="$t('to_date')" v-model="to_date" default />
+        <BaseDatePicker outlined :label="$t('to_date')" v-model="to_date" default />
       </v-col>
       <v-col md="2">
-        <BaseInput :label="$t('template')" v-model="template"/>
+        <BaseInput outlined :label="$t('template')" v-model="template"/>
       </v-col>
       <v-col md="3" class="d-flex justify-end">
-         <BaseButton
-          btn_type="icon"
-          icon_type="search"
-          @onclick="onClickButton()"
-        />
-        <BaseButton icon_type="preview"  @onclick="onPreview"/>
-       
+        <BaseButton icon_type="search" :btn_text="$t('search')"  @onclick="onClickButton" />
+        <BaseButton icon_type="preview" :btn_text="$t('preview')"  @onclick="onPreview" />
       </v-col>
     </v-row>
     <v-row>

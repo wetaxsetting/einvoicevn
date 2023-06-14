@@ -1,16 +1,14 @@
 <template>
   <v-container fluid class="pa-0">
     <v-row dense>
-      <v-col lg="4" sm="6" cols="12">
+      <v-col lg="4" sm="6" cols="12" class="pl-2">
         <v-select clearable dense hide-details outlined :label="$t('company')" v-model="lstCompany" :items="companyGroup" item-text="TEXT" item-value="PK" :text_all="$t('all')" ></v-select> 
       </v-col>
-      <v-col lg="4" sm="6" cols="12">
+      <v-col lg="3" sm="6" cols="12">
         <v-text-field clearable dense hide-details outlined :label="$t('customer_name')" v-model="customer_name" ></v-text-field>
       </v-col>
-      <v-col lg="4" cols="12" class="text-right">
-        <div class="d-flex justify-end">
+      <v-col lg="5" cols="12" class="text-right d-flex justify-end">
           <BaseButton icon_type="search" :btn_text="$t('search')" :disabled="isProcessing" @onclick="onClickButton('SEARCH')"/>
-        </div>
       </v-col>
       <v-col cols="12">
         <DataGridView column-resizing-mode="widget" 

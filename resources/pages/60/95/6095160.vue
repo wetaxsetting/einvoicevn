@@ -1,87 +1,47 @@
 <template>
-  <v-container fluid v-resize="onResize">
-    <v-row>
-      <v-col md="4">
-        <BaseSelect
-          :label="$t('company')"
-          v-model="company"
-          :lstData="companyList"
-          item-text="TEXT"
-          item-value="PK"
-        />
-      </v-col>
-
-      <v-col md="2">
-        <BaseDatePicker
-          :label="$t('date_year')"
-          v-model="date_year"
-          month
-          today
-        />
-      </v-col>
-      <v-col md="3">
-        <BaseDatePicker :label="$t('from_date')" v-model="from_date" start />
-      </v-col>
-      <v-col md="3">
-        <BaseDatePicker :label="$t('to_date')" v-model="to_date" today />
+  <v-container fluid v-resize="onResize"  class="pa-0">
+    <v-row md="12">
+      <v-col md="9"></v-col>
+      <v-col md="3" class="d-flex justify-end">
+        <BaseButton icon_type="search" :btn_text="$t('search')" @onclick="onClickButton()" />
+        <BaseButton icon_type="excel" :btn_text="$t('print')" @onclick="onReport()" />
       </v-col>
     </v-row>
-    <v-row>
+    <v-row md="12">
       <v-col md="2">
-        <BaseSelect
-          :label="$t('form_no')"
-          v-model="form_no"
-          item-value="VAL"
-          item-text="NAME"
-          :lstData="form_no_list"
-          :text_all="$t('all')"
-        />
+        <BaseSelect outlined :label="$t('company')" v-model="company" :lstData="companyList" item-text="TEXT" item-value="PK" />
+      </v-col>
+      <v-col md="1">
+        <BaseDatePicker outlined :label="$t('date_year')" v-model="date_year" month today />
+      </v-col>
+      <v-col md="1">
+        <BaseDatePicker outlined :label="$t('from_date')" v-model="from_date" start />
+      </v-col>
+      <v-col md="1">
+        <BaseDatePicker outlined :label="$t('to_date')" v-model="to_date" today />
+      </v-col>
+      <v-col md="1">
+        <BaseSelect outlined :label="$t('form_no')" v-model="form_no" item-value="VAL" item-text="NAME" :lstData="form_no_list"
+          :text_all="$t('all')" />
+      </v-col>
+      <v-col md="1">
+        <BaseSelect outlined :label="$t('serial_no')" v-model="serial_no" :lstData="serial_List" item-text="NAME" item-value="VAL"
+          :text_all="$t('all')" />
       </v-col>
       <v-col md="2">
-        <BaseSelect
-          :label="$t('serial_no')"
-          v-model="serial_no"
-          :lstData="serial_List"
-          item-text="NAME"
-          item-value="VAL"
-          :text_all="$t('all')"
-        />
+        <BaseInput outlined :label="$t('invoice_no')" v-model="invoiceNo" />
+      </v-col>
+      <v-col md="1">
+        <BaseInput outlined :label="$t('trand_code')" v-model="tranCode" />
       </v-col>
       <v-col md="2">
-        <BaseInput :label="$t('invoice_no')" v-model="invoiceNo" />
-      </v-col>
-      <v-col md="2">
-        <BaseInput :label="$t('trand_code')" v-model="tranCode" />
-      </v-col>
-      <v-col md="2">
-        <BaseInput :label="$t('cqt_code')" v-model="cqtCode" />
-      </v-col>
-      <v-col md="2" class="d-flex justify-end">
-        <BaseButton
-          icon_type="search"
-          :btn_text="$t('search')"
-          @onclick="onClickButton()"
-        />
-        <BaseButton
-          icon_type="excel"
-          :btn_text="$t('print')"
-          @onclick="onReport()"
-        />
+        <BaseInput outlined :label="$t('cqt_code')" v-model="cqtCode" />
       </v-col>
     </v-row>
-
-  
     <v-row no-gutters align="center" justify="start" class="mb-2">
       <v-col cols="12">
-        <BaseGridView
-          ref="gridview"
-          select_mode="Single"
-          :max_height="limitHeight"
-          column-resizing-mode="widget"
-          sel_procedure="stacfrstac710019_s_01_node"
-          :editable="false"
-          :header="this.headerQQ"
-          :filter_paras="[
+        <BaseGridView ref="gridview" select_mode="Single" :max_height="limitHeight" column-resizing-mode="widget"
+          sel_procedure="stacfrstac710019_s_01_node" :editable="false" :header="this.headerQQ" :filter_paras="[
             this.from_date,
             this.to_date,
             this.form_no,
@@ -90,8 +50,7 @@
             this.company,
             this.tranCode,
             this.cqtCode,
-          ]"
-        />
+          ]" />
       </v-col>
     </v-row>
   </v-container>
@@ -140,7 +99,7 @@ export default {
   computed: {
     limitHeight() {
       if (this.$vuetify.breakpoint.smAndUp) {
-        return 510;
+        return 600;
       }
     },
     user() {
@@ -248,7 +207,7 @@ export default {
               ],
               dateColumns: ["INVOICE_DATE", "SIGN_DT", "CANCEL_DT"],
               stringColumns: [
-               "ORDERBY_NO",
+                "ORDERBY_NO",
                 "FORM_NO",
                 "SERIAL_NO",
                 "INVOICE_NO",
@@ -259,7 +218,7 @@ export default {
                 "ADDR",
                 "CANCEL_BY",
                 "CANCEL_REASON",
-               //"CQT_MAGD",
+                //"CQT_MAGD",
               ],
             },
           ],
@@ -297,6 +256,7 @@ export default {
           caption: this.$t("no"),
           allowEditing: false,
           alignment: "right",
+          width:"40"
         },
         // {
         //   dataField: "CUST_NAME",
@@ -346,8 +306,8 @@ export default {
               allowEditing: false,
               alignment: "right",
               dataType: "number",
-            formatFloat: 2,
-            summaryType: "sum",
+              formatFloat: 2,
+              summaryType: "sum",
             },
           ],
         },
@@ -366,12 +326,14 @@ export default {
               allowEditing: false,
               dataType: "string",
               alignment: "center",
+              width:"80"
             },
             {
               dataField: "CUS_NM",
               caption: this.$t("name"),
               allowEditing: false,
               dataType: "string",
+              width:"120"
             },
             {
               dataField: "TAX_CODE",

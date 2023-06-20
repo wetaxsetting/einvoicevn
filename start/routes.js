@@ -86,6 +86,11 @@ Route.group(() => {
     Route.post("importeivfile", "ImportController.UploadFileToFolderEInvoice")
     Route.post("importtkhqfile", "ImportController.UploadFileToFolderTKHQ")
     Route.post("converttopdf", "DsoController.ConvertToPdf");
+    Route.post("viewpdf", "EInvoiceController.viewPDF")
+    // Route.post("viewpdf", "EInvoiceController.viewPDFFromClient")
+    Route.post("viewxml", "EInvoiceController.viewPDF")
+    Route.post("updateparamtemplate", "EInvoiceController.updateViewTemplate")
+    Route.post("viewpdftest", "EInvoiceController.viewPDFTEST")
 }).prefix("api/dso").middleware("user");
 
 Route.group(() => {

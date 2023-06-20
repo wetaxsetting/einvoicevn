@@ -901,7 +901,6 @@ class DsoController {
                     Utils.response(false, "missing_folder_parameter", null)
                 );
             }
-            const file_path = await Utils.putFile(file, folder);
 
             const params = [...JSON.parse(para)];
             let result;
@@ -917,7 +916,7 @@ class DsoController {
                     p_file_ext: file_ext,
                     p_file_size: file_size,
                     p_file_type: file_type,
-                    p_file_path: file_path,
+                    p_file_path: "",
                 },
                     p_language,
                     p_crt_by,
@@ -935,7 +934,7 @@ class DsoController {
                     p_file_ext: file_ext,
                     p_file_size: file_size,
                     p_file_type: file_type,
-                    p_file_path: file_path,
+                    p_file_path: "",
                 },
                     p_language,
                     p_crt_by,
@@ -977,7 +976,7 @@ class DsoController {
                     Utils.response(false, "missing_folder_parameter", null)
                 );
             }
-            const file_path = await Utils.putFile(file, folder);
+            const file_path = await Utils.putFileRootPath(file, folder);
 
             if (!proc) {
                 proc = "sys_upload_file_to_folder";
@@ -1035,7 +1034,7 @@ class DsoController {
                     Utils.response(false, "missing_folder_parameter", null)
                 );
             }
-            const file_path = await Utils.putFile(file, folder);
+            const file_path = await Utils.putFileRootPath(file, folder);
 
             if (!proc) {
                 proc = "sys_upload_file_to_folder2";
@@ -1077,7 +1076,49 @@ class DsoController {
             return response.send(Utils.response(false, e.message, null));
         }
     }
+    async UploadFileToFolderReturnURLToken({ request, response, auth }) {
+        try {
+            var p_language = request.header("accept-language", "ENG");
+            const file = request.file("file");
 
+            const file_size = file.size;
+            const file_name = file.clientName;
+            const file_ext = file.extname;
+            const file_type = file.type;
+
+            let { folder } = request.all();
+            if (!folder) {
+                return response.send(
+                    Utils.response(false, "missing_folder_parameter", null)
+                );
+            }
+            let file_path = await Utils.putFileRootPath(file, folder);
+            const current = new Date();
+            const year = current.getFullYear()
+            let month = current.getMonth() + 1
+            let day = current.getDate()
+            if (day < 10) {
+                day = "0" + day
+            }
+            if (month < 10) {
+                month = "0" + month
+            }
+            file_path="/"+file_path
+            let token = AES.encrypt(file_path + "|" + year + month + day, APP_KEY)
+            token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l')
+            return response.send(APP_URL_LOCAL + "/api/dso/getfiletoken?file_name=" + file_path + "&token=" + token)            
+        } catch (e) {
+            Utils.ConsoleLogError(e.message)
+            Utils.Logger({
+                LVL: "error",
+                MODULE: "DsoController",
+                FUNC: "UploadFileToFolderReturnURLToken",
+                CONTENT: e.message,
+                CRT_BY: p_crt_by,
+            });
+            return response.send(Utils.response(false, e.message, null));
+        }
+    }
     async UploadManualFile({ request, response, auth }) {
         try {
             const user = await auth.getUser();

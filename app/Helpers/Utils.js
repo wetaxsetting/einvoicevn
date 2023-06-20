@@ -13,6 +13,8 @@ const nodemailer = require('nodemailer')
     //const qpdf = require("node-qpdf");
 class Utils {
     constructor() {
+        this.Env = use('Env')
+        this.ROOT_DIR_FILES = this.Env.get("ROOT_DIR_FILES")
         this.Database = use("Database");
         this.fileLogger = use("Logger");
         this.Drive = use("Drive");
@@ -307,64 +309,23 @@ class Utils {
     async deleteFileGCS(filename) {
         const isDeleted = await this.Drive.disk("gcs").delete(filename);
         return isDeleted;
-    }
-    async putFile(file, folder) {
-        const type = typeof file;
-        const imageExt =
-            type === "string" ?
-            file
-            .split("?")[0]
-            .split(".")
-            .pop() :
-            file.extname;
-
-        /* thuan.dang 20200714 modify subtype sua thanh  extname . vi subtype la plain .format file khong dung
-             const imageExt = type === "string" ?
-                 (file.split('?')[0]).split('.').pop() :
-                 file.subtype
-              */
-        let current = new Date();
-        let year = current.getFullYear();
-        let month = current.getMonth() + 1;
-        if (month < 10) {
-            month = "0" + month;
-        }
-        let date = current.getDate();
-        let path = `/public/${folder}/${year}/${month}/${date}`;
-        let savePath = Helpers.appRoot(path);
-        let fileName = `${current.getTime()}.${imageExt.toLowerCase()}`;
-
-        if (type !== "string") {
-            await file.move(savePath, {
-                name: fileName
-            });
-        }
-
-        return `${path}/${fileName}`;
-    }
+    }   
     async putFileRootPath(file, folder) {
         const type = typeof file;
         const imageExt =
             type === "string" ?
-            file
-            .split("?")[0]
-            .split(".")
-            .pop() :
-            file.extname;
-
-        /* thuan.dang 20200714 modify subtype sua thanh  extname . vi subtype la plain .format file khong dung
-             const imageExt = type === "string" ?
-                 (file.split('?')[0]).split('.').pop() :
-                 file.subtype
-              */
+                file
+                    .split("?")[0]
+                    .split(".")
+                    .pop() :
+                file.extname;
         let current = new Date();
         let year = current.getFullYear();
         let month = current.getMonth() + 1;
         if (month < 10) {
             month = "0" + month;
         }
-        //let date = current.getDate();
-        let savePath = `${folder}/${year}/${month}`;
+        let savePath = `${this.ROOT_DIR_FILES}/${folder}/${year}/${month}`;
         let fileName = `${current.getTime()}.${imageExt.toLowerCase()}`;
 
         if (type !== "string") {
@@ -373,7 +334,7 @@ class Utils {
             });
         }
 
-        return `${savePath}/${fileName}`;
+        return `${folder}/${year}/${month}/${fileName}`;
     }
     async putManualFile(file, folder, filename) {
         try {

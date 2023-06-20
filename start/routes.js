@@ -66,6 +66,7 @@ Route.group(() => {
     Route.post("getblob", "DsoController.GetBlobData");
     Route.post("uploadfilefolder", "DsoController.UploadFileToFolder");
     Route.post("uploadfilefolder2", "DsoController.UploadFileToFolder2");
+    Route.post("uploadfile2folder", "DsoController.UploadFileToFolderReturnURLToken");
     Route.post("uploadfilevms", "DsoController.UploadFileVMS");
     Route.post("dictionaryauto", "DsoController.createDictionaryAuto");
     Route.post("uploadmanual", "DsoController.UploadManualFile");

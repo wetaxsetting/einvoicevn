@@ -19,8 +19,8 @@
       <v-col cols="12">
         <DataGridView column-resizing-mode="widget" ref="grdCompany" :auto_load="false" select_mode="Single"
           :max_height="limitHeight" :header="headerGrid" :onCellPrepared="onCellPrepared" @row-updated="checkUpdatedItem"
-          sel_procedure="AC_SEL_6090060_CUSTOMER_NO_CACHE"
-          :filter_paras="[this.lstCompany, this.txtCustomerName, this.tax_code]" />
+          sel_procedure="AC_SEL_6095060_CUSTOMER_NO_CACHE"
+          :filter_paras="[this.lstCompany, this.customer_name, this.tax_code]" />
       </v-col>
     </v-row>
     <confirm-dialog ref="confirmDialog" @onConfirm="onClickButton('OPTION')"></confirm-dialog>
@@ -48,7 +48,7 @@ export default {
     transDateTo: "",
     lstStatus: "",
     statusGroup: [],
-    txtCustomerName: "",
+    customer_name: "",
     tax_code: ""
   }),
 

@@ -1,38 +1,32 @@
 <template>
   <v-container fluid v-resize="onResize">
     <v-row dense>
-      <GwFlexBox>
         <v-col md="12" class="d-flex justify-end">
           <BaseButton icon_type="search" :btn_text="$t('search')" @onclick="onClickButton('SEARCH')" />
           <BaseButton icon_type="add" :btn_text="$t('add')" @onclick="onClickButton('NEW')" />
           <BaseButton icon_type="save" :btn_text="$t('save')" @onclick="onClickButton('SAVE')" />
-          <!-- <BaseButton
-          icon_type="excel"
-          :btn_text="$t('print')"
-          @onclick="onReport('PRINT')"
-        /> -->
+          <!-- <BaseButton icon_type="excel" :btn_text="$t('print')" @onclick="onReport('PRINT')"/> -->
         </v-col>
-      </GwFlexBox>
     </v-row>
 
     <v-row dense>
       <v-col md="2" class="pl-2 pr-3">
-        <BaseSelect :label="$t('company')" v-model="company" :lstData="companyList" item-text="TEXT" item-value="PK" />
+        <BaseSelect outlined :label="$t('company')" v-model="company" :lstData="companyList" item-text="TEXT" item-value="PK" />
       </v-col>
       <v-col md="2" class="pl-3 pr-3">
-        <BaseDatePicker :label="$t('from_date')" v-model="from_date" start />
+        <BaseDatePicker outlined :label="$t('from_date')" v-model="from_date" start />
       </v-col>
       <v-col md="2" class="pl-3 pr-3">
-        <BaseDatePicker :label="$t('to_date')" v-model="to_date" today />
+        <BaseDatePicker outlined :label="$t('to_date')" v-model="to_date" today />
       </v-col>
       <v-col md="2" class="pl-3 pr-3">
-        <BaseInput :label="$t('partner')" v-model="partner" />
+        <BaseInput outlined :label="$t('partner')" v-model="partner" />
       </v-col>
       <v-col md="2" class="pl-3 pr-3">
-        <BaseInput :label="$t('mail')" v-model="mail" />
+        <BaseInput outlined :label="$t('mail')" v-model="mail" />
       </v-col>
       <v-col md="2" class="pl-3 pr-2">
-        <BaseInput :label="$t('mail_cc')" v-model="mail_cc" />
+        <BaseInput outlined :label="$t('mail_cc')" v-model="mail_cc" />
       </v-col>
     </v-row>
     <v-row>
@@ -41,8 +35,9 @@
     <v-row no-gutters align="center" justify="start" class="mb-2">
       <v-col cols="12">
         <BaseGridView ref="gridview" select_mode="Single" :max_height="limitHeight" column-resizing-mode="widget"
-          @cellDblClick="openDialog" sel_procedure="stacfrstac710003_s_02_node" upd_procedure="stacfrstac710003_u_03_node"
-          :editable="false" :header="this.headerQQ" :filter_paras="[
+           sel_procedure="stacfrstac710003_s_02_node" 
+           upd_procedure="stacfrstac710003_u_03_node"
+           :header="this.headerQQ" :filter_paras="[
             this.company,
             this.from_date,
             this.to_date,
@@ -50,29 +45,29 @@
             this.mail,
             this.mail_cc,
           ]" :update_paras="[
-  'PK',
-  'RN',
-  'TCO_COMPANY_PK',
-  'PARTNER_PK',
-  'PARTNER_ID',
-  'PARTNER_NAME',
-  'PARTNER_LNAME',
-  'PARTNER_FNAME',
-  'EMAIL_ADDRESS',
-  'TAX_CODE',
-  'ADDR1',
-  'PHONE_NO',
-  'FAX_NO',
-  'VALID_FROM',
-  'VALID_TO',
-  'USE_YN',
-  'DESCRIPTION',
-  'TEI_CUSTOMER_PK',
-  'EMAIL_ADDRES S_CC',
-  'CRT_BY',
-]" />
+            'PK',
+            'RN',
+            'TCO_COMPANY_PK',
+            'PARTNER_PK',
+            'PARTNER_ID',
+            'PARTNER_NAME',
+            'PARTNER_LNAME',
+            'PARTNER_FNAME',
+            'EMAIL_ADDRESS',
+            'TAX_CODE',
+            'ADDR1',
+            'PHONE_NO',
+            'FAX_NO',
+            'VALID_FROM',
+            'VALID_TO',
+            'USE_YN',
+            'DESCRIPTION',
+            'TEI_CUSTOMER_PK',
+            'EMAIL_ADDRESS_CC',
+            'CRT_BY',
+            ]" />
       </v-col>
-      <dynamic-dialog ref="refDynamicDialog" :companyPK="user.TCO_COMPANY_PK" :header="dynamicHeader" :listData="listData"
+      <dynamic-dialog ref="refDynamicDialog" :companyPK="company" :header="dynamicHeader" :listData="listData"
         :nameLabel="nameLabel" :dialogTitle="dialogTitle" :procedure="procedure" :moreParas="moreParas"
         :codeLabel="codeLabel" :autoSearch="autoSearch" :multiSelectMode="multiSelectMode"
         @returnData="onSelectItemInfoTO"></dynamic-dialog>
@@ -203,7 +198,7 @@ export default {
         USE_YN: "Y",
         DESCRIPTION: "",
         TEI_CUSTOMER_PK: "",
-        FAX_NO: "",
+        EMAIL_ADDRESS_CC: "",
       };
     },
     async onSaveMaster() {
@@ -225,16 +220,16 @@ export default {
         case "PRINT":
           onReport();
           break;
-        case "OPTION":
-          if (this.objClick == "btnSave") {
-            this.$refs.gridview.saveData();
-          } else if (this.objClick == "btnDelete") {
-            this.$refs.gridview.deleteRows2();
-          }
-          break;
-        case "btnAgreeCF":
-          this.confirmDialog = true;
-          break;
+        // case "OPTION":
+        //   if (this.objClick == "btnSave") {
+        //     this.$refs.gridview.saveData();
+        //   } else if (this.objClick == "btnDelete") {
+        //     this.$refs.gridview.deleteRows2();
+        //   }
+        //   break;
+        // case "btnAgreeCF":
+        //   this.confirmDialog = true;
+        //   break;
       }
     },
     async onReport() { },
@@ -326,16 +321,12 @@ export default {
         {
           dataField: "EMAIL_ADDRESS",
           caption: this.$t("email"),
-          allowEditing: false,
-          dataType: "string",
-          alignment: "left",
+          allowEditing: true,
         },
         {
           dataField: "EMAIL_ADDRESS_CC",
           caption: this.$t("email_cc"),
-          allowEditing: false,
-          dataType: "string",
-          alignment: "left",
+          allowEditing: true,
         },
         {
           dataField: "TAX_CODE",
@@ -358,7 +349,7 @@ export default {
         {
           dataField: "USE_YN",
           caption: this.$t("user_yn"),
-          allowEditing: false,
+          allowEditing: true,
           dataType: "checkbox",
           alignment: "center",
         },
@@ -390,14 +381,13 @@ export default {
       ];
       this.headerQQ = headerobj;
     },
-    onSelectItemInfo(item) { },
-
     onSelectItemInfoTO(item) {
       console.log(item);
       for (let i = 0; i < item.length; i++) {
         this.$refs.gridview.addRowStruct({
           PK: item[i].PK,
           TCO_COMPANY_PK: item[i].TCO_COMPANY_PK,
+          PARTNER_PK: item[i].PK,
           PARTNER_ID: item[i].PARTNER_ID,
           PARTNER_NAME: item[i].PARTNER_NAME,
           PARTNER_LNAME: item[i].PARTNER_LNAME,
@@ -407,7 +397,7 @@ export default {
           TAX_CODE: item[i].TAX_CODE,
           VALID_FROM: item[i].VALID_FROM,
           VALID_TO: item[i].VALID_TO,
-          USE_YN: item[i].USE_YN,
+          USE_YN: "Y",
           DESCRIPTION: item[i].DESCRIPTION,
           CRT_DT: item[i].CRT_DT,
           MOD_DT: item[i].MOD_DT,

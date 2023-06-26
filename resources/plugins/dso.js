@@ -11,7 +11,7 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "sys_sel_common_code",
                 para: [p_tco_company_pk, p_parent_code],
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
 
             return res.data ? res.data : [];
@@ -24,7 +24,7 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "sys_sel_common_code21",
                 para: _para,
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
             if (res) {
                 if (res.data.length > 0) {
@@ -44,7 +44,6 @@ Vue.mixin({
 
             return commonList;
         },
-
         async _getCommonCode3(p_parent_code = 0, p_name_code = false) {
             this._setSecondDBStstus();
             let commonList = [];
@@ -73,13 +72,12 @@ Vue.mixin({
 
             return commonList;
         },
-
         async _getHRCode(p_parent_code, p_tco_company_pk = 0, p_tco_busplace_pks = '') {
             this._setSecondDBStstus();
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "sys_sel_hr_code",
                 para: [p_tco_company_pk, p_parent_code, p_tco_busplace_pks ? p_tco_busplace_pks : ''],
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
 
             return res.data ? res.data : [];
@@ -93,7 +91,7 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "sys_sel_hr_code21",
                 para: _para,
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
             if (res) {
                 if (res.data.length > 0) {
@@ -118,7 +116,7 @@ Vue.mixin({
             const dso = {
                 type: 'process',
                 updpro: "ea_pro_1310010_doc_type",
-                para: null //[p_tco_company_pk]
+                para: null//[p_tco_company_pk]
             }
 
             const result = await this._dsoCall(dso, 'process', false)
@@ -134,7 +132,7 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "SYS_SEL_FORM_CUSTOM_FIELD",
                 para: [p_user_pk, p_menu_cd, !!p_tab_id ? p_tab_id : "", !!p_grid_id ? p_grid_id : ""],
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
 
             if (res.data && res.data.length > 0) {
@@ -187,7 +185,7 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "hr_sel_report_list_nocache",
                 para: [p_tco_company_pk, p_menu_cd, p_tab],
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
 
             return res.data ? res.data : [];
@@ -198,7 +196,7 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "hr_sel_cost_center",
                 para: [p_tco_company_pk, p_plc_pk, p_plc_cd_nm],
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
 
             return res.data ? res.data : [];
@@ -208,7 +206,7 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "sys_pro_salary_display",
                 para: [p_user_pk],
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
             if (res.data) return res.data[0].SALARY_SECURITY;
             return "N";
@@ -218,9 +216,9 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "sys_pro_get_sal_period_by_mon",
                 para: [p_tco_company_pk, p_work_mon],
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
-
+            
             return res.data ? res.data : [];
         },
         async _getAllFactory(p_user_pk = 0) {
@@ -228,7 +226,7 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "sys_sel_list_factory",
                 para: [p_user_pk],
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
             return res.data ? res.data : [];
         },
@@ -237,7 +235,7 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "gsf20_lg_sys_get_factory",
                 para: [p_user_pk, p_pr_level],
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
             return res.data ? res.data : [];
         },
@@ -246,7 +244,7 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "sys_sel_list_factory_by_com_user",
                 para: [p_tco_company_pk, p_user_pk, p_pr_level],
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
             return res.data ? res.data : [];
         },
@@ -255,7 +253,7 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "sys_sel_list_wh_tree",
                 para: [p_user_pk],
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
             return res.data ? res.data : [];
         },
@@ -264,7 +262,7 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "sys_sel_list_org",
                 para: [p_tco_company_pk],
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
             return res.data ? res.data : [];
         },
@@ -273,7 +271,7 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "sys_sel_list_org_user",
                 para: [p_user_pk],
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
             return res.data ? res.data : [];
         },
@@ -282,16 +280,7 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "SYS_SEL_LIST_WG_NOCACHE",
                 para: [p_tco_company_pk],
-                _db2: this.SECOND_DB_YN
-            });
-            return res.data ? res.data : [];
-        },
-        async _getWorkProcess(p_pb_process_pk = 0) {
-            this._setSecondDBStstus();
-            let res = await this.$axios.$post("dso/callproc", {
-                proc: "SYS_SEL_LIST_WP_NOCACHE",
-                para: [p_pb_process_pk],
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
             return res.data ? res.data : [];
         },
@@ -300,7 +289,7 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "SYS_SEL_LIST_WG_BIZ",
                 para: [p_tco_company_pk, p_tco_busplace_pks],
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
             return res.data ? res.data : [];
         },
@@ -309,7 +298,7 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "ac_sel_deposit_account",
                 para: [p_tco_company_pk],
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
             return res.data ? res.data : [];
         },
@@ -318,7 +307,7 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "SYS_SEL_LIST_WS_NOCACHE",
                 para: [p_tco_company_pk],
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
             return res.data ? res.data : [];
         },
@@ -327,7 +316,7 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "ac_sel_bank",
                 para: [p_tco_company_pk],
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
             return res.data ? res.data : [];
         },
@@ -336,7 +325,7 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "ac_sel_trans_type",
                 para: [p_tco_company_pk],
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
             return res.data ? res.data : [];
         },
@@ -345,7 +334,7 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "ac_sel_ex_rate",
                 para: [p_tco_company_pk, p_date],
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
             return res.data ? res.data : [];
         },
@@ -354,16 +343,7 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "lg_sel_itemgrp_by_group_type",
                 para: [p_group_type],
-                _db2: this.SECOND_DB_YN
-            });
-            return res.data ? res.data : [];
-        },
-        async _getPBLineByGroup(p_line_group = null, p_line_name = null) {
-            this._setSecondDBStstus();
-            let res = await this.$axios.$post("dso/callproc", {
-                proc: "lg_sel_pb_line_by_group",
-                para: [p_line_group, p_line_name],
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
             return res.data ? res.data : [];
         },
@@ -372,7 +352,7 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "lg_sel_uom",
                 para: [p_tco_company_pk],
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
             return res.data ? res.data : [];
         },
@@ -381,7 +361,7 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "sys_get_item_group",
                 para: [p_tco_company_pk],
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
             return res.data ? res.data : [];
         },
@@ -391,7 +371,7 @@ Vue.mixin({
                 let res_m = await this.$axios.$post("dso/callproc", {
                     proc: "AC_PRO_GET_MONTH_RATE",
                     para: [p_date, p_tco_company_pk, p_ccy],
-                    _db2: this.SECOND_DB_YN
+                    dbname: this.SECOND_DB_YN
                 });
                 if (res_m.data.length > 0) {
                     return res_m.data[0].EX_RATE;
@@ -400,7 +380,7 @@ Vue.mixin({
                 let res = await this.$axios.$post("dso/callproc", {
                     proc: "ac_pro_getrate",
                     para: [p_date, p_tco_company_pk, p_ccy],
-                    _db2: this.SECOND_DB_YN
+                    dbname: this.SECOND_DB_YN
                 });
                 if (res.data.length > 0) {
                     return res.data[0].EX_RATE;
@@ -413,7 +393,7 @@ Vue.mixin({
             this._setSecondDBStstus();
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "sys_get_company",
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
             return res.data ? res.data : [];
         },
@@ -422,7 +402,7 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "sys_sel_list_company",
                 para: [p_user_pk],
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
 
             return res.data ? res.data : [];
@@ -433,7 +413,7 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "sys_sel_list_biz_place",
                 para: [p_tco_company_pk],
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
 
             return res.data ? res.data : [];
@@ -444,28 +424,20 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "sys_sel_list_biz_place_user",
                 para: [p_user_pk],
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
 
             return res.data ? res.data : [];
         },
 
-        async _callProcedure(p_proc, p_para, p_db2_yn = 'N') {
-            let res;
-            if (p_db2_yn == 'Y') {
-                res = await this.$axios.$post("dso/callproc", {
-                    proc: p_proc,
-                    para: p_para,
-                    _db2: 'Y'
-                });
-            } else {
-                this._setSecondDBStstus();
-                res = await this.$axios.$post("dso/callproc", {
-                    proc: p_proc,
-                    para: p_para,
-                    _db2: this.SECOND_DB_YN
-                });
-            }
+        async _callProcedure(p_proc, p_para, dbcommon) {
+            console.log("_callProcedure-dbcommon:", dbcommon)
+            this._setSecondDBStstus();
+            let res = await this.$axios.$post("dso/callproc", {
+                proc: p_proc,
+                para: p_para,
+                dbname: dbcommon ? dbcommon : this.SECOND_DB_YN
+            });
             if (res.data && res.data.length > 0) {
                 if (res.data[0].ERRCODE) {
                     if (res.data[0].ERRMSG) {
@@ -483,32 +455,24 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/execsql", {
                 sql: p_sql,
                 para: p_para,
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
-            return res.data ? res.data : [];
-        },
-        async _callProcedureMultiCursor(p_proc, p_para, p_number_cursor) {
-            this._setSecondDBStstus();
-            let res = await this.$axios.$post("dso/callproc2", {
-                proc: p_proc,
-                para: p_para,
-                number_cursor: p_number_cursor,
-                _db2: this.SECOND_DB_YN
-            });
-
             return res.data ? res.data : [];
         },
         _setSecondDBStstus() {
             if (this._secondDBMenu.some(item => item.FORM_URL == this.$root._route.fullPath)) {
-                this.SECOND_DB_YN = 'Y';
+                this.SECOND_DB_YN = 'common';
             }
         },
-        //vng-207 20221126 add delayNextCall xử lý cho trường hợp grid có data dòng sau cần pk dòng trước
-        async _dsoCall(dso, action = "update", notice = true, acntStyle = '', p_check_db2 = "Y", delayNextCall = 0) {
-            if (p_check_db2 == "Y" || p_check_db2 == undefined) {
+        async _dsoCall(dso, action = "update", notice = true, acntStyle = '', p_check_db2 = "Y") {
+            // console.log("_dsoCall:", dso)
+            if (p_check_db2 == "Y") {
                 this._setSecondDBStstus();
             } else {
                 this.SECOND_DB_YN = 'N';
+            }
+            if(dso.dbname === "common") {
+                this.SECOND_DB_YN = 'common';
             }
 
             /* dso = {
@@ -520,10 +484,10 @@ Vue.mixin({
                       requirecol: require column //type array[]
                       data: data,  //array json
                   } */
-            return await this.dsoCall(dso, action, notice, acntStyle, delayNextCall);
+            return await this.dsoCall(dso, action, notice, acntStyle);
         },
-
-        async dsoCall(dso, action, notice, acntStyle = '', delayNextCall = 0) {
+        async dsoCall(dso, action, notice, acntStyle = '') {
+            console.log("dso ++++==>", dso);
             try {
                 let res = null;
                 if (dso.para) {
@@ -531,7 +495,7 @@ Vue.mixin({
                         if (dso.para[i] == "null" || dso.para[i] === null || dso.para[i] === undefined) {
                             dso.para[i] = "";
                         }
-                        //dso.para[i] = typeof dso.para[i] === "string" ? dso.para[i].replace(/\'/g, "''") : dso.para[i];
+                        dso.para[i] = typeof dso.para[i] === "string" ? dso.para[i].replace(/\'/g, "''") : dso.para[i];
                     }
                 }
                 if (action === "select") {
@@ -539,8 +503,7 @@ Vue.mixin({
                     const para = {
                         proc: dso.selpro,
                         para: dso.para,
-                        para_extra: dso.para_extra,
-                        _db2: this.SECOND_DB_YN
+                        dbname: this.SECOND_DB_YN
                     }
                     res = await this.$axios.$post("dso/callproc", para);
 
@@ -548,11 +511,8 @@ Vue.mixin({
                     if (res.success == false) {
                         let msg = this.$t(res.message);
                         this.handlingErrorMessage(res.message, '', acntStyle, notice);
-                        //this.showNotification("danger", msg, "", this.POPUP_ERROR_DELAY);
                         if (res.message == "your_session_timeout_logout_and_login_to_continue") {
-                            //this.$store.commit("auth/FETCH_USER_FAILURE");
                             this.$store.dispatch("auth/logout");
-                            //this.$router.push("/login");
                             alert(msg);
                             window.location.href = "/login";
                         }
@@ -575,7 +535,6 @@ Vue.mixin({
                     } else {
                         return this.showNotification("warning", this.$t("no_data_found"), "", 3000);
                     }
-
                     // if (notice) {
                     //     this.showNotification("success", this.$t("get_data_success"), "");
                     // }
@@ -599,21 +558,14 @@ Vue.mixin({
                         }
 
                         if (dso.data._rowstatus) {
-                            let result = null;
-
-                            if (dso.colfile && dso.colfile.length > 0) {
-                                result = await this.delayedDataProcessBlob(dso.data, dso);
-                            } else {
-                                result = await this.delayedDataProcess(dso.data, dso);
-                            }
-
+                            const result = await this.delayedDataProcess(dso.data, dso);
                             if (!result) {
                                 return null;
                             } else {
                                 res = await this.$axios.$post("dso/callproc", {
                                     proc: dso.selpro,
                                     para: dso.para1 ? dso.para1 : [dso.data.PK],
-                                    _db2: this.SECOND_DB_YN
+                                    dbname: this.SECOND_DB_YN
                                 });
                                 let rtn = null;
                                 if (res.success == false) {
@@ -651,10 +603,9 @@ Vue.mixin({
                                 }
                             }
                         }
-
                         let paras = [];
                         for (let i = 0; i < dso.data.length; i++) {
-                            let item = dso.data[i];
+                            let item=dso.data[i];
                             //console.log(item)
                             if (item._rowstatus) {
                                 let para = [];
@@ -682,25 +633,25 @@ Vue.mixin({
                         res = await this.$axios.$post("dso/bulkinsertpro", {
                             proc: dso.updpro,
                             para: paras,
-                            _db2: this.SECOND_DB_YN
+                            dbname: this.SECOND_DB_YN
                         });
                         if (res.success == false) {
                             this.handlingErrorMessage(res.message);
-                            return false;
+                            return null;
                         } else if (res.data.length > 0 && res.data[0].ERRCODE) {
                             if (res.data[0].ERRMSG) {
                                 this.showNotification("danger", this.$t(res.data[0].ERRCODE) + " [" + res.data[0].ERRMSG + "]", "", this.POPUP_ERROR_DELAY);
                             } else {
                                 this.showNotification("danger", this.$t(res.data[0].ERRCODE), "", this.POPUP_ERROR_DELAY);
                             }
-                            return false;
+                            return null;
                         } else if (res.success == true) {
                             if (dso.selpro) {
                                 res = await this.$axios.$post("dso/callproc", {
                                     proc: dso.selpro,
                                     para: dso.para,
                                     para_extra: dso.para_extra,
-                                    _db2: this.SECOND_DB_YN
+                                    dbname: this.SECOND_DB_YN
                                 });
                                 if (res.success == false) {
                                     this.handlingErrorMessage(res.message, '', acntStyle);
@@ -730,8 +681,7 @@ Vue.mixin({
                         res = await this.$axios.$post("dso/callproc", {
                             proc: dso.updpro,
                             para: dso.para,
-                            para_extra: dso.para_extra,
-                            _db2: this.SECOND_DB_YN
+                            dbname: this.SECOND_DB_YN
                         });
                         this.isProcessing = false;
                         if (res.success == false) {
@@ -744,13 +694,10 @@ Vue.mixin({
                                     } else {
                                         this.showNotification(acntStyle ? "warning" : "danger", this.$t(res.data[0].ERRCODE), "", this.POPUP_ERROR_DELAY);
                                     }
-                                    return false;
+                                    return null;
                                 }
-                            } else {
-                                //if (notice) this.showNotification(acntStyle?"warning":"danger", this.$t("no_return_data"), "", this.POPUP_ERROR_DELAY);
                             }
                         }
-
                         if (notice) {
                             this.showNotification("success", this.$t("process_success"), "");
                         }
@@ -767,6 +714,7 @@ Vue.mixin({
                 } else {
                     this.showNotification("danger", this.$t("unexpected_error"), e.message);
                 }
+                return null
             } finally {
                 this.isProcessing = false;
             }
@@ -790,21 +738,17 @@ Vue.mixin({
                         if (val == "null" || val == undefined || val == null) {
                             val = "";
                         }
-                        //val = typeof val === "string" ? val.replace("'", "''").replace("?", "\\?") : val;
-
-                        val = typeof val === "string" ? val/*.replace(/\'/g, "''")*/.replace(/\?/g, "\?") : val;
-
+                        val = typeof val === "string" ? val.replace(/\'/g, "''").replace(/\?/g, "\?") : val;
                         para.push(val);
                     }
                     this.isProcessing = true;
                     const res = await this.$axios.$post("dso/callproc", {
                         proc: dso.updpro,
                         para: para,
-                        _db2: this.SECOND_DB_YN
+                        dbname: this.SECOND_DB_YN
                     });
                     if (res.success == false) {
                         this.handlingErrorMessage(res.message);
-                        //this.showNotification("danger", res.message, "", this.POPUP_ERROR_DELAY);
                         return false;
                     } else if (res.data[0].ERRCODE) {
                         if (res.data[0].ERRMSG) {
@@ -831,97 +775,8 @@ Vue.mixin({
                 return false;
             }
         },
-
-
-        async delayedDataProcessBlob(item, dso) {
-            try {
-                let para = [];
-                if (item._rowstatus) {
-                    for (let j = 0; j < dso.elname.length; j++) {
-                        let val;
-                        if (dso.elname[j] == "ADDDITION_PARA") {
-                            val = item.ADDDITION_PARA;
-                        } else {
-                            try {
-                                val = eval("item." + dso.elname[j]);
-                            } catch (ex) {
-                                val = "";
-                            }
-                        }
-
-                        if (val == "null" || val == undefined || val == null) {
-                            val = "";
-                        }
-                        //val = typeof val === "string" ? val.replace("'", "''").replace("?", "\\?") : val;
-
-                        val = typeof val === "string" ? val/*.replace(/\'/g, "''")*/.replace(/\?/g, "\?") : val;
-
-                        para.push(val);
-                    }
-                    this.isProcessing = true;
-
-
-                    const fd = new FormData();
-                    let params = {
-                        keys: [...dso.elname]
-                    };
-
-                    let fileIdx = 0;
-                    dso.elname.forEach((key, idx) => {
-                        if (dso.colfile.includes(key)) {
-                            params[key] = `byte-array${fileIdx++}`;
-                            fd.append('files', item[key].file);
-                        } else {
-                            params[key] = item[key];
-                        }
-                    });
-
-                    fd.append('proc', dso.updpro);
-                    fd.append('para', JSON.stringify(params));
-
-                    let res = await this.$axios({
-                        method: 'post',
-                        url: '/dso/callprocedureblob',
-                        data: fd
-                    });
-
-                    res = res.data;
-                    if (res.success == false) {
-                        this.handlingErrorMessage(res.message);
-                        //this.showNotification("danger", res.message, "", this.POPUP_ERROR_DELAY);
-                        return false;
-                    } else if (res.data[0].ERRCODE) {
-                        if (res.data[0].ERRMSG) {
-                            this.showNotification("danger", this.$t(res.data[0].ERRCODE) + " [" + res.data[0].ERRMSG + "]", "", this.POPUP_ERROR_DELAY);
-                        } else {
-                            this.showNotification("danger", this.$t(res.data[0].ERRCODE), "", this.POPUP_ERROR_DELAY);
-                        }
-                        return false;
-                    }
-
-
-                    if (dso.type === "control") {
-                        let rtnKeys = Object.keys(res.data[0]);
-                        rtnKeys.forEach((q) => {
-                            item[q] = res.data[0][q];
-                        });
-                    }
-                    return true;
-                } else {
-                    this.showNotification("danger", this.$t("item_status_no_change"), "", this.POPUP_ERROR_DELAY);
-                    return false;
-                }
-            } catch (e) {
-                console.log(e);
-                this.showNotification("danger", e.message, "", this.POPUP_ERROR_DELAY);
-                return false;
-            }
-        },
-
-
-
         handlingErrorMessage(val, title = "", acntStyle = "", notice = true) {
-
+            if (notice == false) return;
             const str = `ORA-20999: ORA-20999: [NOI_DNG_TEST]
             ORA-06512: at "WMS1.CW_PRO_CS70030_APPROVE_ALL", line 270
             `;
@@ -931,15 +786,11 @@ Vue.mixin({
             this.decodeMessage(arr, vall);
 
             if (arr.length > 0) {
-                if (notice) {
-                    this.showNotification(acntStyle ? "warning" : "danger", arr.join("  >>>  "), title, this.POPUP_ERROR_DELAY);
-                }
-                this._callProcedure("sys_upd_sys_user_msg_log", [arr.join("  >>>  "), val, this.$root._route.fullPath]);
+                this.showNotification(acntStyle ? "warning" : "danger", arr.join("  >>>  "), title, this.POPUP_ERROR_DELAY);
+                this._callProcedure("sys_upd_sys_user_msg_log", [arr.join("  >>>  "), val, this.$root._route.fullPath], "common");
             } else {
-                if (notice) {
-                    this.showNotification(acntStyle ? "warning" : "danger", val, title, this.POPUP_ERROR_DELAY);
-                }
-                this._callProcedure("sys_upd_sys_user_msg_log", [val, '', this.$root._route.fullPath]);
+                this.showNotification(acntStyle ? "warning" : "danger", val, title, this.POPUP_ERROR_DELAY);
+                this._callProcedure("sys_upd_sys_user_msg_log", [val, '', this.$root._route.fullPath], "common");
             }
         },
         decodeMessage(arr, val) {
@@ -973,7 +824,7 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "sys_get_company_by_user",
                 para: [p_user_pk],
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
 
             return res.data ? res.data : [];
@@ -983,7 +834,7 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "sys_sel_common_code_par",
                 para: [p_tco_company_pk, p_parent_code, p_val1, p_val2, p_val3],
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
 
             return res.data ? res.data : [];
@@ -994,7 +845,7 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "GSF20_LG_SYS_GET_GROUP_ITEM",
                 para: [p_user_pk, p_pr_level, p_leaf_yn, p_yn_string, p_group_type],
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
             return res.data ? res.data : [];
         },
@@ -1004,46 +855,12 @@ Vue.mixin({
             let res = await this.$axios.$post("dso/callproc", {
                 proc: "LG_SEL_COMPANY_WH_V3",
                 para: [p_tlg_in_storage_pk, p_user_pk, p_type, p_wh_type, p_tco_company_pk],
-                _db2: this.SECOND_DB_YN
+                dbname: this.SECOND_DB_YN
             });
             return res.data ? res.data : [];
         },
 
-        async _getWarehouseByGroup(p_tlg_wh_group_pk = '') {
-            this._setSecondDBStstus();
-            let res = await this.$axios.$post("dso/callproc", {
-                proc: "LG_SEL_WH_BY_GROUP",
-                para: [p_tlg_wh_group_pk],
-                _db2: this.SECOND_DB_YN
-            });
-            return res.data ? res.data : [];
-        },
-        async _FlowsSendArticle(_flowProjectId, _flowTitle, _flowContent, _flowFileName = "", _flowFileBase64String = "") {
-            var flowsdata1 = {
-                COLABO_SRNO: _flowProjectId, // project id
-                COMMT_TTL: _flowTitle, // title
-                CNTN: _flowContent, // content 
-            };
-
-            var flowsdata2 = {
-                FILE_REC: [{
-                    ORG_FILE_NM: _flowFileName,// file name
-                    SAVE_FILE_NM: _flowFileBase64String // base64string
-                }]
-            };
-
-            var flowsdata = flowsdata1;
-            // console.log('[vng-154/dvg] > file: dso.js:1001 > _FlowsSendArticle > flowsdata', flowsdata);
-
-            if (_flowFileName != "" && _flowFileBase64String != "") {
-                // console.log('[vng-154/dvg] > file: dso.js:1004 > _FlowsSendArticle > _flowFileName', _flowFileName);
-                flowsdata = { ...flowsdata1, ...flowsdata2 }
-            }
-            const rntFlows = await this.$axios.$post("flow/sendarticle", flowsdata);
-            return rntFlows ? rntFlows : [];
-        },
-        // ==============LG=========================
-
+        // ==============LG=========================  
         async _clearCache(notiYN = "Y") {
             try {
                 const { success, data, message } = await this.$axios.$post("dso/clearcache");
@@ -1058,8 +875,8 @@ Vue.mixin({
                 console.log("catch exception-toggleNocache:", error.message)
             }
         },
-        async _sendESign(_eSignInfo = { _groupkey: "", _doc_type: "", _orginal_pdf_base64: "", _sign_by_pk: "", _sign_seq: '', _description: "" }) {
-            try {
+        async _sendESign(_eSignInfo={ _groupkey:"", _doc_type:"", _orginal_pdf_base64:"", _sign_by_pk:"", _sign_seq:'', _description:""}) {  
+            try{
                 console.clear();
                 // _eSignInfo ={
                 //     _groupkey:'TAX'+busplace_info.TAX_CD+"TAC_HGTRH"+this.mstData.PK, 
@@ -1073,139 +890,137 @@ Vue.mixin({
                 // }  
                 let MSG = this.$t('pls_check_group_key_or_doc_type_or_parse_file_pdf_to_base64');
                 let MSG_COLOR = "warning";
-                if (_eSignInfo._groupkey != "" && _eSignInfo._doc_type != "" && _eSignInfo._orginal_pdf_base64 != "") {
+                if(_eSignInfo._groupkey !="" && _eSignInfo._doc_type !="" && _eSignInfo._orginal_pdf_base64 != ""){
                     /*==[CHK] Check _eSignInfo._orginal_pdf_base64 error or not yet==*/
                     const _result = _eSignInfo._orginal_pdf_base64;
                     if (_result.type) {
                         let _err_print = _result.type.split("/")[1].toLowerCase();
                         if (_result && _err_print == "xml" && _result.size == 0) {
-                            this.showNotification(MSG_COLOR, this.$t("no_data_or_report_error"), 3000);
+                            this.showNotification(MSG_COLOR, this.$t("no_data_or_report_error"), 3000 );
                             return;
                         }
                         if (_err_print == "json") {
                             MSG = "NO_DATA";
-                            _result.text().then((res) => {
-                                var _json_msg = JSON.parse(res); MSG = _json_msg["message"];
+                            _result.text().then((res) => { var _json_msg = JSON.parse(res); MSG = _json_msg["message"];
                                 if (MSG == undefined) { MSG = "no_data_or_report_error"; }
-                                this.showNotification(MSG_COLOR, this.$t(MSG), "", 5000);
+                                this.showNotification(MSG_COLOR, this.$t(MSG), "", 5000 );
                             });
                             return;
-                        }
+                        }  
                     }
                     /*===[CVT] Convert blob to base64==================================*/
-                    const _orginalPDFBase64 = await this._blobFileToBase64(_eSignInfo._orginal_pdf_base64);
-                    if (!_orginalPDFBase64 || _orginalPDFBase64 == undefined) {
-                        MSG = this.$t('can_not_convert_file_pdf_to_base64_pls_check');
-                        return this.showNotification(MSG_COLOR, MSG, "", 5000);
+                    const _orginalPDFBase64 =  await this._blobFileToBase64(_eSignInfo._orginal_pdf_base64);
+                    if(!_orginalPDFBase64 || _orginalPDFBase64 == undefined){
+                        MSG =  this.$t('can_not_convert_file_pdf_to_base64_pls_check');
+                        return this.showNotification(MSG_COLOR, MSG, "", 5000); 
                     }
-                    this.showNotification("info", this.$t("begin_send_esign"), "", 500);
+                    this.showNotification("info", this.$t("begin_send_esign"), "", 500); 
                     _eSignInfo._orginal_pdf_base64 = _orginalPDFBase64;
                     //console.log('[vng-154/dvg] > file: dso.js:1060 > _sendESign > _eSignInfo:', _eSignInfo);
                     let rtnSendESignStatus = await this.$axios.$post("dso/apiproclob", {
                         proc: "SYS_PRO_SEND_ESIGN",
-                        para: [_eSignInfo._tco_company_pk, _eSignInfo._tco_busplace_pk, _eSignInfo._groupkey, _eSignInfo._doc_type, _eSignInfo._orginal_pdf_base64, _eSignInfo._sign_by_pk, _eSignInfo._sign_seq, _eSignInfo._description],
+                        para: [_eSignInfo._tco_company_pk,_eSignInfo._tco_busplace_pk, _eSignInfo._groupkey, _eSignInfo._doc_type, _eSignInfo._orginal_pdf_base64, _eSignInfo._sign_by_pk, _eSignInfo._sign_seq, _eSignInfo._description],
                         _db2: this.SECOND_DB_YN
-                    });
+                    }); 
                     //console.log('[vng-154/dvg] > file: dso.js:1066 > _sendESign > rtnSendESignStatus:', rtnSendESignStatus);
                     MSG_COLOR = "info";
-                    MSG = this.$t(rtnSendESignStatus.data[0].STATUS + "");
-                    let lCode = this.$t(rtnSendESignStatus.data[0].CODE + "");
+                    MSG = this.$t(rtnSendESignStatus.data[0].STATUS+"");
+                    let lCode = this.$t(rtnSendESignStatus.data[0].CODE+"");
                     //console.log("[_eSignInfo]",_eSignInfo)
-                    return this.showNotification(MSG_COLOR, MSG, lCode, 5000);
-                }
+                    return this.showNotification(MSG_COLOR, MSG, lCode, 5000); 
+                } 
                 //console.log('[_eSignInfo]', _eSignInfo);
-                return this.showNotification(MSG_COLOR, MSG, "", 5000);
-            } catch (e) {
+                return this.showNotification(MSG_COLOR, MSG, "", 5000); 
+            }catch(e){
                 console.log('[Error Code _sendESign/_eSignInfo]', _eSignInfo);
                 console.log("[Error Code _sendESign]:", e);
                 MSG = this.$t('error_when_system_send_esign');
-                MSG_COLOR = "warning";
+                MSG_COLOR = "warning"; 
                 return this.showNotification(MSG_COLOR, MSG, "", 5000);
             }
         },
-        async _getFrmSetting(_frmId, _type = "NAME", _tco_company_pk = '') {
-            try {
-                this._setSecondDBStstus();
+        async _getFrmSetting(_frmId, _type = "NAME", _tco_company_pk = '') {  
+            try{this._setSecondDBStstus();
                 let rtnFromSetting = await this.$axios.$post("dso/callproc", {
                     proc: "SYS_SEL_FRM_SETTING_NC",
                     para: [_frmId, _type, _tco_company_pk],
                     _db2: this.SECOND_DB_YN
-                });
+                }); 
                 return rtnFromSetting.data ? rtnFromSetting.data : [];
             }
-            catch (e) {
+            catch(e){
                 return [];
             }
         },
-        async _getInitProc(_crt_id, _listData = [], _defaultProc = '', _contenproc = '', _getcolnm = "PROCEDURE_NAME") {
+        async _getInitProc (_crt_id, _listData = [], _defaultProc = '', _contenproc = '', _getcolnm = "PROCEDURE_NAME"){
             let procNM = _defaultProc;
-            try {
-                if (_listData && _listData.length > 0) {
+                try{
+                    if (_listData && _listData.length > 0) {
                     const rtnFilter = _listData.filter((x) => x.CRT_ID == `${_crt_id}`);
-                    if (rtnFilter && rtnFilter[0] && rtnFilter.length > 0) {
+                    if (rtnFilter && rtnFilter[0] && rtnFilter.length>0) {
                         let _getData = rtnFilter[0];
                         if (_getData[`${_getcolnm}`] && _getData[`${_getcolnm}`] != undefined && _getData[`${_getcolnm}`] != '' && _getData[`${_getcolnm}`] != 'null') {
-                            if (_contenproc == 'CONTENT') {
+                            if(_contenproc == 'CONTENT'){
                                 let rtnContentProc = await this.$axios.$post("dso/callproc", {
                                     proc: "SYS_SEL_CONTENT_PROC",
                                     para: [_defaultProc],
                                     _db2: this.SECOND_DB_YN
-                                });
+                                });  
                                 procNM = rtnContentProc;
                             }
-                            return procNM = _getData[`${_getcolnm}`];
+                            return procNM = _getData[`${_getcolnm}`]; 
                         }
                     }
+                    }
+                    return procNM;
                 }
-                return procNM;
-            }
-            catch (e) {
-                return procNM;
-            }
+                catch(e){
+                    return procNM;
+                } 
         },
-        async _getInitList(_crt_id, _listData = [], _defaultComm = '', _tco_company_pk = '', _getcolnm = "PROCEDURE_NAME") {
+        async _getInitList(_crt_id, _listData = [], _defaultComm = '', _tco_company_pk='', _getcolnm = "PROCEDURE_NAME"){
             let rtnData = [];
-            try {
+                try{
                 if (_listData && _listData.length > 0) {
                     const rtnFilter = _listData.filter((x) => x.CRT_ID == `${_crt_id}`);
-                    if (rtnFilter && rtnFilter[0] && rtnFilter.length > 0) {
+                    if (rtnFilter && rtnFilter[0] && rtnFilter.length>0) {
                         let _getData = rtnFilter[0];
                         if (_getData[`${_getcolnm}`] && _getData[`${_getcolnm}`] != undefined && _getData[`${_getcolnm}`] != '' && _getData[`${_getcolnm}`] != 'null') {
-                            let parentCode = _getData[`${_getcolnm}`];
+                            let parentCode = _getData[`${_getcolnm}`]; 
                             let _rtnVal = []
                             switch (_getData.PROCEDURE_TYPE) {
-                                case 'COMMCODE':
+                                case 'COMMCODE': 
                                     _listData.forEach(e => {
                                         if (e.CRT_ID == `${_crt_id}` && e.TCO_COMPANY_PK == _tco_company_pk && _defaultComm == parentCode) {
                                             _rtnVal.push(e);
-                                        }
-                                    });
-                                    rtnData = (_rtnVal && _rtnVal.length > 0) ? _rtnVal : [];
+                                        } 
+                                    }); 
+                                    rtnData = (_rtnVal && _rtnVal.length > 0)? _rtnVal : [];   
                                     break;
                                 case 'COMMCODE_CLOUD':
                                     _listData.forEach(e => {
                                         if (e.CRT_ID == `${_crt_id}` && _defaultComm == parentCode) {
                                             _rtnVal.push(e);
                                         }
-                                    });
-                                    rtnData = (_rtnVal && _rtnVal.length > 0) ? _rtnVal : [];
+                                    }); 
+                                    rtnData = (_rtnVal && _rtnVal.length > 0)? _rtnVal : []; 
                                     break;
-                                default:
+                                default :
                                     rtnData = [];
-                                    break;
+                                break;
                             }
-                            // return rtnData;
+                          // return rtnData;
                         }
                     }
-                }
-                if (rtnData && rtnData.length == 0 && _defaultComm != "") {
+                }  
+                if(rtnData && rtnData.length == 0 && _defaultComm != ""){
                     rtnData = await this._getCommonCode(`${_defaultComm}`, '');
                 }
                 return rtnData;
             }
-            catch (e) {
+            catch(e){
                 return rtnData;
-            }
+            } 
         }
     },
-}); 
+});

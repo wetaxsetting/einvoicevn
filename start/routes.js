@@ -92,6 +92,7 @@ Route.group(() => {
     Route.post("viewxml", "EInvoiceController.viewPDF")
     Route.post("updateparamtemplate", "EInvoiceController.updateViewTemplate")
     Route.post("viewpdftest", "EInvoiceController.viewPDFTEST")
+    Route.post("bulkinsertpro", "DsoController.CallBulkInsertProcedure")
 }).prefix("api/dso").middleware("user");
 
 Route.group(() => {

@@ -210,7 +210,32 @@ class DsoController {
             return response.send(Utils.response(false, e.message, null));
         }
     }
-
+    async CallBulkInsertProcedure({ request, response, auth }) {
+        let p_crt_by = "";
+        try {
+            const { proc, para, _db2 } = request.all();
+            //console.log("para", para)
+            const p_language = request.header("accept-language", "ENG");
+            const user = await auth.getUser();
+            if (user) {
+                p_crt_by = user.USER_ID;
+            }
+            const result = await DBService.callBulkProcCursor(proc, para, p_language, p_crt_by, _db2);
+            return response.send(
+                Utils.response(true, "Call api bulk insert pro  was sucessfully!", result)
+            );
+        } catch (e) {
+            Utils.ConsoleLogError(e.message)
+            Utils.Logger({
+                LVL: "error",
+                MODULE: "DsoController",
+                FUNC: "CallBulkInsertProcedure",
+                CONTENT: e.message,
+                CRT_BY: p_crt_by,
+            });
+            return response.send(Utils.response(false, e.message, null));
+        }
+    }
     async CallProcedureCLOB({ request, response, auth }) {
         let p_crt_by = "";
         try {

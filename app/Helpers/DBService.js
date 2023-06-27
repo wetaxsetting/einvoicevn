@@ -19,6 +19,10 @@ class DBService {
     async clearCache() {
         return this.myDB.clearCache()
     }
+    async callBulkProcCursor(p_proc, p_para = null, p_language, p_crt_by, p_dbinfo) {
+
+        return this.myDB.callBulkProcCursor(p_proc, p_para, p_language, p_crt_by, p_dbinfo);
+    }
     async callProcCursor(p_proc, p_para = null, p_language, p_crt_by, p_db2 = null) {
         if (p_db2 == "Y") {
             if (this.DB_CONNECTION2 == "mysql2") {

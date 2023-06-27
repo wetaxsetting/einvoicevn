@@ -211,10 +211,11 @@ class DsoController {
         }
     }
     async CallBulkInsertProcedure({ request, response, auth }) {
+        console.log("CallBulkInsertProcedure");
         let p_crt_by = "";
         try {
             const { proc, para, _db2 } = request.all();
-            //console.log("para", para)
+            console.log("para", para)
             const p_language = request.header("accept-language", "ENG");
             const user = await auth.getUser();
             if (user) {

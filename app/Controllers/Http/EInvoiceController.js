@@ -346,6 +346,7 @@ class EInvoiceController {
                 });
             }
             const xml = convertXML.json2xml(jsonDeclare, { compact: true, ignoreComment: true, spaces: 4 });
+            // console.log("xmlxml ++++==?> ", xml);
             return response.send(
                 Utils.response(
                     true,

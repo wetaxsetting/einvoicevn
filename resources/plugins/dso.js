@@ -487,7 +487,6 @@ Vue.mixin({
             return await this.dsoCall(dso, action, notice, acntStyle);
         },
         async dsoCall(dso, action, notice, acntStyle = '') {
-            console.log("dso ++++==>", dso);
             try {
                 let res = null;
                 if (dso.para) {
@@ -630,7 +629,7 @@ Vue.mixin({
                             }
                         }
                         this.isProcessing = true;
-                        res = await this.$axios.$post("dso/bulkinsertpro", {
+                        res = await this.$axios.$post("dso/bulkinsertpro", { /// bulkinsertpro
                             proc: dso.updpro,
                             para: paras,
                             dbname: this.SECOND_DB_YN

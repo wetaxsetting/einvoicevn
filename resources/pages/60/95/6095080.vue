@@ -51,11 +51,8 @@
                     <BaseButton icon_type="xml" :btn_text="$t('view_xml')" @onclick="onClick('viewXML')" />
                     <BaseButton icon_type="xml" :btn_text="$t('view_dec')" @onclick="onClick('viewDEC')" />
 
-                    <BaseButton btn_type="text" :btn_text="$t('checking_declaration')"
-                      @onclick="onClick('previewOriginal')" />
-                    <BaseButton btn_type="text" :btn_text="$t('general_declaration')"
-                      @onclick="onClick('previewOriginal')"
-                      :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
+                    <BaseButton btn_type="text" :btn_text="$t('checking_declaration')" @onclick="onClick('previewOriginal')" />
+                    <BaseButton btn_type="text" :btn_text="$t('general_declaration')" @onclick="onClick('generalDeclaration')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
                     <!-- Add -->
                     <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')"
                       @onclick="onClick('newMaster')" />
@@ -294,7 +291,7 @@
                   'SERI',
                   'DNGAY',
                   'TNGAY',
-                  'HTHUC'
+                  'HTHUC',
                 ]" />
             </v-col>
           </v-row>
@@ -507,6 +504,10 @@ export default {
           break;
         case "viewXML":
           break;
+        case "generalDeclaration":
+            this.SignXML();
+          break;
+          
       }
     },
     async dsoMaster(action) {
@@ -626,18 +627,22 @@ export default {
       {
         dataField: "MST",
         caption: this.$t("mst"),
+        width: 150,
       },
       {
         dataField: "SERI",
         caption: this.$t("seti"),
+        width: 300,
       },
       {
         dataField: "TNGAY",
         caption: this.$t("tngay"),
+        width: 200,
       },
       {
         dataField: "DNGAY",
         caption: this.$t("dngay"),
+        width: 200,
       },
       {
         dataField: "HTHUC",
@@ -651,64 +656,41 @@ export default {
       }
       ];
     },
-    onGeneralXML(onGetDetai) {
-      if (this.modelMaster.PK) {
 
+    onGeneralXML() {
+      if (this.modelMaster.PK) {
         const objDataMaster = {
-          declare_name: this.modelMaster.LST_TEN_TO_KHAI,
+          declare_name: this.modelMaster.TEN,
           declare_type: 1,
-          saler_company_name: this.modelMaster.TXT_TEN_NGUOI_NOP_THUE,
-          saler_taxcode: this.modelMaster.TXT_MA_SO_THUE,
-          tax_office_name:
-            this.dataMasterList.taxOfficeList.find(
-              (item) => item.VAL == this.modelMaster.LST_CO_QUAN_THUE_QUAN_LY
-            )?.NAME || "",
-          tax_office_code: this.modelMaster.TXT_CO_QUAN_THUE_QUAN_LY,
-          contact_person: this.modelMaster.TXT_NGUOI_LIEN_HE,
-          contact_address: this.modelMaster.TXT_DIA_DANH,
-          contact_email: this.modelMaster.TXT_EMAIL,
-          contact_phone: this.modelMaster.TXT_DIEN_THOAI_LIEN_HE,
-          location_name: this.modelMaster.TXT_DIA_CHI_LIEN_HE,
-          created_date: this.modelMaster.DT_NGAY_DANG_KY,
-          has_code: this.modelMaster.CK_COMA,
-          no_code: this.modelMaster.CK_KCOMA,
-          taxpayer_from_difficult_location: 0,
-          taxpayer_from_people_committee_suggestions: 0,
-          transfer_data_directly_to_tax_office: 0,
-          cdlqtvan: 0,
-          full_transfer: 1,
-          summary_transfer: 0,
-          vat_invoice: 1,
-          saling_invoice: 0,
-          public_asset_invoice: 0,
-          national_reserve_goods_invoice: 0,
-          other_invoice: 0,
-          voucher: 0,
+          saller_company_name: this.modelMaster.TNNT,
+          seller_taxcode: this.modelMaster.MST,
+          tax_office_name: this.dataMasterList.taxOfficeList.find((item) => item.CODE == this.modelMaster.MCQTQLY)?.NAME || "",
+          tax_office_code: this.modelMaster.MCQTQLY,
+          contact_person: this.modelMaster.NLHE,
+          contact_address: this.modelMaster.DCLHE,
+          contact_email: this.modelMaster.DCTDTU,
+          contact_phone: this.modelMaster.DTLHE,
+          location_name: this.modelMaster.DDANH,
+          created_date: this.modelMaster.NLAP,
+          has_code: this.modelMaster.CMA,
+          no_code: this.modelMaster.KCMA,
+          taxpayer_from_difficult_location: this.modelMaster.NNTDBKKHAN,
+          taxpayer_from_people_committee_suggestions: this.modelMaster.NNTKTDNUBND,
+          transfer_data_directly_to_tax_office: this.modelMaster.CDLTTDCQT,
+          cdlqtvan: this.modelMaster.CDLQTVAN,
+          full_transfer: this.modelMaster.CDDU,
+          summary_transfer: this.modelMaster.CBTHOP,
+          vat_invoice: this.modelMaster.HDGTGT,
+          saling_invoice: this.modelMaster.HDBHANG,
+          public_asset_invoice: this.modelMaster.HDBTSCONG,
+          national_reserve_goods_invoice: this.modelMaster.HDBHDTQGIA,
+          other_invoice: this.modelMaster.HDKHAC,
+          voucher: this.modelMaster.CTU,
           digital_certificates: [
-            // {
-            //   sequence: 1,
-            //   organization_name: "Fpt-CA",
-            //   serial_no: "0123456789",
-            //   from_date: "2020-05-01T00:00:00",
-            //   to_date: "2022-10-01T00:00:00",
-            //   type: 1,
-            // },
-            // {
-            //   sequence: 2,
-            //   organization_name: "VNPT-CA",
-            //   serial_no: "0123456789",
-            //   from_date: "2021-05-01T00:00:00",
-            //   to_date: "2022-10-01T00:00:00",
-            //   type: 1,
-            // },
           ],
         };
-        if (!onGetDetai) {
-          for (
-            let j = 0;
-            j < this.$refs.grdDetail.getDataSource().length;
-            j++
-          ) {
+
+        for (let j = 0; j < this.$refs.grdDetail.getDataSource().length;  j++) {
             if (this.$refs.grdDetail.getDataSource()[j]._rowstatus != "") {
               return;
             }
@@ -721,11 +703,168 @@ export default {
               to_date: this.$refs.grdDetail.getDataSource()[j].DNGAY,
               type: this.$refs.grdDetail.getDataSource()[j].HTHUC,
             });
-          }
         }
 
         return objDataMaster;
       }
+    },
+
+    async SignXML(){
+      let data_xml = this.onGeneralXML();
+
+      console.log("data_xml  +===>", data_xml);
+      let res = await this.$axios.$post("/einvoice/declare2xml", {
+        responseType: "json",
+        declare: data_xml,
+      });
+
+      if (resConvertXML.success) {
+          const objXml = [
+            {
+              master_pk: this.mstData.PK,
+              xml: JSON.stringify(resConvertXML.data)
+                .toString()
+                .replaceAll('"', "")
+                .replaceAll("<DLTKhai>", "<DLTKhai Id='ID1'>"),
+            },
+          ];
+
+          jQuery.support.cors = true;
+          $.ajax({
+            url: "http://localhost:1080/issueXmlList",
+            dataType: "text",
+            method: "POST",
+            data: {
+              crt_by: this.user.USER_ID,
+              xml: JSON.stringify(objXml).toString(),
+            },
+            error: this.onErrorissueXmlList,
+            success: this.onSuccessissueXmlList,
+          });
+        }
+    },
+    async onErrorissueXmlList(json, textStatus, errorThrown) {
+      alert(" Error :" + errorThrown);
+    },
+    async onSuccessissueXmlList(data) {
+      let obj_token = $.parseJSON(data);
+      // console.log("onSuccessissueXmlList e1 " + JSON.stringify(obj_token));
+      // return;
+
+      let resAPI = await this.$axios.$post(
+        "/einvoice/senddeclarationfromclient",
+        {
+          responseType: "json",
+          para: {
+            xml_signed: obj_token.result[0].xml,
+            erp_declaration_m_pk: obj_token.result[0].master_pk,
+          },
+        }
+      );
+      if (resAPI.success) {
+        let resDB = await this.$axios.$post("/dso/apiproclob", {
+          responseType: "json",
+          proc: "EI_UPD_6060160_DECLARATION_M_AR",
+          para: [
+            resAPI.data[0].erp_declaration_m_pk,
+            resAPI.data[0].trade_code,
+            resAPI.data[0].xml_sign,
+          ],
+        });
+        // console.log("onSuccessissueXmlList result " + JSON.stringify(result));
+        if (resDB.success) {
+          this.$refs.grdLeft.loadData();
+          this.showNotification("success", this.$t(resDB.message), "");
+        } else {
+          this.showNotification("danger", this.$t(resDB.message), "");
+        }
+      } else {
+        this.showNotification("danger", this.$t(resAPI.message), "");
+      }
+    },
+
+
+
+
+    onError(){
+       this.showNotification("danger", res.message);
+    },
+
+   async onSuccess(data){
+      console.log("data +++===>", data);
+      // this.jsonSendData = [];
+      // const dataGirdMasterSelected = this.$refs.gridMaster.getSelectedRows();
+
+      // for (let i = 0; i < dataGirdMasterSelected.length; i++) {
+      //   for (let j = 0; j < data.result.length; j++) {
+      //     if (
+      //       dataGirdMasterSelected &&
+      //       dataGirdMasterSelected[i] &&
+      //       dataGirdMasterSelected[i].PK == data.result[j]["master_pk"]
+      //     ) {
+      //       this.objXMLSendAPI = {};
+      //       this.objXMLSendAPI.tac_crca_pk = dataGirdMasterSelected[i].PK;
+      //       this.objXMLSendAPI.tei_company_pk = this.selected_company;
+      //       this.objXMLSendAPI.xml_signed = data.result[j]["xml"];
+      //       this.objXMLSendAPI.form_no = dataGirdMasterSelected[i].KHMSHDON;
+      //       this.objXMLSendAPI.serial_no = dataGirdMasterSelected[i].KHHDON;
+      //       this.objXMLSendAPI.invoice_no = dataGirdMasterSelected[i].SHDON;
+      //       this.objXMLSendAPI.issuer = data.issuer;
+      //       this.objXMLSendAPI.issue_by = data.issue_by;
+      //       this.objXMLSendAPI.issue_to = data.issue_to;
+      //       this.objXMLSendAPI.notbefore = data.not_before;
+      //       this.objXMLSendAPI.notafter = data.not_after;
+      //       this.objXMLSendAPI.dn_name = data.dn_name;
+      //       this.objXMLSendAPI.dn_mst = data.dn_mst;
+      //       this.objXMLSendAPI.mail_to = dataGirdMasterSelected[i].MALL_TO;
+      //       this.objXMLSendAPI.mail_cc = dataGirdMasterSelected[i].MALL_CC;
+      //       this.objXMLSendAPI.tax_serial_number = data.serial_number;
+      //       this.objXMLSendAPI.invoice_type = dataGirdMasterSelected[i].INVOICE_TYPE;
+      //       this.objXMLSendAPI.tr_type = dataGirdMasterSelected[i].TR_TYPE;
+      //       this.objXMLSendAPI.invoice_form_symbol = dataGirdMasterSelected[i].INVOICE_FORM_SYMBOL;
+      //       this.jsonSendData.push(this.objXMLSendAPI);
+
+      //       const response = await this._callProcedure("ac_upd_6060130_invoice_no", [
+      //         data.result[j]["master_pk"],
+      //         data.result[j]["invoice_no"],
+      //       ]);
+
+      //       if (response && response[0].STATUS != "OK") {
+      //         this.showNotification("danger", response.message);
+      //       }
+      //     }
+      //     // }
+      //   }
+      // }
+
+      // //   console.log("jsonSendData ", this.jsonSendData);
+      // let res = await this.$axios.$post("/einvoice/sendinvoicefromclient", {
+      //   responseType: "json",
+      //   para: this.jsonSendData,
+      // });
+
+      // //   console.log("res", res);
+      // if (res.success) {
+      //   // this.showNotification("success", res.message, "");
+      //   for (const item of res.data) {
+      //     if (item.tac_crca_pk && item.tradecode) {
+      //       const response = await this._callProcedure("ac_upd_6060130_tradecode", [item.tac_crca_pk, item.tradecode]);
+      //       if (response[0].STATUS == "OK") {
+      //         this.showNotification("success", res.message, "");
+      //       } else {
+      //         this.showNotification("danger", res.message);
+      //       }
+      //     } else {
+      //       this.showNotification("danger", item.errmsg, "");
+      //     }
+      //   }
+
+      //   this.$nextTick(() => {
+      //     this.$refs.gridMaster.loadData();
+      //   });
+      // } else {
+      //   this.showNotification("danger", res.message, "");
+      // }
     },
 
     async onGetDetailDeclaration() {
@@ -771,8 +910,8 @@ export default {
     async onErrorGetDetailDeclaration() {
       this.showNotification("warning", this.$t("warning"), this.$t("pls_install_application_or_open_application"));
     },
+
     async onSuccessGetDetailDeclaration(data) {
-      console.log("this.modelMaster  +===> ",this.modelMaster);
       let obj_token = $.parseJSON(data);
       this.$refs.grdDetail.addRowStruct({
         _rowstatus: "i",
@@ -784,15 +923,14 @@ export default {
         SERI: obj_token.serial_number,
         DNGAY: obj_token.not_after,
         TNGAY: obj_token.not_before,
-        HTHUC: obj_token.token_type
+        HTHUC: "1"
       });
     },
+
     getPara( paraname,  data)
     {
-      console.log("data ++==>",data);
       let result = "";
       let start = data.indexOf(paraname + "=");
-      console.log("start ++==>",start);
       if (start >= 0 && start + paraname.length < data.length)
       {
           start = start + paraname.length + 1;
@@ -801,7 +939,6 @@ export default {
 
           if (spa >= 0 && data.length > spa && spa - start > 0)
           {
-            console.log("start ++==>  ",start , "spa +++===> ", spa );
               result = data.substring(start, spa);
           }
           else
@@ -811,9 +948,9 @@ export default {
 
           result.replace(paraname + "=", "");
       }
-      console.log("result ++==>",result);
       return result;
     },
+
     async initDataList() {
       const companyInfo = await this._callProcedure("AC_SEL_6095080_CompanyInfo", [this.user.PK]);
       if (companyInfo.length > 0) {
@@ -830,6 +967,7 @@ export default {
 
       this.token_type_list = results[6];
     },
+
     async initModel() {
       this.modelMaster._rowstatus = "i";
       this.modelMaster.PK = null;

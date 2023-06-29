@@ -429,7 +429,7 @@ export default {
           break;
         case "grdSearchClick":
           this.modelMaster.PK = await this.$refs.grdSearch.getSelectedRows()[0].PK;
-          this.dsoMaster("select");
+          await this.dsoMaster("select");
           this.$refs.grdDetail.loadData();
           break;
         case "newMaster":
@@ -660,9 +660,10 @@ export default {
     onGeneralXML() {
       if (this.modelMaster.PK) {
         const objDataMaster = {
+          version :this.modelMaster.PBAN,
           declare_name: this.modelMaster.TEN,
           declare_type: 1,
-          saller_company_name: this.modelMaster.TNNT,
+          seller_company_name: this.modelMaster.TNNT,
           seller_taxcode: this.modelMaster.MST,
           tax_office_name: this.dataMasterList.taxOfficeList.find((item) => item.CODE == this.modelMaster.MCQTQLY)?.NAME || "",
           tax_office_code: this.modelMaster.MCQTQLY,
@@ -674,6 +675,7 @@ export default {
           created_date: this.modelMaster.NLAP,
           has_code: this.modelMaster.CMA,
           no_code: this.modelMaster.KCMA,
+          pos_code: this.modelMaster.CMTMTTIEN,
           taxpayer_from_difficult_location: this.modelMaster.NNTDBKKHAN,
           taxpayer_from_people_committee_suggestions: this.modelMaster.NNTKTDNUBND,
           transfer_data_directly_to_tax_office: this.modelMaster.CDLTTDCQT,
@@ -713,7 +715,7 @@ export default {
       let data_xml = this.onGeneralXML();
 
       console.log("data_xml  +===>", data_xml);
-      let res = await this.$axios.$post("/einvoice/declare2xml", {
+      let resConvertXML = await this.$axios.$post("/einvoice/declare2xml", {
         responseType: "json",
         declare: data_xml,
       });
@@ -721,7 +723,7 @@ export default {
       if (resConvertXML.success) {
           const objXml = [
             {
-              master_pk: this.mstData.PK,
+              master_pk: this.modelMaster.PK,
               xml: JSON.stringify(resConvertXML.data)
                 .toString()
                 .replaceAll('"', "")
@@ -752,7 +754,7 @@ export default {
       // return;
 
       let resAPI = await this.$axios.$post(
-        "/einvoice/senddeclarationfromclient",
+        "/einvoice/senddeclaration",
         {
           responseType: "json",
           para: {
@@ -764,7 +766,7 @@ export default {
       if (resAPI.success) {
         let resDB = await this.$axios.$post("/dso/apiproclob", {
           responseType: "json",
-          proc: "EI_UPD_6060160_DECLARATION_M_AR",
+          proc: "AC_SEL_6095080_u_7",
           para: [
             resAPI.data[0].erp_declaration_m_pk,
             resAPI.data[0].trade_code,
@@ -781,90 +783,6 @@ export default {
       } else {
         this.showNotification("danger", this.$t(resAPI.message), "");
       }
-    },
-
-
-
-
-    onError(){
-       this.showNotification("danger", res.message);
-    },
-
-   async onSuccess(data){
-      console.log("data +++===>", data);
-      // this.jsonSendData = [];
-      // const dataGirdMasterSelected = this.$refs.gridMaster.getSelectedRows();
-
-      // for (let i = 0; i < dataGirdMasterSelected.length; i++) {
-      //   for (let j = 0; j < data.result.length; j++) {
-      //     if (
-      //       dataGirdMasterSelected &&
-      //       dataGirdMasterSelected[i] &&
-      //       dataGirdMasterSelected[i].PK == data.result[j]["master_pk"]
-      //     ) {
-      //       this.objXMLSendAPI = {};
-      //       this.objXMLSendAPI.tac_crca_pk = dataGirdMasterSelected[i].PK;
-      //       this.objXMLSendAPI.tei_company_pk = this.selected_company;
-      //       this.objXMLSendAPI.xml_signed = data.result[j]["xml"];
-      //       this.objXMLSendAPI.form_no = dataGirdMasterSelected[i].KHMSHDON;
-      //       this.objXMLSendAPI.serial_no = dataGirdMasterSelected[i].KHHDON;
-      //       this.objXMLSendAPI.invoice_no = dataGirdMasterSelected[i].SHDON;
-      //       this.objXMLSendAPI.issuer = data.issuer;
-      //       this.objXMLSendAPI.issue_by = data.issue_by;
-      //       this.objXMLSendAPI.issue_to = data.issue_to;
-      //       this.objXMLSendAPI.notbefore = data.not_before;
-      //       this.objXMLSendAPI.notafter = data.not_after;
-      //       this.objXMLSendAPI.dn_name = data.dn_name;
-      //       this.objXMLSendAPI.dn_mst = data.dn_mst;
-      //       this.objXMLSendAPI.mail_to = dataGirdMasterSelected[i].MALL_TO;
-      //       this.objXMLSendAPI.mail_cc = dataGirdMasterSelected[i].MALL_CC;
-      //       this.objXMLSendAPI.tax_serial_number = data.serial_number;
-      //       this.objXMLSendAPI.invoice_type = dataGirdMasterSelected[i].INVOICE_TYPE;
-      //       this.objXMLSendAPI.tr_type = dataGirdMasterSelected[i].TR_TYPE;
-      //       this.objXMLSendAPI.invoice_form_symbol = dataGirdMasterSelected[i].INVOICE_FORM_SYMBOL;
-      //       this.jsonSendData.push(this.objXMLSendAPI);
-
-      //       const response = await this._callProcedure("ac_upd_6060130_invoice_no", [
-      //         data.result[j]["master_pk"],
-      //         data.result[j]["invoice_no"],
-      //       ]);
-
-      //       if (response && response[0].STATUS != "OK") {
-      //         this.showNotification("danger", response.message);
-      //       }
-      //     }
-      //     // }
-      //   }
-      // }
-
-      // //   console.log("jsonSendData ", this.jsonSendData);
-      // let res = await this.$axios.$post("/einvoice/sendinvoicefromclient", {
-      //   responseType: "json",
-      //   para: this.jsonSendData,
-      // });
-
-      // //   console.log("res", res);
-      // if (res.success) {
-      //   // this.showNotification("success", res.message, "");
-      //   for (const item of res.data) {
-      //     if (item.tac_crca_pk && item.tradecode) {
-      //       const response = await this._callProcedure("ac_upd_6060130_tradecode", [item.tac_crca_pk, item.tradecode]);
-      //       if (response[0].STATUS == "OK") {
-      //         this.showNotification("success", res.message, "");
-      //       } else {
-      //         this.showNotification("danger", res.message);
-      //       }
-      //     } else {
-      //       this.showNotification("danger", item.errmsg, "");
-      //     }
-      //   }
-
-      //   this.$nextTick(() => {
-      //     this.$refs.gridMaster.loadData();
-      //   });
-      // } else {
-      //   this.showNotification("danger", res.message, "");
-      // }
     },
 
     async onGetDetailDeclaration() {
@@ -959,6 +877,7 @@ export default {
       }
       const results = await this._getCommonCode2(["ACEI0010", "ACEI0220", "ACEI0120", "ACEI0190", "ACEI0140", "ACEIN010", "ACJS0460"], this.user.TCO_COMPANY_PK)
       this.dataSearchList.statusList = results[0];
+      this.modelSearch.STATUS = "7";
       this.dataMasterList.versionList = results[1];
       this.dataMasterList.taxOfficeList = results[2];
       this.dataMasterList.fromNoList = results[3];

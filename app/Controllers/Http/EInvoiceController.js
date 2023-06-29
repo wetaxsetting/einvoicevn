@@ -267,7 +267,8 @@ class EInvoiceController {
                         NDTKhai: {
                             HTHDon: {
                                 CMa: 1,
-                                KCMa: 0
+                                KCMa: 0,
+                                CMTMTTien: 0
                             },
                             HTGDLHDDT: {
                                 NNTDBKKhan: 0,
@@ -307,6 +308,7 @@ class EInvoiceController {
                     )
                 );
             }
+            jsonDeclare.TKhai.DLTKhai.TTChung.PBan = this.convertHtmlCode(declare.version);
             jsonDeclare.TKhai.DLTKhai.TTChung.Ten = this.convertHtmlCode(declare.declare_name);
             jsonDeclare.TKhai.DLTKhai.TTChung.HThuc = declare.declare_type;
             jsonDeclare.TKhai.DLTKhai.TTChung.TNNT = this.convertHtmlCode(declare.seller_company_name);
@@ -321,6 +323,7 @@ class EInvoiceController {
             jsonDeclare.TKhai.DLTKhai.TTChung.NLap = declare.created_date;
             jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.CMa = declare.has_code;
             jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.KCMa = declare.no_code;
+            jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.CMTMTTien = declare.pos_code;
             jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NNTDBKKhan = declare.taxpayer_from_difficult_location;
             jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NNTKTDNUBND = declare.taxpayer_from_people_committee_suggestions;
             jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLTTDCQT = declare.transfer_data_directly_to_tax_office;
@@ -1803,6 +1806,7 @@ class EInvoiceController {
                 {
                     CMa: "CMa",
                     KCMa: "KCMa",
+                    CMTMTTien: "CMTMTTien",
                 },
             ];
             const jsonNDTKhai = await transform(p_xml_content, templateNDTKhai);

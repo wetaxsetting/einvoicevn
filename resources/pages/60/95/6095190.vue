@@ -5,38 +5,38 @@
         <v-card class="pa-2" :color="$vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-4'">
           <v-row class="py-0">
             <v-col md="2">
-              <BaseSelect :label="$t('company')" :lstData="company_list" v-model="selected_company" item-value="VAL"
+              <BaseSelect outlined :label="$t('company')" :lstData="company_list" v-model="selected_company" item-value="VAL"
                 item-text="NAME" />
             </v-col>
             <v-col md="1">
-              <BaseDatePicker :label="$t('date')" default v-model="formDate" />
+              <BaseDatePicker outlined :label="$t('date')" default v-model="formDate" />
             </v-col>
             <v-col md="1">
-              <BaseDatePicker :label="$t('to')" default v-model="formTo" />
+              <BaseDatePicker outlined :label="$t('to')" default v-model="formTo" />
             </v-col>
             <v-col md="2">
-              <BaseSelect :label="$t('form_no')" item-text="NAME" item-value="VAL" :lstData="from_no_list"
+              <BaseSelect outlined :label="$t('form_no')" item-text="NAME" item-value="VAL" :lstData="from_no_list"
                 v-model="selected_form_no" />
             </v-col>
             <v-col md="1">
-              <BaseSelect :label="$t('serial_no')" item-value="VAL" item-text="NAME" :lstData="serial_no_list"
+              <BaseSelect outlined :label="$t('serial_no')" item-value="VAL" item-text="NAME" :lstData="serial_no_list"
                 v-model="selected_serial_no" />
             </v-col>
             <v-col md="1">
-              <BaseSelect :label="$t('status')" item-value="VAL" item-text="NAME" :lstData="status_list"
+              <BaseSelect outlined :label="$t('status')" item-value="VAL" item-text="NAME" :lstData="status_list"
                 v-model="selected_status" />
             </v-col>
             <v-col md="1">
-              <BaseSelect :label="$t('trading_type')" item-value="VAL" item-text="NAME" :lstData="trading_type_list"
+              <BaseSelect outlined :label="$t('trading_type')" item-value="VAL" item-text="NAME" :lstData="trading_type_list"
                 v-model="selected_trading_type" />
             </v-col>
             <v-col md="3">
               <GwFlexBox class="d-flex justify-end">
                 <BaseButton icon_type="search" btn_type="icon" @onclick="onClickButton()" />
-                <BaseButton :btn_text="$t('preview')" @onclick="onPreview" :disabled="isProcessing" />
-                <BaseButton :btn_text="$t('pdf')" :disabled="isProcessing" @onclick="onDownloadPdf" />
+                <BaseButton icon_type="preview" :btn_text="$t('preview')" @onclick="onPreview" :disabled="isProcessing" />
+                <BaseButton icon_type="pdf" :btn_text="$t('pdf')" :disabled="isProcessing" @onclick="onDownloadPdf" />
 
-                <BaseButton :btn_text="$t('xml')" :disabled="isProcessing" @onclick="onDownloadXml" />
+                <BaseButton icon_type="xml" :btn_text="$t('xml')" :disabled="isProcessing" @onclick="onDownloadXml" />
                 <!-- <BaseButton icon_type="xml" />
               <BaseButton icon_type="pdf" btn_type="icon" /> -->
               </GwFlexBox>
@@ -44,25 +44,25 @@
           </v-row>
           <v-row>
             <v-col md="2">
-              <BaseInput :label="$t('partner')" />
+              <BaseInput outlined :label="$t('partner')" />
             </v-col>
             <v-col md="2">
-              <BaseInput :label="$t('invoice_no')" />
+              <BaseInput outlined :label="$t('invoice_no')" />
             </v-col>
             <v-col md="2">
-              <BaseInput :label="$t('cqt_code')" />
+              <BaseInput outlined :label="$t('cqt_code')" />
             </v-col>
             <v-col md="2">
-              <BaseInput :label="$t('trade_code')" />
+              <BaseInput outlined :label="$t('trade_code')" />
             </v-col>
             <v-col md="1">
-              <BaseInput :label="$t('amount')" readonly v-model="amount" number />
+              <BaseInput outlined :label="$t('amount')" readonly v-model="amount" number />
             </v-col>
             <v-col md="1">
-              <BaseInput :label="$t('vat_amount')" readonly v-model="vatAmount" number />
+              <BaseInput outlined :label="$t('vat_amount')" readonly v-model="vatAmount" number />
             </v-col>
             <v-col md="1">
-              <BaseInput :label="$t('total')" readonly v-model="total" number />
+              <BaseInput outlined :label="$t('total')" readonly v-model="total" number />
             </v-col>
           </v-row>
         </v-card>

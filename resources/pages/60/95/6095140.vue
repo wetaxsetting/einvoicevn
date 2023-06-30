@@ -2,101 +2,72 @@
   <v-container fluid v-resize="onResize">
     <v-row>
       <v-col md="3">
-        <BaseSelect
-          :label="$t('company')"
-          :lstData="company_list"
-          v-model="selected_company"
-          item-value="VAL"
-          item-text="NAME"
-        />
+        <BaseSelect outlined :label="$t('company')" :lstData="company_list" v-model="selected_company" item-value="VAL"
+          item-text="NAME" />
       </v-col>
       <v-col md="2">
-        <BaseSelect
-          :label="$t('date')"
-          :lstData="type_date_list"
-          v-model="selected_type_date"
-          item-value="VAL"
-          item-text="NAME"
-          filter_off
-        />
+        <BaseSelect outlined :label="$t('date')" :lstData="type_date_list" v-model="selected_type_date" item-value="VAL"
+          item-text="NAME" filter_off />
       </v-col>
 
       <!-- month -->
       <v-col md="2" v-show="selected_type_date == '0'">
-        <BaseDatePicker :label="$t('month')" v-model="month" month />
+        <BaseDatePicker outlined :label="$t('month')" v-model="month" month />
       </v-col>
       <v-col md="2" v-show="selected_type_date == '0'">
-        <BaseDatePicker :label="$t('from_date')" v-model="from_date" />
+        <BaseDatePicker outlined :label="$t('from_date')" v-model="from_date" />
       </v-col>
       <v-col md="2" v-show="selected_type_date == '0'">
-        <BaseDatePicker :label="$t('from_to')" v-model="to_date" />
+        <BaseDatePicker outlined :label="$t('from_to')" v-model="to_date" />
       </v-col>
       <!-- ascurrent -->
       <v-col md="2" v-show="selected_type_date == '1'"> </v-col>
       <v-col md="2" v-show="selected_type_date == '1'">
-        <BaseDatePicker :label="$t('from_date')" v-model="from_date" />
+        <BaseDatePicker outlined :label="$t('from_date')" v-model="from_date" />
       </v-col>
       <v-col md="2" v-show="selected_type_date == '1'">
-        <BaseDatePicker :label="$t('to_date')" v-model="to_date" />
+        <BaseDatePicker outlined :label="$t('to_date')" v-model="to_date" />
       </v-col>
       <!-- year -->
       <v-col md="2" v-show="selected_type_date == '2'">
-        <BaseDatePicker :label="$t('year')" v-model="year" year />
+        <BaseDatePicker outlined :label="$t('year')" v-model="year" year />
       </v-col>
       <v-col md="2" v-show="selected_type_date == '2'">
-        <BaseDatePicker :label="$t('from_date')" v-model="from_date" />
+        <BaseDatePicker outlined :label="$t('from_date')" v-model="from_date" />
       </v-col>
       <v-col md="2" v-show="selected_type_date == '2'">
-        <BaseDatePicker :label="$t('to_date')" v-model="to_date" />
+        <BaseDatePicker outlined :label="$t('to_date')" v-model="to_date" />
       </v-col>
 
       <!-- Quarter -->
       <v-col md="1" v-show="selected_type_date == '3'">
-        <BaseDatePicker :label="$t('year')" v-model="year" year />
+        <BaseDatePicker outlined :label="$t('year')" v-model="year" year />
       </v-col>
       <v-col md="1" v-show="selected_type_date == '3'">
-        <BaseSelect
-          :label="$t('type_quarter')"
-          v-model="selected_type_quarter"
-          :lstData="type_quarter_list"
-          item-text="NAME"
-          item-value="VAL"
-          filter_off
-        />
+        <BaseSelect outlined :label="$t('type_quarter')" v-model="selected_type_quarter" :lstData="type_quarter_list"
+          item-text="NAME" item-value="VAL" filter_off />
       </v-col>
       <v-col md="2" v-show="selected_type_date == '3'">
-        <BaseDatePicker :label="$t('from_date')" v-model="from_date" />
+        <BaseDatePicker outlined :label="$t('from_date')" v-model="from_date" />
       </v-col>
       <v-col md="2" v-show="selected_type_date == '3'">
-        <BaseDatePicker :label="$t('to_date')" v-model="to_date" />
+        <BaseDatePicker outlined :label="$t('to_date')" v-model="to_date" />
       </v-col>
 
       <v-col md="1" class="d-flex justify-end">
-        <BaseButton
-          btn_type="icon"
-          icon_type="search"
-          @onclick="onClickButton()"
-        />
-        <BaseButton btn_type="icon" icon_type="print"   @onclick="onReport"/>
+        <BaseButton btn_type="icon" icon_type="search" @onclick="onClickButton()" />
+        <BaseButton btn_type="icon" icon_type="excel" @onclick="onReport" />
       </v-col>
     </v-row>
     <v-row>
       <v-col>
-        <BaseGridView
-          ref="gridview"
-          :header="this.headerGrid"
-          :autoresize="false"
-          :height="limitHeight"
-          :setting="true"
-          :headertype="1"
-          sel_procedure="AC_SEL_6095140_DATA"
-          :filter_paras="[
+        <BaseGridView ref="gridview" :header="this.headerGrid" :autoresize="false" :height="limitHeight" :setting="true"
+          :headertype="1" sel_procedure="AC_SEL_6095140_DATA" :filter_paras="[
             this.from_date,
             this.to_date,
             this.selected_company,
             this.selected_fiscal,
-          ]"
-        />
+          ]" />
       </v-col>
     </v-row>
   </v-container>
@@ -494,7 +465,7 @@ export default {
           insertRows: [
             {
               sequence: "break",
-              startRow: 25,
+              startRow: 24,
               proc: "AC_RPT_6095140",
               params: [
                 this.from_date,

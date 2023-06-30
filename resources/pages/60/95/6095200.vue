@@ -2,96 +2,68 @@
   <v-container fluid v-resize="onResize">
     <v-row>
       <v-col md="3">
-        <BaseSelect
-          :label="$t('company')"
-          :lstData="conpany_list"
-          v-model="selected_company"
-          item-value="VAL"
-          item-text="NAME"
-        />
+        <BaseSelect outlined :label="$t('company')" :lstData="conpany_list" v-model="selected_company" item-value="VAL"
+          item-text="NAME" />
       </v-col>
       <v-col md="2">
-        <BaseSelect
-          :label="$t('date')"
-          :lstData="date_type_list"
-          v-model="selected_date_type"
-          item-value="VAL"
-          item-text="NAME"
-          filter_off
-        />
+        <BaseSelect outlined :label="$t('date')" :lstData="date_type_list" v-model="selected_date_type" item-value="VAL"
+          item-text="NAME" filter_off />
       </v-col>
 
       <!-- month -->
       <v-col md="2" v-show="selected_date_type == '0'">
-        <BaseDatePicker :label="$t('month')" v-model="month" month />
+        <BaseDatePicker outlined :label="$t('month')" v-model="month" month />
       </v-col>
       <v-col md="2" v-show="selected_date_type == '0'">
-        <BaseDatePicker :label="$t('from_date')" v-model="from_date" />
+        <BaseDatePicker outlined :label="$t('from_date')" v-model="from_date" />
       </v-col>
       <v-col md="2" v-show="selected_date_type == '0'">
-        <BaseDatePicker :label="$t('to_date')" v-model="to_date" />
+        <BaseDatePicker outlined :label="$t('to_date')" v-model="to_date" />
       </v-col>
       <!-- ascurrent -->
       <v-col md="2" v-show="selected_date_type == '1'"> </v-col>
       <v-col md="2" v-show="selected_date_type == '1'">
-        <BaseDatePicker :label="$t('from_date')" v-model="from_date" />
+        <BaseDatePicker outlined :label="$t('from_date')" v-model="from_date" />
       </v-col>
       <v-col md="2" v-show="selected_date_type == '1'">
-        <BaseDatePicker :label="$t('to_date')" v-model="to_date" />
+        <BaseDatePicker outlined :label="$t('to_date')" v-model="to_date" />
       </v-col>
       <!-- year -->
       <v-col md="2" v-show="selected_date_type == '2'">
-        <BaseDatePicker :label="$t('year')" v-model="year" year />
+        <BaseDatePicker outlined :label="$t('year')" v-model="year" year />
       </v-col>
       <v-col md="2" v-show="selected_date_type == '2'">
-        <BaseDatePicker :label="$t('from_date')" v-model="from_date" />
+        <BaseDatePicker outlined :label="$t('from_date')" v-model="from_date" />
       </v-col>
       <v-col md="2" v-show="selected_date_type == '2'">
-        <BaseDatePicker :label="$t('to_date')" v-model="to_date" />
+        <BaseDatePicker outlined :label="$t('to_date')" v-model="to_date" />
       </v-col>
       <!-- Quarter -->
 
       <v-col md="1" v-show="selected_date_type == '3'">
-        <BaseDatePicker :label="$t('year')" v-model="year" year />
+        <BaseDatePicker outlined :label="$t('year')" v-model="year" year />
       </v-col>
       <v-col md="1" v-show="selected_date_type == '3'">
-        <BaseSelect
-          :label="$t('type_quarter')"
-          v-model="selectTypeQuarter"
-          :lstData="lstTypeQuarter"
-          item-text="NAME"
-          item-value="VAL"
-          filter_off
-        />
+        <BaseSelect outlined :label="$t('type_quarter')" v-model="selectTypeQuarter" :lstData="lstTypeQuarter" item-text="NAME"
+          item-value="VAL" filter_off />
       </v-col>
       <v-col md="2" v-show="selected_date_type == '3'">
-        <BaseDatePicker :label="$t('from_date')" v-model="from_date" />
+        <BaseDatePicker outlined :label="$t('from_date')" v-model="from_date" />
       </v-col>
       <v-col md="2" v-show="selected_date_type == '3'">
-        <BaseDatePicker :label="$t('to_date')" v-model="to_date" />
+        <BaseDatePicker outlined :label="$t('to_date')" v-model="to_date" />
       </v-col>
 
       <v-col md="1" class="d-flex justify-end">
-        <BaseButton
-          btn_type="icon"
-          icon_type="search"
-          @onclick="onClickButton()"
-        />
-        <BaseButton btn_type="icon" icon_type="print" @onclick="onReport"/>
+        <BaseButton btn_type="icon" icon_type="search" @onclick="onClickButton()" />
+        <BaseButton btn_type="icon" icon_type="print" @onclick="onReport" />
       </v-col>
     </v-row>
     <v-row>
       <v-col>
-        <BaseGridView
-          ref="gridview"
-          :header="this.headerGrid"
-          :autoresize="false"
-          :setting="true"
-          :headertype="1"
-          :height="limitHeight"
-          sel_procedure="EI_SEL_6095200_DATA"
-          :filter_paras="[this.selected_company, this.from_date, this.to_date]"
-        />
+        <BaseGridView ref="gridview" :header="this.headerGrid" :autoresize="false" :setting="true" :headertype="1"
+          :height="limitHeight" sel_procedure="EI_SEL_6095200_DATA"
+          :filter_paras="[this.selected_company, this.from_date, this.to_date]" />
       </v-col>
     </v-row>
   </v-container>
@@ -277,15 +249,15 @@ export default {
   computed: {
     user() {
       return this.$store.getters["auth/user"];
-      
+
     },
     limitHeight() {
-            if (this.windowHeight <= 768) {
-                return this.windowHeight * 0.69;//1366x768
-            } else {
-                return this.windowHeight * 0.82;//1920x18/080
-            }
-        },
+      if (this.windowHeight <= 768) {
+        return this.windowHeight * 0.69;//1366x768
+      } else {
+        return this.windowHeight * 0.82;//1920x18/080
+      }
+    },
   },
   methods: {
     async onReport() {
@@ -299,7 +271,7 @@ export default {
             {
               range: "A1:J11",
               proc: "AC_RPT_6095200_M",
-              params: [ 
+              params: [
                 this.selected_company,
                 this.from_date,
                 this.to_date,
@@ -367,79 +339,79 @@ export default {
           field: "SEQ",
           title: this.$t("no"),
           alignment: "right",
-          type:"text",
-          width:80,
+          type: "text",
+          width: 80,
         },
         {
           field: "TAX_CODE",
           title: this.$t("tax_code"),
           alignment: "left",
-          type:"text",
-          width:120,
+          type: "text",
+          width: 120,
         },
         {
           field: "COMPANY_NM",
           title: this.$t("company_name"),
           alignment: "left",
-          type:"text",
-          width:300,
+          type: "text",
+          width: 300,
         },
         {
           field: "ADDR",
           title: this.$t("address"),
           width: 350,
           alignment: "left",
-          type:"text",
+          type: "text",
         },
         {
           field: "INV_CONTENT",
           title: this.$t("invoice_type"),
           alignment: "left",
-          type:"text",
-          width:200,
+          type: "text",
+          width: 200,
         },
         {
           field: "FORM_NO",
           title: this.$t("form_no"),
           width: 100,
           alignment: "left",
-          type:"text",
+          type: "text",
         },
         {
           field: "SERIAL_NO",
           title: this.$t("serial_no"),
           alignment: "center",
-          type:"text",
-          width:100,
+          type: "text",
+          width: 100,
         },
         {
           field: "INVOICE_MIN",
           title: this.$t("form"),
           width: 100,
           alignment: "center",
-          type:"munber",
+          type: "munber",
         },
         {
           field: "INVOICE_MAX",
           title: this.$t("to"),
           width: 100,
           alignment: "center",
-          type:"munber",
+          type: "munber",
         },
         {
           field: "REMAIN_QTY",
           title: this.$t("quantity"),
           alignment: "left",
-          type:"text",
-          width:100,
+          type: "text",
+          width: 100,
           formatFloat: 0,
         },
         {
           field: "REMARK",
           title: this.$t("remark"),
           alignment: "right",
-          type:"text",
-          width:100,
+          type: "text",
+          width: 100,
         },
       ];
     },

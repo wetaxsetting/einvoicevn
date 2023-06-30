@@ -14,32 +14,32 @@
     <v-col md="12">
       <v-row dense>
         <v-col md="2">
-          <BaseSelect :label="$t('company')" v-model="selected_company" :lstData="company_list" item-text="NAME"
+          <BaseSelect outlined :label="$t('company')" v-model="selected_company" :lstData="company_list" item-text="NAME"
             item-value="VAL" />
         </v-col>
         <v-col md="1">
-          <BaseDatePicker :pretoday="7" :label="$t('date_from')" v-model="dt_from" />
+          <BaseDatePicker outlined :pretoday="7" :label="$t('date_from')" v-model="dt_from" />
         </v-col>
         <v-col md="1">
-          <BaseDatePicker today :label="$t('date_to')" v-model="dt_to" />
+          <BaseDatePicker outlined today :label="$t('date_to')" v-model="dt_to" />
         </v-col>
         <v-col md="2">
-          <BaseSelect :label="$t('send_status')" v-model="selected_status" :lstData="status_list" item-text="NAME"
+          <BaseSelect outlined :label="$t('send_status')" v-model="selected_status" :lstData="status_list" item-text="NAME"
             item-value="VAL" />
         </v-col>
         <v-col md="2">
-          <BaseSelect :label="$t('trading_type')" v-model="selected_trading_type" :lstData="trading_type_list"
+          <BaseSelect outlined :label="$t('trading_type')" v-model="selected_trading_type" :lstData="trading_type_list"
             item-text="NAME" item-value="VAL" />
         </v-col>
         <v-col md="2">
-          <BaseSelect :label="$t('send_limit')" v-model="selected_send_limit" :lstData="send_limit_list" item-text="NAME"
+          <BaseSelect outlined :label="$t('send_limit')" v-model="selected_send_limit" :lstData="send_limit_list" item-text="NAME"
             item-value="VAL" />
         </v-col>
         <v-col md="1">
-          <BaseInput :label="$t('invoice_no')" v-model="invoice_no" />
+          <BaseInput outlined :label="$t('invoice_no')" v-model="invoice_no" />
         </v-col>
         <v-col md="1" class="pr-2">
-          <BaseInput :label="$t('partner')" v-model="partner" />
+          <BaseInput outlined :label="$t('partner')" v-model="partner" />
         </v-col>
       </v-row>
     </v-col>

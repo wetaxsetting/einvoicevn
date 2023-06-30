@@ -2,59 +2,54 @@
 <template>
   <v-container fluid class="py-0 px-1" v-resize="onResize">
     <v-row dense>
-      <v-col md="12" class="pt-2 pr-3" >
-        <GwFlexBox class="d-flex justify-end">
+      <v-col md="12" class="pt-2 pr-4 d-flex justify-end" >
           <BaseButton icon_type="search" :btn_text="$t('search')" :disabled="isProcessing" @onclick="onSearch" />
           <BaseButton icon_type="preview" :btn_text="$t('preview')" @onclick="onPreview" :disabled="isProcessing" />
           <BaseButton icon_type="convert" :btn_text="$t('convert')" @onclick="onConvert" :disabled="isProcessing" />
           <BaseButton icon_type="pdf" :btn_text="$t('pdf')" :disabled="isProcessing" @onclick="onDownloadPdf" />
           <BaseButton icon_type="debit_note" :btn_text="$t('debit_note')" @onclick="debitNote" :disabled="isSending" />
           <BaseButton icon_type="credit_note" :btn_text="$t('credit_note')" @onclick="creditNote" :disabled="isSending" />
-        
-        </GwFlexBox>
       </v-col>
     </v-row>
 
-    <v-row dense class="pt-1">
+    <v-row dense>
       <v-col md="12">
-        <v-card>
           <v-row dense class="pa-3">
             <v-col md="3" class="pl-2 pr-2">
-              <BaseSelect :label="$t('company')" v-model="selected_company" :lstData="company_list" item-text="NAME"
+              <BaseSelect outlined :label="$t('company')" v-model="selected_company" :lstData="company_list" item-text="NAME"
                 item-value="VAL" />
             </v-col>
             <v-col md="1" class="pl-2 pr-2">
-              <BaseDatePicker :pretoday="7" :label="$t('date_from')" v-model="dt_from" />
+              <BaseDatePicker outlined :pretoday="7" :label="$t('date_from')" v-model="dt_from" />
             </v-col>
             <v-col md="1" class="pl-2 pr-2">
-              <BaseDatePicker default :label="$t('date_to')" v-model="dt_to" />
+              <BaseDatePicker outlined default :label="$t('date_to')" v-model="dt_to" />
             </v-col>
-            <v-col md="1" class="pl-2 pr-2"></v-col>
+            <!-- <v-col md="1" class="pl-2 pr-2"></v-col> -->
             <v-col md="1" class="pl-2 pr-2">
-              <BaseSelect :label="$t('trading_type')" v-model="selected_trading_type" :lstData="trading_type_list"
+              <BaseSelect outlined :label="$t('trading_type')" v-model="selected_trading_type" :lstData="trading_type_list"
                 item-text="NAME" item-value="VAL" filter_off />
             </v-col>
-            <v-col md="1" class="pl-2 pr-2">
-              <BaseSelect :label="$t('converted_yn')" :lstData="yn_list" v-model="selected_yn" item-text="NAME"
+            <v-col md="2" class="pl-2 pr-2">
+              <BaseSelect outlined :label="$t('converted_yn')" :lstData="yn_list" v-model="selected_yn" item-text="NAME"
                 item-value="VAL" filter_off />
             </v-col>
             <v-col md="1" class="pl-2 pr-2">
-              <BaseInput :label="$t('invoice_no')" v-model="invoice_no" />
+              <BaseInput outlined :label="$t('invoice_no')" v-model="invoice_no" />
             </v-col>
             <v-col md="1" class="pl-2 pr-2">
-              <BaseInput :label="$t('partner')" v-model="partner" />
+              <BaseInput outlined :label="$t('partner')" v-model="partner" />
             </v-col>
             <v-col md="1" class="pl-2 pr-2">
-              <BaseInput :label="$t('trade_cqt')" v-model="trade_cqt" />
+              <BaseInput outlined :label="$t('trade_cqt')" v-model="trade_cqt" />
             </v-col>
             <v-col md="1" class="pl-2 pr-2">
-              <BaseInput :label="$t('cqt_code')" v-model="cqt_code" />
+              <BaseInput outlined :label="$t('cqt_code')" v-model="cqt_code" />
             </v-col>
           </v-row>
-        </v-card>
       </v-col>
     </v-row>
-    <v-row dense class="pt-3">
+    <v-row dense >
       <v-col md="12">
         <!-- :selectionmode="'checkbox'" -->
         <BaseGridView ref="grdConvert" :header="grdHeader" sel_procedure="AC_SEL_6095120_SEL_DATA" :multiselect="true"

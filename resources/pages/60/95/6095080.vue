@@ -101,7 +101,7 @@
                   <BaseInput outlined :label="$t('contact_person')" v-model="modelMaster.NLHE" />
                 </v-col>
                 <v-col md="4" class="pl-5 pt-1">
-                  <BaseInput outlined :label="$t('tax_address')" v-model="modelMaster.DCLHE" />
+                  <BaseInput outlined :label="$t('contract_address')" v-model="modelMaster.DCLHE" />
                 </v-col>
                 <v-col md="4" class="pl-5 pt-1 pr-5">
                   <BaseSelect outlined :label="$t('registration_form')" v-model="modelMaster.HTHUC"
@@ -429,6 +429,7 @@ export default {
           break;
         case "grdSearchClick":
           this.modelMaster.PK = await this.$refs.grdSearch.getSelectedRows()[0].PK;
+          this.modelMaster.CQT_MAGD = await this.$refs.grdSearch.getSelectedRows()[0].TRADE_CODE;
           await this.dsoMaster("select");
           this.$refs.grdDetail.loadData();
           break;
@@ -503,6 +504,7 @@ export default {
           this.$refs.grdDetail.deleteRows();
           break;
         case "viewXML":
+          this.onPreviewXML();
           break;
         case "generalDeclaration":
             this.SignXML();
@@ -510,6 +512,57 @@ export default {
           
       }
     },
+
+    async onPreviewXML() {
+      if (!this.modelMaster.CQT_MAGD.length) {
+        return this.showNotification("warning", this.$t("error_occurs"), "pls_select_einvoice");
+      }
+  
+      this.isProcessing = true;
+      if (!this.modelMaster.CQT_MAGD) {
+        const checkDate = this.OnGeneralXml();
+        if (!checkDate.status) {
+          return this.showNotification("danger", checkDate.message);
+        }
+        let res = await this.$axios.$post("/einvoice/invoice2xmlfromclient", {
+          responseType: "json",
+          invoices: this.objInvoiceM.invoices,
+        });
+
+        if (res.success && res.data.length) {
+          console.log("response", res.data);
+          this.xmlUrl = res.data[0].xml; //new Blob([byteArray], { type: _typeFile });;
+          await this.$nextTick();
+          this.isProcessing = false;
+          this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
+        } else {
+          this.showNotification("danger", res.message);
+        }
+      }
+      else {
+        try {
+          let res = await this.$axios.$post("/einvoice/viewpdf", {
+            responseType: "json",
+            para: {
+              tei_einvoice_m_pk: _Pk,
+              trade_code: _maGD,
+            },
+          });
+          if (res.success) {
+            this.xmlUrl = res.data[0].SIGN_XML; //new Blob([byteArray], { type: _typeFile });;
+            this.$nextTick(() => {
+              this.isProcessing = false;
+              this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
+            });
+          }
+          this.isProcessing = false;
+        } catch (e) {
+          this.isProcessing = false;
+          return this.showNotification("danger", e.message);
+        }
+      }
+    },
+
     async dsoMaster(action) {
       await this._dsoCall({
         type: "control",
@@ -579,6 +632,7 @@ export default {
         }
       });
     },
+
     async initHeaderList() {
       this.headerList.grdSearch = [{
         dataField: "NO",
@@ -745,9 +799,11 @@ export default {
           });
         }
     },
+
     async onErrorissueXmlList(json, textStatus, errorThrown) {
       alert(" Error :" + errorThrown);
     },
+
     async onSuccessissueXmlList(data) {
       let obj_token = $.parseJSON(data);
       // console.log("onSuccessissueXmlList e1 " + JSON.stringify(obj_token));

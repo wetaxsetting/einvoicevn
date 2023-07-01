@@ -10,7 +10,7 @@ const md5 = require("crypto-js/md5");
 const pdf = require('html-pdf')
 const getMAC = require('getmac').default
 const nodemailer = require('nodemailer')
-    //const qpdf = require("node-qpdf");
+//const qpdf = require("node-qpdf");
 class Utils {
     constructor() {
         this.Env = use('Env')
@@ -26,7 +26,7 @@ class Utils {
         //console.log(args)
         let pros = new Promise((resolve, reject) => {
             if (isWin) {
-                exec('c:\\qpdf\\bin\\qpdf.exe ' + args.join(' '), function(error, stdout, stderr) {
+                exec('c:\\qpdf\\bin\\qpdf.exe ' + args.join(' '), function (error, stdout, stderr) {
                     if (error) {
                         console.error(error);
                         resolve(stderr);
@@ -35,7 +35,7 @@ class Utils {
                     resolve(stdout);
                 });
             } else {
-                exec('qpdf ' + args.join(' '), function(error, stdout, stderr) {
+                exec('qpdf ' + args.join(' '), function (error, stdout, stderr) {
                     if (error) {
                         console.error(error);
                         return;
@@ -50,7 +50,7 @@ class Utils {
     async smtpSendMail(mailOptions, p_smtp_info) {
         return new Promise((resolve, reject) => {
             let transporter = nodemailer.createTransport(p_smtp_info)
-            transporter.sendMail(mailOptions, async function(error, info) {
+            transporter.sendMail(mailOptions, async function (error, info) {
                 if (error) {
                     console.error(`error send mail to ${mailOptions.to} :` + JSON.stringify(error))
                     resolve(false)
@@ -65,7 +65,7 @@ class Utils {
         var rd = fs.createReadStream(source);
         var wr = fs.createWriteStream(target);
         try {
-            return await new Promise(function(resolve, reject) {
+            return await new Promise(function (resolve, reject) {
                 rd.on('error', reject);
                 wr.on('error', reject);
                 wr.on('finish', resolve);
@@ -84,7 +84,7 @@ class Utils {
         let pros = new Promise((resolve, reject) => {
 
             if (isWin) {
-                exec('C:\\unoconv\\unoconv -f pdf "' + fileName + '"', function(error, stdout, stderr) {
+                exec('C:\\unoconv\\unoconv -f pdf "' + fileName + '"', function (error, stdout, stderr) {
                     if (error) {
                         console.error(error);
                         return;
@@ -92,7 +92,7 @@ class Utils {
                     resolve(stdout);
                 });
             } else {
-                exec('unoconv -f pdf "' + fileName + '"', function(error, stdout, stderr) {
+                exec('unoconv -f pdf "' + fileName + '"', function (error, stdout, stderr) {
                     if (error) {
                         console.error(error);
                         return;
@@ -218,18 +218,18 @@ class Utils {
         try {
             const rand = () =>
                 Math.random(0)
-                .toString(36)
-                .substr(2);
+                    .toString(36)
+                    .substr(2);
             const token = length => (rand() + rand() + rand()).substr(0, length);
             if (filePath) {
                 const d = new Date();
                 const path =
                     d.getMonth() + 1 < 10 ?
-                    d.getFullYear() + "/0" + (d.getMonth() + 1) :
-                    d.getFullYear() + "/" + (d.getMonth() + 1);
+                        d.getFullYear() + "/0" + (d.getMonth() + 1) :
+                        d.getFullYear() + "/" + (d.getMonth() + 1);
                 const filename = `${foldername}/${path}/${d.getTime()}-${token(
-          40
-        )}.${extname}`;
+                    40
+                )}.${extname}`;
                 const url = await this.Drive.disk("gcs").put(`${filename}`, filePath, {
                     public: true
                 });
@@ -273,8 +273,8 @@ class Utils {
                     const height = h - Math.ceil(h * (1 - max_size / w));
                     const rand = () =>
                         Math.random(0)
-                        .toString(36)
-                        .substr(2);
+                            .toString(36)
+                            .substr(2);
                     const token = length => (rand() + rand() + rand()).substr(0, length);
                     const image_name = `${d.getTime()}-${token(40)}.${extname}`;
                     if (h > w) {
@@ -309,7 +309,7 @@ class Utils {
     async deleteFileGCS(filename) {
         const isDeleted = await this.Drive.disk("gcs").delete(filename);
         return isDeleted;
-    }   
+    }
     async putFileRootPath(file, folder) {
         const type = typeof file;
         const imageExt =
@@ -327,14 +327,15 @@ class Utils {
         }
         let savePath = `${this.ROOT_DIR_FILES}/${folder}/${year}/${month}`;
         let fileName = `${current.getTime()}.${imageExt.toLowerCase()}`;
-
-        if (type !== "string") {
+        try {
             await file.move(savePath, {
                 name: fileName
             });
+        } catch (ex) {
+            console.error(ex)
+            return ex.message
         }
-
-        return `${folder}/${year}/${month}/${fileName}`;
+        return `/${folder}/${year}/${month}/${fileName}`;
     }
     async putManualFile(file, folder, filename) {
         try {
@@ -854,9 +855,9 @@ class Utils {
         worksheet.spliceRows(pos + 1, 0, []);
         let rSrc = worksheet.getRow(pos);
         let rDst = worksheet.getRow(pos + 1);
-        rDst.style = {...rSrc.style };
+        rDst.style = { ...rSrc.style };
         rSrc.eachCell({ includeEmpty: true }, (cell, colNumber) => {
-            rDst.getCell(colNumber).style = {...cell.style };
+            rDst.getCell(colNumber).style = { ...cell.style };
         });
         rDst.height = rSrc.height;
     }
@@ -881,7 +882,7 @@ class Utils {
                     //	col = (q.match(regexColumnName))[1].toUpperCase().replace("{","").replace("}","") ;
                     try {
                         _str = _str.replace(q, _obj[col]);
-                    } catch (e) {}
+                    } catch (e) { }
                 }
 
             });

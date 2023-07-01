@@ -91,7 +91,7 @@ class ImportController {
       const file_name = file.clientName;
       const file_ext = file.extname;
       const file_type = file.type;
-
+      console.log("file_size", file_size)
       let { tei_company_pk, tei_einvoice_cloud_pk } = request.all();
       if (!tei_company_pk) {
         return response.send(Utils.response(false, "missing_[tei_company_pk]_parameter", null));
@@ -104,7 +104,7 @@ class ImportController {
         if (!isNaN(tei_einvoice_cloud_pk)) {
           return response.send(Utils.response(true, "upload_xml_file_sucessfull", { tei_einvoice_cloud_pk: tei_einvoice_cloud_pk }));
         } else {
-          fs.unlinkSync(file_path);
+          fs.unlinkSync(ROOT_DIR_FILES + "/" + file_path);
           Utils.Logger({
             LVL: "error",
             MODULE: "ImportController",

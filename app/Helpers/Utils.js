@@ -335,7 +335,7 @@ class Utils {
             console.error(ex)
             return ex.message
         }
-        return `${folder}/${year}/${month}/${fileName}`;
+        return `/${folder}/${year}/${month}/${fileName}`;
     }
     async putManualFile(file, folder, filename) {
         try {

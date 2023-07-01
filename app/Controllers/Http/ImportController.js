@@ -91,20 +91,20 @@ class ImportController {
       const file_name = file.clientName;
       const file_ext = file.extname;
       const file_type = file.type;
-      console.log("file_size", file_size)
+      //console.log("file_size", file_size)
       let { tei_company_pk, tei_einvoice_cloud_pk } = request.all();
       if (!tei_company_pk) {
         return response.send(Utils.response(false, "missing_[tei_company_pk]_parameter", null));
       }
-      const root_directory = `${ROOT_DIR_FILES}/eiv-ap/${tei_company_pk}`;
-      const file_path = await Utils.putFileRootPath(file, root_directory);
+      const folder = `eiv-ap/${tei_company_pk}`;
+      const file_path = await Utils.putFileRootPath(file, folder);
       //console.log("file_path", file_path);
       if (file_path && file_path.indexOf(".xml") > 0) {
-        tei_einvoice_cloud_pk = await this.extractXMLContent(file_path, p_language, p_crt_by, file_name);
+        tei_einvoice_cloud_pk = await this.extractXMLContent(`${ROOT_DIR_FILES}${file_path}`, p_language, p_crt_by, file_name);
         if (!isNaN(tei_einvoice_cloud_pk)) {
           return response.send(Utils.response(true, "upload_xml_file_sucessfull", { tei_einvoice_cloud_pk: tei_einvoice_cloud_pk }));
         } else {
-          fs.unlinkSync(ROOT_DIR_FILES + "/" + file_path);
+          fs.unlinkSync(`${ROOT_DIR_FILES}${file_path}`);
           Utils.Logger({
             LVL: "error",
             MODULE: "ImportController",
@@ -115,8 +115,7 @@ class ImportController {
           return response.send(Utils.response(false, "upload_xml_file_failed", { file_name: file_name, ermsg: tei_einvoice_cloud_pk }));
         }
       } else if (file_path && file_path.indexOf(".pdf") > 0) {
-        const pdfRelativePath = file_path.replace(ROOT_DIR_FILES, "");
-        const result = await DBService.callProcCursor("ei_upd_tei_einvoice_cloud_pdf_file", [tei_einvoice_cloud_pk, pdfRelativePath], p_language, p_crt_by);
+        const result = await DBService.callProcCursor("ei_upd_tei_einvoice_cloud_pdf_file", [tei_einvoice_cloud_pk, file_path], p_language, p_crt_by);
         return response.send(Utils.response(true, "upload_pdf_file_sucessfull", result));
       }
       return response.send(Utils.response(false, "failed_upload_file", file_path));
@@ -755,18 +754,17 @@ class ImportController {
       if (!user_pk) {
         return response.send(Utils.response(false, "missing_[user_pk]_parameter", null));
       }
-      const root_directory = `${ROOT_DIR_FILES}/tkhq/${user_pk}`;
-      const file_path = await Utils.putFileRootPath(file, root_directory);
+      const folder = `tkhq/${user_pk}`;
+      const file_path = await Utils.putFileRootPath(file, folder);
       // console.log("root_directory", root_directory)
       //  console.log("file_path", file_path)
       if (file_path && file_path.indexOf(".xml") > 0) {
-        let tei_ecus_declare_pk = await this.extractXMLTKHQContent(file_path, tei_company_pk, p_language, p_crt_by);
+        let tei_ecus_declare_pk = await this.extractXMLTKHQContent(`${ROOT_DIR_FILES}${file_path}`, tei_company_pk, p_language, p_crt_by);
         if (tei_ecus_declare_pk > 0) {
           return response.send(Utils.response(true, "upload_xml_file_sucessfull", { tei_ecus_declare_pk: tei_ecus_declare_pk }));
         }
       } else if (file_path && file_path.indexOf(".pdf") > 0) {
-        const pdfRelativePath = file_path.replace(ROOT_DIR_FILES, "");
-        const result = await DBService.callProcCursor("ei_upd_tei_ecus_declare_pdf_file", [tei_ecus_declare_pk, pdfRelativePath], p_language, p_crt_by);
+        const result = await DBService.callProcCursor("ei_upd_tei_ecus_declare_pdf_file", [tei_ecus_declare_pk, file_path], p_language, p_crt_by);
         return response.send(Utils.response(true, "upload_pdf_file_sucessfull", null));
       }
       return response.send(Utils.response(false, "failed_upload_file", file_path));

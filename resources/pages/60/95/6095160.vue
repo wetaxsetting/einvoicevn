@@ -1,82 +1,46 @@
 <template>
   <v-container fluid v-resize="onResize" class="pa-0">
+    <v-row dense>
     <v-row md="12">
-      <v-col md="4" class="pl-5">
-        <BaseSelect outlined :label="$t('company')" v-model="company" :lstData="companyList" item-text="TEXT" item-value="PK" />
+      <v-col md="3" class="pl-5">
+        <BaseSelect outlined :label="$t('company')" v-model="company" :lstData="companyList" item-text="TEXT"
+          item-value="PK" />
+      </v-col>
+      <v-col md="1" class="pl-3 pr-2">
+        <BaseDatePicker outlined :label="$t('date_year')" v-model="date_year" month today />
+      </v-col>
+      <v-col md="1" class="pl-3 pr-2">
+        <BaseDatePicker outlined :label="$t('from_date')" v-model="from_date" start  />
+      </v-col>
+      <v-col md="1" class="pl-3 pr-2">
+        <BaseDatePicker outlined :label="$t('to_date')" v-model="to_date" today />
       </v-col>
       <v-col md="2">
-        <BaseSelect outlined :label="$t('date')" :lstData="date_type_list" v-model="selected_date_type" item-value="VAL"
-          item-text="NAME" filter_off />
+        <BaseSelect outlined :label="$t('form_no')" v-model="form_no" item-value="VAL" item-text="NAME"
+          :lstData="form_no_list"  />
       </v-col>
-      <!-- month -->
-      <v-col md="2" v-show="selected_date_type == '0'">
-        <BaseDatePicker outlined :label="$t('month')" v-model="month" month />
+      <v-col md="2" class="pr-5">
+        <BaseSelect outlined :label="$t('serial_no')" v-model="serial_no" :lstData="serial_List" item-text="NAME"
+          item-value="VAL"/>
       </v-col>
-      <v-col md="2" v-show="selected_date_type == '0'">
-        <BaseDatePicker outlined :label="$t('from_date')" v-model="from_date" />
-      </v-col>
-      <v-col md="2" v-show="selected_date_type == '0'" cl>
-        <BaseDatePicker outlined :label="$t('to_date')" v-model="to_date" />
-      </v-col>
-       <!-- ascurrent -->
-       <v-col md="2" v-show="selected_date_type == '1'"> </v-col>
-      <v-col md="2" v-show="selected_date_type == '1'">
-        <BaseDatePicker outlined :label="$t('from_date')" v-model="from_date" />
-      </v-col>
-      <v-col md="2" v-show="selected_date_type == '1'">
-        <BaseDatePicker outlined :label="$t('to_date')" v-model="to_date" />
-      </v-col>
-      <!-- year -->
-      <v-col md="2" v-show="selected_date_type == '2'">
-        <BaseDatePicker outlined :label="$t('year')" v-model="year" year />
-      </v-col>
-      <v-col md="2" v-show="selected_date_type == '2'">
-        <BaseDatePicker outlined :label="$t('from_date')" v-model="from_date" />
-      </v-col>
-      <v-col md="2" v-show="selected_date_type == '2'">
-        <BaseDatePicker outlined :label="$t('to_date')" v-model="to_date" />
-      </v-col>
-      <!-- Quarter -->
-      <v-col md="1" v-show="selected_date_type == '3'">
-        <BaseDatePicker outlined :label="$t('year')" v-model="year" year />
-      </v-col>
-      <v-col md="1" v-show="selected_date_type == '3'">
-        <BaseSelect outlined :label="$t('type_quarter')" v-model="selectTypeQuarter" :lstData="lstTypeQuarter" item-text="NAME"
-          item-value="VAL" filter_off />
-      </v-col>
-      <v-col md="2" v-show="selected_date_type == '3'">
-        <BaseDatePicker outlined :label="$t('from_date')" v-model="from_date" />
-      </v-col>
-      <v-col md="2" v-show="selected_date_type == '3'">
-        <BaseDatePicker outlined :label="$t('to_date')" v-model="to_date" />
-      </v-col>
-    </v-row>
-    <v-row md="12">
-      <v-col md="2" class="pl-5">
-        <BaseSelect outlined :label="$t('form_no')" v-model="form_no" item-value="VAL" item-text="NAME" :lstData="form_no_list" />
-      </v-col>
-      <v-col md="1">
-        <BaseSelect outlined :label="$t('serial_no')" v-model="serial_no" :lstData="serial_List" item-text="NAME" item-value="VAL"
-          :text_all="$t('all')" />
-      </v-col>
-      <v-col md="1">
-        <BaseSelect outlined :label="$t('invoice_type')" v-model="invoice_type" :lstData="invoiceType_List" item-text="NAME"
-          item-value="CODE" />
-      </v-col>
-      <v-col md="2">
-        <BaseInput outlined :label="$t('invoice_no')" v-model="invoiceNo" />
-      </v-col>
-      <v-col md="2">
-        <BaseInput outlined :label="$t('trade_code')" v-model="tranCode" />
-      </v-col>
-      <v-col md="2">
-        <BaseInput outlined :label="$t('cqt_code')" v-model="cqtCode" />
-      </v-col>
-      <v-col md="2" class="d-flex justify-end">
+      <v-col md="2" class="d-flex justify-end pr-3">
         <BaseButton icon_type="search" :btn_text="$t('search')" @onclick="onClickButton()" />
         <BaseButton icon_type="excel" :btn_text="$t('print')" @onclick="onReport()" />
       </v-col>
     </v-row>
+    <v-row md="12">
+      <v-col md="3" class="pl-5">
+        <BaseInput outlined :label="$t('invoice_no')" v-model="invoiceNo" />
+      </v-col>
+      <v-col md="3" class="pl-3 pr-2">
+        <BaseInput outlined :label="$t('trand_code')" v-model="tranCode" />
+      </v-col>
+      <v-col md="2">
+        <BaseInput outlined :label="$t('cqt_code')" v-model="cqtCode" />
+      </v-col>
+      
+    </v-row>
+  </v-row>
     <v-row no-gutters align="center" justify="start" class="mb-2">
       <v-col cols="12">
         <BaseGridView ref="gridview" select_mode="Single" :max_height="limitHeight" column-resizing-mode="widget"
@@ -89,7 +53,6 @@
             this.company,
             this.tranCode,
             this.cqtCode,
-            this.invoice_type
           ]" />
       </v-col>
     </v-row>
@@ -105,7 +68,14 @@ export default {
   data: () => ({
     companyList: [],
     company: "",
-    form_no: "1",
+    mstData: "",
+    companyFornno: "",
+    serialno_formno_list: [],
+    dateList: [],
+    from_date: "",
+    form_no: "",
+    to_date: "",
+    date: null,
     date_year: "",
     searchInput: null,
     limitHeight: [],
@@ -115,63 +85,19 @@ export default {
     cqtCode: "",
     form_no_list: [],
     serial_List: [],
-    invoiceType_List: [],
 
     gridview: [],
-    serial_no: "C22TCH",
-    invoice_type: "",
-
-    selected_date_type: "",
-    date_type_list: [
-      {
-        NAME: "Monthly",
-        VAL: "0",
-      },
-      {
-        NAME: "As current",
-        VAL: "1",
-      },
-      {
-        NAME: "Year",
-        VAL: "2",
-      },
-      {
-        NAME: "Quarter",
-        VAL: "3",
-      },
-    ],
-    selectTypeQuarter: "",
-    month: "",
-    from_date: "",
-    to_date: "",
-    year: "",
-    lstTypeQuarter: [
-      {
-        NAME: "I",
-        VAL: "0",
-      },
-      {
-        NAME: "II",
-        VAL: "1",
-      },
-      {
-        NAME: "III",
-        VAL: "2",
-      },
-      {
-        NAME: "IV",
-        VAL: "3",
-      },
-    ], 
+    serial_no: "",
   }),
 
   async created() {
-    await this.initDataList();
-    this.onSetHeader();
-    this.selectedCompany = this.user.TCO_COMPANY_PK;
+    await this.getListCodes("company");
+    await this.getListCodes("form_no");
+    await this.getListCodes("serial_no");
+    // this.company = this.user.TCO_COMPANY_PK;
   },
   mounted() {
-    
+    this.onSetHeader();
   },
   computed: {
     limitHeight() {
@@ -184,155 +110,67 @@ export default {
     },
   },
   watch: {
-    // date_year(val) {
-    //   if (val) {
-    //     this.from_date = val + "01";
-    //     this.to_date = val + this._maxDateOfMonth(val);
-    //   }
-    // },
-    selected_date_type(val) {
-      if (val == "0" || val == "2") {
-        this.from_date = "";
-        this.to_date = "";
-      }
-      let tmpMonth = new Date().getMonth() + 1;
-      if (val == "0" && this.month == "") {
-        if (tmpMonth < 10) {
-          this.month = "0" + tmpMonth.toString();
-        } else {
-          this.month = tmpMonth.toString();
-        }
-        let tmpYear = new Date().getFullYear();
-        this.month = tmpYear.toString() + this.month;
-      }
-      if (val == "2" && this.year == "") {
-        let tmpYear = new Date().getFullYear();
-        this.year = tmpYear.toString();
-      }
-      if (val == "3" && this.year == "") {
-        let tmpYear = new Date().getFullYear();
-        this.year = tmpYear.toString();
-      }
-      if (this.year != "" && val == "2") {
-        this.from_date = this.year + "0101";
-        this.to_date = this.year + "1231";
-      }
-      if (this.month != "" && val == "0") {
-        this.from_date = this.month + "01";
-        this.to_date = this.month + this._maxDateOfMonth(this.from_date);
-      }
-      if (val == "3") {
-        if (this.selectTypeQuarter == "0") {
-          this.from_date = this.year + "0101";
-          this.to_date = this.year + "0331";
-        }
-        if (this.selectTypeQuarter == "1") {
-          this.from_date = this.year + "0401";
-          this.to_date = this.year + "0630";
-        }
-        if (this.selectTypeQuarter == "2") {
-          this.from_date = this.year + "0701";
-          this.to_date = this.year + "0930";
-        }
-        if (this.selectTypeQuarter == "3") {
-          this.from_date = this.year + "1001";
-          this.to_date = this.year + "1231";
-        }
-      }
+    company(val){
+      this.getListCodes("form_no");
     },
-    month(val) {
+    form_no(val){
+      this.getListCodes("serial_no");
+    },
+    from_date(val){
+      this.getListCodes("form_no");
+      this.getListCodes("serial_no");
+    },
+    to_date(val){
+      this.getListCodes("form_no");
+      this.getListCodes("serial_no");
+    },
+    date_year(val) {
       if (val) {
         this.from_date = val + "01";
         this.to_date = val + this._maxDateOfMonth(val);
       }
     },
-    year(val) {
-      if (val) {
-        if (this.selected_date_type == "2") {
-          this.from_date = this.year + "0101";
-          this.to_date = this.year + "1231";
-        }
-        if (this.selected_date_type == "3") {
-          if (this.selectTypeQuarter == "0") {
-            this.from_date = this.year + "0101";
-            this.to_date = this.year + "0331";
-          }
-          if (this.selectTypeQuarter == "1") {
-            this.from_date = this.year + "0401";
-            this.to_date = this.year + "0630";
-          }
-          if (this.selectTypeQuarter == "2") {
-            this.from_date = this.year + "0701";
-            this.to_date = this.year + "0930";
-          }
-          if (this.selectTypeQuarter == "3") {
-            this.from_date = this.year + "1001";
-            this.to_date = this.year + "1231";
-          }
-        }
-      }
-    },
-    selectTypeQuarter(val) {
-      switch (val) {
-        case "0":
-          this.from_date = this.year + "0101";
-          this.to_date = this.year + "0331";
-          break;
-        case "1":
-          this.from_date = this.year + "0401";
-          this.to_date = this.year + "0630";
-          break;
-        case "2":
-          this.from_date = this.year + "0701";
-          this.to_date = this.year + "0930";
-          break;
-        case "3":
-          this.from_date = this.year + "1001";
-          this.to_date = this.year + "1231";
-          break;
-      }
-    },
-    form_no(val) {
-      this.getListCodes("serial_no");
-    },
-  },
-  async mounted() {
-    let tmpMonth = new Date().getMonth() + 1;
-    if (tmpMonth < 10) {
-      this.month = "0" + tmpMonth.toString();
-    } else {
-      this.month = tmpMonth.toString();
-    }
-    let tmpYear = new Date().getFullYear();
-    this.month = tmpYear.toString() + this.month;
-    this.year = tmpYear.toString();
   },
   methods: {
-    async initDataList() {
-      const company = await this._callProcedure("AC_SEL_6095160_COMPANY", [this.user.PK]);
-      if (company.length > 0) {
-        this.companyList = company;
-      }
-
-      const results = await this._getCommonCode2(["ACEI0020"], this.user.TCO_COMPANY_PK)
-      this.invoiceType_List = results[0];
-      // this.invoiceType_List  = this.invoiceType_List.filter(status => status.CODE !== "0");
-
-      const dso_form_no_list = {
-        type: "list",
-        selpro: "AC_SEL_6095160_FORM_NO",
-        para: [this.company],
-      };
-      this.form_no_list = await this._dsoCall(dso_form_no_list, "select", false);
-
-      const dso_serial_no_list = {
+    async getListCodes(pos) {
+      switch (pos) {
+        case "company":
+          const dso_company_list = {
+            type: "list",
+            selpro: "SYS_SEL_LIST_COMPANY",
+            para: [this.user.PK],
+          };
+          this.companyList = await this._dsoCall(
+            dso_company_list,
+            "select",
+            false
+          );
+          if (this.companyList.length > 0) {}
+            this.company = this.companyList[0].PK;
+          break;
+        case "form_no":
+          const dso_form_no_list = {
+            type: "list",
+            selpro: "AC_SEL_6095160_FORM_NO",
+            para: [this.company, this.from_date, this.to_date],
+          };
+          this.form_no_list = await this._dsoCall(dso_form_no_list, "select",false);
+          if (this.form_no_list != null) {
+            this.form_no = this.form_no_list[0].VAL;
+          }
+          break;
+        case "serial_no":
+          const dso_serial_no_list = {
             type: "list",
             selpro: "AC_SEL_6095160_SERIAL_NO",
             para: [this.company, this.form_no],
           };
-      this.serial_List = await this._dsoCall( dso_serial_no_list,"select",false);
+          this.serial_List = await this._dsoCall(dso_serial_no_list, "select",false);
+          
+            this.serial_no = this.serial_List[0].VAL;
+          break;
+      }
     },
-
     onClickButton(obj) {
       this.$refs.gridview.loadData();
     },
@@ -356,7 +194,6 @@ export default {
                 this.serial_no,
                 this.invoiceNo,
                 this.company,
-                this.invoice_type
                 // this.tranCode,
                 // this.cqtCode,
               ],
@@ -377,7 +214,7 @@ export default {
                 this.tranCode,
                 this.cqtCode,
               ],
-              dateColumns: ["INVOICE_DATE"],
+              dateColumns: ["INVOICE_DATE", ],
               stringColumns: [
                 "ORDERBY_NO",
                 "FORM_NO",
@@ -413,13 +250,10 @@ export default {
         let blob = new Blob([res], {
           type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         });
-
-        saveAs(blob, ["6095160_E_invoice Cancel List"]);
+        saveAs(blob, ["6095160_E_invoice Cancelled List"]);
         // let url = window.URL.createObjectURL(blob);
         // window.open(url);
         // this.salaryStatus = this.$t("complete");
-        // console.log('res',  res);
-        // console.log('url',  url);
       } else {
         //this.showNotification( "danger", this.$t("fail_to_export_report"),  "",  4000 );
         this.salaryStatus = this.$t("fail_to_export_report");
@@ -541,7 +375,7 @@ export default {
         },
         {
           dataField: "CANCEL_REASON",
-          caption: this.$t("cancel_cause"),
+          caption: this.$t("cancel_couse"),
           allowEditing: false,
           dataType: "string",
         },
@@ -553,19 +387,7 @@ export default {
         },
         {
           dataField: "CQT_MAGD",
-          caption: this.$t("trade_code "),
-          allowEditing: false,
-        },
-        {
-          dataField: "CQT_MAGD_CANCEL",
-          caption: this.$t("trade_code_cancel"),
-          allowEditing: false,
-          dataType: "string",
-          alignment: "center",
-        },
-        {
-          dataField: "CQT_STATUS_GE",
-          caption: this.$t("cancel_cause"),
+          caption: this.$t("trand_code "),
           allowEditing: false,
         },
       ];

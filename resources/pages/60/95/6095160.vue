@@ -17,11 +17,11 @@
       </v-col>
       <v-col md="2">
         <BaseSelect outlined :label="$t('form_no')" v-model="form_no" item-value="VAL" item-text="NAME"
-          :lstData="form_no_list" :text_all="$t('all')" />
+          :lstData="form_no_list"  />
       </v-col>
       <v-col md="2" class="pr-5">
         <BaseSelect outlined :label="$t('serial_no')" v-model="serial_no" :lstData="serial_List" item-text="NAME"
-          item-value="VAL" :text_all="$t('all')" />
+          item-value="VAL"/>
       </v-col>
       <v-col md="2" class="d-flex justify-end pr-3">
         <BaseButton icon_type="search" :btn_text="$t('search')" @onclick="onClickButton()" />

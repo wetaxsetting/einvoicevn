@@ -1,87 +1,47 @@
 <template>
   <v-container fluid v-resize="onResize">
     <v-row>
-      <v-col md="4" class="pl-4">
-        <BaseSelect
-          :label="$t('company')"
-          v-model="company"
-          :lstData="companyList"
-          item-text="TEXT"
-          item-value="PK"
-        />
+      <v-col md="3" class="pl-4">
+        <BaseSelect outlined :label="$t('company')" v-model="company" :lstData="companyList" item-text="TEXT" item-value="PK" />
       </v-col>
 
+      <v-col md="1">
+        <BaseDatePicker outlined :label="$t('date_year')" v-model="date_year" month today />
+      </v-col>
       <v-col md="2">
-        <BaseDatePicker
-          :label="$t('date_year')"
-          v-model="date_year"
-          month
-          today
-        />
+        <BaseDatePicker outlined :label="$t('from_date')" v-model="from_date" start />
       </v-col>
-      <v-col md="3">
-        <BaseDatePicker :label="$t('from_date')" v-model="from_date" start />
+      <v-col md="2">
+        <BaseDatePicker outlined :label="$t('to_date')" v-model="to_date" today />
       </v-col>
-      <v-col md="3" class="pr-5">
-        <BaseDatePicker :label="$t('to_date')" v-model="to_date" today />
+      <v-col md="2" class="pl-4">
+        <BaseSelect outlined :label="$t('form_no')" v-model="form_no" item-value="VAL" item-text="NAME" :lstData="form_no_list"/>
+      </v-col>
+      <v-col md="2">
+        <BaseSelect outlined :label="$t('serial_no')" v-model="serial_no" :lstData="serial_List" item-text="NAME" item-value="VAL"/>
       </v-col>
     </v-row>
     <v-row>
-      <v-col md="2" class="pl-4">
-        <BaseSelect
-          :label="$t('form_no')"
-          v-model="form_no"
-          item-value="VAL"
-          item-text="NAME"
-          :lstData="form_no_list"
-          :text_all="$t('all')"
-        />
+      <v-col md="3">
+        <BaseInput outlined :label="$t('invoice_no')" v-model="invoiceNo" />
+      </v-col>
+      <v-col md="3">
+        <BaseInput outlined :label="$t('trand_code')" v-model="tranCode" />
       </v-col>
       <v-col md="2">
-        <BaseSelect
-          :label="$t('serial_no')"
-          v-model="serial_no"
-          :lstData="serial_List"
-          item-text="NAME"
-          item-value="VAL"
-          :text_all="$t('all')"
-        />
+        <BaseInput outlined :label="$t('cqt_code')" v-model="cqtCode" />
       </v-col>
-      <v-col md="2">
-        <BaseInput :label="$t('invoice_no')" v-model="invoiceNo" />
-      </v-col>
-      <v-col md="2">
-        <BaseInput :label="$t('trand_code')" v-model="tranCode" />
-      </v-col>
-      <v-col md="2">
-        <BaseInput :label="$t('cqt_code')" v-model="cqtCode" />
-      </v-col>
-      <v-col md="2" class="d-flex justify-end">
-        <BaseButton
-          icon_type="search"
-          :btn_text="$t('search')"
-          @onclick="onClickButton()"
-        />
-        <BaseButton
-          icon_type="excel"
-          :btn_text="$t('print')"
-          @onclick="onReport()"
-        />
+      <v-col md="4" class="d-flex justify-end">
+        <BaseButton icon_type="search" :btn_text="$t('search')" @onclick="onClickButton()" />
+        <BaseButton icon_type="excel" :btn_text="$t('print')" @onclick="onReport()" />
       </v-col>
     </v-row>
 
     <v-row> </v-row>
     <v-row no-gutters align="center" justify="start" class="mb-2">
       <v-col cols="12">
-        <BaseGridView
-          ref="gridview"
-          select_mode="Single"
-          :maxheight="limitHeight"
-          column-resizing-mode="widget"
-          sel_procedure="stacfrstac710021_s_01_node"
-          :editable="false"
-          :header="this.headerQQ"
-          :filter_paras="[
+        <BaseGridView ref="gridview" select_mode="Single" :maxheight="limitHeight" column-resizing-mode="widget"
+          sel_procedure="AC_SEL_6095180_S_01_NOCACHE" :editable="false" :header="this.headerQQ" :filter_paras="[
             this.from_date,
             this.to_date,
             this.form_no,
@@ -90,8 +50,7 @@
             this.company,
             this.tranCode,
             this.cqtCode,
-          ]"
-        />
+          ]" />
       </v-col>
     </v-row>
   </v-container>
@@ -159,47 +118,98 @@ export default {
         this.to_date = val + this._maxDateOfMonth(val);
       }
     },
+    company(val) {
+      this.getListCodes("form_no");
+    },
     form_no(val) {
       this.getListCodes("serial_no");
     },
   },
   methods: {
     async getListCodes(pos) {
-      const result = await this._getCompanyByUser(this.user.PK);
+      switch (pos) {
+        case "company":
+          const dso_company_list = {
+            type: "list",
+            selpro: "SYS_SEL_LIST_COMPANY",
+            para: [this.user.PK],
+          };
+          this.companyList = await this._dsoCall(
+            dso_company_list,
+            "select",
+            false
+          );
+          if (this.companyList.length > 0) {
+            this.company = this.companyList[0].PK;
+          }
+          break;
 
-      if (result) {
-        this.companyList = result;
-        this.company = this.companyList[0].PK;
+        case "form_no":
+          const dso_form_no_list = {
+            type: "list",
+            selpro: "AC_SEL_6095180_05_FORM_NO",
+            para: [this.company, this.from_date, this.to_date, this.form_no],
+          };
+
+          this.form_no_list = await this._dsoCall( dso_form_no_list, "select", false );
+          if (this.form_no_list != null) {
+            this.form_no = this.form_no_list[0].VAL;
+          }
+          break;
+        case "serial_no":
+          const dso_serial_no_list = {
+            type: "list",
+            selpro: "AC_SEL_6095180_6_SERIAL_NO",
+            para: [
+              this.company,
+              this.form_no,
+              this.from_date,
+              this.to_date,
+              this.serial_no,
+            ],
+          };
+
+          this.serial_List = await this._dsoCall(dso_serial_no_list, "select", false );
+          this.serial_no = this.serial_List[0].VAL;
+          break;
       }
-      const dso_form_no_list = {
-        type: "list",
-        selpro: "stacfrstac710021_s_05_node",
-        para: [this.company, this.from_date, this.to_date, this.form_no],
-      };
-
-      this.form_no_list = await this._dsoCall(
-        dso_form_no_list,
-        "select",
-        false
-      );
-      const dso_serial_no_list = {
-        type: "list",
-        selpro: "STACFRSTAC710021_S_06_NODE",
-        para: [
-          this.company,
-          this.form_no,
-          this.from_date,
-          this.to_date,
-          this.serial_no,
-        ],
-      };
-
-      this.serial_List = await this._dsoCall(
-        dso_serial_no_list,
-        "select",
-        false
-      );
     },
+    // async getListCodes(pos) {
+    //   const result = await this._getCompanyByUser(this.user.PK);
+
+    //   if (result) {
+    //     this.companyList = result;
+    //     this.company = this.companyList[0].PK;
+    //   }
+    //   const dso_form_no_list = {
+    //     type: "list",
+    //     selpro: "AC_SEL_6095180_05_FORM_NO",
+    //     para: [this.company, this.from_date, this.to_date, this.form_no],
+    //   };
+
+    //   this.form_no_list = await this._dsoCall(
+    //     dso_form_no_list,
+    //     "select",
+    //     false
+    //   );
+    //   const dso_serial_no_list = {
+    //     type: "list",
+    //     selpro: "AC_SEL_6095180_6_SERIAL_NO",
+    //     para: [
+    //       this.company,
+    //       this.form_no,
+    //       this.from_date,
+    //       this.to_date,
+    //       this.serial_no,
+    //     ],
+    //   };
+
+    //   this.serial_List = await this._dsoCall(
+    //     dso_serial_no_list,
+    //     "select",
+    //     false
+    //   );
+    // },
     onClickButton(obj) {
       this.$refs.gridview.loadData();
     },
@@ -240,7 +250,6 @@ export default {
               ],
               dateColumns: [
                 "INVOICE_DATE",
-                "SIGN_DT",
                 "CANCEL_DT",
                 "SIGN_DT_ADJ",
               ],
@@ -259,8 +268,8 @@ export default {
                 "CUS_NM",
                 "TAX_CODE",
                 "ADDR",
-                "CRT_BY",
-                "CANCEL_DT",
+                // "CRT_BY",
+                "REL_BY",
                 "REMARK",
               ],
             },
@@ -284,9 +293,10 @@ export default {
         let blob = new Blob([res], {
           type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         });
-        let url = window.URL.createObjectURL(blob);
-        window.open(url);
-        this.salaryStatus = this.$t("complete");
+        saveAs(blob, ["6095180_E_invoice Replace List"]);
+        // let url = window.URL.createObjectURL(blob);
+        // window.open(url);
+        // this.salaryStatus = this.$t("complete");
       } else {
         //this.showNotification( "danger", this.$t("fail_to_export_report"),  "",  4000 );
         this.salaryStatus = this.$t("fail_to_export_report");
@@ -325,7 +335,7 @@ export default {
               allowEditing: false,
               dataType: "string",
               alignment: "right",
-             
+
             },
             {
               dataField: "INVOICE_DATE",
@@ -383,7 +393,7 @@ export default {
               allowEditing: false,
               dataType: "string",
               alignment: "center",
-              
+
             },
             {
               dataField: "SIGN_DT_ADJ",
@@ -429,13 +439,13 @@ export default {
         },
 
         {
-          dataField: "CANCEL_BY",
+          dataField: "REL_BY",
           caption: this.$t("replace_by"),
           allowEditing: false,
           dataType: "string",
         },
         {
-          dataField: "CANCEL_DT",
+          dataField: "REL_DT",
           caption: this.$t("replace_date"),
           allowEditing: false,
         },

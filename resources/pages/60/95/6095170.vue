@@ -2,78 +2,78 @@
 <v-container fluid class="pa-0" v-resize="onResize">
   <v-row class="pt-2" dense>
     <v-col md="4" class="pl-3 pr-2">
-      <BaseSelect :label="$t('company')" item-text="NAME" item-value="VAL" filter_off :lstData="companyList" v-model="company" />
+      <BaseSelect outlined :label="$t('company')" item-text="NAME" item-value="VAL" filter_off :lstData="companyList" v-model="company" />
     </v-col>
     <!-- <v-col md="1">
       </v-col> -->
-    <v-col md="2" class="pl-3 pr-2">
-      <BaseSelect :label="$t('choose_type_date')" v-model="itemChooseTypeDate" :lstData="lstChooseTypeDate" item-text="NAME" item-value="VAL" filter_off />
+    <v-col md="1" class="pl-3 pr-2">
+      <BaseSelect outlined :label="$t('choose_type_date')" v-model="itemChooseTypeDate" :lstData="lstChooseTypeDate" item-text="NAME" item-value="VAL" filter_off />
     </v-col>
     <!-- <v-col md="1">
       </v-col> -->
     <!-- Monthly -->
-    <v-col md="2" class="pl-3 pr-2" v-show="itemChooseTypeDate == '0'">
-      <BaseDatePicker :label="$t('month')" v-model="month" month />
+    <v-col md="1"  class="pl-3 pr-2" v-show="itemChooseTypeDate == '0'">
+      <BaseDatePicker outlined :label="$t('month')" v-model="month" month />
     </v-col>
-    <v-col md="1" class="pl-3 pr-2" v-show="itemChooseTypeDate == '0'">
-      <BaseDatePicker :label="$t('from_date')" v-model="fromDate" />
+    <v-col md="1"  class="pl-3 pr-2" v-show="itemChooseTypeDate == '0'">
+      <BaseDatePicker outlined :label="$t('from_date')" v-model="fromDate" />
     </v-col>
-    <v-col md="1" class="pl-3 pr-2" v-show="itemChooseTypeDate == '0'">
-      <BaseDatePicker :label="$t('to_date')" v-model="toDate" />
+    <v-col md="1"  class="pl-3 pr-2" v-show="itemChooseTypeDate == '0'">
+      <BaseDatePicker outlined :label="$t('to_date')" v-model="toDate" />
     </v-col>
     <!-- As current -->
-    <v-col md="2" class="pl-3 pr-2" v-show="itemChooseTypeDate == '1'"> </v-col>
-    <v-col md="1" class="pl-3 pr-2" v-show="itemChooseTypeDate == '1'">
-      <BaseDatePicker :label="$t('from_date')" v-model="fromDate" />
+    <v-col md="2"  class="pl-3 pr-2" v-show="itemChooseTypeDate == '1'"> </v-col>
+    <v-col md="1"  class="pl-3 pr-2" v-show="itemChooseTypeDate == '1'">
+      <BaseDatePicker outlined :label="$t('from_date')" v-model="fromDate" />
     </v-col>
-    <v-col md="1" class="pl-3 pr-2" v-show="itemChooseTypeDate == '1'">
-      <BaseDatePicker :label="$t('to_date')" v-model="toDate" />
+    <v-col md="1"  class="pl-3 pr-2" v-show="itemChooseTypeDate == '1'">
+      <BaseDatePicker outlined :label="$t('to_date')" v-model="toDate" />
     </v-col>
     <!-- Year -->
 
-    <v-col md="2" class="pl-3 pr-2" v-show="itemChooseTypeDate == '2'">
-      <BaseDatePicker :label="$t('year')" v-model="year" year />
+    <v-col md="1"  class="pl-3 pr-2" v-show="itemChooseTypeDate == '2'">
+      <BaseDatePicker outlined :label="$t('year')" v-model="year" year />
     </v-col>
-    <v-col md="1" class="pl-3 pr-2" v-show="itemChooseTypeDate == '2'">
-      <BaseDatePicker :label="$t('from_date')" v-model="fromDate" />
+    <v-col md="1"  class="pl-3 pr-2" v-show="itemChooseTypeDate == '2'">
+      <BaseDatePicker outlined :label="$t('from_date')" v-model="fromDate" />
     </v-col>
-    <v-col md="1" class="pl-3 pr-2" v-show="itemChooseTypeDate == '2'">
-      <BaseDatePicker :label="$t('to_date')" v-model="toDate" />
+    <v-col md="1"  class="pl-3 pr-2" v-show="itemChooseTypeDate == '2'">
+      <BaseDatePicker outlined :label="$t('to_date')" v-model="toDate" />
     </v-col>
 
     <!-- Quarter -->
 
-    <v-col md="1" class="pl-3 pr-2" v-show="itemChooseTypeDate == '3'">
-      <BaseDatePicker :label="$t('year')" v-model="year" year />
+    <v-col md="1"  class="pl-3 pr-2" v-show="itemChooseTypeDate == '3'">
+      <BaseDatePicker outlined :label="$t('year')" v-model="year" year />
+    </v-col>
+    <v-col md="1"  class="pl-3 pr-2" v-show="itemChooseTypeDate == '3'">
+      <BaseSelect outlined :label="$t('choose_type_quarter')" v-model="itemChooseTypeQuarter" :lstData="lstChooseTypeQuarter" item-text="NAME" item-value="VAL" filter_off />
+    </v-col>
+    <v-col md="1"  class="pl-3 pr-2" v-show="itemChooseTypeDate == '3'">
+      <BaseDatePicker outlined :label="$t('from_date')" v-model="fromDate" />
     </v-col>
     <v-col md="1" class="pl-3 pr-2" v-show="itemChooseTypeDate == '3'">
-      <BaseSelect :label="$t('choose_type_quarter')" v-model="itemChooseTypeQuarter" :lstData="lstChooseTypeQuarter" item-text="NAME" item-value="VAL" filter_off />
-    </v-col>
-    <v-col md="1" class="pl-3 pr-2" v-show="itemChooseTypeDate == '3'">
-      <BaseDatePicker :label="$t('from_date')" v-model="fromDate" />
-    </v-col>
-    <v-col md="1" class="pl-3 pr-2" v-show="itemChooseTypeDate == '3'">
-      <BaseDatePicker :label="$t('to_date')" v-model="toDate" />
+      <BaseDatePicker outlined :label="$t('to_date')" v-model="toDate" />
     </v-col>
   </v-row>
 
   <v-row class="pt-1" dense>
     <v-col md="2" class="pl-3 pr-2">
-      <BaseSelect :label="$t('form_no')" item-text="NAME" item-value="VAL" filter_off :lstData="formList" v-model="lstForm" />
+      <BaseSelect outlined :label="$t('form_no')" item-text="NAME" item-value="VAL" filter_off :lstData="formList" v-model="lstForm" />
     </v-col>
     <!-- <v-col md="1">
       </v-col> -->
     <v-col md="2" class="pl-3 pr-2">
-      <BaseSelect :label="$t('serial_no')" item-text="NAME" item-value="VAL" filter_off :lstData="serialList" v-model="lstSerial" />
+      <BaseSelect outlined :label="$t('serial_no')" item-text="NAME" item-value="VAL" filter_off :lstData="serialList" v-model="lstSerial" />
     </v-col>
     <v-col md="2" class="pl-3 pr-2">
-      <BaseInput :label="$t('invoice_no')" v-model="lstInvoiceNo" @keyPressEnter="onClickButton()" />
+      <BaseInput outlined :label="$t('invoice_no')" v-model="lstInvoiceNo" @keyPressEnter="onClickButton()" />
     </v-col>
     <v-col md="2" class="pl-3 pr-2">
-      <BaseInput :label="$t('trade_code')" v-model="lstTradeCode" @keyPressEnter="onClickButton()" />
+      <BaseInput outlined :label="$t('trade_code')" v-model="lstTradeCode" @keyPressEnter="onClickButton()" />
     </v-col>
     <v-col md="2" class="pl-3 pr-2">
-      <BaseInput :label="$t('cqt_code')" v-model="lstCQTCode" @keyPressEnter="onClickButton()" />
+      <BaseInput outlined :label="$t('cqt_code')" v-model="lstCQTCode" @keyPressEnter="onClickButton()" />
     </v-col>
     <v-col md="2" class="d-flex justify-end">
       <BaseButton icon_type="search" :btn_text="$t('search')" @onclick="onClickButton()" />
@@ -184,8 +184,17 @@ export default {
   watch: {
     company(val) {
       this.getListCodes("form_no");
+      // this.getListCodes("serial_no");
     },
     lstForm(val) {
+      this.getListCodes("serial_no");
+    },
+    fromDate(val){
+      this.getListCodes("form_no");
+      this.getListCodes("serial_no");
+    },
+    toDate(val){
+      this.getListCodes("form_no");
       this.getListCodes("serial_no");
     },
     itemChooseTypeDate(val) {
@@ -290,6 +299,7 @@ export default {
           break;
       }
     },
+
   },
   computed: {
     user() {
@@ -333,7 +343,7 @@ export default {
           const dso_form_list = {
             type: "list",
             selpro: "AC_SEL_6095170_FORM_NO",
-            para: [this.company],
+            para: [this.company, this.fromDate, this.toDate],
           };
           this.formList = await this._dsoCall(dso_form_list, "select", false);
           if (this.formList != null) {
@@ -356,7 +366,7 @@ export default {
           break;
       }
     },
-        async onReport() {
+    async onReport() {
       let report_path = "report/60/95/rpt_6095170_1.xlsx";
       let hiddenCols = [];
       let excel = [];
@@ -391,10 +401,7 @@ export default {
                     this.company,
                   ],
                   dateColumns: [
-                    "INVOICE_DATE",
-                    "SIGN_DT",
                     "INVOICE_DATE_ADJ",
-                    "SIGN_DT_ADJ",
                   ],
                   stringColumns: [
                     "ORDERBY_NO",
@@ -414,7 +421,7 @@ export default {
                     "CUS_NM",
                     "TAX_CODE",
                     "ADDR",
-                    "CANCEL_BY",
+                    "ADJ_BY",
                     "CANCEL_DT",
                     "REMARK",
                   ],
@@ -438,9 +445,10 @@ export default {
         let blob = new Blob([res], {
           type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         });
-        let url = window.URL.createObjectURL(blob);
-        window.open(url);
-        this.salaryStatus = this.$t("complete");
+        saveAs(blob, ["6095170_E_invoice Adjusted List"]);
+        // let url = window.URL.createObjectURL(blob);
+        // window.open(url);
+        // this.salaryStatus = this.$t("complete");
       } else {
         //this.showNotification( "danger", this.$t("fail_to_export_report"),  "",  4000 );
         this.salaryStatus = this.$t("fail_to_export_report");
@@ -448,7 +456,7 @@ export default {
     },
     onSetHeader() {
       let headerObj = [{
-          dataField: "COUNT_ORDER",
+          dataField: "ORDERBY_NO",
           allowEditing: false,
           caption: this.$t("no"),
         },
@@ -485,7 +493,7 @@ export default {
               dataField: "SIGN_DT",
               caption: this.$t("sign_date"),
               allowEditing: false,
-              dataType: "date",
+              dataType: "string",
             },
             {
               dataField: "AMOUNT",
@@ -568,17 +576,17 @@ export default {
           ],
         },
         {
-          dataField: "CANCEL_BY",
+          dataField: "ADJ_BY",
           width: 0,
           caption: this.$t("adjust_by"),
         },
         {
-          dataField: "CANCEL_DT",
+          dataField: "ADJ_DT",
           width: 0,
           caption: this.$t("adjust_date"),
         },
         {
-          dataField: "REMARK",
+          dataField: "REMARK2",
           width: 0,
           caption: this.$t("remark"),
         },

@@ -928,9 +928,9 @@ let test = {
 
 		//END-this part add more style to missing part of the footer(optional).
 
-		//let convertResult = await exceljs.convertToPdfAndDownload(that, reportInfo.NAME)
+		let convertResult = await exceljs.convertToPdfAndDownload(that, reportInfo.NAME)
 		//console.log(" convertResult" , convertResult);
-		//return convertResult.data
+		return convertResult.data
 		await exceljs.dowloadWorkbook(that, reportInfo.NAME + ".xlsx");
 	},
 

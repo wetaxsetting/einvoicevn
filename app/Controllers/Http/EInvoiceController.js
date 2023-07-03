@@ -2056,15 +2056,14 @@ class EInvoiceController {
             const authPassword = "e_GX4v@"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
             // const authPassword = "genuwin123"; // "e_GX4v@";
 
-            // const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
-            let url =
-                "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+            const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+            // let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
 
-            const { proc, para } = request.all();
-
+            const {  para } = request.all();
+            // console.log("para +++===> ", para);
             // @TODO: _______________________________________________________
 
-            const para_value = {
+            /*const para_value = {
                 p_tei_einvoice_issuse_cqt_pk: para.p_tei_einvoice_issuse_cqt_pk,
                 xml_sign: "xml_sign test.",
                 p_messCQT: "mess cqt test.",
@@ -2097,7 +2096,7 @@ class EInvoiceController {
                         para_value
                     )
                 );
-            }
+            }*/
 
             // @TODO: _______________________________________________________
 
@@ -2108,6 +2107,7 @@ class EInvoiceController {
                     options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
                 },
             };
+            let para_value;
             for (let parent of para.tradecode) {
                 console.log("checkingDeclarations parent " + JSON.stringify(parent));
                 // den day
@@ -2124,9 +2124,9 @@ class EInvoiceController {
                     status = "",
                     base64XML = "";
 
-                console.log(`checkingDeclarations url + parent `, url + parent);
-                console.log(`checkingDeclarations res `, res);
-                console.log(`checkingDeclarations res.data `, res.data);
+                // console.log(`checkingDeclarations url + parent `, url + parent);
+                // console.log(`checkingDeclarations res `, res);
+                // console.log(`checkingDeclarations res.data `, res.data);
 
                 if (!res.data) {
                     return response.send(Utils.response(false, `no data found.`));
@@ -2145,7 +2145,7 @@ class EInvoiceController {
                         }
                         tenTBao = child.tenTBao;
 
-                        const para_value = {
+                        para_value = {
                             p_tei_einvoice_issuse_cqt_pk: para.p_tei_einvoice_issuse_cqt_pk,
                             xml_sign: base64XML,
                             p_messCQT: tenTBao,
@@ -2163,7 +2163,7 @@ class EInvoiceController {
                     }
                 }
             }
-            return response.send(Utils.response(true, `checking_declare_success`));
+            return response.send(Utils.response(true, `checking_declare_success`,para_value));
         } catch (e) {
             Utils.Logger({
                 LVL: "error",

@@ -51,8 +51,11 @@
                     <BaseButton icon_type="xml" :btn_text="$t('view_xml')" @onclick="onClick('viewXML')" />
                     <BaseButton icon_type="xml" :btn_text="$t('view_dec')" @onclick="onClick('viewDEC')" />
 
-                    <BaseButton btn_type="text" :btn_text="$t('checking_declaration')" @onclick="onClick('previewOriginal')" />
-                    <BaseButton btn_type="text" :btn_text="$t('general_declaration')" @onclick="onClick('generalDeclaration')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
+                    <BaseButton btn_type="text" :btn_text="$t('checking_declaration')"
+                      @onclick="onClick('checkingDeclaration')" />
+                    <BaseButton btn_type="text" :btn_text="$t('general_declaration')"
+                      @onclick="onClick('generalDeclaration')"
+                      :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
                     <!-- Add -->
                     <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')"
                       @onclick="onClick('newMaster')" />
@@ -275,15 +278,9 @@
               </GwFlexBox>
             </v-col>
             <v-col md="12">
-              <BaseGridView ref="grdDetail" 
-                :header="headerList.grdDetail" 
-                sel_procedure="AC_SEL_6095080_s_05"
-                upd_procedure="AC_UPD_6095080_u_06" 
-                :multiselect="true" 
-                :headertype="1"
-                :filter_paras="[this.modelMaster.PK]" 
-                :height="limitHeightGridDetails" 
-                :update_paras="[
+              <BaseGridView ref="grdDetail" :header="headerList.grdDetail" sel_procedure="AC_SEL_6095080_s_05"
+                upd_procedure="AC_UPD_6095080_u_06" :multiselect="true" :headertype="1"
+                :filter_paras="[this.modelMaster.PK]" :height="limitHeightGridDetails" :update_paras="[
                   'PK',
                   'TEI_DECLARATION_M_PK',
                   'TTCHUC',
@@ -298,18 +295,52 @@
         </v-card>
       </v-col>
     </v-row>
+    <view-einvoice-pdf-dialog ref="ViewEInvoicePDFDialog" :src_pdfUrl="pdfUrl"
+      @minimizeDialogPDF="manualIsMinimizedPDF = true"
+      @closeManualDialog="manualIsMinimizedPDF = false"></view-einvoice-pdf-dialog>
+    <view-einvoice-xml-dialog ref="ViewEInvoiceXMLDialog" :src_xmlUrl="xmlUrl" :xmlFileNm="xmlFileNm" dwnFile
+      @minimizeDialog="manualIsMinimized = true"
+      @closeManualDialog="manualIsMinimized = false"></view-einvoice-xml-dialog>
+    <div class="squareBox" v-if="false">
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on }">
+          <v-btn icon small v-on="on" @click="openManualDialog">
+            <v-icon :color="currentTheme">mdi-help-box</v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $t("show_manual") }}</span>
+      </v-tooltip>
+    </div>
+    <v-scale-transition origin="bottom center">
+      <v-btn dark depressed fab fixed bottom right small :color="currentTheme" v-if="manualIsMinimized"
+        @click="restoreManualDialog">
+        <v-icon>mdi-window-restore</v-icon>
+      </v-btn>
+    </v-scale-transition>
+
+    <v-scale-transition origin="bottom center">
+      <v-btn dark depressed fab fixed bottom right small :color="currentTheme" v-if="manualIsMinimizedPDF"
+        @click="restoreManualDialogPDF">
+        <v-icon>mdi-window-restore</v-icon>
+      </v-btn>
+    </v-scale-transition>
   </v-container>
 </template>
-
 <script>
+import ViewEInvoicePDFDialog from "@/components/dialog/ViewEInvoicePDFDialog.vue";
+import ViewEInvoiceXMLDialog from "@/components/dialog/ViewEInvoiceXMLDialog.vue";
 export default {
   layout: "default",
   middleware: "user",
   components: {
-
+    "view-einvoice-xml-dialog": ViewEInvoiceXMLDialog,
+    "view-einvoice-pdf-dialog": ViewEInvoicePDFDialog,
   },
 
   data: () => ({
+    xmlFileNm: "",
+    xmlUrl: "",
+    pdfUrl: "",
     isShowLeft: true,
     scrollInvoked: 0,
     headerList: {
@@ -371,7 +402,8 @@ export default {
       STATUS: null,
       XML_SIGNED: null,
     },
-
+    manualIsMinimized: false,
+    manualIsMinimizedPDF: false,
     token_type_list: []
   }),
 
@@ -383,6 +415,11 @@ export default {
     await this.initDataList();
     await this.initHeaderList();
     await this.initModel();
+
+    this.pdf_handler = require("./js/EiExcelDECHandler.js");
+    if (!!this.pdf_handler) {
+      Object.assign(this, this.pdf_handler.default);
+    }
   },
   computed: {
 
@@ -411,7 +448,7 @@ export default {
         this.modelMaster.CQTQLY = this.dataMasterList.taxOfficeList.find(item => item.CODE == val).NAME;
       }
     },
-    "modelSearch.COMPANY_PK"(val){
+    "modelSearch.COMPANY_PK"(val) {
       if (val) {
         this.modelMaster.TEI_COMPANY_PK = this.dataMasterList.companyList.find(item => item.VAL == val).VAL;
         this.modelMaster.MST = this.dataMasterList.companyList.find(item => item.VAL == val).TAX_CODE;
@@ -506,32 +543,75 @@ export default {
         case "viewXML":
           this.onPreviewXML();
           break;
-        case "generalDeclaration":
-            this.SignXML();
+        case "viewDEC":
+          this.onPreviewDEC();
           break;
-          
+        case "generalDeclaration":
+          this.SignXML();
+          break;
+        case "checkingDeclaration":
+          this.onCheckingDeckaration();
+          break;
+
+
+      }
+    },
+
+    async onPreviewDEC() {
+      this.isProcessing = true;
+      if(this.modelMaster.PK != null)
+      {
+        this.pdfUrl = await this.pdfUrlGetter(this.modelMaster.PK);
+        // console.log("pdfUrlv", this.pdfUrl);
+        this.$nextTick(() => {
+          this.isProcessing = false;
+          this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+        });
+      }else
+      {
+        this.showNotification("warning", this.$t("error_occurs"), "pls_select_declaration");
+                return;
+      }
+      
+    },
+
+    async onCheckingDeckaration() {
+      if (!this.modelMaster.CQT_MAGD) {
+        this.showNotification("danger", this.$t("trade_code_null"), "");
+        return;
+      }
+      let res = await this.$axios.$post("/einvoice/checkingdeclaration",
+        {
+          responseType: "json",
+          para: {
+            p_tei_einvoice_issuse_cqt_pk: this.modelMaster.PK,
+            tradecode: [this.modelMaster.CQT_MAGD],
+          },
+        }
+      );
+      if (res.success) {
+        this.$refs.grdSearch.loadData();
+        this.showNotification("success", this.$t(res.message), "");
+      } else {
+        this.showNotification("danger", this.$t(res.message), "");
       }
     },
 
     async onPreviewXML() {
-      if (!this.modelMaster.CQT_MAGD.length) {
-        return this.showNotification("warning", this.$t("error_occurs"), "pls_select_einvoice");
+      if (!this.modelMaster.PK == null) {
+        return this.showNotification("warning", this.$t("error_occurs"), "pls_select_declaration");
       }
-  
       this.isProcessing = true;
+
       if (!this.modelMaster.CQT_MAGD) {
-        const checkDate = this.OnGeneralXml();
-        if (!checkDate.status) {
-          return this.showNotification("danger", checkDate.message);
-        }
-        let res = await this.$axios.$post("/einvoice/invoice2xmlfromclient", {
+        let data_xml = this.onGeneralXML();
+        let resConvertXML = await this.$axios.$post("/einvoice/declare2xml", {
           responseType: "json",
-          invoices: this.objInvoiceM.invoices,
+          declare: data_xml,
         });
 
-        if (res.success && res.data.length) {
-          console.log("response", res.data);
-          this.xmlUrl = res.data[0].xml; //new Blob([byteArray], { type: _typeFile });;
+        if (resConvertXML.success && resConvertXML.data.length) {
+          this.xmlUrl = resConvertXML.data; //new Blob([byteArray], { type: _typeFile });;
           await this.$nextTick();
           this.isProcessing = false;
           this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
@@ -541,20 +621,12 @@ export default {
       }
       else {
         try {
-          let res = await this.$axios.$post("/einvoice/viewpdf", {
-            responseType: "json",
-            para: {
-              tei_einvoice_m_pk: _Pk,
-              trade_code: _maGD,
-            },
+          this.xmlUrl = this.modelMaster.XML_SIGNED; //new Blob([byteArray], { type: _typeFile });;
+          this.$nextTick(() => {
+            this.isProcessing = false;
+            this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
           });
-          if (res.success) {
-            this.xmlUrl = res.data[0].SIGN_XML; //new Blob([byteArray], { type: _typeFile });;
-            this.$nextTick(() => {
-              this.isProcessing = false;
-              this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
-            });
-          }
+
           this.isProcessing = false;
         } catch (e) {
           this.isProcessing = false;
@@ -656,65 +728,65 @@ export default {
         caption: this.$t("trade_code"),
       },
       ];
-      this.headerList.grdDetail = 
-      [{
-        dataField: "NO",
-        caption: this.$t("no"),
-        width: 50,
-      },
-      {
-        dataField: "PK",
-        caption: this.$t("pk"),
-        hidden: true,
-      },
-      {
-        dataField: "TEI_DECLARATION_M_PK",
-        caption: this.$t("tei_declaration_m_pk"),
-        hidden: true,
-      },
-      {
-        dataField: "TTCHUC",
-        caption: this.$t("ttchuc"),
-        allowEditing: true,
-        width: 200,
-      },
-      {
-        dataField: "MST",
-        caption: this.$t("mst"),
-        width: 150,
-      },
-      {
-        dataField: "SERI",
-        caption: this.$t("seti"),
-        width: 300,
-      },
-      {
-        dataField: "TNGAY",
-        caption: this.$t("tngay"),
-        width: 200,
-      },
-      {
-        dataField: "DNGAY",
-        caption: this.$t("dngay"),
-        width: 200,
-      },
-      {
-        dataField: "HTHUC",
-        caption: this.$t("hthuc"),
-        allowEditing: true,
-        lookup: {
-          displayExpr: 'NAME',
-          valueExpr: 'CODE',
-          dataSource: this.token_type_list,
+      this.headerList.grdDetail =
+        [{
+          dataField: "NO",
+          caption: this.$t("no"),
+          width: 50,
         },
-      }
-      ];
+        {
+          dataField: "PK",
+          caption: this.$t("pk"),
+          hidden: true,
+        },
+        {
+          dataField: "TEI_DECLARATION_M_PK",
+          caption: this.$t("tei_declaration_m_pk"),
+          hidden: true,
+        },
+        {
+          dataField: "TTCHUC",
+          caption: this.$t("ttchuc"),
+          allowEditing: true,
+          width: 200,
+        },
+        {
+          dataField: "MST",
+          caption: this.$t("mst"),
+          width: 150,
+        },
+        {
+          dataField: "SERI",
+          caption: this.$t("seti"),
+          width: 300,
+        },
+        {
+          dataField: "TNGAY",
+          caption: this.$t("tngay"),
+          width: 200,
+        },
+        {
+          dataField: "DNGAY",
+          caption: this.$t("dngay"),
+          width: 200,
+        },
+        {
+          dataField: "HTHUC",
+          caption: this.$t("hthuc"),
+          allowEditing: true,
+          lookup: {
+            displayExpr: 'NAME',
+            valueExpr: 'CODE',
+            dataSource: this.token_type_list,
+          },
+        }
+        ];
     },
 
     onGeneralXML() {
       if (this.modelMaster.PK) {
         const objDataMaster = {
-          version :this.modelMaster.PBAN,
+          version: this.modelMaster.PBAN,
           declare_name: this.modelMaster.TEN,
           declare_type: 1,
           seller_company_name: this.modelMaster.TNNT,
@@ -746,26 +818,26 @@ export default {
           ],
         };
 
-        for (let j = 0; j < this.$refs.grdDetail.getDataSource().length;  j++) {
-            if (this.$refs.grdDetail.getDataSource()[j]._rowstatus != "") {
-              return;
-            }
+        for (let j = 0; j < this.$refs.grdDetail.getDataSource().length; j++) {
+          if (this.$refs.grdDetail.getDataSource()[j]._rowstatus != "") {
+            return;
+          }
 
-            objDataMaster.digital_certificates.push({
-              sequence: this.$refs.grdDetail.getDataSource()[j].NO,
-              organization_name: this.$refs.grdDetail.getDataSource()[j].TTCHUC,
-              serial_no: this.$refs.grdDetail.getDataSource()[j].SERI,
-              from_date: this.$refs.grdDetail.getDataSource()[j].TNGAY,
-              to_date: this.$refs.grdDetail.getDataSource()[j].DNGAY,
-              type: this.$refs.grdDetail.getDataSource()[j].HTHUC,
-            });
+          objDataMaster.digital_certificates.push({
+            sequence: this.$refs.grdDetail.getDataSource()[j].NO,
+            organization_name: this.$refs.grdDetail.getDataSource()[j].TTCHUC,
+            serial_no: this.$refs.grdDetail.getDataSource()[j].SERI,
+            from_date: this.$refs.grdDetail.getDataSource()[j].TNGAY,
+            to_date: this.$refs.grdDetail.getDataSource()[j].DNGAY,
+            type: this.$refs.grdDetail.getDataSource()[j].HTHUC,
+          });
         }
 
         return objDataMaster;
       }
     },
 
-    async SignXML(){
+    async SignXML() {
       let data_xml = this.onGeneralXML();
 
       console.log("data_xml  +===>", data_xml);
@@ -775,29 +847,29 @@ export default {
       });
 
       if (resConvertXML.success) {
-          const objXml = [
-            {
-              master_pk: this.modelMaster.PK,
-              xml: JSON.stringify(resConvertXML.data)
-                .toString()
-                .replaceAll('"', "")
-                .replaceAll("<DLTKhai>", "<DLTKhai Id='ID1'>"),
-            },
-          ];
+        const objXml = [
+          {
+            master_pk: this.modelMaster.PK,
+            xml: JSON.stringify(resConvertXML.data)
+              .toString()
+              .replaceAll('"', "")
+              .replaceAll("<DLTKhai>", "<DLTKhai Id='ID1'>"),
+          },
+        ];
 
-          jQuery.support.cors = true;
-          $.ajax({
-            url: "http://localhost:1080/issueXmlList",
-            dataType: "text",
-            method: "POST",
-            data: {
-              crt_by: this.user.USER_ID,
-              xml: JSON.stringify(objXml).toString(),
-            },
-            error: this.onErrorissueXmlList,
-            success: this.onSuccessissueXmlList,
-          });
-        }
+        jQuery.support.cors = true;
+        $.ajax({
+          url: "http://localhost:1080/issueXmlList",
+          dataType: "text",
+          method: "POST",
+          data: {
+            crt_by: this.user.USER_ID,
+            xml: JSON.stringify(objXml).toString(),
+          },
+          error: this.onErrorissueXmlList,
+          success: this.onSuccessissueXmlList,
+        });
+      }
     },
 
     async onErrorissueXmlList(json, textStatus, errorThrown) {
@@ -892,7 +964,7 @@ export default {
         NO: this.$refs.grdDetail.getDataSource().length + 1,
         PK: "",
         TEI_DECLARATION_M_PK: this.modelMaster.PK,
-        TTCHUC: this.getPara("CN",obj_token.issue_by),
+        TTCHUC: this.getPara("CN", obj_token.issue_by),
         MST: obj_token.dn_mst,
         SERI: obj_token.serial_number,
         DNGAY: obj_token.not_after,
@@ -901,26 +973,22 @@ export default {
       });
     },
 
-    getPara( paraname,  data)
-    {
+    getPara(paraname, data) {
       let result = "";
       let start = data.indexOf(paraname + "=");
-      if (start >= 0 && start + paraname.length < data.length)
-      {
-          start = start + paraname.length + 1;
+      if (start >= 0 && start + paraname.length < data.length) {
+        start = start + paraname.length + 1;
 
-          let spa = data.indexOf(",", start);
+        let spa = data.indexOf(",", start);
 
-          if (spa >= 0 && data.length > spa && spa - start > 0)
-          {
-              result = data.substring(start, spa);
-          }
-          else
-          {
-              result = data.substring(start);
-          }
+        if (spa >= 0 && data.length > spa && spa - start > 0) {
+          result = data.substring(start, spa);
+        }
+        else {
+          result = data.substring(start);
+        }
 
-          result.replace(paraname + "=", "");
+        result.replace(paraname + "=", "");
       }
       return result;
     },
@@ -979,6 +1047,43 @@ export default {
       this.modelMaster.PBAN = "2.0.1";
       this.modelMaster.CMTMTTIEN = "0";
       this.$refs.grdDetail.Clear();
+    },
+
+    openManualDialogPDF() {
+      if (this.hasForm) {
+        if (this.manualIsMinimizedPDF) {
+          this.manualIsMinimizedPDF = false
+          this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true
+        } else {
+          this.dialogIsShow = true
+        }
+      }
+    },
+
+    restoreManualDialogPDF() {
+      this.manualIsMinimizedPDF = false
+      this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true
+    },
+
+    openManualDialog() {
+      if (this.hasForm) {
+        if (this.manualIsMinimized) {
+          this.manualIsMinimized = false
+          this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true
+        } else {
+          this.dialogIsShow = true
+        }
+      }
+    },
+
+    restoreManualDialog() {
+      this.manualIsMinimized = false
+      this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true
+    },
+
+    async pdfUrlGetter(pk) {
+      const pdfUrlExcel = await this.getDeclariton(this, pk);
+      return pdfUrlExcel;
     },
   }
 }

@@ -2785,7 +2785,6 @@
                 if (p_filter_paras) {
                     await this._onLoad(p_filter_paras);
                 } else {
-                    console.log("this.filter_paras",this.filter_paras)
                     await this._onLoad(this.filter_paras);
                 }
                 if (this.autoresize) {

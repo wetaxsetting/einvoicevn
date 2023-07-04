@@ -1018,14 +1018,14 @@ export default {
       this.modelMaster.TNNT = this.dataMasterList.companyList.find(item => item.VAL == this.modelMaster.TEI_COMPANY_PK).NAME;
       this.modelMaster.CQTQLY = null;
       this.modelMaster.MCQTQLY = "00";
-      this.modelMaster.MSO = "00";
+      this.modelMaster.MSO = "01/ĐKTĐ-HĐĐT";
       this.modelMaster.MST = this.dataMasterList.companyList.find(item => item.VAL == this.modelMaster.TEI_COMPANY_PK).TAX_CODE;
       this.modelMaster.DDANH = null;
-      this.modelMaster.CODE = "00"; //Declare_CODE
+      this.modelMaster.CODE = "1"; //Declare_CODE
       this.modelMaster.TEN = null;
       this.modelMaster.NLHE = null;
       this.modelMaster.DCLHE = null;
-      this.modelMaster.HTHUC = "00";
+      this.modelMaster.HTHUC = "1";
       this.modelMaster.DTLHE = null;
       this.modelMaster.DCTDTU = null;
       this.modelMaster.NLAP = new Date().toISOString().substr(0, 10).replaceAll("-", "");

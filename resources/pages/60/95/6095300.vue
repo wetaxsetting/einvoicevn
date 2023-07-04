@@ -44,7 +44,7 @@
                     <BaseInput colspan="2" clearable dense hide-details :label="$t('website')" v-model="WEB_SITE"></BaseInput>
                     <BaseInput colspan="3" clearable dense hide-details :label="$t('mcqt')" v-model="macqt"></BaseInput>
                     <BaseSelect colspan="1" :label="$t('file_integrity')" v-model="file_integrity" :lstData="file_integrity_list" item-text="NAME" item-value="CODE" />
-                    <BaseGridView colspan="12" :header="grd_header_m" :setting="true" :headertype="1" sel_procedure="EI_SEL_6090300_SEL_TEI_EINVOICE_CLOUD" @onSelectionDataChanged="onGridSelectionChanged" ref="grdAPInvoiceReview" :height="gridHeight" :selectionmode="'singlecell'" :autoresize="false" :filter_paras="[
+                    <BaseGridView colspan="12" :header="grd_header_m" :setting="true" :headertype="1" sel_procedure="EI_SEL_6090300_SEL_TEI_EINVOICE_CLOUD" ref="grdAPInvoiceReview" :height="gridHeight" :selectionmode="'singlecell'" :autoresize="false" :filter_paras="[
                 this.selected_company,
                 this.dt_from,
                 this.dt_to,
@@ -59,7 +59,7 @@
                 this.WEB_SITE, // khong sai
                 this.file_integrity,
                 this.date_type,
-              ]" @cellDblClick="onDblClickCell" @cellClick="onCellClick" upd_procedure="EI_UPD_6090300_EINVOICE_CLOUD" :editable="true" :update_paras="['PK']" :menu_cd="'6095300'" :id="'grdAPInvoiceReview'" allow-cookie />
+              ]" @cellClick="onCellClick" upd_procedure="EI_UPD_6090300_EINVOICE_CLOUD" :editable="true" :update_paras="['PK']" :menu_cd="'6095300'" :id="'grdAPInvoiceReview'" allow-cookie />
                 </GwGridLayout>
             </GwGridLayout>
         </v-col>
@@ -446,21 +446,12 @@ export default {
                 "report_" + this.dt_from + "-" + this.dt_to + ".xlsx"
             );
             this.showLoading = false;
-        },
-        onDblClickCell(cell) {
-            // console.log(cell);
-        },
+        },      
         toggleRight() {
             this.showRight = this.showRight ? false : true;
             this.RightCols = !this.showRight ? 0 : 5;
             this.btnIconType = !this.showRight ? "skip_next" : "skip_prev";
         },
-
-        async onGridSelectionChanged(data) {
-            // console.log(data)
-            this.selected_rows = data;
-        },
-
         async changeFile(file) {
             // console.log("file",file)
             if (file == "" || file == "undefined" || file == null) {
@@ -551,7 +542,7 @@ export default {
             rowType
         }) {
             //  console.log(column);
-            console.log(data);
+            //console.log(data);
             if (data.PDF_URL == null || data.PDF_URL == "") {
                 this.tei_einvoice_cloud_pk = data.PK;
             } else {
@@ -570,9 +561,7 @@ export default {
             this.item_nlhd = data.NLHDCLQUAN;
             this.item_so_hoa_don = data.SHDCLQUAN;
             this.item_pk = data.PK;
-            setTimeout(() => {
-                this.$refs.gridview.loadData();
-            }, 500);
+            this.$refs.gridview.loadData();
         },
 
         async onSearch() {

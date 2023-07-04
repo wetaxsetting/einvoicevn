@@ -10,14 +10,15 @@ export const state = () => ({
   colorTheme: "rgba(0, 96, 190, 1)", // "rgba(55, 88, 117, 1)",
   textColorTheme: "white--text",
   darkTheme: false,
+  flatMenuList: [],
   menuList: [],
   logs: [],
   dictionaryList: [],
   dictionaryFormID: "",
   waitingChangeLang: false,
-  activeForm: null,
+  activeForm2: null,
   secondDBMenu: [],
-  btnThemeStyle: {
+  /* btnThemeStyle: {
     isIcon: false,
     isDepressed: true,
     isOutlined: false,
@@ -25,7 +26,7 @@ export const state = () => ({
     isShaped: false,
     isText: false,
     isTile: false,
-  },
+  }, */
   cwCommonParam: [],
   menuDrawerWidth: 0,
   favoriteMenu: [],
@@ -33,7 +34,7 @@ export const state = () => ({
   windowHeight: 0,
   windowWidth: 0,
   formContainerHeight: 0,
-  componentKey: 1
+  componentKey: 1,
 });
 
 export const getters = {
@@ -43,12 +44,13 @@ export const getters = {
   textColorTheme: (state) => state.textColorTheme,
   darkTheme: (state) => state.darkTheme,
   menuList: (state) => state.menuList,
+  flatMenuList: (state) => state.flatMenuList,
   logs: (state) => state.logs,
   dictionaryList: (state) => state.dictionaryList,
   dictionaryFormID: (state) => state.dictionaryFormID,
   dbType: (state) => state.dbType,
   waitingChangeLang: (state) => state.waitingChangeLang,
-  activeForm: (state) => state.activeForm,
+  activeForm2: (state) => state.activeForm2,
   dictionaryList_i18n: (state) => state.dictionaryList_i18n,
   cwCommonParam: (state) => state.cwCommonParam,
   menuDrawerWidth: (state) => state.menuDrawerWidth,
@@ -57,7 +59,7 @@ export const getters = {
   windowHeight: (state) => state.windowHeight,
   windowWidth: (state) => state.windowWidth,
   formContainerHeight: (state) => state.formContainerHeight,
-  componentKey: (state) => state.componentKey
+  componentKey: (state) => state.componentKey,
 };
 
 export const mutations = {
@@ -91,6 +93,12 @@ export const mutations = {
   FETCH_MENU_LIST_FAILURE: (state) => {
     state.menuList = [];
   },
+  FETCH_FLAT_MENU_LIST_SUCCESS: (state, flatMenuList) => {
+    state.flatMenuList = flatMenuList;
+  },
+  FETCH_FLAT_MENU_LIST_FAILURE: (state) => {
+    state.flatMenuList = [];
+  },
   WRITE_LOGS: (state, logs) => {
     state.logs = logs;
   },
@@ -113,7 +121,7 @@ export const mutations = {
     state.waitingChangeLang = waitingChangeLang;
   },
   FETCH_ACTIVE_FORM: (state, activeForm) => {
-    state.activeForm = activeForm;
+    state.activeForm2 = activeForm;
   },
   FETCH_DICTIONARY_I18N_SUCCESS: (state, dictionaryList_i18n) => {
     state.dictionaryList_i18n = { ...dictionaryList_i18n };
@@ -150,7 +158,7 @@ export const mutations = {
   },
   UPDATE_COMPONENT_KEY: (state, key) => {
     state.componentKey = key;
-  }
+  },
 };
 
 export const actions = {
@@ -166,18 +174,13 @@ export const actions = {
   async getUserInfoServer({ state }) {
     try {
       let instance = this.$axios.create({
-        baseURL: process.env.LOCAL_API_URL
-          ? process.env.LOCAL_API_URL
-          : process.env.API_URL,
+        baseURL: process.env.LOCAL_API_URL ? process.env.LOCAL_API_URL : process.env.API_URL,
       });
 
-      instance.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${state.token}`;
+      instance.defaults.headers.common["Authorization"] = `Bearer ${state.token}`;
       instance.defaults.headers.common["Accept-Language"] = state.language;
       const user = await instance.$get("/user/getuser");
-      //console.log(user)
-
+      // console.log(user)
       return user;
     } catch (e) {
       return false;
@@ -185,29 +188,43 @@ export const actions = {
   },
 
   async getMenuListServer({ commit, state }, language) {
-    let instance = this.$axios.create({
-      baseURL: process.env.LOCAL_API_URL
-        ? process.env.LOCAL_API_URL
-        : process.env.API_URL,
-    });
-    instance.defaults.headers.common["Authorization"] = `Bearer ${state.token}`;
-    instance.defaults.headers.common["Accept-Language"] = language;
-    let { data, message } = await instance.$post("/dso/callproc", {
-      proc: "SYS_SEL_USER_MENU",
-      para: [state.user.PK],
-    });
-    if (data) {
-      const secondDBMenu = data.filter((x) => x.SECOND_DB_YN === "Y");
-      commit("FETCH_SECOND_DB_MENU_SUCCESS", secondDBMenu);
-      const menuList = listToTree(data, {
-        idKey: "PK",
-        parentKey: "P_PK",
-        childrenKey: "childMenu",
+    let dataTemp, messageTemp;
+    try {
+      let instance = this.$axios.create({
+        baseURL: process.env.LOCAL_API_URL ? process.env.LOCAL_API_URL : process.env.API_URL,
       });
-      commit("FETCH_MENU_LIST_SUCCESS", menuList);
-    } else {
-      console.log("get menu error: " + message);
-      commit("FETCH_MENU_LIST_FAILURE");
+      instance.defaults.headers.common["Authorization"] = `Bearer ${state.token}`;
+      instance.defaults.headers.common["Accept-Language"] = language;
+      let { data, message } = await instance.$post("/dso/callproc", {
+        proc: "SYS_SEL_USER_MENU",
+        para: [state.user.PK],
+      });
+      dataTemp = data;
+      messageTemp = message;
+      if (data && data.length) {
+        const secondDBMenu = data.filter((x) => x.SECOND_DB_YN === "Y");
+        commit("FETCH_SECOND_DB_MENU_SUCCESS", secondDBMenu);
+        const menuList = listToTree(data, {
+          idKey: "PK",
+          parentKey: "P_PK",
+          childrenKey: "childMenu",
+        });
+        commit("FETCH_FLAT_MENU_LIST_SUCCESS", data);
+        commit("FETCH_MENU_LIST_SUCCESS", menuList);
+      } else {
+        console.log("get menu error-data:", data);
+        console.log("get menu error-message: ", message);
+        commit("FETCH_FLAT_MENU_LIST_FAILURE");
+        commit("FETCH_MENU_LIST_FAILURE");
+        // redirect("/login");
+        window.location.href = "/login";
+      }
+    } catch (error) {
+      // redirect("/login");
+      window.location.href = "/login";
+      console.log("dataTemp:", dataTemp);
+      console.log("messageTemp:", messageTemp);
+      console.error("getMenuListServer-catch exception:", error.message);
     }
   },
 
@@ -263,22 +280,37 @@ export const actions = {
   },
 
   async getMenuList({ commit, state }) {
-    let { data, message } = await this.$axios.$post("dso/callproc", {
-      proc: "SYS_SEL_USER_MENU",
-      para: [state.user.PK],
-    });
-    if (data) {
-      const secondDBMenu = data.filter((x) => x.SECOND_DB_YN === "Y");
-      commit("FETCH_SECOND_DB_MENU_SUCCESS", secondDBMenu);
-      const menuList = listToTree(data, {
-        idKey: "PK",
-        parentKey: "P_PK",
-        childrenKey: "childMenu",
+    let dataTemp, messageTemp;
+    try {
+      let { data, message } = await this.$axios.$post("dso/callproc", {
+        proc: "SYS_SEL_USER_MENU",
+        para: [state.user.PK],
       });
-      commit("FETCH_MENU_LIST_SUCCESS", menuList);
-    } else {
-      console.log("get menu error: " + message);
-      commit("FETCH_MENU_LIST_FAILURE");
+      dataTemp = data;
+      messageTemp = message;
+      if (data && data.length) {
+        const secondDBMenu = data.filter((x) => x.SECOND_DB_YN === "Y");
+        commit("FETCH_SECOND_DB_MENU_SUCCESS", secondDBMenu);
+        const menuList = listToTree(data, {
+          idKey: "PK",
+          parentKey: "P_PK",
+          childrenKey: "childMenu",
+        });
+        commit("FETCH_FLAT_MENU_LIST_SUCCESS", data);
+        commit("FETCH_MENU_LIST_SUCCESS", menuList);
+      } else {
+        window.location.href = "/login";
+        // redirect("/login");
+        console.log("get menu error-data:", data);
+        console.log("get menu error-message: ", message);
+        commit("FETCH_FLAT_MENU_LIST_FAILURE");
+        commit("FETCH_MENU_LIST_FAILURE");
+      }
+    } catch (error) {
+      window.location.href = "/login";
+      console.log("dataTemp:", dataTemp);
+      console.log("messageTemp:", messageTemp);
+      console.error("getMenuListServer-catch exception:", error.message);
     }
   },
 
@@ -374,9 +406,7 @@ export const actions = {
         para: [element],
       });
       if (res.data && res.data.length) {
-        const idx = dictArray.findIndex(
-          (item) => item.hasOwnProperty(element) === true
-        );
+        const idx = dictArray.findIndex((item) => item.hasOwnProperty(element) === true);
         if (idx > -1) {
           dictArray.splice(idx, 1);
           var key = element;
@@ -399,15 +429,14 @@ export const actions = {
     commit("FETCH_WAITING_CHANGE_LANG_SUCCESS", waitingChangeLang);
   },
 
-  setActiveForm({ commit }, activeForm) {
-    commit("FETCH_ACTIVE_FORM", activeForm);
+  setActiveForm({ commit }, formURL) {
+    const menuCode = formURL && formURL.split("/").pop() ? formURL.split("/").pop().toUpperCase() : "";
+    // console.log("setActiveForm-menuCode:", menuCode)
+    commit("FETCH_ACTIVE_FORM", menuCode);
   },
 
   //use for select language, will reset all dictionary
-  async refreshDictionary_i18n(
-    { commit },
-    { app, lang, openTabs, activeTab, _db2 }
-  ) {
+  async refreshDictionary_i18n({ commit }, { app, lang, openTabs, activeTab, _db2 }) {
     commit("FETCH_DICTIONARY_I18N_FAILED");
     commit("SET_LANG", { app: app, lang: lang });
 
@@ -433,13 +462,13 @@ export const actions = {
           if (dictArray[i].FORM_ID === "COMMON") {
             commonDict[dictArray[i].ID.toLowerCase()] = dictArray[i].MESSAGE;
             //console.log(commonDict[ dictArray[i].ID.toLowerCase()  ] );
-            continue;
-          }
-          //console.log(`${dictArray[i].FORM_ID} - ${dictArray[i].ID}`);
-          if (!formDict[dictArray[i].FORM_ID]) {
-            formDict[dictArray[i].FORM_ID] = {};
-            formDict[dictArray[i].FORM_ID][dictArray[i].ID.toLowerCase()] =
-              dictArray[i].MESSAGE;
+            //continue;
+          } else {
+            //console.log(`${dictArray[i].FORM_ID} - ${dictArray[i].ID}`);
+            if (!formDict[dictArray[i].FORM_ID]) {
+              formDict[dictArray[i].FORM_ID] = {};
+            }
+            formDict[dictArray[i].FORM_ID][dictArray[i].ID.toLowerCase()] = dictArray[i].MESSAGE;
             //console.log(formDict[dictArray[i].FORM_ID]);
           }
         }
@@ -473,9 +502,13 @@ export const actions = {
     commit("SET_LANG", { app: app, lang: lang });
 
     let objDictionary = { ...state.dictionaryList_i18n };
+
     if (objDictionary.hasOwnProperty(formID)) {
       //dictionary has existed (swith tab)
       //console.log( objDictionary[formID])
+      //app.i18n.mergeLocaleMessage(lang, objDictionary[formID]);
+
+      //app.i18n.setLocaleMessage(lang, {});
       app.i18n.mergeLocaleMessage(lang, objDictionary[formID]);
     } else {
       try {
@@ -494,13 +527,52 @@ export const actions = {
         }
 
         objDictionary[formID] = formDict;
+
+        //app.i18n.setLocaleMessage(lang, {});
         app.i18n.mergeLocaleMessage(lang, formDict);
+
         commit("FETCH_DICTIONARY_I18N_SUCCESS", objDictionary);
       } catch (e) {
         console.log(e);
       }
     }
+
     //console.log(app.i18n)
+  },
+
+  switchDictionary({ commit, state }, { app, lang, form, _db2 }) {
+    let objDictionary = { ...state.dictionaryList_i18n };
+    if (objDictionary.hasOwnProperty(form.MENU_CD)) {
+      console.log('state.user ', state.user);
+      //dictionary has existed (swith tab)
+      //console.log( objDictionary[formID])
+      //app.i18n.mergeLocaleMessage(lang, objDictionary[formID]);
+      setTimeout(async () => {
+        //app.i18n.setLocaleMessage(lang, {});
+        //app.i18n.mergeLocaleMessage(lang, objDictionary[form.MENU_CD]);
+        // console.log(state.user)
+
+        if (!state.user) {
+          console.log('state.user ', state.user);
+          window.location.href = "/login";
+          return;
+        }
+
+        const theme = state.user.USER_THEME ? JSON.parse(state.user.USER_THEME) : "";
+        if (theme && Object.keys(theme).length) {
+          if (theme.mergeDictionary == true) {
+            app.i18n.mergeLocaleMessage(lang, objDictionary[form.MENU_CD]);
+          }
+        } else {
+          // default
+          app.i18n.mergeLocaleMessage(lang, objDictionary[form.MENU_CD]);
+        }
+
+        commit("SET_DICT_FORM_ID", form.MENU_CD);
+        const menuCode = form.tabUrl && form.tabUrl.split("/").pop() ? form.tabUrl.split("/").pop().toUpperCase() : "";
+        commit("FETCH_ACTIVE_FORM", menuCode);
+      }, 1);
+    }
   },
 
   async getCwCommonParam({ commit, state }) {
@@ -518,9 +590,7 @@ export const actions = {
 
   async getCwCommonParamServer({ commit, state }) {
     let instance = this.$axios.create({
-      baseURL: process.env.LOCAL_API_URL
-        ? process.env.LOCAL_API_URL
-        : process.env.API_URL,
+      baseURL: process.env.LOCAL_API_URL ? process.env.LOCAL_API_URL : process.env.API_URL,
     });
     instance.defaults.headers.common["Authorization"] = `Bearer ${state.token}`;
     instance.defaults.headers.common["Accept-Language"] = language;
@@ -536,7 +606,7 @@ export const actions = {
     }
   },
 
-  updateMenuDrawerWidth({ commit }, width) {    
+  updateMenuDrawerWidth({ commit }, width) {
     commit("FETCH_MENU_DRAWER_WIDTH_SUCCESS", width);
   },
 
@@ -567,5 +637,5 @@ export const actions = {
 
   updateComponentKey({ commit }, key) {
     commit("UPDATE_COMPONENT_KEY", key);
-  }
+  },
 };

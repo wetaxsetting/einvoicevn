@@ -1,7 +1,8 @@
 <template>
     <v-card ref="basegridview" :height="limitHeight" :id="'gridview_' + idKey" v-resize="_onMyResize" color="transparent" outlined
+        style="overflow-y:hidden; overflow-x: auto"
             :style="{
-        width: '100%', 'min-height': heightZoneMin,  position: 'relative', overflow: 'auto',
+        width: '100%', 'min-height': heightZoneMin,  position: 'relative',
         display: 'inline-block', 'vertical-align': 'top',padding: '2px',
     }">
         <v-row no-gutters align="center" justify="center" >
@@ -66,7 +67,30 @@
                         </template>
                         <span>{{ $t("set_panel") }}</span>
                     </v-tooltip>   
-                    <span style="font-weight:bold; color: red" class="px-2">{{label}}</span>
+
+                    <v-tooltip top >
+                        <template v-slot:activator="{ on }">
+                            <v-btn :id="'gridviewDelete_' + idKey" depressed icon v-on="on"  class="mx-1 red white--text" 
+                                style="height: 17px !important; width: 17px !important"
+                                @click="myGridOnDeleteInsert"
+                            >
+                            <v-icon small >mdi-delete-circle</v-icon>
+                            </v-btn>
+                        </template>
+                        <span>{{ $t("delete_new_row") }}</span>
+                    </v-tooltip>   
+                    <v-tooltip top >
+                        <template v-slot:activator="{ on }">
+                            <v-btn :id="'gridviewExport_' + idKey" depressed icon v-on="on"   class="mx-1 green--text" 
+                                style="height: 15px !important; width: 15px !important"
+                                @click="selectallrows" v-show="autoselectallrows"
+                            >
+                            <v-icon small >mdi-checkbox-multiple-marked-circle-outline</v-icon>
+                            </v-btn>
+                        </template>
+                        <span>{{ $t("select_all") }}</span>
+                    </v-tooltip>
+                    <span :style="`font-weight:bold; color: ${labelInfo.Color}`" :class="`px-2 ${labelInfo.Class}`">{{labelInfo.Label||label}}</span>
                     <v-spacer></v-spacer>
 
                     <!-- v-if="reportList && reportList.length > 0" -->
@@ -197,29 +221,33 @@
         <span @contextmenu="contextmenuMenu($event)"
               @mousedown="mousedown($event)">
             <jqxgrid ref="myGrid" :name="'myGrid_' + idKey"
-                     @rowclick="myGridOnRowClick($event)"
-                     @cellselect="myGridOnCellSelect($event)"
-                     @cellclick="myGridOnCellClick($event)"
-                     @cellbeginedit="cellBeginEditEvent($event)"
-                     @cellendedit="cellEndEditEvent($event)"
-                     @rowselect="myGridOnRowSelect($event,'select')"
-                     @rowunselect="myGridOnRowSelect($event,'unselect')"
-                     @sort="myGridOnSort($event)"
-                     :handlekeyboardnavigation="handlekeyboardnavigation"
-                     :width="'100%'" :height="limitHeight-28"
-                     :columns="columns" :columngroups="columngroups"
-                     :editable="editable" :editmode="'dblclick'"
-                     :showstatusbar="showstatusbar" :statusbarheight="statusbarheight"
-                     :showaggregates="showaggregates" :altrows="altrows"
-                     :columnsresize="true" :virtualmode="false"
-                     :rendergridrows="rendergridrows" :enabletooltips="enableTooltip"
-                     :selectionmode="gridSelectionMode"
-                     :rowsheight="rowsheight"
-                     :columnsheight="columnsheight"
-                     :sortable="true"
-                     :clipboard="true"
-                     :cellhover="cellhover"
-
+                    @rowclick="myGridOnRowClick($event)"
+                    @cellselect="myGridOnCellSelect($event)"
+                    @cellclick="myGridOnCellClick($event)"
+                    @cellbeginedit="cellBeginEditEvent($event)"
+                    @cellendedit="cellEndEditEvent($event)"
+                    @rowselect="myGridOnRowSelect($event,'select')"
+                    @rowunselect="myGridOnRowSelect($event,'unselect')"
+                    @sort="myGridOnSort($event)"
+                    :handlekeyboardnavigation="handlekeyboardnavigation"
+                    :width="'100%'" :height="limitHeight-28"
+                    :columns="columns" :columngroups="columngroups"
+                    :editable="editable" :editmode="'dblclick'"
+                    :showstatusbar="showstatusbar" :statusbarheight="statusbarheight"
+                    :showaggregates="showaggregates" :altrows="altrows"
+                    :columnsresize="true" :virtualmode="false"
+                    :rendergridrows="rendergridrows" :enabletooltips="enableTooltip"
+                    :selectionmode="gridSelectionMode"
+                    :rowsheight="rowsheight"
+                    :columnsheight="columnsheight"
+                    :sortable="true"
+                    :clipboard="true"
+                    :cellhover="cellhover"
+                    :filterable="true"
+                    :autoshowfiltericon="true"
+                    :autoselectallrows="autoselectallrows"
+                    :columnsreorder="defaultcolumnsreorder"
+                    
             >
             </jqxgrid>
         </span>
@@ -252,8 +280,8 @@
             <ul>
                 <li id="refresh"> {{$t('refresh')}} </li>
                 <li id="resize_column"> {{$t('resize_column')}} </li>
-                <li id="column_display"  v-if="$attrs.hasOwnProperty('allow-cookie') && !!menu_cd && !!id" > {{$t('column_display')}} </li>
-                <li id="report_template" v-if="user.SYSADMIN_YN == 'Y' && !!menu_cd && !!id"> {{$t('report_template')}} </li>
+                <!-- <li id="column_display"  v-if="$attrs.hasOwnProperty('allow-cookie') && !!menu_cd && !!id" > {{$t('column_display')}} </li> -->
+                <li id="report_template" v-if="user && user.SYSADMIN_YN == 'Y' && !!menu_cd && !!id"> {{$t('report_template')}} </li>
                 <li v-if="!!!fixselectionmode">
                     {{$t('selection_mode')}}
                     <ul>
@@ -264,6 +292,16 @@
                         <li id="multiplecells"> {{$t('multiple_cells')}}  </li>
                     </ul>
                 </li>
+                <li>
+                    {{$t('column_display')}}
+                    <ul>
+                        <li id="column_chooser"> {{$t('column_chooser')}}  </li>
+                        <li :id="this.defaultcolumnsreorder ? 'disable_drag_and_drop': 'enable_drag_and_drop'"> {{  $t(this.defaultcolumnsreorder ? 'disable_drag_and_drop' : 'enable_drag_and_drop')}}</li>
+                        <li id="save_header"> {{$t('save_header')}}  </li>
+                        <li id="reset_header"> {{$t('reset_header')}}  </li>
+                    </ul>
+                </li>
+                
             </ul>
         </jqxmenu>
 
@@ -456,7 +494,7 @@
             },
             autoresize: {
                 type: Boolean,
-                default: true,
+                default: false,
             },
             enableTooltip: {
                 type: Boolean,
@@ -486,6 +524,7 @@
             autocheckbox: { type: Boolean, default: true },
             autotranslate: { type: Boolean, default: true },
             exportexcel2:{type: Function, default: null},
+            exportOption:{  type: Object  },
             dialogCallback:{  type: Object  },
             showaggregatestop:{
                 type: Boolean,
@@ -495,10 +534,19 @@
                             default: null 
                         },
             label: { type: String, default: null },
+            labelInfo: {
+                type: Object,
+                default: () => {
+                    let _labelInfo = {Color:"red",Class: "", Label:""}
+                    return _labelInfo;
+                },
+            },
             columnsheight: { type: Number, default: 32 },
             db2: { type: String, default: undefined},
             checkMenu: { type: Boolean, default: true },
-            
+            filterRow: {type: Boolean, default: false },
+            autoselectallrows: {type: Boolean, default: false },
+            columnsreorder: {type: Boolean, default: false }            
         },
         data() {
             return {
@@ -547,6 +595,8 @@
 
                 //vng-207 20211127
                 //function apply for hr style
+                defaultcolumnsreorder:false,
+                sysCols :["_rowstatus", "_rowstatus2", "_rowstatusUnMarked", "_colchange"],
                 headerCreating: false,
                 columnsTmp: [],
                 customCols: [],
@@ -566,6 +616,7 @@
                 gridFilterList:[],
                 firstFilter:false,
                 columnNameList:[],
+                tempDragandDropHeader: null,
                 gridFilterDropDownList:{},
                 gridFilterCondition:{},
 
@@ -602,6 +653,7 @@
                 
                 aggregates:null,
                 summaryTypes:null,
+                roundHeader:[],
 
                 cellPreviewDialog: false,
                 cellPreviewImd:null,
@@ -758,22 +810,41 @@
                     ]
                 });
 
+                menu.push({ 
+                    id: "column_display", text: this.$t("column_display"), icon: "mdi-checkbox-marked-outline",
+                    menu: [
+                        { id: "column_chooser", text: this.$t("column_chooser") },
+                        { id: this.defaultcolumnsreorder ? "disable_drag_and_drop": "enable_drag_and_drop", text: this.$t(this.defaultcolumnsreorder ? "disable_drag_and_drop": "enable_drag_and_drop" ) },
+                        { id: "save_header", text: this.$t("save_header") },
+                        { id: "reset_header", text: this.$t("reset_header") },
+                    ]
+                });
+
                 return menu;
             },
             userSavedTheme() {
-                if (this.user.USER_THEME) {
+                if (this.user && this.user.USER_THEME) {
                     const theme = JSON.parse(this.user.USER_THEME);
                     return theme && Object.keys(theme).length ? theme : null;
                 }
                 return null;
             },
             cookieId: function() {
-                return ( this.id && this.menu_cd) ? `${this.user.PK}_grid_${this.menu_cd}_${this.id}` : undefined;
+                let _cookieId = null;
+                try {
+                    let formId =  document
+                        .getElementById("appBar")
+                        .getElementsByClassName("v-chip--active")[0]
+                        .getElementsByClassName("v-chip__content")[0].innerText.replace(/\s+/g, "_");
+                    let gridId = this.$vnode.data.ref;
+                    _cookieId = `${this.user.PK}_${formId}_${gridId}`;
+                } catch {}
+                return _cookieId;
             },
 
             label2: function(){
                 return this.$attrs.hasOwnProperty("label-right") ? this.$attrs["label-right"] : "";
-            }
+            },
         },
         mounted() {
             //console.log(XLSX)
@@ -792,12 +863,17 @@
                 {CODE: true, NAME: this.$t('yes')},
                 {CODE: false, NAME: this.$t('no')},
             ];
-            if(this.menu_cd && this.id) {
+            if(this.menu_cd && this.id && this.cookieId !=null) {
                 let _gridCookie = Cookies.get(this.cookieId);
                 if(_gridCookie){
                     //renew cookie
                     Cookies.set(this.cookieId, _gridCookie );
                     this.gridCookie = JSON.parse(_gridCookie);
+                    this.gridCookie = this.gridCookie.map( q=> {
+                        return { datafield: q.c, hidden: q.h =='T' ? true : false, index: q.idx };
+                    });
+
+                    //console.log(this.gridCookie);
                 }
             }
             
@@ -810,6 +886,7 @@
 
         methods: {
             renewCss() {
+                
                 try {
                     let element = document.getElementsByName("myGrid_"+this.idKey);
                     let gridContent = element[0].childNodes[0].childNodes[0].childNodes //.find(q => q.id.includes("contentjqxGrid"));
@@ -1159,9 +1236,28 @@
                         } catch { }
                     })
                 }
-                const result = await this._dsoCall(_dso, "update", notify, '', this.db2, delayNextCall);
+                let result = await this._dsoCall(_dso, "update", notify, '', this.db2, delayNextCall);
                 let isSuccess = false;
                 if (result) {
+
+                    result = result.map( (q,idx) => {
+                        let timeKey = that._getTimeSpan() + "";
+                        let keyID = timeKey.substr(timeKey.length - 5);
+                        let o = Object.assign({}, q);
+                        if( this.roundHeader?.length > 0) {
+                            for(let i = 0; i< this.roundHeader.length; i++) {
+                                let round = this.roundHeader[i]["round"];
+                                let header = this.roundHeader[i]["col"];
+                                o[header] = (( q[header] && typeof q[header] == 'number') ?  Number( q[header].toFixed(round)): q[header])   ;
+                            }
+                        }
+
+                        o.UNIQUEID = keyID * 10000 + idx;
+                        o.INDEX=idx+1;
+                        return o;
+                    } );
+
+
                     this.$emit("callSaveResult", true);
 
                     this.onGridCalculate(result);
@@ -1472,101 +1568,130 @@
             },
 
             async myGridOnExport(_handleData){
-                let that = this;
-                let gridDatas = _handleData && _handleData.length > 0 ? [..._handleData] : [...this.$refs.myGrid.getrows()] ;
-                if(gridDatas.length <=0) {
-                    this.showNotification("warning", this.$t("no_data_to_export"), '');
-                    return;
-                }
-
                 this.$refs.myGrid.showloadelement();
+                try {
+                    let that = this;
+                    let gridDatas = _handleData && _handleData.length > 0 ? [..._handleData] : [...this.$refs.myGrid.getrows()] ;
+                    if(gridDatas.length <=0) {
+                        this.showNotification("warning", this.$t("no_data_to_export"), '');
+                        return;
+                    }
 
-                await this.wait(500);
-
-                let displayedHeader  = lodash.cloneDeep( this.columnsTmp.filter( q=> (q["visible"] && q["visible"] != false) && (q["hidden"] == undefined || q["hidden"] == false) ) );
-                
-                if(this.gridCookie) {
-                    displayedHeader = displayedHeader.map( (q,idx) => {
-                        q["index"] = idx+1;
-                        return q;
+                    await this.wait(500);
+                    let cols = this.$refs.myGrid.columns.records.filter(q => q.hidden == false || q.hidden == undefined);
+                    let groupCols = this.$refs.myGrid.columngroups;
+                    groupCols.forEach( q => {
+                        let _cols = q.columns.filter(q => q.hidden == false || q.hidden == undefined);
+                        cols.push(..._cols)
                     });
 
-                    let updateHeader = ( _header ) =>{
-                        let header = [..._header];
-                        for(let i = 0; i< header.length; i++) {
-                            let localColumn = that.gridCookie.find( q => q["datafield"] == header[i]["datafield"]);
-                            if(localColumn) {
-                                header[i]["index"] = localColumn["index"];
-                            }
-                        }
-                        if(header["columns"] && header["columns"].length > 0 ) {
-                           header["columns"] = updateHeader(header["columns"] );
-                        }
-                        header = header.sort((a, b) => a.index >= b.index ? 1 : -1);
-                        return header;
-                    };
+                    let colNames = cols.map(q => {return q.datafield});
 
-                    displayedHeader = updateHeader(displayedHeader);
-                }
+                    let displayedHeader  = lodash.cloneDeep( this.columnsTmp.filter( q=> (q["visible"] && q["visible"] != false) /*&& (q["hidden"] == undefined || q["hidden"] == false)*/ || colNames.includes(q.datafield) ) );
+                    if(this.gridCookie) {
+                        displayedHeader = displayedHeader.map( (q,idx) => {
+                            q["index"] = idx+1;
+                            return q;
+                        });
 
-                let displayedHeaderField = [];
-                let maxHeaderRow = 0;
-                let maxHeaderColumn = 0;
-                let excelHeader = [];
-                let colIdx = 0;
-                //let rowIdx = 0;
-
-                //============================FIND THE MAX COL/ROW OF HEADER===============================
-                let findMaxHeader = function (columns, rowIdx) {
-                    maxHeaderRow = rowIdx;
-                    columns.forEach(q => {
-                        let cols = q["columns"];
-                        if(!!cols) {
-                            findMaxHeader(cols, rowIdx + 1);
-                        } else {
-                            ++maxHeaderColumn;
-                        }
-                    })
-                };
-                findMaxHeader(displayedHeader, 1);
-
-                //=========================================================================================
-
-                //==================================GENERATE HEADER========================================
-                for(let i = 0; i< maxHeaderRow; i++) {
-                    excelHeader[i] = [];
-                }
-
-                let buildHeader = function(columns, rowIdx) {
-                    columns.forEach(q => {
-                        let cols = q["columns"];
-                        if(!!cols) {
-                            excelHeader[rowIdx][colIdx] = q["text"];
-                            buildHeader(cols, rowIdx + 1);
-                        } else {
-                            for(let i = 0; i < maxHeaderRow ; i++){
-                                if(i == rowIdx) {
-                                    excelHeader[i][colIdx] = q["text"];
-                                    if(q["datafield"] && q["datafield"] !=undefined){
-                                        displayedHeaderField.push(q["datafield"])
-                                    }
-                                } else {
-                                    excelHeader[i][colIdx] = excelHeader[i][colIdx] ? excelHeader[i][colIdx] : "";
+                        let updateHeader = ( _header ) =>{
+                            let header = [..._header];
+                            for(let i = 0; i< header.length; i++) {
+                                let localColumn = that.gridCookie.find( q => q["datafield"] == header[i]["datafield"]);
+                                if(localColumn) {
+                                    header[i]["index"] = localColumn["index"];
                                 }
                             }
-                            colIdx++;
-                        }
-                    })
-                };
-                buildHeader(displayedHeader, 0);
-                //=========================================================================================
+                            if(header["columns"] && header["columns"].length > 0 ) {
+                            header["columns"] = updateHeader(header["columns"] );
+                            }
+                            header = header.sort((a, b) => a.index >= b.index ? 1 : -1);
+                            return header;
+                        };
 
-                //==================================GENERATE DATA==========================================
-                let exportData = this.buildDataToExport( gridDatas, displayedHeaderField );
+                        displayedHeader = updateHeader(displayedHeader);
+                    }
 
-                await this.exportExceljs(excelHeader, exportData);
+                    try {
+                        //order lại theo drag & drop column
+                        let ordHeader = (_header) => {
+                            _header.forEach(q => {
+                                q["ord"] = colNames.findIndex(qq => qq == q["datafield"]);
 
-                this.$refs.myGrid.hideloadelement();
+                                if(q.columns?.length > 0) {
+                                    ordHeader(q.columns);
+                                    q["ord"] = q.columns[0]["ord"];
+                                }
+                            });
+
+                            _header = _header.sort((a, b) => a.ord >= b.ord ? 1 : -1);
+                        };
+
+                        ordHeader(displayedHeader);
+                    } catch(e) {console.log(e.message)}
+
+
+                    let displayedHeaderField = [];
+                    let maxHeaderRow = 0;
+                    let maxHeaderColumn = 0;
+                    let excelHeader = [];
+                    let colIdx = 0;
+                    //let rowIdx = 0;
+
+                    //============================FIND THE MAX COL/ROW OF HEADER===============================
+                    let findMaxHeader = function (columns, rowIdx) {
+                        maxHeaderRow = rowIdx;
+                        columns.forEach(q => {
+                            let cols = q["columns"];
+                            if(!!cols) {
+                                findMaxHeader(cols, rowIdx + 1);
+                            } else {
+                                ++maxHeaderColumn;
+                            }
+                        })
+                    };
+                    findMaxHeader(displayedHeader, 1);
+
+                    //=========================================================================================
+
+                    //==================================GENERATE HEADER========================================
+                    for(let i = 0; i< maxHeaderRow; i++) {
+                        excelHeader[i] = [];
+                    }
+
+                    let buildHeader = function(columns, rowIdx) {
+                        columns.forEach(q => {
+                            let cols = q["columns"];
+                            if(!!cols) {
+                                excelHeader[rowIdx][colIdx] = q["text"];
+                                buildHeader(cols, rowIdx + 1);
+                            } else {
+                                for(let i = 0; i < maxHeaderRow ; i++){
+                                    if(i == rowIdx) {
+                                        excelHeader[i][colIdx] = q["text"];
+                                        if(q["datafield"] && q["datafield"] !=undefined){
+                                            displayedHeaderField.push(q["datafield"])
+                                        }
+                                    } else {
+                                        excelHeader[i][colIdx] = excelHeader[i][colIdx] ? excelHeader[i][colIdx] : "";
+                                    }
+                                }
+                                colIdx++;
+                            }
+                        })
+                    };
+                    buildHeader(displayedHeader, 0);
+                    //=========================================================================================
+
+                    //==================================GENERATE DATA==========================================
+                    let exportData = this.buildDataToExport( gridDatas, displayedHeaderField );
+
+                    await this.exportExceljs(excelHeader, exportData);
+                } catch(e) {
+                    this.showNotification("warning", this.$t("error_occurs"), '');
+                } finally {
+                    this.$refs.myGrid.hideloadelement();
+                }
             },
 
             buildDataToExport(data, displayedHeaderField){
@@ -1654,7 +1779,7 @@
                     CREATE_DT: moment().format("YYYY-MM-DD hh-mm-ss")
                 }
 
-                worksheet = this.buildExportSheet( worksheet, excelHeader, exportData, headerTitle);
+                worksheet = this.buildExportSheet( worksheet, excelHeader, exportData, headerTitle, 5, this.exportOption);
 
                 await workbook.xlsx.writeBuffer()
                 .then(function(buffer) {
@@ -1696,6 +1821,11 @@
                 return today.getTime();
             },
             exportExcel() {
+                this.myGridOnExport();
+                return;
+
+
+
                 var wb = XLSX.utils.book_new();
                 wb.Props = {
                     Title: "Export to from datagrid",
@@ -1841,6 +1971,30 @@
                         this.rebuildHeader();
                         break;
                     }
+                    case 'column_chooser': {
+                        this.$refs.myGrid.openColumnChooser();
+                        break;
+                    }
+                    case 'enable_drag_and_drop':{
+                        this.defaultcolumnsreorder = true;
+                        this.onSetTempHeader();
+                        this.rebuildHeader();
+                        break;
+                    }
+                    case 'disable_drag_and_drop':{
+                        this.defaultcolumnsreorder = false;
+                        this.onSetTempHeader();
+                        this.rebuildHeader();
+                        break;
+                    }
+                    case 'save_header':{
+                        this.onSaveHeader();
+                        break;
+                    }
+                    case 'reset_header' : {
+                        this.onClearCookie();
+                        break;
+                    }
                     
                     default: {
                         //this.rebuildHeader();
@@ -1882,6 +2036,30 @@
                     }
                     case 'report_template': {
                         this.$refs.ReportManagement.dialogIsShow = true;
+                        break;
+                    }
+                    case 'column_chooser': {
+                        this.$refs.myGrid.openColumnChooser();
+                        break;
+                    }
+                    case 'enable_drag_and_drop':{
+                        this.defaultcolumnsreorder = true;
+                        this.onSetTempHeader();
+                        this.rebuildHeader();
+                        break;
+                    }
+                    case 'disable_drag_and_drop':{
+                        this.defaultcolumnsreorder = false;
+                        this.onSetTempHeader();
+                        this.rebuildHeader();
+                        break;
+                    }
+                    case 'save_header':{
+                        this.onSaveHeader();
+                        break;
+                    }
+                    case 'reset_header' : {
+                        this.onClearCookie();
                         break;
                     }
                     default: {
@@ -1933,6 +2111,32 @@
                 }
                 return min + 20
             },
+
+            onSaveHeader(){
+                //save cookie
+                let records = this.$refs.myGrid.columns.records.filter(q=> !this.sysCols.includes(q.datafield) ).map((q, idx) =>{
+                    return { c: q.datafield, h: q.hidden ? 'T' : 'F', idx: idx };
+                });
+                records = records.filter( q =>  this.gridDefaultColumns.findIndex( w => w.datafield == q.c && w.index != q.idx ) >=0  );
+                Cookies.set(this.cookieId, JSON.stringify(records)  );
+                this.showNotification("success", this.$t("save_column_chooser"), "");
+            },
+
+            onSetTempHeader() {
+                let records = this.$refs.myGrid.columns.records.filter(q=> !this.sysCols.includes(q.datafield) ).map((q, idx) =>{
+                    return { datafield: q.datafield, hidden: q.hidden, index: idx };
+                });
+                records = records.filter( q =>  this.gridDefaultColumns.findIndex( w => w.datafield == q.datafield && w.index != q.index ) >=0  );
+                this.tempDragandDropHeader = records;
+            },
+
+            onClearCookie(){
+                Cookies.remove(this.cookieId);
+                this.gridCookie = null;
+                this.rebuildHeader();
+                this.showNotification("success", this.$t("reset_column_chooser"), "");
+            },
+
             async _updateHeader() {
                 this.columns = [];
                 this.columngroups = [{
@@ -1946,6 +2150,10 @@
 
                 //column from local - vng-207
                 this.gridDefaultColumns = lodash.cloneDeep(this.columns);
+                this.gridDefaultColumns.forEach( (col, idx) => {
+                    col.index= idx
+                } );
+
                 if(this.gridCookie) {
                     this.columns = this.columns.map( (q,idx) => {
                         q["index"] = idx+1;
@@ -1960,6 +2168,22 @@
                         }
                     }
 
+                    this.columns = this.columns.sort((a, b) => a.index >= b.index ? 1 : -1);
+                }
+
+                if(this.tempDragandDropHeader) {
+                    this.columns = this.columns.map( (q,idx) => {
+                        q["index"] = idx+1;
+                        return q;
+                    });
+
+                    for(let i = 0; i< this.columns.length; i++) {
+                        let localColumn = this.tempDragandDropHeader.find( q => q["datafield"] == this.columns[i]["datafield"]);
+                        if(localColumn) {
+                            this.columns[i]["hidden"] = localColumn["hidden"];
+                            this.columns[i]["index"] = localColumn["index"];
+                        }
+                    }
                     this.columns = this.columns.sort((a, b) => a.index >= b.index ? 1 : -1);
                 }
 
@@ -1979,6 +2203,12 @@
                 if (objs instanceof Array) {
                     for( let idx = 0; idx<objs.length; idx++ ) {
                         let entry= objs[idx];
+
+                        if(entry.hasOwnProperty("round") ||entry.hasOwnProperty("formatFloat") ) {
+                            that.roundHeader.push({ col: entry["dataField"], round: entry["round"] ?  entry["round"] : (  entry["formatFloat"] ? entry["formatFloat"] : 0 )  });
+                        }
+
+                            
                         entry.cellclassname = !!entry["cellclassname"] ? entry["cellclassname"] : that.cellClassStatus2;
                         if(that.onRowPrepared != null){
                             entry.cellclassname = that.onRowPrepared;
@@ -2503,53 +2733,64 @@
                 return objs;
             },
             gridUpdate() {
-                if (this.$refs.myGrid == undefined) {
-                    return;
-                }
-                setTimeout(() => {
-                    this.renewCss();
-                }, 50);
-                
-
-                let that = this;
-                if (!!this.gridSelectionMode && !this.changingSelection) {
-                    this.$refs.myGrid.selectionmode = this.gridSelectionMode;
-                } else {
-                    if (this.selectionmode == null) {
-                        this.gridSelectionMode = "singlecell";
-                        if (this.userSavedTheme != null) {
-                            this.gridSelectionMode = this.userSavedTheme.selectMode ? this.userSavedTheme.selectMode : this.gridSelectionMode;
-                        }
-                    } else {
-                        this.gridSelectionMode = !!this.selectionmode ? this.selectionmode : 'singlecell'
+                try {
+                    if (this.$refs.myGrid == undefined) {
+                        return;
                     }
-                    this.$refs.myGrid.selectionmode = this.gridSelectionMode;
-                }
-
-                this.$refs.myGrid.showloadelement();
-                this.$refs.myGrid.beginupdate();
-                this.$refs.myGrid.setOptions({
-                    source: new jqx.dataAdapter(that.dataAdapter),
-                    columns: that.columns,
-                    columngroups: that.columngroups
-                });
-                this.$refs.myGrid.endupdate();
-                this.$refs.myGrid.hideloadelement();
-                if (this.autoresizecolumn) {
                     setTimeout(() => {
-                        that.$refs.myGrid.autoresizecolumns();
-                    }, 500);
+                        this.renewCss();
+                    }, 50);
+                    
+
+                    let that = this;
+                    if (!!this.gridSelectionMode && !this.changingSelection) {
+                        this.$refs.myGrid.selectionmode = this.gridSelectionMode;
+                    } else {
+                        if (this.selectionmode == null) {
+                            this.gridSelectionMode = "singlecell";
+                            if (this.userSavedTheme != null) {
+                                this.gridSelectionMode = this.userSavedTheme.selectMode ? this.userSavedTheme.selectMode : this.gridSelectionMode;
+                            }
+                        } else {
+                            this.gridSelectionMode = !!this.selectionmode ? this.selectionmode : 'singlecell'
+                        }
+                        this.$refs.myGrid.selectionmode = this.gridSelectionMode;
+                    }
+
+                    this.$refs.myGrid.showloadelement();
+                    this.$refs.myGrid.beginupdate();
+                    this.$refs.myGrid.setOptions({
+                        source: new jqx.dataAdapter(that.dataAdapter),
+                        columns: that.columns,
+                        columngroups: that.columngroups,
+                        columnsreorder: that.defaultcolumnsreorder
+                    });
+                    this.$refs.myGrid.endupdate();
+                    this.$refs.myGrid.hideloadelement();
+                    if (this.autoresizecolumn) {
+                        setTimeout(() => {
+                            that.$refs.myGrid.autoresizecolumns();
+                        }, 500);
+                    }
+                    this.changingSelection = false;
+                } catch (error) {
+                    // console.log = function() {}
+                    return;
+                    // console.log("gridUpdate-catch exception:", error.message)
                 }
-                this.changingSelection = false;
             },
              async loadData(p_filter_paras = null) {
+                await this.$nextTick();
                 this.isProcessing = true;
                 if (p_filter_paras) {
                     await this._onLoad(p_filter_paras);
                 } else {
+                    console.log("this.filter_paras",this.filter_paras)
                     await this._onLoad(this.filter_paras);
                 }
-
+                if (this.autoresize) {
+                    this.resizeColumns();
+                }
             },
             // loadData(p_filter_paras = null) {
             //     this.isProcessing = true;
@@ -2583,10 +2824,18 @@
                 const result = await this._dsoCall(_dso, "select", true, '', this.db2, this.checkMenu);
                 if (result) {
                     let resTmp = [...result];
+                        
                     resTmp = resTmp.map( (q,idx) => {
                         let timeKey = that._getTimeSpan() + "";
                         let keyID = timeKey.substr(timeKey.length - 5);
                         let o = Object.assign({}, q);
+                        if( this.roundHeader?.length > 0) {
+                            for(let i = 0; i< this.roundHeader.length; i++) {
+                                let round = this.roundHeader[i]["round"];
+                                let header = this.roundHeader[i]["col"];
+                                o[header] = (( q[header] && typeof q[header] == 'number') ?  Number( q[header].toFixed(round)): q[header])   ;
+                            }
+                        }
                         o.UNIQUEID = keyID * 10000 + idx;
                         o.INDEX=idx+1;
                         return o;
@@ -2608,7 +2857,10 @@
                         if (this.gridSelectionMode == 'checkbox' && !!this.autocheckbox) {
                             this.$refs.myGrid.selectallrows();
                             //console.log("selectallrows")
-                        }
+                        }/*else if(this.autoselectallrows==true && this.gridSelectionMode != 'checkbox'){
+                            this.$refs.myGrid.selectallrows();
+                        }*/
+
                     }, 500);
 
                      //vng-207 20220831 reload header sum top
@@ -2883,7 +3135,8 @@
                 this.scrollTo(0)
             },
             addRowStruct(p_rowdata = null, p_position = 0) {
-                this.addRow(p_rowdata, p_position);
+                //this.addRow(p_rowdata, p_position);
+                  this.onAdd(p_rowdata, false, p_position) 
             },
             removeSortBtnOnClick() {
                 this.gridUpdate();
@@ -2931,7 +3184,7 @@
                 return "Invalid cell refer!";
             },
             setCellSelected(p_datafield, p_value) {
-                 let selectionMode = this.$refs.myGrid.selectionmode;                
+                let selectionMode = this.$refs.myGrid.selectionmode;                
                 let rowindexes = [];
                 if (selectionMode == "singlecell" || selectionMode == "multiplecells" || selectionMode == "multiplecellsextended") {
                     let selecteds = this.$refs.myGrid.getselectedcells();
@@ -2940,7 +3193,7 @@
                     rowindexes = this.$refs.myGrid.getselectedrowindexes();
                 }
                 
-                if (rowindexes.length >= 0) {
+                if (rowindexes.length >= 0 && rowindexes[0] != undefined) {
                     let rowsdata = this.$refs.myGrid.getrows();
                     rowindexes.forEach(q => {
                         rowsdata[q][p_datafield] = p_value;
@@ -2948,6 +3201,29 @@
                     });
                     this.setDataSource(rowsdata)
                     this.gridUpdate();
+                }
+            },
+            setArrCellSelected(arrSetVal=[{datafield:'', value:null}]) { 
+                let selecteds = this.$refs.myGrid.getselectedcells();
+                let rowindexes = Array.from(new Set(Array.from(selecteds, x => x["rowindex"])));  
+                // console.log('[vng-154/dvg] > file: BaseGridView.vue:3027 > setArrCellSelected > rowindexes:', rowindexes);
+                rowindexes =(rowindexes&& rowindexes[0]==undefined)?this.$refs.myGrid.getselectedrowindexes():rowindexes; 
+                // console.log('[vng-154/dvg] > file: BaseGridView.vue:3028 > setArrCellSelected > rowindexes:', rowindexes);
+                if (rowindexes.length >= 0 && rowindexes[0] != undefined) {
+                    let rowsdata = this.$refs.myGrid.getrows();  
+                    rowindexes.forEach(q => {
+                        arrSetVal.forEach(x => {  
+                            let p_datafield = x.datafield,p_value = x.value; 
+                            //if(rowsdata[q][p_datafield] && p_value){
+                                rowsdata[q][p_datafield] = p_value; 
+                                rowsdata[q]._rowstatus = rowsdata[q]._rowstatus !== "i" && rowsdata[q]._rowstatus !== "d" ? "u" : rowsdata[q]._rowstatus
+                            //} 
+                        });
+                    });
+                    this.setDataSource(rowsdata)
+                    this.gridUpdate(); 
+                }else{
+                    this.showNotification("warning", this.$t("no_row_selected"), '');
                 }
             },
             setValueColumn(p_column, p_value, isUpdateStatus = true) {
@@ -2996,19 +3272,22 @@
             },
 
             rebuildHeader() {
-
                 let currData = this.$refs.myGrid.getrows();
                 if(currData && currData.length>0) {
                     this.dataAdapter.localdata = [...currData];
                 }
 
                 this._updateHeader();
-                try {this.$refs.myGrid.render();} catch (e){}
-                
+                try {
+                    this.$refs.myGrid.render();
+                } catch (e){
+                    console.log("rebuildHeader-catch exception:", e.message);
+                }
             },
             async _rebuildHeader(headerType = 0) {
                 if (this.setting != null) { //vng-207 hien cai dong setting cho grid hr
                     this.gridSetting = this.setting;
+                    
                 } else {
                     if (headerType == 1) {
                         this.gridSetting = true;
@@ -3037,6 +3316,10 @@
                                         _header.push({ caption: this.$t(col["FIELD_NAME"]), dataField: !!col["FIELD_ALIAS"] ? col["FIELD_ALIAS"] : col["FIELD_ID"], allowEditing: col["EDITABLE_YN"] == 'Y', dataType: "", lookup: { valueExpr: 'CODE', displayExpr: 'NAME', dataSource: col.dataSource }, isAdditionColumn: true });
                                     } else if (col["FIELD_TYPE"] == "BOOLEAN") {
                                         _header.push({ caption: this.$t(col["FIELD_NAME"]), dataField: !!col["FIELD_ALIAS"] ? col["FIELD_ALIAS"] : col["FIELD_ID"], allowEditing: col["EDITABLE_YN"] == 'Y', dataType: "checkbox", isAdditionColumn: true },);
+                                    } else if (col["FIELD_TYPE"] == "TIME") {
+                                        _header.push({ caption: this.$t(col["FIELD_NAME"]), dataField: !!col["FIELD_ALIAS"] ? col["FIELD_ALIAS"] : col["FIELD_ID"], allowEditing: col["EDITABLE_YN"] == 'Y', dataType: "time", isAdditionColumn: true },);
+                                    } else if (col["FIELD_TYPE"] == "NUMBER") {
+                                        obj = { title: this.$t(col["FIELD_NAME"]), field: !!col["FIELD_ALIAS"] ? col["FIELD_ALIAS"] : col["FIELD_ID"], editable: col["EDITABLE_YN"] == 'Y', type: "", format: "###,###,###.##" , isAdditionColumn: true}
                                     }
                                 }
                             });
@@ -3099,6 +3382,8 @@
                                         obj = { title: this.$t(col["FIELD_NAME"]), field: !!col["FIELD_ALIAS"] ? col["FIELD_ALIAS"] : col["FIELD_ID"], editable: col["EDITABLE_YN"] == 'Y', type: "boolean", isAdditionColumn: true }
                                     } else if (col["FIELD_TYPE"] == "NUMBER") {
                                         obj = { title: this.$t(col["FIELD_NAME"]), field: !!col["FIELD_ALIAS"] ? col["FIELD_ALIAS"] : col["FIELD_ID"], editable: col["EDITABLE_YN"] == 'Y', type: "", format: "###,###,###.##" , isAdditionColumn: true}
+                                    } else if (col["FIELD_TYPE"] == "TIME") {
+                                        _header.push({ caption: this.$t(col["FIELD_NAME"]), dataField: !!col["FIELD_ALIAS"] ? col["FIELD_ALIAS"] : col["FIELD_ID"], allowEditing: col["EDITABLE_YN"] == 'Y', dataType: "time", isAdditionColumn: true },);
                                     }
 
                                     if (!!col["HEADER_1"]) { obj["group1"] = this.$t(col["HEADER_1"]) };
@@ -3244,21 +3529,15 @@
             },
             setColumnsHidden(colNames, isHidden) {
                 if (colNames && colNames.length > 0) {
-                    let currData = this.$refs.myGrid.getrows();
-                    if(currData && currData.length>0) {
-                        this.dataAdapter.localdata = [...currData];
-                    }
-                    
-                    for (let i = 0; i < this.columns.length; i++) {
-                        let column = this.columns[i];
-                        colNames.forEach(q => {
-                            if (column.datafield == q) {
-                                column.hidden = isHidden;
-                            }
-                        })
-                    }
-
-                    this.gridUpdate();
+                    this.$refs.myGrid.beginupdate();
+                    colNames.forEach(c => {
+                        if (!isHidden) {
+                            this.$refs.myGrid.showcolumn(c);
+                        } else {
+                            this.$refs.myGrid.hidecolumn(c);
+                        }
+                    });
+                    this.$refs.myGrid.endupdate();
                 }
             },
             getData() {
@@ -3272,7 +3551,7 @@
               
                 return datas;
             },
-            onSelectedData() {
+            onSelectedData( notify = true) {
                 let selectionMode = this.$refs.myGrid.selectionmode;
                 let rowindexes = [];
                 if (selectionMode == "singlecell" || selectionMode == "multiplecells" || selectionMode == "multiplecellsextended") {
@@ -3283,7 +3562,7 @@
                 }
 
                 if (rowindexes.length <= 0) {
-                    this.showNotification("warning", this.$t("no_row_selected"), '');
+                    if(notify)  { this.showNotification("warning", this.$t("no_row_selected"), '');}
                     return;
                 }
                 let returnList = [];
@@ -3388,7 +3667,7 @@
                 }
                 return true;
             },
-            onSet(column, value, isUpdateStatus = true, rowindex = null) {
+            onSet(column, value, isUpdateStatus = true, rowindex = null, isCellChanged = true) {
                 try {
                     let selectionMode = this.$refs.myGrid.selectionmode;
                     let rowindexes = [];
@@ -3404,7 +3683,8 @@
                     }
 
                     if (rowindexes.length > 0) {
-                        rowindexes.forEach(idx => {
+                        this.$refs.myGrid.beginupdate();
+                        rowindexes.forEach((idx, i )=> {
                             let rowData = this.$refs.myGrid.getrowdata(idx);
                             let oldValue = rowData[column];
 
@@ -3427,12 +3707,14 @@
                                 _colchange.push(column);
                                 this.$refs.myGrid.setcellvalue(idx, "_colchange", _colchange);
                             }
-                            
-                            this.$emit("cell-changed"
-                                        , { rowindex: idx, datafield: column, oldvalue: oldValue, value: value, row: this.$refs.myGrid.getrowdata(idx) }  
-                                        , this._buildDataSaveDb(this.$refs.myGrid.getrowdata(idx))
-                            );
+                            if(isCellChanged) {
+                                this.$emit("cell-changed"
+                                            , { rowindex: idx, datafield: column, oldvalue: oldValue, value: value, row: this.$refs.myGrid.getrowdata(idx) }  
+                                            , this._buildDataSaveDb(this.$refs.myGrid.getrowdata(idx))
+                                );
+                            }
                         })
+                        this.$refs.myGrid.endupdate();
                         //this.setDataSource(dataList);
                         return true;
                     } else {
@@ -3463,7 +3745,7 @@
             resizeColumns() {
                 this.$refs.myGrid.autoresizecolumns();
             },
-            onAdd(data, isLastRow = false) {
+            onAdd(data, isLastRow = false, p_position = 0) {
                 let dataList = this.$refs.myGrid.getrows();
                 let struct = !!this.update_paras ? [...this.update_paras] : [];
                 if (dataList.length > 0) {
@@ -3492,7 +3774,7 @@
                 _data = this._buildDataInsert(_data);
 
                 if (!isLastRow) {
-                    this.$refs.myGrid.addrow(null, _data, 0);
+                    this.$refs.myGrid.addrow(null, _data, p_position);
                     //dataList.unshift(_data);
                 } else {
                     this.$refs.myGrid.addrow(null, _data, dataList.length);
@@ -3543,6 +3825,7 @@
             },
 
             _buildDataInsert(data) {
+                let that = this;
                 if(data) {
                     let _data = {...data};
                     let colchecks = this.columns.filter(q => q.columntype == "checkbox").map(q => q["datafield"]);
@@ -3577,6 +3860,7 @@
             },
 
             _buildDataSaveDb(data) {
+                let that = this;
                 if(data) {
                     let _data = {...data};
                     let colchecks = this.columns.filter(q => q.columntype == "checkbox").map(q => q["datafield"]);
@@ -3628,9 +3912,11 @@
 
 
                 if (rowindexes.length > 0) {
+                    this.$refs.myGrid.beginupdate();
                     rowindexes.forEach(idx => {
                         this.$refs.myGrid.setcellvalue(idx, '_rowstatus', 'd');
                     })
+                    this.$refs.myGrid.endupdate();
 
                     let dataList = this.$refs.myGrid.getrows();
                     if (dataList.findIndex(x => x._rowstatus === "d") >= 0) {
@@ -3664,6 +3950,34 @@
 
                 })
             },
+            selectallrows(){
+                this.$refs.myGrid.selectallrows();
+            },
+            myGridOnDeleteInsert(){
+                let selectionMode = this.$refs.myGrid.selectionmode;
+                let rowindexes = [];
+                let rowidxs = [];
+                if (selectionMode == "singlecell" || selectionMode == "multiplecells" || selectionMode == "multiplecellsextended") {
+                    let selecteds = this.$refs.myGrid.getselectedcells();
+                    rowindexes = Array.from(new Set(Array.from(selecteds, x => x["rowindex"])));
+                } else {
+                    rowindexes = this.$refs.myGrid.getselectedrowindexes();
+                }
+
+                this.$refs.myGrid.beginupdate();
+                
+                rowindexes.forEach(idx => {
+                    let rowData = this.$refs.myGrid.getrowdata(idx);
+                    if(rowData._rowstatus =='i') {
+                        rowidxs.push(this.$refs.myGrid.getrowid(idx))
+                    }
+                })
+                this.$refs.myGrid.deleterow(rowidxs);
+
+                this.$refs.myGrid.endupdate();
+                try { this.rowCount(this.$refs.myGrid.getrows().length); } catch { }
+            },
+
             async onSave(dso, notify = true, delayNextCall = 0) {
                 let dataList = this.$refs.myGrid.getrows();
                 if (dataList.findIndex(q => q["_rowstatus"] != undefined && q["_rowstatus"] != "" && q["_rowstatus"] != null) < 0) {
@@ -4051,9 +4365,7 @@
         margin-top: 4px !important;
     } */
 
-        .jqx-grid-cell-pinned {
-            background-color: white !important;
-        }
+        
 
         /* Đã di chuyển 2 class này sang file _color.css để có thể apply màu lên khi customize theme */
         /*
@@ -4074,20 +4386,7 @@
             z-index: 0 !important;
         } */
 
-        .cellUpdate {
-            background-color: #cfe3ff !important;
-            color: black !important;
-        }
-
-        .cellInsert {
-            background-color: #dcfae2 !important;
-            color: black !important;
-        }
-
-        .cellDelete {
-            background-color: #ffb8b8 !important;
-            color: black !important;
-        }
+        
 
         .jqx-grid-cell-alt {
             background: #ffffff;
@@ -4102,5 +4401,8 @@
             border-right: 0px !important;
             border-left: 0px !important;
             border-bottom: 1px solid grey !important;
+        }
+        .mergeCell {
+            border-bottom: 0 !important;
         }
 </style>

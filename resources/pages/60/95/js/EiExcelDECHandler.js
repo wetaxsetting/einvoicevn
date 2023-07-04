@@ -28,6 +28,8 @@ let EiExcelDECHandler = {
     let signPath = require("@/assets/images/einvoices_logo/greentick.png")//đường dẫn của dấu tick xanh
     let cancelPath = require("@/assets/images/einvoices_logo/Einvoice_cancel.png")//đường dẫn của hình cancel
     let bgPath = "" //đường dẫn của hình background
+    let checked = ""
+    let unchecked = ""
 
     let _sourceRow = 0//chiều cao tính từ đầu trang tới dòng đầu tiên của detail
     let _sourceRow_2 = 0//chiều cao tính từ đầu trang tới dòng đầu tiên của detail
@@ -58,16 +60,6 @@ let EiExcelDECHandler = {
       );
     } 
 
-    //cancelYn = "Y"
-    // convertYn = 'Y'
-    // companyTaxcode=281
-
-    // let msThueCutter = async (msothueArray, taxCode, taxRow) => {
-    //   for (let i = 0; i < taxCode.length; i++) {
-    //     const e = taxCode[i];
-    //     masterDataArray.push({ Cell: `${msothueArray[i] + taxRow}`, Info: [e], Type: 2 }) //so thue
-    //   }
-    // }
     masterDataArray = []
 
     reportPath = 'report/60/95/Declaration.xlsx'

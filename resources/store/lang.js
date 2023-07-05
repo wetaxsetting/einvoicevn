@@ -29,9 +29,7 @@ export const mutations = {
 export const actions = {
   async getLanguagesServer({ commit, state }, token) {
     let instance = this.$axios.create({
-      baseURL: process.env.LOCAL_API_URL
-        ? process.env.LOCAL_API_URL
-        : process.env.API_URL,
+      baseURL: process.env.LOCAL_API_URL ? process.env.LOCAL_API_URL : process.env.API_URL,
     });
     instance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     instance.defaults.headers.common["Accept-Language"] = state.language;
@@ -45,9 +43,7 @@ export const actions = {
   },
   async getLangMappingListServer({ commit, state }, token) {
     let instance = this.$axios.create({
-      baseURL: process.env.LOCAL_API_URL
-        ? process.env.LOCAL_API_URL
-        : process.env.API_URL,
+      baseURL: process.env.LOCAL_API_URL ? process.env.LOCAL_API_URL : process.env.API_URL,
     });
     instance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     instance.defaults.headers.common["Accept-Language"] = state.language;

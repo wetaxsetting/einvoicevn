@@ -82,6 +82,7 @@
         "speakeasy": "^2.0.0",
         "sweetalert2": "^10.1.0",
         "systeminformation": "^5.6.21",
+        "tree-xml": "^0.1.4",
         "uuid": "^3.4.0",
         "v-mask": "2.2.3",
         "vue": "^2.6.11",

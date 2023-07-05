@@ -28,10 +28,10 @@ let EiExcelDECHandler = {
     let signPath = require("@/assets/images/einvoices_logo/greentick.png")//đường dẫn của dấu tick xanh
     let cancelPath = require("@/assets/images/einvoices_logo/Einvoice_cancel.png")//đường dẫn của hình cancel
     let bgPath = "" //đường dẫn của hình background
-    let checked = ""
-    let unchecked = ""
+    let checked = require("@/assets/images/einvoices_logo/checked.png")
+    let unchecked = require("@/assets/images/einvoices_logo/unchecked.png")
 
-    let _sourceRow = 0//chiều cao tính từ đầu trang tới dòng đầu tiên của detail
+    let _sourceRow = 47//chiều cao tính từ đầu trang tới dòng đầu tiên của detail
     let _sourceRow_2 = 0//chiều cao tính từ đầu trang tới dòng đầu tiên của detail
     let _sourceRow_3 = 0//chiều cao tính từ đầu trang tới dòng đầu tiên của detail
     let headerRowCount = 0//chiều cao tính từ đầu trang tới dòng trên dòng đầu tiên của detail
@@ -59,67 +59,51 @@ let EiExcelDECHandler = {
         5000
       );
     } 
+    try {
+      masterDataArray = []
 
-    masterDataArray = []
+      reportPath = 'report/60/95/Declaration.xlsx';
+      reportSheet = "Declaration";
+  
+      //mảng data của master
+      masterDataArray.push(
+        { Cell: `B7`, Info: [`TEN`], Type: 1 },
+        { Cell: `C8`, Info: [`HTHUC`], Type: 1 },
+  
+        { Cell: `F11`, Info: [`TNNT`], Type: 1 },
+        { Cell: `E12`, Info: [`MST`], Type: 1 },
+        { Cell: `B13`, Info: [`CQTQLY`], Type: 1 },
+  
+        { Cell: `B14`, Info: [`NLHE`], Type: 1 },
+        { Cell: `H14`, Info: [`DTLHE`], Type: 1 },
+        { Cell: `B15`, Info: [`DCLHE`], Type: 1 },
+        { Cell: `H15`, Info: [`DCTDTU`], Type: 1 },
+        { Cell: `G49`, Info: [`DDANHTIME`], Type: 1 },
+  
+      )
+      if (einvoiceMasterData[0]["STATUS"] == "Y") {
+        masterDataArray.push(
+          { Cell: `G52`, Info: [`TNNT`], Type: 1 },
+        )
+      }
+      // // //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
+      // // //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
+  
+      // //cấu trúc dòng detail
+      // // thin//dotted//dashDot//hair//dashDotDot//slantDashDot//mediumDashed//mediumDashDotDot//mediumDashDot//medium//double//thick
+      detailCellFormat = [
+        { startCell: 2, endCell: 3, cellType: 2, cellBorder: "solid", field: "NO" },//từ cell bắt đầu tới cell kết thúc, type 2: cell đầu tiên
+        { startCell: 4, endCell: 6, cellType: 3, cellBorder: "solid", field: "TTCHUC" },//từ cell bắt đầu tới cell kết thúc, type 3: cell kế tiếp cell đầu tiên,
+        { startCell: 7, endCell: 7, cellType: 2, cellBorder: "solid", field: "SERI" },//type 1: còn lại
+        { startCell: 8, endCell: 8, cellType: 2, cellBorder: "solid", field: "TNGAY" },//type 1: còn lại
+        { startCell: 9, endCell: 9, cellType: 2, cellBorder: "solid", field: "DNGAY" },//type 1: còn lại
+        { startCell: 10, endCell: 10, cellType: 2, cellBorder: "solid", field: "HTHUC" },//type 1: còn lại
+      ]
+    } catch (error) {
+      console.log("error ",error)
+    }
 
-    reportPath = 'report/60/95/Declaration.xlsx'
-    reportSheet = "Declaration"
-
-
-    // bgPath = require("assets/images/einvoices_logo/Ottogi_CNBN_PXK/bg.png")
-    // logos = [
-    //   { start: 1, width: 0.99 * dpi, height: 0.99 * dpi, logoStartCount: 1.2, logoPath: require("assets/images/einvoices_logo/Ottogi_CNBN_PXK/companylogo.png") },
-
-    // ]
-
-    //mảng data của master
-    // masterDataArray.push(
-    //   { Cell: `AA12`, Info: [`TEMPLATECODE`, `INVOICESERIALNO`], Type: 1 },
-    //   { Cell: `Z13`, Info: [`INVOICENUMBER`], Type: 1 },
-    //   { Cell: `G14`, Info: [`dateString`], Type: 2 },
-    //   { Cell: `X14`, Info: [`page`], Type: 2 },
-    //   { Cell: `A43`, Info: [`footer`], Type: 2 },
-
-    //   { Cell: `F2`, Info: [`SELLER_NAME`], Type: 1 },
-    //   { Cell: `H3`, Info: [`SELLER_TAXCODE`], Type: 1 },
-    //   { Cell: `H4`, Info: [`SELLER_ADDRESS`], Type: 1 },
-    //   { Cell: `H5`, Info: [`SELLER_TEL`], Type: 1 },
-    //   { Cell: `I6`, Info: [`SELLER_ACCOUNTNO`], Type: 1 },
-
-    //   { Cell: `H16`, Info: [`ATTRIBUTE_01`], Type: 1 },
-    //   { Cell: `Y16`, Info: [`ATTRIBUTE_02`], Type: 1 },
-    //   { Cell: `C17`, Info: [`ATTRIBUTE_03`], Type: 1 },
-    //   // { Cell: `I5`, Info: [`ATTRIBUTE_04`], Type: 1 },
-    //   { Cell: `G18`, Info: [`ATTRIBUTE_05`], Type: 1 },
-    //   { Cell: `Y18`, Info: [`ATTRIBUTE_06`], Type: 1 },
-    //   { Cell: `G19`, Info: [`ATTRIBUTE_07`], Type: 1 },
-    //   { Cell: `F20`, Info: [`ATTRIBUTE_08`], Type: 1 },
-    //   { Cell: `F21`, Info: [`ATTRIBUTE_09`], Type: 1 },
-
-    //   { Cell: `Z27`, Info: [`amount_total`], Type: 2 },
-
-    //   { Cell: `D39`, Info: [`CQT_MCCQT_ID`], Type: 1 },
-    //   { Cell: `W41`, Info: [`MATRACUU`], Type: 1 },
-
-    //   { Cell: `V38`, Info: [`SIGNEDBY`], Type: 3 },
-    //   { Cell: `V39`, Info: [`SIGNEDDATE`], Type: 3 },
-
-    // )
-    // // //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
-    // // //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
-
-    // //cấu trúc dòng detail
-    // // thin//dotted//dashDot//hair//dashDotDot//slantDashDot//mediumDashed//mediumDashDotDot//mediumDashDot//medium//double//thick
-    // detailCellFormat = [
-    //   { startCell: 2, endCell: 2, cellType: 2, cellBorder: "dotted", field: "STT" },//từ cell bắt đầu tới cell kết thúc, type 2: cell đầu tiên
-    //   { startCell: 3, endCell: 14, cellType: 3, cellBorder: "dotted", field: "ITEM_NAME" },//từ cell bắt đầu tới cell kết thúc, type 3: cell kế tiếp cell đầu tiên,
-    //   { startCell: 16, endCell: 17, cellType: 1, cellBorder: "dotted", field: "BLANK" },//type 1: còn lại
-    //   { startCell: 18, endCell: 19, cellType: 1, cellBorder: "dotted", field: "ITEM_UOM" },//type 1: còn lại
-    //   { startCell: 20, endCell: 21, cellType: 1, cellBorder: "dotted", field: "QTY" },//type 1: còn lại
-    //   { startCell: 22, endCell: 23, cellType: 1, cellBorder: "dotted", field: "BLANK" },//type 1: còn lại
-    //   { startCell: 24, endCell: 25, cellType: 1, cellBorder: "dotted", field: "U_PRICE" },//type 1: còn lại
-    //   { startCell: 26, endCell: 28, cellType: 1, cellBorder: "dotted", field: "NET_TR_AMT" },//type 1: còn lại
-    // ]
+   
     // backgroundCell = 8
     // backgroundWidth = 300
     // backgroundHeight = 200
@@ -143,12 +127,12 @@ let EiExcelDECHandler = {
 
       exceljs = require("./EiExcelDECConverter.js");
       if (!!exceljs) { exceljs = exceljs.default; }
-      resultExcel = await exceljs.ExcelBuilder(
-        that, einvoiceMasterData, einvoiceDetailData, einvoicePk,
+      resultExcel = await exceljs.ExcelBuilder( that, einvoiceMasterData, einvoiceDetailData, einvoicePk,
         _sourceRow, _sourceRow_2, _sourceRow_3, headerRowCount, countFromEndDetailToSignBox,
         lastPageRowsHeight, reportPath, reportSheet, signPath, cancelPath, bgPath,
         masterDataArray, detailCellFormat, logos, signCell, signBoxCell, signByCell, cancelYn,
-        backgroundCell, backgroundWidth, backgroundHeight)
+        backgroundCell, backgroundWidth, backgroundHeight,checked, unchecked
+        )
     } catch (error) {
 
     }

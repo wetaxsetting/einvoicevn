@@ -278,8 +278,8 @@
               </GwFlexBox>
             </v-col>
             <v-col md="12">
-              <BaseGridView ref="grdDetail" :header="headerList.grdDetail" sel_procedure="AC_SEL_6095080_s_05"
-                upd_procedure="AC_UPD_6095080_u_06" :multiselect="true" :headertype="1"
+              <BaseGridView ref="grdDetail" :header="headerList.grdDetail" sel_procedure="AC_SEL_6095080_s_05_NC"
+                upd_procedure="AC_UPD_6095080_u_06"  :headertype="1"
                 :filter_paras="[this.modelMaster.PK]" :height="limitHeightGridDetails" :update_paras="[
                   'PK',
                   'TEI_DECLARATION_M_PK',
@@ -538,6 +538,7 @@ export default {
           this.$refs.grdDetail.saveData();
           break;
         case "deleteDetail":
+          console.log("deleteDetail");
           this.$refs.grdDetail.deleteRows();
           break;
         case "viewXML":

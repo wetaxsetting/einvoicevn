@@ -66,7 +66,7 @@
                     <v-row align="center" justify="center">
                         <v-col cols="12" class="py-0">
                             <v-card outlined tile v-resize="onResize">
-                                <DataGridView ref="grdView" :header="defaultHeader" :sel_procedure="procedure" :select_mode="selectMode" :filter_paras="searchParas" :is_allow_paste="false" :max_height="limitHeight" @cellDblClick="onSelectSingle" @onSelectionChanged="onGridSelectionChanged" />
+                                <DataGridView ref="grdView" :header="defaultHeader" :sel_procedure="procedure" :select_mode="selectMode" :filter_paras="searchParas" :is_allow_paste="false" :max_height="limitHeight" @cellDblClick="onSelectSingle" @onSelectionChanged="onGridSelectionChanged" @setDataSource = 'setDataSource'/>
                             </v-card>
                         </v-col>
                     </v-row>

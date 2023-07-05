@@ -1353,7 +1353,7 @@ class DsoController {
             if (month < 10) {
                 month = "0" + month
             }
-            const dir = _ROOT_DIR_FILES + '/pdf/' + year + '/' + month
+            const dir = ROOT_DIR_FILES + '/pdf/' + year + '/' + month
             if (!fs.existsSync(dir)) {
                 fs.mkdirSync(dir, { recursive: true }, err => { console.log(err) })
             }

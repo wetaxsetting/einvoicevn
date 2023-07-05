@@ -541,7 +541,7 @@ let test = {
 		
 
 		let convertResult = await exceljs.convertToPdfAndDownload(that, reportInfo.NAME)
-		//console.log(" convertResult" , convertResult);
+		console.log(" convertResult" , convertResult);
 		return convertResult.data
 		await exceljs.dowloadWorkbook(that, reportInfo.NAME + ".xlsx");
 	},

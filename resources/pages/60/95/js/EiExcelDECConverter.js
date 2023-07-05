@@ -51,9 +51,9 @@ let test = {
 		let signIconByteArray = await that.blobToArray(new Blob([signedIcon], { type: 'application/octet-stream' }))
 
 		//END-this fuction get the images and turn it to bytearray to insert to the excel.
-		console.log("checkImageByteArray +++==> ", checkImageByteArray);
+		// console.log("checkImageByteArray +++==> ", checkImageByteArray);
 
-		console.log("uncheckImageByteArray +++==> ", uncheckImageByteArray);
+		// console.log("uncheckImageByteArray +++==> ", uncheckImageByteArray);
 		// //this part set the master data to each cell. that 100% base on template.
 		try {
 			if (einvoiceDetailData && einvoiceDetailData.length > 0) {
@@ -61,14 +61,14 @@ let test = {
 					if (e.Type == 1) {
 						let infoData = ""
 						e.Info.forEach(_e => {
-							console.log("_e +++>> 1", _e);
+							// console.log("_e +++>> 1", _e);
 							if (einvoiceMasterData[0][`${_e}`] != null || einvoiceMasterData[0][`${_e}`] != undefined) {
 								infoData = infoData + einvoiceMasterData[0][`${_e}`];
 							} else {
 								infoData = infoData + " "
 							}
 						});
-						console.log("e.Cell +++>> 1", e.Cell, " infoData ++++==>   ", infoData);
+						// console.log("e.Cell +++>> 1", e.Cell, " infoData ++++==>   ", infoData);
 						exceljs.getCellByAddress(that, `${e.Cell}`).value = infoData;
 					} else
 						if (e.Type == 2) {

@@ -563,7 +563,7 @@ export default {
       if(this.modelMaster.PK != null)
       {
         this.pdfUrl = await this.pdfUrlGetter(this.modelMaster.PK);
-        // console.log("pdfUrlv", this.pdfUrl);
+        console.log("pdfUrlv", this.pdfUrl);
         this.$nextTick(() => {
           this.isProcessing = false;
           this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;

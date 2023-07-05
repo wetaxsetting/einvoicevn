@@ -43,11 +43,11 @@ let EiExcelDECHandler = {
     //exec stacfdstac71_r_03_view_einv_nodejs ('255','', 'ENG', 'admingenuwin', :p_rtn_cur)
 
     const einvoiceMasterData = await that._callProcedure(
-      "stacfrstac710037_s_02_r_nodejs",
+      "stacfrstac710037_s_02_r_nodejs_nc",
       [einvoicePk,]
     );
     const einvoiceDetailData = await that._callProcedure(
-      "stacfrstac710037_s_05_r_nodejs",
+      "stacfrstac710037_s_05_r_nodejs_nc",
       [einvoicePk,]
     );
     //console.log(einvoiceDetailData)
@@ -103,27 +103,9 @@ let EiExcelDECHandler = {
       console.log("error ",error)
     }
 
-   
-    // backgroundCell = 8
-    // backgroundWidth = 300
-    // backgroundHeight = 200
-
-    // signCell = { start: 24, end: 26 }
-    // signBoxCell = "V"
-    // signByCell = { start: 22, end: 29 }
-    // countFromEndDetailToSignBox = 10
-
-    // _sourceRow = 26
-    // _sourceRow_2 = 26
-    // _sourceRow_3 = 26
-    // headerRowCount = 25
-
-
-    // lastPageRowsHeight = 18
-
     try {
       if (masterDataArray.length > 0)
-        console.log("masterDataArray  ", masterDataArray.length);
+        // console.log("masterDataArray  ", masterDataArray.length);
 
       exceljs = require("./EiExcelDECConverter.js");
       if (!!exceljs) { exceljs = exceljs.default; }

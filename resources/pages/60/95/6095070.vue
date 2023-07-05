@@ -207,10 +207,6 @@ export default {
         EMAIL_ADDRESS_CC: "",
       };
     },
-    async onSaveMaster() {
-      this.$refs.gridview.saveData();
-    },
-
     onClickButton(obj) {
       switch (obj) {
         case "SEARCH":
@@ -220,9 +216,15 @@ export default {
           this.openDialog();
           break;
         case "SAVE":
-          this.onSaveMaster();
+          let data = this.$refs.gridview.getDataSource();
+          for (let i = 0; i < data.length; i++) {
+            if(!data[i].EMAIL_ADDRESS){
+              this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_email_at_" + (i+1)));
+              return;
+            }
+          }
+          this.$refs.gridview.saveData();
           break;
-        // this.openDialog();
         case "PRINT":
           onReport();
           break;
@@ -400,8 +402,8 @@ export default {
           PARTNER_NAME: item[i].PARTNER_NAME,
           PARTNER_LNAME: item[i].PARTNER_LNAME,
           PARTNER_FNAME: item[i].PARTNER_FNAME,
-          EMAIL_ADDRESS:    (item[i].EMAIL_ADDRESS == '' || item[i].EMAIL_ADDRESS == null) ? this.mail : item[i].EMAIL_ADDRESS ,
-          EMAIL_ADDRESS_CC: (item[i].EMAIL_ADDRESS_CC == '' || item[i].EMAIL_ADDRESS_CC == null) ? this.mail_cc : item[i].EMAIL_ADDRESS_CC ,
+          EMAIL_ADDRESS: !item[i].EMAIL_ADDRESS ? this.mail : item[i].EMAIL_ADDRESS  ,
+          EMAIL_ADDRESS_CC: !item[i].EMAIL_ADDRESS_CC  ? this.mail_cc : item[i].EMAIL_ADDRESS_CC ,
           TAX_CODE: item[i].TAX_CODE,
           VALID_FROM: item[i].VALID_FROM,
           VALID_TO: item[i].VALID_TO,

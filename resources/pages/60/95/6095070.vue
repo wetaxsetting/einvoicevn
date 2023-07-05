@@ -35,8 +35,8 @@
     <v-row no-gutters align="center" justify="start" class="mb-2">
       <v-col cols="12">
         <BaseGridView ref="gridview" select_mode="Single" :max_height="limitHeight" column-resizing-mode="widget"
-           sel_procedure="stacfrstac710003_s_02_node" 
-           upd_procedure="stacfrstac710003_u_03_node"
+           sel_procedure="EI_SEL_6095070_S_02_NODE" 
+           upd_procedure="EI_UPD_6095070_U_03_NODE"
            :header="this.headerQQ" :filter_paras="[
             this.company,
             this.from_date,
@@ -169,6 +169,12 @@ export default {
         this.to_date = val + this._maxDateOfMonth(val);
       }
     },
+    mail(val){
+      if(val){
+        const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          // console.log(pattern.test(val));
+      }
+    }
   },
   methods: {
     async getListCodes(pos) {
@@ -280,7 +286,7 @@ export default {
       this.nameLabel = this.$t("partner_name");
       this.codeLabel = this.$t("partner_lname");
 
-      this.procedure = "stacpustac710002_s_03_node";
+      this.procedure = "EI_SEL_6095070_S_03_NODE";
       this.moreParas = null;
       this.autoSearch = true;
       this.multiSelectMode = true;
@@ -317,6 +323,7 @@ export default {
           allowEditing: false,
           dataType: "string",
           alignment: "left",
+          hidden:  true,
         },
         {
           dataField: "EMAIL_ADDRESS",
@@ -377,6 +384,7 @@ export default {
           allowEditing: false,
           dataType: "string",
           alignment: "right",
+          hidden:  true,
         },
       ];
       this.headerQQ = headerobj;
@@ -392,8 +400,8 @@ export default {
           PARTNER_NAME: item[i].PARTNER_NAME,
           PARTNER_LNAME: item[i].PARTNER_LNAME,
           PARTNER_FNAME: item[i].PARTNER_FNAME,
-          EMAIL_ADDRESS: item[i].EMAIL_ADDRESS,
-          EMAIL_ADDRESS_CC: item[i].EMAIL_ADDRESS_CC,
+          EMAIL_ADDRESS:    (item[i].EMAIL_ADDRESS == '' || item[i].EMAIL_ADDRESS == null) ? this.mail : item[i].EMAIL_ADDRESS ,
+          EMAIL_ADDRESS_CC: (item[i].EMAIL_ADDRESS_CC == '' || item[i].EMAIL_ADDRESS_CC == null) ? this.mail_cc : item[i].EMAIL_ADDRESS_CC ,
           TAX_CODE: item[i].TAX_CODE,
           VALID_FROM: item[i].VALID_FROM,
           VALID_TO: item[i].VALID_TO,
@@ -402,6 +410,7 @@ export default {
           CRT_DT: item[i].CRT_DT,
           MOD_DT: item[i].MOD_DT,
           TEI_CUSTOMER_PK: item[i].TEI_CUSTOMER_PK,
+
         });
       }
     },

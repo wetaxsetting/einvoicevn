@@ -70,7 +70,7 @@
       <dynamic-dialog ref="refDynamicDialog" :companyPK="company" :header="dynamicHeader" :listData="listData"
         :nameLabel="nameLabel" :dialogTitle="dialogTitle" :procedure="procedure" :moreParas="moreParas"
         :codeLabel="codeLabel" :autoSearch="autoSearch" :selectionmode="selectionmode"  :autocheckbox="true" 
-        @returnData="onSelectItemInfoTO"></dynamic-dialog>
+        @returnData="onSelectItemInfoTO" :multiSelectMode="multiSelectMode"></dynamic-dialog>
     </v-row>
   </v-container>
 </template>
@@ -132,6 +132,7 @@ export default {
     listLabel: "",
     listData: [],
     selectionmode: "",
+    multiSelectMode: false,
     moreParas: null,
     autoSearch: false,
     // tranCode: "",
@@ -292,14 +293,12 @@ export default {
       this.moreParas = null;
       this.autoSearch = true;
       this.selectionmode = "checkbox";
+      this.multiSelectMode = true;
       this.$refs.refDynamicDialog.dialogIsShow = true;
 
 
 
-      this.$refs.refDynamicDialog.instance.selectAll()
-
-
-
+      this.$refs.refDynamicDialog.instance.selectAll();
     },
     openAccountDialog() {
       this.$refs.accountDialog.dialogIsShow = true;

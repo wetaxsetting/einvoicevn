@@ -69,7 +69,7 @@
       </v-col>
       <dynamic-dialog ref="refDynamicDialog" :companyPK="company" :header="dynamicHeader" :listData="listData"
         :nameLabel="nameLabel" :dialogTitle="dialogTitle" :procedure="procedure" :moreParas="moreParas"
-        :codeLabel="codeLabel" :autoSearch="autoSearch" :multiSelectMode="multiSelectMode"
+        :codeLabel="codeLabel" :autoSearch="autoSearch" :selectionmode="selectionmode"  :autocheckbox="true" 
         @returnData="onSelectItemInfoTO"></dynamic-dialog>
     </v-row>
   </v-container>
@@ -95,7 +95,7 @@ export default {
     "delete-dialog": DeleteDialog,
     DataGridView,
     accountDialog: () => import("@/components/dialog/AccountEiDialog"),
-    DynamicDialog: () => import("@/components/dialog/DynamicDialog"),
+    DynamicDialog: () => import("@/components/dialog/DynamicDialog_B"),
   },
 
   data: () => ({
@@ -131,7 +131,7 @@ export default {
     procedure: "",
     listLabel: "",
     listData: [],
-    multiSelectMode: false,
+    selectionmode: "",
     moreParas: null,
     autoSearch: false,
     // tranCode: "",
@@ -291,8 +291,15 @@ export default {
       this.procedure = "EI_SEL_6095070_S_03_NODE";
       this.moreParas = null;
       this.autoSearch = true;
-      this.multiSelectMode = true;
+      this.selectionmode = "checkbox";
       this.$refs.refDynamicDialog.dialogIsShow = true;
+
+
+
+      this.$refs.refDynamicDialog.instance.selectAll()
+
+
+
     },
     openAccountDialog() {
       this.$refs.accountDialog.dialogIsShow = true;
@@ -392,9 +399,9 @@ export default {
       this.headerQQ = headerobj;
     },
     onSelectItemInfoTO(item) {
-      console.log(item);
       for (let i = 0; i < item.length; i++) {
         this.$refs.gridview.addRowStruct({
+           _rowstatus:  "i",
           PK: item[i].PK,
           TCO_COMPANY_PK: item[i].TCO_COMPANY_PK,
           PARTNER_PK: item[i].PK,

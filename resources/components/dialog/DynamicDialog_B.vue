@@ -15,7 +15,7 @@
                 <v-card outlined tile>
                   <v-container fluid>
                     <v-row dense align="center" justify="space-between">
-                      <!-- <v-col lg="2" sm="5" cols="12">
+                      <v-col lg="2" sm="5" cols="12">
                         <v-select
                           dense
                           hide-details
@@ -26,7 +26,7 @@
                           v-model="selectedCompany"
                           @change="onSearch"
                         ></v-select>
-                      </v-col> -->
+                      </v-col>
                       <v-col lg="2" sm="5" cols="12" v-if="from_date">
                         <datePicker
                           :label="$t('from')"
@@ -124,9 +124,10 @@
                     :header="defaultHeader"
                     :sel_procedure="procedure"
                     :select_mode="selectMode"
+                    :selection_mode="selection_mode"
                     :filter_paras="searchParas"
                     :is_allow_paste="false"
-                    :autocheckbox="false"
+                    :autocheckbox="autocheckbox"
                     :max_height="limitHeight"
                     @cellDblClick="onSelectSingle"
                     :selectionmode="selectionmode"
@@ -201,6 +202,14 @@ export default {
     showaggregatestop: {
       type: Boolean,
       default: false,
+    },
+    autocheckbox: {
+      type: Boolean,
+      default: false,
+    },
+    selection_mode: {
+      type: String,
+      default: "singlecell",
     },
   },
   components: {

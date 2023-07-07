@@ -1,101 +1,62 @@
 <template>
-<v-container fluid class="pa-0" v-resize="onResize">
-  <v-row class="pt-2" dense>
-    <v-col md="4" class="pl-3 pr-2">
-      <BaseSelect outlined :label="$t('company')" item-text="NAME" item-value="VAL" filter_off :lstData="companyList" v-model="company" />
-    </v-col>
-    <!-- <v-col md="1">
-      </v-col> -->
-    <v-col md="1" class="pl-3 pr-2">
-      <BaseSelect outlined :label="$t('choose_type_date')" v-model="itemChooseTypeDate" :lstData="lstChooseTypeDate" item-text="NAME" item-value="VAL" filter_off />
-    </v-col>
-    <!-- <v-col md="1">
-      </v-col> -->
-    <!-- Monthly -->
-    <v-col md="1"  class="pl-3 pr-2" v-show="itemChooseTypeDate == '0'">
-      <BaseDatePicker outlined :label="$t('month')" v-model="month" month />
-    </v-col>
-    <v-col md="1"  class="pl-3 pr-2" v-show="itemChooseTypeDate == '0'">
-      <BaseDatePicker outlined :label="$t('from_date')" v-model="fromDate" />
-    </v-col>
-    <v-col md="1"  class="pl-3 pr-2" v-show="itemChooseTypeDate == '0'">
-      <BaseDatePicker outlined :label="$t('to_date')" v-model="toDate" />
-    </v-col>
-    <!-- As current -->
-    <v-col md="2"  class="pl-3 pr-2" v-show="itemChooseTypeDate == '1'"> </v-col>
-    <v-col md="1"  class="pl-3 pr-2" v-show="itemChooseTypeDate == '1'">
-      <BaseDatePicker outlined :label="$t('from_date')" v-model="fromDate" />
-    </v-col>
-    <v-col md="1"  class="pl-3 pr-2" v-show="itemChooseTypeDate == '1'">
-      <BaseDatePicker outlined :label="$t('to_date')" v-model="toDate" />
-    </v-col>
-    <!-- Year -->
-
-    <v-col md="1"  class="pl-3 pr-2" v-show="itemChooseTypeDate == '2'">
-      <BaseDatePicker outlined :label="$t('year')" v-model="year" year />
-    </v-col>
-    <v-col md="1"  class="pl-3 pr-2" v-show="itemChooseTypeDate == '2'">
-      <BaseDatePicker outlined :label="$t('from_date')" v-model="fromDate" />
-    </v-col>
-    <v-col md="1"  class="pl-3 pr-2" v-show="itemChooseTypeDate == '2'">
-      <BaseDatePicker outlined :label="$t('to_date')" v-model="toDate" />
-    </v-col>
-
-    <!-- Quarter -->
-
-    <v-col md="1"  class="pl-3 pr-2" v-show="itemChooseTypeDate == '3'">
-      <BaseDatePicker outlined :label="$t('year')" v-model="year" year />
-    </v-col>
-    <v-col md="1"  class="pl-3 pr-2" v-show="itemChooseTypeDate == '3'">
-      <BaseSelect outlined :label="$t('choose_type_quarter')" v-model="itemChooseTypeQuarter" :lstData="lstChooseTypeQuarter" item-text="NAME" item-value="VAL" filter_off />
-    </v-col>
-    <v-col md="1"  class="pl-3 pr-2" v-show="itemChooseTypeDate == '3'">
-      <BaseDatePicker outlined :label="$t('from_date')" v-model="fromDate" />
-    </v-col>
-    <v-col md="1" class="pl-3 pr-2" v-show="itemChooseTypeDate == '3'">
-      <BaseDatePicker outlined :label="$t('to_date')" v-model="toDate" />
-    </v-col>
+  <v-container fluid v-resize="onResize" class="pa-0">
+    <v-row dense>
+    <v-row md="12">
+      <v-col md="3" class="pl-5">
+        <BaseSelect outlined :label="$t('company')" v-model="company" :lstData="companyList" item-text="TEXT"
+          item-value="PK" />
+      </v-col>
+      <v-col md="1" class="pl-3 pr-2">
+        <BaseDatePicker outlined :label="$t('date_year')" v-model="date_year" month today />
+      </v-col>
+      <v-col md="1" class="pl-3 pr-2">
+        <BaseDatePicker outlined :label="$t('from_date')" v-model="from_date" start  />
+      </v-col>
+      <v-col md="1" class="pl-3 pr-2">
+        <BaseDatePicker outlined :label="$t('to_date')" v-model="to_date" today />
+      </v-col>
+      <v-col md="2">
+        <BaseSelect outlined :label="$t('form_no')" v-model="form_no" item-value="VAL" item-text="NAME"
+          :lstData="form_no_list"  />
+      </v-col>
+      <v-col md="2" class="pr-5">
+        <BaseSelect outlined :label="$t('serial_no')" v-model="serial_no" :lstData="serial_List" item-text="NAME"
+          item-value="VAL"/>
+      </v-col>
+      <v-col md="2" class="d-flex justify-end pr-3">
+        <BaseButton icon_type="search" :btn_text="$t('search')" @onclick="onClickButton()" />
+        <BaseButton icon_type="excel" :btn_text="$t('print')" @onclick="onReport()" />
+      </v-col>
+    </v-row>
+    <v-row md="12">
+      <v-col md="3" class="pl-5">
+        <BaseInput outlined :label="$t('invoice_no')" v-model="invoiceNo" />
+      </v-col>
+      <v-col md="3" class="pl-3 pr-2">
+        <BaseInput outlined :label="$t('trand_code')" v-model="tranCode" />
+      </v-col>
+      <v-col md="2">
+        <BaseInput outlined :label="$t('cqt_code')" v-model="cqtCode" />
+      </v-col>
+      
+    </v-row>
   </v-row>
-
-  <v-row class="pt-1" dense>
-    <v-col md="2" class="pl-3 pr-2">
-      <BaseSelect outlined :label="$t('form_no')" item-text="NAME" item-value="VAL" filter_off :lstData="formList" v-model="lstForm" />
-    </v-col>
-    <!-- <v-col md="1">
-      </v-col> -->
-    <v-col md="2" class="pl-3 pr-2">
-      <BaseSelect outlined :label="$t('serial_no')" item-text="NAME" item-value="VAL" filter_off :lstData="serialList" v-model="lstSerial" />
-    </v-col>
-    <v-col md="2" class="pl-3 pr-2">
-      <BaseInput outlined :label="$t('invoice_no')" v-model="lstInvoiceNo" @keyPressEnter="onClickButton()" />
-    </v-col>
-    <v-col md="2" class="pl-3 pr-2">
-      <BaseInput outlined :label="$t('trade_code')" v-model="lstTradeCode" @keyPressEnter="onClickButton()" />
-    </v-col>
-    <v-col md="2" class="pl-3 pr-2">
-      <BaseInput outlined :label="$t('cqt_code')" v-model="lstCQTCode" @keyPressEnter="onClickButton()" />
-    </v-col>
-    <v-col md="2" class="d-flex justify-end">
-      <BaseButton icon_type="search" :btn_text="$t('search')" @onclick="onClickButton()" />
-      <BaseButton icon_type="print" :btn_text="$t('print')" @onclick="onReport" />
-    </v-col>
-  </v-row>
-
-  <v-row no-gutters align="center" justify="start" class="pt-3">
-    <v-col cols="12">
-      <BaseGridView column-resizing-mode="widget" ref="gridview" :auto_load="false" select_mode="Single" :max_height="limitHeight" :header="this.headerGrid" sel_procedure="AC_SEL_6095170_1" :filter_paras="[
-            this.fromDate,
-            this.toDate,
-            this.lstForm,
-            this.lstSerial,
-            this.lstInvoiceNo,
-            this.lstTradeCode,
-            this.lstCQTCode,
+    <v-row no-gutters align="center" justify="start" class="mb-2">
+      <v-col cols="12">
+        <BaseGridView ref="gridview" select_mode="Single" :max_height="limitHeight" column-resizing-mode="widget"
+          sel_procedure="AC_SEL_6095170_1_NC" :editable="false" :header="this.headerGrid" :filter_paras="[
+            this.from_date,
+            this.to_date,
+            this.form_no,
+            this.serial_no,
+            this.invoiceNo,
+            this.tranCode,
+            this.cqtCode,
             this.company,
           ]" />
-    </v-col>
-  </v-row>
-</v-container>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -103,231 +64,80 @@ export default {
   layout: "default",
   middleware: "user",
 
-  components: {
-    DatePicker: () => import("@/components/control/DatePicker"),
-  },
+  components: {},
   data: () => ({
     companyList: [],
-    company: null,
-    headerGrid: [],
-    lstCompany: [],
-    txtSerialNo: "",
-    lstStatus: "",
-    selTypeDate: "0",
-    fromDate: "",
-    toDate: "",
-    formList: [],
-    lstForm: "",
-    serialList: [],
-    lstSerial: "",
-    lstInvoiceNo: "",
-    lstTradeCode: "",
-    lstCQTCode: "",
-    invoice_no: "",
-    lstChooseTypeDate: [{
-        NAME: "Monthly",
-        VAL: "0",
-      },
-      {
-        NAME: "As current",
-        VAL: "1",
-      },
-      {
-        NAME: "Year",
-        VAL: "2",
-      },
-      {
-        NAME: "Quarter",
-        VAL: "3",
-      },
-    ],
-    itemChooseTypeDate: "0",
-    lstChooseTypeQuarter: [{
-        NAME: "I",
-        VAL: "0",
-      },
-      {
-        NAME: "II",
-        VAL: "1",
-      },
-      {
-        NAME: "III",
-        VAL: "2",
-      },
-      {
-        NAME: "IV",
-        VAL: "3",
-      },
-    ],
-    itemChooseTypeQuarter: "0",
-    month: "",
-    year: "",
+    company: "",
+    mstData: "",
+    companyFornno: "",
+    serialno_formno_list: [],
+    dateList: [],
+    from_date: "",
+    form_no: "",
+    to_date: "",
+    date: null,
+    date_year: "",
+    searchInput: null,
+    headerQQ: [],
+    invoiceNo: "",
+    tranCode: "",
+    cqtCode: "",
+    form_no_list: [],
+    serial_List: [],
+
+    gridview: [],
+    serial_no: "",
   }),
 
   async created() {
     await this.getListCodes("company");
     await this.getListCodes("form_no");
     await this.getListCodes("serial_no");
+    // this.company = this.user.TCO_COMPANY_PK;
+  },
+  mounted() {
     this.onSetHeader();
   },
-  async mounted() {
-    let tmpMonth = new Date().getMonth() + 1;
-    if (tmpMonth < 10) {
-      this.month = "0" + tmpMonth.toString();
-    } else {
-      this.month = tmpMonth.toString();
-    }
-    let tmpYear = new Date().getFullYear();
-    this.month = tmpYear.toString() + this.month;
-    this.year = tmpYear.toString();
-  },
-  watch: {
-    company(val) {
-      this.getListCodes("form_no");
-      // this.getListCodes("serial_no");
-    },
-    lstForm(val) {
-      this.getListCodes("serial_no");
-    },
-    fromDate(val){
-      this.getListCodes("form_no");
-      this.getListCodes("serial_no");
-    },
-    toDate(val){
-      this.getListCodes("form_no");
-      this.getListCodes("serial_no");
-    },
-    itemChooseTypeDate(val) {
-      if (val == "0" || val == "2") {
-        this.fromDate = "";
-        this.toDate = "";
-      }
-      let tmpMonth = new Date().getMonth() + 1;
-      if (val == "0" && this.month == "") {
-        if (tmpMonth < 10) {
-          this.month = "0" + tmpMonth.toString();
-        } else {
-          this.month = tmpMonth.toString();
-        }
-        let tmpYear = new Date().getFullYear();
-        this.month = tmpYear.toString() + this.month;
-      }
-      if (val == "2" && this.year == "") {
-        let tmpYear = new Date().getFullYear();
-        this.year = tmpYear.toString();
-      }
-      if (val == "3" && this.year == "") {
-        let tmpYear = new Date().getFullYear();
-        this.year = tmpYear.toString();
-      }
-      if (this.year != "" && val == "2") {
-        this.fromDate = this.year + "0101";
-        this.toDate = this.year + "1231";
-      }
-      if (this.month != "" && val == "0") {
-        this.fromDate = this.month + "01";
-        this.toDate = this.month + this._maxDateOfMonth(this.fromDate);
-      }
-      if (val == "3") {
-        if (this.itemChooseTypeQuarter == "0") {
-          this.fromDate = this.year + "0101";
-          this.toDate = this.year + "0331";
-        }
-        if (this.itemChooseTypeQuarter == "1") {
-          this.fromDate = this.year + "0401";
-          this.toDate = this.year + "0630";
-        }
-        if (this.itemChooseTypeQuarter == "2") {
-          this.fromDate = this.year + "0701";
-          this.toDate = this.year + "0930";
-        }
-        if (this.itemChooseTypeQuarter == "3") {
-          this.fromDate = this.year + "1001";
-          this.toDate = this.year + "1231";
-        }
-      }
-    },
-    month(val) {
-      if (val) {
-        this.fromDate = val + "01";
-        this.toDate = val + this._maxDateOfMonth(val);
-      }
-    },
-    year(val) {
-      if (val) {
-        if (this.itemChooseTypeDate == "2") {
-          this.fromDate = this.year + "0101";
-          this.toDate = this.year + "1231";
-        }
-        if (this.itemChooseTypeDate == "3") {
-          if (this.itemChooseTypeQuarter == "0") {
-            this.fromDate = this.year + "0101";
-            this.toDate = this.year + "0331";
-          }
-          if (this.itemChooseTypeQuarter == "1") {
-            this.fromDate = this.year + "0401";
-            this.toDate = this.year + "0630";
-          }
-          if (this.itemChooseTypeQuarter == "2") {
-            this.fromDate = this.year + "0701";
-            this.toDate = this.year + "0930";
-          }
-          if (this.itemChooseTypeQuarter == "3") {
-            this.fromDate = this.year + "1001";
-            this.toDate = this.year + "1231";
-          }
-        }
-      }
-    },
-    itemChooseTypeQuarter(val) {
-      switch (val) {
-        case "0":
-          this.fromDate = this.year + "0101";
-          this.toDate = this.year + "0331";
-          break;
-        case "1":
-          this.fromDate = this.year + "0401";
-          this.toDate = this.year + "0630";
-          break;
-        case "2":
-          this.fromDate = this.year + "0701";
-          this.toDate = this.year + "0930";
-          break;
-        case "3":
-          this.fromDate = this.year + "1001";
-          this.toDate = this.year + "1231";
-          break;
-      }
-    },
-
-  },
   computed: {
+    limitHeight() {
+      if (this.$vuetify.breakpoint.smAndUp) {
+        return 600;
+      }
+    },
     user() {
       return this.$store.getters["auth/user"];
     },
-    limitHeight() {
-      if (this.windowHeight <= 768) {
-        return this.windowHeight * 0.4;
-      } else {
-        return this.windowHeight * 0.8;
+  },
+  watch: {
+    company(val){
+      this.getListCodes("form_no");
+      this.getListCodes("serial_no");
+    },
+    form_no(val){
+      this.getListCodes("serial_no");
+    },
+    from_date(val){
+      this.getListCodes("form_no");
+      this.getListCodes("serial_no");
+    },
+    to_date(val){
+      this.getListCodes("form_no");
+      this.getListCodes("serial_no");
+    },
+    date_year(val) {
+      if (val) {
+        this.from_date = val + "01";
+        this.to_date = val + this._maxDateOfMonth(val);
       }
     },
   },
-
   methods: {
-    onClickButton() {
-      this.$refs.gridview.loadData();
-    },
-    onClickExport(obj) {
-      this.$refs.gridview.exportExcel();
-    },
-
     async getListCodes(pos) {
       switch (pos) {
         case "company":
           const dso_company_list = {
             type: "list",
-            selpro: "AC_SEL_6095170_COM",
+            selpro: "SYS_SEL_LIST_COMPANY",
             para: [this.user.PK],
           };
           this.companyList = await this._dsoCall(
@@ -335,36 +145,36 @@ export default {
             "select",
             false
           );
-           if (this.companyList.length > 0) {}
-          this.company = this.companyList[0].PK;
+          if (this.companyList.length > 0) {}
+            this.company = this.companyList[0].PK;
           break;
-
         case "form_no":
-          const dso_form_list = {
+          const dso_form_no_list = {
             type: "list",
-            selpro: "AC_SEL_6095170_FORM_NO",
-            para: [this.company, this.fromDate, this.toDate],
+            selpro: "AC_SEL_6095160_FORM_NO",
+            para: [this.company, this.from_date, this.to_date],
           };
-          this.formList = await this._dsoCall(dso_form_list, "select", false);
-          if (this.formList != null) {
-            this.lstForm = this.formList[0].VAL;
+          this.form_no_list = await this._dsoCall(dso_form_no_list, "select",false);
+          if (this.form_no_list != null) {
+            this.form_no = this.form_no_list[0].VAL;
           }
           break;
-
         case "serial_no":
-          const dso_serial_list = {
+          const dso_serial_no_list = {
             type: "list",
-            selpro: "AC_SEL_6095170_SERIAL_NO",
-            para: [this.company, this.lstForm],
+            selpro: "AC_SEL_6095160_SERIAL_NO",
+            para: [this.company, this.form_no, this.from_date, this.to_date],
           };
-          this.serialList = await this._dsoCall(
-            dso_serial_list,
-            "select",
-            false
-          );
-          this.lstSerial = this.serialList[0].VAL;
+          this.serial_List = await this._dsoCall(dso_serial_no_list, "select",false);
+          if (this.serial_List != null) {
+              this.serial_no = this.serial_List[0].VAL;
+          }
+          
           break;
       }
+    },
+    onClickButton(obj) {
+      this.$refs.gridview.loadData();
     },
     async onReport() {
       let report_path = "report/60/95/rpt_6095170_1.xlsx";
@@ -379,11 +189,11 @@ export default {
                range: "A1:Q7",
                     proc: "AC_RPT_6095170_1",
                     params: [
-                      this.fromDate,
-                      this.toDate,
-                      this.lstForm,
-                      this.lstSerial,
-                      this.lstInvoiceNo,
+                      this.from_date,
+                      this.to_date,
+                      this.form_no,
+                      this.serial_no,
+                      this.invoiceNo,
                       this.company,
                     ],
             }, //header
@@ -393,11 +203,13 @@ export default {
                   startRow: 11,
                   proc: "AC_RPT_6095170_2",
                   params: [
-                    this.fromDate,
-                    this.toDate,
-                    this.lstForm,
-                    this.lstSerial,
-                    this.lstInvoiceNo,
+                    this.from_date,
+                    this.to_date,
+                    this.form_no,
+                    this.serial_no,
+                    this.invoiceNo,
+                    this.tranCode,
+                    this.cqtCode,
                     this.company,
                   ],
                   dateColumns: [
@@ -454,6 +266,7 @@ export default {
         this.salaryStatus = this.$t("fail_to_export_report");
       }
     },
+    
     onSetHeader() {
       let headerObj = [{
           dataField: "ORDERBY_NO",
@@ -488,12 +301,15 @@ export default {
               caption: this.$t("invoice_date"),
               allowEditing: false,
               dataType: "string",
+              alignment: "center",
             },
             {
               dataField: "SIGN_DT",
               caption: this.$t("sign_date"),
               allowEditing: false,
               dataType: "string",
+              alignment: "center",
+
             },
             {
               dataField: "AMOUNT",

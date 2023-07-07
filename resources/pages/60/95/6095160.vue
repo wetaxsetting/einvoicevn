@@ -44,7 +44,7 @@
     <v-row no-gutters align="center" justify="start" class="mb-2">
       <v-col cols="12">
         <BaseGridView ref="gridview" select_mode="Single" :max_height="limitHeight" column-resizing-mode="widget"
-          sel_procedure="AC_SEL_6095160_S_NOCACHE" :editable="false" :header="this.headerQQ" :filter_paras="[
+          sel_procedure="AC_SEL_6095160_1_NC" :editable="false" :header="this.headerQQ" :filter_paras="[
             this.from_date,
             this.to_date,
             this.form_no,
@@ -78,7 +78,6 @@ export default {
     date: null,
     date_year: "",
     searchInput: null,
-    limitHeight: [],
     headerQQ: [],
     invoiceNo: "",
     tranCode: "",
@@ -112,6 +111,7 @@ export default {
   watch: {
     company(val){
       this.getListCodes("form_no");
+      this.getListCodes("serial_no");
     },
     form_no(val){
       this.getListCodes("serial_no");
@@ -163,11 +163,13 @@ export default {
           const dso_serial_no_list = {
             type: "list",
             selpro: "AC_SEL_6095160_SERIAL_NO",
-            para: [this.company, this.form_no],
+            para: [this.company, this.form_no, this.from_date, this.to_date],
           };
           this.serial_List = await this._dsoCall(dso_serial_no_list, "select",false);
+          if (this.serial_List != null) {
+              this.serial_no = this.serial_List[0].VAL;
+          }
           
-            this.serial_no = this.serial_List[0].VAL;
           break;
       }
     },
@@ -309,6 +311,7 @@ export default {
               caption: this.$t("sign_date"),
               allowEditing: false,
               dataType: "string",
+              alignment: "center",
             },
             {
               dataField: "AMOUNT",
@@ -375,7 +378,7 @@ export default {
         },
         {
           dataField: "CANCEL_REASON",
-          caption: this.$t("cancel_couse"),
+          caption: this.$t("cancel_reason"),
           allowEditing: false,
           dataType: "string",
         },

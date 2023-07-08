@@ -35,7 +35,7 @@
       <v-col md="3" class="pl-3 pr-2">
         <BaseInput outlined :label="$t('trand_code')" v-model="tranCode" />
       </v-col>
-      <v-col md="2">
+      <v-col md="4">
         <BaseInput outlined :label="$t('cqt_code')" v-model="cqtCode" />
       </v-col>
       
@@ -401,7 +401,6 @@ export default {
           width: 0,
           caption: this.$t("adjust_date"),
         },
-        
         {
           dataField: "CANCEL_REASON",
           width: 0,
@@ -411,6 +410,11 @@ export default {
           dataField: "REMARK2",
           width: 0,
           caption: this.$t("remark"),
+        },
+        {
+          dataField: "CQT_MAGD",
+          caption: this.$t("trand_code"),
+          allowEditing: false,
         },
       ];
       this.headerGrid = headerObj;

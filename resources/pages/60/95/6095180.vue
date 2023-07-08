@@ -35,7 +35,7 @@
       <v-col md="3" class="pl-3 pr-2">
         <BaseInput outlined :label="$t('trand_code')" v-model="tranCode" />
       </v-col>
-      <v-col md="2">
+      <v-col md="4">
         <BaseInput outlined :label="$t('cqt_code')" v-model="cqtCode" />
       </v-col>
       
@@ -331,36 +331,69 @@ export default {
             },
           ],
         },
-        // {
-        //   dataField: "GD_DATE",
-        //   caption: this.$t("ex_factory_date"),
-        //   allowEditing: false,
-        //   dataType:"date"
-        // },
+        
+      
         {
-          caption: "Customer",
-          columns: [
+          caption: this.$t("invoice_replace"),
+          columns: [{
+              dataField: "FORM_NO_ADJ",
+              caption: this.$t("form_no"),
+              allowEditing: false,
+              dataType: "string",
+              alignment: "right",
+            },
             {
-              dataField: "CUS_CD",
-              caption: this.$t("code"),
+              dataField: "SERIAL_NO_ADJ",
+              caption: this.$t("serial_no"),
               allowEditing: false,
               dataType: "string",
               alignment: "center",
-              width: "80"
+            },
+            {
+              dataField: "INVOICE_DATE_ADJ",
+              caption: this.$t("invoice_date"),
+              allowEditing: false,
+              dataType: "string",
+              alignment: "right",
+            },
+            {
+              dataField: "INVOICE_NO_ADJ",
+              caption: this.$t("invoice_no"),
+              allowEditing: false,
+              dataType: "string",
+              alignment: "right",
+            },
+            {
+              dataField: "SIGN_DT_ADJ",
+              caption: this.$t("sign_date"),
+              allowEditing: false,
+              dataType: "string",
+            },
+            {
+              dataField: "AMOUNT_ADJ",
+              caption: this.$t("amount"),
+              cssClass: "cell-align-right",
+              allowEditing: false,
+              dataType: "number",
+              formatFloat: 0,
+            },
+            {
+              dataField: "CUS_CD",
+              caption: this.$t("customer_code"),
+              allowEditing: false,
+              dataType: "string",
             },
             {
               dataField: "CUS_NM",
-              caption: this.$t("name"),
+              caption: this.$t("customer_name"),
               allowEditing: false,
               dataType: "string",
-              width: "120"
             },
             {
               dataField: "TAX_CODE",
-              caption: this.$t("tax _code"),
+              caption: this.$t("tax_code"),
               allowEditing: false,
-              dataType: "num",
-              alignment: "center",
+              dataType: "string",
             },
             {
               dataField: "ADDR",
@@ -370,16 +403,15 @@ export default {
             },
           ],
         },
-
         {
-          dataField: "CANCEL_BY",
-          caption: this.$t("cancle_by"),
+          dataField: "REL_BY",
+          caption: this.$t("replace_by"),
           allowEditing: false,
           dataType: "string",
         },
         {
-          dataField: "CANCEL_DT",
-          caption: this.$t("cancle_date"),
+          dataField: "REL_DT",
+          caption: this.$t("replace_date"),
           allowEditing: false,
           dataType: "string",
         },
@@ -394,10 +426,11 @@ export default {
           caption: this.$t("cqt_code"),
           allowEditing: false,
           dataType: "string",
+          visible:false 
         },
         {
           dataField: "CQT_MAGD",
-          caption: this.$t("trand_code "),
+          caption: this.$t("trand_code"),
           allowEditing: false,
         },
       ];

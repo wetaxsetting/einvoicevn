@@ -130,10 +130,6 @@ export default {
     dynamicHeader: [],
     cellDblClickgrdDetail: {},
     selectedTab: undefined,
-    codeLabel: "",
-    nameLabel: "",
-    dialogTitle: "",
-    procedure: "",
     listLabel: "",
     listData: [],
     selectionmode: "",
@@ -267,6 +263,7 @@ export default {
         {
           dataField: "PK",
           caption: this.$t("pk"),
+          hidden:true
         },
         {
           dataField: "PARTNER_ID",
@@ -275,18 +272,22 @@ export default {
         {
           dataField: "PARTNER_NAME",
           caption: this.nameLabel,
+          width: 400,
         },
         {
           dataField: "PARTNER_LNAME",
           caption: this.codeLabel,
+          hidden:true
         },
         {
           dataField: "PARTNER_FNAME",
           caption: this.$t("partner_fname"),
+          hidden:true
         },
         {
           dataField: "ADDR1",
           caption: this.$t("address"),
+          width: 200,
         },
         {
           dataField: "PHONE_NO",
@@ -301,16 +302,16 @@ export default {
       // }
     },
     async openDialog() {
-      this.dynamicHeader = this.BuildDynamicHeader();
       this.dialogTitle = this.$t("popup_get_partner");
       this.nameLabel = this.$t("partner_name");
       this.codeLabel = this.$t("partner_lname");
-
       this.procedure = "EI_SEL_6095070_S_03_NC";
       this.moreParas = null;
       this.autoSearch = true;
       this.selectionmode = "checkbox";
       this.multiSelectMode = true;
+
+      this.dynamicHeader = this.BuildDynamicHeader();
       this.$refs.refDynamicDialog.dialogIsShow = true;
 
 

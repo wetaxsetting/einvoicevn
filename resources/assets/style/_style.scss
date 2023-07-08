@@ -170,6 +170,21 @@ html {
 			}
 		}
 
+		.numberRed {
+			.v-text-field {
+				.v-text-field__slot {
+					.v-input {
+						font-size: 12px !important;
+					}
+
+					input {
+						text-align: right !important;
+						color: red !important;
+					}
+				}
+			}
+		}
+
 		#mainWrapper {
 			background-color: #F2F7FF;
 		}
@@ -595,6 +610,29 @@ div.menuable__content__active {
 
 .word-break {
 	word-break: break-all;
+}
+
+.jqx-grid-cell-pinned {
+	background-color: white !important;
+}
+
+.cellUpdate {
+	background-color: #cfe3ff !important;
+	color: black !important;
+}
+
+.cellInsert {
+	background-color: #dcfae2 !important;
+	color: black !important;
+}
+
+.cellDelete {
+	background-color: #ffb8b8 !important;
+	color: black !important;
+}
+
+.cell-non-ediable {
+	background-color: #ececec !important;
 }
 
 .jqx-grid-cell-selected {

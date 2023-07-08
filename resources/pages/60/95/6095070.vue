@@ -1,16 +1,7 @@
 <template>
   <v-container fluid v-resize="onResize">
     <v-row dense>
-        <v-col md="12" class="d-flex justify-end">
-          <BaseButton icon_type="search" :btn_text="$t('search')" @onclick="onClickButton('SEARCH')" />
-          <BaseButton icon_type="add" :btn_text="$t('add')" @onclick="onClickButton('NEW')" />
-          <BaseButton icon_type="save" :btn_text="$t('save')" @onclick="onClickButton('SAVE')" />
-          <!-- <BaseButton icon_type="excel" :btn_text="$t('print')" @onclick="onReport('PRINT')"/> -->
-        </v-col>
-    </v-row>
-
-    <v-row dense>
-      <v-col md="2" class="pl-2 pr-3">
+      <v-col md="3" class="pl-2 pr-3">
         <BaseSelect outlined :label="$t('company')" v-model="company" :lstData="companyList" item-text="TEXT" item-value="PK" />
       </v-col>
       <v-col md="2" class="pl-3 pr-3">
@@ -22,11 +13,24 @@
       <v-col md="2" class="pl-3 pr-3">
         <BaseInput outlined :label="$t('partner')" v-model="partner" />
       </v-col>
-      <v-col md="2" class="pl-3 pr-3">
+        <v-col md="3" class="d-flex justify-end">
+          <BaseButton icon_type="search" :btn_text="$t('search')" @onclick="onClickButton('SEARCH')" />
+          <BaseButton icon_type="add" :btn_text="$t('add')" @onclick="onClickButton('NEW')" />
+          <BaseButton icon_type="save" :btn_text="$t('save')" @onclick="onClickButton('SAVE')" />
+          <!-- <BaseButton icon_type="excel" :btn_text="$t('print')" @onclick="onReport('PRINT')"/> -->
+        </v-col>
+    </v-row>
+
+    <v-row dense>
+      
+      <v-col md="3" class="pl-2 pr-3">
         <BaseInput outlined :label="$t('mail')" v-model="mail" />
       </v-col>
-      <v-col md="2" class="pl-3 pr-2">
+      <v-col md="2" class="pl-3 pr-3">
         <BaseInput outlined :label="$t('mail_cc')" v-model="mail_cc" />
+      </v-col>
+      <v-col  md="2" class="pl-3 pr-3">
+        <BaseSelect outlined :label="$t('user_yn')" v-model="seluserYN" :lstData="seluserYNList" item-value="VAL" item-text="NAME" :text_all="$t('select_all')" />
       </v-col>
     </v-row>
     <v-row>
@@ -35,8 +39,8 @@
     <v-row no-gutters align="center" justify="start" class="mb-2">
       <v-col cols="12">
         <BaseGridView ref="gridview" select_mode="Single" :max_height="limitHeight" column-resizing-mode="widget"
-           sel_procedure="EI_SEL_6095070_S_02_NODE" 
-           upd_procedure="EI_UPD_6095070_U_03_NODE"
+           sel_procedure="EI_SEL_6095070_S_02_NOCACHE" 
+           upd_procedure="EI_UPD_6095070_U_03_NOCACHE"
            :header="this.headerQQ" :filter_paras="[
             this.company,
             this.from_date,
@@ -44,6 +48,7 @@
             this.partner,
             this.mail,
             this.mail_cc,
+            this.seluserYN
           ]" :update_paras="[
             'PK',
             'RN',
@@ -135,6 +140,18 @@ export default {
     multiSelectMode: false,
     moreParas: null,
     autoSearch: false,
+
+    seluserYN: "",
+    seluserYNList: [
+      {
+        NAME: "Yes",
+        VAL: "Y",
+      },
+      {
+        NAME: "No",
+        VAL: "N",
+      },
+    ]
     // tranCode: "",
     // cqtCode: "",
   }),
@@ -289,7 +306,7 @@ export default {
       this.nameLabel = this.$t("partner_name");
       this.codeLabel = this.$t("partner_lname");
 
-      this.procedure = "EI_SEL_6095070_S_03_NODE";
+      this.procedure = "EI_SEL_6095070_S_03_NOCACHE";
       this.moreParas = null;
       this.autoSearch = true;
       this.selectionmode = "checkbox";
@@ -399,8 +416,7 @@ export default {
     },
     onSelectItemInfoTO(item) {
       for (let i = 0; i < item.length; i++) {
-        this.$refs.gridview.addRowStruct({
-           _rowstatus:  "i",
+        this.$refs.gridview.onAdd({
           PK: item[i].PK,
           TCO_COMPANY_PK: item[i].TCO_COMPANY_PK,
           PARTNER_PK: item[i].PK,
@@ -422,6 +438,13 @@ export default {
         });
       }
     },
+    // onSelectItemInfoTO(){
+    //   this.$refs.gridview.addRowStruct({
+    //     PK:
+    //     TCO_COMPANY_PK: this.
+    //   });
+    // }
+
   },
 };
 </script>

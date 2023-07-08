@@ -364,7 +364,7 @@ export default {
           ],
         },
         {
-          caption: "Invoid (Reaplace)",
+          caption: "Invoice (Reaplace)",
           columns: [
             {
               dataField: "FORM_NO_ADJ",

@@ -28,7 +28,7 @@
       <v-col md="3">
         <BaseInput outlined :label="$t('trand_code')" v-model="tranCode" />
       </v-col>
-      <v-col md="2">
+      <v-col md="4">
         <BaseInput outlined :label="$t('cqt_code')" v-model="cqtCode" />
       </v-col>
       <v-col md="4" class="d-flex justify-end">
@@ -427,6 +427,7 @@ export default {
               caption: this.$t("tax_code"),
               allowEditing: false,
               dataType: "string",
+              dataType: "string",
             },
             {
               dataField: "ADDR",
@@ -437,7 +438,6 @@ export default {
             },
           ],
         },
-
         {
           dataField: "REL_BY",
           caption: this.$t("replace_by"),
@@ -460,6 +460,7 @@ export default {
           caption: this.$t("trand_code"),
           allowEditing: false,
           dataType: "string",
+          visible:false 
         },
         {
           dataField: "REMARK",

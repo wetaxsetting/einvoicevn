@@ -590,6 +590,11 @@ export default {
           width: 0,
           caption: this.$t("remark"),
         },
+        {
+          dataField: "CQT_MAGD",
+          caption: this.$t("trand_code"),
+          allowEditing: false,
+        },
       ];
       this.headerGrid = headerObj;
     },

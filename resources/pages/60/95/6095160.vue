@@ -35,7 +35,7 @@
       <v-col md="3" class="pl-3 pr-2">
         <BaseInput outlined :label="$t('trand_code')" v-model="tranCode" />
       </v-col>
-      <v-col md="2">
+      <v-col md="4">
         <BaseInput outlined :label="$t('cqt_code')" v-model="cqtCode" />
       </v-col>
       
@@ -384,10 +384,11 @@ export default {
           caption: this.$t("cqt_code"),
           allowEditing: false,
           dataType: "string",
+          visible:false 
         },
         {
           dataField: "CQT_MAGD",
-          caption: this.$t("trand_code "),
+          caption: this.$t("trand_code"),
           allowEditing: false,
         },
       ];

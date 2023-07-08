@@ -39,8 +39,8 @@
     <v-row no-gutters align="center" justify="start" class="mb-2">
       <v-col cols="12">
         <BaseGridView ref="gridview" select_mode="Single" :max_height="limitHeight" column-resizing-mode="widget"
-           sel_procedure="EI_SEL_6095070_S_02_NOCACHE" 
-           upd_procedure="EI_UPD_6095070_U_03_NOCACHE"
+           sel_procedure="EI_SEL_6095070_S_02_NC" 
+           upd_procedure="EI_UPD_6095070_U_03_NC"
            :header="this.headerQQ" :filter_paras="[
             this.company,
             this.from_date,
@@ -306,7 +306,7 @@ export default {
       this.nameLabel = this.$t("partner_name");
       this.codeLabel = this.$t("partner_lname");
 
-      this.procedure = "EI_SEL_6095070_S_03_NOCACHE";
+      this.procedure = "EI_SEL_6095070_S_03_NC";
       this.moreParas = null;
       this.autoSearch = true;
       this.selectionmode = "checkbox";

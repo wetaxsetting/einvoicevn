@@ -433,6 +433,12 @@ export default {
           caption: this.$t("trand_code"),
           allowEditing: false,
         },
+        ,
+        {
+          dataField: "REMARK",
+          caption: this.$t("remark"),
+          allowEditing: false,
+        },
       ];
       this.headerQQ = headerobj;
     },

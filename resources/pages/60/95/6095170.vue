@@ -44,7 +44,7 @@
     <v-row no-gutters align="center" justify="start" class="mb-2">
       <v-col cols="12">
         <BaseGridView ref="gridview" select_mode="Single" :max_height="limitHeight" column-resizing-mode="widget"
-          sel_procedure="AC_SEL_6095170_1_NC" :editable="false" :header="this.headerGrid" :filter_paras="[
+          sel_procedure="AC_SEL_6095170_1_NC" :editable="false" :header="headerGrid" :filter_paras="[
             this.from_date,
             this.to_date,
             this.form_no,
@@ -400,6 +400,12 @@ export default {
           dataField: "ADJ_DT",
           width: 0,
           caption: this.$t("adjust_date"),
+        },
+        
+        {
+          dataField: "CANCEL_REASON",
+          width: 0,
+          caption: this.$t("cancel_reason"),
         },
         {
           dataField: "REMARK2",

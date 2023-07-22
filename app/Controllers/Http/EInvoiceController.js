@@ -1,10 +1,15 @@
 "use strict";
 const Utils = use("Utils");
 const Env = use("Env");
+const AES = use("AES");
+const APP_KEY = Env.get("APP_KEY");
 const Helpers = use("Helpers");
 const Request = use("Request");
 const ROOT_DIR_FILES = Env.get("ROOT_DIR_FILES", Helpers.tmpPath());
 const API_URL = Env.get("API_URL");
+const APP_URL_LOCAL = Env.get("APP_URL_LOCAL", Env.get("APP_URL"));
+const API_URL_API = Env.get("API_URL_API", Env.get("API_URL_API"));
+const PORT = Env.get("PORT", Env.get("PORT"));
 const EINVOICE_USER = Env.get("EINVOICE_USER");
 const EINVOICE_PW = Env.get("EINVOICE_PW");
 const EINVOICE_URL_LOGIN = Env.get("EINVOICE_URL_LOGIN");
@@ -17,6 +22,8 @@ const EINVOICE_URL_API_DECLARATION_CHECK = Env.get("EINVOICE_URL_API_DECLARATION
 const EINVOICE_URL_API_CONVERT = Env.get("EINVOICE_URL_API_DECLARATION_CHECK");
 const EINVOICE_URL_API_CONVERT_EINV = Env.get("EINVOICE_URL_API_CONVERT_EINV");
 const EINVOICE_URL_API_VIEW_PDF = Env.get("EINVOICE_URL_API_VIEW_PDF");
+const EINVOICE_URL_API_CONVERT_TO_XML_CLIENT = Env.get("EINVOICE_URL_API_CONVERT_TO_XML_CLIENT")
+const EINVOICE_URL_API_VIEW_XML = Env.get("EINVOICE_URL_API_VIEW_XML");
 const SMTP_SERVER = Env.get("SMTP_SERVER");
 const SMTP_PORT = Env.get("SMTP_PORT");
 const EMAIL_FROM = Env.get("EMAIL_FROM");
@@ -32,6 +39,15 @@ const oracledb = require("oracledb");
 // const { result_lodash } = require("lodash-es");
 const EiExcelHandler = use("App/Helpers/EiExcelHandler");
 const EiExcelHandlerAuto = use("App/Helpers/EiExcelHandlerAuto");
+const URL = "http://demosign.easyca.vn:8080/api";
+const Username = "demo_easysign";
+const Password = "demo_easysign";
+const Serial = "540110beffa622f3ca84bd2f93f0122c";
+const Pin = "12345678";
+const uuid = require("uuid");
+const { Builder, parseString } = require('xml2js');
+const { X509Certificate, crypto } = require('crypto');
+const { create, createCB } = require('xmlbuilder2');
 
 class EInvoiceController {
     async einvoicePdfConvert({ request, response, auth }) {
@@ -410,6 +426,44 @@ class EInvoiceController {
                 LVL: "error",
                 MODULE: "EInvoiceController",
                 FUNC: "convertInvoiceToXMLClient",
+                CONTENT: e.message,
+            });
+            return response.send(Utils.response(false, "error", e.message));
+        }
+    }
+
+    async convertDeclareToXMLClient ({ request, response, auth }) {
+        try {
+            var p_language = request.header("accept-language", "ENG");
+            var p_crt_by = "";
+            const user = await auth.getUser();
+            if (user) {
+                p_crt_by = user.USER_ID;
+            }
+            const { proc, declare } = request.all();
+            // console.log(" declare ", declare);
+            const token = await this.callLogin(
+                EINVOICE_URL_LOGIN,
+                EINVOICE_USER,
+                EINVOICE_PW
+            );
+            if (token) {
+                const config = {
+                    headers: { Authorization: `Bearer ${token}` },
+                };
+                const res = await Request.post(EINVOICE_URL_API_CONVERT_TO_XML_CLIENT, { declare: declare }, config)
+                return response.send(res.data);
+            } else {
+                console.error("Failed to get api token");
+            }
+            return response.send(
+                Utils.response(false, `Failed to send invoices.....`, null)
+            );
+        } catch (e) {
+            Utils.Logger({
+                LVL: "error",
+                MODULE: "EInvoiceController",
+                FUNC: "convertDeclareToXMLClient",
                 CONTENT: e.message,
             });
             return response.send(Utils.response(false, "error", e.message));
@@ -2042,8 +2096,9 @@ class EInvoiceController {
             return response.send(Utils.response(false, "error", e.message));
         }
     }
-
-    async checkingDeclarations({ request, response, auth }) {
+    
+    // đã test ok theo dữ liệu thât
+    async checkingDeclarations({ request, response, auth }) { 
         try {
             var p_language = request.header("accept-language", "ENG");
             var p_crt_by = "";
@@ -2921,7 +2976,6 @@ class EInvoiceController {
 
     }
 
-
     async viewPDFFromClient({ request, response, auth }) {
         try {
             var p_language = request.header("accept-language", "ENG");
@@ -3361,6 +3415,525 @@ class EInvoiceController {
         }
 
     }
+
+    async DownloadXML({ request, response, auth }) {
+       
+        var p_crt_by = "";
+            const user = await auth.getUser();
+            if (user) {
+                p_crt_by = user.USER_ID;
+            }
+        try {
+            const { token, proc, pk, params } = request.all();
+            // console.log("params ++=>", params)
+            // console.log("token ++=>", token)
+            // console.log("proc ++=>", proc)
+            // console.log("pk ++=>", pk)
+            //if dont pass token that mean generate url only else download file
+            if (token == undefined || token == null || token == "") {
+                const current = new Date();
+                const year = current.getFullYear()
+                let month = current.getMonth() + 1
+                let day = current.getDate()
+                if (day < 10) {
+                    day = "0" + day
+                }
+                if (month < 10) {
+                    month = "0" + month
+                }
+                let tokenEncrypted = AES.encrypt(proc + "|" + year + month + day, APP_KEY)
+                tokenEncrypted = tokenEncrypted.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l')
+                return response.send(APP_URL_LOCAL+"/api/dso/getfiledbtoken?pk=" + pk + "&proc=" + proc + "&token=" + tokenEncrypted)
+            }
+
+            const token2 = token.replace(/p1L2u3S/g, '+').replace(/s1L2a3S4h/g, '/').replace(/e1Q2u3A4l/g, '=');
+            const decodeToken = AES.decrypt(token2, APP_KEY);
+            const arrToken = decodeToken.split("|");
+            if (arrToken.length != 2) {
+                return response.send(Utils.response(false, "Invalid token", null));
+            }
+            if (arrToken[0] !== proc) {
+                return response.send(Utils.response(false, "Invalid token", null));
+            }
+            let ip = request.header("x-real-ip")
+            if (ip == undefined) {
+                ip = request.ip()
+            }
+            if (HOST != ip && ip != '127.0.0.1') {
+                const curDate = Utils.CurrentDate();
+                if (arrToken[1].substring(0, 8) != curDate) {
+                    return response.send(Utils.response(false, "Token was expired", null));
+                }
+            }
+
+            const result = await DBService.callProcCursor(
+                proc, [pk],
+                "ENG",
+                "public",
+                "N"
+            );
+
+            if (result.length > 0) {
+                response.header("content-type", result[0].FILE_TYPE);
+                response.header(
+                    "Content-Disposition",
+                    "attachment; filename=" + result[0].FILE_NAME
+                );
+                response.header("content-length", result[0].FILE_SIZE);
+                return response.send(result[0].FILE_CONTENT);
+            }
+            return response.send(Utils.response(false, "not found data", null));
+
+        } catch (e) {
+            Utils.ConsoleLogError(e.message)
+            Utils.Logger({
+                LVL: "error",
+                MODULE: "EInvoiceController",
+                FUNC: "DownloadXMLFromClient",
+                CONTENT: e.message,
+                CRT_BY: p_crt_by,
+            });
+            return response.send(Utils.response(false, e.message, null));
+        }
+    }
+
+    async DownloadPDF({ request, response, auth }) {
+        var p_language = request.header("accept-language", "ENG");
+        var p_crt_by = "";
+            const user = await auth.getUser();
+            if (user) {
+                p_crt_by = user.USER_ID;
+            }
+            try {
+                const { proc, para, trade_code } = request.all();
+
+                // console.log("para ", para);
+          
+                if (DB_CONNECTION == "oracle") {
+                    oracledb.fetchAsBuffer = [oracledb.BLOB]
+                    oracledb.fetchAsString = [oracledb.CLOB]
+                }
+                const master = await DBService.callProcCursor(
+                    "ei_sel_einvoice_get_pdf_xml",
+                    [trade_code],
+                    p_language,
+                    p_crt_by
+                );
+                 
+                let pdf_url_t = "";
+
+                if(master)
+                {
+                    pdf_url_t = master[0].PDF_URL;
+                }
+                const current = new Date();
+                const year = current.getFullYear()
+                let month = current.getMonth() + 1
+                let day = current.getDate()
+                if (day < 10) {
+                    day = "0" + day
+                }
+                if (month < 10) {
+                    month = "0" + month
+                }
+                let token = AES.encrypt('/' + pdf_url_t + "|" + year + month + day, APP_KEY)
+                token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l')
+                const pdf_url = APP_URL_LOCAL + "/api/dso/getfiletoken?file_name=" + '/' + pdf_url_t + "&token=" + token
+                return response.send(pdf_url)
+            } catch (e) {
+                return response.send(Utils.response(false, e.message, null))
+            }
+    }
+
+    IsNullOrEmpty(str) {
+        return str === null || str === undefined || str.trim() === '';
+    }
+
+    // async PerformGetDigest( xn, //XmlNode
+    //                      namespacePrefix //string
+    //                     )
+    //     {
+    //         XmlDocument xmlDocument = new XmlDocument();
+    //         xmlDocument.LoadXml(xn.OuterXml);
+    //         Transform transform;
+
+    //         // ThanhLD: Load transform according to prefix namespace
+    //         if (this.IsNullOrEmpty(namespacePrefix))
+    //         {
+    //             transform = new XmlDsigC14NTransform();
+    //         }
+    //         else
+    //         {
+    //             transform = new XmlDsigExcC14NTransform(false, namespacePrefix);
+    //         }
+    //         transform.LoadInput((object)xmlDocument);
+    //         byte[] hash = new SHA1CryptoServiceProvider().ComputeHash((Stream)transform.GetOutput(typeof(Stream)));
+    //         //byte[] hash = SHA256.Create().ComputeHash((Stream)dsigC14Ntransform.GetOutput(typeof(Stream)));
+    //         Convert.ToBase64String(hash);
+    //         return hash;
+    //     }
+
+    // async getDigestForRemoteByID( xmldoc,  //XmlDocument 
+    //                               signingElementId,  //string
+    //                               namespacePrefix //string
+    //                             )
+    // {
+    //     //TODO: get signing node by id
+    //     XmlNode node = xmldoc.SelectSingleNode($"//*[@Id|@id='{signingElementId}']");
+    //     if (node == null)
+    //         throw new Exception("Signing Element ID did not found!");
+    //     return DsigSignature.PerformGetDigest(node, namespacePrefix);
+    //     //return DsigSignature.PerformGetDigest(xmldoc.GetElementsByTagName("Content")[0], namespacePrefix);
+    // }
+
+    async GetToken()
+    {
+        try {
+            const tokenResponse = await Request.post(`${URL}/authenticate`, {
+                username: Username,
+                password: Password,
+                rememberMe: false
+            });
+            // console.log("res.data", tokenResponse);
+            return tokenResponse.data.id_token;
+        } catch (err) {
+             console.log("err",err)
+            return null;
+        }
+
+    }
+
+    async GetCertificateRawData(token)
+    {
+        let para = {
+            serial: Serial,
+            pin: Pin,
+        }
+        const agent = {
+            Agent: {
+                defaultPort: 443,
+                protocol: "https:",
+                options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
+            },
+        };
+        try {
+            const config = {
+                headers: { Authorization: `Bearer ${token}` },
+                params : para,
+            };
+       
+            const certDataRes = await Request.get(`${URL}/certificate/get`, config);
+
+            return certDataRes.data.data;
+        } catch (err) {
+             console.log("err",err)
+            return null;
+        }
+
+    }
+
+    async tempSignature(     base64Digest,                  //byte[]
+                             base64SignatureValue,          //byte[]
+                             CustomerCert,                  //X509Certificate2
+                             SignedTagId,                   //string
+                             SigningTagId,                  //string
+                             useNamespacePrefix,            //bool
+                             isTagName                      //bool
+                        )
+    {
+        if (this.IsNullOrEmpty(SigningTagId))
+        {
+            SigningTagId = "serSig";
+        }
+        if (this.IsNullOrEmpty(SignedTagId))
+        {
+            throw new Exception("Signed Tag Id is required");
+        }
+        //string str1 = "serSig";
+        let signingTagId = SigningTagId;
+        let refSigningTagId = ""; //`#${SignedTagId}`;
+        let signatureValue = base64SignatureValue == null ? "" : (base64SignatureValue.toString());
+        let signatureMethod__Algorithm = "";
+        let canonicalizationMethod_Algorithm = "";
+        if (useNamespacePrefix)
+        {
+            canonicalizationMethod_Algorithm = "http://www.w3.org/2001/10/xml-exc-c14n#";
+        }else
+        {
+            canonicalizationMethod_Algorithm = "http://www.w3.org/TR/2001/REC-xml-c14n-20010315";
+        }
+
+        let signatureMethod_Algorithm = "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
+
+        if(isTagName)
+        {
+            refSigningTagId = ""; //`#${SignedTagId}`;
+        }else
+        {
+            refSigningTagId = `#${SignedTagId}`;
+        }
+
+        let transform_Algorithm = "http://www.w3.org/2000/09/xmldsig#enveloped-signature";
+
+        // loai 2 transform
+        if(useNamespacePrefix)
+        {
+
+        }
+        
+        let digestMethod_Algorithm = "http://www.w3.org/2000/09/xmldsig#sha1" ;// "http://www.w3.org/2001/04/xmlenc#sha256";
+
+        const signedInfoXml = create({ version: '1.0' })
+                                        .ele('Signature', {Id: signingTagId, xmlns: 'http://www.w3.org/2000/09/xmldsig#',  })
+                                        .ele('SignedInfo')
+                                        .ele('CanonicalizationMethod', { Algorithm: canonicalizationMethod_Algorithm })
+                                        .up()
+                                        .ele('SignatureMethod', { Algorithm: signatureMethod_Algorithm })
+                                        .up()
+                                        .ele('Reference', { URI: refSigningTagId })
+                                        .ele('Transforms')
+                                        .ele('Transform', { Algorithm: transform_Algorithm })
+                                        .up()
+                                        .up()
+                                        .ele('DigestMethod', { Algorithm: digestMethod_Algorithm })
+                                        .ele('DigestValue')
+                                        .txt(base64Digest.toString())
+
+                                        .end({ prettyPrint: true });
+            console.log(signedInfoXml);
+
+    }
+
+    async HashForRemote(     xd,                //XmlDocument
+                             SignedTagId,       //string 
+                             SigningTagId,      //string
+                             namespacePrefix,   //string
+                             CustomerCert,      //X509Certificate2
+                             path,              //string
+                             isSignTagName      //bool
+                    )
+        {
+            try
+            {
+                //XmlNode signature = null;
+                // if (isSignTagName)
+                // {
+                //     signature = DsigSignature.tempSignature(DsigSignature.getDigestForRemoteByTagName(xd, SignedTagId, namespacePrefix), (byte[])null, CustomerCert, SignedTagId, SigningTagId, !string.IsNullOrEmpty(namespacePrefix), true);
+                // }
+                // else
+                // {
+                //     signature = DsigSignature.tempSignature(DsigSignature.getDigestForRemoteByID(xd, SignedTagId, namespacePrefix), (byte[])null, CustomerCert, SignedTagId, SigningTagId, !string.IsNullOrEmpty(namespacePrefix), false);
+                // }
+                // return DsigSignature.PerformHash(xd, signature, path);
+            }
+            catch (ex)
+            {
+                console.log("error ", ex);
+            }
+        }
+
+    async createHashxml(
+                         xmlRaw, 
+                         SignedTagId,
+                         SigningTagId,
+                         namespacePrefix,
+                         certificate2,
+                         xmlWithHashInfo,
+                         path,
+                         isSignTagName
+                    )
+    {
+        const builder = new Builder();
+        const xmlDocument = builder.buildObject(xmlRaw);
+    }
+    
+    async SignXml({ request, response, auth }) {
+        var p_language = request.header("accept-language", "ENG");
+        let SignedTagId = "SigningData";
+        let signaturePath = "HSDLGCS/CHUKYDONVI";
+        let xmlContent = `<HSDLGCS>
+                            <GIAYCHUNGSINH Id="SigningData">
+                                <MA_GCS>001</MA_GCS>
+                                <MA_BN>22234972-test</MA_BN>
+                                <MA_CT>00183.GCS.79028.23</MA_CT>
+                                <SO_SERI>790282302533</SO_SERI>
+                                <MA_BHXH_NND>3824771323</MA_BHXH_NND>
+                                <MA_THE_NND>GD4793824771323</MA_THE_NND>
+                                <HOTEN_NND>Đặng Thị Hiền</HOTEN_NND>
+                                <NGAYSINH_NND>19910519</NGAYSINH_NND>
+                                <MA_DANTOC_NND>1</MA_DANTOC_NND>
+                                <MA_QUOCTICH_NN>VN</MA_QUOCTICH_NN>
+                                <LOAI_GIAYTO_NND>1</LOAI_GIAYTO_NND>
+                                <SO_CCCD_NND>038191033305</SO_CCCD_NND>
+                                <NGAYCAP_CCCD_NND>20220112</NGAYCAP_CCCD_NND>
+                                <NOICAP_CCCD_NND>CT CCS QLHC về TTXH</NOICAP_CCCD_NND>
+                                <NOI_CU_TRU_NND>47/74/1K Lạc Long Quân - Phường 1 - Quận 11</NOI_CU_TRU_NND>
+                                <MATINH_CU_TRU>38</MATINH_CU_TRU>
+                                <MAHUYEN_CU_TRU>392</MAHUYEN_CU_TRU>
+                                <MAXA_CU_TRU>15283</MAXA_CU_TRU>
+                                <HO_TEN_CHA/>
+                                <MA_THE_TAM/>
+                                <TEN_CON/>
+                                <GIOI_TINH_CON>-Nữ</GIOI_TINH_CON>
+                                <SO_CON>1</SO_CON>
+                                <LAN_SINH>3</LAN_SINH>
+                                <SO_CON_SONG>3</SO_CON_SONG>
+                                <CAN_NANG_CON>4100</CAN_NANG_CON>
+                                <NGAY_SINH_CON>202304041050</NGAY_SINH_CON>
+                                <NOI_SINH_CON>Sinh tại nhà ở 47/74/1K Lạc Long Quân - Phường 1 - Quận 11</NOI_SINH_CON>
+                                <TINH_TRANG_CON>Khỏe</TINH_TRANG_CON>
+                                <SINHCON_PHAUTHUAT>0</SINHCON_PHAUTHUAT>
+                                <SINHCON_DUOI32TUAN>0</SINHCON_DUOI32TUAN>
+                                <GHI_CHU/>
+                                <NGUOI_DO_DE>BS PHẠM THỊ HUỲNH HOA</NGUOI_DO_DE>
+                                <NGUOI_GHI_PHIEU>NGUYỄN THỊ THÚY NGA</NGUOI_GHI_PHIEU>
+                                <MA_TTDV>0200028172</MA_TTDV>
+                                <THU_TRUONG_DVI>BS.Phạm Quốc Dũng</THU_TRUONG_DVI>
+                                <NGAY_CT>20230404</NGAY_CT>
+                                <SO>183/2023</SO>
+                                <QUYEN_SO>01/2023</QUYEN_SO>
+                            </GIAYCHUNGSINH>
+                            <CHUKYDONVI/>	
+                        </HSDLGCS>`;
+        var p_crt_by = "";
+        const user = await auth.getUser();
+        if (user) {
+            p_crt_by = user.USER_ID;
+        }
+        const config = {
+            headers: { Authorization: request.headers().authorization },
+        };
+        //console.log(config)
+        try {
+                let token = await this.GetToken();
+                // console.log("token +===> ", token);
+                let certData = await this.GetCertificateRawData(token);
+                // console.log("certData   ++===> ", certData)
+                let xmlWithHashInfo = null;
+                let signingTagId = uuid();
+                // console.log("signingTagId  ", signingTagId);
+               
+                const x509 =  new X509Certificate(Buffer.from(`-----BEGIN CERTIFICATE-----\n${certData}\n-----END CERTIFICATE-----`, 'utf-8'));
+                // console.log("x509   ", x509);
+                // Call the function to create the SignedInfo element
+              
+                // this.tempSignature(
+                //     xmlContent,                         //base64Digest,                  //byte[]
+                //     null,                               //base64SignatureValue,          //byte[]
+                //     x509,                               //CustomerCert,                 //X509Certificate2
+                //     SignedTagId,                        //SignedTagId,                   //string
+                //     signingTagId,                       //SigningTagId,                  //string
+                //     null,                               //useNamespacePrefix,            //bool
+                //     false                               //isTagName                      //bool
+                // );
+                // Parse the XML content into a JavaScript object Buffer.from(xmlContent, 'utf-8')
+                parseString(xmlContent, async (err, result) => {
+                    if (err) {
+                    console.error('Error parsing XML:', err);
+                    return;
+                    }
+                    // console.log("result +++>>>", result);
+                    // // Replace 'desired_id' with the actual id you want to select
+                    // const desiredId = 'SigningData';
+                
+                    // // Search for the node with the specified id attribute
+                    // const selectedNode = await this.findNodeById(result, desiredId);
+                    
+
+                    // console.log("selectedNode +++>>>", selectedNode);
+                    // if (selectedNode) {
+                    // console.log('Selected Node:', selectedNode);
+                    // } else {
+                    // console.log('Node with the specified id not found.');
+                    // }
+
+
+                    // const signingDataNode = result.HSDLGCS.GIAYCHUNGSINH.find(node => node.$.Id === 'SigningData');
+
+                    //     if (signingDataNode) {
+                    //         console.log('Selected Node:', signingDataNode);
+                    //     } else {
+                    //         console.log('Node with Id="SigningData" not found.');
+                    //     }
+
+                    // Replace 'SigningData' with the actual id of the node you want to sign
+                    const nodeIdToSign = 'SigningData';
+
+                    // Find the node with the specified id
+                    const nodeToSign = result.HSDLGCS.GIAYCHUNGSINH.find(node => node.$.Id === 'SigningData'); //await this.findNodeById(result.HSDLGCS, nodeIdToSign);
+                   
+                    var xml2js = require('xml2js');
+                    var builder = new xml2js.Builder();
+                    var xml = builder.buildObject(nodeToSign);
+
+                    console.log("nodeToSign ", );
+                    if (!nodeToSign) {
+                        console.log(`Node with id "${nodeIdToSign}" not found.`);
+                        return;
+                    }
+
+                    // Convert the node to a string and hash it (using SHA-256 in this example)
+                    const nodeStringToHash = await  create({ version: '1.0' }).ele(xml).end({ prettyPrint: true });
+
+                    console.log("nodeStringToHash ++>>",nodeStringToHash)
+                    const hashedData = await crypto.createHash('sha256').update(nodeStringToHash).digest('hex');
+
+                    console.log('Hashed data:', hashedData);
+
+                });
+
+            } catch (err) {
+                console.log("err",err)
+               return null;
+           }
+
+        return;
+        const { tradecodes } = request.all();
+    }
+
+    // async createSignedInfo() {
+    //     try {
+    //         return createxml({ version: '1.0' })
+    //       .ele('SignedInfo', { xmlns: 'http://www.w3.org/2000/09/xmldsig#' })
+    //       .ele('CanonicalizationMethod', { Algorithm: 'http://www.w3.org/TR/2001/REC-xml-c14n-20010315' })
+    //       .up()
+    //       .ele('SignatureMethod', { Algorithm: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256' })
+    //       .up()
+    //       .ele('Reference', { URI: '#dataToSign' })
+    //       .ele('DigestMethod', { Algorithm: 'http://www.w3.org/2001/04/xmlenc#sha256' })
+    //       .up()
+    //       .ele('DigestValue')
+    //       .end({ prettyPrint: true });
+    //     } catch (error) {
+    //         console.log("error  " , error);
+    //     }
+        
+    //   }
+     async findNodeById(node, desiredId) {
+
+        if (node['$'] && node['$'].id === desiredId) {
+          return node;
+        }
+      
+        for (const key in node) {
+          if (Array.isArray(node[key])) {
+            for (const subNode of node[key]) {
+              const result = this.findNodeById(subNode, desiredId);
+              if (result) {
+                return result;
+              }
+            }
+          } else if (typeof node[key] === 'object') {
+            const result = this.findNodeById(node[key], desiredId);
+            if (result) {
+              return result;
+            }
+          }
+        }
+      
+        return null;
+      }
+
 }
 
 module.exports = EInvoiceController;

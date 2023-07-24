@@ -49,6 +49,7 @@ const { Builder, parseString } = require('xml2js');
 const { X509Certificate, crypto } = require('crypto');
 const { create, createCB } = require('xmlbuilder2');
 
+
 class EInvoiceController {
     async einvoicePdfConvert({ request, response, auth }) {
         var p_language = request.header("accept-language", "ENG");
@@ -3827,60 +3828,295 @@ class EInvoiceController {
                 //     false                               //isTagName                      //bool
                 // );
                 // Parse the XML content into a JavaScript object Buffer.from(xmlContent, 'utf-8')
-                parseString(xmlContent, async (err, result) => {
-                    if (err) {
-                    console.error('Error parsing XML:', err);
-                    return;
-                    }
-                    // console.log("result +++>>>", result);
-                    // // Replace 'desired_id' with the actual id you want to select
-                    // const desiredId = 'SigningData';
+                // parseString(xmlContent, async (err, result) => {
+                //     if (err) {
+                //     console.error('Error parsing XML:', err);
+                //     return;
+                //     }
+                //     // console.log("result +++>>>", result);
+                //     // // Replace 'desired_id' with the actual id you want to select
+                //     // const desiredId = 'SigningData';
                 
-                    // // Search for the node with the specified id attribute
-                    // const selectedNode = await this.findNodeById(result, desiredId);
+                //     // // Search for the node with the specified id attribute
+                //     // const selectedNode = await this.findNodeById(result, desiredId);
                     
 
-                    // console.log("selectedNode +++>>>", selectedNode);
-                    // if (selectedNode) {
-                    // console.log('Selected Node:', selectedNode);
-                    // } else {
-                    // console.log('Node with the specified id not found.');
-                    // }
+                //     // console.log("selectedNode +++>>>", selectedNode);
+                //     // if (selectedNode) {
+                //     // console.log('Selected Node:', selectedNode);
+                //     // } else {
+                //     // console.log('Node with the specified id not found.');
+                //     // }
 
 
-                    // const signingDataNode = result.HSDLGCS.GIAYCHUNGSINH.find(node => node.$.Id === 'SigningData');
+                //     // const signingDataNode = result.HSDLGCS.GIAYCHUNGSINH.find(node => node.$.Id === 'SigningData');
 
-                    //     if (signingDataNode) {
-                    //         console.log('Selected Node:', signingDataNode);
-                    //     } else {
-                    //         console.log('Node with Id="SigningData" not found.');
-                    //     }
+                //     //     if (signingDataNode) {
+                //     //         console.log('Selected Node:', signingDataNode);
+                //     //     } else {
+                //     //         console.log('Node with Id="SigningData" not found.');
+                //     //     }
 
-                    // Replace 'SigningData' with the actual id of the node you want to sign
-                    const nodeIdToSign = 'SigningData';
+                //     // Replace 'SigningData' with the actual id of the node you want to sign
+                //     // const nodeIdToSign = 'SigningData';
 
-                    // Find the node with the specified id
-                    const nodeToSign = result.HSDLGCS.GIAYCHUNGSINH.find(node => node.$.Id === 'SigningData'); //await this.findNodeById(result.HSDLGCS, nodeIdToSign);
+                //     // // Find the node with the specified id
+                //     // const nodeToSign = result.HSDLGCS.GIAYCHUNGSINH.find(node => node.$.Id === 'SigningData'); //await this.findNodeById(result.HSDLGCS, nodeIdToSign);
                    
-                    var xml2js = require('xml2js');
-                    var builder = new xml2js.Builder();
-                    var xml = builder.buildObject(nodeToSign);
+                //     // var xml2js = require('xml2js');
+                //     // var builder = new xml2js.Builder();
+                //     // var xml = builder.buildObject(nodeToSign);
 
-                    console.log("nodeToSign ", );
-                    if (!nodeToSign) {
-                        console.log(`Node with id "${nodeIdToSign}" not found.`);
-                        return;
-                    }
+                //     // console.log("nodeToSign ", );
+                //     // if (!nodeToSign) {
+                //     //     console.log(`Node with id "${nodeIdToSign}" not found.`);
+                //     //     return;
+                //     // }
 
-                    // Convert the node to a string and hash it (using SHA-256 in this example)
-                    const nodeStringToHash = await  create({ version: '1.0' }).ele(xml).end({ prettyPrint: true });
+                //     // Convert the node to a string and hash it (using SHA-256 in this example)
+                //     // const nodeStringToHash = await  create({ version: '1.0' }).ele(xml).end({ prettyPrint: true });
 
-                    console.log("nodeStringToHash ++>>",nodeStringToHash)
-                    const hashedData = await crypto.createHash('sha256').update(nodeStringToHash).digest('hex');
+                //     // console.log("nodeStringToHash ++>>",nodeStringToHash)
+                //     // const hashedData = await crypto.createHash('sha256').update(nodeStringToHash).digest('hex');
 
-                    console.log('Hashed data:', hashedData);
+                //     // console.log('Hashed data:', hashedData);
+                //     const xmlString = `<GIAYCHUNGSINH Id="SigningData">001<MA_GCS /><MA_BN>22234972-test</MA_BN><MA_CT>00183.GCS.79028.23</MA_CT><SO_SERI>790282302533</SO_SERI><MA_BHXH_NND>3824771323</MA_BHXH_NND><MA_THE_NND>GD4793824771323</MA_THE_NND><HOTEN_NND>Đặng Thị Hiền</HOTEN_NND><NGAYSINH_NND>19910519</NGAYSINH_NND><MA_DANTOC_NND>1</MA_DANTOC_NND><MA_QUOCTICH_NN>VN</MA_QUOCTICH_NN><LOAI_GIAYTO_NND>1</LOAI_GIAYTO_NND><SO_CCCD_NND>038191033305</SO_CCCD_NND><NGAYCAP_CCCD_NND>20220112</NGAYCAP_CCCD_NND><NOICAP_CCCD_NND>CT CCS QLHC về TTXH</NOICAP_CCCD_NND><NOI_CU_TRU_NND>47/74/1K Lạc Long Quân - Phường 1 - Quận 11</NOI_CU_TRU_NND><MATINH_CU_TRU>38</MATINH_CU_TRU><MAHUYEN_CU_TRU>392</MAHUYEN_CU_TRU><MAXA_CU_TRU>15283</MAXA_CU_TRU><HO_TEN_CHA /><MA_THE_TAM /><TEN_CON /><GIOI_TINH_CON>-Nữ</GIOI_TINH_CON><SO_CON>1</SO_CON><LAN_SINH>3</LAN_SINH><SO_CON_SONG>3</SO_CON_SONG><CAN_NANG_CON>4100</CAN_NANG_CON><NGAY_SINH_CON>202304041050</NGAY_SINH_CON><NOI_SINH_CON>Sinh tại nhà ở 47/74/1K Lạc Long Quân - Phường 1 - Quận 11</NOI_SINH_CON><TINH_TRANG_CON>Khỏe</TINH_TRANG_CON><SINHCON_PHAUTHUAT>0</SINHCON_PHAUTHUAT><SINHCON_DUOI32TUAN>0</SINHCON_DUOI32TUAN><GHI_CHU /><NGUOI_DO_DE>BS PHẠM THỊ HUỲNH HOA</NGUOI_DO_DE><NGUOI_GHI_PHIEU>NGUYỄN THỊ THÚY NGA</NGUOI_GHI_PHIEU><MA_TTDV>0200028172</MA_TTDV><THU_TRUONG_DVI>BS.Phạm Quốc Dũng</THU_TRUONG_DVI><NGAY_CT>20230404</NGAY_CT><SO>183/2023</SO><QUYEN_SO>01/2023</QUYEN_SO></GIAYCHUNGSINH>`;
 
-                });
+                //     // Hash the XML data using SHA-1
+                //     //const hash = await crypto.createHash('sha1').update(xmlString).digest('hex');
+                //     //console.log('SHA-1 Hash:', hash);
+
+                //     // const crypto = require('crypto-js');
+                //     // const sha1Hash = crypto.SHA1(xmlString).toString(crypto.enc.Base64);
+
+                //     // const crypto = require('crypto');
+                //     // const { XmlDsigExcC14NTransform } = require('xml-crypto');
+
+                //     // const transform = new XmlDsigExcC14NTransform();
+  
+                //     // const canonicalizedXmlBuffer = transform.process(Buffer.from(xmlData).toString('utf-8'));
+
+                //     // const sha1Hash = crypto.createHash('sha1').update(canonicalizedXmlBuffer).digest('hex');
+
+                //     //Calculate SHA-1 hash
+                //     // const sha1Hash = crypto.createHash('sha1').update(xmlString).digest('base64');
+
+
+                //     //console.log('SHA-1 Hash:', sha1Hash);
+
+
+                //     // var SignedXml = require("xml-crypto").SignedXml;
+                //     // //fs = require("fs");
+
+                //     // var xml = "<library>" + "<book>" + "<name>Harry Potter</name>" + "</book>" + "</library>";
+
+                //     // var sig = new SignedXml({ privateKey: fs.readFileSync("client.pem") });
+                //     // sig.addReference({ xpath: "//*[local-name(.)='book']" });
+                //     // sig.computeSignature(xml);
+                //     // const single = sig.getSignedXml()
+                //     //fs.writeFileSync("signed.xml", sig.getSignedXml());
+                //     // const fs = require('fs');
+                //     // const { SignedXml } = require('xml-crypto');
+                //     // const { select } = require('xml-crypto');
+                //     // const { execSync } = require('child_process');
+
+                //     // const xmlFilePath = 'path/to/your/xml/file.xml';
+                //     // const privateKeyPath = 'path/to/your/private_key.pem';
+                //     // const publicKeyPath = 'path/to/your/public_key.pem'; // This is optional if you want to verify the signature later
+
+                //     // // Read the XML content from the file
+                //     // const xmlContent = fs.readFileSync(xmlFilePath, 'utf-8');
+
+                //     // // Read the private key from the PEM file
+                //     // const privateKey = fs.readFileSync(privateKeyPath, 'utf-8');
+
+                //     // // Create the SignedXml object
+                //     // const sig = new SignedXml();
+
+                //     // // Set the signing key info (X509Certificate)
+                //     // sig.signingKey = privateKey;
+
+                //     // // Load the XML document into the SignedXml object
+                //     // sig.addReference("//*[local-name(.)='GIAYCHUNGSINH']", ["http://www.w3.org/2001/10/xml-exc-c14n#"]);
+
+                //     // // Sign the XML data
+                //     // sig.computeSignature(xmlContent);
+
+                //     // // Get the signature in XML format
+                //     // const signature = sig.getSignatureXml();
+
+                //     // // Append the signature to the XML data
+                //     // const signedXmlContent = xmlContent.replace('</HSDLGCS>', `</HSDLGCS>${signature}`);
+
+                //     // // Optionally, you can verify the signature using the public key
+                //     // // Read the public key from the PEM file
+                //     // const publicKey = fs.readFileSync(publicKeyPath, 'utf-8');
+
+                //     // // Verify the signature
+                //     // const verifyCmd = `echo "${signedXmlContent}" | openssl dgst -verify ${publicKeyPath} -sha256 -signature <(echo "${signature}" | base64 --decode)`;
+                //     // try {
+                //     // execSync(verifyCmd);
+                //     // console.log('Signature verified successfully!');
+                //     // } catch (err) {
+                //     // console.error('Signature verification failed:', err.message);
+                //     // }
+
+                //     // Print the signed XML
+                //     // console.log('Signed XML:', signedXmlContent);
+
+                //     // const fs = require('fs');
+                //     // const { XmlDsigExcC14NTransform, SignedXml } = require('xml-crypto');
+                //     // const crypto = require('crypto');
+
+                //     //const xmlFilePath = 'path/to/your/xml/file.xml';
+
+                //     // Read the XML content from the file
+                //     //const xmlContent = fs.readFileSync(xmlFilePath, 'utf-8');
+
+                //     // Create the SignedXml object
+                //     // const sig = new SignedXml();
+
+                //     // Set the XML content to be signed
+                //     // sig.loadSignature(Buffer.from(xmlString).toString('utf-8'));
+
+                //     // Get the specific node to be hashed (for example, the GIAYCHUNGSINH element)
+                //     // const nodeToHash = select("//*[local-name(.)='GIAYCHUNGSINH']", sig.signatureXml)[0];
+
+                //     // Create XmlDsigExcC14NTransform
+                //     // const excC14NTransform = new XmlDsigExcC14NTransform();
+
+                //     // // Canonicalize the node data
+                //     // const canonicalizedNode = excC14NTransform.process(nodeToHash);
+
+                //     // // Calculate the hash of the canonicalized node data
+                //     // const hash = crypto.createHash('sha256').update(canonicalizedNode).digest('hex');
+
+                   
+
+                
+
+
+                // });
+
+                // var select = require("xml-crypto").xpath,
+                // dom = require("@xmldom/xmldom").DOMParser,
+                // SignedXml = require("xml-crypto").SignedXml,
+                // const select = require('xml-crypto').xpath;
+                // const dom = require('@xmldom/xmldom').DOMParser;
+                // const SignedXml = require('xml-crypto').SignedXml;
+                // const fs = require("fs");
+
+                // // const xmlFilePath = 'E:/WORK COMPANY/E-INVOICE/COMPANY/ALL/XML HASH/DemoSignXMLWithHash/DemoSignXMLWithHash/DemoSignXMLWithHash/bin/Debug/ExampleFile/gcs.xml';
+
+                // // var xml = fs.readFileSync(xmlContent);
+                // var doc = new dom().parseFromString(xmlContent);
+                // // console.log("doc +++==>", doc);
+                // var signature = select(doc,"//*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']",)[0];
+                // var sig = new SignedXml({ publicCert: fs.readFileSync("C:/Users/LAP-DEV-06/Desktop/public-cert.pem") });
+                // sig.loadSignature(signature);
+                // var res = sig.checkSignature(xml);
+                // if (!res) console.log(sig.validationErrors);
+
+                    // const { XmlDocument, Crypto } = require('xmldsigjs');
+
+                    // // const xmlFilePath = 'path/to/your/xml/file.xml';
+                    // const xmlFilePath = 'E:/WORK COMPANY/E-INVOICE/COMPANY/ALL/XML HASH/DemoSignXMLWithHash/DemoSignXMLWithHash/DemoSignXMLWithHash/bin/Debug/ExampleFile/gcs.xml';
+
+
+                    // // Read the XML content from the file
+                    // let xmlContent = fs.readFileSync(xmlFilePath, 'utf-8');
+
+                    // // Parse the XML content into an XmlDocument object
+                    // const xmlDoc = await new XmlDocument();
+                    // xmlDoc.loadXml(xmlContent);
+
+                    // // Create the XmlDsigExcC14NTransform
+                    // const excC14NTransform = new Crypto.Xml.XmlDsigExcC14NTransform();
+
+                    // // Load the XML content into the transform
+                    // excC14NTransform.
+                    // exc
+                    // LoadInnerXml(xmlDoc);
+
+                    // // Execute the transform and get the canonicalized XML data
+                    // const canonicalizedXml = excC14NTransform.GetOutput();
+
+                    // // Compute the hash of the canonicalized XML data (using SHA-256 in this example)
+                    // const hash = Crypto.HashAlgorithm.SHA256.ComputeHash(canonicalizedXml);
+
+                    // // Convert the hash to a hexadecimal string
+                    // const hexHash = Buffer.from(hash).toString('hex');
+
+                    // console.log('Hash:', hexHash);
+                    // console.log('Signed XML:', hash);
+
+
+                  
+                    // const xmlFilePath = 'E:/WORK COMPANY/E-INVOICE/COMPANY/ALL/XML HASH/DemoSignXMLWithHash/DemoSignXMLWithHash/DemoSignXMLWithHash/bin/Debug/ExampleFile/gcs.xml';
+
+                    // // Read the XML content from the file
+                    // const xmlContent = fs.readFileSync(xmlFilePath, 'utf-8');
+
+                    // // Create a DOMParser instance to parse the XML content
+                    // const parser = new DOMParser();
+                    // const xmlDoc = parser.parseFromString(xmlContent, 'text/xml');
+
+                    // console.log("Crypto   ++ " ,Crypto)
+                    // // Create the XmlDsigExcC14NTransform
+                    // const excC14NTransform = await new Crypto.XmlDsigExcC14NTransform();
+
+                    // // Load the XML content into the transform
+                    // excC14NTransform.
+                    // exc
+                    // LoadInnerXml(xmlDoc);
+
+                    // // Execute the transform and get the canonicalized XML data
+                    // const canonicalizedXml = excC14NTransform.GetOutput();
+
+                    // // Compute the hash of the canonicalized XML data (using SHA-256 in this example)
+                    // const hash = Crypto.HashAlgorithm.SHA256.ComputeHash(canonicalizedXml);
+
+                    // // Convert the hash to a hexadecimal string
+                    // const hexHash = Buffer.from(hash).toString('hex');
+
+                    // console.log('Hash:', hexHash);
+
+                    // const { DOMParser } = require('xmldom');
+                    // const { Crypto } = require('xmldsigjs');
+
+                    // const WebCrypto = require("node-webcrypto-ossl");
+                    // const Crypto = new WebCrypto();
+                    const XmlDSigJs = require("xmldsigjs");
+
+                    // XmlDSigJs.Application.setEngine("OpenSSL", Crypto);
+
+                    const xmlFilePath = 'E:/WORK COMPANY/E-INVOICE/COMPANY/ALL/XML HASH/DemoSignXMLWithHash/DemoSignXMLWithHash/DemoSignXMLWithHash/bin/Debug/ExampleFile/gcs.xml';
+
+                    // Read the XML content from the file
+                    const xmlContent = fs.readFileSync(xmlFilePath, 'utf-8');
+
+                    // Create a DOMParser instance to parse the XML content
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(xmlContent, 'text/xml');
+
+                    // console.log("Crypto   ++ " ,Crypto)
+                    // Create the XmlDsigExcC14NTransform
+                    const excC14NTransform = await new XmlDSigJs.XmlDsigExcC14NTransform();
+
+                    // Load the XML content into the transform
+                    excC14NTransform.
+
+                    LoadInnerXml(xmlDoc);
+
+                    // Execute the transform and get the canonicalized XML data
+                    const canonicalizedXml = await excC14NTransform.GetOutput();
+
+                    // Compute the hash of the canonicalized XML data (using SHA-256 in this example)
+                    const hash = await XmlDSigJs.HmacSha1.
+                    HashAlgorithm.Sha1.ComputeHash(canonicalizedXml);
+
+                    // Convert the hash to a hexadecimal string
+                    const hexHash = Buffer.from(hash).toString('hex');
 
             } catch (err) {
                 console.log("err",err)

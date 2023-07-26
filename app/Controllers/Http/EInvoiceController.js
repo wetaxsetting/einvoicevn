@@ -3722,7 +3722,7 @@ class EInvoiceController {
             }
 
             const {  para } = request.all();
-            // console.log("para ", JSON.stringify(para));
+             console.log("para ", JSON.stringify(para));
      
             await Request.post( EINVOICE_ESIGN_XML, { xmlContent : JSON.stringify(para)}  )
             .then(res => {

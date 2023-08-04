@@ -156,7 +156,7 @@
                   <GwFlexBox justify="end">
                     <!-- Add -->
                     <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')"
-                      @onclick="onClick('newDetail')" />
+                      @onclick="onClick('newDetail')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1"/>
                     <!-- Save -->
                     <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClick('saveDetail')"
                       :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />

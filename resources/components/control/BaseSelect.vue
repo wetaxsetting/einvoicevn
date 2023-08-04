@@ -10,7 +10,11 @@
     :outlined="curLang.THEME_SUPPORT === 2 || $attrs.hasOwnProperty('outlined') || $attrs.hasOwnProperty('acntoutlined') ? true : false"
     :class="curLang.THEME_SUPPORT === 2 ? 'rounded-0' : ''"
     :clearable="showClearable"
-    :background-color="isMandatory ? `yellow lighten-3` : ''"
+
+    :background-color="isMandatory ? (mandatoryColor ? mandatoryColor : `yellow lighten-3`) : ''"
+
+
+
     :validate-on-blur="rules && rules.length ? true : false"
     :rules="rules"
     :items="itemData"
@@ -51,6 +55,7 @@ export default {
     key_all: { type: String, default: undefined },
     rules: { type: [String, Array], default: undefined },
     checkAll: { type: Boolean, default: false },
+    mandatoryColor: { type: String },
   }, //["lstData", "value", "text_all", "key_all", "rules"],
 
   data() {

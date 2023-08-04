@@ -11,24 +11,24 @@
             <v-col md="3" class="d-flex justify-end pr-2 pt-2">
               <BaseButton icon_type="search" :btn_text="$t('search')" :disabled="false" @onclick="onClick('search')" />
             </v-col>
-            <v-col md="6" class="pl-3 pr-3">
+            <v-col md="6" class="pl-3">
               <BaseDatePicker outlined :pretoday="7" :label="$t('from_date')" v-model="modelSearch.FROM_DATE" />
             </v-col>
-            <v-col md="6" class="pl-3 pr-3">
+            <v-col md="6" class="pr-3">
               <BaseDatePicker outlined today :label="$t('to_date')" v-model="modelSearch.TO_DATE" />
             </v-col>
-            <v-col md="6" class="pl-3 pr-3">
+            <v-col md="6" class="pl-3">
               <BaseSelect outlined :label="$t('status')" :lstData="dataSearchList.statusList" v-model="modelSearch.STATUS"
-                item-value="CODE" item-text="CODE_NM" />
+                item-value="CODE" item-text="NAME" />
             </v-col>
-            <v-col md="6" class="pl-3 pr-3">
+            <v-col md="6" class="pr-3">
               <BaseInput outlined :label="$t('voucher_no')" v-model="modelSearch.VOUCHER" number />
             </v-col>
 
-            <v-col md="6" class="pl-3 pr-3">
+            <v-col md="6" class="pl-3">
               <BaseInput outlined :label="$t('symbols')" v-model="modelSearch.SYMBOLS" number />
             </v-col>
-            <v-col md="6" class="pl-3 pr-3">
+            <v-col md="6" class="pr-3">
               <BaseInput outlined :label="$t('invoice_no')" v-model="modelSearch.INVOICE" number />
             </v-col>
             <v-col md="12">
@@ -69,7 +69,7 @@
                       :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
                     <!-- Add -->
                     <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')"
-                      @onclick="onClick('newMaster')" />
+                      @onclick="onClick('newMaster')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1"/>
                     <!-- Save -->
                     <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClick('saveMaster')"
                       :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
@@ -80,30 +80,37 @@
                       :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
                   </GwFlexBox>
                 </v-col>
-                <!--  -->
-                <v-row dense class="pl-3 pr-3 pt-3">
-                  <v-col md="2" class="pl-5">
+              </v-row>
+              <!--  -->
+              <v-row dense class="pl-3 pr-3 pt-3">
+                  <v-col md="2">
                     <BaseSelect outlined :label="$t('version')" :lstData="dataMasterList.versionList"
-                      v-model="modelMaster.PBAN" item-text="CODE_NM" item-value="CODE" />
+                      v-model="modelMaster.PBAN" item-text="NAME" item-value="CODE" />
                   </v-col>
-                  <v-col md="10"></v-col>
-                </v-row>
-                
-                <v-row dense class="pl-3 pr-3 pt-3">
+                  <v-col md="2"></v-col>
+                  <!-- <v-col md="1"></v-col> -->
+                  <v-col md="4">
+                    <BaseInput outlined :label="$t('represent')"  v-model="modelMaster.REPRESENT"/>
+                  </v-col>
+                  <v-col md="4">
+                    <BaseInput outlined :label="$t('position')"  v-model="modelMaster.POSITION"/>
+                  </v-col>
+              </v-row>
+              <v-row dense class="pl-3 pr-3">
                   <v-col md="4">
                     <BaseSelect outlined item-value="CODE" item-text="NAME" :label="$t('taxpayer_name')"
                       :lstData="dataMasterList.companyList" v-model="modelMaster.TEI_COMPANY_PK" readonly />
                   </v-col>
                   <v-col md="4">
                     <BaseSelect outlined :label="$t('tax_office')" v-model="modelMaster.MCQT"
-                      :lstData="dataMasterList.taxOfficeList" item-text="CODE_NM" item-value="CODE" mandatory />
+                      :lstData="dataMasterList.taxOfficeList" item-text="NAME" item-value="CODE" mandatory/>
                   </v-col>
                   <v-col md="4">
                     <BaseSelect outlined :label="$t('form_no')" v-model="modelMaster.MSO"
-                      :lstData="dataMasterList.fromNoList" item-text="CODE_NM" item-value="CODE" mandatory />
+                      :lstData="dataMasterList.fromNoList" item-text="NAME" item-value="CODE" mandatory/>
                   </v-col>
-                </v-row>
-                <v-row dense class="pl-3 pr-3">
+              </v-row>
+              <v-row dense class="pl-3 pr-3">
                   <!--  -->
                   <v-col md="4">
                     <BaseInput outlined :label="$t('tax_code')" v-model="modelMaster.MST"  />
@@ -113,14 +120,15 @@
                   </v-col>
                   <v-col md="4">
                     <BaseSelect outlined :label="$t('declaration_name')" v-model="modelMaster.LTEN"
-                      :lstData="dataMasterList.declarationNameList" item-text="CODE_NM" item-value="CODE" mandatory />
+                      :lstData="dataMasterList.declarationNameList" item-text="NAME" item-value="CODE" mandatory/>
                   </v-col>
-                </v-row>
-                <!--  -->
-                <v-row dense class="pl-3 pr-3">
+                  <v-col md="1"></v-col>
+              </v-row>
+              <!--  -->
+              <v-row dense class="pl-3 pr-3">
                   <v-col md="4">
                     <BaseSelect outlined :label="$t('categories')" v-model="modelMaster.LOAI"
-                      :lstData="dataMasterList.categoriesList" item-text="CODE_NM" item-value="CODE" mandatory />
+                      :lstData="dataMasterList.categoriesList" item-text="NAME" item-value="CODE" mandatory/>
                   </v-col>
                   <v-col md="4">
                     <BaseInput outlined :label="$t('minutes_no')" v-model="modelMaster.VOUCHER_NO"></BaseInput>
@@ -128,23 +136,26 @@
                   <v-col md="2">
                     <BaseDatePicker outlined today :label="$t('register_day')" start  v-model="modelMaster.NTBAO" />
                   </v-col>
-                </v-row>
+                  <v-col md="2"></v-col>
               </v-row>
+            </v-card>
+            <v-card>
               <v-row class="pt-3" dense>
-                <v-col md="5" class="d-flex pl-2">
+                <v-col md="7" class="d-flex pl-2">
                   <BaseButton icon_type="eye_on" :btn_text="$t('preview_E-invoice')"
                     @onclick="onClick('previewEinvoice')" />
-                  <BaseButton icon_type="eye_on" :btn_text="$t('preview_BB')" @onclick="onClick('previewBB')" />
+                  <BaseButton icon_type="eye_on" :btn_text="$t('preview_bb')" @onclick="onClick('previewBB')" />
+                  <BaseButton icon_type="eye_on" :btn_text="$t('preview_bb_replace')" @onclick="onClick('previewBB_Replace')" />
                   <BaseButton icon_type="email" :btn_text="$t('send_mail')" @onclick="onClick('sendMail')" />
                 </v-col>
                 <v-col md="3" class="pr-2">
-                  <BaseSelect outlined v-model="selectedTable" :lstData="tables" item-text="CODE_NM" item-value="CODE" />
+                  <BaseSelect outlined v-model="selectedTable" :lstData="tables" item-text="NAME" item-value="CODE" />
                 </v-col>
-                <v-col md="4" class="pr-2">
+                <v-col md="2" class="pr-2">
                   <GwFlexBox justify="end">
                     <!-- Add -->
                     <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')"
-                      @onclick="onClick('newDetail')" />
+                      @onclick="onClick('newDetail')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1"/>
                     <!-- Save -->
                     <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClick('saveDetail')"
                       :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
@@ -156,7 +167,7 @@
               </v-row>
               <v-row dense>
                 <v-col md="12">
-                  <BaseGridView ref="grdDetail" autoresize :header="headerList.grdDetail"
+                  <BaseGridView ref="grdDetail"  :header="headerList.grdDetail"
                     sel_procedure="AC_SEL_6095280_6" 
                     upd_procedure="AC_UP_6095280_7" 
                     :multiselect="true"
@@ -207,11 +218,11 @@
           </v-row>
           <v-row>
             <v-col md="4">
-              <BaseSelect :label="$t('form_no')" v-model="form_no_pop" :lstData="list_form_no_pop" item-text="CODE_NM"
+              <BaseSelect :label="$t('form_no')" v-model="form_no_pop" :lstData="list_form_no_pop" item-text="NAME"
                 item-value="CODE" />
             </v-col>
             <v-col md="3">
-              <BaseSelect :label="$t('serial_no')" item-value="CODE" item-text="CODE_NM" :lstData="serial_no_list"
+              <BaseSelect :label="$t('serial_no')" item-value="CODE" item-text="NAME" :lstData="serial_no_list"
                 v-model="selected_serial_no" :text_all="$t('all')" />
             </v-col>
             <v-col md="3">
@@ -290,7 +301,9 @@ export default {
       NTBAO: null,
       TMESS_CQT: null,
       VOUCHER_NO: null,
-      PBAN:null,
+      PBAN:'2.0.0',
+      POSITION: null,
+      REPRESENT: null,
     },
     invoice_type_list: [],
     type_invoice_list: [],
@@ -337,20 +350,20 @@ export default {
       return this.windowHeight - 339;
     },
     limitHeightGridDetails() {
-      return this.windowHeight * 0.59;
+      return this.windowHeight - 450;
     },
   },
   watch: {
     "modelMaster.LTEN"(val) {
       if (val) {
-        console.log("val  ++===>",val);
-        console.log("this.dataMasterList.declarationNameList ++===>", this.dataMasterList.declarationNameList);
+        // console.log("val  ++===>",val);
+        // console.log("this.dataMasterList.declarationNameList ++===>", this.dataMasterList.declarationNameList);
         this.dataMasterList.declarationNameList.forEach(item =>{
           if(item.CODE == val)
           {
             this.modelMaster.TEN = item.NAME;
           }
-          console.log("this.modelMaster.TEN +++===> ", this.modelMaster.TEN);
+          // console.log("this.modelMaster.TEN +++===> ", this.modelMaster.TEN);
         }); 
       }
     },
@@ -522,7 +535,7 @@ export default {
         caption: this.$t("declare_nm"),
         datasource: {
           KEY: "CODE",
-          VALUE: "CODE_NM",
+          VALUE: "NAME",
           data: this.dataMasterList.declarationNameList,
         },
       },
@@ -560,21 +573,25 @@ export default {
       {
         dataField: "KHMSHDON",
         caption: this.$t("form_no"),
+        width: 200
       },
       {
         dataField: "KHHDON",
         caption: this.$t("serial_no"),
+        width: 200
       },
       {
         dataField: "SHDON",
         caption: this.$t("invoice_no"),
         allowEditing: true,
+        width: 200
       },
       {
         dataField: "NGAY",
         caption: this.$t("date"),
         allowEditing: true,
         type: "date",
+        width: 200
       },
       {
         dataField: "LADHDDT",
@@ -582,9 +599,10 @@ export default {
         allowEditing: true,
         datasource: {
           KEY: "CODE",
-          VALUE: "CODE_NM",
+          VALUE: "NAME",
           data: this.type_invoice_list,
         },
+        width: 200
       },
       {
         dataField: "TCTBAO",
@@ -592,9 +610,10 @@ export default {
         allowEditing: true,
         datasource: {
           KEY: "CODE",
-          VALUE: "CODE_NM",
+          VALUE: "NAME",
           data: this.invoice_type_list,
         },
+        width: 200
       },
       {
         dataField: "LDO",
@@ -678,15 +697,17 @@ export default {
       if (company.length > 0) {
         this.dataSearchList.companyList = company;
         this.dataMasterList.companyList = company;
+
+        this.modelSearch.COMPANY_PK = this.dataSearchList.companyList[0].CODE;
       }
-      
+
       const companyInfo = await this._callProcedure("AC_SEL_6095280_COMPANYINFO");
       if (companyInfo.length > 0) {
         this.dataMasterList.companyInfoList = companyInfo;
       }
 
 
-      const results = await this._getCommonCode3(["ACEI0010", "ACEI0120", "ACEI0190", "ACEI0170", "ACEI0180", "ACEIS310", "ACEI0210","ACEI0220"], this.user.TCO_COMPANY_PK)
+      const results = await this._getCommonCode2(["ACEI0010", "ACEI0120", "ACEI0190", "ACEI0170", "ACEI0180", "ACEIS310", "ACEI0210","ACEI0220"], this.user.TCO_COMPANY_PK)
       this.dataSearchList.statusList = results[0];
       this.dataMasterList.taxOfficeList = results[1];
       this.dataMasterList.fromNoList = results[2];
@@ -696,6 +717,7 @@ export default {
       this.type_invoice_list = results[6];
       this.dataMasterList.versionList = results[7];
 
+      
       const dso_form_list = {
         type: "list",
         selpro: "AC_SEL_6095280_FORM_NO",
@@ -730,7 +752,7 @@ export default {
       // this.modelMaster.TNNT = await this.dataMasterList.companyList.find(item => item.TEI_COMPANY_PK == this.modelSearch.COMPANY_PK).NAME;
       // this.modelMaster.MST = await this.dataMasterList.companyList.find(item => item.TEI_COMPANY_PK == this.modelSearch.COMPANY_PK).TAX_CODE;
       // this.modelMaster.DDANH = await this.dataMasterList.companyInfoList.find(item => item.TEI_COMPANY_PK == this.modelSearch.COMPANY_PK).DDANH;
-
+      
       this.modelMaster.TCQT = null;
       this.modelMaster.MCQT = "00";
       // this.modelMaster.MSO = "00";

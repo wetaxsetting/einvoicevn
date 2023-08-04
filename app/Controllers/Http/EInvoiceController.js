@@ -520,9 +520,7 @@ class EInvoiceController {
                     Utils.response(false, `Invalid json format.`, invalid_invoices)
                 );
             }
-            jsonInvalidInvoices.TBao.DLTBao.TCQT = this.convertHtmlCode(
-                invalid_invoices.tax_office_name
-            );
+            jsonInvalidInvoices.TBao.DLTBao.TCQT = this.convertHtmlCode(invalid_invoices.tax_office_name);
             jsonInvalidInvoices.TBao.DLTBao.MCQT = invalid_invoices.tax_office_code;
             jsonInvalidInvoices.TBao.DLTBao.MST = invalid_invoices.seller_taxcode;
             jsonInvalidInvoices.TBao.DLTBao.TNNT = this.convertHtmlCode(
@@ -2311,12 +2309,12 @@ class EInvoiceController {
 
             if (tradeCode && tradeCode.data) {
                 const para_value = {
-                    tei_einvoice_ss_m_pk: para.tei_einvoice_ss_m_pk,
-                    tradecode: tradeCode.data.maGDich,
+                    erp_einvoice_ss_m_pk: para.erp_einvoice_ss_m_pk,
+                    trade_code: tradeCode.data.maGDich,
                     xml_sign: para.xml_signed,
                 };
                 const res = await DBService.ExecuteSQLBlob(
-                    `BEGIN EI_UP_6095280_DATA_TRADE_CODE(:tei_einvoice_ss_m_pk,:tradecode, :xml_sign,
+                    `BEGIN EI_UP_6095280_DATA_TRADE_CODE(:erp_einvoice_ss_m_pk,:trade_code, :xml_sign,
                             :p_language, :p_crt_by, :p_rtn_cur); END;`,
                     para_value,
                     p_language,
@@ -2325,8 +2323,8 @@ class EInvoiceController {
 
                 if (res.p_rtn_cur[0].STATUS == "OK") {
                     return Utils.response(true, `Call tax office api success.`, {
-                        tei_einvoice_ss_m_pk: para.tei_einvoice_ss_m_pk,
-                        tradecode: tradeCode.data.maGDich,
+                        erp_einvoice_ss_m_pk: para.erp_einvoice_ss_m_pk,
+                        trade_code: tradeCode.data.maGDich,
                     });
                 } else {
                     return response.send(
@@ -2886,6 +2884,59 @@ class EInvoiceController {
             return response.send(Utils.response(false, "error", e.message));
         }
     }
+
+    async checkingStatusEInvoice({ request, response, auth }) {
+        try {
+            var p_language = request.header("accept-language", "ENG");
+            var p_crt_by = "";
+            const user = await auth.getUser();
+            if (user) {
+                p_crt_by = user.USER_ID;
+            }
+
+            const {  para } = request.all();
+
+            let rtnValue = [];
+            
+            const para_value = {
+                p_tco_company_pk: para.tco_company_pk,
+                p_tei_company_pk: para.tei_company_pk,
+                p_dt_from: para.dt_from,
+                p_dt_to: para.dt_to,
+            };
+
+            rtnValue = await DBService.ExecuteSQLBlob(
+                `BEGIN ei_pro_getinfo_inv_erp_nodejs (  :p_tco_company_pk,
+                                                        :p_tei_company_pk,
+                                                        :p_dt_from,
+                                                        :p_dt_to,
+                                                        :p_language, 
+                                                        :p_crt_by, 
+                                                        :p_rtn_cur); END;`,
+                para_value,
+                p_language,
+                p_crt_by
+            );
+
+            return response.send(
+                Utils.response(
+                    true,
+                    `Checking status einvoice successful.`,
+                    rtnValue.p_rtn_cur
+                )
+            );
+        } catch (e) {
+            Utils.Logger({
+                LVL: "error",
+                MODULE: "EInvoiceController",
+                FUNC: "checkingStatusEInvoice",
+                CONTENT: e.message,
+            });
+            return response.send(Utils.response(false, "error", e.message));
+        }
+    }
+
+
 
     async getTaxCode({ request, response, auth }) {
         try {
@@ -3772,6 +3823,7 @@ class EInvoiceController {
     //     }
         
     //   }
+
      async findNodeById(node, desiredId) {
 
         if (node['$'] && node['$'].id === desiredId) {

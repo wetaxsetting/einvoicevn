@@ -19,7 +19,7 @@
             </v-col>
             <v-col md="6" class="pl-3">
               <BaseSelect outlined :label="$t('status')" :lstData="dataSearchList.statusList" v-model="modelSearch.STATUS"
-                item-value="CODE" item-text="CODE_NM" />
+                item-value="CODE" item-text="NAME" />
             </v-col>
             <v-col md="6" class="pr-3">
               <BaseInput outlined :label="$t('voucher_no')" v-model="modelSearch.VOUCHER" number />
@@ -80,8 +80,9 @@
                       :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
                   </GwFlexBox>
                 </v-col>
-                <!--  -->
-                <v-row dense class="pl-3 pr-3 pt-3">
+              </v-row>
+              <!--  -->
+              <v-row dense class="pl-3 pr-3 pt-3">
                   <v-col md="2">
                     <BaseSelect outlined :label="$t('version')" :lstData="dataMasterList.versionList"
                       v-model="modelMaster.PBAN" item-text="NAME" item-value="CODE" />
@@ -94,23 +95,22 @@
                   <v-col md="4">
                     <BaseInput outlined :label="$t('position')"  v-model="modelMaster.POSITION"/>
                   </v-col>
-                </v-row>
-                
-                <v-row dense class="pl-3 pr-3">
+              </v-row>
+              <v-row dense class="pl-3 pr-3">
                   <v-col md="4">
                     <BaseSelect outlined item-value="VAL" item-text="NAME" :label="$t('taxpayer_name')"
                       :lstData="dataMasterList.companyList" v-model="modelMaster.TEI_COMPANY_PK" readonly />
                   </v-col>
                   <v-col md="4">
                     <BaseSelect outlined :label="$t('tax_office')" v-model="modelMaster.MCQT"
-                      :lstData="dataMasterList.taxOfficeList" item-text="CODE_NM" item-value="CODE" mandatory/>
+                      :lstData="dataMasterList.taxOfficeList" item-text="NAME" item-value="CODE" mandatory/>
                   </v-col>
                   <v-col md="4">
                     <BaseSelect outlined :label="$t('form_no')" v-model="modelMaster.MSO"
-                      :lstData="dataMasterList.fromNoList" item-text="CODE_NM" item-value="CODE" mandatory/>
+                      :lstData="dataMasterList.fromNoList" item-text="NAME" item-value="CODE" mandatory/>
                   </v-col>
-                </v-row>
-                <v-row dense class="pl-3 pr-3">
+              </v-row>
+              <v-row dense class="pl-3 pr-3">
                   <!--  -->
                   <v-col md="4">
                     <BaseInput outlined :label="$t('tax_code')" v-model="modelMaster.MST"  />
@@ -120,14 +120,15 @@
                   </v-col>
                   <v-col md="4">
                     <BaseSelect outlined :label="$t('declaration_name')" v-model="modelMaster.LTEN"
-                      :lstData="dataMasterList.declarationNameList" item-text="CODE_NM" item-value="CODE" mandatory/>
+                      :lstData="dataMasterList.declarationNameList" item-text="NAME" item-value="CODE" mandatory/>
                   </v-col>
-                </v-row>
-                <!--  -->
-                <v-row dense class="pl-3 pr-3">
+                  <v-col md="1"></v-col>
+              </v-row>
+              <!--  -->
+              <v-row dense class="pl-3 pr-3">
                   <v-col md="4">
                     <BaseSelect outlined :label="$t('categories')" v-model="modelMaster.LOAI"
-                      :lstData="dataMasterList.categoriesList" item-text="CODE_NM" item-value="CODE" mandatory/>
+                      :lstData="dataMasterList.categoriesList" item-text="NAME" item-value="CODE" mandatory/>
                   </v-col>
                   <v-col md="4">
                     <BaseInput outlined :label="$t('minutes_no')" v-model="modelMaster.VOUCHER_NO"></BaseInput>
@@ -136,11 +137,8 @@
                     <BaseDatePicker outlined today :label="$t('register_day')" start  v-model="modelMaster.NTBAO" />
                   </v-col>
                   <v-col md="2"></v-col>
-                </v-row>
               </v-row>
-
             </v-card>
-
             <v-card>
               <v-row class="pt-3" dense>
                 <v-col md="7" class="d-flex pl-2">
@@ -220,11 +218,11 @@
           </v-row>
           <v-row>
             <v-col md="4">
-              <BaseSelect :label="$t('form_no')" v-model="form_no_pop" :lstData="list_form_no_pop" item-text="CODE_NM"
+              <BaseSelect :label="$t('form_no')" v-model="form_no_pop" :lstData="list_form_no_pop" item-text="NAME"
                 item-value="CODE" />
             </v-col>
             <v-col md="3">
-              <BaseSelect :label="$t('serial_no')" item-value="CODE" item-text="CODE_NM" :lstData="serial_no_list"
+              <BaseSelect :label="$t('serial_no')" item-value="CODE" item-text="NAME" :lstData="serial_no_list"
                 v-model="selected_serial_no" :text_all="$t('all')" />
             </v-col>
             <v-col md="3">
@@ -537,7 +535,7 @@ export default {
         caption: this.$t("declare_nm"),
         datasource: {
           KEY: "CODE",
-          VALUE: "CODE_NM",
+          VALUE: "NAME",
           data: this.dataMasterList.declarationNameList,
         },
       },
@@ -601,7 +599,7 @@ export default {
         allowEditing: true,
         datasource: {
           KEY: "CODE",
-          VALUE: "CODE_NM",
+          VALUE: "NAME",
           data: this.type_invoice_list,
         },
         width: 200
@@ -612,7 +610,7 @@ export default {
         allowEditing: true,
         datasource: {
           KEY: "CODE",
-          VALUE: "CODE_NM",
+          VALUE: "NAME",
           data: this.invoice_type_list,
         },
         width: 200

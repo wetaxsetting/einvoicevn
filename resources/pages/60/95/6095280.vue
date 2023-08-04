@@ -84,7 +84,7 @@
                 <v-row dense class="pl-3 pr-3 pt-3">
                   <v-col md="2">
                     <BaseSelect outlined :label="$t('version')" :lstData="dataMasterList.versionList"
-                      v-model="modelMaster.PBAN" item-text="NAME" item-value="CODE"  />
+                      v-model="modelMaster.PBAN" item-text="NAME" item-value="CODE" />
                   </v-col>
                   <v-col md="2"></v-col>
                   <!-- <v-col md="1"></v-col> -->
@@ -169,7 +169,7 @@
               </v-row>
               <v-row dense>
                 <v-col md="12">
-                  <BaseGridView ref="grdDetail" autoresize :header="headerList.grdDetail"
+                  <BaseGridView ref="grdDetail"  :header="headerList.grdDetail"
                     sel_procedure="AC_SEL_6095280_6" 
                     upd_procedure="AC_UP_6095280_7" 
                     :multiselect="true"
@@ -575,21 +575,25 @@ export default {
       {
         dataField: "KHMSHDON",
         caption: this.$t("form_no"),
+        width: 200
       },
       {
         dataField: "KHHDON",
         caption: this.$t("serial_no"),
+        width: 200
       },
       {
         dataField: "SHDON",
         caption: this.$t("invoice_no"),
         allowEditing: true,
+        width: 200
       },
       {
         dataField: "NGAY",
         caption: this.$t("date"),
         allowEditing: true,
         type: "date",
+        width: 200
       },
       {
         dataField: "LADHDDT",
@@ -600,6 +604,7 @@ export default {
           VALUE: "CODE_NM",
           data: this.type_invoice_list,
         },
+        width: 200
       },
       {
         dataField: "TCTBAO",
@@ -610,6 +615,7 @@ export default {
           VALUE: "CODE_NM",
           data: this.invoice_type_list,
         },
+        width: 200
       },
       {
         dataField: "LDO",
@@ -701,7 +707,7 @@ export default {
       }
 
 
-      const results = await this._getCommonCode3(["ACEI0010", "ACEI0120", "ACEI0190", "ACEI0170", "ACEI0180", "ACEIS310", "ACEI0210","ACEI0220"], this.user.TCO_COMPANY_PK)
+      const results = await this._getCommonCode2(["ACEI0010", "ACEI0120", "ACEI0190", "ACEI0170", "ACEI0180", "ACEIS310", "ACEI0210","ACEI0220"], this.user.TCO_COMPANY_PK)
       this.dataSearchList.statusList = results[0];
       this.dataMasterList.taxOfficeList = results[1];
       this.dataMasterList.fromNoList = results[2];
@@ -754,7 +760,6 @@ export default {
       this.modelMaster.TEN = "";
       this.modelMaster.LTEN = "00";
       this.modelMaster.NTBAO = new Date().toISOString().substr(0, 10).replaceAll("-", "");
-      this.modelMaster.PBAN = "2.0.1";
       this.modelMaster.VOUCHER_NO = null;
       this.$refs.grdDetail.Clear();
     },

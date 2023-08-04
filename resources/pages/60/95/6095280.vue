@@ -5,7 +5,7 @@
         <v-card>
           <v-row dense>
             <v-col md="9" class="pl-3 pr-3 pt-2">
-              <BaseSelect outlined item-value="VAL" item-text="NAME" :label="$t('company_name')"
+              <BaseSelect outlined item-value="CODE" item-text="NAME" :label="$t('company_name')"
                 :lstData="dataSearchList.companyList" v-model="modelSearch.COMPANY_PK" />
             </v-col>
             <v-col md="3" class="d-flex justify-end pr-2 pt-2">
@@ -98,7 +98,7 @@
               </v-row>
               <v-row dense class="pl-3 pr-3">
                   <v-col md="4">
-                    <BaseSelect outlined item-value="VAL" item-text="NAME" :label="$t('taxpayer_name')"
+                    <BaseSelect outlined item-value="CODE" item-text="NAME" :label="$t('taxpayer_name')"
                       :lstData="dataMasterList.companyList" v-model="modelMaster.TEI_COMPANY_PK" readonly />
                   </v-col>
                   <v-col md="4">
@@ -698,7 +698,7 @@ export default {
         this.dataSearchList.companyList = company;
         this.dataMasterList.companyList = company;
 
-        this.modelSearch.COMPANY_PK = this.dataSearchList.companyList[0].VAL;
+        this.modelSearch.COMPANY_PK = this.dataSearchList.companyList[0].CODE;
       }
 
       const companyInfo = await this._callProcedure("AC_SEL_6095280_COMPANYINFO");

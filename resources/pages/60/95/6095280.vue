@@ -697,6 +697,8 @@ export default {
       if (company.length > 0) {
         this.dataSearchList.companyList = company;
         this.dataMasterList.companyList = company;
+
+        this.modelSearch.COMPANY_PK = this.dataSearchList.companyList[0].VAL;
       }
 
       const companyInfo = await this._callProcedure("AC_SEL_6095280_COMPANYINFO");

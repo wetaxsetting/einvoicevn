@@ -143,16 +143,17 @@
 
             <v-card>
               <v-row class="pt-3" dense>
-                <v-col md="5" class="d-flex pl-2">
+                <v-col md="7" class="d-flex pl-2">
                   <BaseButton icon_type="eye_on" :btn_text="$t('preview_E-invoice')"
                     @onclick="onClick('previewEinvoice')" />
-                  <BaseButton icon_type="eye_on" :btn_text="$t('preview_BB')" @onclick="onClick('previewBB')" />
+                  <BaseButton icon_type="eye_on" :btn_text="$t('preview_bb')" @onclick="onClick('previewBB')" />
+                  <BaseButton icon_type="eye_on" :btn_text="$t('preview_bb_replace')" @onclick="onClick('previewBB_Replace')" />
                   <BaseButton icon_type="email" :btn_text="$t('send_mail')" @onclick="onClick('sendMail')" />
                 </v-col>
                 <v-col md="3" class="pr-2">
                   <BaseSelect outlined v-model="selectedTable" :lstData="tables" item-text="NAME" item-value="CODE" />
                 </v-col>
-                <v-col md="4" class="pr-2">
+                <v-col md="2" class="pr-2">
                   <GwFlexBox justify="end">
                     <!-- Add -->
                     <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')"

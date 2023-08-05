@@ -45,7 +45,7 @@
             </template>
 
             <v-sheet class="menuGroupBg">
-              <v-list-item nuxt active-class="primaryTextThree" v-for="favMenu in favMenuList" :key="favMenu.PK ? favMenu.PK : favMenu.pk" :to="favMenu.FORM_URL ? favMenu.FORM_URL : favMenu.form_url" :disabled="isClicked" @click="openNewTab(favMenu)">
+              <v-list-item nuxt active-class="primaryTextThree" v-for="favMenu in favMenuList" :key="favMenu.PK ? favMenu.PK : favMenu.pk" :to="favMenu.FORM_URL ? favMenu.FORM_URL : favMenu.form_url" :disabled="isClicked" @click.prevent="clickedMenu =  favMenu">
                 <v-list-item-content class="ml-3">
                   <v-list-item-title class="font-weight-bold">
                     <v-icon small>{{ (favMenu.MENU_CD ? favMenu.MENU_CD : favMenu.menu_cd) === currentForm ? 'mdi-minus-thick' : 'mdi-circle-medium'}}</v-icon> {{ favMenu.FORM_NM ? favMenu.FORM_NM : favMenu.form_nm }}
@@ -71,7 +71,7 @@
                   </div>
                 </template>
                 
-                <v-list-item nuxt active-class="primaryTextThree" v-for="menu3 in menu2.childMenu" :key="menu3.PK ? menu3.PK : menu3.pk" :to="menu3.FORM_URL ? menu3.FORM_URL : menu3.form_url" :disabled="isClicked" @click="openNewTab(menu3)">
+                <v-list-item nuxt active-class="primaryTextThree" v-for="menu3 in menu2.childMenu" :key="menu3.PK ? menu3.PK : menu3.pk" :to="menu3.FORM_URL ? menu3.FORM_URL : menu3.form_url" :disabled="isClicked" @click.prevent="clickedMenu = menu3">
                   <v-list-item-content class="ml-3">
                     <v-list-item-title class="font-weight-bold">
                       <v-icon small>{{ menu3.MENU_CD === currentForm ? 'mdi-minus-thick' : 'mdi-circle-medium'}}</v-icon> {{ menu3.FORM_NM }}
@@ -565,7 +565,8 @@ export default {
     showSearchMenuInput: false, 
     showMenu: false,
     pinForm: false,
-    acntSource: false 
+    acntSource: false,
+    clickedMenu: null
   }),
   
   created() {
@@ -580,8 +581,8 @@ export default {
         this.closeFullscreen()
       }
     })
-    this.$nuxt.$on('openFormInLayout', (formID) => {
-      this.findMenuFromMenuList(formID);
+    this.$nuxt.$on('openFormInLayout', (formID, isRefresh) => {
+      this.findMenuFromMenuList(formID, isRefresh);
     })
     this._updateLocale(this._language);
      //get dictionary common first login for i18n
@@ -611,6 +612,10 @@ export default {
       }
     }
     this.$store.dispatch("auth/updateMenuDrawerWidth", this.navigation.width);
+    if(!this.tabList.length && this.$route.fullPath !== "/") {
+      // console.log("tab list is empty but route is not clear, then redirect!");
+      this.$router.push("/")
+    }
   },
 
   destroyed() {
@@ -638,6 +643,13 @@ export default {
         }
         return false;
       }
+    },
+    nuxtChildKey() {
+      if(this.curTab) {
+        const found = this.tabList.find(item => item.tabID.toString() === (this.curTab.PK ? this.curTab.PK.toString() : this.curTab.tabID.toString()))
+        return found ? found.tabID.toString() : "1";
+      }
+      return "1";
     }
   },
 
@@ -658,9 +670,20 @@ export default {
         }
       }
     },
-    '$route'(val) {
+    async '$route'(val) {
       this.currentForm = val && val.path.split("/")[3] ? val.path.split("/")[3].toUpperCase() : ''
-      this.acntSource = this.currentForm =='' ? false : this.currentForm.substring(0, 1) == '6' ? true : false;
+      // this.acntSource = this.currentForm =='' ? false : this.currentForm.substring(0, 1) == '6' ? true : false;
+      if(val && val.name !== "index") {
+        await this._sleep(500);
+        // console.log("clickedMenu:", this.clickedMenu)
+        if(this.clickedMenu) {
+          this.openNewTab(this.clickedMenu)
+        }
+      }
+      /* if(val.name !== "index" && !this.tabList.length) {
+        console.log("tab list is empty but route is not clear, then redirect!");
+        this.redirect("/")
+      } */
     }
   }, 
 
@@ -765,32 +788,39 @@ export default {
     },
 
     async openNewTab(item) {
-      this.isClicked = true;
-      //get dictionary form for i18n
-      //console.log("item.SECOND_DB_YN",item)
-      this.db2=item.SECOND_DB_YN ? item.SECOND_DB_YN : item.second_db_yn;
-      await this.$store.dispatch("auth/setFormDictionary_i18n", { app: this.$store.app, lang: this.$store.getters["lang/language"], formID: item.MENU_CD?item.MENU_CD:item.menu_cd,_db2:"N" });
-      const idx = this.tabList.findIndex(x => x.tabID === (item.PK ? item.PK : item.pk));
-      if (idx > -1) {
-        this.tab = idx;        
-      } else {
-        this.tabList.push({
-          tabID: item.PK ? item.PK : item.pk,
-          MENU_CD: item.MENU_CD ? item.MENU_CD : item.menu_cd,
-          tabName: item.FORM_NM ? item.FORM_NM : item.form_nm,
-          tabUrl: item.FORM_URL ? item.FORM_URL : item.form_url,
-        });
-        const found = this.tempFormArray.find(x => x === (item.MENU_CD ? item.MENU_CD : item.menu_cd));
-        if (!found) {
-          this.tempFormArray.push(item.MENU_CD ? item.MENU_CD : item.menu_cd);
+      // console.log("*** openNewTab ***", item.FORM_URL);
+      try {
+        this.isClicked = true;
+        //get dictionary form for i18n
+        //console.log("item.SECOND_DB_YN",item)
+        this.db2=item.SECOND_DB_YN ? item.SECOND_DB_YN : item.second_db_yn;
+        await this.$store.dispatch("auth/setFormDictionary_i18n", { app: this.$store.app, lang: this.$store.getters["lang/language"], formID: item.MENU_CD?item.MENU_CD:item.menu_cd,_db2:"N" });
+        const idx = this.tabList.findIndex(x => x.tabID === (item.PK ? item.PK : item.pk));
+        if (idx > -1) {
+          this.tab = idx;        
+        } else {
+          this.tabList.push({
+            tabID: item.PK ? item.PK : item.pk,
+            MENU_CD: item.MENU_CD ? item.MENU_CD : item.menu_cd,
+            tabName: item.FORM_NM ? item.FORM_NM : item.form_nm,
+            tabUrl: item.FORM_URL ? item.FORM_URL : item.form_url,
+          });
+          const found = this.tempFormArray.find(x => x === (item.MENU_CD ? item.MENU_CD : item.menu_cd));
+          if (!found) {
+            this.tempFormArray.push(item.MENU_CD ? item.MENU_CD : item.menu_cd);
+          }
+          this.$nextTick(() => {
+            this.tab = this.tabList.length - 1;
+          });
         }
-        this.$nextTick(() => {
-          this.tab = this.tabList.length - 1;
-        });
+        this.curTab = item;
+        this.isClicked = false;
+        this.$store.dispatch("auth/setActiveForm", item.FORM_URL)
+        this.clickedMenu = null;
+      } catch (error) {
+        console.log("openNewTab-catch exception:", error.message)
+        this.isClicked = false;        
       }
-      this.curTab = item;
-      this.isClicked = false;
-      this.$store.dispatch("auth/setActiveForm", item.FORM_URL)
     },
     
     async openNewTabSSO(item) {
@@ -826,67 +856,99 @@ export default {
     },
 
     async switchToTab(item) {
-      this.curTab = item;
-      this.db2 = item.SECOND_DB_YN ? item.SECOND_DB_YN : item.second_db_yn;
-      //this.$store.dispatch("auth/setWaitingChangeLang", true);
-      //get dictionary form for i18n
-      await this.$store.dispatch("auth/setFormDictionary_i18n", { app: this.$store.app, lang: this.$store.getters["lang/language"], formID: item.MENU_CD ? item.MENU_CD : item.menu_cd, _db2: "N" }) ;
-     // this.$store.dispatch("auth/setWaitingChangeLang", false);
-      this.$store.dispatch("auth/setDictionaryFormID", item.MENU_CD ? item.MENU_CD : item.menu_cd);
-      this.$router.push({ path: item.tabUrl });
+      try {
+        // console.log("*** switchToTab ***", item);
+        this.curTab = item;
+        this.db2 = item.SECOND_DB_YN ? item.SECOND_DB_YN : item.second_db_yn;
+        //this.$store.dispatch("auth/setWaitingChangeLang", true);
+        //get dictionary form for i18n
+        await this.$store.dispatch("auth/setFormDictionary_i18n", { app: this.$store.app, lang: this.$store.getters["lang/language"], formID: item.MENU_CD ? item.MENU_CD : item.menu_cd, _db2: "N" }) ;
+      // this.$store.dispatch("auth/setWaitingChangeLang", false);
+        this.$store.dispatch("auth/setDictionaryFormID", item.MENU_CD ? item.MENU_CD : item.menu_cd);
+        // this.$router.push({ path: item.tabUrl });        
+      } catch (error) {
+        console.log("switchToTab-catch exception:", error.message)
+      }
     },
 
     async closeCurrentTab(item) {
-      // Remove current tab from tabList array
-      this.tabList = this.tabList.filter(x => x.MENU_CD !== (item.MENU_CD ? item.MENU_CD : item.menu_cd));
-      this.tempFormArray = this.tempFormArray.filter(x => x !== (item.MENU_CD ? item.MENU_CD : item.menu_cd));
-      // Check tabList array and router push
-      this.$nextTick(() => {
-        if (this.tabList.length) {
-          this.tab = 0;
-          this.curTab = this.tabList[0];
-          this.$store.dispatch("auth/setDictionaryFormID", this.curTab.MENU_CD);
-          this.$router.push({ path: this.tabList[0].tabUrl });
-        } else {
-          this.tab = null;
-          this.$router.push("/");
-        }
-        //set dict to tab active
-      });
-      this.$store.dispatch("auth/removeCurrentFormDictionary", item.MENU_CD ? item.MENU_CD : item.menu_cd);
-      //this.$store.dispatch("auth/setWaitingChangeLang", true);
-      await this.$store.dispatch("auth/setFormDictionary_i18n", { app: this.$store.app, lang: this.$store.getters["lang/language"], formID: this.curTab.MENU_CD, _db2: "N" } ) ;
-      //this.$store.dispatch("auth/setWaitingChangeLang", false);
+      try {
+        // console.log("*** closeCurrentTab ***", item.tabUrl);
+        // Remove current tab from tabList array
+        this.tabList = this.tabList.filter(x => x.MENU_CD !== (item.MENU_CD ? item.MENU_CD : item.menu_cd));
+        this.tempFormArray = this.tempFormArray.filter(x => x !== (item.MENU_CD ? item.MENU_CD : item.menu_cd));
+        // Check tabList array and router push
+        this.$nextTick(async () => {
+          if (this.tabList.length) {
+            /* this.tab = 0;
+            this.curTab = this.tabList[0];
+            this.$store.dispatch("auth/setDictionaryFormID", this.curTab.MENU_CD);
+            this.$router.push({ path: this.tabList[0].tabUrl }); */
+            if((item.MENU_CD ? item.MENU_CD : item.menu_cd) !== this.curTab.MENU_CD) {
+              const currentIndex = this.tabList.indexOf(this.tabList.find(x=> x.MENU_CD === this.curTab.MENU_CD));            
+              await this.$nextTick();
+              this.tab = currentIndex;
+            } else {
+              const lastTabIndex = this.tabList.lastIndexOf(this.tabList[this.tabList.length - 1]); 
+              await this.$nextTick();
+              this.tab = lastTabIndex; // 0;
+              this.curTab = this.tabList[this.tabList.length - 1]; // this.tabList[0];
+              this.$store.dispatch("auth/setDictionaryFormID", this.curTab.MENU_CD);
+              this.$router.replace({ path: this.tabList[this.tabList.length - 1].tabUrl }); // this.$router.push({ path: this.tabList[0].tabUrl });
+            }
+          } else {
+            this.tab = null;
+            this.$router.push("/");
+          }
+          //set dict to tab active
+        });
+        this.$store.dispatch("auth/removeCurrentFormDictionary", item.MENU_CD ? item.MENU_CD : item.menu_cd);
+        //this.$store.dispatch("auth/setWaitingChangeLang", true);
+        await this.$store.dispatch("auth/setFormDictionary_i18n", { app: this.$store.app, lang: this.$store.getters["lang/language"], formID: this.curTab.MENU_CD, _db2: "N" } ) ;
+        //this.$store.dispatch("auth/setWaitingChangeLang", false);
+      } catch (error) {
+        console.log("closeCurrentTab-catch exception:", error.message)
+      }      
     },
 
     closeAllTabs() {
-      if (this.tabList.length) {
-        this.tabList = [];
-        this.tab = null;
-        this.tempFormArray = this.tempFormArray.filter((item) => item === "COMMON");
-        this.$store.dispatch("auth/removeAllFormDictionary", { app: this.$store.app, lang: this.$store.getters["lang/language"]} );
-        this.$router.push({ path: "/" });
+      // console.log("closeAllTabs:");
+      try {
+        if (this.tabList.length) {
+          this.tabList = [];
+          this.tab = null;
+          this.tempFormArray = this.tempFormArray.filter((item) => item === "COMMON");
+          this.$store.dispatch("auth/removeAllFormDictionary", { app: this.$store.app, lang: this.$store.getters["lang/language"]} );
+          this.$router.push({ path: "/" });
+        }
+      } catch (error) {
+        console.log("closeAllTabs-catch exception:", error.message);
       }
     },
 
     refreshCurrentTab() {
-      if (this.tabList.length) {
-        // Save current tab to temp variable
-        const tempTab = this.tabList[this.tab];
-        const tempIdx = this.tabList[this.tab].tabID;
-        if (tempTab) {
-          // Remove current tab from tabList array
-          this.tabList.splice(this.tab, 1);
-          // Push temp tab to tabList array
-          this.$nextTick(() => {
-            this.tabList.push(tempTab);
+      // console.log("*** refreshCurrentTab ***")
+      try {
+        if (this.tabList.length) {
+          // Save current tab to temp variable
+          const tempTab = this.tabList[this.tab];
+          const tempIdx = this.tabList[this.tab].tabID;
+          if (tempTab) {
+            // Remove current tab from tabList array
+            this.tabList.splice(this.tab, 1);
+            // Push temp tab to tabList array
             this.$nextTick(() => {
-              document.getElementById(`tab-${tempIdx}`).click();
-              this.$router.push({ path: tempTab.tabUrl });
+              this.tabList.push(tempTab);
+              this.$nextTick(() => {
+                document.getElementById(`tab-${tempIdx}`).click();
+                this.$router.push({ path: tempTab.tabUrl });
+              });
             });
-          });
+          }
         }
-      }
+      } catch (error) {
+        console.log("refreshCurrentTab-catch exception:", error.message)
+      }      
     },
 
     async logOut() {
@@ -918,15 +980,15 @@ export default {
       this.$refs.manualDialog.manualDialog = true
     },
 
-    findMenuFromMenuList(formID) {
+    findMenuFromMenuList(formID, isRefresh) {
       if(formID) {
         try {
           findValueDeep(
             this.menuList,
             (value) => {
-              if (value.MENU_CD ? value.MENU_CD : value.menu_cd) {
-                if (value.MENU_CD ? value.MENU_CD.toUpperCase() : value.menu_cd.toUpperCase() === formID.toUpperCase()) {
-                  return this.openNewTab2(value)
+              if ((value.MENU_CD ? value.MENU_CD : value.menu_cd)) {
+                if ((value.MENU_CD ? value.MENU_CD.toUpperCase() : value.menu_cd.toUpperCase()) === formID.toUpperCase()) {
+                  return this.openNewTab2(value, isRefresh)
                 }
               }
             },
@@ -939,8 +1001,8 @@ export default {
       }
     },
 
-    async openNewTab2(item) {
-      this.isRefreshing = true
+    async openNewTab2(item, isRefresh = true) {
+      this.isRefreshing = isRefresh;
       this.isClicked = true;
       //get dictionary form for i18n
       await this.$store.dispatch("auth/setFormDictionary_i18n", { app: this.$store.app, lang: this.$store.getters["lang/language"], formID: item.MENU_CD ? item.MENU_CD : item.menu_cd, _db2: "N"  });
@@ -959,13 +1021,12 @@ export default {
         if (!found) {
           this.tempFormArray.push(item.MENU_CD ? item.MENU_CD : item.menu_cd);
         }
-        this.$nextTick(() => {
+        this.$nextTick(async () => {
           this.tab = this.tabList.length - 1;
-          this.$router.push({ path: item.FORM_URL ? item.FORM_URL : item.form_url });
-          setTimeout(() => {
-            this.refreshCurrentTab();
-            this.isRefreshing = false
-          }, 2000);
+          this.$router.replace({ path: item.FORM_URL });
+          await this._sleep(500);
+          this.refreshCurrentTab();
+          this.isRefreshing = false;
         });
       }
       this.isClicked = false;

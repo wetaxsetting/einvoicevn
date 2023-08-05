@@ -60,7 +60,7 @@
                     <!-- Copy -->
                     <v-tooltip bottom>
                       <template v-slot:activator="{ on }">
-                        <v-btn icon tile v-on="on" :color="currentTheme" :disabled="isProcessing" @click="copyToDialog = true" >
+                        <v-btn icon tile v-on="on" :color="currentTheme" :disabled="isProcessing" @click="openCopyDialog">
                           <v-icon>mdi-content-copy</v-icon>
                         </v-btn>
                       </template>
@@ -76,15 +76,21 @@
         <v-row align="center" justify="center">
           <v-col cols="12" class="py-0">
             <v-card outlined tile v-resize="onResize">
-              <DxDataGrid column-resizing-mode="widget" key-expr="PK" ref="dictionaryGrid"
-                :allow-column-resizing="true" :column-auto-width="$vuetify.breakpoint.smAndDown"
-                :columns="dictionaryTableHeaders" :data-source="dictionaryList" :height="limitHeight" 
-                :no-data-text="$t('no_data', 'common')" :onRowClick="onRowClick" :onSelectionChanged="onSelectionChanged"
-                :paging="{ pageSize: 200 }" :remote-operations="false" :selection="{ mode: 'multiple', showCheckBoxesMode: 'none' }"
-                :show-borders="true" :show-column-lines="true" :show-row-lines="true" @row-updated="checkUpdatedItem">
-                  <DxKeyboardNavigation :edit-on-key-press="true" />
-                  <DxEditing mode="cell" start-edit-action="dblClick" :allow-updating="true" :select-text-on-edit-start="true" />
-              </DxDataGrid>
+              <BaseGridView
+                ref="dictionaryGrid" 
+                :max_height="limitHeight" 
+                selectionmode="multiplerows"
+                :autoresize="true"
+                :editable="true"
+                :headertype="1"
+                :header="dictionaryTableHeaders"                  
+                sel_procedure="SYS_SEL_SYSE003_DICTIONARY"
+                upd_procedure="SYS_UPD_SYSE003_DICTIONARY"
+                :filter_paras="[this.keyword ? this.keyword : '', this.message ? this.message : '', this.selectedLang ? this.selectedLang : '', this.formID ? this.formID : '']"
+                :update_paras="['PK', 'ID', 'MESSAGE', 'LANGUAGE', 'FORM_ID']"
+                @setDataSource="onSetDataSource"
+                @callSaveResult="onCallSaveResult"
+              />
             </v-card>
           </v-col>
         </v-row>
@@ -135,32 +141,37 @@ export default {
       toLangList: [],
       error1: false,
       error2: false,
-      error3: false
+      error3: false,
+
+      formArr: []
     }
   },
 
   created() {
     this.selectedLang = this._language
     this.toLangList = this._languages.filter(x => x.CODE !== "ENG")
-    console.log('SECOND_DB_YN:'+this.SECOND_DB_YN)
+    // console.log('SECOND_DB_YN:'+this.SECOND_DB_YN)
   },
 
   computed: {
     limitHeight() { if(this.$vuetify.breakpoint.smAndUp) return this.windowHeight - 220 },
     dictionaryTableHeaders() {
       return [
-        { dataField: 'ID', caption: this.$t('id', 'common') },
-        { dataField: 'MESSAGE', caption: this.$t('message', 'common') },
+        { field: 'ID', title: this.$t('id', 'common'), width: "25%", dataType: "string", editable: true },
+        { field: 'MESSAGE', title: this.$t('message', 'common'), width: "25%", dataType: "string", editable: true },
         { 
-          dataField: 'LANGUAGE', 
-          caption: this.$t('language', 'common'), 
+          field: 'LANGUAGE', 
+          title: this.$t('language', 'common'), 
+          width: "25%",
+          dataType: "string", 
+          editable: true,
           lookup: {
             valueExpr: "CODE",
             displayExpr: "NAME",
             dataSource: this._languages
           }
         },
-        { dataField: 'FORM_ID', caption: this.$t('form_id', 'common') }
+        { field: 'FORM_ID', title: this.$t('form_id', 'common'), width: "25%", dataType: "string", editable: true }
       ]
     }
   },
@@ -174,105 +185,53 @@ export default {
     },
     formID() {
       this.error3 = false
+    },
+    _language(val) {
+      this.selectedLang = val;
     }
   },
 
   methods: {
     search() {
-      this.getDictionaryList([ this.keyword ? this.keyword : '', this.message ? this.message : '', this.selectedLang ? this.selectedLang : '', this.formID ? this.formID : '' ])
-    },
-
-    async getDictionaryList(paramsData) {
-      const dso = {
-        type: 'grid',
-        selpro: 'SYS_SEL_SYSE003_DICTIONARY',
-        para: paramsData
-      }
-      const result = await this._dsoCall(dso, 'select', false)
-      this.dictionaryList = result ? result : []
-      this.$refs.dictionaryGrid.instance.clearSelection()
-    },
+      this.$refs.dictionaryGrid.loadData();
+    },    
 
     addNew() {
-      this.dictionaryList.unshift({
-        _rowstatus: 'i', PK: this._uniqueID(), ID: this.keyword ? this.keyword : '', MESSAGE: '', LANGUAGE: this.selectedLang, FORM_ID: this.formID
-      })
-    },
-
-    checkUpdatedItem(e) {
-      if(!e.cancel) {
-        if(e.data._rowstatus !== "i") {
-          e.data._rowstatus = 'u'
-        }
+      if(this.$siteDomain !== this.$webCashSiteDomain) {
+        return this.showNotification("danger", this.$t('alert'), this.$t('please_contact_system_admin_for_update_dictionary'));
       }
+      this.$refs.dictionaryGrid.addRowStruct({
+        PK: null, ID: this.keyword ? this.keyword : '', MESSAGE: '', LANGUAGE: this.selectedLang, FORM_ID: this.formID
+      })
     },
   
     save() {
-      this.$refs.dictionaryGrid.instance.saveEditData().then(async () => {
-        var formArr = this.dictionaryList.filter(x => x._rowstatus === "i" || x._rowstatus === "u").map(y => y.FORM_ID)
-        formArr = [...new Set(formArr)]
-        const dso = {
-          type: 'grid',
-          selpro: 'SYS_SEL_SYSE003_DICTIONARY',
-          updpro: 'SYS_UPD_SYSE003_DICTIONARY',
-          para: [ this.keyword ? this.keyword : '', this.message ? this.message : '', this.selectedLang ? this.selectedLang : '', this.formID ? this.formID : '' ],
-          elname: [ '_rowstatus', 'PK', 'ID', 'MESSAGE', 'LANGUAGE', 'FORM_ID' ],
-          requirecol: [ 'ID', 'MESSAGE', 'LANGUAGE', 'FORM_ID' ],
-          data: this.dictionaryList
-        }
-        const result = await this._dsoCall(dso, 'update', true)
-        if(result) {
-          this.dictionaryList = result
-          // await this.$store.dispatch("auth/updateDictionary", formArr)
-          await this.$store.dispatch("auth/refreshDictionary_i18n", {
-            app: this.$store.app, 
-            lang: this.selectedLang, 
-            openTabs: formArr, 
-            activeTab: this.formID
-          })
-        }
-        this.$refs.dictionaryGrid.instance.clearSelection()
-      })
-    },
-
-    onRowClick(e) {
-      if(e.rowType === "data" && e.isSelected && e.data._rowstatus === "d") {
-        e.rowElement.classList.remove("dx-selection")
+      if(this.$siteDomain !== this.$webCashSiteDomain) {
+        return this.showNotification("danger", this.$t('alert'), this.$t('please_contact_system_admin_for_update_dictionary'));
       }
-    },
-
-    onSelectionChanged({ selectedRowKeys }) {
-      this.selectedRowKeys = selectedRowKeys
+      this.formArr = this.dictionaryList.filter(x => x._rowstatus === "i" || x._rowstatus === "u").map(y => y.FORM_ID);
+      this.formArr = [...new Set(this.formArr)]
+      this.$refs.dictionaryGrid.saveData();      
     },
 
     markDeleteItems() {
-      if(this.selectedRowKeys.length) {
-        for (let i = 0; i < this.dictionaryList.length; i++) {
-          const word = this.dictionaryList[i]
-          for (let j = 0; j < this.selectedRowKeys.length; j++) {
-            const item = this.selectedRowKeys[j]
-            if(item === word.PK) {
-              if(word._rowstatus !== "d") {
-                word._rowstatus = "d"
-                this.setMarkedDeleteRowColor('dictionaryGrid', true, i)
-              } else {
-                word._rowstatus = ""
-                this.setMarkedDeleteRowColor('dictionaryGrid', false, i)
-              }
-            }
-          }
-        }
-      } else {
-        this.dictionaryList.forEach((item, index) => {
-          if(item._rowstatus === "d") {
-            item._rowstatus = ""
-            this.setMarkedDeleteRowColor('dictionaryGrid', false, index)
-          }
-        })
+      if(this.$siteDomain !== this.$webCashSiteDomain) {
+        return this.showNotification("danger", this.$t('alert'), this.$t('please_contact_system_admin_for_update_dictionary'));
       }
+      this.$refs.dictionaryGrid.deleteRows();
+    },
+
+    openCopyDialog() {
+      if(this.$siteDomain !== this.$webCashSiteDomain) {
+        return this.showNotification("danger", this.$t('alert'), this.$t('please_contact_system_admin_for_update_dictionary'));
+      }
+      this.copyToDialog = true
     },
 
     copy() {
+      if(this.$siteDomain !== this.$webCashSiteDomain) {
+        return this.showNotification("danger", this.$t('alert'), this.$t('please_contact_system_admin_for_update_dictionary'));
+      }
       if(!this.selectedLang){
         this.error1 = true
         return this.showNotification('danger', this.$t('copy_failed', 'common'), this.$t('must_select_from_language', 'common'))
@@ -305,6 +264,22 @@ export default {
           this.isProcessing = false
           this.copyToDialog = false
         })
+    },
+
+    async onSetDataSource() {
+      await this.$nextTick();
+      this.dictionaryList = this.$refs.dictionaryGrid.getDataSource();
+    },
+
+    async onCallSaveResult(value) {
+      if(value) {
+        await this.$store.dispatch("auth/refreshDictionary_i18n", {
+          app: this.$store.app, 
+          lang: this.selectedLang, 
+          openTabs: this.formArr, 
+          activeTab: this.formID
+        })
+      }
     }
   }
 }

@@ -1,57 +1,38 @@
 <template>
-<v-container fluid v-resize="onResize">
-    <v-row class="pt-1" dense>
-        <v-col md="1" class="d-flex align-end">
-            <b>{{$t('master_code')}}</b>
-        </v-col>
-        <v-col md="3">
-            <BaseSelect :label="$t('company')" multiple v-model="selectedCompany" :lstData="companyList" item-text="TEXT" item-value="PK" />
-        </v-col>
-        <v-col md="2">
-            <BaseInput :label="$t('code_name')" v-model="searchMasterCode" @keyPressEnter="onSearchMaster" />
-        </v-col>
-        <v-col md="4">
-            <BaseInput :label="$t('search_name')" v-model="searchMasterName" @keyPressEnter="onSearchMaster" />
-        </v-col>
-        <v-col md="2" class="d-flex justify-end">
+<div>
+    <GwGridLayout flat dense colsPerRow="1" containerHeight="auto" @callBackHeight="parentHeight = $event">
+        <div colspan="2">
+            <b> {{$t('master_code')}} </b>
+        </div>
+        <BaseSelect colspan="2" :label="$t('company')" multiple v-model="selectedCompany" :lstData="companyList" item-text="TEXT" item-value="PK" />
+        <BaseInput colspan="2" :label="$t('code_name')" v-model="searchMasterCode" @keyPressEnter="onSearchMaster" />
+        <BaseInput colspan="2" :label="$t('search_name')" v-model="searchMasterName" @keyPressEnter="onSearchMaster" />
+        <GwFlexBox colspan="4">
             <BaseButton btn_type="icon" icon_type="search" @onclick="onSearchMaster" :disabled="isProcessing" />
             <BaseButton btn_type="icon" icon_type="copy" @onclick="copyToDialog = true" :disabled="isProcessing" />
             <BaseButton btn_type="icon" icon_type="add" @onclick="onAddNewMaster" :disabled="isProcessing" />
             <BaseButton btn_type="icon" icon_type="save" @onclick="onSaveMaster" :disabled="isProcessing" />
             <BaseButton btn_type="icon" icon_type="delete" @onclick="onDeleteMaster" :disabled="isProcessing" />
-        </v-col>
-    </v-row>
-    <v-row class="pt-1" dense>
-        <v-col md="12">
-            <BaseGridView ref='idGrid' :editable="true" :headertype="1" :height="heightMaster - 50" :header="headerMaster" @cellClick="cellClickMaster"></BaseGridView>
-        </v-col>
-    </v-row>
-    <v-row class="pt-1" dense>
-        <v-col md="3" class="d-flex align-end">
-            <b>{{$t('detail_code')}}</b>
-        </v-col>
-        <v-col md="6">
-            <BaseInput :label="$t('code_name')" v-model="searchDetailCode" @keyPressEnter="onSearchDetail" />
-        </v-col>
-        <v-col md="1" class="d-flex justify-end align-end">
-            <BaseCheckbox :label="$t('use_yn')" v-model="selectedUse_YN" true-value="Y" false-value="ALL" />
-        </v-col>
-        <v-col md="2" class="d-flex justify-end">
+        </GwFlexBox>
+        <BaseGridView colspan="12" ref='idGrid' :editable="true" :headertype="1" :height="heightMaster - 50" :header="headerMaster" @cellClick="cellClickMaster"></BaseGridView>
+        <!-- Detail -->
+        <div colspan="2"><b>{{$t('detail_code')}}</b></div>
+        <div colspan="2" />
+        <BaseInput colspan="4" :label="$t('code_name')" v-model="searchDetailCode" @keyPressEnter="onSearchDetail" />
+        <GwFlexBox colspan="4">
+            <BaseCheckbox colspan="1" :label="$t('use_yn')" v-model="selectedUse_YN" true-value="Y" false-value="ALL" />
             <BaseButton btn_type="icon" icon_type="search" @onclick="onSearchDetail" :disabled="isProcessing" />
             <BaseButton btn_type="icon" icon_type="add" @onclick="onAddNewDetail" :disabled="isProcessing" />
             <BaseButton btn_type="icon" icon_type="save" @onclick="onSaveDetail" :disabled="isProcessing" />
             <BaseButton btn_type="icon" icon_type="delete" @onclick="onDeleteDetail" :disabled="isProcessing" />
-        </v-col>
-    </v-row>
-    <v-row class="pt-1" dense>
-        <v-col md="12">
-            <BaseGridView ref='idGrid2' :editable="true" :headertype="1" :height="heightDetail" :header="headerDetail"></BaseGridView>
-        </v-col>
-    </v-row>
+        </GwFlexBox>
+        <BaseGridView colspan="12" ref='idGrid2' :editable="true" :headertype="1" :height="heightDetail" :header="headerDetail"></BaseGridView>
+
+    </GwGridLayout>
     <!-- Copy To Dialog -->
     <v-dialog persistent id="copy-to-dialog" max-width="500" v-model="copyToDialog">
         <v-card>
-            <v-card-title class="headline primary-gradient white--text py-2">{{ $t("copy_commoncode_to", "common") }}</v-card-title>
+            <v-card-title class="headline primary-gradient white--text py-2">{{ $t("copy_commoncode_to") }}</v-card-title>
             <v-card-text class="pa-4 pb-2 d-flex flex-column align-space-between">
                 <v-select cache-items dense hide-details outlined clearable class="pb-3" item-value="PK" item-text="TEXT" :label="$t('from_company')" :items="companyListDialog" v-model="selectedCompanyFrom"></v-select>
                 <v-select cache-items dense hide-details outlined class="pb-3" item-value="PK" item-text="TEXT" :label="$t('to_company')" :items="companyListDialog" v-model="selectedCompanyTo"></v-select>
@@ -62,12 +43,12 @@
             <v-card-actions>
                 <span class="red--text">{{ copyResult }}</span>
                 <v-spacer></v-spacer>
-                <v-btn text :color="currentTheme" :disabled="isProcessing" @click="copyToDialog = false">{{ $t("cancel", "common") }}</v-btn>
-                <v-btn depressed class="white--text" :color="currentTheme" :disabled="isProcessing" :loading="isProcessing" @click="onProcessConfirm('copy')">{{ $t("copy", "common") }}</v-btn>
+                <v-btn text :color="currentTheme" :disabled="isProcessing" @click="copyToDialog = false">{{ $t("cancel") }}</v-btn>
+                <v-btn depressed class="white--text" :color="currentTheme" :disabled="isProcessing" :loading="isProcessing" @click="onProcessConfirm('copy')">{{ $t("copy") }}</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
-</v-container>
+</div>
 </template>
 
 <script>
@@ -79,7 +60,8 @@ export default {
     middleware: 'user',
 
     components: {},
-
+    /*===[B][props]===================*/
+    props: ["parentCode"],
     data: () => ({
         companyList: [],
         companyListDialog: [],
@@ -137,6 +119,13 @@ export default {
     watch: {
         selectedUse_YN(value) {
             this.filterDetail();
+        },
+        parentCode(val) { 
+            if (val) {
+                // console.log("val", val)
+                this.searchMasterCode = val;
+                this.onSearchMaster();
+            }
         }
     },
 
@@ -151,10 +140,10 @@ export default {
             return this.$store.getters["auth/user"];
         },
         heightMaster() {
-            return this.windowHeight * 0.4
+            return this._calculateHeight(this.formContainerHeight, 100) / 2 - 50; //this.windowHeight * 0.4
         },
         heightDetail() {
-            return this.windowHeight * 0.4
+            return this._calculateHeight(this.formContainerHeight, 100) / 2 - 50; //this.windowHeight * 0.4
         },
         widthButton() {
             return this.windowWidth * 0.4
@@ -173,37 +162,195 @@ export default {
         async createHeader() {
             await this.prepareCommonData();
 
-            this.headerMaster = [
-                { title: ("code"),  field: "CODE",  type: "",  editable: true},
-                { title: ("name"),  field: "NAME",  type: "", width: 180,  editable: true},
-                { title: ("lname"),  field: "LNAME",  type: "", width: 180,  editable: true},
-                { title: ("fname"),  field: "FNAME",  type: "", width: 180,  editable: true},
-                { title: ("ord"),  field: "ORD",  type: "",  editable: true},
-                { title: ("default yn"),  field: "DEF_YN",  type: "boolean",  editable: true},
-                { title: ("use yn"),  field: "USE_YN",  type: "boolean",  editable: true},
-                { title: ("sys yn"),  field: "SYS_YN",  type: "boolean",  editable: true},
-                { title: ("description"),  field: "DESCRIPTION",  type: "", width: 180,  editable: true},
-                { title: ('val 1'),  field: "VAL1",  type: "",  editable: true},
-                { title: ('val 2'),  field: "VAL2",  type: "",  editable: true},
-                { title: ('val 3'),  field: "VAL3",  type: "",  editable: true},
-                { title: ('val 4'),  field: "VAL4",  type: "",  editable: true},
-                { title: ('val 5'),  field: "VAL5",  type: "",  editable: true},
-                { title: ('val 6'),  field: "VAL6",  type: "",  editable: true},
-                { title: ('val 7'),  field: "VAL7",  type: "",  editable: true},
-                { title: ('val 8'),  field: "VAL8",  type: "",  editable: true},
-                { title: ('val 9'),  field: "VAL9",  type: "",  editable: true},
-                { title: ('val 10'),  field: "VAL10",  type: "",  editable: true},
-                { title: ('num 1'),  field: "NUM1",  type: "",  editable: true},
-                { title: ('num 2'),  field: "NUM2",  type: "",  editable: true},
-                { title: ('num 3'),  field: "NUM3",  type: "",  editable: true},
-                { title: ('num 4'),  field: "NUM4",  type: "",  editable: true},
-                { title: ('num 5'),  field: "NUM5",  type: "",  editable: true},
-                { title: ('num 6'),  field: "NUM6",  type: "",  editable: true},
-                { title: ('num 7'),  field: "NUM7",  type: "",  editable: true},
-                { title: ('num 8'),  field: "NUM8",  type: "",  editable: true},
-                { title: ('num 9'),  field: "NUM9",  type: "",  editable: true},
-                { title: ('num 10'),  field: "NUM10",  type: "",  editable: true},
-                { title: ("company"),  field: "TCO_COMPANY_PK",  type: "list", datasource: { KEY: 'PK', VALUE:'TEXT', data: this.companyList},  editable: true}
+            this.headerMaster = [{
+                    title: ("code"),
+                    field: "CODE",
+                    type: "",
+                    editable: true
+                },
+                {
+                    title: ("name"),
+                    field: "NAME",
+                    type: "",
+                    width: 180,
+                    editable: true
+                },
+                {
+                    title: ("lname"),
+                    field: "LNAME",
+                    type: "",
+                    width: 180,
+                    editable: true
+                },
+                {
+                    title: ("fname"),
+                    field: "FNAME",
+                    type: "",
+                    width: 180,
+                    editable: true
+                },
+                {
+                    title: ("ord"),
+                    field: "ORD",
+                    type: "",
+                    editable: true
+                },
+                {
+                    title: ("default yn"),
+                    field: "DEF_YN",
+                    type: "boolean",
+                    editable: true
+                },
+                {
+                    title: ("use yn"),
+                    field: "USE_YN",
+                    type: "boolean",
+                    editable: true
+                },
+                {
+                    title: ("sys yn"),
+                    field: "SYS_YN",
+                    type: "boolean",
+                    editable: true
+                },
+                {
+                    title: ("description"),
+                    field: "DESCRIPTION",
+                    type: "",
+                    width: 180,
+                    editable: true
+                },
+                {
+                    title: ('val 1'),
+                    field: "VAL1",
+                    type: "",
+                    editable: true
+                },
+                {
+                    title: ('val 2'),
+                    field: "VAL2",
+                    type: "",
+                    editable: true
+                },
+                {
+                    title: ('val 3'),
+                    field: "VAL3",
+                    type: "",
+                    editable: true
+                },
+                {
+                    title: ('val 4'),
+                    field: "VAL4",
+                    type: "",
+                    editable: true
+                },
+                {
+                    title: ('val 5'),
+                    field: "VAL5",
+                    type: "",
+                    editable: true
+                },
+                {
+                    title: ('val 6'),
+                    field: "VAL6",
+                    type: "",
+                    editable: true
+                },
+                {
+                    title: ('val 7'),
+                    field: "VAL7",
+                    type: "",
+                    editable: true
+                },
+                {
+                    title: ('val 8'),
+                    field: "VAL8",
+                    type: "",
+                    editable: true
+                },
+                {
+                    title: ('val 9'),
+                    field: "VAL9",
+                    type: "",
+                    editable: true
+                },
+                {
+                    title: ('val 10'),
+                    field: "VAL10",
+                    type: "",
+                    editable: true
+                },
+                {
+                    title: ('num 1'),
+                    field: "NUM1",
+                    type: "",
+                    editable: true
+                },
+                {
+                    title: ('num 2'),
+                    field: "NUM2",
+                    type: "",
+                    editable: true
+                },
+                {
+                    title: ('num 3'),
+                    field: "NUM3",
+                    type: "",
+                    editable: true
+                },
+                {
+                    title: ('num 4'),
+                    field: "NUM4",
+                    type: "",
+                    editable: true
+                },
+                {
+                    title: ('num 5'),
+                    field: "NUM5",
+                    type: "",
+                    editable: true
+                },
+                {
+                    title: ('num 6'),
+                    field: "NUM6",
+                    type: "",
+                    editable: true
+                },
+                {
+                    title: ('num 7'),
+                    field: "NUM7",
+                    type: "",
+                    editable: true
+                },
+                {
+                    title: ('num 8'),
+                    field: "NUM8",
+                    type: "",
+                    editable: true
+                },
+                {
+                    title: ('num 9'),
+                    field: "NUM9",
+                    type: "",
+                    editable: true
+                },
+                {
+                    title: ('num 10'),
+                    field: "NUM10",
+                    type: "",
+                    editable: true
+                },
+                {
+                    title: ("company"),
+                    field: "TCO_COMPANY_PK",
+                    type: "list",
+                    datasource: {
+                        KEY: 'PK',
+                        VALUE: 'TEXT',
+                        data: this.companyList
+                    },
+                    editable: true
+                }
             ];
 
             this.headerDetail = [...this.headerMaster];
@@ -227,37 +374,195 @@ export default {
             if (data) {
                 data = data.data;
                 //if(this.mastercode == data.CODE) return;
-                this.headerDetail = [
-                    { title: ("code"),  field: "CODE",  type: "",  editable: true},
-                    { title: ("name"),  field: "NAME",  type: "", width: 180,  editable: true},
-                    { title: ("lname"),  field: "LNAME",  type: "", width: 180,  editable: true},
-                    { title: ("fname"),  field: "FNAME",  type: "", width: 180,  editable: true},
-                    { title: ("ord"),  field: "ORD",  type: "",  editable: true},
-                    { title: ("default yn"),  field: "DEF_YN",  type: "boolean",  editable: true},
-                    { title: ("use yn"),  field: "USE_YN",  type: "boolean",  editable: true},
-                    { title: ("sys yn"),  field: "SYS_YN",  type: "boolean",  editable: true},
-                    { title: ("description"),  field: "DESCRIPTION",  type: "", width: 180,  editable: true},
-                    { title: data.VAL1  ?  data.VAL1 :  ('val_1') , field: "VAL1",  type: "",  editable: true},
-                    { title: data.VAL2  ?  data.VAL2 :  ('val_2') , field: "VAL2",  type: "",  editable: true},
-                    { title: data.VAL3  ?  data.VAL3 :  ('val_3') , field: "VAL3",  type: "",  editable: true},
-                    { title: data.VAL4  ?  data.VAL4 :  ('val_4') , field: "VAL4",  type: "",  editable: true},
-                    { title: data.VAL5  ?  data.VAL5 :  ('val_5') , field: "VAL5",  type: "",  editable: true},
-                    { title: data.VAL6  ?  data.VAL6 :  ('val_6') , field: "VAL6",  type: "",  editable: true},
-                    { title: data.VAL7  ?  data.VAL7 :  ('val_7') , field: "VAL7",  type: "",  editable: true},
-                    { title: data.VAL8  ?  data.VAL8 :  ('val_8') , field: "VAL8",  type: "",  editable: true},
-                    { title: data.VAL9  ?  data.VAL9 :  ('val_9') , field: "VAL9",  type: "",  editable: true},
-                    { title: data.VAL10 ?  data.VAL10:  ('val_10'),  field: "VAL10",  type: "",  editable: true},
-                    { title: data.NUM1  ?  data.NUM1 :  ('num_1') , field: "NUM1",  type: "",  editable: true},
-                    { title: data.NUM2  ?  data.NUM2 :  ('num_2') , field: "NUM2",  type: "",  editable: true},
-                    { title: data.NUM3  ?  data.NUM3 :  ('num_3') , field: "NUM3",  type: "",  editable: true},
-                    { title: data.NUM4  ?  data.NUM4 :  ('num_4') , field: "NUM4",  type: "",  editable: true},
-                    { title: data.NUM5  ?  data.NUM5 :  ('num_5') , field: "NUM5",  type: "",  editable: true},
-                    { title: data.NUM6  ?  data.NUM6 :  ('num_6') , field: "NUM6",  type: "",  editable: true},
-                    { title: data.NUM7  ?  data.NUM7 :  ('num_7') , field: "NUM7",  type: "",  editable: true},
-                    { title: data.NUM8  ?  data.NUM8 :  ('num_8') , field: "NUM8",  type: "",  editable: true},
-                    { title: data.NUM9  ?  data.NUM9 :  ('num_9') , field: "NUM9",  type: "",  editable: true},
-                    { title: data.NUM10 ? data.NUM10 :  ('num_10'),  field: "NUM10",  type: "",  editable: true},
-                    { title: ("company"),  field: "TCO_COMPANY_PK",  type: "list", datasource: { KEY: 'PK', VALUE:'TEXT', data: this.companyList},  editable: true}
+                this.headerDetail = [{
+                        title: ("code"),
+                        field: "CODE",
+                        type: "",
+                        editable: true
+                    },
+                    {
+                        title: ("name"),
+                        field: "NAME",
+                        type: "",
+                        width: 180,
+                        editable: true
+                    },
+                    {
+                        title: ("lname"),
+                        field: "LNAME",
+                        type: "",
+                        width: 180,
+                        editable: true
+                    },
+                    {
+                        title: ("fname"),
+                        field: "FNAME",
+                        type: "",
+                        width: 180,
+                        editable: true
+                    },
+                    {
+                        title: ("ord"),
+                        field: "ORD",
+                        type: "",
+                        editable: true
+                    },
+                    {
+                        title: ("default yn"),
+                        field: "DEF_YN",
+                        type: "boolean",
+                        editable: true
+                    },
+                    {
+                        title: ("use yn"),
+                        field: "USE_YN",
+                        type: "boolean",
+                        editable: true
+                    },
+                    {
+                        title: ("sys yn"),
+                        field: "SYS_YN",
+                        type: "boolean",
+                        editable: true
+                    },
+                    {
+                        title: ("description"),
+                        field: "DESCRIPTION",
+                        type: "",
+                        width: 180,
+                        editable: true
+                    },
+                    {
+                        title: data.VAL1 ? data.VAL1 : ('val_1'),
+                        field: "VAL1",
+                        type: "",
+                        editable: true
+                    },
+                    {
+                        title: data.VAL2 ? data.VAL2 : ('val_2'),
+                        field: "VAL2",
+                        type: "",
+                        editable: true
+                    },
+                    {
+                        title: data.VAL3 ? data.VAL3 : ('val_3'),
+                        field: "VAL3",
+                        type: "",
+                        editable: true
+                    },
+                    {
+                        title: data.VAL4 ? data.VAL4 : ('val_4'),
+                        field: "VAL4",
+                        type: "",
+                        editable: true
+                    },
+                    {
+                        title: data.VAL5 ? data.VAL5 : ('val_5'),
+                        field: "VAL5",
+                        type: "",
+                        editable: true
+                    },
+                    {
+                        title: data.VAL6 ? data.VAL6 : ('val_6'),
+                        field: "VAL6",
+                        type: "",
+                        editable: true
+                    },
+                    {
+                        title: data.VAL7 ? data.VAL7 : ('val_7'),
+                        field: "VAL7",
+                        type: "",
+                        editable: true
+                    },
+                    {
+                        title: data.VAL8 ? data.VAL8 : ('val_8'),
+                        field: "VAL8",
+                        type: "",
+                        editable: true
+                    },
+                    {
+                        title: data.VAL9 ? data.VAL9 : ('val_9'),
+                        field: "VAL9",
+                        type: "",
+                        editable: true
+                    },
+                    {
+                        title: data.VAL10 ? data.VAL10 : ('val_10'),
+                        field: "VAL10",
+                        type: "",
+                        editable: true
+                    },
+                    {
+                        title: data.NUM1 ? data.NUM1 : ('num_1'),
+                        field: "NUM1",
+                        type: "",
+                        editable: true
+                    },
+                    {
+                        title: data.NUM2 ? data.NUM2 : ('num_2'),
+                        field: "NUM2",
+                        type: "",
+                        editable: true
+                    },
+                    {
+                        title: data.NUM3 ? data.NUM3 : ('num_3'),
+                        field: "NUM3",
+                        type: "",
+                        editable: true
+                    },
+                    {
+                        title: data.NUM4 ? data.NUM4 : ('num_4'),
+                        field: "NUM4",
+                        type: "",
+                        editable: true
+                    },
+                    {
+                        title: data.NUM5 ? data.NUM5 : ('num_5'),
+                        field: "NUM5",
+                        type: "",
+                        editable: true
+                    },
+                    {
+                        title: data.NUM6 ? data.NUM6 : ('num_6'),
+                        field: "NUM6",
+                        type: "",
+                        editable: true
+                    },
+                    {
+                        title: data.NUM7 ? data.NUM7 : ('num_7'),
+                        field: "NUM7",
+                        type: "",
+                        editable: true
+                    },
+                    {
+                        title: data.NUM8 ? data.NUM8 : ('num_8'),
+                        field: "NUM8",
+                        type: "",
+                        editable: true
+                    },
+                    {
+                        title: data.NUM9 ? data.NUM9 : ('num_9'),
+                        field: "NUM9",
+                        type: "",
+                        editable: true
+                    },
+                    {
+                        title: data.NUM10 ? data.NUM10 : ('num_10'),
+                        field: "NUM10",
+                        type: "",
+                        editable: true
+                    },
+                    {
+                        title: ("company"),
+                        field: "TCO_COMPANY_PK",
+                        type: "list",
+                        datasource: {
+                            KEY: 'PK',
+                            VALUE: 'TEXT',
+                            data: this.companyList
+                        },
+                        editable: true
+                    }
                 ];
 
                 this.mastercode = data.CODE;
@@ -342,7 +647,7 @@ export default {
         onAddNewMaster() {
             let data = {
                 USE_YN: 'Y',
-                TCO_COMPANY_PK: this.user.TCO_COMPANY_PK,
+                TCO_COMPANY_PK: this.selectedCompany[0],
                 USER_PK: this.user.PK
             }
             this.$refs.idGrid.onAdd(data);
@@ -400,7 +705,7 @@ export default {
                 let data = {
                     PARENT_CODE: this.mastercode,
                     USE_YN: 'Y',
-                    TCO_COMPANY_PK: this.user.TCO_COMPANY_PK,
+                    TCO_COMPANY_PK: this.selectedCompany[0],
                     USER_PK: this.user.PK
                 }
                 this.$refs.idGrid2.onAdd(data);

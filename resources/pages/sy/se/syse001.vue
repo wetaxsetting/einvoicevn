@@ -255,19 +255,21 @@
                 </v-tooltip>
               </v-col>
               <v-col cols="12">
-                <DxDataGrid column-resizing-mode="widget" key-expr="PK" ref="managerMenuGrid"
-                  :allow-column-resizing="true" :column-auto-width="$vuetify.breakpoint.smAndDown"
-                  :columns="managerMenuHeaders" :data-source="managerMenuList" :height="limitHeightRight" 
-                  :no-data-text="$t('no_data', 'common')" :paging="{ pageSize: managerMenuList.length }"
-                  :onSelectionChanged="onSelectionChanged" :selection="{ mode: 'multiple', showCheckBoxesMode: 'none' }"
-                  :show-borders="true" :show-column-lines="true" :show-row-lines="true" @row-updated="checkUpdatedItem">
-                    <DxKeyboardNavigation :edit-on-key-press="true" />
-                    <DxEditing mode="cell" start-edit-action="dblClick" :allow-updating="true" :select-text-on-edit-start="true" />
-
-                    <template #active-template="{ data }">
-                      <input class="mx-2" type="checkbox" :checked="data.value === 'Y' ? true : false" @change="valueChanged($event.target.checked, data.column.dataField, data.data.PK)">
-                    </template>
-                </DxDataGrid>
+                <BaseGridView
+                  ref="managerMenuGrid" 
+                  :max_height="limitHeightRight" 
+                  selectionmode="singlecell"
+                  :autoresize="true"
+                  :editable="true"
+                  :headertype="1"
+                  :header="managerMenuHeaders"                  
+                  sel_procedure="SYS_SEL_SYSE001_MANAGER_MENU"
+                  upd_procedure="SYS_UPD_SYSE001_MANAGER_MENU"
+                  :filter_paras="[selectedMenu.PK]"
+                  :update_paras="['PK', 'P_PK', 'NO', 'MENU_CD', 'FORM_NM', 'FORM_LNM', 'FORM_FNM', 'FORM_URL', 'FORM_URL_NODEJS', 'MENU_CD_NODEJS', 'IMG', 'USE_YN', 'FORM_TYPE','SECOND_DB_YN']"
+                  @setDataSource="onSetDataSource"
+                  @callSaveResult="onCallSaveResult"
+                />
               </v-col>
             </v-row>
           </v-card>
@@ -277,7 +279,7 @@
 
     <v-dialog v-model="mdiCheatSheetDialog">
       <v-card>
-        <iframe style="width: 100%" height="900px" src="https://cdn.materialdesignicons.com/5.4.55/"></iframe>
+        <iframe style="width: 100%" height="900px" src="https://pictogrammers.github.io/@mdi/font/6.9.96/"></iframe>
       </v-card>
     </v-dialog>
 
@@ -293,9 +295,7 @@ const mapValuesDeep = require('deepdash/mapValuesDeep');
 export default {
   layout: 'default',
   middleware: 'user',
-
   components: { DeleteDialog }, 
-
   data: () => ({
     langMappingList: [],
 
@@ -342,31 +342,17 @@ export default {
     },
     managerMenuHeaders() {
       return [
-        { dataField: 'NO', caption: this.$t('row_num'), cssClass: "cell-align-left", width: '50' },
-        { dataField: 'MENU_CD', caption: this.$t('menu_code'), width: '80' },
-        { dataField: 'FORM_NM', caption: this.$t(this._langMappingList[0].LANGUAGE_CODE), width: '250' },
-        { dataField: 'FORM_LNM', caption: this.$t(this._langMappingList[1].LANGUAGE_CODE), width: '160' },
-        { dataField: 'FORM_FNM', caption: this.$t(this._langMappingList[2].LANGUAGE_CODE), width: '160' },
-        { dataField: 'FORM_URL', caption: this.$t('menu_url') , width: '120'},
-        { dataField: 'FORM_URL_NODEJS', caption: this.$t('menu_url_nodejs'), width: '120' },
-        { dataField: 'MENU_CD_NODEJS', caption: this.$t('menu_code_nodejs'), width: '120' },
-        { 
-          dataField: 'USE_YN',
-          caption: this.$t('active', 'common'),
-          editCellTemplate: "active-template",
-          showEditorAlways: true,
-          cssClass: "cell-align-center",
-          width: '50'
-        },
-        { 
-          dataField: 'SECOND_DB_YN',
-          caption: this.$t('db2'),
-          editCellTemplate: "active-template",
-          showEditorAlways: true,
-          cssClass: "cell-align-center",
-          width: '50'
-        }
-      ]
+        { field: 'NO', title: this.$t('row_num'), width: '50', dataType: "string", editable: true },
+        { field: 'MENU_CD', title: this.$t('menu_code'), width: '80', dataType: "string", editable: true },
+        { field: 'FORM_NM', title: this.$t(this._langMappingList[0].LANGUAGE_CODE), width: '250', dataType: "string", editable: true },
+        { field: 'FORM_LNM', title: this.$t(this._langMappingList[1].LANGUAGE_CODE), width: '160', dataType: "string", editable: true },
+        { field: 'FORM_FNM', title: this.$t(this._langMappingList[2].LANGUAGE_CODE), width: '160', dataType: "string", editable: true },
+        { field: 'FORM_URL', title: this.$t('menu_url') , width: '120', dataType: "string", editable: true },
+        { field: 'FORM_URL_NODEJS', title: this.$t('menu_url_nodejs'), width: '120', dataType: "string", editable: true },
+        { field: 'MENU_CD_NODEJS', title: this.$t('menu_code_nodejs'), width: '120', dataType: "string", editable: true },
+        { field: 'USE_YN', title: this.$t('active', 'common'), width: '50', dataType: "checkbox", editable: true },
+        { field: 'SECOND_DB_YN', title: this.$t('db2'), width: '50', dataType: "checkbox", editable: true }
+      ];      
     }
   },
 
@@ -398,6 +384,7 @@ export default {
         }
         this.isProcessing = false;
     },
+
     async getMenuList() {
       try {
         this.isRendering = true
@@ -416,7 +403,7 @@ export default {
       }
     },
 
-    getSelectedMenu() {
+    async getSelectedMenu() {
       if(!this.active.length) {
         this.selectedMenu = ''
       } else {
@@ -426,7 +413,9 @@ export default {
           this.showCreateMenu = false
           this.showCreateFolder = false
         }
-        this.getManagerMenu()
+        // this.getManagerMenu()
+        await this.$nextTick();
+        this.$refs.managerMenuGrid.loadData();
       }
     },
 
@@ -453,7 +442,7 @@ export default {
           try {
             this.isProcessing = true
             const data = [ 'INSERT', null, '0', this.menuCode, this.formName, this.formLName, this.formFName, this.formUrl, this.formUrlNodeJS, this.menuCodeNodeJS, this.menuIcon, this.activeYN, !this.formUrl ? "M" : "I" ]
-            const res = await this.$axios.$post("dso/callproc", { proc: "SYS_UPD_SYSE001_MENU", para: data })
+            const res = await this.$axios.$post("dso/callproc", { proc: "SYS_UPD_SYSE001_MENU", para: data,dbname:'common' })
             if(res.data) {
               const result = res.data[0]
               const newItem = { PK: result.PK, P_PK: result.P_PK, MENU_CD: result.MENU_CD, FORM_NM: result.FORM_NM, FORM_LNM: result.FORM_LNM, FORM_FNM: result.FORM_FNM, FORM_URL: result.FORM_URL, LVL: 1 }
@@ -485,7 +474,7 @@ export default {
             try {
               this.isProcessing = true
               const data = [ 'INSERT', null, this.selectedMenu.PK, this.menuCode, this.formName, this.formLName, this.formFName, this.formUrl, this.formUrlNodeJS, this.menuCodeNodeJS, this.menuIcon, this.activeYN, !this.formUrl ? "M" : "I" ]
-              const res = await this.$axios.$post("dso/callproc", { proc: "SYS_UPD_SYSE001_MENU", para: data })
+              const res = await this.$axios.$post("dso/callproc", { proc: "SYS_UPD_SYSE001_MENU", para: data,dbname:'common' })
               if(res.data) {
                 const result = res.data[0]                  
                 findValueDeep(
@@ -534,7 +523,7 @@ export default {
                 this.selectedMenu.FORM_URL_NODEJS=="null"?"":this.selectedMenu.FORM_URL_NODEJS, this.selectedMenu.MENU_CD_NODEJS=="null"?"":this.selectedMenu.MENU_CD_NODEJS,
                 this.selectedMenu.IMG, this.selectedMenu.USE_YN, !this.selectedMenu.FORM_URL ? "M" : "I"
               ]
-              const res = await this.$axios.$post("dso/callproc", { proc: "SYS_UPD_SYSE001_MENU", para: data })
+              const res = await this.$axios.$post("dso/callproc", { proc: "SYS_UPD_SYSE001_MENU", para: data,dbname:'common' })
               if(res.data) {
                 const result = res.data[0]
                 mapValuesDeep(
@@ -595,101 +584,33 @@ export default {
         this.selectedMenu = ''
         await this.$store.dispatch("auth/getMenuList")
       }
-    },
-
-    async getManagerMenu() {
-      const dso = { type: "grid", selpro: "SYS_SEL_SYSE001_MANAGER_MENU", para: [ this.selectedMenu.PK ]}
-      const result = await this._dsoCall(dso, 'select', false)
-      this.managerMenuList = result ? result : []
-      this.lastRowNum = this.managerMenuList[this.managerMenuList.length-1] ? this.managerMenuList[this.managerMenuList.length-1].NO : 0
-      this.$refs.managerMenuGrid.instance.clearSelection()
-    },
+    },    
 
     addNew() {
-      this.lastRowNum = this.lastRowNum+1
-      this.managerMenuList.unshift({
-        _rowstatus: 'i', PK: this._uniqueID(), P_PK: this.selectedMenu.PK, NO: this.lastRowNum, MENU_CD: '', FORM_NM: '', FORM_LNM: '', FORM_FNM: '', FORM_URL: '', FORM_URL_NODEJS: '', MENU_CD_NODEJS: '', IMG: '', USE_YN: 'N'
-      })
-    },
+      this.lastRowNum = this.lastRowNum+1;      
+      this.$refs.managerMenuGrid.addRowStruct({ 
+        PK: null, P_PK: this.selectedMenu.PK, NO: this.lastRowNum, MENU_CD: '', FORM_NM: '', FORM_LNM: '', FORM_FNM: '', FORM_URL: '', FORM_URL_NODEJS: '', MENU_CD_NODEJS: '', IMG: '', USE_YN: 'Y'
+      });
+    },    
 
-    valueChanged(e, colName, rowPK) {
-      const newValue = e ? 'Y' : 'N'
-      this.changeValue(newValue, colName, rowPK, true)
-    },
-
-    changeValue(value, key, pk, isModified) {
-      this.managerMenuList.map((item, index) => {
-        if(item.PK === pk) {
-          this.$set(item, key, value)
-          if(isModified && item.PK && item._rowstatus !== "i") {
-            item._rowstatus = "u"
-          }
-        }
-      })
-    },
-
-    checkUpdatedItem(e) {
-      if(!e.cancel) {
-        if(!e.data.FORM_URL) {
-          e.data.FORM_TYPE = "M"
-        } else {
-          e.data.FORM_TYPE = "I"
-        }
-        if(e.data._rowstatus !== "i") {
-          e.data._rowstatus = 'u'
-        }
-      }
-    },
-
-    onSelectionChanged({ selectedRowKeys }) {
-      this.selectedRowKeys = selectedRowKeys
-    },
-
-    saveGrid() {
-      this.$refs.managerMenuGrid.instance.saveEditData().then(async () => {
-        const dataIsModified = this.managerMenuList.some(x => x._rowstatus !== "")
-        if(dataIsModified) {
-          const dso = {
-            type: "grid",
-            selpro: "SYS_SEL_SYSE001_MANAGER_MENU",
-            updpro: "SYS_UPD_SYSE001_MANAGER_MENU",
-            para: [ this.selectedMenu.PK ],
-            elname: [ '_rowstatus', 'PK', 'P_PK', 'NO', 'MENU_CD', 'FORM_NM', 'FORM_LNM', 'FORM_FNM', 'FORM_URL', 'FORM_URL_NODEJS', 'MENU_CD_NODEJS', 'IMG', 'USE_YN', 'FORM_TYPE','SECOND_DB_YN' ],
-            data: this.managerMenuList
-          }
-          const result = await this._dsoCall(dso, 'update', true)
-          this.managerMenuList = result ? result : []
-          this.$refs.managerMenuGrid.instance.clearSelection()
-          this.getMenuList()
-          await this.$store.dispatch("auth/getMenuList")
-        }
-      })
+    async saveGrid() {
+      this.$refs.managerMenuGrid.saveData();
     },
 
     markDeleteItems() {
-      if(this.selectedRowKeys.length) {
-        for (let i = 0; i < this.managerMenuList.length; i++) {
-          const user = this.managerMenuList[i]
-          for (let j = 0; j < this.selectedRowKeys.length; j++) {
-            const item = this.selectedRowKeys[j]
-            if(item === user.PK) {
-              if(user._rowstatus !== "d") {
-                user._rowstatus = "d"
-                this.setMarkedDeleteRowColor('managerMenuGrid', true, i)
-              } else {
-                user._rowstatus = ""
-                this.setMarkedDeleteRowColor('managerMenuGrid', false, i)
-              }
-            }
-          }
-        }
-      } else {
-        this.managerMenuList.forEach((item, index) => {
-          if(item._rowstatus === "d") {
-            item._rowstatus = ""
-            this.setMarkedDeleteRowColor('managerMenuGrid', false, index)
-          }
-        })
+      this.$refs.managerMenuGrid.deleteRows();      
+    },
+
+    async onSetDataSource() {
+      await this.$nextTick();
+      const ds = this.$refs.managerMenuGrid.getDataSource();
+      this.lastRowNum = ds[ds.length-1] ? ds[ds.length-1].NO : 0
+    },
+
+    async onCallSaveResult(value) {
+      if(value) {
+        this.getMenuList()
+        await this.$store.dispatch("auth/getMenuList");
       }
     }
   }

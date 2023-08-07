@@ -64,7 +64,7 @@
                     <BaseButton icon_type="xml" :btn_text="$t('view_xml')" @onclick="onClick('viewXML')" />
                     <BaseButton icon_type="xml" :btn_text="$t('view_dec')" @onclick="onClick('viewDEC')" />
 
-                    <BaseButton icon_type="eye_on" :btn_text="$t('checking_result_CQT')" @onclick="onClick()" />
+                    <BaseButton icon_type="eye_on" :btn_text="$t('checking_result_CQT')" @onclick="onClick('CHECKCQT')" />
                     <BaseButton icon_type="pensign" :btn_text="$t('sign')" @onclick="onClick()"
                       :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
                     <!-- Add -->
@@ -183,8 +183,8 @@
                       'LDO',
                       'TEI_EINVOICE_SS_M_PK',
                       'CUSTOMER_NM',
-                       'POSITION',
-                       'REPRESENT',
+                       'BUYER_POSITION',
+                       'BUYER_REPRESENT',
                     ]" />
                 </v-col>
               </v-row>
@@ -456,6 +456,10 @@ export default {
         case "deleteDetail":
           this.$refs.grdDetail.onSetMarkedDelete();
           break;
+
+          case"CHECKCQT": 
+          await this.OnCheckingDec();
+          break;
       }
     },
     async dsoMaster(action) {
@@ -587,21 +591,25 @@ export default {
       }, {
         dataField: "NO",
         caption: this.$t("no"),
+        allowEditing: true,
         width: 50
       },
       {
         dataField: "MCQTCAP",
         caption: this.$t("ma_cqt_cap"),
+        allowEditing: true,
         width: 300
       },
       {
         dataField: "KHMSHDON",
         caption: this.$t("form_no"),
+        allowEditing: true,
         width: 80
       },
       {
         dataField: "KHHDON",
         caption: this.$t("serial_no"),
+        allowEditing: true,
         width: 100
       },
       {
@@ -649,7 +657,7 @@ export default {
       {
         dataField: "CUSTOMER_NM",
         caption: this.$t("customer"),
-        allowEditing: false,
+        allowEditing: true,
         width: 200
       },
       {
@@ -671,15 +679,15 @@ export default {
         width: 200
       },
       {
-        dataField: "POSITION",
+        dataField: "BUYER_POSITION",
         caption: this.$t("position"),
-        allowEditing: false,
+        allowEditing: true,
         width: 200
       },
       {
-        dataField: "REPRESENT",
+        dataField: "BUYER_REPRESENT",
         caption: this.$t("represent"),
-        allowEditing: false,
+        allowEditing: true,
         width: 200
       },
       ];
@@ -875,6 +883,43 @@ export default {
       this.modelMaster.SELLER_POSITION = "";
       this.$refs.grdDetail.Clear();
     },
+
+
+
+    OnCheckingDec()
+{
+	var count = 1;
+	if(confirm("Bạn muốn kiểm tra tờ khai này?"))
+	{	
+		jQuery.support.cors = true;
+		$.ajax({
+			 url:  "http://genuclouding.com/wseinvoice/BSService.asmx/CheckingDeclationCQT_v3",
+			 dataType: 'text',
+			 method: 'POST',
+			 data: {	tei_einvoice_issuse_cqt_pk: txtPK.value, 
+						tei_company_pk: lstCompany.value,  
+						tradecode: txtTrade_Code_CQT.value, 
+						ctr_by: txtUserName.value },
+			 error: function (response, json, textStatus, errorThrown) {
+				 alert(' Error :' + errorThrown);
+			 },
+			 success: function (response) {
+				 
+				  var xmlDoc = $.parseXML(response);
+				  var xml = $(xmlDoc);
+				  //alert(xml.text());
+				  let obj = $.parseJSON(xml.text());
+				if(obj.msg == "OK")
+				{
+					alert("Checking Ma CQT is OK !!");
+					//dso_steafrstea010003_s_01.Call('SELECT');
+					//txtXMl_T.value = obj.result;	
+					 
+				}
+			 }
+	   });
+	}	   
+}
   }
 }
 </script>

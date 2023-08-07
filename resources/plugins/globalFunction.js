@@ -30,18 +30,10 @@ export default (context, $store) => {
         return "Invalid quarter!";
       };
       Vue.prototype._maxDateOfMonth = (p_month) => {
-        if (
-          p_month.substr(4, 2) == "04" ||
-          p_month.substr(4, 2) == "06" ||
-          p_month.substr(4, 2) == "09" ||
-          p_month.substr(4, 2) == "11"
-        ) {
+        if (p_month.substr(4, 2) == "04" || p_month.substr(4, 2) == "06" || p_month.substr(4, 2) == "09" || p_month.substr(4, 2) == "11") {
           return "30";
         } else if (p_month.substr(4, 2) == "02") {
-          if (
-            p_month.substr(0, 4) % 4 == 0 ||
-            p_month.substr(0, 4) % 100 == 0
-          ) {
+          if (p_month.substr(0, 4) % 4 == 0 || p_month.substr(0, 4) % 100 == 0) {
             return "29";
           } else {
             return "28";
@@ -93,11 +85,7 @@ export default (context, $store) => {
         const d = {};
         document.addEventListener("mousedown", (e) => {
           const closestDialog = e.target.closest(".v-dialog.v-dialog--active");
-          if (
-            e.button === 0 &&
-            closestDialog != null &&
-            e.target.classList.contains("v-card__title")
-          ) {
+          if (e.button === 0 && closestDialog != null && e.target.classList.contains("v-card__title")) {
             // element which can be used to move element
             d.el = closestDialog; // element which should be moved
             d.mouseStartX = e.clientX;
@@ -114,16 +102,8 @@ export default (context, $store) => {
         document.addEventListener("mousemove", (e) => {
           if (d.el === undefined) return;
           d.el.style.cursor = "grabbing";
-          d.el.style.left =
-            Math.min(
-              Math.max(d.elStartX + e.clientX - d.mouseStartX, 0),
-              window.innerWidth - d.el.getBoundingClientRect().width
-            ) + "px";
-          d.el.style.top =
-            Math.min(
-              Math.max(d.elStartY + e.clientY - d.mouseStartY, 0),
-              window.innerHeight - d.el.getBoundingClientRect().height
-            ) + "px";
+          d.el.style.left = Math.min(Math.max(d.elStartX + e.clientX - d.mouseStartX, 0), window.innerWidth - d.el.getBoundingClientRect().width) + "px";
+          d.el.style.top = Math.min(Math.max(d.elStartY + e.clientY - d.mouseStartY, 0), window.innerHeight - d.el.getBoundingClientRect().height) + "px";
         });
         document.addEventListener("mouseup", () => {
           if (d.el === undefined) return;
@@ -205,11 +185,7 @@ export default (context, $store) => {
         return day;
       };
       Vue.prototype.TotalDayInCurrentYear = (day, month, year) => {
-        return (
-          Vue.prototype.dayAfterYear(year) +
-          Vue.prototype.dayBeforeMonth(month, year) +
-          day
-        );
+        return Vue.prototype.dayAfterYear(year) + Vue.prototype.dayBeforeMonth(month, year) + day;
       };
       Vue.prototype.dayOfTheWeek = (day, month, year) => {
         switch (Vue.prototype.TotalDayInCurrentYear(day, month, year) % 7) {
@@ -231,9 +207,7 @@ export default (context, $store) => {
       };
       Vue.prototype.checkCurrentDate = (day) => {
         const date = new Date();
-        const current_time = Date.parse(
-          `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
-        );
+        const current_time = Date.parse(`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`);
         day = Date.parse(day);
         if (day != current_time) return false;
         return true;
@@ -282,31 +256,15 @@ export default (context, $store) => {
       };
       Vue.prototype._hasValue = (value) => {
         if (typeof value == "number") return true;
-        else if (
-          value == "" ||
-          value == null ||
-          value == undefined ||
-          value == "null"
-        )
-          return false;
+        else if (value == "" || value == null || value == undefined || value == "null") return false;
         if (typeof value == "object") {
           for (var i = 0; i < value.length; i++) {
-            if (
-              value[i] == "" ||
-              value[i] == null ||
-              value[i] == undefined ||
-              value[i] == "null"
-            ) {
+            if (value[i] == "" || value[i] == null || value[i] == undefined || value[i] == "null") {
               return false;
             }
           }
         } else if (typeof value == "string") {
-          if (
-            value == "" ||
-            value == null ||
-            value == undefined ||
-            value == "null"
-          ) {
+          if (value == "" || value == null || value == undefined || value == "null") {
             return false;
           }
         }
@@ -321,18 +279,10 @@ export default (context, $store) => {
         }
         return window.btoa(binary);
       };
-      Vue.prototype._base64ToBlob = (
-        b64Data,
-        contentType = "",
-        sliceSize = 512
-      ) => {
+      Vue.prototype._base64ToBlob = (b64Data, contentType = "", sliceSize = 512) => {
         let byteCharacters = window.atob(b64Data.split(",")[1]);
         let byteArrays = [];
-        for (
-          let offset = 0;
-          offset < byteCharacters.length;
-          offset += sliceSize
-        ) {
+        for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
           let slice = byteCharacters.slice(offset, offset + sliceSize);
           let byteNumbers = new Array(slice.length);
           for (let i = 0; i < slice.length; i++) {
@@ -447,12 +397,7 @@ export default (context, $store) => {
         });
         return rtn;
       };
-      Vue.prototype._plusdate = (
-        dates = "",
-        separater = "",
-        type = "",
-        plus = 0
-      ) => {
+      Vue.prototype._plusdate = (dates = "", separater = "", type = "", plus = 0) => {
         var date = dates;
         if (dates == "") {
           date = new Date();
@@ -466,19 +411,14 @@ export default (context, $store) => {
         return RE.test(input);
       };
       Vue.prototype._getImageUrlFromBuffer = (buffer) => {
-        const url = `data:image/png;base64,${Vue.prototype._arrayBufferToBase64(
-          buffer.data
-        )}`;
+        const url = `data:image/png;base64,${Vue.prototype._arrayBufferToBase64(buffer.data)}`;
         return url;
       };
       Vue.prototype._getImageUrlFromBase64 = (base64) => {
         const url = `data:image/png;base64,${base64}`;
         return url;
       };
-      Vue.prototype._dateStringFromFormat = (
-        dateStr,
-        format = "DD/MM/YYYY"
-      ) => {
+      Vue.prototype._dateStringFromFormat = (dateStr, format = "DD/MM/YYYY") => {
         const date = moment(dateStr || Date.now());
         return date.isValid() ? date.format(format) : dateStr;
       };
@@ -486,9 +426,7 @@ export default (context, $store) => {
         if (value.length < index) {
           return value;
         }
-        return [value.substring(0, index)].concat(
-          Vue.prototype._splitText(value.substring(index), index)
-        );
+        return [value.substring(0, index)].concat(Vue.prototype._splitText(value.substring(index), index));
       };
       Vue.prototype._stringToTime = (string, format = "HH:mm:ss") => {
         const time = moment(string, "HH:mm:ss").format(format);
@@ -504,30 +442,8 @@ export default (context, $store) => {
       Vue.prototype._num2VieText = (amount) => {
         if (amount == 0) return "Không đồng";
 
-        let ones = [
-          "",
-          "một",
-          "hai",
-          "ba",
-          "bốn",
-          "năm",
-          "sáu",
-          "bảy",
-          "tám",
-          "chín",
-        ];
-        let tens = [
-          "",
-          "mười",
-          "hai mươi",
-          "ba mươi",
-          "bốn mươi",
-          "năm mươi",
-          "sáu mươi",
-          "bảy mươi",
-          "tám mươi",
-          "chín mươi",
-        ];
+        let ones = ["", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín"];
+        let tens = ["", "mười", "hai mươi", "ba mươi", "bốn mươi", "năm mươi", "sáu mươi", "bảy mươi", "tám mươi", "chín mươi"];
         let scales = ["", "nghìn", "triệu", "tỷ"];
 
         let words = "";
@@ -543,22 +459,12 @@ export default (context, $store) => {
           if (chunk > 0) {
             let chunkWords = "";
             if (chunk < 100) {
-              chunkWords =
-                tens[Math.floor(chunk / 10)] +
-                " " +
-                (chunk % 10 == 5 ? "lăm" : ones[chunk % 10]);
+              chunkWords = tens[Math.floor(chunk / 10)] + " " + (chunk % 10 == 5 ? "lăm" : ones[chunk % 10]);
             } else {
               if (chunk % 100 == 0) {
                 chunkWords = ones[Math.floor(chunk / 100)] + " trăm";
               } else {
-                chunkWords =
-                  ones[Math.floor(chunk / 100)] +
-                  " trăm " +
-                  (Math.floor((chunk % 100) / 10) == 0
-                    ? "lẻ"
-                    : tens[Math.floor((chunk % 100) / 10)]) +
-                  " " +
-                  (chunk % 10 == 5 ? "lăm" : ones[chunk % 10]);
+                chunkWords = ones[Math.floor(chunk / 100)] + " trăm " + (Math.floor((chunk % 100) / 10) == 0 ? "lẻ" : tens[Math.floor((chunk % 100) / 10)]) + " " + (chunk % 10 == 5 ? "lăm" : ones[chunk % 10]);
               }
             }
             words = chunkWords + " " + scales[scaleIndex] + " " + words;
@@ -573,11 +479,7 @@ export default (context, $store) => {
           if (decimalPart < 10) {
             words += ones[decimalPart] + " ";
           } else {
-            words +=
-              tens[Math.floor(decimalPart / 10)] +
-              " " +
-              (decimalPart % 10 == 5 ? "lăm" : ones[decimalPart % 10]) +
-              " ";
+            words += tens[Math.floor(decimalPart / 10)] + " " + (decimalPart % 10 == 5 ? "lăm" : ones[decimalPart % 10]) + " ";
           }
           words += "đồng ";
         } else {
@@ -609,42 +511,9 @@ export default (context, $store) => {
         strPlace[4] = " Billion ";
         strPlace[5] = " Trillion ";
         s = s.replace(/,/g, "").trim();
-        var strTens = [
-          "Ten",
-          "Eleven",
-          "Twelve",
-          "Thirteen",
-          "Fourteen",
-          "Fifteen",
-          "Sixteen",
-          "Seventeen",
-          "Eighteen",
-          "Nineteen",
-        ];
-        var strTens2 = [
-          "",
-          "",
-          "Twenty ",
-          "Thirty ",
-          "Forty ",
-          "Fifty ",
-          "Sixty ",
-          "Seventy ",
-          "Eighty ",
-          "Ninety ",
-        ];
-        var Digits = [
-          "",
-          "One",
-          "Two",
-          "Three",
-          "Four",
-          "Five",
-          "Six",
-          "Seven",
-          "Eight",
-          "Nine",
-        ];
+        var strTens = ["Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+        var strTens2 = ["", "", "Twenty ", "Thirty ", "Forty ", "Fifty ", "Sixty ", "Seventy ", "Eighty ", "Ninety "];
+        var Digits = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"];
         var chk_s = s;
         chk_s = chk_s.replace(".", "/");
         if (chk_s.search("/") != -1) {
@@ -743,24 +612,14 @@ export default (context, $store) => {
         return rtnf.replace(/\s{2,}/g, " ");
       };
       Vue.prototype._formatted_string = (pad, user_str, pad_pos) => {
-        if (
-          user_str == undefined ||
-          user_str == "" ||
-          user_str == "null" ||
-          user_str == null
-        )
-          return pad;
+        if (user_str == undefined || user_str == "" || user_str == "null" || user_str == null) return pad;
         if (pad_pos == "l") {
           return (pad + user_str).slice(-pad.length);
         } else {
           return (user_str + pad).substring(0, pad.length);
         }
       };
-      Vue.prototype._CurrentYMD = (
-        type = "YYYYMMDD",
-        separater = "",
-        _getDate = ""
-      ) => {
+      Vue.prototype._CurrentYMD = (type = "YYYYMMDD", separater = "", _getDate = "") => {
         const date = new Date();
         const yyyy = date.getFullYear();
         let mm = date.getMonth() + 1;
@@ -784,16 +643,7 @@ export default (context, $store) => {
         var YYYY = yyyy;
         var StartYear = yyyy + separater + "01" + separater + "01";
         var EndYear = yyyy + separater + "12" + separater + "31";
-        var rvalue =
-          type == "Y"
-            ? YYYY
-            : type == "YM"
-            ? YYYYMM
-            : type == "SY"
-            ? StartYear
-            : type == "EY"
-            ? EndYear
-            : YYYYMMDD;
+        var rvalue = type == "Y" ? YYYY : type == "YM" ? YYYYMM : type == "SY" ? StartYear : type == "EY" ? EndYear : YYYYMMDD;
         return rvalue;
       };
       (Vue.prototype._calculateHeight = (height, percentage) => {
@@ -835,25 +685,14 @@ export default (context, $store) => {
 					return;
 				} */
       };
-      Vue.prototype._getDiffBetweenDateTime = (
-        startDateTime,
-        endDateTime,
-        diffType = "days"
-      ) => {
+      Vue.prototype._getDiffBetweenDateTime = (startDateTime, endDateTime, diffType = "days") => {
         /* diffType bao gồm có: years, months, weeks, days, hours, minutes, và seconds */
         let format = "";
-        if (
-          diffType === "hours" ||
-          diffType === "hours" ||
-          diffType === "hours"
-        ) {
+        if (diffType === "hours" || diffType === "hours" || diffType === "hours") {
           format = "YYYYMMDDHHmmss";
         }
         format = "YYYYMMDD";
-        const diff = moment(endDateTime, format).diff(
-          moment(startDateTime, format),
-          diffType
-        );
+        const diff = moment(endDateTime, format).diff(moment(startDateTime, format), diffType);
         return diff;
       };
       (Vue.prototype._chunkArray = (array, size) => {
@@ -865,12 +704,8 @@ export default (context, $store) => {
           let width = node.clientWidth; // width with padding
           let height = node.clientHeight; // height with padding
 
-          width -=
-            parseFloat(computedStyle.paddingLeft) +
-            parseFloat(computedStyle.paddingRight);
-          height -=
-            parseFloat(computedStyle.paddingTop) +
-            parseFloat(computedStyle.paddingBottom);
+          width -= parseFloat(computedStyle.paddingLeft) + parseFloat(computedStyle.paddingRight);
+          height -= parseFloat(computedStyle.paddingTop) + parseFloat(computedStyle.paddingBottom);
 
           return { width, height };
         });
@@ -878,17 +713,14 @@ export default (context, $store) => {
         if (_fileInfo) {
           try {
             const _data = _fileInfo.FILE_CONTENT.data;
-            let _fileBase64String = Vue.prototype._arrayBufferToBase64([
-              ..._data,
-            ]);
+            let _fileBase64String = Vue.prototype._arrayBufferToBase64([..._data]);
             let _extFile = "";
             switch (_fileInfo.FILE_EXT) {
               case "xlsx":
                 _extFile = "application/octet-stream";
                 break;
               case "docx":
-                _extFile =
-                  "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                _extFile = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
                 break;
               case "img":
                 _extFile = "image/png";
@@ -897,8 +729,7 @@ export default (context, $store) => {
                 _extFile = "application/pdf";
                 break;
             }
-            let _convertFile =
-              "data:" + _extFile + ";base64," + _fileBase64String;
+            let _convertFile = "data:" + _extFile + ";base64," + _fileBase64String;
             let _url = _convertFile;
             var tag_a = document.createElement("a");
             document.body.appendChild(tag_a);
@@ -916,10 +747,7 @@ export default (context, $store) => {
       };
       Vue.prototype._reRenderComponent = () => {
         let { componentKey } = context?.store?.state?.auth;
-        context.store.dispatch(
-          "auth/updateComponentKey",
-          !componentKey ? Date.now() : componentKey + 1
-        );
+        context.store.dispatch("auth/updateComponentKey", !componentKey ? Date.now() : componentKey + 1);
       };
       Vue.prototype._hash = () => {
         return {
@@ -1017,9 +845,7 @@ export default (context, $store) => {
             duplicates = _duplicates;
           }
         } else {
-          duplicates = array.filter(
-            (item, index) => arr.indexOf(item) !== index
-          );
+          duplicates = array.filter((item, index) => arr.indexOf(item) !== index);
 
           if (keysOnly) {
             duplicates = Array.from(new Set(Array.from(duplicates, (x) => x)));
@@ -1050,10 +876,7 @@ export default (context, $store) => {
         return result;
       };
       (Vue.prototype._removeDuplicates = (array, keys = []) => {
-        return array.filter(
-          (v, i, a) =>
-            a.findIndex((v2) => keys.every((k) => v2[k] === v[k])) === i
-        );
+        return array.filter((v, i, a) => a.findIndex((v2) => keys.every((k) => v2[k] === v[k])) === i);
       }),
         (Vue.prototype._groupBy = (array, f) => {
           var groups = {};
@@ -1068,16 +891,14 @@ export default (context, $store) => {
         }),
         (Vue.prototype._hashRPAmake = (value) => {
           // var RPA_KEY_TEXT  = 'WebCashGw@2023!gVas#'
-          var RPA_KEY =
-            "U2FsdGVkX1+g2BhXwHhmOzO38YOvVTH7C99o3MTn7VW01laBWoLubsUXfQuD5CDx?";
+          var RPA_KEY = "U2FsdGVkX1+g2BhXwHhmOzO38YOvVTH7C99o3MTn7VW01laBWoLubsUXfQuD5CDx?";
           var bytes = CryptoJS.AES.encrypt(value, RPA_KEY);
           var encryptedData = bytes.toString();
           return encryptedData;
         }),
         (Vue.prototype._hashRPAverify = (value) => {
           // var RPA_KEY_TEXT  = 'WebCashGw@2023!gVas#'
-          var RPA_KEY =
-            "U2FsdGVkX1+g2BhXwHhmOzO38YOvVTH7C99o3MTn7VW01laBWoLubsUXfQuD5CDx?";
+          var RPA_KEY = "U2FsdGVkX1+g2BhXwHhmOzO38YOvVTH7C99o3MTn7VW01laBWoLubsUXfQuD5CDx?";
           var bytes = CryptoJS.AES.decrypt(value, RPA_KEY);
           var decryptedData = bytes.toString(CryptoJS.enc.Utf8);
           return decryptedData;
@@ -1125,10 +946,7 @@ export default (context, $store) => {
             return "";
           }
         }),
-        (Vue.prototype._base64StringToBlobFile = (
-          _base64String = "",
-          _typeFile = "application/pdf"
-        ) => {
+        (Vue.prototype._base64StringToBlobFile = (_base64String = "", _typeFile = "application/pdf") => {
           const byteArray = Uint8Array.from(
             atob(_base64String)
               .split("")

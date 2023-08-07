@@ -131,7 +131,7 @@
                     :lstData="dataMasterList.categoriesList" item-text="NAME" item-value="CODE" mandatory />
                 </v-col>
                 <v-col md="4">
-                  <BaseInput outlined :label="$t('minutes_no')" v-model="modelMaster.VOUCHER_NO"></BaseInput>
+                  <BaseInput outlined :label="$t('minutes_no')" v-model="modelMaster.VOUCHER_NO" readonly></BaseInput>
                 </v-col>
                 <v-col md="2">
                   <BaseDatePicker outlined today :label="$t('register_day')" start v-model="modelMaster.NTBAO" />
@@ -181,7 +181,10 @@
                       'LADHDDT',
                       'TCTBAO',
                       'LDO',
-                      'TEI_EINVOICE_SS_M_PK'
+                      'TEI_EINVOICE_SS_M_PK',
+                      'CUSTOMER_NM',
+                       'POSITION',
+                       'REPRESENT',
                     ]" />
                 </v-col>
               </v-row>
@@ -303,7 +306,7 @@ export default {
       SELLER_POSITION: null,
       SELLER_REPRESENT: null,
     },
-    invoice_type_list: [],
+    e_invoice_type_list: [],
     type_invoice_list: [],
 
     /////////////// DIALOG //////////////////
@@ -337,10 +340,13 @@ export default {
   },
   async created() {
     await this.initDataList();
-    await this.initHeaderList();
     await this.initModel();
     await this.getListCodes("form_no");
     await this.getListCodes("serial_no");
+    await this.getListCodes("e-invoice_type");
+    
+    await this.initHeaderList();
+   
   },
   computed: {
     user() {
@@ -352,6 +358,9 @@ export default {
     limitHeightGridDetails() {
       return this.windowHeight - 450;
     },
+    // grdHeader(){
+    //   return await this.initHeaderList();
+    // }
   },
   watch: {
     "modelMaster.LTEN"(val) {
@@ -445,7 +454,7 @@ export default {
           this.$refs.grdDetail.saveData();
           break;
         case "deleteDetail":
-          this.$refs.grdDetail.deleteRows();
+          this.$refs.grdDetail.onSetMarkedDelete();
           break;
       }
     },
@@ -510,7 +519,8 @@ export default {
     },
     onSelect() {
       let selectedData = this.$refs.popupGrid.getSelectedRows();
-
+      console.log("file: 6095280.vue:519 [vng-304] onSelect [vng-304] selectedData:", selectedData)
+      
       for (let i = 0; i < selectedData.length; i++) {
         this.$refs.grdDetail.onAdd({
           _rowstatus: "i",
@@ -523,8 +533,9 @@ export default {
           SHDON: selectedData[i].INVOICE_NO,
           NGAY: selectedData[i].NGAY,
           LADHDDT: selectedData[i].LADHDDT,
-          TCTBAO: selectedData[i].TCTBAO,
           LDO: selectedData[i].CANCEL_REASON,
+          CUSTOMER_NM: selectedData[i].CUSTOMER_NM,
+          TTHAI: selectedData[i].EI_STATUS,
           TEI_EINVOICE_SS_M_PK: this.modelMaster.PK,
         });
       }
@@ -625,7 +636,7 @@ export default {
         datasource: {
           KEY: "CODE",
           VALUE: "NAME",
-          data: this.invoice_type_list,
+          data: this.e_invoice_type_list,
         },
       },
       {
@@ -763,12 +774,15 @@ export default {
       this.dataMasterList.fromNoList = results[2];
       this.dataMasterList.categoriesList = results[3];
       this.dataMasterList.declarationNameList = results[4];
-      this.invoice_type_list = results[5];
+      this.e_invoice_type_list = results[5];
       this.type_invoice_list = results[6];
       this.dataMasterList.versionList = results[7];
       // if (this.serial_no_list.length > 0) {
       //   this.selected_serial_no = this.serial_no_list[0].selected_serial_no;
       // };
+
+
+
     },
     async getListCodes(pos) {
       switch (pos) {
@@ -800,6 +814,36 @@ export default {
             }
           }
           break;
+
+          // case "type_e-invoice":
+          // const dso_e_invoicetype_list = {
+          //   type: "list",
+          //   selpro: "AC_SEL_6095280_INVOICE_TYPE",
+          //   para: [this.modelSearch.COMPANY_PK],
+          // };
+          // const checke_invoice_type = await this._dsoCall(dso_e_invoicetype_list, "select", false);
+          // if (checke_invoice_type != null) {
+          //   if (checke_invoice_type.length > 0) {
+          //     this.type_invoice_list = checke_invoice_type[0].CODE;
+          //   }
+          // }
+          // break;
+
+
+          // case "e-invoice_type":
+          // const dso_invoicetype_list = {
+          //   type: "list",
+          //   selpro: "AC_SEL_6095280_INVOICE_TYPE",
+          //   para: [this.modelSearch.COMPANY_PK],
+          // };
+          // const checkinvoice_type = await this._dsoCall(dso_invoicetype_list, "select", false);
+          // if (checkinvoice_type != null) {
+          //   if (checkinvoice_type.length > 0) {
+          //     this.e_invoice_type_list = checkinvoice_type[0].CODE;
+          //   }
+          // }
+          // break;
+          
       }
     },
     async initModel() {

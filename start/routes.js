@@ -128,6 +128,7 @@ Route.group(() => {
     Route.post("checkinformadjustinvoice", "EInvoiceController.checkInformAdjustToTaxOffice")
     Route.post("checkinformadjustinvoicefromclient", "EInvoiceController.checkInformAdjustToTaxOfficeFromClient")
     Route.post("signxmlesign", "EInvoiceController.SignXml")
+    Route.post("checkingstatuseinvoice", "EInvoiceController.checkingStatusEInvoice")
 }).prefix("api/einvoice").middleware("user");
 
 // Frontend

@@ -366,8 +366,8 @@ Vue.mixin({
       }
     },
 
-    _openFormInLayout(formID) {
-      this.$nuxt.$emit("openFormInLayout", formID);
+    _openFormInLayout(formID, isRefresh = false) {
+      this.$nuxt.$emit("openFormInLayout", formID, isRefresh);
     },
 
     async _getElementWidthHeight(refName) {

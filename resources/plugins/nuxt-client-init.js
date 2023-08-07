@@ -2,29 +2,30 @@ import Cookies from "js-cookie";
 
 export default async ({ app, store, route, redirect }) => {
   try {
-    console.log("nuxtClientInit!");
+    // console.log("nuxtClientInit!");
     const token = Cookies.get("token");
     let languageFromCookies = Cookies.get("language");
     /* console.log("token:", token);
     console.log("languageFromCookies:", languageFromCookies) */
     // console.log("token:", token);
-    //console.log("token:", token);
+    // console.log("token:", token);
     if (token) {
       store.commit("auth/SET_TOKEN", token);
       await store.dispatch("auth/saveUserInfo");
       const user = store.getters["auth/user"];
       // console.log("user:", user)
       if (!user) {
+        console.log("Pls check uid of token exist in db or not: "+token)
         if (route.name === "sso") {
           //do nothing
         } else {
-          // redirect("/login");
-          if (window.location.href.includes("/login")) {
-            return;
-          } else {
-            window.location.replace("/login");
-            // window.location.href = "/login";
-          }
+          redirect("/login");
+          // if (window.location.href.includes("/login")) {
+          //   return;
+          // } else {
+          //   window.location.replace("/login");
+          //   // window.location.href = "/login";
+          // }
         }
         store.commit("auth/FETCH_USER_FAILURE");
       } else {
@@ -57,24 +58,24 @@ export default async ({ app, store, route, redirect }) => {
         // do nothing
       } else {
         store.commit("auth/FETCH_USER_FAILURE");
-        // redirect("/login");
-        if (window.location.href.includes("/login")) {
-          return;
-        } else {
-          window.location.replace("/login");
-          // window.location.href = "/login";
-        }
+        redirect("/login");
+        // if (window.location.href.includes("/login")) {
+        //   return;
+        // } else {
+        //   window.location.replace("/login");
+        //   // window.location.href = "/login";
+        // }
       }
     }
   } catch (error) {
     store.commit("auth/FETCH_USER_FAILURE");
     console.log("===> nuxtClientInit:", error.message);
-    // redirect("/login");
-    if (window.location.href.includes("/login")) {
-      return;
-    } else {
-      window.location.replace("/login");
-      // window.location.href = "/login";
-    }
+    redirect("/login");
+    // if (window.location.href.includes("/login")) {
+    //   return;
+    // } else {
+    //   window.location.replace("/login");
+    //   // window.location.href = "/login";
+    // }
   }
 };

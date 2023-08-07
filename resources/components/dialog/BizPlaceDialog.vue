@@ -175,8 +175,8 @@ export default {
 
   created() {
     this.selectedCompany = this.companyPK;
-    console.log(this.companyPK);
-    this.getCompanyList();
+    //console.log(this.companyPK);
+    //this.getCompanyList();
     this.getPartnerTypeList();
   },
 
@@ -195,7 +195,7 @@ export default {
     dialogIsShow(val) {
       if(val === true) {
         this.companyList = [];
-        this.getCompanyList();
+        //this.getCompanyList();
       }
     },
     selectedCompany(val) {

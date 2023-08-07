@@ -217,11 +217,11 @@ export const actions = {
         commit("FETCH_FLAT_MENU_LIST_FAILURE");
         commit("FETCH_MENU_LIST_FAILURE");
         // redirect("/login");
-        window.location.href = "/login";
+        // window.location.href = "/login";
       }
     } catch (error) {
       // redirect("/login");
-      window.location.href = "/login";
+      // window.location.href = "/login";
       console.log("dataTemp:", dataTemp);
       console.log("messageTemp:", messageTemp);
       console.error("getMenuListServer-catch exception:", error.message);
@@ -299,7 +299,7 @@ export const actions = {
         commit("FETCH_FLAT_MENU_LIST_SUCCESS", data);
         commit("FETCH_MENU_LIST_SUCCESS", menuList);
       } else {
-        window.location.href = "/login";
+        // window.location.href = "/login";
         // redirect("/login");
         console.log("get menu error-data:", data);
         console.log("get menu error-message: ", message);
@@ -307,7 +307,7 @@ export const actions = {
         commit("FETCH_MENU_LIST_FAILURE");
       }
     } catch (error) {
-      window.location.href = "/login";
+      // window.location.href = "/login";
       console.log("dataTemp:", dataTemp);
       console.log("messageTemp:", messageTemp);
       console.error("getMenuListServer-catch exception:", error.message);
@@ -554,7 +554,7 @@ export const actions = {
 
         if (!state.user) {
           console.log('state.user ', state.user);
-          window.location.href = "/login";
+          // window.location.href = "/login";
           return;
         }
 

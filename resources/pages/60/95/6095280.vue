@@ -32,7 +32,7 @@
               <BaseInput outlined :label="$t('invoice_no')" v-model="modelSearch.INVOICE" number />
             </v-col>
             <v-col md="12">
-              <BaseGridView ref="grdSearch" autoresize :header="headerList.grdSearch" sel_procedure="AC_SEL_6095280_S_04"
+              <BaseGridView ref="grdSearch" :header="headerList.grdSearch" sel_procedure="AC_SEL_6095280_S_04"
                 selectionmode="singlerow" :multiselect="true" :height="limitHeight" :headertype="1" :filter_paras="[
                   this.modelSearch.COMPANY_PK,
                   this.modelSearch.FROM_DATE,
@@ -69,7 +69,7 @@
                       :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
                     <!-- Add -->
                     <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')"
-                      @onclick="onClick('newMaster')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1"/>
+                      @onclick="onClick('newMaster')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
                     <!-- Save -->
                     <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClick('saveMaster')"
                       :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
@@ -83,60 +83,60 @@
               </v-row>
               <!--  -->
               <v-row dense class="pl-3 pr-3 pt-3">
-                  <v-col md="2">
-                    <BaseSelect outlined :label="$t('version')" :lstData="dataMasterList.versionList"
-                      v-model="modelMaster.PBAN" item-text="NAME" item-value="CODE" />
-                  </v-col>
-                  <v-col md="2"></v-col>
-                  <!-- <v-col md="1"></v-col> -->
-                  <v-col md="4">
-                    <BaseInput outlined :label="$t('represent')"  v-model="modelMaster.REPRESENT"/>
-                  </v-col>
-                  <v-col md="4">
-                    <BaseInput outlined :label="$t('position')"  v-model="modelMaster.POSITION"/>
-                  </v-col>
+                <v-col md="2">
+                  <BaseSelect outlined :label="$t('version')" :lstData="dataMasterList.versionList"
+                    v-model="modelMaster.PBAN" item-text="NAME" item-value="CODE" />
+                </v-col>
+                <v-col md="2"></v-col>
+                <!-- <v-col md="1"></v-col> -->
+                <v-col md="4">
+                  <BaseInput outlined :label="$t('represent')" v-model="modelMaster.SELLER_REPRESENT" />
+                </v-col>
+                <v-col md="4">
+                  <BaseInput outlined :label="$t('position')" v-model="modelMaster.SELLER_POSITION" />
+                </v-col>
               </v-row>
               <v-row dense class="pl-3 pr-3">
-                  <v-col md="4">
-                    <BaseSelect outlined item-value="CODE" item-text="NAME" :label="$t('taxpayer_name')"
-                      :lstData="dataMasterList.companyList" v-model="modelMaster.TEI_COMPANY_PK" readonly />
-                  </v-col>
-                  <v-col md="4">
-                    <BaseSelect outlined :label="$t('tax_office')" v-model="modelMaster.MCQT"
-                      :lstData="dataMasterList.taxOfficeList" item-text="NAME" item-value="CODE" mandatory/>
-                  </v-col>
-                  <v-col md="4">
-                    <BaseSelect outlined :label="$t('form_no')" v-model="modelMaster.MSO"
-                      :lstData="dataMasterList.fromNoList" item-text="NAME" item-value="CODE" mandatory/>
-                  </v-col>
+                <v-col md="4">
+                  <BaseSelect outlined item-value="CODE" item-text="NAME" :label="$t('taxpayer_name')"
+                    :lstData="dataMasterList.companyList" v-model="modelMaster.TEI_COMPANY_PK" readonly />
+                </v-col>
+                <v-col md="4">
+                  <BaseSelect outlined :label="$t('tax_office')" v-model="modelMaster.MCQT"
+                    :lstData="dataMasterList.taxOfficeList" item-text="NAME" item-value="CODE" mandatory />
+                </v-col>
+                <v-col md="4">
+                  <BaseSelect outlined :label="$t('form_no')" v-model="modelMaster.MSO"
+                    :lstData="dataMasterList.fromNoList" item-text="NAME" item-value="CODE" mandatory />
+                </v-col>
               </v-row>
               <v-row dense class="pl-3 pr-3">
-                  <!--  -->
-                  <v-col md="4">
-                    <BaseInput outlined :label="$t('tax_code')" v-model="modelMaster.MST"  />
-                  </v-col>
-                  <v-col md="4">
-                    <BaseInput outlined :label="$t('address')" v-model="modelMaster.DDANH"/>
-                  </v-col>
-                  <v-col md="4">
-                    <BaseSelect outlined :label="$t('declaration_name')" v-model="modelMaster.LTEN"
-                      :lstData="dataMasterList.declarationNameList" item-text="NAME" item-value="CODE" mandatory/>
-                  </v-col>
-                  <v-col md="1"></v-col>
+                <!--  -->
+                <v-col md="4">
+                  <BaseInput outlined :label="$t('tax_code')" v-model="modelMaster.MST" />
+                </v-col>
+                <v-col md="4">
+                  <BaseInput outlined :label="$t('address')" v-model="modelMaster.DDANH" />
+                </v-col>
+                <v-col md="4">
+                  <BaseSelect outlined :label="$t('declaration_name')" v-model="modelMaster.LTEN"
+                    :lstData="dataMasterList.declarationNameList" item-text="NAME" item-value="CODE" mandatory />
+                </v-col>
+                <v-col md="1"></v-col>
               </v-row>
               <!--  -->
               <v-row dense class="pl-3 pr-3">
-                  <v-col md="4">
-                    <BaseSelect outlined :label="$t('categories')" v-model="modelMaster.LOAI"
-                      :lstData="dataMasterList.categoriesList" item-text="NAME" item-value="CODE" mandatory/>
-                  </v-col>
-                  <v-col md="4">
-                    <BaseInput outlined :label="$t('minutes_no')" v-model="modelMaster.VOUCHER_NO"></BaseInput>
-                  </v-col>
-                  <v-col md="2">
-                    <BaseDatePicker outlined today :label="$t('register_day')" start  v-model="modelMaster.NTBAO" />
-                  </v-col>
-                  <v-col md="2"></v-col>
+                <v-col md="4">
+                  <BaseSelect outlined :label="$t('categories')" v-model="modelMaster.LOAI"
+                    :lstData="dataMasterList.categoriesList" item-text="NAME" item-value="CODE" mandatory />
+                </v-col>
+                <v-col md="4">
+                  <BaseInput outlined :label="$t('minutes_no')" v-model="modelMaster.VOUCHER_NO"></BaseInput>
+                </v-col>
+                <v-col md="2">
+                  <BaseDatePicker outlined today :label="$t('register_day')" start v-model="modelMaster.NTBAO" />
+                </v-col>
+                <v-col md="2"></v-col>
               </v-row>
             </v-card>
             <v-card>
@@ -145,7 +145,8 @@
                   <BaseButton icon_type="eye_on" :btn_text="$t('preview_E-invoice')"
                     @onclick="onClick('previewEinvoice')" />
                   <BaseButton icon_type="eye_on" :btn_text="$t('preview_bb')" @onclick="onClick('previewBB')" />
-                  <BaseButton icon_type="eye_on" :btn_text="$t('preview_bb_replace')" @onclick="onClick('previewBB_Replace')" />
+                  <BaseButton icon_type="eye_on" :btn_text="$t('preview_bb_replace')"
+                    @onclick="onClick('previewBB_Replace')" />
                   <BaseButton icon_type="email" :btn_text="$t('send_mail')" @onclick="onClick('sendMail')" />
                 </v-col>
                 <v-col md="3" class="pr-2">
@@ -155,7 +156,7 @@
                   <GwFlexBox justify="end">
                     <!-- Add -->
                     <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')"
-                      @onclick="onClick('newDetail')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1"/>
+                      @onclick="onClick('newDetail')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
                     <!-- Save -->
                     <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClick('saveDetail')"
                       :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
@@ -167,12 +168,9 @@
               </v-row>
               <v-row dense>
                 <v-col md="12">
-                  <BaseGridView ref="grdDetail"  :header="headerList.grdDetail"
-                    sel_procedure="AC_SEL_6095280_6" 
-                    upd_procedure="AC_UP_6095280_7" 
-                    :multiselect="true"
-                    :headertype="1" selectionmode="singlerow" :filter_paras="[this.modelMaster.PK]"
-                    :height="limitHeightGridDetails" :update_paras="[
+                  <BaseGridView ref="grdDetail" :header="headerList.grdDetail" sel_procedure="AC_SEL_6095280_6"
+                    upd_procedure="AC_UP_6095280_7" :multiselect="true" :headertype="1" selectionmode="singlerow"
+                    :filter_paras="[this.modelMaster.PK]" :height="limitHeightGridDetails" :update_paras="[
                       'PK',
                       'TEI_EINVOICE_M_PK',
                       'MCQTCAP',
@@ -219,11 +217,11 @@
           <v-row>
             <v-col md="4">
               <BaseSelect :label="$t('form_no')" v-model="form_no_pop" :lstData="list_form_no_pop" item-text="NAME"
-                item-value="CODE" />
+                item-value="VAL" />
             </v-col>
             <v-col md="3">
               <BaseSelect :label="$t('serial_no')" item-value="CODE" item-text="NAME" :lstData="serial_no_list"
-                v-model="selected_serial_no" :text_all="$t('all')" />
+                v-model="selected_serial_no"  />
             </v-col>
             <v-col md="3">
               <BaseInput :label="$t('invoice_no')" v-model="invoice_no_pop" />
@@ -234,7 +232,7 @@
               <BaseGridView ref="popupGrid" :autoresize="false" :header="headerList.grdPopup" :setting="true"
                 :multiselect="true" :selectionmode="'checkbox'" :headertype="1" :height="limitHeightGridDetails"
                 sel_procedure="AC_SEL_6095280_DATA_POPUP" :filter_paras="[
-                  this.company,
+                  this.modelSearch.COMPANY_PK,
                   this.form_no_pop,
                   this.selected_serial_no,
                   this.invoice_no_pop,
@@ -301,9 +299,9 @@ export default {
       NTBAO: null,
       TMESS_CQT: null,
       VOUCHER_NO: null,
-      PBAN:'2.0.0',
-      POSITION: null,
-      REPRESENT: null,
+      PBAN: '2.0.0',
+      SELLER_POSITION: null,
+      SELLER_REPRESENT: null,
     },
     invoice_type_list: [],
     type_invoice_list: [],
@@ -341,6 +339,8 @@ export default {
     await this.initDataList();
     await this.initHeaderList();
     await this.initModel();
+    await this.getListCodes("form_no");
+    await this.getListCodes("serial_no");
   },
   computed: {
     user() {
@@ -358,36 +358,38 @@ export default {
       if (val) {
         // console.log("val  ++===>",val);
         // console.log("this.dataMasterList.declarationNameList ++===>", this.dataMasterList.declarationNameList);
-        this.dataMasterList.declarationNameList.forEach(item =>{
-          if(item.CODE == val)
-          {
+        this.dataMasterList.declarationNameList.forEach(item => {
+          if (item.CODE == val) {
             this.modelMaster.TEN = item.NAME;
           }
           // console.log("this.modelMaster.TEN +++===> ", this.modelMaster.TEN);
-        }); 
+        });
       }
     },
     "modelSearch.COMPANY_PK"(val) {
       if (val) {
         console.log("this.dataMasterList.companyList +++==> ", this.dataMasterList.companyInfoList);
-        this.dataMasterList.companyInfoList.forEach(item =>{
-          if(item.TEI_COMPANY_PK == val)
-          {
-            this.modelMaster.TEI_COMPANY_PK = val;
+        this.modelMaster.TEI_COMPANY_PK = val;
+        this.dataMasterList.companyInfoList.forEach(item => {
+          if (item.TEI_COMPANY_PK == val) {
             this.modelMaster.TNNT = item.NAME;
             this.modelMaster.MST = item.TAX_CODE;
             this.modelMaster.DDANH = item.DDANH;
           }
         });
       }
+
+      this.getListCodes("form_no");
     },
     "modelSearch.TCQT"(val) {
       if (val) {
-      
+
       }
-    }
-    
-    
+    },
+    form_no_pop(val) {
+      this.getListCodes("serial_no");
+    },
+
   },
   methods: {
     async onClick(pos) {
@@ -425,14 +427,14 @@ export default {
             this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_type"));
             break;
           } else if (this.modelMaster.LTEN == "00") {
-            this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_registration_form"));
+            this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_declaration_name"));
             break;
           }
 
           else {
             this.dsoMaster("update");
             this.onClick("saveDetail");
-            this.onClick("search");
+            // this.onClick("search");
           } break;
         case "btnPrint":
           break;
@@ -451,7 +453,7 @@ export default {
       await this._dsoCall({
         type: "control",
         selpro: "AC_SEL_6095280_2",
-        updpro: "AC_UP_6095280_3",
+        updpro: "AC_UPD_6095280_3",
         para: [this.modelMaster.PK],
         elname: [
           "_rowstatus",
@@ -469,7 +471,9 @@ export default {
           "TMESS_CQT",
           "LOAI",
           "VOUCHER_NO",
-          "PBAN"
+          "PBAN",
+          "SELLER_REPRESENT",
+          "SELLER_POSITION"
         ],
         data: this.modelMaster,
       }, action, true).then((res) => {
@@ -530,30 +534,38 @@ export default {
       this.headerList.grdSearch = [{
         dataField: "NO",
         caption: this.$t("no"),
-      }, {
-        dataField: "DECLARE_NM",
-        caption: this.$t("declare_nm"),
-        datasource: {
-          KEY: "CODE",
-          VALUE: "NAME",
-          data: this.dataMasterList.declarationNameList,
-        },
+        width: 50
       },
-      {
-        dataField: "FORM_NO",
-        caption: this.$t("form_no"),
-      },
+      // {
+      //   dataField: "DECLARE_NM",
+      //   caption: this.$t("declare_nm"),
+      //   datasource: {
+      //     KEY: "CODE",
+      //     VALUE: "NAME",
+      //     data: this.dataMasterList.declarationNameList,
+      //   },
+      // },
+      // {
+      //   dataField: "FORM_NO",
+      //   caption: this.$t("form_no"),
+      // },
       {
         dataField: "STATUS",
         caption: this.$t("status"),
+      },
+      {
+        dataField: "TRADE_CODE",
+        caption: this.$t("trade_code"),
+        width: 120
       },
       {
         dataField: "VOUCHER_NO",
         caption: this.$t("voucher"),
       },
       {
-        dataField: "TRADE_CODE",
-        caption: this.$t("trade_code"),
+        dataField: "NTBAO",
+        caption: this.$t("date"),
+        dataType: 'date'
       },
       ];
 
@@ -564,6 +576,7 @@ export default {
       }, {
         dataField: "NO",
         caption: this.$t("no"),
+        width: 50
       },
       {
         dataField: "MCQTCAP",
@@ -573,29 +586,29 @@ export default {
       {
         dataField: "KHMSHDON",
         caption: this.$t("form_no"),
-        width: 200
+        width: 80
       },
       {
         dataField: "KHHDON",
         caption: this.$t("serial_no"),
-        width: 200
+        width: 100
       },
       {
         dataField: "SHDON",
         caption: this.$t("invoice_no"),
         allowEditing: true,
-        width: 200
+        width: 80
       },
       {
         dataField: "NGAY",
         caption: this.$t("date"),
         allowEditing: true,
         type: "date",
-        width: 200
+        width: 180
       },
       {
         dataField: "LADHDDT",
-        caption: this.$t("ladhddt"),
+        caption: this.$t("type_e_invoice"),
         allowEditing: true,
         datasource: {
           KEY: "CODE",
@@ -606,21 +619,58 @@ export default {
       },
       {
         dataField: "TCTBAO",
-        caption: this.$t("tctbao"),
+        caption: this.$t("e_invoice_type"),
         allowEditing: true,
+        width: 200,
         datasource: {
           KEY: "CODE",
           VALUE: "NAME",
           data: this.invoice_type_list,
         },
-        width: 200
       },
       {
         dataField: "LDO",
         caption: this.$t("cancel_reason"),
         allowEditing: true,
-        width: 300
-      }
+        width: 300,
+        
+      },
+      {
+        dataField: "CUSTOMER_NM",
+        caption: this.$t("customer"),
+        allowEditing: false,
+        width: 200
+      },
+      {
+        dataField: "VOUCHER_NO",
+        caption: this.$t("voucher_no"),
+        allowEditing: false,
+        width: 200
+      },
+      {
+        dataField: "TTHAI",
+        caption: this.$t("status"),
+        allowEditing: false,
+        width: 80
+      },
+      {
+        dataField: "KQUA",
+        caption: this.$t("result"),
+        allowEditing: false,
+        width: 200
+      },
+      {
+        dataField: "POSITION",
+        caption: this.$t("position"),
+        allowEditing: false,
+        width: 200
+      },
+      {
+        dataField: "REPRESENT",
+        caption: this.$t("represent"),
+        allowEditing: false,
+        width: 200
+      },
       ];
       this.headerList.grdPopup = [
         {
@@ -707,7 +757,7 @@ export default {
       }
 
 
-      const results = await this._getCommonCode2(["ACEI0010", "ACEI0120", "ACEI0190", "ACEI0170", "ACEI0180", "ACEIS310", "ACEI0210","ACEI0220"], this.user.TCO_COMPANY_PK)
+      const results = await this._getCommonCode2(["ACEI0010", "ACEI0120", "ACEI0190", "ACEI0170", "ACEI0180", "ACEIS310", "ACEI0210", "ACEI0220"], this.user.TCO_COMPANY_PK)
       this.dataSearchList.statusList = results[0];
       this.dataMasterList.taxOfficeList = results[1];
       this.dataMasterList.fromNoList = results[2];
@@ -716,51 +766,69 @@ export default {
       this.invoice_type_list = results[5];
       this.type_invoice_list = results[6];
       this.dataMasterList.versionList = results[7];
-
-      
-      const dso_form_list = {
-        type: "list",
-        selpro: "AC_SEL_6095280_FORM_NO",
-        para: [this.modelSearch.COMPANY_PK],
-      };
-      const checkFormNo = await this._dsoCall(dso_form_list, "select", false);
-      if (checkFormNo != null) {
-        if (checkFormNo.length > 0) {
-          this.list_form_no_pop = checkFormNo;
-          this.form_no_pop = this.list_form_no_pop[0].VAL;
-        }
-      }
       // if (this.serial_no_list.length > 0) {
       //   this.selected_serial_no = this.serial_no_list[0].selected_serial_no;
       // };
-
-
+    },
+    async getListCodes(pos) {
+      switch (pos) {
+        case "form_no":
+          const dso_form_list = {
+            type: "list",
+            selpro: "AC_SEL_6095280_FORM_NO",
+            para: [this.modelSearch.COMPANY_PK],
+          };
+          const checkFormNo = await this._dsoCall(dso_form_list, "select", false);
+          if (checkFormNo != null) {
+            if (checkFormNo.length > 0) {
+              this.list_form_no_pop = checkFormNo;
+              this.form_no_pop = this.list_form_no_pop[0].VAL;
+            }
+          }
+          break;
+        case "serial_no":
+          const dso_serial_no_list = {
+            type: "list",
+            selpro: "AC_SEL_6095280_SERIAL_NO",
+            para: [this.modelSearch.COMPANY_PK, this.form_no_pop],
+          };
+          const checkSerialNo = await this._dsoCall(dso_serial_no_list, "select", false);
+          if (checkSerialNo != null) {
+            if (checkSerialNo.length > 0) {
+              this.serial_no_list = checkSerialNo;
+              this.selected_serial_no = this.serial_no_list[0].VAL;
+            }
+          }
+          break;
+      }
     },
     async initModel() {
       this.modelMaster._rowstatus = "i";
       this.modelMaster.PK = null;
       this.modelMaster.TEI_COMPANY_PK = this.modelSearch.COMPANY_PK;
 
-      this.dataMasterList.companyInfoList.forEach(item =>{
-          if(item.TEI_COMPANY_PK == this.modelSearch.COMPANY_PK)
-          {
-            this.modelMaster.TNNT = item.NAME;
-            this.modelMaster.MST = item.TAX_CODE;
-            this.modelMaster.DDANH = item.DDANH;
-          }
+      this.dataMasterList.companyInfoList.forEach(item => {
+        if (item.TEI_COMPANY_PK == this.modelSearch.COMPANY_PK) {
+          this.modelMaster.TNNT = item.NAME;
+          this.modelMaster.MST = item.TAX_CODE;
+          this.modelMaster.DDANH = item.DDANH;
+        }
       });
       // this.modelMaster.TNNT = await this.dataMasterList.companyList.find(item => item.TEI_COMPANY_PK == this.modelSearch.COMPANY_PK).NAME;
       // this.modelMaster.MST = await this.dataMasterList.companyList.find(item => item.TEI_COMPANY_PK == this.modelSearch.COMPANY_PK).TAX_CODE;
       // this.modelMaster.DDANH = await this.dataMasterList.companyInfoList.find(item => item.TEI_COMPANY_PK == this.modelSearch.COMPANY_PK).DDANH;
-      
+
       this.modelMaster.TCQT = null;
       this.modelMaster.MCQT = "00";
       // this.modelMaster.MSO = "00";
       this.modelMaster.LOAI = "1";
       this.modelMaster.TEN = "";
-      this.modelMaster.LTEN = "00";
+      this.modelMaster.LTEN = "4";
       this.modelMaster.NTBAO = new Date().toISOString().substr(0, 10).replaceAll("-", "");
       this.modelMaster.VOUCHER_NO = null;
+      this.modelMaster.PBAN = "2.0.1";
+      this.modelMaster.SELLER_REPRESENT = "";
+      this.modelMaster.SELLER_POSITION = "";
       this.$refs.grdDetail.Clear();
     },
   }

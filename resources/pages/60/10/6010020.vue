@@ -60,10 +60,10 @@
                           allowEditing: false,
                       },
                   ]" 
-                  sel_procedure="ac_sel_6010020_1"
+                  sel_procedure="ac_sel_6010020_1_nc"
                   :filter_paras="[
                       this.userID, 
-                      '', 
+                      'GENUWIN', 
                   ]"
                   
                   select_mode="MultipleHideBox"
@@ -168,15 +168,17 @@
                         dataField: 'LOC_ID',
                         caption: this.$t('bizplace_id'),
                         allowEditing: false,
+                        visible: false,
                     },
                     {
                         dataField: 'LOC_NM',
                         caption: this.$t('bizplace_nm'),
                         allowEditing: false,
+                        visible: false,
                     }
                   ]" 
-                  sel_procedure='ac_sel_6010020_compbyuser_v2'
-                  upd_procedure='ac_upd_6010020_compbyuser_v2'
+                  sel_procedure='ac_sel_6010020_2_nc'
+                  upd_procedure='ac_upd_6010020_3'
                   :filter_paras="[
                       this.p_user_id, 
                       this.p_user_pk
@@ -264,7 +266,7 @@ export default {
   }),
 
   computed: {
-    user() { return this.$store.getters["auth/user"] },
+    // user() { return this.$store.getters["auth/user"] },
     getUser: function() {
       return this.$store.getters["auth/user"];
     },
@@ -290,6 +292,7 @@ export default {
     // },
 
     searchUser() {
+      console.log("getUser ", this.getUser )
       //this.getUserList();
       this.$refs.gridUserID.loadData();
     },
@@ -365,33 +368,18 @@ export default {
               LOC_ID 	            : item.LOC_ID,
               LOC_NM       	      : item.LOC_ID,
           });   
-      // this.selectedCompany = item;
-      // let newRow = {
-      //   PK: 0,
-      //   PARTNER_ID: this.selectedCompany.PARTNER_ID,
-      //   PARTNER_NAME: this.selectedCompany.PARTNER_NAME,
-      //   USER_ID: this.selectedUserID,
-      //   TCO_COMPANY_PK: this.selectedCompany.PK,
-      //   TCO_BSUSER_PK: this.selectedUserPK,
-      //   TCO_BUSPLACE_PK:this.selectedCompany.TCO_BUSPLACE_PK,
-      //   LOC_ID:this.selectedCompany.LOC_ID,
-      //   LOC_NM:this.selectedCompany.LOC_NM,
-      //   _rowstatus: "i"
-      // };
-
-      // //focus to row
-      // this.companyList.unshift(newRow);
-      // this.focusedRowKey = newRow.PK;
+     
     },
     onBizPlace(row)
     {
      // console.log('onBizPlace');
-      this.selectedCompany = { ...row };
-      if(this.selectedCompany.data.TCO_COMPANY_PK !== "")
-      {
-        this.tco_comp_pk = this.selectedCompany.data.TCO_COMPANY_PK+ " ";
-        //console.log('tco_company_pk  ' + this.selectedCompany.data.TCO_COMPANY_PK);
-      }
+      // this.selectedCompany = { ...row };
+      // if(this.selectedCompany.data.TCO_COMPANY_PK !== "")
+      // {
+      //   this.tco_comp_pk = this.selectedCompany.data.TCO_COMPANY_PK+ " ";
+      //   //console.log('tco_company_pk  ' + this.selectedCompany.data.TCO_COMPANY_PK);
+      // }
+
       this.$refs.bizCenterDialog.dialogIsShow = true;
       
     },

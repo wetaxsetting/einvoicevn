@@ -1,18 +1,18 @@
 <template>
   <v-container fluid>
      <!-- send alarm msg -->
-    <v-tooltip bottom>
+    <!--v-tooltip bottom>
       <template v-slot:activator="{ on }">
         <v-btn icon tile v-on="on" :color="currentTheme" :disabled="isProcessing" @click="testSSO">
           <v-icon>mdi-cellphone-message</v-icon>
         </v-btn>
       </template>
       <span>{{ $t("send_alarm") }}</span>
-    </v-tooltip>
-   <vue-friendly-iframe v-if=false :src="src" crossorigin="true" @load="onLoad"></vue-friendly-iframe>
-   <v-btn icon tile color="currentTheme"  @click="createDOC">
+    </v-tooltip-->
+   <iframe width="100%" height="800" :src="src" crossorigin="true" @load="onLoad"></iframe>
+   <!--v-btn icon tile color="currentTheme"  @click="createDOC">
                     <v-icon>mdi-magnify</v-icon>
-                  </v-btn>
+                  </v-btn-->
   </v-container>  
 </template> 
 
@@ -20,7 +20,7 @@
 
 // import docxtemplater from 'docxtemplater'
 // import JSzip from 'jszip'
-// import JSzipUtils from 'jszip-utils'
+// import JSzipUtils from 'jszip-utils'npm run build
 // import { saveAs } from 'file-saver'
 export default {
   layout: 'default',
@@ -28,9 +28,16 @@ export default {
 
   data: () => ({
     //src:"http://192.168.60.49:8080/system/index.gw?userid=vng-067&openType=F&objId=sipdfrsipmif0008"
-    src:"http://genuwinsolution.com/system/index.gw?userid=admingenuwin&openType=F&objId=siomfrsiomso0002"
+    //src:"http://genuwinsolution.com/e-invoice/system/index.gw?userid=admingenuwin&openType=F&objId=siomfrsiomso0002"
+    src:""
   }),
-
+created() {
+    this.form = this.$route.query.objId;
+    this.token = this.$route.query.token;
+    //this.src=`http://localhost:8080/core/system/sso_form.gw?userid=vng-067&openType=F&objId=${this.form}`;
+    console.log(this.src)
+    //this.checkLogIn();
+  },
   computed: {
     searchTypeList() {
       return [

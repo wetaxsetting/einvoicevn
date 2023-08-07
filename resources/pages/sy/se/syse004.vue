@@ -27,7 +27,7 @@
                     <v-btn icon tile color="error" :disabled="isProcessing" @click="markDeleteItems">
                       <v-icon>mdi-delete</v-icon>
                     </v-btn>
-                    <v-btn icon tile :color="currentTheme" :disabled="isProcessing" @click="commitSave">
+                    <v-btn icon tile :color="currentTheme" :disabled="isProcessing" @click="save">
                       <v-icon>mdi-content-save</v-icon>
                     </v-btn>
                   </v-col>
@@ -40,89 +40,20 @@
         <v-row align="center" justify="center">
           <v-col cols="12" class="py-0">
             <v-card outlined tile v-resize="onResize">
-              <DxDataGrid column-resizing-mode="widget" dateSerializationFormat="yyyyMMdd" key-expr="PK" ref="userDataGrid" 
-                :allow-column-resizing="true" :cache-enabled="true"  :data-source="userList" 
-                :height="limitHeight" :no-data-text="$t('no_data', 'common')" 
-                :onEditorPreparing="onEditorPreparing" :onEditorPrepared="onEditorPrepared" :onRowClick="onRowClick"
-                :show-borders="true" :show-column-lines="true" :show-row-lines="true"
-                @row-updated="checkUpdatedItem" @selection-changed="selectionChanged">
-                  <DxColumn width="100" cell-template="emp-id-template" data-field="EMP_ID" :allow-editing="false" :caption="$t('emp_id')"></DxColumn>
-                  <DxColumn width="100" data-field="EMP_NAME" :caption="$t('emp_name')"></DxColumn>
-                  <DxColumn width="100" data-field="USER_ID" :caption="$t('user_id')"></DxColumn>
-                  <DxColumn width="100" cell-template="user-pw-template" data-field="USER_PW" :allow-editing="false" :caption="$t('user_pw')"></DxColumn>
-                  <DxColumn width="100" cell-template="partner-name-template" data-field="PARTNER_NAME" :allow-editing="false" :caption="$t('partner_name')"></DxColumn>
-                  <DxColumn width="100" data-field="MOBILE" :caption="$t('mobile')"></DxColumn>
-                  <DxColumn width="100" data-field="LIVING_ADDR" :caption="$t('living_addr')"></DxColumn>
-                  <DxColumn width="100" data-field="USER_LANGUAGE" :caption="$t('user_language')">
-                    <DxLookup display-expr="NAME" value-expr="CODE" :data-source="_languages" />
-                  </DxColumn>
-                  <DxColumn  width="100" edit-cell-template="use-yn-template" data-field="USE_YN" :caption="$t('active')" :showEditorAlways="true"></DxColumn>
-                  <!-- <DxColumn  width="100" edit-cell-template="announce-yn-template" data-field="ANNOUNCE_YN" :caption="$t('announcement')" :showEditorAlways="true"></DxColumn> -->
-                  <DxColumn  width="100" edit-cell-template="sysadmin-yn-template" data-field="SYSADMIN_YN" :caption="$t('sysadmin')" :showEditorAlways="true" v-if="user.SYSADMIN_YN === 'Y'"></DxColumn>
-
-                  <DxColumn  data-field="AC_LEVEL" :caption="$t('ac_level')" width="120">
-                    <DxLookup display-expr="NAME" value-expr="CODE" :data-source="lstSecurityLevel" />
-                  </DxColumn>
-                  <DxColumn  data-field="FU_LEVEL" :caption="$t('fu_level')" width="120">
-                    <DxLookup display-expr="NAME" value-expr="CODE" :data-source="lstSecurityLevel" />
-                  </DxColumn>
-                  <DxColumn  data-field="SA_LEVEL" :caption="$t('sa_level')" width="120">
-                    <DxLookup display-expr="NAME" value-expr="CODE" :data-source="lstSecurityLevel" />
-                  </DxColumn>
-                  <DxColumn  data-field="PR_LEVEL" :caption="$t('pr_level')" width="120">
-                    <DxLookup display-expr="NAME" value-expr="CODE" :data-source="lstSecurityLevel" />
-                  </DxColumn>
-                  <DxColumn  data-field="IN_LEVEL" :caption="$t('in_level')" width="120">
-                    <DxLookup display-expr="NAME" value-expr="CODE" :data-source="lstSecurityLevel" />
-                  </DxColumn>
-                  <DxColumn data-field="PU_LEVEL" :caption="$t('pu_level')" width="120">
-                    <DxLookup display-expr="NAME" value-expr="CODE" :data-source="lstSecurityLevel" />
-                  </DxColumn>
-                  <DxColumn  data-field="HR_LEVEL" :caption="$t('hr_level')" width="120">
-                    <DxLookup display-expr="NAME" value-expr="CODE" :data-source="lstSecurityLevel" />
-                  </DxColumn>
-                  <DxColumn   data-field="EI_LEVEL" :caption="$t('ei_level')" width="120">
-                    <DxLookup display-expr="NAME" value-expr="CODE" :data-source="lstSecurityLevel" />
-                  </DxColumn>
-
-
-                  <DxColumn  width="100" data-field="ST_DATE" data-type="date" :caption="$t('st_date')" :format="curLang.DATE_FORMAT"></DxColumn>
-                  <DxColumn  width="100" data-field="END_DATE" data-type="date" :caption="$t('end_date')" :format="curLang.DATE_FORMAT"></DxColumn>
-
-                  <DxSelection mode="multiple" show-check-boxes-mode="none" />
-                  <DxKeyboardNavigation :edit-on-key-press="true" />
-                  <DxEditing mode="cell" start-edit-action="dblClick" :allow-updating="true" :select-text-on-edit-start="true" />
-                  <DxPaging :enable="true" :pageSize="200" />
-                  <!-- <DxScrolling mode="infinite" v-else /> -->
-                  <!-- <DxStateStoring :enabled="true" type="localStorage" storage-key="storage" /> -->
-
-                  <template #emp-id-template="{ data }">
-                    <div class="empty-cell" @dblclick="openEmployeeDialog(data.data)">{{ data.value }}</div>
-                  </template>
-
-                  <template #user-pw-template="{ data }">
-                    <div class="text-center" v-if="data.data._rowstatus === '' && data.data.USER_PW || data.data._rowstatus === '' && !data.data.USER_PW || data.data._rowstatus === 'i' && !data.data.USER_PW || data.data._rowstatus === 'u' && data.data.USER_PW">
-                      <v-icon small :color="currentTheme" @click="openPasswordDialog(data.data.PK, data.data._rowstatus)">mdi-account-key</v-icon>
-                    </div>
-                    <span @dblclick="openPasswordDialog(data.data.PK, data.data._rowstatus)" v-else>{{ returnedPassword | hidePassword }}</span>
-                  </template>
-
-                  <template #partner-name-template="{ data }">
-                    <div class="empty-cell" @dblclick="openPartnerDialog(data.data)">{{ data.value }}</div>
-                  </template>
-
-                  <template #use-yn-template="{ data }">
-                    <input class="mx-2" type="checkbox" :checked="data.value === 'Y' ? true : false" @change="valueChanged($event.target.checked, data.column.dataField, data.data.PK)">
-                  </template>
-
-                  <!-- <template #announce-yn-template="{ data }">
-                    <input class="mx-2" type="checkbox" :checked="data.value === 'Y' ? true : false" @change="valueChanged($event.target.checked, data.column.dataField, data.data.PK)">
-                  </template> -->
-
-                  <template #sysadmin-yn-template="{ data }">
-                    <input class="mx-2" type="checkbox" :checked="data.value === 'Y' ? true : false" @change="valueChanged($event.target.checked, data.column.dataField, data.data.PK)">
-                  </template>
-              </DxDataGrid>
+              <BaseGridView
+                ref="userDataGrid" 
+                :max_height="limitHeight" 
+                selectionmode="singlecell"
+                :autoresize="true"
+                :editable="true"
+                :headertype="1"
+                :header="headers"                  
+                sel_procedure="SYS_SEL_SYSE004_USER"
+                upd_procedure="SYS_UPD_SYSE004_USER"
+                :filter_paras="[this.userEmpID ? this.userEmpID : '', this.empName ? this.empName : '', this.activeStatus ? -1 : 0, '']"
+                :update_paras="['PK', 'THR_ABEMP_PK', 'EMP_NAME', 'USER_ID', 'USER_PW', 'MOBILE', 'LIVING_ADDR', 'USER_LANGUAGE', 'USE_YN', 'ANNOUNCE_YN', 'SYSADMIN_YN', 'ST_DATE', 'END_DATE', 'AC_LEVEL', 'FU_LEVEL', 'SA_LEVEL', 'PR_LEVEL', 'IN_LEVEL', 'PU_LEVEL', 'HR_LEVEL', 'EI_LEVEL', 'TCO_BUSPARTNER_PK']"
+                @cellDblClick="onCellDblClick"
+              />
             </v-card>
           </v-col>
         </v-row>
@@ -130,7 +61,7 @@
     </v-row>
 
     <!-- Set Password Dialog -->
-    <v-dialog id="set-password-dialog" max-width="500" v-model="setPasswordDialog">
+    <!-- <v-dialog id="set-password-dialog" max-width="500" v-model="setPasswordDialog">
       <v-card>
         <v-card-title class="headline primary-gradient white--text py-2">{{ setPasswordType === "i" ? $t('create_password') : $t('update_password', 'common') }}</v-card-title>
         <v-card-text class="pa-0">
@@ -160,7 +91,7 @@
           <v-btn depressed class="white--text" :color="currentTheme" :disabled="isProcessing" :loading="isProcessing" @click="updatePassword">{{ setPasswordType === "i" ? $t('create', 'common') : $t('update', 'common') }}</v-btn>
         </v-card-actions>
       </v-card>
-    </v-dialog>
+    </v-dialog> -->
 
     <!-- Employee Dialog -->
     <employee-dialog ref="employeeDialog" :headers="columnHeaders" @callBackData="mappingEmp"></employee-dialog>
@@ -189,7 +120,7 @@ export default {
     selectedRowKeys: [],
 
     // Set Password
-    setPasswordDialog: false,
+    // setPasswordDialog: false,
     setPasswordFormIsValid: undefined,
     selectedUserPK: '',
     setPasswordType: '',
@@ -214,7 +145,7 @@ export default {
 
   mounted() {
     this.prepareCommonData();
-    console.log('SECOND_DB_YN:'+this.SECOND_DB_YN)
+    //console.log('SECOND_DB_YN:'+this.SECOND_DB_YN)
   },
 
   computed: {
@@ -225,43 +156,113 @@ export default {
         return true
       }
       return this.$t('confirm_pass_not_match', 'common')
+    },
+    headers() {
+      return [
+        { field: 'EMP_ID', title: this.$t('emp_id'), width: '100', dataType: "dialog", editable: false },
+        { field: 'EMP_NAME', title: this.$t('emp_name'), width: '100', dataType: "string", editable: true },
+        { field: 'USER_ID', title: this.$t('user_id'), width: '100', dataType: "string", editable: true },
+        { field: 'USER_PW', title: this.$t('user_pw'), width: '100', dataType: "password", editable: true },
+        { field: 'PARTNER_NAME', title: this.$t('partner_name'), width: '100', dataType: "string", editable: false },
+        { field: 'MOBILE', title: this.$t('mobile'), width: '100', dataType: "string", editable: true },
+        { field: 'LIVING_ADDR', title: this.$t('living_addr'), width: '100', dataType: "string", editable: true },
+        { 
+          field: 'USER_LANGUAGE', title: this.$t('user_language'), width: '100', dataType: "string", editable: true,
+          lookup: { 
+            dataSource: this._languages, 
+            displayExpr: 'NAME', 
+            valueExpr: 'CODE' 
+          }
+        },
+        { field: 'USE_YN', title: this.$t('active'), width: '100', dataType: "checkbox", editable: true },
+        { field: 'SYSADMIN_YN', title: this.$t('sysadmin'), width: '100', dataType: "checkbox", editable: true },
+        { 
+          field: 'AC_LEVEL', title: this.$t('ac_level'), width: '120', dataType: "list", editable: true,
+          lookup: { 
+            dataSource: this.lstSecurityLevel, 
+            displayExpr: 'NAME', 
+            valueExpr: 'CODE' 
+          }
+        },
+        { 
+          field: 'FU_LEVEL', title: this.$t('fu_level'), width: '120', dataType: "list", editable: true,
+          lookup: { 
+            dataSource: this.lstSecurityLevel, 
+            displayExpr: 'NAME', 
+            valueExpr: 'CODE' 
+          }
+        },
+        { 
+          field: 'SA_LEVEL', title: this.$t('sa_level'), width: '120', dataType: "list", editable: true,
+          lookup: { 
+            dataSource: this.lstSecurityLevel, 
+            displayExpr: 'NAME', 
+            valueExpr: 'CODE' 
+          }
+        },
+        { 
+          field: 'PR_LEVEL', title: this.$t('pr_level'), width: '120', dataType: "list", editable: true,
+          lookup: { 
+            dataSource: this.lstSecurityLevel, 
+            displayExpr: 'NAME', 
+            valueExpr: 'CODE' 
+          }
+        },
+        { 
+          field: 'IN_LEVEL', title: this.$t('in_level'), width: '120', dataType: "list", editable: true,
+          lookup: { 
+            dataSource: this.lstSecurityLevel, 
+            displayExpr: 'NAME', 
+            valueExpr: 'CODE' 
+          }
+        },
+        { 
+          field: 'PU_LEVEL', title: this.$t('pu_level'), width: '120', dataType: "list", editable: true,
+          lookup: { 
+            dataSource: this.lstSecurityLevel, 
+            displayExpr: 'NAME', 
+            valueExpr: 'CODE' 
+          }
+        },
+        { 
+          field: 'HR_LEVEL', title: this.$t('hr_level'), width: '120', dataType: "list", editable: true,
+          lookup: { 
+            dataSource: this.lstSecurityLevel, 
+            displayExpr: 'NAME', 
+            valueExpr: 'CODE' 
+          }
+        },
+        { 
+          field: 'EI_LEVEL', title: this.$t('ei_level'), width: '120', dataType: "list", editable: true,
+          lookup: { 
+            dataSource: this.lstSecurityLevel, 
+            displayExpr: 'NAME', 
+            valueExpr: 'CODE' 
+          }
+        },
+        { field: 'ST_DATE', title: this.$t('st_date'), width: '100', dataType: "date", editable: true },
+        { field: 'END_DATE', title: this.$t('end_date'), width: '100', dataType: "date", editable: true }
+      ]
     }
   },
 
   methods: {
-
     async prepareCommonData(){
       this.lstSecurityLevel = await this._getCommonCode("COBS0010", this.user.TCO_COMPANY_PK);
     },
 
-    async getUserList(paramsData) {
-      const dso = {
-        type: 'grid',
-        selpro: 'SYS_SEL_SYSE004_USER',
-        para: paramsData
-      }
-      const result = await this._dsoCall(dso, 'select', false)
-      this.userList = result ? result : []
-      this.$refs.userDataGrid.instance.clearSelection()
-    },
-
     searchUser() {
-      this.getUserList([ this.userEmpID ? this.userEmpID : '', this.empName ? this.empName : '', this.activeStatus ? -1 : 0, '' ])
+      this.$refs.userDataGrid.loadData();
     },
     
     addNew() {
-      this.userList.unshift({
-        _rowstatus: 'i', PK: this._uniqueID(), THR_ABEMP_PK: '', EMP_NAME: '', USER_ID: '', USER_PW: '', TCO_BUSPARTNER_PK: '', PARTNER_NAME: '' , MOBILE: '', LIVING_ADDR: '', USER_LANGUAGE: 'ENG', USE_YN: 'Y', ANNOUNCE_YN: 'N', SYSADMIN_YN: 'N', ST_DATE: '', END_DATE: ''
-      })
-      console.log(this.userList)
-    },
-
-    valueChanged(e, colName, rowPK) {
-      const newValue = e ? 'Y' : 'N'
-      this.changeValue(newValue, colName, rowPK)
+      this.$refs.userDataGrid.addRowStruct({ 
+        PK: null, THR_ABEMP_PK: '', EMP_NAME: '', USER_ID: '', USER_PW: '', TCO_BUSPARTNER_PK: '', PARTNER_NAME: '' , MOBILE: '', LIVING_ADDR: '', USER_LANGUAGE: 'ENG', USE_YN: 'Y', ANNOUNCE_YN: 'N', SYSADMIN_YN: 'N', ST_DATE: '', END_DATE: ''
+      });
     },
 
     changeValue(value, key, pk) {
+      this.userList = this.$refs.userDataGrid.getDataSource();
       this.userList.map((item, index) => {
         if(item.PK === pk) {
           this.$set(item, key, value)
@@ -269,42 +270,15 @@ export default {
             item._rowstatus = "u"
           }
         }
-      })
+      });      
+      this.$refs.userDataGrid.setDataSource(this.userList);
+    },    
+
+    save() {
+      this.$refs.userDataGrid.saveData();      
     },
 
-    commitSave() {
-      this.$refs.userDataGrid.instance.saveEditData().then(() => {
-        this.save()
-      })
-    },
-
-    async save() {
-      const dataIsModified = this.userList.some(x => x._rowstatus !== "")
-      if(dataIsModified) {
-        const dso = {
-          type: 'grid',
-          selpro: 'SYS_SEL_SYSE004_USER',
-          updpro: 'SYS_UPD_SYSE004_USER',
-          para: [ this.userEmpID ? this.userEmpID : '', this.empName ? this.empName : '', this.activeStatus ? -1 : 0, '' ],
-          elname: [ '_rowstatus', 'PK', 'THR_ABEMP_PK', 'EMP_NAME', 'USER_ID', 'USER_PW', 'MOBILE', 'LIVING_ADDR', 'USER_LANGUAGE', 'USE_YN', 'ANNOUNCE_YN', 'SYSADMIN_YN', 'ST_DATE', 'END_DATE',
-            "AC_LEVEL", "FU_LEVEL", "SA_LEVEL", "PR_LEVEL", "IN_LEVEL", "PU_LEVEL", "HR_LEVEL", "EI_LEVEL", 'TCO_BUSPARTNER_PK'
-          ],
-          requirecol: [ 'EMP_NAME', 'USER_ID', 'USER_LANGUAGE' ],
-          data: this.userList
-        }
-        const result = await this._dsoCall(dso, 'update', true)
-        if(result) {
-          this.userList = result
-          const found = this.userList.find(x => x.PK === this.user.PK)
-          if(found) {
-            await this.$store.dispatch("auth/saveUserInfo")
-          }
-        }
-        this.$refs.userDataGrid.instance.clearSelection()
-      }
-    },
-
-    openPasswordDialog(userPK, rowStatus) {
+    /* openPasswordDialog(userPK, rowStatus) {
       this.selectedUserPK = userPK
       this.setPasswordType = rowStatus
       this.setPasswordDialog = true
@@ -315,7 +289,7 @@ export default {
       this.confirmPassword = ''
       this.showPassword = false
       this.showConfirmPassword = false
-    },
+    }, 
 
     updatePassword() {
       if(this.$refs.setPasswordForm.validate()) {
@@ -335,7 +309,7 @@ export default {
                 this.showNotification('danger', this.$t('create_password_failed'), res.message)
               }
               this.changeValue(this.returnedPassword, "USER_PW", this.selectedUserPK)
-              console.log(this.userList)
+              //console.log(this.userList)
             })
             .catch((e) => {
               this.isProcessing = false
@@ -361,7 +335,7 @@ export default {
       } else {
         this.setPasswordFormIsValid = false
       }
-    },
+    }, */
 
     openEmployeeDialog(item) {
       this.$refs.employeeDialog.dialogIsShow = true
@@ -374,6 +348,7 @@ export default {
     },
 
     mappingEmp(item) {
+      this.userList = this.$refs.userDataGrid.getDataSource();
       const userIdx = this.userList.findIndex(x => x.PK === this.selectedUser.PK)
       if(userIdx > -1) {
         if(!this.userList[userIdx]._rowstatus) {
@@ -383,60 +358,12 @@ export default {
         this.userList[userIdx].EMP_ID = item.EMP_ID
         this.userList[userIdx].EMP_NAME = item.FULL_NAME
       }
-    },
-
-    checkUpdatedItem(e) {
-      if(!e.cancel) {
-        if(e.data._rowstatus !== "i") {
-          e.data._rowstatus = 'u'
-        }
-      }
-    },
-
-    onRowClick(e) {
-      if(e.rowType === "data" && e.isSelected && e.data._rowstatus === "d") {
-        e.rowElement.classList.remove("dx-selection")
-      }
-    },
-
-    selectionChanged({ selectedRowKeys }) {
-      this.selectedRowKeys = selectedRowKeys
+      this.$refs.userDataGrid.setDataSource(this.userList);      
     },
 
     markDeleteItems() {
-      if(this.selectedRowKeys.length) {
-        for (let i = 0; i < this.userList.length; i++) {
-          const user = this.userList[i]
-          for (let j = 0; j < this.selectedRowKeys.length; j++) {
-            const item = this.selectedRowKeys[j]
-            if(item === user.PK) {
-              if(user._rowstatus !== "d") {
-                user._rowstatus = "d"
-                this.setMarkedDeleteRowColor('userDataGrid', true, i)
-              } else {
-                user._rowstatus = ""
-                this.setMarkedDeleteRowColor('userDataGrid', false, i)
-              }
-            }
-          }
-        }
-      } else {
-        this.userList.forEach((item, index) => {
-          if(item._rowstatus === "d") {
-            item._rowstatus = ""
-            this.setMarkedDeleteRowColor('userDataGrid', false, index)
-          }
-        })
-      }
+      this.$refs.userDataGrid.deleteRows();
     },
-
-    onEditorPreparing(e) {
-      if(e.parentType == "dataRow" && e.dataField == "USER_PW") {
-        e.editorOptions.mode = 'password';
-      }
-    },
-
-    onEditorPrepared(e) {},
 
     openPartnerDialog(item) {
       this.$refs.partnerDialog.dialogIsShow = true;
@@ -444,6 +371,7 @@ export default {
     },
 
     handleReturnedPartner(item) {
+      this.userList = this.$refs.userDataGrid.getDataSource();
       const userIdx = this.userList.findIndex(x => x.PK === this.selectedUser.PK)
       if(userIdx > -1) {
         if(!this.userList[userIdx]._rowstatus) {
@@ -452,7 +380,26 @@ export default {
         this.userList[userIdx].TCO_BUSPARTNER_PK = item.PK
         this.userList[userIdx].PARTNER_NAME = item.PARTNER_NAME
       }
+      this.$refs.userDataGrid.setDataSource(this.userList); 
     },
+
+    onCellDblClick({ data, column, rowType }) {
+      if(rowType === "data") {
+        switch (column.datafield) {
+          case "EMP_ID":
+            this.openEmployeeDialog(data);
+            break;
+          /* case "USER_PW":
+            this.openPasswordDialog(data.PK, data._rowstatus)
+            break; */
+          case "PARTNER_NAME":
+            this.openPartnerDialog(data);
+            break;
+          default:
+            break;
+        }
+      }
+    }
   }
 }
 </script>

@@ -7,13 +7,18 @@
           <v-col sm="4" cols="12">
             <!-- Role Name List -->
             <v-card raised tile>
-              <DxDataGrid column-resizing-mode="widget" key-expr="PK" ref="roleGrid"
-                :allow-column-resizing="true" :column-auto-width="$vuetify.breakpoint.smAndDown"
-                :columns="roleTableHeaders" :data-source="roleList" :height="halfHeight"
-                :no-data-text="$t('no_data')" :onRowClick="getSelectedRole"
-                :paging="{ pageSize: roleList.length }" :selection="{ mode: 'single' }"
-                :show-borders="true" :show-column-lines="true" :show-row-lines="true">
-              </DxDataGrid>
+              <BaseGridView
+                ref="roleGrid" 
+                :max_height="halfHeight" 
+                selectionmode="singlecell"
+                :autoresize="true"
+                :editable="true"
+                :headertype="1"
+                :header="roleTableHeaders"                  
+                sel_procedure="SYS_SEL_SYSE002_ROLE"                
+                :filter_paras="['', 'Y']"
+                @cellClick="getSelectedRole"
+              />
             </v-card>
             <!-- Divider -->
             <v-divider class="my-4"></v-divider>
@@ -50,13 +55,19 @@
             </div>
             <!-- Table -->
             <v-card raised tile>
-              <DxDataGrid column-resizing-mode="widget" key-expr="PK" ref="leafMenuOnlyGrid"
-                :allow-column-resizing="true" :column-auto-width="$vuetify.breakpoint.smAndDown"
-                :columns="leafMenuOnlyTableHeaders" :data-source="leafMenuOnly" :height="halfHeight - 36" 
-                :no-data-text="$t('no_data')" :onSelectionChanged="onSelectionMenu"
-                :paging="{ pageSize: leafMenuOnly.length }" :selection="{ mode: 'multiple', showCheckBoxesMode: 'none' }"
-                :show-borders="true" :show-column-lines="true" :show-row-lines="true">
-              </DxDataGrid>
+              <BaseGridView
+                ref="leafMenuOnlyGrid" 
+                :max_height="halfHeight - 36" 
+                selectionmode="checkbox"
+                :autocheckbox="false"
+                :autoresize="true"
+                :editable="true"
+                :headertype="1"
+                :header="leafMenuOnlyTableHeaders"                  
+                sel_procedure="SYS_SEL_SYSE002_LEAF_MENU_ONLY"                
+                :filter_paras="[this.selectedRole.PK, this.searchType === 'OBJ_ID' ? this.inputSearch : '', this.searchType === 'OBJ_NAME' ? this.inputSearch : '', this.selectedMenu ? this.selectedMenu.PK : 0]"                
+                @onSelectionDataChanged="onSelectionLeftMenuOnlyChanged"
+              />
             </v-card>
             <!-- Divider -->
             <v-divider class="my-4"></v-divider>
@@ -71,24 +82,20 @@
             </div>
             <v-card raised tile>
               <BaseGridView
-                    ref="roleMappingGrid"                   
-                    sel_procedure="SYS_SEL_SYSE002_ROLE_MAPPING"
-                    upd_procedure="SYS_UPD_SYSE002_ROLE_MAPPING"
-                    select_mode="MultipleHideBox"
-                    :auto_load="false"
-                    :max_height="halfHeight"                   
-                    :filter_paras="[this.selectedRole.PK]" 
-                    :update_paras="[
-                        'PK',
-                        'ROLE_PK',
-                        'MENU_PK'
-                      ]"
-                  :header="[  
-                   { dataField: 'MENU_CD', caption: this.$t('menu_code'),allowEditing: false },
-                   { dataField: 'FORM_NM', caption: this.$t('menu_name'),allowEditing: false },
-                   { dataField: 'ROLE_NM', caption: this.$t('role_name'),allowEditing: false }                                                                                                                    
-                  ]"           
-                  />
+                ref="roleMappingGrid"                   
+                sel_procedure="SYS_SEL_SYSE002_ROLE_MAPPING"
+                upd_procedure="SYS_UPD_SYSE002_ROLE_MAPPING"
+                selectionmode="checkbox"
+                :headertype="1"
+                :autocheckbox="false"
+                :auto_load="false"
+                :max_height="halfHeight"                   
+                :filter_paras="[this.selectedRole.PK]" 
+                :update_paras="[ 'PK', 'ROLE_PK', 'MENU_PK']"
+                :header="roleMappingTableHeaders"
+                @callSaveResult="onCallSaveResult"
+                @onSelectionDataChanged="onSelectionRoleMappingGrid"
+              />
             </v-card>
           </v-col>
         </v-row>
@@ -131,8 +138,8 @@ export default {
     selectedRoleMappings: []
   }),
   
-  mounted() {
-    this.getRoleList(['', 'Y'])
+  mounted() {    
+    this.$refs.roleGrid.loadData();
     this.getNoneLeafMenu()
   },
 
@@ -153,40 +160,29 @@ export default {
     halfHeight() { return Math.ceil(this.limitHeight / 2) },
     roleTableHeaders() {
       return [
-        { dataField: 'ROLE_NM', caption: this.$t('role_name') }
+        { field: 'ROLE_NM', title: this.$t('role_name'), width: "100%", dataType: "string", editable: false },
       ]
     },
     leafMenuOnlyTableHeaders() {
       return [
-        { dataField: 'MENU_CD', caption: this.$t('menu_code') },
-        { dataField: 'FORM_NM', caption: this.$t('menu_name') },
-        { dataField: 'PARENT_NAME', caption: this.$t('parent_menu_name') }
+        { field: 'MENU_CD', title: this.$t('menu_code'), width: "33.33%", dataType: "string", editable: false },
+        { field: 'FORM_NM', title: this.$t('menu_name'), width: "33.33%", dataType: "string", editable: false },
+        { field: 'PARENT_NAME', title: this.$t('parent_menu_name'), width: "33.33%", dataType: "string", editable: false }
       ]
     },
     roleMappingTableHeaders() {
       return [
-        { dataField: 'MENU_CD', caption: this.$t('menu_code') },
-        { dataField: 'FORM_NM', caption: this.$t('menu_name') },
-        { dataField: 'ROLE_NM', caption: this.$t('role_name') }
+        { field: 'MENU_CD', title: this.$t('menu_code'), width: "33.33%", dataType: "string", editable: false },
+        { field: 'FORM_NM', title: this.$t('menu_name'), width: "33.33%", dataType: "string", editable: false },
+        { field: 'ROLE_NM', title: this.$t('role_name'), width: "33.33%", dataType: "string", editable: false }
       ]
     }
   },
 
   methods: {
-    search() {
-      this.getLeafMenuOnly([
-        this.selectedRole ? this.selectedRole.PK : '',
-        this.searchType === 'OBJ_ID' ? this.inputSearch : '',
-        this.searchType === 'OBJ_NAME' ? this.inputSearch : '',
-        this.selectedMenu ? this.selectedMenu.PK : 0
-      ])
-    },
-
-    async getRoleList(paramsData) {
-      const dso = { type: "grid", selpro: "SYS_SEL_SYSE002_ROLE", para: paramsData }
-      const result = await this._dsoCall(dso, 'select', false)
-      this.roleList = result ? result : []
-      this.$refs.roleGrid.instance.clearSelection()
+    async search() {
+      await this.$nextTick();
+      this.$refs.leafMenuOnlyGrid.loadData();
     },
 
     async getNoneLeafMenu() {
@@ -196,68 +192,56 @@ export default {
       this.noneLeafMenu = [...filteredMenu]
     },
 
-    getSelectedRole({ data }) {
-      this.selectedRole = data
-      this.getLeafMenuOnly([ 
-        this.selectedRole.PK, 
-        this.searchType === 'OBJ_ID' ? this.inputSearch : '',
-        this.searchType === 'OBJ_NAME' ? this.inputSearch : '',
-        this.selectedMenu ? this.selectedMenu.PK : 0
-      ])
-      this.getRoleMapping(this.selectedRole.PK)
-    },
+    async getSelectedRole({ data }) {
+      this.selectedRole = data;
+      await this.$nextTick();
+      this.$refs.leafMenuOnlyGrid.loadData();      
+      this.$refs.roleMappingGrid.loadData();      
+    },   
 
-    async getLeafMenuOnly(paramsData) {
-      const dso = { type: "grid", selpro: "SYS_SEL_SYSE002_LEAF_MENU_ONLY", para: paramsData }
-      const result = await this._dsoCall(dso, 'select', false)
-      this.leafMenuOnly = result ? result : []
-      this.$refs.leafMenuOnlyGrid.instance.clearSelection()
-    },
-
-    async getRoleMapping(roleID) {
-      this.$refs.roleMappingGrid.loadData();    
-    },
-
-    getSelectedMenu() {
+    async getSelectedMenu() {
       if(!this.selectedRole) {
         return this.showNotification('danger', this.$t('alert'), this.$t('please_select_a_role_fisrt'))
       }
       if(!this.active.length) {
         return this.selectedMenu = ''
       }
-      this.selectedMenu = {...this.active[0]}
-      this.getLeafMenuOnly([ 
-        this.selectedRole.PK, 
-        this.searchType === 'OBJ_ID' ? this.inputSearch : '',
-        this.searchType === 'OBJ_NAME' ? this.inputSearch : '',
-        this.selectedMenu ? this.selectedMenu.PK : 0 
-      ])
+      this.selectedMenu = {...this.active[0]};
+      await this.$nextTick();
+      this.$refs.leafMenuOnlyGrid.loadData();      
     },
 
-    onSelectionMenu({ selectedRowsData }) {
-      this.selectedMenus = selectedRowsData
+    async multiAssignMenuToRole() {
+      if(this.selectedMenus.length) {
+        this.selectedMenus.forEach((item) => {
+          this.$refs.roleMappingGrid.addRowStruct({ 
+            PK: null, MENU_PK: item.PK, MENU_CD: item.MENU_CD, FORM_NM: item.FORM_NM, ROLE_PK: this.selectedRole.PK, ROLE_NM: this.selectedRole.ROLE_NM 
+          });
+          this.$refs.roleMappingGrid.ClearSel();
+        })
+      }
     },
 
-    multiAssignMenuToRole() {
-      //this.leafMenuOnly = this.leafMenuOnly.filter(x => this.selectedMenus.indexOf(x) == -1);
-      
-      this.selectedMenus.forEach((item) => {
-        this.$refs.roleMappingGrid.addRowStruct({ 
-           PK: null, MENU_PK: item.PK, MENU_CD: item.MENU_CD, FORM_NM: item.FORM_NM, ROLE_PK: this.selectedRole.PK, ROLE_NM: this.selectedRole.ROLE_NM 
-        });
-      })
-    },
-
-    async save() {
-      this.$refs.roleMappingGrid.saveData(); 
-    },
-
-    onSelectionRoleMapping({ selectedRowKeys }) {
-      this.selectedRoleMappings = selectedRowKeys
+    save() {
+      this.$refs.roleMappingGrid.saveData();
     },
 
     markDeleteItems() {
       this.$refs.roleMappingGrid.deleteRows();
+    },
+
+    onSelectionLeftMenuOnlyChanged(data, type) {
+      this.selectedMenus = [...data];      
+    },
+
+    onCallSaveResult(value) { 
+      if(value) {
+        this.$refs.leafMenuOnlyGrid.loadData();  
+      }
+    },
+
+    onSelectionRoleMappingGrid(data, type) {
+      
     }
   }
 }

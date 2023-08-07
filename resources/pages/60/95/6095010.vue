@@ -76,7 +76,7 @@
               :header="headerGrid" 
               :onCellPrepared="onCellPrepared"
               @cellClick="onClickButton('SEARCH_M')"
-              sel_procedure="AC_SEL_6095010_LIST_COMPANY_NO_CACHE"
+              sel_procedure="AC_SEL_6095010_LIST_COMPANY_NC"
               upd_procedure="AC_UPD_6095010_LIST_COMPANY" 
               :filter_paras="[this.txtCompanyName]" 
               :update_paras="['PK',

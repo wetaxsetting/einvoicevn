@@ -1,237 +1,105 @@
 <template>
-  <v-container fluid class="py-0 px-1" v-resize="onResize">
+  <v-container fluid class="pt-1" v-resize="onResize">
     <v-card outlined>
-      <v-row dense justify="space-between" class="py-0">
-        <v-col cols="7">
-          <v-card outlined>
-            <v-container fluid>
-              <div class="d-flex flex-column justify-center">
-                <v-container>
-                  <v-row dense justify="space-between">
-                    <v-col cols="12">
-                      <v-row class="py-0">
-                        <v-col lg="6" cols="12">
-                          <BaseSelect
-                            :label="$t('company')"
-                            item-text="NAME"
-                            item-value="VAL"
-                            :lstData="company_list"
-                            v-model="selected_company"
-                            filter_off
-                          />
-                        </v-col>
-                        <v-col lg="3" cols="12">
-                          <BaseDatePicker
-                            :outlined="false"
-                            default
-                            :label="$t('from_date')"
-                            v-model="dt_from"
-                          />
-                        </v-col>
-                        <v-col lg="3" cols="12">
-                          <BaseDatePicker
-                            :outlined="false"
-                            default
-                            :label="$t('to_date')"
-                            v-model="dt_to"
-                          />
-                        </v-col>
-                      </v-row>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </div> </v-container></v-card
-        ></v-col>
-        <v-col cols="5">
-          <v-card outlined>
-            <v-container fluid>
-              <div class="d-flex flex-column justify-center">
-                <v-container>
-                  <v-row dense justify="space-between">
-                    <v-col
-                      lg="12"
-                      cols="12"
-                      class="text-right d-flex justify-end"
-                    >
-                      <BaseButton
-                        icon_type="search"
-                        :btn_text="$t('search')"
-                        :disabled="isProcessing"
-                        @onclick="funcSearch()"
-                      />
-                      <BaseButton
-                        icon_type="view"
-                        :btn_text="$t('preview')"
-                        :disabled="isProcessing"
-                        @onclick="onPreview"
-                      />
-                      <BaseButton
-                        icon_type="attach"
-                        :btn_text="$t('invoice_sign')"
-                        :disabled="isProcessing"
-                        @onclick="InvoiceSign()"
-                      />
-                      <BaseButton
-                        icon_type="add_new"
-                        :btn_text="$t('check_code_cqt')"
-                        :disabled="isProcessing"
-                      />
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </div> </v-container></v-card
-        ></v-col>
+      <v-row dense justify="space-between" class="pl-3 pr-3 pt-2">
+        <v-col lg="4" cols="12">
+          <BaseSelect outlined :label="$t('company')" item-text="NAME" item-value="VAL" :lstData="company_list"
+            v-model="selected_company" filter_off />
+        </v-col>
+        <v-col lg="2">
+          <BaseInput outlined :label="$t('invoice_no')" v-model="invoice_no" filter_off />
+        </v-col>
+        <v-col lg="2">
+          <BaseInput outlined v-model="invoice_no_ip" filter_off />
+        </v-col>
+        <v-col lg="2">
+          <BaseSelect outlined :label="$t('form_no')" item-text="NAME" item-value="VAL" filter_off :lstData="form_no_list"
+            v-model="selected_form_no" />
+        </v-col>
+        <v-col lg="2">
+          <BaseSelect outlined :label="$t('serial_no')" item-text="NAME" item-value="VAL" filter_off
+            :lstData="serial_no_list" v-model="selected_serial_no" />
+        </v-col>
       </v-row>
 
-      <v-row dense justify="space-between" class="py-0">
-        <v-col cols="12">
-          <v-card outlined>
-            <v-container fluid>
-              <div class="d-flex flex-column justify-center">
-                <v-container>
-                  <v-row dense justify="space-between">
-                    <v-col cols="12">
-                      <v-row class="py-0">
-                        <v-col lg="2">
-                          <BaseInput
-                            :label="$t('tot_net_tr_amt')"
-                            v-model="tot_net_tr_amt"
-                            number
-                          />
-                        </v-col>
-
-                        <v-col lg="2">
-                          <BaseInput
-                            :label="$t('tot_net_bk_amt')"
-                            v-model="tot_net_bk_amt"
-                            number
-                          />
-                        </v-col>
-
-                        <v-col lg="2">
-                          <BaseSelect
-                            :label="$t('status')"
-                            v-model="selected_status"
-                            :lstData="status_list"
-                            item-text="NAME"
-                            item-value="VAL"
-                            filter_off
-                          />
-                        </v-col>
-                        <v-col lg="2">
-                          <BaseSelect
-                            :label="$t('form_no')"
-                            item-text="NAME"
-                            item-value="VAL"
-                            filter_off
-                            :lstData="form_no_list"
-                            v-model="selected_form_no"
-                          />
-                        </v-col>
-
-                        <v-col lg="1">
-                          <BaseSelect
-                            :label="$t('serial_no')"
-                            item-text="NAME"
-                            item-value="VAL"
-                            filter_off
-                            :lstData="serial_no_list"
-                            v-model="selected_serial_no"
-                          />
-                        </v-col>
-                        <v-col lg="1">
-                          <BaseSelect
-                            :label="$t('trading_type')"
-                            v-model="selected_trading_type"
-                            :lstData="trading_type_list"
-                            item-text="NAME"
-                            item-value="VAL"
-                            filter_off
-                          />
-                        </v-col>
-                        <v-col lg="2">
-                          <BaseSelect
-                            :label="$t('directly_yn')"
-                            :lstData="yn_list"
-                            v-model="selected_yn"
-                            item-text="NAME"
-                            item-value="VAL"
-                            filter_off
-                          />
-                        </v-col>
-                      </v-row>
-                      <v-row class="py-0">
-                        <v-col lg="2">
-                          <BaseInput
-                            :label="$t('tot_net_tr_vat_amt')"
-                            v-model="tot_net_tr_vat_amt"
-                            number
-                          />
-                        </v-col>
-
-                        <v-col lg="2">
-                          <BaseInput
-                            :label="$t('tot_net_bk_vat_amt')"
-                            v-model="tot_net_bk_vat_amt"
-                            number
-                          />
-                        </v-col>
-
-                        <v-col lg="2">
-                          <BaseInput
-                            :label="$t('total')"
-                            v-model="total"
-                            number
-                          />
-                        </v-col>
-                        <v-col lg="2">
-                          <BaseInput
-                            :label="$t('total_bk')"
-                            v-model="total_bk"
-                            number
-                          />
-                        </v-col>
-
-                        <v-col lg="1">
-                          <BaseInput
-                            :label="$t('invoice_no_from')"
-                            v-model="txtFromInvoiceNo"
-                          />
-                        </v-col>
-                        <v-col lg="1">
-                          <BaseInput
-                            :label="$t('invoice_no_to')"
-                            v-model="txtToInvoiceNo"
-                          />
-                        </v-col>
-                        <v-col lg="2">
-                          <BaseInput
-                            :label="$t('partner')"
-                            v-model="itemPartner"
-                          />
-                        </v-col>
-                      </v-row>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </div> </v-container></v-card
-        ></v-col>
+      <v-row dense justify="space-between" class="pl-3 pr-3 pt-2">
+        <v-col lg="2" cols="12">
+          <BaseDatePicker outlined :pretoday="7" :label="$t('from_date')" v-model="dt_from" />
+        </v-col>
+        <v-col lg="2" cols="12">
+          <BaseDatePicker outlined  today :label="$t('to_date')" v-model="dt_to" />
+        </v-col>
+        <v-col lg="2">
+          <BaseSelect outlined :label="$t('status')" v-model="selected_status" :lstData="status_list" item-text="NAME"
+            item-value="VAL" filter_off />
+        </v-col>
+        <v-col lg="2">
+          <BaseSelect outlined :label="$t('etax_status')" v-model="selected_etaxStatus" :lstData="etaxStatus_list"
+            item-text="NAME" item-value="VAL" filter_off />
+        </v-col>
+        <v-col lg="2">
+          <BaseSelect outlined :label="$t('etax_result')" v-model="selected_etaxResult" :lstData="etaxResult_list"
+            item-text="NAME" item-value="VAL" filter_off />
+        </v-col>
+        <v-col lg="2">
+          <BaseSelect outlined :label="$t('trading_type')" v-model="selected_trading_type" :lstData="trading_type_list"
+            item-text="NAME" item-value="VAL" filter_off />
+        </v-col>
       </v-row>
+
+
+      <v-row dense justify="space-between" class="pl-3 pr-3 pt-2">
+        <v-col lg="2">
+          <BaseInput outlined :label="$t('tot_net_tr_amt')" v-model="tot_net_tr_amt" number />
+        </v-col>
+        <v-col lg="2">
+          <BaseInput outlined :label="$t('tot_net_bk_amt')" v-model="tot_net_bk_amt" number />
+        </v-col>
+        <v-col lg="2">
+          <BaseInput outlined :label="$t('tot_net_tr_vat_amt')" v-model="tot_net_tr_vat_amt" number />
+        </v-col>
+
+        <v-col lg="2">
+          <BaseInput outlined :label="$t('tot_net_bk_vat_amt')" v-model="tot_net_bk_vat_amt" number />
+        </v-col>
+        <v-col lg="2">
+          <BaseInput outlined :label="$t('total')" v-model="total" number />
+        </v-col>
+        <v-col lg="2">
+          <BaseInput outlined :label="$t('total_bk')" v-model="total_bk" number />
+        </v-col>
+      </v-row>
+
+      <v-row dense justify="space-between" class="pl-3 pr-3 pt-2">
+        <v-col lg="2">
+          <BaseInput outlined :label="$t('partner')" v-model="itemPartner" />
+        </v-col>
+        <v-col lg="2">
+          <BaseSelect outlined :label="$t('directly_yn')" :lstData="yn_list" v-model="selected_yn" item-text="NAME"
+            item-value="VAL" filter_off />
+        </v-col>
+        <v-col lg="1">
+          <BaseCheckbox :label="$t('check_all')" true-value="Y" false-value="N" v-model="check_all" />
+        </v-col>
+        <v-col lg="7" class="pl-1 d-flex justify-end">
+          <BaseButton icon_type="search" :btn_text="$t('search')" :disabled="isProcessing" @onclick="funcSearch()" />
+          <BaseButton icon_type="view" :btn_text="$t('preview')" :disabled="isProcessing" @onclick="onPreview" />
+          <BaseButton icon_type="xml" :btn_text="$t('view_xml')" @onclick="onClick('viewXML')" />
+          <BaseButton icon_type="attach" :btn_text="$t('invoice_sign')" :disabled="isProcessing"
+            @onclick="InvoiceSign()" />
+          <BaseButton icon_type="add_new" :btn_text="$t('check_code_cqt')" :disabled="isProcessing" />
+        </v-col>
+      </v-row>
+
+
       <v-row dense align="stretch" justify="space-between">
         <v-col cols="12">
-          <v-card outlined >
+          <v-card outlined>
             <v-container fluid class="">
               <!-- :selectionmode="'checkbox'" -->
-              <BaseGridView
-                ref="gridview"
-                :header="this.headerGrid"
-                sel_procedure="EI_SEL_6095090_SEL_DATA"
-                :multiselect="true"
-                :selectionmode="'checkbox'"
-                :autocheckbox="false"
-                :headertype="1"
-                @onSelectionDataChanged="onGridSelectionChanged"
-                :filter_paras="[
+              <BaseGridView ref="gridview" :header="this.headerGrid" sel_procedure="EI_SEL_6095090_SEL_DATA"
+                :multiselect="true" :selectionmode="'checkbox'" :autocheckbox="false" :headertype="1"
+                @onSelectionDataChanged="onGridSelectionChanged" :filter_paras="[
                   this.selected_company,
                   this.txtFromInvoiceNo,
                   this.txtToInvoiceNo,
@@ -243,20 +111,13 @@
                   this.txtPartner,
                   this.selected_trading_type,
                   this.selected_yn,
-                ]"
-                @setDataSource="onAfterLoad"
-                :height="limitHeight"
-                @cellClick="onCellClick"
-              />
+                ]" @setDataSource="onAfterLoad" :height="limitHeight" @cellClick="onCellClick" />
             </v-container>
           </v-card>
         </v-col>
       </v-row>
     </v-card>
-    <view-einvoice-pdf-dialog
-      ref="ViewEInvoicePDFDialog"
-      :src_pdfUrl="pdfUrl"
-    ></view-einvoice-pdf-dialog>
+    <view-einvoice-pdf-dialog ref="ViewEInvoicePDFDialog" :src_pdfUrl="pdfUrl"></view-einvoice-pdf-dialog>
   </v-container>
 </template>
 
@@ -282,6 +143,14 @@ export default {
     dt_from: null,
     dt_to: null,
     status_list: [],
+    etaxStatus_list: [],
+    selected_etaxStatus: "",
+    etaxResult_list: [],
+    selected_etaxResult: "",
+    invoice_no: "",
+    invoice_no_ip: "",
+    check_all: "Y",
+
     selected_status: "",
     txtPartner: "",
     trading_type_list: [],
@@ -297,7 +166,7 @@ export default {
     blYN: "Y",
     offInvoiceSign: true,
     headerGrid: [],
-
+    
     pdfUrl: "",
     tei_einvoice_m_pk_row: "",
 
@@ -311,7 +180,7 @@ export default {
     tei_einvoice_m_PK: "",
     Count_Pk: 0,
     txtXMl_T: "",
-    itemPartner:"",
+    itemPartner: "",
     txtSerial_Number: "",
     txtNOTBEFORE: "",
     txtNOTAFTER: "",
@@ -332,9 +201,9 @@ export default {
     // this.dt_to = "" + new Date().getFullYear() + month + "31";
     await this.getListCodes();
     this.pdf_handler = require("./js/EiExcelHandler.js");
-      if(!!this.pdf_handler) {
-          Object.assign(this, this.pdf_handler.default);
-      }
+    if (!!this.pdf_handler) {
+      Object.assign(this, this.pdf_handler.default);
+    }
   },
   mounted() {
     this.onSetHeader();
@@ -416,8 +285,8 @@ export default {
           ) {
             alert(
               "E-Mail của công ty : " +
-                grdSelectedRow[i].cus_cd +
-                " chưa đúng. Chỉ sử dụng được 1 mail hoặc định dạng mail chưa đúng."
+              grdSelectedRow[i].cus_cd +
+              " chưa đúng. Chỉ sử dụng được 1 mail hoặc định dạng mail chưa đúng."
             );
             return;
           }
@@ -576,22 +445,22 @@ export default {
       //   success: this.OnSuccessCallReUploadPDF,this.tei_einvoice_m_pk_row
       //   error: this.OnErrorCallReUploadPDF,
       // });
-     
-     //351913 265263 304524  313069
-        this.isProcessing=true
-    //this.pdfUrl = await this.pdfUrlGetter(385207);
-    this.pdfUrl = await this.pdfUrlGetter(this.tei_einvoice_m_pk_row);
+
+      //351913 265263 304524  313069
+      this.isProcessing = true
+      //this.pdfUrl = await this.pdfUrlGetter(385207);
+      this.pdfUrl = await this.pdfUrlGetter(this.tei_einvoice_m_pk_row);
       //   this.pdfUrl = await this.$axios.$post("/einvoice/einvoicepdfconvert", { tradecode:this.tei_einvoice_m_pk_row });
-     
+
       this.$nextTick(() => {
-        this.isProcessing=false
+        this.isProcessing = false
         this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
       });
     },
-    async pdfUrlGetter(pk){
-     const pdfUrlExcel = await this.getEinvoice(this,pk)
-    console.log("pdfUrlExcel " , pdfUrlExcel);
-     return pdfUrlExcel
+    async pdfUrlGetter(pk) {
+      const pdfUrlExcel = await this.getEinvoice(this, pk)
+      console.log("pdfUrlExcel ", pdfUrlExcel);
+      return pdfUrlExcel
     },
 
     onAfterLoad() {
@@ -818,9 +687,26 @@ export default {
           field: "CQT_MCCQT_ID",
           title: this.$t("cqt_mccqt_id"),
           type: "text",
-          width: 80,
+          width: 100,
           alignment: "left",
         },
+
+
+
+        {
+          field: "ETAX_STATUS",
+          title: this.$t("etax_status"),
+          width: 150,
+        },
+        {
+          field: "ETAX_RESULT",
+          title: this.$t("etax_result"),
+          width: 150,
+        },
+
+
+
+
         {
           field: "CQT_ERROR_CODE",
           title: this.$t("cqt_err_code"),
@@ -885,6 +771,32 @@ export default {
           this.selected_serial_no = this.serial_no_list[0].VAL;
         }
       }
+      const dso_etaxStatus_list = {
+        type: "list",
+        selpro: "EI_SEL_6095090_ETAX_STATUS",
+        para: [this.selected_company],
+      };
+      const checkeTaxStatus = await this._dsoCall(dso_etaxStatus_list, "select", false);
+      if (checkeTaxStatus != null) {
+        if (checkeTaxStatus.length > 0) {
+          this.etaxStatus_list = checkeTaxStatus;
+          this.selected_etaxStatus = this.etaxStatus_list[0].VAL;
+        }
+      }
+
+      const dso_etaxResult_list = {
+        type: "list",
+        selpro: "EI_SEL_6095090_ETAX_RESULT",
+        para: [this.selected_company],
+      };
+      const checkeTaxResult = await this._dsoCall(dso_etaxResult_list, "select", false);
+      if (checkeTaxResult != null) {
+        if (checkeTaxResult.length > 0) {
+          this.etaxResult_list = checkeTaxResult;
+          this.selected_etaxResult = this.etaxResult_list[0].VAL;
+        }
+      }
+
       const dso_status_list = {
         type: "list",
         selpro: "EI_SEL_6095090_STATUS",
@@ -896,6 +808,7 @@ export default {
           this.selected_status = this.status_list[0].VAL;
         }
       }
+
       // console.log(checkStatus);
       const dso_tradingtype_list = {
         type: "list",

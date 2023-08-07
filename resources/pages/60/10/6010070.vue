@@ -9,7 +9,7 @@
               <v-container fluid class="py-0">
                 <v-row justify="end" class="mr-1">
                   <v-col cols="6">
-                     <BaseInput :label="$t('user_id')" v-model="userID"  @keypress.enter="searchUser"/>
+                     <BaseInput :label="$t('user_id')" v-model="userID" @keyPressEnter="searchUser" />
                   </v-col>
                   <v-col cols="6">
                     <div class="d-flex justify-end">

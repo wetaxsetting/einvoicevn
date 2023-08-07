@@ -61,7 +61,7 @@
                 </v-col>
                 <v-col md="7" class="pr-3">
                   <GwFlexBox justify="end">
-                    <BaseButton icon_type="xml" :btn_text="$t('view_xml')" @onclick="onClick('viewXML')" />
+                    <BaseButton icon_type="xml" :btn_text="$t('view_xml')" @onclick="onClick('viewXML_04_SS')" />
                     <BaseButton icon_type="xml" :btn_text="$t('view_dec')" @onclick="onClick('viewDEC')" />
 
                     <BaseButton icon_type="eye_on" :btn_text="$t('checking_result_CQT')" @onclick="onClick('CHECKCQT')" />
@@ -183,8 +183,8 @@
                       'LDO',
                       'TEI_EINVOICE_SS_M_PK',
                       'CUSTOMER_NM',
-                       'BUYER_POSITION',
-                       'BUYER_REPRESENT',
+                      'BUYER_POSITION',
+                      'BUYER_REPRESENT',
                     ]" />
                 </v-col>
               </v-row>
@@ -224,7 +224,7 @@
             </v-col>
             <v-col md="3">
               <BaseSelect :label="$t('serial_no')" item-value="CODE" item-text="NAME" :lstData="serial_no_list"
-                v-model="selected_serial_no"  />
+                v-model="selected_serial_no" />
             </v-col>
             <v-col md="3">
               <BaseInput :label="$t('invoice_no')" v-model="invoice_no_pop" />
@@ -344,9 +344,9 @@ export default {
     await this.getListCodes("form_no");
     await this.getListCodes("serial_no");
     await this.getListCodes("e-invoice_type");
-    
+
     await this.initHeaderList();
-   
+
   },
   computed: {
     user() {
@@ -457,9 +457,12 @@ export default {
           this.$refs.grdDetail.onSetMarkedDelete();
           break;
 
-          case"CHECKCQT": 
+        case "CHECKCQT":
           await this.OnCheckingDec();
           break;
+        case "viewXML_04_SS":
+          this.OnPreviewXMLSS();
+        break;
       }
     },
     async dsoMaster(action) {
@@ -523,8 +526,6 @@ export default {
     },
     onSelect() {
       let selectedData = this.$refs.popupGrid.getSelectedRows();
-      console.log("file: 6095280.vue:519 [vng-304] onSelect [vng-304] selectedData:", selectedData)
-      
       for (let i = 0; i < selectedData.length; i++) {
         this.$refs.grdDetail.onAdd({
           _rowstatus: "i",
@@ -551,19 +552,6 @@ export default {
         caption: this.$t("no"),
         width: 50
       },
-      // {
-      //   dataField: "DECLARE_NM",
-      //   caption: this.$t("declare_nm"),
-      //   datasource: {
-      //     KEY: "CODE",
-      //     VALUE: "NAME",
-      //     data: this.dataMasterList.declarationNameList,
-      //   },
-      // },
-      // {
-      //   dataField: "FORM_NO",
-      //   caption: this.$t("form_no"),
-      // },
       {
         dataField: "STATUS",
         caption: this.$t("status"),
@@ -652,7 +640,7 @@ export default {
         caption: this.$t("cancel_reason"),
         allowEditing: true,
         width: 300,
-        
+
       },
       {
         dataField: "CUSTOMER_NM",
@@ -823,35 +811,35 @@ export default {
           }
           break;
 
-          // case "type_e-invoice":
-          // const dso_e_invoicetype_list = {
-          //   type: "list",
-          //   selpro: "AC_SEL_6095280_INVOICE_TYPE",
-          //   para: [this.modelSearch.COMPANY_PK],
-          // };
-          // const checke_invoice_type = await this._dsoCall(dso_e_invoicetype_list, "select", false);
-          // if (checke_invoice_type != null) {
-          //   if (checke_invoice_type.length > 0) {
-          //     this.type_invoice_list = checke_invoice_type[0].CODE;
-          //   }
-          // }
-          // break;
+        // case "type_e-invoice":
+        // const dso_e_invoicetype_list = {
+        //   type: "list",
+        //   selpro: "AC_SEL_6095280_INVOICE_TYPE",
+        //   para: [this.modelSearch.COMPANY_PK],
+        // };
+        // const checke_invoice_type = await this._dsoCall(dso_e_invoicetype_list, "select", false);
+        // if (checke_invoice_type != null) {
+        //   if (checke_invoice_type.length > 0) {
+        //     this.type_invoice_list = checke_invoice_type[0].CODE;
+        //   }
+        // }
+        // break;
 
 
-          // case "e-invoice_type":
-          // const dso_invoicetype_list = {
-          //   type: "list",
-          //   selpro: "AC_SEL_6095280_INVOICE_TYPE",
-          //   para: [this.modelSearch.COMPANY_PK],
-          // };
-          // const checkinvoice_type = await this._dsoCall(dso_invoicetype_list, "select", false);
-          // if (checkinvoice_type != null) {
-          //   if (checkinvoice_type.length > 0) {
-          //     this.e_invoice_type_list = checkinvoice_type[0].CODE;
-          //   }
-          // }
-          // break;
-          
+        // case "e-invoice_type":
+        // const dso_invoicetype_list = {
+        //   type: "list",
+        //   selpro: "AC_SEL_6095280_INVOICE_TYPE",
+        //   para: [this.modelSearch.COMPANY_PK],
+        // };
+        // const checkinvoice_type = await this._dsoCall(dso_invoicetype_list, "select", false);
+        // if (checkinvoice_type != null) {
+        //   if (checkinvoice_type.length > 0) {
+        //     this.e_invoice_type_list = checkinvoice_type[0].CODE;
+        //   }
+        // }
+        // break;
+
       }
     },
     async initModel() {
@@ -886,40 +874,57 @@ export default {
 
 
 
-    OnCheckingDec()
-{
-	var count = 1;
-	if(confirm("Bạn muốn kiểm tra tờ khai này?"))
-	{	
-		jQuery.support.cors = true;
-		$.ajax({
-			 url:  "http://genuclouding.com/wseinvoice/BSService.asmx/CheckingDeclationCQT_v3",
-			 dataType: 'text',
-			 method: 'POST',
-			 data: {	tei_einvoice_issuse_cqt_pk: txtPK.value, 
-						tei_company_pk: lstCompany.value,  
-						tradecode: txtTrade_Code_CQT.value, 
-						ctr_by: txtUserName.value },
-			 error: function (response, json, textStatus, errorThrown) {
-				 alert(' Error :' + errorThrown);
-			 },
-			 success: function (response) {
-				 
-				  var xmlDoc = $.parseXML(response);
-				  var xml = $(xmlDoc);
-				  //alert(xml.text());
-				  let obj = $.parseJSON(xml.text());
-				if(obj.msg == "OK")
-				{
-					alert("Checking Ma CQT is OK !!");
-					//dso_steafrstea010003_s_01.Call('SELECT');
-					//txtXMl_T.value = obj.result;	
-					 
-				}
-			 }
-	   });
-	}	   
-}
+    OnCheckingDec() {
+      var count = 1;
+      if (confirm("Bạn muốn kiểm tra tờ khai này?")) {
+        jQuery.support.cors = true;
+        $.ajax({
+          url: "http://genuclouding.com/wseinvoice/BSService.asmx/CheckingDeclationCQT_v3",
+          dataType: 'text',
+          method: 'POST',
+          data: {
+            tei_einvoice_issuse_cqt_pk: txtPK.value,
+            tei_company_pk: lstCompany.value,
+            tradecode: txtTrade_Code_CQT.value,
+            ctr_by: txtUserName.value
+          },
+          error: function (response, json, textStatus, errorThrown) {
+            alert(' Error :' + errorThrown);
+          },
+          success: function (response) {
+
+            var xmlDoc = $.parseXML(response);
+            var xml = $(xmlDoc);
+            //alert(xml.text());
+            let obj = $.parseJSON(xml.text());
+            if (obj.msg == "OK") {
+              alert("Checking Ma CQT is OK !!");
+              //dso_steafrstea010003_s_01.Call('SELECT');
+              //txtXMl_T.value = obj.result;	
+
+            }
+          }
+        });
+      }
+    },
+
+    OnPreviewXMLSS() {
+      var v_user_id = System.getSessionUserId();
+      if (txtPK.value != "") {
+        var url = "/system/index.gw?openType=F&objId=stacpustac710001";
+        url += "&p_tac_e_invoice_crca_pk=" + txtPK.value;
+        url += "&p_option=XML";
+        url += "&p_TradingType=04SS";
+        url += "&p_user_id=" + v_user_id;
+        url += "&p_tei_company_pk=XML";
+        url += "&p_status=" + v_sign_stamp;
+
+        System.OpenModal(url, 1024, 1000, 'HDGTGT', document, "");
+      } else {
+        alert("please select row search grid");
+        return;
+      }
+    }
   }
 }
 </script>

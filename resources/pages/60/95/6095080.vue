@@ -1022,7 +1022,7 @@ export default {
       this.modelMaster.MSO = "01/ĐKTĐ-HĐĐT";
       this.modelMaster.MST = this.dataMasterList.companyList.find(item => item.VAL == this.modelMaster.TEI_COMPANY_PK).TAX_CODE;
       this.modelMaster.DDANH = null;
-      this.modelMaster.CODE = "1"; //Declare_CODE
+      this.modelMaster.CODE = "00"; //Declare_CODE//
       this.modelMaster.TEN = null;
       this.modelMaster.NLHE = null;
       this.modelMaster.DCLHE = null;

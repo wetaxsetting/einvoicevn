@@ -26,10 +26,10 @@
             </v-col>
 
             <v-col md="6" class="pl-3">
-              <BaseInput outlined :label="$t('symbols')" v-model="modelSearch.SYMBOLS" number />
+              <BaseInput outlined :label="$t('symbols')" v-model="modelSearch.SYMBOLS"  />
             </v-col>
             <v-col md="6" class="pr-3">
-              <BaseInput outlined :label="$t('invoice_no')" v-model="modelSearch.INVOICE" number />
+              <BaseInput outlined :label="$t('invoice_no')" v-model="modelSearch.INVOICE"  />
             </v-col>
             <v-col md="12">
               <BaseGridView ref="grdSearch" :header="headerList.grdSearch" sel_procedure="AC_SEL_6095280_S_04"
@@ -595,7 +595,7 @@ export default {
       },
       {
         dataField: "VOUCHER_NO",
-        caption: this.$t("voucher"),
+        caption: this.$t("voucher_no"),
         allowEditing: true,
       },
       {

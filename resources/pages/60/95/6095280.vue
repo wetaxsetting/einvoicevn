@@ -247,18 +247,27 @@
         </v-container>
       </v-card>
     </v-dialog>
+
+    <view-einvoice-xml-dialog ref="ViewEInvoiceXMLDialog" :src_xmlUrl="xmlUrl" :xmlFileNm="xmlFileNm" dwnFile
+      @minimizeDialog="manualIsMinimized = true"
+      @closeManualDialog="manualIsMinimized = false"></view-einvoice-xml-dialog>
   </v-container>
 </template>
 
 
 <script>
+import ViewEInvoiceXMLDialog from "@/components/dialog/ViewEInvoiceXMLDialog.vue";
 export default {
   layout: "default",
   middleware: "user",
   components: {
-
+    "view-einvoice-xml-dialog": ViewEInvoiceXMLDialog
   },
   data: () => ({
+
+    xmlFileNm: "",
+    xmlUrl: "",
+
     isShowLeft: true,
     headerList: {
       grdSearch: [],
@@ -339,6 +348,7 @@ export default {
     this.onResize();
   },
   async created() {
+    console.clear();
     await this.initDataList();
     await this.initModel();
     await this.getListCodes("form_no");
@@ -386,9 +396,15 @@ export default {
             this.modelMaster.DDANH = item.DDANH;
           }
         });
-      }
 
+
+
+
+
+      }
       this.getListCodes("form_no");
+      this.getListCodes("serial_no");
+
     },
     "modelSearch.TCQT"(val) {
       if (val) {
@@ -398,11 +414,11 @@ export default {
     form_no_pop(val) {
       this.getListCodes("serial_no");
     },
-    form_date(val){
+    form_date(val) {
       this.getListCodes("form_no");
       this.getListCodes("serial_no");
     },
-    form_to(val){
+    form_to(val) {
       this.getListCodes("form_no");
       this.getListCodes("serial_no");
     },
@@ -456,6 +472,15 @@ export default {
           break;
         case "newDetail":
           this.dlg_View = true;
+          
+          let _break = false;
+          while(!_break) {
+            try {
+              this.$refs.popupGrid.Clear();
+              _break = true;
+            }catch{}
+            await this.wait(100);
+          }
           break;
         case "saveDetail":
           this.$refs.grdDetail.saveData();
@@ -797,7 +822,7 @@ export default {
           const dso_form_list = {
             type: "list",
             selpro: "AC_SEL_6095280_FORM_NO",
-            para: [this.modelSearch.COMPANY_PK, this.form_date , this.form_to],
+            para: [this.modelSearch.COMPANY_PK, this.form_date, this.form_to],
           };
           const checkFormNo = await this._dsoCall(dso_form_list, "select", false);
           if (checkFormNo != null) {
@@ -811,7 +836,7 @@ export default {
           const dso_serial_no_list = {
             type: "list",
             selpro: "AC_SEL_6095280_SERIAL_NO",
-            para: [this.modelSearch.COMPANY_PK, this.form_no_pop , this.form_date , this.form_to],
+            para: [this.modelSearch.COMPANY_PK, this.form_no_pop, this.form_date, this.form_to],
           };
           const checkSerialNo = await this._dsoCall(dso_serial_no_list, "select", false);
           if (checkSerialNo != null) {
@@ -885,39 +910,39 @@ export default {
 
 
 
-    async OnCheckingDec() {
-      var count = 1;
-      if (confirm("Bạn muốn kiểm tra tờ khai này?")) {
-        jQuery.support.cors = true;
-        $.ajax({
-          url: "http://genuclouding.com/wseinvoice/BSService.asmx/CheckingDeclationCQT_v3",
-          dataType: 'text',
-          method: 'POST',
-          data: {
-            tei_einvoice_issuse_cqt_pk: txtPK.value,
-            tei_company_pk: lstCompany.value,
-            tradecode: txtTrade_Code_CQT.value,
-            ctr_by: txtUserName.value
-          },
-          error: function (response, json, textStatus, errorThrown) {
-            alert(' Error :' + errorThrown);
-          },
-          success: function (response) {
+    // async OnCheckingDec() {
+    //   var count = 1;
+    //   if (confirm("Bạn muốn kiểm tra tờ khai này?")) {
+    //     jQuery.support.cors = true;
+    //     $.ajax({
+    //       url: "http://genuclouding.com/wseinvoice/BSService.asmx/CheckingDeclationCQT_v3",
+    //       dataType: 'text',
+    //       method: 'POST',
+    //       data: {
+    //         tei_einvoice_issuse_cqt_pk: modelMaster.TEI_COMPANY_PK.value,
+    //         tei_company_pk: dataMasterList.companyList.value,
+    //         tradecode: txtTrade_Code_CQT.value,
+    //         ctr_by: txtUserName.value
+    //       },
+    //       error: function (response, json, textStatus, errorThrown) {
+    //         alert(' Error :' + errorThrown);
+    //       },
+    //       success: function (response) {
 
-            var xmlDoc = $.parseXML(response);
-            var xml = $(xmlDoc);
-            //alert(xml.text());
-            let obj = $.parseJSON(xml.text());
-            if (obj.msg == "OK") {
-              alert("Checking Ma CQT is OK !!");
-              //dso_steafrstea010003_s_01.Call('SELECT');
-              //txtXMl_T.value = obj.result;	
+    //         var xmlDoc = $.parseXML(response);
+    //         var xml = $(xmlDoc);
+    //         //alert(xml.text());
+    //         let obj = $.parseJSON(xml.text());
+    //         if (obj.msg == "OK") {
+    //           alert("Checking Ma CQT is OK !!");
+    //           //dso_steafrstea010003_s_01.Call('SELECT');
+    //           //txtXMl_T.value = obj.result;	
 
-            }
-          }
-        });
-      }
-    },
+    //         }
+    //       }
+    //     });
+    //   }
+    // },
 
     async OnPreviewXMLSS() {
       var v_user_id = System.getSessionUserId();
@@ -945,7 +970,7 @@ export default {
       if (!this.modelMaster.CQT_MAGD) {
         let data_xml = this.onGeneralXML();
         console.log("file: 6095280.vue:940 [vng-304] onPreviewXML [vng-304] data_xml:", data_xml)
-        
+
         // let resConvertXML = await this.$axios.$post("/einvoice/declare2xml", {
         //   responseType: "json",
         //   declare: data_xml,

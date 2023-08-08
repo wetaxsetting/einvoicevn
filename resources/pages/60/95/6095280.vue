@@ -169,7 +169,7 @@
               <v-row dense>
                 <v-col md="12">
                   <BaseGridView ref="grdDetail" :header="headerList.grdDetail" sel_procedure="AC_SEL_6095280_6"
-                    upd_procedure="AC_UP_6095280_7" :multiselect="true" :headertype="1" selectionmode="singlerow"
+                    upd_procedure="AC_UP_6095280_7" :multiselect="true" :headertype="1" selectionmode="singlecell"
                     :filter_paras="[this.modelMaster.PK]" :height="limitHeightGridDetails" :update_paras="[
                       'PK',
                       'TEI_EINVOICE_M_PK',
@@ -375,19 +375,15 @@ export default {
   watch: {
     "modelMaster.LTEN"(val) {
       if (val) {
-        // console.log("val  ++===>",val);
-        // console.log("this.dataMasterList.declarationNameList ++===>", this.dataMasterList.declarationNameList);
         this.dataMasterList.declarationNameList.forEach(item => {
           if (item.CODE == val) {
             this.modelMaster.TEN = item.NAME;
           }
-          // console.log("this.modelMaster.TEN +++===> ", this.modelMaster.TEN);
         });
       }
     },
     "modelSearch.COMPANY_PK"(val) {
       if (val) {
-        console.log("this.dataMasterList.companyList +++==> ", this.dataMasterList.companyInfoList);
         this.modelMaster.TEI_COMPANY_PK = val;
         this.dataMasterList.companyInfoList.forEach(item => {
           if (item.TEI_COMPANY_PK == val) {
@@ -425,7 +421,7 @@ export default {
           this.$refs.grdSearch.loadData();
           break;
         case "grdSearchClick":
-          this.modelMaster.PK = await this.$refs.grdSearch.getSelectedRows()[0].PK;
+          this.modelMaster.PK = await this.$refs.grdSearch.onSelectedData().PK;
           await this.dsoMaster("select");
           this.$refs.grdDetail.loadData();
           break;
@@ -539,8 +535,6 @@ export default {
                   break
                 case "u":
                   this.modelMaster = { ...res };
-                  console.log({ ...res });
-                  console.log(this.modelMaster);
                   this.modelMaster._rowstatus = "u";
                   break;
                 case "d":
@@ -976,7 +970,6 @@ export default {
 
       if (!this.modelMaster.CQT_MAGD) {
         let data_xml = this.onGeneralXML();
-        console.log("file: 6095280.vue:940 [vng-304] onPreviewXML [vng-304] data_xml:", data_xml)
 
         // let resConvertXML = await this.$axios.$post("/einvoice/declare2xml", {
         //   responseType: "json",

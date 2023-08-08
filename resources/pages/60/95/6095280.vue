@@ -22,7 +22,7 @@
                 item-value="CODE" item-text="NAME" />
             </v-col>
             <v-col md="6" class="pr-3">
-              <BaseInput outlined :label="$t('voucher_no')" v-model="modelSearch.VOUCHER" number />
+              <BaseInput outlined :label="$t('voucher_no')" v-model="modelSearch.VOUCHER"  />
             </v-col>
 
             <v-col md="6" class="pl-3">
@@ -396,11 +396,6 @@ export default {
             this.modelMaster.DDANH = item.DDANH;
           }
         });
-
-
-
-
-
       }
       this.getListCodes("form_no");
       this.getListCodes("serial_no");
@@ -595,11 +590,13 @@ export default {
       {
         dataField: "TRADE_CODE",
         caption: this.$t("trade_code"),
+        allowEditing: true,
         width: 120
       },
       {
         dataField: "VOUCHER_NO",
         caption: this.$t("voucher"),
+        allowEditing: true,
       },
       {
         dataField: "NTBAO",
@@ -783,6 +780,16 @@ export default {
           alignment: "left",
           type: "text",
         },
+        {
+        dataField: "BUYER_POSITION",
+        caption: this.$t("position"),
+        width: 200
+      },
+      {
+        dataField: "BUYER_REPRESENT",
+        caption: this.$t("represent"),
+        width: 200
+      },
       ]
     },
     async initDataList() {

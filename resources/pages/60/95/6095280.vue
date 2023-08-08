@@ -695,13 +695,13 @@ export default {
       },
       {
         dataField: "BUYER_POSITION",
-        caption: this.$t("position"),
+        caption: this.$t("buyer_position"),
         allowEditing: true,
         width: 200
       },
       {
         dataField: "BUYER_REPRESENT",
-        caption: this.$t("represent"),
+        caption: this.$t("buyer_represent"),
         allowEditing: true,
         width: 200
       },

@@ -154,7 +154,7 @@ export default {
     selected_status: "",
     txtPartner: "",
     trading_type_list: [],
-    selected_trading_type: "",
+    selected_trading_type: "DO",
     tot_net_tr_amt: 0,
     tot_net_bk_amt: 0,
     tot_net_tr_vat_amt: 0,
@@ -209,38 +209,6 @@ export default {
     this.onSetHeader();
   },
   watch: {
-    async selected_company(val) {
-      const dso_form_list = {
-        type: "list",
-        selpro: "EI_SEL_6095090_FORM_NO",
-        para: [this.selected_company],
-      };
-      const checkFormNo = await this._dsoCall(dso_form_list, "select", false);
-      if (checkFormNo != null) {
-        if (checkFormNo.length > 0) {
-          this.form_no_list = checkFormNo;
-          this.selected_form_no = this.form_no_list[0].VAL;
-        }
-      }
-    },
-    async selected_form_no(val) {
-      const dso_serial_list = {
-        type: "list",
-        selpro: "EI_SEL_6095090_SERIAL_NO",
-        para: [this.selected_company, this.selected_form_no],
-      };
-      const checkSerialNo = await this._dsoCall(
-        dso_serial_list,
-        "select",
-        false
-      );
-      if (checkSerialNo != null) {
-        if (checkSerialNo.length > 0) {
-          this.serial_no_list = checkSerialNo;
-          this.selected_serial_no = this.serial_no_list[0].VAL;
-        }
-      }
-    },
     selected_status(val) {
       // console.log(`${new Date().getTime()} val=`, val)
       if (val == 1) {
@@ -248,6 +216,21 @@ export default {
       } else {
         this.offInvoiceSign = false;
       }
+    },
+    selected_company(val){
+      this.getListCode("form_no");
+      this.getListCode("serial_no");
+    },
+    selected_form_no(val){
+      this.getListCode("serial_no");
+    },
+    dt_from(val){
+      this.getListCode("form_no");
+      this.getListCode("serial_no");
+    },
+    dt_to(val){
+      this.getListCode("form_no");
+      this.getListCode("serial_no");
     },
   },
   computed: {
@@ -742,35 +725,7 @@ export default {
           this.selected_company = this.company_list[0].VAL;
         }
       }
-      const dso_form_list = {
-        type: "list",
-        selpro: "EI_SEL_6095090_FORM_NO",
-        para: [this.selected_company],
-      };
-      const checkFormNo = await this._dsoCall(dso_form_list, "select", false);
-      if (checkFormNo != null) {
-        if (checkFormNo.length > 0) {
-          this.form_no_list = checkFormNo;
-          this.selected_form_no = this.form_no_list[0].VAL;
-        }
-      }
-      const dso_serial_list = {
-        type: "list",
-        selpro: "EI_SEL_6095090_SERIAL_NO",
-        para: [this.selected_company, this.selected_form_no],
-      };
-
-      const checkSerialNo = await this._dsoCall(
-        dso_serial_list,
-        "select",
-        false
-      );
-      if (checkSerialNo != null) {
-        if (checkSerialNo.length > 0) {
-          this.serial_no_list = checkSerialNo;
-          this.selected_serial_no = this.serial_no_list[0].VAL;
-        }
-      }
+      
       const dso_etaxStatus_list = {
         type: "list",
         selpro: "EI_SEL_6095090_ETAX_STATUS",
@@ -822,7 +777,7 @@ export default {
       if (checkTrandingType != null) {
         if (checkTrandingType.length > 0) {
           this.trading_type_list = checkTrandingType;
-          this.selected_trading_type = this.trading_type_list[0].VAL;
+          this.selected_trading_type = this.trading_type_list[1].VAL;
         }
       }
       const dso_directly_list = {
@@ -840,6 +795,39 @@ export default {
           this.yn_list = checkDerictly;
           this.selected_yn = this.yn_list[0].VAL;
         }
+      }
+    },
+
+    async getListCode(pos) {
+      switch (pos) {
+        case "form_no":
+          const dso_form_list = {
+            type: "list",
+            selpro: "AC_SEL_6095090_FORM_NO",
+            para: [this.selected_company, this.dt_from, this.dt_to],
+          };
+          const checkFormNo = await this._dsoCall(dso_form_list, "select", false);
+          if (checkFormNo != null) {
+            if (checkFormNo.length > 0) {
+              this.form_no_list = checkFormNo;
+              this.selected_form_no = this.form_no_list[0].VAL;
+            }
+          }
+          break;
+        case "serial_no":
+          const dso_serial_no_list = {
+            type: "list",
+            selpro: "AC_SEL_6095090_SERIAL_NO",
+            para: [this.selected_company, this.selected_form_no, this.dt_from, this.dt_to],
+          };
+          const checkSerialNo = await this._dsoCall(dso_serial_no_list, "select", false);
+          if (checkSerialNo != null) {
+            if (checkSerialNo.length > 0) {
+              this.serial_no_list = checkSerialNo;
+              this.selected_serial_no = this.serial_no_list[0].VAL;
+            }
+          }
+          break;
       }
     },
   },

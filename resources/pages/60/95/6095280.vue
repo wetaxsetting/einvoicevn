@@ -22,7 +22,7 @@
                 item-value="CODE" item-text="NAME" />
             </v-col>
             <v-col md="6" class="pr-3">
-              <BaseInput outlined :label="$t('voucher_no')" v-model="modelSearch.VOUCHER"  />
+              <BaseInput outlined :label="$t('voucher_no')" v-model="modelSearch.VOUCHER_NO"  />
             </v-col>
 
             <v-col md="6" class="pl-3">

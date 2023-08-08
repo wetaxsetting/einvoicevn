@@ -61,8 +61,8 @@
                 </v-col>
                 <v-col md="7" class="pr-3">
                   <GwFlexBox justify="end">
-                    <BaseButton icon_type="xml" :btn_text="$t('view_xml')" @onclick="onClick('viewXML_04_SS')" />
-                    <BaseButton icon_type="xml" :btn_text="$t('view_dec')" @onclick="onClick('viewDEC')" />
+                    <BaseButton icon_type="xml" :btn_text="$t('view_xml_04_SS')" @onclick="onClick('viewXML_04_SS')" />
+                    <BaseButton icon_type="xml" :btn_text="$t('view_xml')" @onclick="onClick('viewXML')" />
 
                     <BaseButton icon_type="eye_on" :btn_text="$t('checking_result_CQT')" @onclick="onClick('CHECKCQT')" />
                     <BaseButton icon_type="pensign" :btn_text="$t('sign')" @onclick="onClick()"
@@ -398,7 +398,14 @@ export default {
     form_no_pop(val) {
       this.getListCodes("serial_no");
     },
-
+    form_date(val){
+      this.getListCodes("form_no");
+      this.getListCodes("serial_no");
+    },
+    form_to(val){
+      this.getListCodes("form_no");
+      this.getListCodes("serial_no");
+    },
   },
   methods: {
     async onClick(pos) {
@@ -462,7 +469,11 @@ export default {
           break;
         case "viewXML_04_SS":
           this.OnPreviewXMLSS();
-        break;
+          break;
+
+        case "viewXML":
+          this.OnPreviewXML();
+          break;
       }
     },
     async dsoMaster(action) {
@@ -579,7 +590,7 @@ export default {
       }, {
         dataField: "NO",
         caption: this.$t("no"),
-        allowEditing: true,
+        allowEditing: false,
         width: 50
       },
       {
@@ -786,7 +797,7 @@ export default {
           const dso_form_list = {
             type: "list",
             selpro: "AC_SEL_6095280_FORM_NO",
-            para: [this.modelSearch.COMPANY_PK],
+            para: [this.modelSearch.COMPANY_PK, this.form_date , this.form_to],
           };
           const checkFormNo = await this._dsoCall(dso_form_list, "select", false);
           if (checkFormNo != null) {
@@ -800,7 +811,7 @@ export default {
           const dso_serial_no_list = {
             type: "list",
             selpro: "AC_SEL_6095280_SERIAL_NO",
-            para: [this.modelSearch.COMPANY_PK, this.form_no_pop],
+            para: [this.modelSearch.COMPANY_PK, this.form_no_pop , this.form_date , this.form_to],
           };
           const checkSerialNo = await this._dsoCall(dso_serial_no_list, "select", false);
           if (checkSerialNo != null) {
@@ -874,7 +885,7 @@ export default {
 
 
 
-    OnCheckingDec() {
+    async OnCheckingDec() {
       var count = 1;
       if (confirm("Bạn muốn kiểm tra tờ khai này?")) {
         jQuery.support.cors = true;
@@ -908,7 +919,7 @@ export default {
       }
     },
 
-    OnPreviewXMLSS() {
+    async OnPreviewXMLSS() {
       var v_user_id = System.getSessionUserId();
       if (txtPK.value != "") {
         var url = "/system/index.gw?openType=F&objId=stacpustac710001";
@@ -924,7 +935,46 @@ export default {
         alert("please select row search grid");
         return;
       }
-    }
+    },
+    async onPreviewXML() {
+      if (!this.modelMaster.PK == null) {
+        return this.showNotification("warning", this.$t("error_occurs"), "pls_select_declaration");
+      }
+      this.isProcessing = true;
+
+      if (!this.modelMaster.CQT_MAGD) {
+        let data_xml = this.onGeneralXML();
+        console.log("file: 6095280.vue:940 [vng-304] onPreviewXML [vng-304] data_xml:", data_xml)
+        
+        // let resConvertXML = await this.$axios.$post("/einvoice/declare2xml", {
+        //   responseType: "json",
+        //   declare: data_xml,
+        // });
+
+        // if (resConvertXML.success && resConvertXML.data.length) {
+        //   this.xmlUrl = resConvertXML.data; //new Blob([byteArray], { type: _typeFile });;
+        //   await this.$nextTick();
+        //   this.isProcessing = false;
+        //   this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
+        // } else {
+        //   this.showNotification("danger", res.message);
+        // }
+      }
+      else {
+        // try {
+        //   this.xmlUrl = this.modelMaster.XML_SIGNED; //new Blob([byteArray], { type: _typeFile });;
+        //   this.$nextTick(() => {
+        //     this.isProcessing = false;
+        //     this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
+        //   });
+
+        //   this.isProcessing = false;
+        // } catch (e) {
+        //   this.isProcessing = false;
+        //   return this.showNotification("danger", e.message);
+        // }
+      }
+    },
   }
 }
 </script>

@@ -678,7 +678,7 @@ export default {
       },
       {
         dataField: "KHMSHDON",
-        caption: this.$t("form_no"),
+        caption: this.$t("form_no_iv"),
         allowEditing: true,
         width: 80
       },

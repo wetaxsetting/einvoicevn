@@ -61,10 +61,10 @@
                 </v-col>
                 <v-col md="7" class="pr-3">
                   <GwFlexBox justify="end">
-                    <BaseButton icon_type="xml" :btn_text="$t('view_xml_04_SS')" @onclick="onClick('viewXML_04_SS')" />
+                    <BaseButton icon_type="xml" :btn_text="$t('view_xml_04_ss')" @onclick="onClick('viewXML_04_SS')" />
                     <BaseButton icon_type="xml" :btn_text="$t('view_xml')" @onclick="onClick('viewXML')" />
 
-                    <BaseButton icon_type="eye_on" :btn_text="$t('checking_result_CQT')" @onclick="onClick('CHECKCQT')" />
+                    <BaseButton icon_type="eye_on" :btn_text="$t('checking_result_cqt')" @onclick="onClick('CHECKCQT')" />
                     <BaseButton icon_type="pensign" :btn_text="$t('sign')" @onclick="onClick()"
                       :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
                     <!-- Add -->
@@ -476,13 +476,13 @@ export default {
             }
           } else {
             this.selectedTable == "E"
-            setTimeout(() => {
+            
               this.$refs.grdDetail.addRowStruct({
               _rowstatus: "i",
               NO: "",
               PK: "",
               TEI_EINVOICE_M_PK: this.modelMaster.TEI_COMPANY_PK,
-              // MCQTCAP: "",
+              MCQTCAP: "",
               KHMSHDON: "",
               KHHDON:"",
               SHDON: "",
@@ -494,7 +494,6 @@ export default {
               TEI_EINVOICE_SS_M_PK: this.modelMaster.PK,
 
             });
-            }, 1000);
             
           }
 
@@ -510,7 +509,7 @@ export default {
                 e.TEI_EINVOICE_M_PK =  this.modelMaster.TEI_COMPANY_PK;
               }
             });
-            let data = this.$refs.grdDetail.dataList; 
+            let data = this.$refs.grdDetail.getData(); 
             for (let i = 0; i < data.length; i++) {
               if(!data[i].KHMSHDON){
                 this.showNotification("warning", this.$t("can_not_save"), this.$t("please_input_form_no_at_" + (i+1)));
@@ -522,7 +521,7 @@ export default {
                 this.showNotification("warning", this.$t("can_not_save"), this.$t("please_input_invoice_no_at_" + (i+1)));
                 return;
               }else if (!data[i].NGAY){
-                this.showNotification("warning", this.$t("can_not_save"), this.$t("please_input_date_at_" + (i+1)));
+                this.showNotification("warning", this.$t("can_not_save"), this.$t("please_input_invoice_date_at_" + (i+1)));
                 return;
               }else if(!data[i].TCTBAO){
                 this.showNotification("warning", this.$t("can_not_save"), this.$t("please_input_nature_of_notice_at_" + (i+1)));
@@ -532,10 +531,7 @@ export default {
                 return;
               }
             }
-
-            setTimeout(() => {
-              this.$refs.grdDetail.saveData();
-            }, 1000);
+            this.$refs.grdDetail.saveData();
            
           }
           break;

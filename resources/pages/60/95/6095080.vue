@@ -781,6 +781,7 @@ export default {
             valueExpr: 'CODE',
             dataSource: this.token_type_list,
           },
+          width: 230,
         }
         ];
     },

@@ -21,10 +21,10 @@
               <v-btn icon small @click="logWindowIsOpen = !logWindowIsOpen" v-if="$vuetify.breakpoint.lgAndUp && user && (user.SYSADMIN_YN === 'Y' || user.sysadmin_yn === 'Y') && !logWindowIsOpen">
                 <v-icon small>mdi-note-text</v-icon>
               </v-btn>
-              <div class="d-flex text-h4 font-weight-bold mx-4" v-if="appName">
+              <div class="d-flex text-h5 font-weight-bold mx-4" v-if="appName">
                 <span class="primaryText">{{ appName }}</span>
               </div>
-              <div class="d-flex text-h4 font-weight-bold mx-4" v-else>
+              <div class="d-flex text-h5 font-weight-bold mx-4" v-else>
                 <span class="primaryText">G-</span>
                 <span class="primaryText">ERP</span>
               </div>

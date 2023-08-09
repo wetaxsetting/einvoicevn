@@ -492,7 +492,7 @@ export default {
             this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_address"));
             break;
           } else if (this.modelMaster.CODE == "00") {
-            this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_declare_name"));
+            this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_declaration_name"));
             break;
           } else if (this.modelMaster.NLHE == "00") {
             this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_contact"));
@@ -1022,7 +1022,7 @@ export default {
       this.modelMaster.MSO = "01/ĐKTĐ-HĐĐT";
       this.modelMaster.MST = this.dataMasterList.companyList.find(item => item.VAL == this.modelMaster.TEI_COMPANY_PK).TAX_CODE;
       this.modelMaster.DDANH = null;
-      this.modelMaster.CODE = "00"; //Declare_CODE//
+      this.modelMaster.CODE = "1"; //Declare_CODE//
       this.modelMaster.TEN = null;
       this.modelMaster.NLHE = null;
       this.modelMaster.DCLHE = null;

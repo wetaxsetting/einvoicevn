@@ -464,77 +464,74 @@ export default {
         case "newDetail":
 
           if (this.selectedTable == "G") {
-            this.dlg_View = true;
-
-            let _break = false;
-            while (!_break) {
-              try {
-                this.$refs.popupGrid.Clear();
-                _break = true;
-              } catch { }
-              await this.wait(100);
+            if (!this.modelMaster.PK) {
+              // this.onClick("saveMaster");
+              this.showNotification("danger", this.$t("can_not_save") , this.$t("pls_save_master_first"));
+            } else {
+              this.$refs.grdDetail.getDataSource().forEach(e => {
+                if (!e.TEI_EINVOICE_SS_M_PK) {
+                  e.TEI_EINVOICE_SS_M_PK = this.modelMaster.PK;
+                  e.TEI_EINVOICE_M_PK = this.modelMaster.TEI_COMPANY_PK;
+                }
+              });
+              this.dlg_View = true;
+              let _break = false;
+              while (!_break) {
+                try {
+                  this.$refs.popupGrid.Clear();
+                  _break = true;
+                } catch { }
+                await this.wait(100);
+              }
             }
           } else {
             this.selectedTable == "E"
-            
-              this.$refs.grdDetail.addRowStruct({
+
+            this.$refs.grdDetail.addRowStruct({
               _rowstatus: "i",
               NO: "",
               PK: "",
               TEI_EINVOICE_M_PK: this.modelMaster.TEI_COMPANY_PK,
               MCQTCAP: "",
               KHMSHDON: "",
-              KHHDON:"",
+              KHHDON: "",
               SHDON: "",
               NGAY: "",
-              LADHDDT: this.type_invoice_list ? this.type_invoice_list[0].CODE: '',
+              LADHDDT: this.type_invoice_list ? this.type_invoice_list[0].CODE : '',
               LDO: "",
               CUSTOMER_NM: "",
               // TTHAI: "",
               TEI_EINVOICE_SS_M_PK: this.modelMaster.PK,
-
             });
           }
           break;
         case "saveDetail":
-          if(!this.modelMaster.PK){
-            // this.onClick("saveMaster");
-            this.showNotification("danger", this.$t("pls_save_master_first"));
-          }else{
-            this.$refs.grdDetail.getDataSource().forEach(e => {
-              if(!e.TEI_EINVOICE_SS_M_PK){
-                e.TEI_EINVOICE_SS_M_PK = this.modelMaster.PK;
-                e.TEI_EINVOICE_M_PK =  this.modelMaster.TEI_COMPANY_PK;
-              }
-            });
-            let data = this.$refs.grdDetail.getData(); 
+          let data = this.$refs.grdDetail.getData();
             for (let i = 0; i < data.length; i++) {
-              if(!data[i].KHMSHDON){
-                this.showNotification("warning", this.$t("can_not_save"), this.$t("please_input_form_no_at_" + (i+1)));
+              if (!data[i].KHMSHDON) {
+                this.showNotification("warning", this.$t("can_not_save"), this.$t("please_input_form_no_at_" + (i + 1)));
                 return;
-              }else if(!data[i].KHHDON){
-                this.showNotification("warning", this.$t("can_not_save"), this.$t("please_input_serial_no_at_" + (i+1)));
+              } else if (!data[i].KHHDON) {
+                this.showNotification("warning", this.$t("can_not_save"), this.$t("please_input_serial_no_at_" + (i + 1)));
                 return;
-              }else if(!data[i].SHDON){
-                this.showNotification("warning", this.$t("can_not_save"), this.$t("please_input_invoice_no_at_" + (i+1)));
+              } else if (!data[i].SHDON) {
+                this.showNotification("warning", this.$t("can_not_save"), this.$t("please_input_invoice_no_at_" + (i + 1)));
                 return;
-              }else if (!data[i].NGAY){
-                this.showNotification("warning", this.$t("can_not_save"), this.$t("please_input_invoice_date_at_" + (i+1)));
+              } else if (!data[i].NGAY) {
+                this.showNotification("warning", this.$t("can_not_save"), this.$t("please_input_invoice_date_at_" + (i + 1)));
                 return;
-              }else if (!data[i].LADHDDT){
-                this.showNotification("warning", this.$t("can_not_save"), this.$t("please_input_type_of_application_of_e_invoice_at_" + (i+1)));
+              } else if (!data[i].LADHDDT) {
+                this.showNotification("warning", this.$t("can_not_save"), this.$t("please_input_type_of_application_of_e_invoice_at_" + (i + 1)));
                 return;
-              }else if(!data[i].TCTBAO){
-                this.showNotification("warning", this.$t("can_not_save"), this.$t("please_input_nature_of_notice_at_" + (i+1)));
+              } else if (!data[i].TCTBAO) {
+                this.showNotification("warning", this.$t("can_not_save"), this.$t("please_input_nature_of_notice_at_" + (i + 1)));
                 return;
-              }else if (!data[i].LDO){
-                this.showNotification("warning", this.$t("can_not_save"), this.$t("please_input_reason_at_" + (i+1)));
+              } else if (!data[i].LDO) {
+                this.showNotification("warning", this.$t("can_not_save"), this.$t("please_input_reason_at_" + (i + 1)));
                 return;
               }
             }
             this.$refs.grdDetail.saveData();
-           
-          }
           break;
         case "deleteDetail":
           this.$refs.grdDetail.onSetMarkedDelete();

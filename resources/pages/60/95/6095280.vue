@@ -447,7 +447,7 @@ export default {
             this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_address"));
             break;
           } else if (this.modelMaster.LOAI == "00") {
-            this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_type"));
+            this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_type_category"));
             break;
           } else if (this.modelMaster.LTEN == "00") {
             this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_declaration_name"));

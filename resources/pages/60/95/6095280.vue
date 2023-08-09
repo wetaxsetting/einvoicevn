@@ -22,14 +22,14 @@
                 item-value="CODE" item-text="NAME" />
             </v-col>
             <v-col md="6" class="pr-3">
-              <BaseInput outlined :label="$t('voucher_no')" v-model="modelSearch.VOUCHER_NO"  />
+              <BaseInput outlined :label="$t('voucher_no')" v-model="modelSearch.VOUCHER_NO" />
             </v-col>
 
             <v-col md="6" class="pl-3">
-              <BaseInput outlined :label="$t('symbols')" v-model="modelSearch.SYMBOLS"  />
+              <BaseInput outlined :label="$t('symbols')" v-model="modelSearch.SYMBOLS" />
             </v-col>
             <v-col md="6" class="pr-3">
-              <BaseInput outlined :label="$t('invoice_no')" v-model="modelSearch.INVOICE"  />
+              <BaseInput outlined :label="$t('invoice_no')" v-model="modelSearch.INVOICE" />
             </v-col>
             <v-col md="12">
               <BaseGridView ref="grdSearch" :header="headerList.grdSearch" sel_procedure="AC_SEL_6095280_S_04"
@@ -462,19 +462,54 @@ export default {
         case "btnPrint":
           break;
         case "newDetail":
-          this.dlg_View = true;
-          
-          let _break = false;
-          while(!_break) {
-            try {
-              this.$refs.popupGrid.Clear();
-              _break = true;
-            }catch{}
-            await this.wait(100);
+
+          if (this.selectedTable == "G") {
+            this.dlg_View = true;
+
+            let _break = false;
+            while (!_break) {
+              try {
+                this.$refs.popupGrid.Clear();
+                _break = true;
+              } catch { }
+              await this.wait(100);
+            }
+          } else {
+            this.selectedTable == "E"
+
+            this.$refs.grdDetail.addRowStruct({
+              _rowstatus: "i",
+              NO: "",
+              PK: "",
+              TEI_EINVOICE_M_PK: this.modelMaster.TEI_COMPANY_PK,
+              MCQTCAP: "",
+              KHMSHDON: "",
+              KHHDON:"",
+              SHDON: "",
+              NGAY: "",
+              LADHDDT: this.type_invoice_list ?this.type_invoice_list[0].CODE: '',
+              LDO: "",
+              CUSTOMER_NM: "",
+              TTHAI: "",
+              TEI_EINVOICE_SS_M_PK: this.modelMaster.PK,
+
+            });
           }
+
           break;
         case "saveDetail":
-          this.$refs.grdDetail.saveData();
+          if(!this.modelMaster.PK){
+            // this.onClick("saveMaster");
+            this.showNotification("danger", this.$t("pls_save_master_first"));
+          }else{
+            this.$refs.grdDetail.getDataSource().forEach(e => {
+              if(!e.TEI_EINVOICE_SS_M_PK){
+                e.TEI_EINVOICE_SS_M_PK = this.modelMaster.PK;
+                e.TEI_EINVOICE_M_PK =  this.modelMaster.TEI_COMPANY_PK;
+              }
+            });
+            this.$refs.grdDetail.saveData();
+          }
           break;
         case "deleteDetail":
           this.$refs.grdDetail.onSetMarkedDelete();
@@ -775,15 +810,15 @@ export default {
           type: "text",
         },
         {
-        dataField: "BUYER_POSITION",
-        caption: this.$t("position"),
-        width: 200
-      },
-      {
-        dataField: "BUYER_REPRESENT",
-        caption: this.$t("represent"),
-        width: 200
-      },
+          dataField: "BUYER_POSITION",
+          caption: this.$t("position"),
+          width: 200
+        },
+        {
+          dataField: "BUYER_REPRESENT",
+          caption: this.$t("represent"),
+          width: 200
+        },
       ]
     },
     async initDataList() {

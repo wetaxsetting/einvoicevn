@@ -494,9 +494,7 @@ export default {
               TEI_EINVOICE_SS_M_PK: this.modelMaster.PK,
 
             });
-            
           }
-
           break;
         case "saveDetail":
           if(!this.modelMaster.PK){
@@ -522,6 +520,9 @@ export default {
                 return;
               }else if (!data[i].NGAY){
                 this.showNotification("warning", this.$t("can_not_save"), this.$t("please_input_invoice_date_at_" + (i+1)));
+                return;
+              }else if (!data[i].LADHDDT){
+                this.showNotification("warning", this.$t("can_not_save"), this.$t("please_input_type_of_application_of_e_invoice_at_" + (i+1)));
                 return;
               }else if(!data[i].TCTBAO){
                 this.showNotification("warning", this.$t("can_not_save"), this.$t("please_input_nature_of_notice_at_" + (i+1)));

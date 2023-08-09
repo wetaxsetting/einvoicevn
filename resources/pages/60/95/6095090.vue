@@ -52,23 +52,25 @@
         <v-col lg="2">
           <BaseInput outlined :label="$t('tot_net_tr_amt')" v-model="tot_net_tr_amt" number />
         </v-col>
-        <v-col lg="2">
+        <!-- <v-col lg="2">
           <BaseInput outlined :label="$t('tot_net_bk_amt')" v-model="tot_net_bk_amt" number />
+        </v-col> -->
+        <v-col lg="2">
         </v-col>
         <v-col lg="2">
           <BaseInput outlined :label="$t('tot_net_tr_vat_amt')" v-model="tot_net_tr_vat_amt" number />
         </v-col>
 
         <v-col lg="2">
-          <BaseInput outlined :label="$t('tot_net_bk_vat_amt')" v-model="tot_net_bk_vat_amt" number />
+          <!-- <BaseInput outlined :label="$t('tot_net_bk_vat_amt')" v-model="tot_net_bk_vat_amt" number /> -->
         </v-col>
         <v-col lg="2">
           <BaseInput outlined :label="$t('total')" v-model="total" number />
         </v-col>
         <v-col lg="2">
-          <BaseInput outlined :label="$t('total_bk')" v-model="total_bk" number />
+          <!-- <BaseInput outlined :label="$t('total_bk')" v-model="total_bk" number /> -->
         </v-col>
-      </v-row>
+      </v-row> 
 
       <v-row dense justify="space-between" class="pl-3 pr-3 pt-2">
         <v-col lg="2">

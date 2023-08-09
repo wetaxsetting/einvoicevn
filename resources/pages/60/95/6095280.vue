@@ -441,7 +441,7 @@ export default {
             this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_from_no"));
             break;
           } else if (this.modelMaster.MST == "00") {
-            this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_from_no"));
+            this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_tax_code"));
             break;
           } else if (this.modelMaster.DDANH == "") {
             this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_address"));

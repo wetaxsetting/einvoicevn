@@ -755,6 +755,7 @@ export default {
           dataField: "MST",
           caption: this.$t("mst"),
           width: 150,
+          hidden: true,
         },
         {
           dataField: "SERI",

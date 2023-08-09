@@ -692,22 +692,12 @@ export default {
           title: this.$t("etax_status"),
           width: 150,
           allowEditing: true,
-          datasource: {
-            KEY: "VAL",
-            VALUE: "NAME",
-            data: this.type_etaxStatus_list,
-          },
         },
         {
           field: "ETAX_RESULT",
           title: this.$t("etax_result"),
           width: 150,
           allowEditing: true,
-          datasource: {
-            KEY: "VAL",
-            VALUE: "NAME",
-            data: this.type_etaxResult_list,
-          },
         },
 
 
@@ -764,7 +754,6 @@ export default {
         if (checkeTaxStatus.length > 0) {
           this.etaxStatus_list = checkeTaxStatus;
           this.selected_etaxStatus = this.etaxStatus_list[0].VAL;
-          this.type_etaxStatus_list = this.etaxStatus_list[0].NAME;
         }
       }
 
@@ -778,7 +767,6 @@ export default {
         if (checkeTaxResult.length > 0) {
           this.etaxResult_list = checkeTaxResult;
           this.selected_etaxResult = this.etaxResult_list[0].VAL;
-          this.type_etaxResult_list = this.etaxResult_list[0].NAME;
         }
       }
 

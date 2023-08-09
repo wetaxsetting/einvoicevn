@@ -103,11 +103,11 @@
                 </v-col>
                 <v-col md="4">
                   <BaseSelect outlined :label="$t('tax_office')" v-model="modelMaster.MCQT"
-                    :lstData="dataMasterList.taxOfficeList" item-text="NAME" item-value="CODE" mandatory />
+                    :lstData="dataMasterList.taxOfficeList" item-text="NAME" item-value="CODE"  />
                 </v-col>
                 <v-col md="4">
                   <BaseSelect outlined :label="$t('form_no')" v-model="modelMaster.MSO"
-                    :lstData="dataMasterList.fromNoList" item-text="NAME" item-value="CODE" mandatory />
+                    :lstData="dataMasterList.fromNoList" item-text="NAME" item-value="CODE"  />
                 </v-col>
               </v-row>
               <v-row dense class="pl-3 pr-3">
@@ -120,7 +120,7 @@
                 </v-col>
                 <v-col md="4">
                   <BaseSelect outlined :label="$t('declaration_name')" v-model="modelMaster.LTEN"
-                    :lstData="dataMasterList.declarationNameList" item-text="NAME" item-value="CODE" mandatory />
+                    :lstData="dataMasterList.declarationNameList" item-text="NAME" item-value="CODE" />
                 </v-col>
                 <v-col md="1"></v-col>
               </v-row>
@@ -128,7 +128,7 @@
               <v-row dense class="pl-3 pr-3">
                 <v-col md="4">
                   <BaseSelect outlined :label="$t('categories')" v-model="modelMaster.LOAI"
-                    :lstData="dataMasterList.categoriesList" item-text="NAME" item-value="CODE" mandatory />
+                    :lstData="dataMasterList.categoriesList" item-text="NAME" item-value="CODE"  />
                 </v-col>
                 <v-col md="4">
                   <BaseInput outlined :label="$t('minutes_no')" v-model="modelMaster.VOUCHER_NO" readonly></BaseInput>

@@ -466,7 +466,7 @@ export default {
           if (this.selectedTable == "G") {
             if (!this.modelMaster.PK) {
               // this.onClick("saveMaster");
-              this.showNotification("danger", this.$t("can_not_save") , this.$t("pls_save_master_first"));
+              this.showNotification("danger", this.$t("can_not_save"), this.$t("pls_save_master_first"));
             } else {
               this.$refs.grdDetail.getDataSource().forEach(e => {
                 if (!e.TEI_EINVOICE_SS_M_PK) {
@@ -506,7 +506,10 @@ export default {
           }
           break;
         case "saveDetail":
-          let data = this.$refs.grdDetail.getData();
+          if (!this.modelMaster.PK) {
+            this.showNotification("danger", this.$t("can_not_save"), this.$t("pls_save_master_first"));
+          } else {
+            let data = this.$refs.grdDetail.getData();
             for (let i = 0; i < data.length; i++) {
               if (!data[i].KHMSHDON) {
                 this.showNotification("warning", this.$t("can_not_save"), this.$t("please_input_form_no_at_" + (i + 1)));
@@ -532,6 +535,7 @@ export default {
               }
             }
             this.$refs.grdDetail.saveData();
+          }
           break;
         case "deleteDetail":
           this.$refs.grdDetail.onSetMarkedDelete();

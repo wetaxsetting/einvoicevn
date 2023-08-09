@@ -572,6 +572,7 @@ export default {
           formatFloat: 0,
           width: 150,
           alignment: "right",
+          hidden:true
         },
         {
           field: "TOT_VAT_TR_AMT",
@@ -588,14 +589,23 @@ export default {
           formatFloat: 0,
           width: 150,
           alignment: "right",
+          hidden:true
         },
-
+        {
+          field: "TOTAL_AMT",
+          title: this.$t("total_amt"),
+          type: "number",
+          formatFloat: 0,
+          width: 150,
+          alignment: "right",
+        },
         {
           field: "REMARK",
           title: this.$t("description"),
           type: "text",
           width: 80,
           alignment: "left",
+          hidden:true
         },
         {
           field: "REMARK2",
@@ -603,6 +613,7 @@ export default {
           type: "text",
           width: 80,
           alignment: "left",
+          hidden:true
         },
         {
           field: "EI_STATUS",
@@ -653,18 +664,14 @@ export default {
           width: 80,
           alignment: "left",
         },
-        // {
-        //   field: "INVOICE_TYPE",
-        //   title: this.$t("invoice_type"),
-        //   type: "text",
-        //   alignment: "left",
-        // },
+        
         {
           field: "REPORT_CODE",
           title: this.$t("report_code"),
           type: "text",
           width: 80,
           alignment: "left",
+          hidden:true
         },
         {
           field: "CQT_MCCQT_ID",
@@ -702,6 +709,11 @@ export default {
           title: this.$t("cqt_noti"),
           type: "text",
           width: 80,
+          alignment: "left",
+        },
+        {
+          field: "TAX_RATE_MULTI",
+          title: this.$t("tax_rate_multi"),
           alignment: "left",
         },
       ];

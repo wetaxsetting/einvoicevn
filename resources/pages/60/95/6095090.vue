@@ -27,7 +27,7 @@
           <BaseDatePicker outlined :pretoday="7" :label="$t('from_date')" v-model="dt_from" />
         </v-col>
         <v-col lg="2" cols="12">
-          <BaseDatePicker outlined  today :label="$t('to_date')" v-model="dt_to" />
+          <BaseDatePicker outlined today :label="$t('to_date')" v-model="dt_to" />
         </v-col>
         <v-col lg="2">
           <BaseSelect outlined :label="$t('status')" v-model="selected_status" :lstData="status_list" item-text="NAME"
@@ -70,7 +70,7 @@
         <v-col lg="2">
           <!-- <BaseInput outlined :label="$t('total_bk')" v-model="total_bk" number /> -->
         </v-col>
-      </v-row> 
+      </v-row>
 
       <v-row dense justify="space-between" class="pl-3 pr-3 pt-2">
         <v-col lg="2">
@@ -113,6 +113,8 @@
                   this.txtPartner,
                   this.selected_trading_type,
                   this.selected_yn,
+                  this.selected_etaxStatus,
+                  this.selected_etaxResult
                 ]" @setDataSource="onAfterLoad" :height="limitHeight" @cellClick="onCellClick" />
             </v-container>
           </v-card>
@@ -168,7 +170,7 @@ export default {
     blYN: "Y",
     offInvoiceSign: true,
     headerGrid: [],
-    
+
     pdfUrl: "",
     tei_einvoice_m_pk_row: "",
 
@@ -219,18 +221,18 @@ export default {
         this.offInvoiceSign = false;
       }
     },
-    selected_company(val){
+    selected_company(val) {
       this.getListCode("form_no");
       this.getListCode("serial_no");
     },
-    selected_form_no(val){
+    selected_form_no(val) {
       this.getListCode("serial_no");
     },
-    dt_from(val){
+    dt_from(val) {
       this.getListCode("form_no");
       this.getListCode("serial_no");
     },
-    dt_to(val){
+    dt_to(val) {
       this.getListCode("form_no");
       this.getListCode("serial_no");
     },
@@ -574,7 +576,7 @@ export default {
           formatFloat: 0,
           width: 150,
           alignment: "right",
-          hidden:true
+          hidden: true
         },
         {
           field: "TOT_VAT_TR_AMT",
@@ -591,7 +593,7 @@ export default {
           formatFloat: 0,
           width: 150,
           alignment: "right",
-          hidden:true
+          hidden: true
         },
         {
           field: "TOTAL_AMT",
@@ -607,7 +609,7 @@ export default {
           type: "text",
           width: 80,
           alignment: "left",
-          hidden:true
+          hidden: true
         },
         {
           field: "REMARK2",
@@ -615,7 +617,7 @@ export default {
           type: "text",
           width: 80,
           alignment: "left",
-          hidden:true
+          hidden: true
         },
         {
           field: "EI_STATUS",
@@ -666,14 +668,14 @@ export default {
           width: 80,
           alignment: "left",
         },
-        
+
         {
           field: "REPORT_CODE",
           title: this.$t("report_code"),
           type: "text",
           width: 80,
           alignment: "left",
-          hidden:true
+          hidden: true
         },
         {
           field: "CQT_MCCQT_ID",
@@ -689,11 +691,23 @@ export default {
           field: "ETAX_STATUS",
           title: this.$t("etax_status"),
           width: 150,
+          allowEditing: true,
+          datasource: {
+            KEY: "VAL",
+            VALUE: "NAME",
+            data: this.type_etaxStatus_list,
+          },
         },
         {
           field: "ETAX_RESULT",
           title: this.$t("etax_result"),
           width: 150,
+          allowEditing: true,
+          datasource: {
+            KEY: "VAL",
+            VALUE: "NAME",
+            data: this.type_etaxResult_list,
+          },
         },
 
 
@@ -739,7 +753,7 @@ export default {
           this.selected_company = this.company_list[0].VAL;
         }
       }
-      
+
       const dso_etaxStatus_list = {
         type: "list",
         selpro: "EI_SEL_6095090_ETAX_STATUS",
@@ -750,6 +764,7 @@ export default {
         if (checkeTaxStatus.length > 0) {
           this.etaxStatus_list = checkeTaxStatus;
           this.selected_etaxStatus = this.etaxStatus_list[0].VAL;
+          this.type_etaxStatus_list = this.etaxStatus_list[0].NAME;
         }
       }
 
@@ -763,6 +778,7 @@ export default {
         if (checkeTaxResult.length > 0) {
           this.etaxResult_list = checkeTaxResult;
           this.selected_etaxResult = this.etaxResult_list[0].VAL;
+          this.type_etaxResult_list = this.etaxResult_list[0].NAME;
         }
       }
 
@@ -774,7 +790,8 @@ export default {
       if (checkStatus != null) {
         if (checkStatus.length > 0) {
           this.status_list = checkStatus;
-          this.selected_status = this.status_list[0].VAL;
+          this.selected_status = this.status_list[1].VAL;
+
         }
       }
 

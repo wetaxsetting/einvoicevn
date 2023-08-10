@@ -1,93 +1,147 @@
 <template>
-    <div>
-        <GwGridLayout flat dense colsPerRow="1" containerHeight="auto" containerClass="py-1" @callBackHeight="parentHeight = $event">
-            <div colspan="6" />
-            <GwFlexBox colspan="6">
-                <!-- action grid -->
-                <BaseButton icon_type="search" :btn_text="$t('search')" :disabled="isProcessing" @onclick="onClick('grdPOPSearch')" />
-                <BaseButton icon_type="save" :btn_text="$t('save')" :disabled="isProcessing" @onclick="onClick('grdPOPSave')" />
-                <BaseButton icon_type="delete" :btn_text="$t('delete')" :disabled="isProcessing" @onclick="onClick('grdPOPDel')" />
-                <!-- process data -->
-                <BaseButton icon_type="delete" :btn_text="$t('delete_all')" :disabled="isProcessing" @onclick="onClick('DELETE_ALL')" />
-                <BaseButton icon_type="update" :btn_text="$t('update_transation')" :disabled="isProcessing" @onclick="onClick('UPDATE_TRANS')" />
-                <BaseButton icon_type="process" :btn_text="$t('process')" :disabled="isProcessing" @onclick="onClick('PROCESS')" />
-                <BaseButton icon_type="cancel" :btn_text="$t('cancel')" :disabled="isProcessing" @onclick="onClick('CANCEL')" />
-            </GwFlexBox>
-            <!-- Row 1 -->
-            <BaseSelect colspan="3" :label="$t('company')" v-model="selCompany" :lstData="cboCompany" item-text="TEXT" item-value="PK" mandatory />
-            <BaseSelect colspan="3" :label="$t('biz_place')" v-model="selBizPlace" :lstData="cboBizPlace" item-text="TEXT" item-value="PK" mandatory />
-            <BaseDatePicker colspan="1" default :label="$t('trans_date')" v-model="dtTrans" mandatory />
-            <BaseSelect colspan="1" :label="$t('form_no')" v-model="selFormNo" :lstData="cboFormSerialNo" item-text="FORM_NO_NAME" item-value="FORM_NO_CODE" mandatory />
-            <BaseSelect colspan="2" :label="$t('serial_no')" v-model="selSerialNo" :lstData="cboFormSerialNo" item-text="SERIAL_NO_NAME" item-value="SERIAL_NO_CODE" mandatory />
-            <BaseSelect colspan="2" :label="$t('process_YN')" v-model="selProcessYn" :lstData="cboselProcessYn" item-text="NAME" item-value="CODE" :text_all="$t('select_all')" mandatory />
-            <!-- Row 2 -->
-            <BaseInput colspan="2" :label="$t('payment_type')" v-model="txtPaymentType" />
-            <BaseInput colspan="2" :label="$t('pl')" @dblClick="dlgPL" v-model="txtPL_NM" readonly>
-                <template v-slot:append>
-                    <v-tooltip bottom>
-                        <template v-slot:activator="{ on }">
-                            <v-icon v-on="on" :color="currentTheme" @click="dlgPL">mdi-window-restore</v-icon>
-                        </template>
-                    </v-tooltip>
-                    <v-tooltip bottom>
-                        <template v-slot:activator="{ on }">
-                            <v-icon v-on="on" :color="currentTheme" @click="txtPL_CD = '', txtPL_NM = '', txtPL_PK = ''">mdi-eraser</v-icon>
-                        </template>
-                    </v-tooltip>
-                </template>
-            </BaseInput>
-            <BaseSelect colspan="2" :label="$t('tax_rate')" v-model="selTaxRate" :lstData="cboTaxRate" item-text="NAME" item-value="CODE" />
-            <GwImportExcelFile colspan="6" :label="$t('import_ar_invoice')" :impMultipleTemp="imp_MultipleTemp" :impCboTemp="cboTemplate" @onrtnseltemp="selTemplate = $event" :impAddParam="[this.dtTrans, this.selBizPlace, this.selCompany, this.txtPL_CD, '', '']" @onAfterImport="onAfterImport" />
-            <!-- Row 3 -->
-            <BaseInput colspan="2" :label="$t('shop_code')" v-model="txtShopCode" />
-            <BaseInput colspan="2" :label="$t('force')" v-model="txtForce" />
-            <BaseInput colspan="2" :label="$t('bill_number')" v-model="txtBillNumber" />
-            <BaseInput colspan="2" :label="$t('discount_code')" v-model="txtDiscountCode" />
-            <BaseInput colspan="2" :label="$t('ar_amount')" v-model="txtArAmount" number addClass="text-danger" />
-            <BaseInput colspan="2" :label="$t('actual_sale')" v-model="txtARAmountBK" number addClass="text-danger" />
-            <!-- Row 4 -->
-            <BaseGridView colspan="12" ref="grdPOS" :header="grdHeadPOS" :height="limitHeight" :sel_procedure="grdSelPOS" :filter_paras="grdSelParaPOS" :upd_procedure="grdUpdPOS" :update_paras="grdUpdParaPOS" @setDataSource="onAfterLoad" />
-        </GwGridLayout>
-        <cost-center-dialog ref="refPLCenter" :companyPK="selCompany" @returnData="rtnMappingPL"></cost-center-dialog>
-    </div>
-    </template>
-    
-    <script>
-    export default {
-        layout: 'default',
-        middleware: 'user',
-        components: {
-            CostCenterDialog: () => import('@/components/dialog/CostCenterDialog'),
-            GwImportExcelFile: () => import('@/components/control/GwImportExcelFile.vue'),
+    <v-container fluid v-resize="onResize">
+        <v-row class="pt-1" dense>
+            <v-col md="12">
+                <v-row dense>
+                    <v-col md="3">
+                        <BaseSelect outlined :label="$t('company')" v-model="modelSearch.COMPANY_PK"
+                            :lstData="dataSearchList.companyList" item-value="PK" item-text="TEXT" />
+                    </v-col>
+                    <v-col md="1"></v-col>
+                    <v-col md="2">
+                        <BaseInput outlined :label="$t('invoice_no')" v-model="modelSearch.INVOICE_NO" number />
+                    </v-col>
+                    <v-col md="1">
+                        <BaseInput outlined v-model="modelSearch.INVOICE_NM" />
+                    </v-col>
+                    <v-col md="1"></v-col>
+                    <v-col md="2">
+                        <BaseSelect outlined :label="$t('form_no')" v-model="modelSearch.FORM_NO"
+                            :lstData="dataSearchList.formno_list" item-text="NAME" item-value="VAL" />
+                    </v-col>
+                    <v-col md="2">
+                        <BaseSelect outlined :label="$t('serial_no')" item-text="NAME" item-value="VAL"
+                            :lstData="dataSearchList.serialno_list" v-model="modelSearch.SERIAL_NO" />
+                    </v-col>
+                </v-row>
+                <v-row dense>
+                    <!--  -->
+                    <v-col md="1">
+                        <BaseDatePicker outlined today :label="$t('date')" v-model="modelSearch.TODATE" />
+                    </v-col>
+                    <v-col md="3"></v-col>
+                    <v-col md="3">
+                        <BaseInput outlined :label="$t('partner')" v-model="modelSearch.PARTNER" />
+                    </v-col>
+                    <v-col md="1"></v-col>
+                    <v-col md="2">
+                        <BaseSelect outlined :label="$t('combine_YN')" v-model="modelSearch.COMBINE_YN"
+                            :lstData="dataSearchList.combineYN_list" item-text="NAME" item-value="CODE"
+                            :text_all="$t('all')" />
+                    </v-col>
+                    <v-col md="2">
+                        <BaseSelect outlined :label="$t('process_YN')" v-model="modelSearch.PROCESS_YN"
+                            :lstData="dataSearchList.processYN_list" item-text="NAME" item-value="CODE"
+                            :text_all="$t('all')" />
+                    </v-col>
+                </v-row>
+                <!--  -->
+                <v-row dense>
+                    <v-col md="1">
+                        <BaseSelect outlined  v-model="modelSearch.SELAB"
+                            :lstData="dataSearchList.selab_list" item-text="NAME" item-value="CODE" />
+                    </v-col>
+                    <v-col md="2">
+                        <GwImportExcelFile :label="$t('import_ar_invoice')" :impMultipleTemp="imp_MultipleTemp"
+                            :impCboTemp="cboTemplate" @onrtnseltemp="selTemplate = $event"
+                            :impAddParam="[this.modelSearch.COMPANY_PK, this.modelSearch.TODATE]"
+                            @onAfterImport="onAfterImport" />
+                    </v-col>
+                    <v-col md="1">
+                        <BaseInput outlined :label="$t('total')" readonly v-model="totalAmount" number />
+                    </v-col>
+                    <v-col md="1">
+                        <BaseInput outlined :label="$t('actual')" readonly v-model="actualAmount" number />
+                    </v-col>
+                    <v-col md="1">
+                        <BaseInput outlined :label="$t('gen_dis')" readonly v-model="generalDiscount" number />
+                    </v-col>
+                    <v-col md="1">
+                        <BaseInput outlined :label="$t('cre_dis')" readonly v-model="creditDiscount" number />
+                    </v-col>
+                    <v-col md="5" class="pt-3">
+                        <GwFlexBox justify="end">
+                            <BaseButton icon_type="delete" :btn_text="$t('delete_all')" @onclick="onClick('OnDeleteALL')" />
+                            <BaseButton icon_type="delete" :btn_text="$t('delete_row')" @onclick="onClick('OnDeleteRow')" />
+                            <BaseButton icon_type="update" :btn_text="$t('update')" @onclick="onClick('UpdateTrans')" />
+                            <BaseButton icon_type="process" :btn_text="$t('process')" @onclick="onClick('ProcessData')" />
+                            <BaseButton icon_type="cancel" :btn_text="$t('cancel')" @onclick="onClick('CancelData')" />
+                            <BaseButton icon_type="view" :btn_text="$t('preview')" @onclick="onClick('OnPreview')" />
+                            <BaseButton btn_type="icon" icon_type="search" :btn_text="$t('btn_search')"
+                                @onclick="onClick('search')" />
+                        </GwFlexBox>
+                    </v-col>
+                </v-row>
+
+                <!--  -->
+                <v-row dense>
+                    <v-col md="12">
+                        <!-- @cellClickData="onCellClickGridLeft" -->
+                        <BaseGridView ref="grdData" :setting="true" :height="limitHeight" :header="headerGrdData"
+                            selectionmode="singlerow" sel_procedure="EI_SEL_6095400_s_01" :filter_paras="[
+                                this.modelSearch.TODATE,
+                                this.modelSearch.PARTNER,
+                                this.modelSearch.COMPANY_PK,
+                                this.modelSearch.PROCESS_YN,
+                                this.modelSearch.COMBINE_YN,
+                                this.modelSearch.SERIAL_NO,
+                                this.modelSearch.FORM_NO,
+                                this.modelSearch.FILE
+                            ]" @setDataSource="onAfterLoad" />
+                    </v-col>
+                </v-row>
+            </v-col>
+        </v-row>
+    </v-container>
+</template>
+  
+<script>
+export default {
+    layout: "default",
+    middleware: "user",
+    components: {
+        GwImportExcelFile: () => import('@/components/control/GwImportExcelFile.vue'),
+    },
+
+    data: () => ({
+        headerGrdData: [],
+        modelSearch: {
+            COMPANY_PK: null,
+            INVOICE_NO: null,
+            INVOICE_NM: null,
+            FORM_NO: null,
+            SERIAL_NO: null,
+            TODATE: null,
+            PARTNER: null,
+            COMBINE_YN: 'N',
+            PROCESS_YN: 'N',
+            SELAB: null,
+            FILE: null
         },
-        data: () => ({
-            _actionClick: '',
-            headerGirdData: [],
-            cboCompany: [],
-            selCompany: '',
-            txtShopCode: '',
-            dtTrans: '',
-            txtPL_CD: '',
-            txtPL_NM: '',
-            txtArAmount: null,
-    
-            selCompany: '',
-            cboBizPlace: [],
-            selBizPlace: '',
-            formNoListS: [],
-            selFormNo: '',
-            serialNoListS: [],
-            selSerialNo: '',
-    
-            transDate: '',
-            txtDiscountCode: '',
-    
-            shopCode: '',
-            txtForce: '',
-            txtBillNumber: '',
-            txtPaymentType: '',
-            selProcessYn: 'N',
-            cboselProcessYn: [{
+        dataSearchList: {
+            companyList: [],
+            formno_list: [],
+            serial_no_list: [],
+            combineYN_list: [{
+                NAME: 'Yes',
+                CODE: 'Y',
+            },
+            {
+                NAME: 'No',
+                CODE: 'N',
+            },],
+            processYN_list: [
+                {
                     NAME: 'Yes',
                     CODE: 'Y',
                 },
@@ -96,470 +150,184 @@
                     CODE: 'N',
                 },
             ],
-    
-            txtARAmountBK: 0,
-            selTaxRate: '',
-            cboTaxRate: [],
-            cboFormSerialNo: [],
-    
-            imp_MultipleTemp: true,
-            cboTemplate: [],
-            selTemplate: [],
-        }),
-        async created() {
-            // console.clear();
-            this.getCompany();
+            selab_list: [],
         },
-        watch: {
-            async selCompany(val) {
-                if (val) {
-                    this.getListCodes();
-                }
-            },
+        lstBizPlace: null,
+        totalAmount: 0,
+        actualAmount: 0,
+        generalDiscount: 0,
+        creditDiscount: 0,
+
+        imp_MultipleTemp: true,
+        cboTemplate: [],
+        selTemplate: [],
+    }),
+    mounted() {
+        this.onResize();
+
+    },
+
+    async created() {
+        await this.initDataList("company");
+        await this.initDataList("filenm");
+        this.initHeaderList();
+
+    },
+    computed: {
+        user() {
+            return this.$store.getters["auth/user"];
         },
-    
-        mounted() {
-            this.onResize();
+        limitHeight() { return this.windowHeight * 0.7; },
+
+    },
+
+    watch: {
+        "modelSearch.COMPANY_PK"(val) {
+            if (val) {
+                this.initDataList("form_no");
+                this.initDataList("serial_no");
+            }
         },
-        computed: {
-            user() {
-                return this.$store.getters['auth/user'];
-            },
-            limitHeight() {
-                return this.windowHeight * 0.7;
-            },
-            grdHeadPOS() {
-                let _grdHeadPOS = [{
-                        dataField: 'ROWNUM',
-                        caption: this.$t('No'),
-                        allowEditing: false,
-                        width: 80,
-                    },
-                    {
-                        dataField: 'ITEMCODE',
-                        caption: this.$t('Item_code'),
-                        allowEditing: false,
-                        width: 150,
-                    },
-                    {
-                        dataField: 'ITEMNAME',
-                        caption: this.$t('Item_name'),
-                        allowEditing: false,
-                        width: 200,
-                    },
-                    {
-                        dataField: 'UNITPRICE',
-                        caption: this.$t('Unit Price'),
-                        allowEditing: false,
-                        width: 100,
-                        formatFloat: 0,
-                        dataType: 'number',
-                    },
-                    {
-                        dataField: 'CASH_QTY',
-                        caption: this.$t('Qty'),
-                        allowEditing: false,
-                        width: 50,
-                        formatFloat: 0,
-                        dataType: 'number',
-                    },
-                    {
-                        dataField: 'CASH_AMT',
-                        caption: this.$t('Total Amount'),
-                        allowEditing: false,
-                        width: 100,
-                        formatFloat: 0,
-                        dataType: 'number',
-                    },
-                    {
-                        dataField: 'ACTUAL_SALE',
-                        caption: this.$t('Actual Sale'),
-                        allowEditing: false,
-                        width: 100,
-                        formatFloat: 0,
-                        dataType: 'number',
-                    },
-                    {
-                        dataField: 'GEN_DISCOUNT',
-                        caption: this.$t('Gen discount'),
-                        allowEditing: false,
-                        width: 100,
-                        formatFloat: 0,
-                        dataType: 'number',
-                    },
-                    {
-                        dataField: 'SH_CARD_DISCOUNT',
-                        caption: this.$t('SH Card Discount'),
-                        allowEditing: false,
-                        width: 100,
-                        formatFloat: 0,
-                        dataType: 'number',
-                    },
-                    {
-                        dataField: 'STORE_CODE',
-                        caption: this.$t('Store code'),
-                        allowEditing: false,
-                        width: 100,
-                        alignment: 'right',
-                    },
-                    {
-                        dataField: 'STORE_NAME',
-                        caption: this.$t('Store name'),
-                        allowEditing: false,
-                        width: 150,
-                    },
-                    {
-                        dataField: 'FORCE',
-                        caption: this.$t('Force'),
-                        allowEditing: false,
-                        width: 80,
-                        alignment: 'right',
-                    },
-                    {
-                        dataField: 'RECEIPT_NUM',
-                        caption: this.$t('Receipt number'),
-                        allowEditing: false,
-                        width: 100,
-                        alignment: 'right',
-                    },
-                    {
-                        dataField: 'SALE_CAT',
-                        caption: this.$t('Sales category'),
-                        allowEditing: false,
-                        width: 100,
-                    },
-                    {
-                        dataField: 'PAYMENT_TYPE',
-                        caption: this.$t('Payment type'),
-                        allowEditing: false,
-                        width: 100,
-                    },
-                    {
-                        dataField: 'DISCOUNT_ID',
-                        caption: this.$t('Discount ID'),
-                        allowEditing: false,
-                        width: 100,
-                        alignment: 'right',
-                    },
-                    {
-                        dataField: 'BANK_ID',
-                        caption: this.$t('Bank ID'),
-                        allowEditing: false,
-                        width: 100,
-                        alignment: 'right',
-                    },
-                    {
-                        dataField: 'AC_CD_DR',
-                        caption: this.$t('Debit ACC Code'),
-                        allowEditing: false,
-                        width: 150,
-                    },
-                    {
-                        dataField: 'AC_CD_CR',
-                        caption: this.$t('Credit ACC Code'),
-                        allowEditing: false,
-                        width: 150,
-                    },
-                    {
-                        dataField: 'REMARK',
-                        caption: this.$t('AR Desc'),
-                        allowEditing: false,
-                        width: 150,
-                    },
-                    {
-                        dataField: 'REMARK2',
-                        caption: this.$t('Local AR Desc'),
-                        allowEditing: false,
-                        width: 150,
-                    },
-                    {
-                        dataField: 'PL_CD',
-                        caption: this.$t('PL Code'),
-                        allowEditing: false,
-                        width: 100,
-                    },
-                    {
-                        dataField: 'WH_ID',
-                        caption: this.$t('Warehouse ID'),
-                        allowEditing: false,
-                        width: 100,
-                    },
-                    {
-                        dataField: 'TRANSDATE',
-                        caption: this.$t('Transdate'),
-                        allowEditing: false,
-                        width: 150,
-                        dataType: 'date',
-                    },
-                    {
-                        dataField: 'MAKH',
-                        caption: this.$t('Partner Code'),
-                        allowEditing: false,
-                        width: 100,
-                    },
-                    {
-                        dataField: 'TENKH',
-                        caption: this.$t('Partner Name'),
-                        allowEditing: false,
-                        width: 100,
-                    },
-                    {
-                        dataField: 'TAX_CODE',
-                        caption: this.$t('Tax Code'),
-                        allowEditing: false,
-                        width: 100,
-                    },
-                    {
-                        dataField: 'ADDRESS',
-                        caption: this.$t('Address'),
-                        allowEditing: false,
-                        width: 100,
-                    },
-                    {
-                        dataField: 'CUS_EMAIL',
-                        caption: this.$t('Email'),
-                        allowEditing: false,
-                        width: 200,
-                    },
-                    {
-                        dataField: 'VOUCHERNO',
-                        caption: this.$t('AR Voucher No'),
-                        allowEditing: false,
-                        width: 100,
-                    },
-                    {
-                        dataField: 'FORM_NO',
-                        caption: this.$t('Form No'),
-                        allowEditing: false,
-                        width: 100,
-                        alignment: 'right',
-                    },
-                    {
-                        dataField: 'SERIAL_NO',
-                        caption: this.$t('Serial No'),
-                        allowEditing: false,
-                        width: 100,
-                        alignment: 'right',
-                    },
-                    {
-                        dataField: 'INVOICE_NO',
-                        caption: this.$t('Invoice No'),
-                        allowEditing: false,
-                        width: 100,
-                        alignment: 'right',
-                    },
-                    {
-                        dataField: 'EI_STATUS',
-                        caption: this.$t('Ei Status'),
-                        allowEditing: false,
-                        width: 100,
-                    },
-                    {
-                        dataField: 'INVOICE_TYPE',
-                        caption: this.$t('Invoice Type'),
-                        allowEditing: false,
-                        width: 100,
-                    },
-                    {
-                        dataField: 'PAYMENT_METHOD',
-                        caption: this.$t('Payment Method'),
-                        allowEditing: false,
-                        width: 100,
-                    },
-                    {
-                        dataField: 'COMBINE_YN',
-                        caption: this.$t('Combine'),
-                        allowEditing: false,
-                        width: 100,
-                    },
-                    {
-                        dataField: 'CUS_PHONE',
-                        caption: this.$t('Cus Phone (Dis code)'),
-                        allowEditing: false,
-                        width: 150,
-                        alignment: 'right',
-                    },
-                ];
-                return _grdHeadPOS;
-            },
-            grdSelPOS() {
-                let _grdSelPOS = 'AC_SEL_6060200_01'; //ac_sel_60110230v2
-                return _grdSelPOS;
-            },
-            grdUpdPOS() {
-                const _grdUpdPOS = 'AC_UPD_6060200_02'; //ac_upd_60110230v2
-                return _grdUpdPOS;
-            },
-            grdSelParaPOS() {
-                let _grdSelPOS = [
-                    this.selCompany,
-                    this.dtTrans,
-                    this.selBizPlace,
-                    this.txtPL_CD,
-                    this.txtShopCode,
-                    this.txtForce,
-                    this.txtBillNumber,
-                    this.txtPaymentType,
-                    this.txtDiscountCode,
-                    this.selProcessYn,
-                    this.selTaxRate,
-                ];
-                return _grdSelPOS;
-            },
-            grdUpdParaPOS() {
-                let _grdUpdPOS = ['PK'];
-                return _grdUpdPOS;
-            },
+        "modelSearch.FORM_NO"(val) {
+            if (val) {
+                this.initDataList("serial_no");
+            }
         },
-        methods: {
-            // async onChangeCompany(val) {
-            //   const dso_bizplace_list = {
-            //     type: 'list',
-            //     selpro: 'SYS_SEL_BIZ_PLACE_V2',
-            //     para: [val, this.user.PK],
-            //   };
-            //   this.cboBizPlace = await this._dsoCall(dso_bizplace_list, 'select', false);
-            //   if (this.cboBizPlace.length > 0) {
-            //     this.selBizPlace = this.cboBizPlace[0].PK;
-            //   }
-            // },
-            onAfterLoad() {
-                setTimeout(() => {
-                    this.txtArAmount = this.$refs.grdPOS.getDataSource().reduce((prev, {
-                        CASH_AMT
-                    }) => prev + CASH_AMT, 0);
-                    this.txtARAmountBK = this.$refs.grdPOS.getDataSource().reduce((prev, {
-                        ACTUAL_SALE
-                    }) => prev + ACTUAL_SALE, 0);
-                }, 1000);
-            },
-            onAfterImport() {},
-            async getCompany() {
-                const result = await this._getCompanyByUser(this.user.PK);
-                if (result) {
-                    this.cboCompany = result;
-                    this.selCompany = this.cboCompany[0].PK;
-                }
-            },
-            async getListCodes() {
-                const dso_bizplace_list = {
-                    type: 'list',
-                    selpro: 'SYS_SEL_BIZ_PLACE_V2',
-                    para: [this.selCompany, this.user.PK],
-                };
-                this.cboBizPlace = await this._dsoCall(dso_bizplace_list, 'select', false);
-                if (this.cboBizPlace.length > 0) {
-                    this.selBizPlace = this.cboBizPlace[0].PK;
-                }
-    
-                const dso_cboFormSerialNo = {
-                    type: 'list',
-                    selpro: 'AC_FORM_NO_SERIAL_NO_MAPPING',
-                    para: [this.selCompany, this.selBizPlace],
-                };
-                this.cboFormSerialNo = await this._dsoCall(dso_cboFormSerialNo, 'select', false);
-    
-                if (this.cboFormSerialNo.length > 0) {
-                    this.selSerialNo = this.cboFormSerialNo[0].SERIAL_NO_CODE;
-                    this.selFormNo = this.cboFormSerialNo[0].FORM_NO_CODE;
-                }
-    
-                const dso_vatrate_list = {
-                    type: 'list',
-                    selpro: 'AC_GET_VAT_EI',
-                    para: [this.selCompany, 'ACCR0110'],
-                };
-                this.cboTaxRate = await this._dsoCall(dso_vatrate_list, 'select', false);
-                if (this.cboTaxRate.length) {
-                    this.selTaxRate = this.cboTaxRate[0].CODE; //this.vatTaxList[0].PK
-                }
-    
-                const commoncode = await this._getCommonCode3(['ACJS0320'], this.lstCompany);
-    
-                commoncode[0].forEach(item => {
-                    if (item.NUM1 == '6060200') {
-                        this.cboTemplate.push(item);
+        "modelSearch.TODATE"(val) {
+            if (val) {
+                this.initDataList("form_no");
+                this.initDataList("serial_no");
+            }
+        },
+    },
+    methods: {
+        async onClick(pos) {
+            switch (pos) {
+                case "search":
+                    this.$refs.grdData.loadData();
+                    console.log(this.user);
+                    break;
+                case "OnDeleteRow":
+                    await this._dsoCall({
+                        type: "process", updpro: "EI_SEL_6095400_p_09", para: [this.modelSearch.COMPANY_PK, this.modelSearch.TODATE,
+                        this.modelSearch.SERIAL_NO, this.modelSearch.FORM_NO]
+                    }, "update", false).then((res) => {
+                        this.onClick("search");
+                    });
+                    break;
+                case "OnDeleteALL":
+                    await this._dsoCall({ type: "process", updpro: "EI_SEL_6095400_p_09", para: [this.modelSearch.COMPANY_PK, this.modelSearch.TODATE, this.modelSearch.SERIAL_NO, this.modelSearch.FORM_NO] }, "update", true).then((res) => {
+                        this.onClick("search");
+                    });
+                    break;
+                case "UpdateTrans":
+                    await this._dsoCall({ type: "process", updpro: "EI_SEL_6095400_P_08", para: [this.modelSearch.COMPANY_PK, this.modelSearch.TODATE, this.modelSearch.SERIAL_NO, this.modelSearch.FORM_NO] }, "update", true).then((res) => {
+                        this.onClick("search");
+                    });
+                    break;
+                case "ProcessData":
+                    await this._dsoCall({ type: "process", updpro: "EI_SEL_6095400_p_02", para: [this.modelSearch.COMPANY_PK, this.modelSearch.TODATE, this.modelSearch.SERIAL_NO, this.modelSearch.FORM_NO] }, "process", true).then((res) => {
+                        this.onClick("search");
+                    });
+                    break;
+                case "CancelData":
+                    await this._dsoCall({ type: "process", updpro: "EI_SEL_6095400_p_03", para: [this.modelSearch.COMPANY_PK, this.modelSearch.TODATE, this.modelSearch.SERIAL_NO, this.modelSearch.FORM_NO] }, "process", true).then((res) => {
+                        this.onClick("search");
+                    });
+                    break;
+            }
+        },
+        onAfterImport() { },
+        onAfterLoad() {
+            setTimeout(() => {
+                this.totalAmount = this.$refs.grdData.getDataSource().reduce((n, { TOTAL_AMOUNT }) => n + TOTAL_AMOUNT, 0);
+                this.actualAmount = this.$refs.grdData.getDataSource().reduce((n, { ACTUAL_SALES }) => n + ACTUAL_SALES, 0);
+                this.generalDiscount = this.$refs.grdData.getDataSource().reduce((n, { GENERAL_DISCOUNT }) => n + GENERAL_DISCOUNT, 0);
+                this.creditDiscount = this.$refs.grdData.getDataSource().reduce((n, { CREDIT_CARD_DISCOUNT }) => n + CREDIT_CARD_DISCOUNT, 0);
+            }, 1000);
+        },
+        async initDataList(pos) {
+            switch (pos) {
+                case "company":
+                    const companyInfo = await this._getCompanyByUser(this.user.PK);
+                    if (companyInfo.length > 0) {
+                        this.dataSearchList.companyList = companyInfo;
+                        this.modelSearch.COMPANY_PK = this.dataSearchList.companyList[0].PK;
                     }
-                });
-            },
-            async onClick(_type, _obj = "") {
-                this._actionClick = _type;
-                switch (_type) {
-                    case 'grdPOPSearch':
-                        this.$refs.grdPOS.loadData();
-                        break;
-                    case 'grdPOPDel':
-                        this.$refs.grdPOS.deleteRows();
-                        break;
-                    case 'grdPOPSave':
-                        this.$refs.grdPOS.saveData();
-                        break;
-                    case 'DELETE_ALL':
-                        const dsoDeleteAll = {
-                            type: 'list',
-                            selpro: 'AC_PRO_6060200_03_DEL_ALL', //ac_upd_60110230v2s
-                            para: [this.selCompany, this.dtTrans, this.selBizPlace, this.txtPL_CD, this.selFormNo, this.selSerialNo],
-                        };
-                        const rtnDeleteAll = await this._dsoCall(dsoDeleteAll, 'select', true);
-                        await this.onClick("grdPOPSearch");
-                        break;
-                    case "UPDATE_TRANS":
-                        const dsoUpdTrans = {
-                            type: 'list',
-                            selpro: 'AC_PRO_6060200_UPD_TRANS', //ac_pro_60110230v2_update
-                            para: [
-                                this.selCompany,
-                                this.dtTrans,
-                                this.selBizPlace,
-                                this.txtPL_CD,
-                                this.selFormNo,
-                                this.selSerialNo,
-                                this.selProcessYn,
-                            ],
-                        };
-                        const rtnUpdTrans = await this._dsoCall(dsoUpdTrans, 'select', true);
-                        await this.onClick("grdPOPSearch");
-                        break;
-                    case "PROCESS":
-                        const dsoProcess = {
-                            type: 'list',
-                            selpro: 'AC_PRO_6060200_PROCESS', //ac_pro_60110230v2 AC_PRO_6060200_NODEJS
-                            para: [
-                                this.selCompany,
-                                this.selBizPlace,
-                                this.selFormNo,
-                                this.selSerialNo,
-                                this.dtTrans,
-                                this.txtPL_CD,
-                                this.selTaxRate,
-                                this.user.PK,//THR_ABEMP_PK,
-                                this.selProcessYn,
-    
-                            ],
-                        };
-                        const rtnProcess = await this._dsoCall(dsoProcess, 'select', true);
-                        await this.onClick("grdPOPSearch");
-                        break;
-                    case "CANCEL":
-                        const dsoCancel = {
-                            type: 'list',
-                            selpro: 'AC_PRO_6060200_CANCEL', //ac_pro_60110230v2_cancel AC_PRO_6060200_CANCEL_NODEJS
-                            para: [this.selCompany, this.dtTrans, this.selBizPlace, this.txtPL_CD],
-                        };
-                        const rtnCancel = await this._dsoCall(dsoCancel, 'select', true);
-                        await this.onClick("grdPOPSearch");
-                        break;
-                }
-            },
-            dlgPL() {
-                this.$refs.refPLCenter.dialogIsShow = true;
-            },
-            rtnMappingPL(item) {
-                this.txtPL_PK = item.PK;
-                this.txtPL_CD = item.CODE;
-                this.txtPL_NM = item.CODE + " - " + item.NAME;
-            },
+                    break;
+                case "form_no":
+                    const dso_formno_list = {
+                        type: 'list',
+                        selpro: 'AC_SEL_6095400_FORM_NO',
+                        para: [this.modelSearch.COMPANY_PK, this.modelSearch.TODATE, ""],
+                    };
+                    this.dataSearchList.formno_list = await this._dsoCall(dso_formno_list, 'select', false);
+                    if (this.dataSearchList.formno_list.length > 0) {
+                        this.modelSearch.FORM_NO = this.dataSearchList.formno_list[0].VAL;
+                    };
+                    break;
+                case "serial_no":
+                    const dso_serialno_list = {
+                        type: 'list',
+                        selpro: 'AC_SEL_6095400_SERIAL_NO',
+                        para: [this.modelSearch.COMPANY_PK, this.modelSearch.FORM_NO, this.modelSearch.TODATE, ""],
+                    };
+                    this.dataSearchList.serialno_list = await this._dsoCall(dso_serialno_list, 'select', false);
+                    if (this.dataSearchList.serialno_list.length > 0) {
+                        this.modelSearch.SERIAL_NO = this.dataSearchList.serialno_list[0].VAL;
+                    };
+                    break;
+
+                case "filenm":
+                    const results = await this._getCommonCode2(["ACEIS130"], this.user.PK)
+                    this.dataSearchList.selab_list = results[0];
+                break;
+            }
+            // const commoncode = await this._getCommonCode3(['ACJS0320'], this.user.COMPANY_PK);
+            // commoncode[0].forEach(item => {
+            //     if (item.NUM1 == '6095400') {
+            //         this.cboTemplate.push(item);
+            //     }
+            // });
+
         },
-    };
-    </script>
-    
+        async initHeaderList() {
+            this.headerGrdData = [
+                { dataField: "CHK", caption: this.$t("chk"), dataType: "checkbox" },
+                // {dataField: "PK",caption: this.$t("pk"),hidden="true"},
+                { dataField: "RN", caption: this.$t("No"), },
+                { dataField: "INVOICE_DATE", caption: this.$t("invoice_date"), dataType: "date", format: this.curLang.DATE_FORMAT, allowEditing: false },
+                { dataField: "BUYER_NAME", caption: this.$t("buyer_name"), allowEditing: false, },
+                { dataField: "BUYER_ADDRESS", caption: this.$t("buyer_address"), allowEditing: false },
+                { dataField: "BUYER_TAXCODE", caption: this.$t("buyer_taxcode"), allowEditing: false },
+                { dataField: "BUYER_MAIL", caption: this.$t("buyer_mail"), allowEditing: false },
+                { dataField: "BUYER_PHONE", caption: this.$t("buyer_phone"), allowEditing: false },
+                { dataField: "DATE_OF_SALES", caption: this.$t("date_of_sales"), allowEditing: false, dataType: "date", format: this.curLang.DATE_FORMAT },
+                { dataField: "STORE_CODE", caption: this.$t("store_code"), allowEditing: false },
+                { dataField: "STORE_NAME", caption: this.$t("store_name"), allowEditing: false },
+                { dataField: "POS", caption: this.$t("pos"), allowEditing: false },
+                { dataField: "RECEIPT_NUMBER", caption: this.$t("receipt_number"), allowEditing: false },
+                { dataField: "SALES_CATEGORY", caption: this.$t("sales_category"), allowEditing: false },
+                { dataField: "PAYMENT_TYPE", caption: this.$t("payment_type"), allowEditing: false },
+                { dataField: "TOTAL_AMOUNT", caption: this.$t("total_amount"), allowEditing: false, dataType: "number", formatFloat: 0, },
+                { dataField: "ACTUAL_SALES", caption: this.$t("actual_sales"), allowEditing: false, dataType: "number", formatFloat: 0, },
+                { dataField: "GENERAL_DISCOUNT", caption: this.$t("general_discount"), allowEditing: false },
+                { dataField: "CREDIT_CARD_DISCOUNT", caption: this.$t("credit_card_discount"), allowEditing: false },
+                { dataField: "ITEM_CODE", caption: this.$t("item_code"), allowEditing: false },
+                { dataField: "ITEM_NAME", caption: this.$t("item_name"), allowEditing: false },
+                { dataField: "UOM", caption: this.$t("uom"), allowEditing: false },
+                { dataField: "QTY", caption: this.$t("qty"), allowEditing: false },
+                { dataField: "PRICE", caption: this.$t("price"), allowEditing: false },
+                { dataField: "FORM_NO", caption: this.$t("form_no"), allowEditing: false },
+                { dataField: "SERIAL_NO", caption: this.$t("serial_no"), allowEditing: false },
+                { dataField: "INVOICE_NO", caption: this.$t("invoice_no"), allowEditing: false },
+                { dataField: "CQT_COMPANY_CODE", caption: this.$t("cqt_company_code"), allowEditing: false },
+                { dataField: "CQT_MCCQT_ID", caption: this.$t("cqt_mccqt_id"), allowEditing: false },
+                { dataField: "AR_GROUP_PK", caption: this.$t("ar_group_pk"), allowEditing: false },
+                { dataField: "EINV_GROUP_PK", caption: this.$t("einv_group_pk"), allowEditing: false },
+            ]
+        }
+    }
+}
+</script>
+  

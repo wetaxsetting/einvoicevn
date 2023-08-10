@@ -908,36 +908,6 @@ export default {
             }
           }
           break;
-
-        // case "type_e-invoice":
-        // const dso_e_invoicetype_list = {
-        //   type: "list",
-        //   selpro: "AC_SEL_6095280_INVOICE_TYPE",
-        //   para: [this.modelSearch.COMPANY_PK],
-        // };
-        // const checke_invoice_type = await this._dsoCall(dso_e_invoicetype_list, "select", false);
-        // if (checke_invoice_type != null) {
-        //   if (checke_invoice_type.length > 0) {
-        //     this.type_invoice_list = checke_invoice_type[0].CODE;
-        //   }
-        // }
-        // break;
-
-
-        // case "e-invoice_type":
-        // const dso_invoicetype_list = {
-        //   type: "list",
-        //   selpro: "AC_SEL_6095280_INVOICE_TYPE",
-        //   para: [this.modelSearch.COMPANY_PK],
-        // };
-        // const checkinvoice_type = await this._dsoCall(dso_invoicetype_list, "select", false);
-        // if (checkinvoice_type != null) {
-        //   if (checkinvoice_type.length > 0) {
-        //     this.e_invoice_type_list = checkinvoice_type[0].CODE;
-        //   }
-        // }
-        // break;
-
       }
     },
     async initModel() {

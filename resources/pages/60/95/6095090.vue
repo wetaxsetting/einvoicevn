@@ -43,7 +43,7 @@
         </v-col>
         <v-col lg="2">
           <BaseSelect outlined :label="$t('trading_type')" v-model="selected_trading_type" :lstData="trading_type_list"
-            item-text="NAME" item-value="VAL" filter_off />
+            item-text="NAME" item-value="CODE" filter_off />
         </v-col>
       </v-row>
 
@@ -783,22 +783,11 @@ export default {
         }
       }
 
-      // console.log(checkStatus);
-      const dso_tradingtype_list = {
-        type: "list",
-        selpro: "EI_SEL_6095090_TRADING_TYPE",
-      };
-      const checkTrandingType = await this._dsoCall(
-        dso_tradingtype_list,
-        "select",
-        false
-      );
-      if (checkTrandingType != null) {
-        if (checkTrandingType.length > 0) {
-          this.trading_type_list = checkTrandingType;
-          this.selected_trading_type = this.trading_type_list[1].VAL;
-        }
-      }
+
+      const TrandingTypeList = await this._getCommonCode2(["ACEI0040"], this.user.PK);
+      this.trading_type_list = TrandingTypeList[0];
+      
+
       const dso_directly_list = {
         type: "list",
         selpro: "EI_SEL_6095090_YN",

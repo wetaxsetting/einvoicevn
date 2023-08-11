@@ -47,15 +47,11 @@
                 </v-row>
                 <!--  -->
                 <v-row dense>
-                    <v-col md="1">
-                        <BaseSelect outlined v-model="modelSearch.SELAB" :lstData="dataSearchList.selab_list"
-                            item-text="NAME" item-value="CODE" />
-                    </v-col>
-                    <v-col md="2">
+                    <v-col md="3">
                         <GwImportExcelFile :label="$t('import_ar_invoice')" :impMultipleTemp="imp_MultipleTemp"
                             :impCboTemp="cboTemplate" @onrtnseltemp="selTemplate = $event"
                             :impAddParam="[this.modelSearch.COMPANY_PK, this.modelSearch.TODATE]"
-                            @onAfterImport="onAfterImport" />
+                            @onAfterImport="onAfterImport"   :impProc="importPacking.prod"/>
                     </v-col>
                     <v-col md="1">
                         <BaseInput outlined :label="$t('total')" readonly v-model="totalAmount" number />
@@ -96,7 +92,7 @@
                                 this.modelSearch.COMBINE_YN,
                                 this.modelSearch.SERIAL_NO,
                                 this.modelSearch.FORM_NO,
-                                this.modelSearch.FILE
+                                this.modelSearch.FILE_IMPORT
                             ]" @setDataSource="onAfterLoad" @cellClickData="OnClickRowPK" />
                     </v-col>
                 </v-row>
@@ -126,7 +122,7 @@ export default {
             COMBINE_YN: 'N',
             PROCESS_YN: 'N',
             SELAB: null,
-            FILE: null
+            FILE_IMPORT: null
         },
         dataSearchList: {
             companyList: [],
@@ -163,10 +159,15 @@ export default {
         selTemplate: [],
 
         txtPK: "",
-        txt_tei_einvoice_m_PK:"",
+        txt_tei_einvoice_m_PK: "",
         txt_report_code: "",
         txtInvoice_No: "",
         txtFormNo: "",
+
+        _arrData: [],
+        importPacking: {
+            prod: "EI_UPD_6095400_U_08_API"
+        }
     }),
     mounted() {
         this.onResize();
@@ -176,7 +177,8 @@ export default {
     async created() {
         await this.initDataList("company");
         await this.initDataList("filenm");
-        await this.initDataList("template");
+        // await this.initDataList("template");
+        await this.initCboFrm();
         this.initHeaderList();
 
     },
@@ -193,6 +195,8 @@ export default {
             if (val) {
                 this.initDataList("form_no");
                 this.initDataList("serial_no");
+
+                this.initCboFrm(this._arrData, val)
             }
         },
         "modelSearch.FORM_NO"(val) {
@@ -206,32 +210,35 @@ export default {
                 this.initDataList("serial_no");
             }
         },
+        selTemplate(val) {
+
+        },
     },
     methods: {
         async OnClickRowPK(item) {
             this.txtPK = item.PK;
-           this.txtPK = item.PK;
-           this.txt_tei_einvoice_m_PK = item.PK;
-           this.txt_report_code = item.REPORT_CODE;
-           this.txtInvoice_No = item.INVOICE_NO;
-           this.txtFormNo= item.FORM_NO;
+            this.txtPK = item.PK;
+            this.txt_tei_einvoice_m_PK = item.PK;
+            this.txt_report_code = item.REPORT_CODE;
+            this.txtInvoice_No = item.INVOICE_NO;
+            this.txtFormNo = item.FORM_NO;
         },
 
 
-       
+
         async onClick(pos) {
             switch (pos) {
                 case "search":
                     this.$refs.grdData.loadData();
                     break;
                 case "OnDeleteRow":
-                    // await this._dsoCall({
-                    //     type: "process", updpro: "EI_SEL_6095400_p_09", para: [this.modelSearch.COMPANY_PK, this.modelSearch.TODATE,
-                    //     this.modelSearch.SERIAL_NO, this.modelSearch.FORM_NO]
-                    // }, "update", false).then((res) => {
-                    //     this.onClick("search");
-                    // });
-                    // break;
+                // await this._dsoCall({
+                //     type: "process", updpro: "EI_SEL_6095400_p_09", para: [this.modelSearch.COMPANY_PK, this.modelSearch.TODATE,
+                //     this.modelSearch.SERIAL_NO, this.modelSearch.FORM_NO]
+                // }, "update", false).then((res) => {
+                //     this.onClick("search");
+                // });
+                // break;
                 case "OnDeleteALL":
                     await this._dsoCall({ type: "process", updpro: "EI_UPD_6095400_p_09", para: [this.modelSearch.COMPANY_PK, this.modelSearch.TODATE, this.modelSearch.SERIAL_NO, this.modelSearch.FORM_NO] }, "update", true).then((res) => {
                         this.onClick("search");
@@ -266,10 +273,10 @@ export default {
                 this.creditDiscount = this.$refs.grdData.getDataSource().reduce((n, { CREDIT_CARD_DISCOUNT }) => n + CREDIT_CARD_DISCOUNT, 0);
             }, 1000);
         },
-        PreviewIv(){
-            var v_user_id="";
-            if(!this.txtPK == ""){
-                
+        PreviewIv() {
+            var v_user_id = "";
+            if (!this.txtPK == "") {
+
             }
         },
         async initDataList(pos) {
@@ -307,19 +314,37 @@ export default {
                 case "filenm":
                     const results = await this._getCommonCode2(["ACEIS130"], this.user.PK)
                     this.dataSearchList.selab_list = results[0];
+
+
+                    
                     break;
-                case "template":
-                    const commoncode = await this._getCommonCode3(['ACJS0320'], this.user.COMPANY_PK);
-                    commoncode[0].forEach(item => {
-                        if (item.DESCRIPTION == 'EI-POST') {
+                // case "template":
+                // //     await this._getInitList('cboTemplate', _arrayData, 'ACJS0320', _tco_compay_pk).then((result) => {
+                // //         result.forEach(item => {
+                // //             if (item.CODE.substr(0, 1) == this.selVoucherIO || item.CODE.substr(0, 1) == 'A') {
+                // //                 this.cboTemplate.push(item);
+                // //             }
+                // //         });
+                // //     });
+                //     const commoncode = await this._getCommonCode3(['ACJS0320'], this.user.PK);
+                //     commoncode[0].forEach(item => {
+                //         if (item.DESCRIPTION == 'EI-POST') {
+                //             this.cboTemplate.push(item);
+                //         }
+                //     });
+                //     break;
+            }
+        },
+        async initCboFrm(_arrayData, _tco_compay_pk) {
+            await this._getInitList('cboTemplate', _arrayData, 'ACJS0320', _tco_compay_pk).then((result) => {
+                result.forEach(item => {
+                    if (item.DESCRIPTION == 'EI-POST') {
                             this.cboTemplate.push(item);
                         }
-                    });
-                    break;
-            }
-
-
+                });
+            });
         },
+
         async initHeaderList() {
             this.headerGrdData = [
                 { dataField: "CHK", caption: this.$t("chk"), dataType: "checkbox" },

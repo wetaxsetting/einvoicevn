@@ -1,28 +1,44 @@
 <template>
-<div class="d-flex align-center justify-space-between">
-    <v-text-field outlined :label="label" dense hide-details prepend-inner-icon="mdi-file-link" readonly v-model="fileName" @click="selectFile"></v-text-field>
-    <BaseButton btn_type="icon" icon_type="import" :btn_text="$t('import')" @onclick="onImpFile" />
-    <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('template_file')" @onclick="getImpFile" />
-    <input type="file" v-show="false" ref="file" @change="selectedFile" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
-</div>
+<v-container fluid class="pa-0 pr-2">
+    <v-row no-gutters>
+        <v-col :cols="impMultipleTemp ? 4 : 10" class="pl-1 pr-1">
+            <v-text-field :outlined="outlined" :label="label" dense hide-details prepend-inner-icon="mdi-file-link" readonly v-model="fileName" @click="selectFile"></v-text-field>
+        </v-col>
+        <v-col cols="6"  v-show="impMultipleTemp">
+            <BaseSelect :outlined="outlined" :label="$t('imp_type')" v-model="selTempType" :lstData="impCboTemp" item-value="CODE" :item-text="impItemText" v-show="impMultipleTemp" /> 
+        </v-col>
+        <v-col cols="2" class="d-flex align-center">
+            <BaseButton btn_type="icon" icon_type="import" :btn_text="$t('import')" @onclick="onImpFile" />
+            <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('template_file')" @onclick="getImpFile" />
+        </v-col>
+    </v-row>
+    <input type="file" v-show="false" ref="file" @change="selectedFile" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
+    <GwLoading :visible="showLoading" />
+</v-container>
 </template>
 
 <script>
 export default {
     name: 'GwImportExcelFile',
-
+    components: {
+        GwLoading: () => import("@/components/control/GwLoading")
+    },
     props: {
         impTempFile: String,
         label: String,
         impProc: String,
+        outlined: {
+            type: Boolean,
+            default: true
+        },
         impAddParam: {
             type: Array,
-            default:[]
+            default: []
         },
         impStartRow: {
             type: Number,
             default: 0
-        }, 
+        },
         impEndCol: {
             type: Number,
             default: 0
@@ -36,48 +52,100 @@ export default {
             type: String,
             default: 'TES_FILE'
         },
-        
+        impValidCol: {
+            type: Number,
+            default: -1
+        },
+        impValidValue: {
+            type: String,
+            default: ''
+        },
+        impStartCol: {
+            type: Number,
+            default: 1
+        },
+        impMultipleTemp: {
+            type: Boolean,
+            default: false
+        },
+        impCboTemp: {
+            type: Array,
+            default: function () {
+                return [{
+                    CODE: '',
+                    NAME: ''
+                }]
+            }
+        },
+        impItemText: {
+            type: String,
+            default: "NAME"
+        },
     },
 
     data: () => ({
         file: null,
         fileSave: null,
         fileName: "",
-        pkImportFile: 0
+        pkImportFile: 0,
+        selTempType: '',
+        cboImpInfo: [],
+        temp_impTempFile: '',
+        showLoading: false,
+        imp_Table:"TES_FILE",
     }),
-
+    created() {
+        this.temp_impTempFile = this.impTempFile;
+        this.imp_Table = this.impTable
+    },
     computed: {
         getUser: function () {
             return this.$store.getters["auth/user"];
         },
+        /*====Default url excel file ============= */
     },
-
-    methods: {
-        selectFile() {
-            this.$refs.file.click();
-        },
-
-        selectedFile(event) {
-            const files = event.target.files;
-            // console.log('vng-154-dvg^_^: > file: GwImportExcelFile.vue > line 71 > selectedFile > files', files);
-            if (files[0] !== undefined) {
-                const fr = new FileReader();
-
-                fr.readAsDataURL(files[0]);
-                fr.addEventListener('load', () => {
-                    this.file = fr.result;
-                    this.fileSave = files[0];
-                    this.fileName = this.fileSave.name;
+    watch: {
+        /*====This case use for multiple excel temple============= */
+        selTempType(val) {
+            if (val) {
+                //console.log('[vng-154/dvg] > file: GwImportExcelFile.vue:92 > selTempType > val', val);
+                this.cboImpInfo = this.impCboTemp.find(x => {
+                    return x.CODE == val;
                 });
-                // console.log('vng-154-dvg^_^: > file: GwImportExcelFile.vue > line 74 > selectedFile > fr', fr);
+
+                //console.log('[vng-154/dvg] > file: GwImportExcelFile.vue:93 > selTempType > this.impCboTemp', this.impCboTemp);
+                //console.log('[vng-154/dvg] > file: GwImportExcelFile.vue:93 > selTempType > this.cboImpInfo', this.cboImpInfo);
+                if (this.cboImpInfo && this.cboImpInfo.VAL2) {
+                    this.temp_impTempFile = this.cboImpInfo.VAL2;
+                    // console.log('[vng-154/dvg] > file: GwImportExcelFile.vue:96 > selTempType >  this.temp_impTempFile', this.temp_impTempFile);
+                }
+                if (this.cboImpInfo && this.cboImpInfo.VAL9 !='') {
+                    this.imp_Table = this.cboImpInfo.VAL9;
+                    // console.log('[vng-154/dvg] > file: GwImportExcelFile.vue:96 > selTempType >  this.temp_impTempFile', this.temp_impTempFile);
+                }
+                this.$emit('onrtnseltemp', this.cboImpInfo);
             }
         },
+        impTempFile(val) {
+            if (val) {
+                this.temp_impTempFile = val;
+            }
+        },
+        impTable(val){
+            if(val){
+                this.imp_Table = val;
+            }
+        }
 
+    },
+    methods: {
+        /*========[step 0] Dowload excel template import======================================================*/
         async getImpFile() {
+            // console.log('[vng-154/dvg] > file: GwImportExcelFile.vue:130 > getImpFile > this.temp_impTempFile', this.temp_impTempFile);
             const res = await this.$axios.$get('/dso/downloadtemp', {
                 responseType: "blob",
                 params: {
-                    template: this.impTempFile
+                    template: this.temp_impTempFile
                 }
             });
             if (!!res && res.size > 0) {
@@ -86,9 +154,11 @@ export default {
                         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                     });
                     let _gettime = new Date().getTime();
-                    const filenameSplit = this.impTempFile.split("/");
-                    const filename = this.filterItems(filenameSplit, '.xlsx')[0].split(".")[0]+'_'+ this.getUser.USER_ID + '.xlsx';
-                    // console.log('vng-154-dvg^_^: > file: GwImportExcelFile.vue > line 95 > getImpFile > filename', filename);
+                    const filenameSplit = this.temp_impTempFile.split("/");
+                    //console.log('[vng-154/dvg] > file: GwImportExcelFile.vue:120 > getImpFile > filenameSplit', filenameSplit);
+                    let filename = this.filterItems(filenameSplit, '.xlsx')[0].split(".")[0] + '_' + this.getUser.USER_ID + '.xlsx';
+                    filename = 'imp_' + this.filterItems(filenameSplit, '.xlsx')[0].split(".")[0] + '_' + _gettime + '.xlsx';
+                    //console.log('vng-154-dvg^_^: > file: GwImportExcelFile.vue > line 95 > getImpFile > filename', filename);
                     this._ExcelSaveAs(blob, filename)
 
                 } catch (e) {
@@ -98,21 +168,40 @@ export default {
                 this.showNotification("danger", this.$t("cannot_find_template"), "", 3001);
             }
         },
+        /*========[step 1] On Click To Choose file excel xlsx ======================================================*/
+        selectFile() {
+            this.$refs.file.click();
+        },
+        /*========[step 2] Read info of file excel has choose at step 1======================================================*/
+        selectedFile(event) {
+            // console.log('[vng-154/dvg] > file: GwImportExcelFile.vue:143 > selectedFile > event:', event);
+            const files = event.target.files;
+            if (files[0] !== undefined) {
+                const fr = new FileReader();
 
+                fr.readAsDataURL(files[0]);
+                fr.addEventListener('load', () => {
+                    this.file = fr.result;
+                    this.fileSave = files[0];
+                    this.fileName = this.fileSave.name;
+                });
+            }
+        },
+        /*========[step 3] Import lob excel file to database======================================================*/
         async onImpFile() {
             if (this.impValidate) {
                 this.showNotification("danger", this.impValidate, "", 3001);
             } else {
                 if (this.fileSave) {
-                    let sProd = "sys_upd_file";
-                    if(this.impTable == "TAC_FILES")
-                    {
+
+                    let sProd = "SYS_UPD_FILE";
+                    if (this.imp_Table == "TAC_FILES") {
                         sProd = "AC_UPD_FILES";
-                    } 
+                    }
                     // console.log('vng-154-dvg^_^: > file: GwImportExcelFile.vue > line 111 > onImpFile > fileSave', this.fileSave);
                     let params = [
                         0, //p_tes_file_pk
-                        this.impTable, //p_table_name
+                        this.imp_Table, //p_table_name
                         '', //p_master_table
                         0 //p_master_table_pk
                     ];
@@ -131,7 +220,7 @@ export default {
                     //  console.log('vng-154-dvg^_^: > file: GwImportExcelFile.vue > line 134 > onImpFile > res.data.data', res.data.data);
                     if (res.data.data) {
 
-                        this.showNotification("success", this.$t("impProcess_success", "common"), "");
+                        // this.showNotification("info", this.$t("imp_file_success_pls_wait_import_data"), '', 2000);
                         this.fileSave = null;
                         let rtnKeys = Object.keys(res.data.data);
                         // console.log('vng-154-dvg^_^: > file: GwImportExcelFile.vue > line 130 > onImpFile > rtnKeys', rtnKeys);
@@ -156,61 +245,72 @@ export default {
                 }
             }
         },
-
+        /*========[step 4] Final Import data excel file======================================================*/
         async onImportData(_table_pk) {
             let import_info = {
                 proc: this.impProc,
                 start_row: this.impStartRow,
+                start_col: this.impStartCol,
                 end_col: this.impEndCol,
-                add_params: this.impAddParam ? this.impAddParam : []
+                add_params: this.impAddParam ? this.impAddParam : [],
+                impValidCol: this.impValidCol,
+                impValidValue: this.impValidValue
             };
-            // const result = await this.$axios.$get(url_path, {
-            //             responseType: "blob",
-            //             params: {
-            //                 para: param
-            //             }
-            //         });
-            //         if (result) {
-            //             this._ExcelSaveAs(result, file_nm);
-            //         } else {
-            //             this.showNotification("danger", this.$t("fail_to_export_report"), "", 4000);
-            //         }
-
-            const resultFile = await this.$axios.$get('/dso/importexcelfile', {responseType: "blob",
+            if (this.impMultipleTemp) {
+                if (this.cboImpInfo && this.cboImpInfo.VAL3 != undefined) {
+                    import_info = {
+                        proc: this.cboImpInfo.VAL3, //procedure
+                        start_row: Number(this.cboImpInfo.VAL5), //start row
+                        start_col: Number(this.cboImpInfo.VAL4), // start col
+                        end_col: Number(this.cboImpInfo.VAL6), //end col
+                        add_params: this.impAddParam ? this.impAddParam : [],
+                        impValidCol: !this.cboImpInfo.VAL7 ? this.impValidCol : Number(this.cboImpInfo.VAL7), //valid col
+                        impValidValue: !this.cboImpInfo.VAL8 ? this.impValidValue : this.cboImpInfo.VAVAL8L7 //valid value import by col
+                    };
+                }
+            }
+            if (this.fileName && this.fileName.split(".")[1].toString().trim().toUpperCase() == 'XLS') {
+                this.showNotification("info", this.$t("pls_wait_system_convert_file_xls_to_xlsx_and_import_data"), '', 5000);
+            } else {
+                this.showNotification("info", this.$t("pls_wait_system_import_data"), '', 5000);
+            }
+            this.showLoading = true;
+            const resultFile = await this.$axios.$get('/dso/importexcelfile', {
+                responseType: "blob",
                 params: {
-                    table_pk: _table_pk, 
-                    table_nm: this.impTable,
+                    table_pk: _table_pk,
+                    table_nm: this.imp_Table,
                     import_info: JSON.stringify(import_info)
                 }
             });
             // console.log('vng-154-dvg^_^: > file: GwImportExcelFile.vue > line 175 > onImportData > resultFile', resultFile);
-           if (resultFile) {
+            if (resultFile) {
+                this.showLoading = false;
                 try {
                     let _gettime = new Date().getTime();
-                    const filenameSplit = this.impTempFile.split("/");
-                    const filename = 'result_'+this.filterItems(filenameSplit, '.xlsx')[0].split(".")[0]+'_'+_gettime + '.xlsx'; 
-                    this._ExcelSaveAs(resultFile, filename)
+                    const filenameSplit = this.temp_impTempFile.split("/");
+                    const filename = 'result_' + this.filterItems(filenameSplit, '.xlsx')[0].split(".")[0] + '_' + _gettime + '.xlsx';
+                    this._ExcelSaveAs(resultFile, filename);
+                    this.onResetImp()
                     this.$emit('onAfterImport', true);
                 } catch (e) {
+                    this.showLoading = false;
                     this.showNotification("danger", this.$t("import_fail"), "", 3001);
                 }
             } else {
+
+                this.showLoading = false;
                 this.showNotification("danger", this.$t("import_fail"), "", 3001);
             }
-
-            //   if (res) {
-            //     // console.log('vng-154-dvg^_^: > file: GwImportExcelFile.vue > line 181 > onImportData > res', res);
-            //     // this.showNotification("success", `${this.$t("import_success", "common")} ${res.data} ${this.$t("rows_effeted", "common")}`, "");  
-            //     this.file = null;
-            //     this.fileSave = null;
-            //     this.fileName = "";
-            //     this.pkImportFile = 0;
-            //     //this.$emit('onReturnMsg', res);
-            //     this._ExcelSaveAs(res, "FILENAMESSSS.xlsx")
-            //   } else {
-            //     this.showNotification("danger", this.$t("import_fail", "common"), "");
-            //   }
         },
+        onResetImp() {
+
+            this.showLoading = false;
+            this.file = null;
+            this.fileSave = null;
+            this.fileName = "";
+            this.$refs.file.value = null;
+        }
     }
 }
 </script>

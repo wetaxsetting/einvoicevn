@@ -32,6 +32,7 @@ class ImportHelper {
 
     
     async loadFile(path){
+		//console.log(this.worksheet);
     	await this.workbook.xlsx.readFile(path)
     }
 
@@ -41,7 +42,12 @@ class ImportHelper {
     }
 
     setActiveSheet(idx){
-    	this.activeSheet = this.workbook.getWorksheet(idx);
+		
+    	let workbookmodel = this.workbook.model;
+        let sheet0 = workbookmodel.sheets[idx];
+        // console.log(sheet0);
+        this.activeSheet = this.workbook.getWorksheet(sheet0.id);
+		
         this.rowIdx = 0;//su dung do insert total
         this.mergeColIndex = [];
         this.sequenceType = null;
@@ -50,7 +56,7 @@ class ImportHelper {
 
     async importData(import_info, lang, crt_by) {
         try{
-            this.setActiveSheet(1);
+            this.setActiveSheet(0);
             let info = JSON.parse(import_info);
 
             let count = 0;
@@ -60,10 +66,12 @@ class ImportHelper {
             let start_row = info["start_row"];
             let add_params = info["add_params"] ? info["add_params"]  : [];
             let err_continue = info["error_continue"];
-
+            let db2  = info["_db2"] ? info["_db2"] : null;
             let seq = Date.now();
 
-            let processList = [];
+            //let processList = [];
+
+            let params = [];
 
             const sheetModel = this.activeSheet.model;
 
@@ -71,7 +79,7 @@ class ImportHelper {
                 let row = this.activeSheet.getRow(idx);
                 let rowModel = row.model;
 
-                let process = {  proc: proc, param: []  };
+                //let process = {  proc: proc, param: []  };
                 let param = [];
 
                 for(let colIdx = rowModel.min; colIdx <= rowModel.max; colIdx++) {
@@ -83,27 +91,20 @@ class ImportHelper {
                 param.push(...add_params);
                 param.push(seq);
 
-                process["param"] = param;
-                processList.push(process);
+                params.push(param);
             }
 
+            const result =  await DBService.callBulkProcCursor(proc, params, lang, crt_by, db2);
 
-            
-
-            const promises = processList.map(async x => {
-                if(next || err_continue) {
-                    const result = await this.delayedDataProcess(x,lang, crt_by);
-                    if (result <= 0) {
-                        next = false;
-                        if(!err_continue)
-                            return null;
-                    } else {
-                        count+=result;
-                    }
+            if(result && result.length > 0) {
+                try { 
+                    result.forEach(res => {
+                        count += res.filter(q => !(q.hasOwnProperty("ERRCODE") || q.hasOwnProperty("ERRMSG")) ).length;
+                    });
+                } catch(e){
+                    console.log(e.message);
                 }
-            });
-
-            await Promise.all(promises);
+            }
 
             return count;
         } catch (e) {
@@ -113,91 +114,198 @@ class ImportHelper {
         return 0;
     }
 
-
-
-    async delayedDataProcess(item, lang, crt_by) {
-        try {
-            const result = await DBService.callProcCursor(item.proc, item.param, lang, crt_by);
-            if(result) 
-                return 1;
-            else 
-                return 0;
-        } catch (e) {
-            Utils.Logger({ LVL: "error", MODULE: "ImportController", FUNC: "delayedDataProcess", CONTENT: e.message })
-            return 0;
-        }
-    }
-
-	 async importDBData(import_info, lang, crt_by, _resourcesPath, _filenm) {
+	 async importDBData(import_info, lang, crt_by, _resourcesPath, _filenm, _tablepk, _tablenm) {
         try{
-            this.setActiveSheet(1);
-            let info = JSON.parse(import_info); 
-
+            
+            //console.log('importDBData',_tablepk+" - "+_tablenm)
+            this.setActiveSheet(0);
+			//console.log('import_info',import_info)
+            let info = JSON.parse(import_info);  
             let count = 0;
             let next = true;
-
+            let paramObj = [];
             let proc = info["proc"];
             let start_row = info["start_row"];
             let add_params = info["add_params"] ? info["add_params"]  : [];
             let err_continue = info["error_continue"];
+			let start_col = info["start_col"];
             let end_col = info["end_col"];
-
-            
-
+            let db2  = info["_db2"] ? info["_db2"] : null;
+            /*[Anh Quyen Chinh] */
+            let columnChk = info["impValidCol"];
+            let valCheck = info["impValidValue"].trim();
+            /*=================*/
             let processList = [];
             const arr_result = []; 
+			
             const sheetModel = this.activeSheet.model;
-            for(let idx = start_row; idx <= sheetModel.rows.length; idx++) {
+			
+            let rows = this.activeSheet.getColumn(start_col); 
+            let rowsCount = rows['_worksheet']['_rows'].length;
+            //console.log('sheetModel::',sheetModel.rows.length)
+            /*[vng-154/dvg] sheetModel.rows.length get wrong total rows */ 
+            for(let idx = start_row; idx <= rowsCount; idx++) {
                 let seq = Date.now();
+				//console.log('valCheck:',"-"+valCheck+"-");
                 let row = this.activeSheet.getRow(idx);
+				//console.log(row)
                 let rowModel = row.model;
-                
+                //console.log('rowModel-beg:',rowModel)
                 let process = {  proc: proc, param: []  };
                 let param = [];
-
-                for(let colIdx = rowModel.min; colIdx <= end_col; colIdx++) {
-                    let cell = row.getCell(colIdx);
-                    let cellValue = (cell.value ? cell.value : ""); 
-                    if(cellValue.formula && cellValue.formula != undefined){
-                        cellValue = cellValue.result;
+				if(rowModel?.min != null && rowModel?.min != 'null' && rowModel?.min != undefined){
+					//console.log('rowModel-if:',idx);
+					/*[Add Check column - values] */
+					if(Number(columnChk) >=0 && valCheck != ''){
+						let execlChk = row.getCell(columnChk);
+						let cellValue2 = (execlChk.value ? execlChk.value : ""); 
+						if(cellValue2.trim() == valCheck.trim())
+						{
+							for(let colIdx = start_col; colIdx <= end_col; colIdx++) {
+								let cell = row.getCell(colIdx);
+								//console.log('cell11:',cell.value)
+								let cellValue = (cell.value ? cell.value : ""); 
+								if(cellValue.formula && cellValue.formula != undefined){
+									cellValue = cellValue.result;
+								}
+								if(cellValue.richText && cellValue.richText != undefined){
+									let concatRichText = ""; 
+									for(let r = 0; r< cellValue.richText.length; r++){
+										let getText = cellValue.richText[r].text;
+										concatRichText = concatRichText +""+getText;
+									} 
+									cellValue = concatRichText;
+									//console.log('cellValue:',cellValue);
+								}
+								if(cellValue.sharedFormula && cellValue.sharedFormula != undefined){
+									cellValue = cellValue.result;
+									//console.log('cellValue:',cellValue);
+								}
+								param.push(cellValue);
+							} 
+							row.getCell(end_col+1).value = idx+''+seq;
+							row.commit();
+							param.push(...add_params); 
+							if(_tablenm == 'TAC_FILES'){
+								param.push(_tablenm); 
+								param.push(_tablepk); 
+							}
+							param.push(idx+''+seq); 
+							paramObj.push(param); 
+							process["param"] = param;
+							processList.push(process); 
+						}
+					}
+					/*[end]*/
+					else{
+						
+						for(let colIdx = start_col; colIdx <= end_col; colIdx++) {
+							//console.log('colIdx ::',colIdx)  //rowModel.min
+							let cell = row.getCell(colIdx);
+							//console.log('cell1122:',cell.value)
+							let cellValue = (cell.value ? cell.value : ""); 
+							if(cellValue.formula && cellValue.formula != undefined){
+								cellValue = cellValue.result;
+							}
+                            if (cellValue == undefined) cellValue = ""
+							if(cellValue.richText && cellValue.richText != undefined){
+								let concatRichText = ""; 
+								for(let r = 0; r< cellValue.richText.length; r++){
+									let getText = cellValue.richText[r].text;
+									concatRichText = concatRichText +""+getText;
+								} 
+								cellValue = concatRichText;
+								//console.log('cellValue:',cellValue);
+							}
+							if(cellValue.sharedFormula && cellValue.sharedFormula != undefined){
+								cellValue = cellValue.result;
+								//console.log('cellValue:',cellValue);
+							}
+							
+							param.push(cellValue);
+						} 
+						row.getCell(end_col+1).value = idx+''+seq;
+						row.commit();
+						param.push(...add_params); 
+						if(_tablenm == 'TAC_FILES'){
+							param.push(_tablenm); 
+							param.push(_tablepk); 
+						}
+						param.push(idx+''+seq); 
+						paramObj.push(param); 
+						process["param"] = param;
+						processList.push(process); 
+					}
+				}	
+				//console.log('rowModel:',idx);
+            }  
+            try{
+                const rtnList =  await DBService.callBulkProcCursor(proc, paramObj, lang, crt_by, db2);   
+                
+                if(rtnList && rtnList.length > 0) {
+                    try { 
+                        for (let index = 0; index < rtnList.length; index++) {
+                            const element = rtnList[index][0];
+                            // console.log('[vng-154/dvg] > file: ImportHelper.js > line 167 > ImportHelper > importDBData > element', element);
+                            // console.log('[vng-154/dvg] > file: ImportHelper.js > line 167 > ImportHelper > importDBData > element', element);
+                            let result = {};
+                            result.SEQ = paramObj[index][paramObj[index].length-1];
+                            if(!(element.hasOwnProperty("ERRCODE") || element.hasOwnProperty("ERRMSG"))){   
+                                // result.ERRCODE = element.ERRCODE; 
+                                // result.ERRMSG  = element.ERRMSG; 
+                            }
+                            else{
+                                
+                                result.ERRCODE = element.ERRCODE; 
+                                result.ERRMSG  = element.ERRMSG; 
+                            }  
+                            arr_result.push(result);  
+                            count++;
+                        }  
+                    } catch(e){
+                        console.log(e.message);
                     }
-                    param.push(cellValue);
-                } 
-                row.getCell(end_col+1).value = idx+''+seq;
-                row.commit();
-                param.push(...add_params);
-                param.push(idx+''+seq); 
+                }
+            }catch(e){ 
+                let arr1 = [];
+                let vall1 = e.message.toLowerCase(); 
+                this.decodeMessage(arr1, vall1);
+                let result1 = {};
+                result1.SEQ = paramObj[0][paramObj[0].length-1]+'';
 
-                process["param"] = param;
-                processList.push(process); 
-            }   
-            const promises = processList.map(async x => { 
-                const result = await this.ProcessDataImp(x,lang, crt_by);   
-                var obj = result[0] ; 
-                arr_result.push(obj);   
-                // console.log('vng-154-dvg^_^: > file: ImportHelper.js > line 175 > ImportHelper > importDBData > arr_result', arr_result);
-                count++;
-            });  
-            await Promise.all(promises);   
-            
+                if (arr1.length > 0) {
+                    result1.ERRCODE = arr1.join("  >>>  ") ; 
+                } else {
+                    result1.ERRCODE = vall1; 
+                }
+                arr_result.push(result1); 
+            }  
+            /*[B][vng-154/dvg close 20220915] 
+                const promises = processList.map(async x => { 
+                    const result = await this.ProcessDataImp(x,lang, crt_by);   
+                    var obj = result[0] ; 
+                    rr_result.push(obj);    
+                    count++;
+                });  
+                await Promise.all(promises);   
+             [E][vng-154/dvg close 20220915] */
 
-            // this.loadFile(_resourcesPath);
-            // this.setActiveSheet(1);
-            var worksheet = this.activeSheet;
-            // console.log('vng-154-dvg^_^: > file: ImportHelper.js > line 191 > ImportHelper > importDBData > itemdata');
-            for(let idx = start_row; idx <= sheetModel.rows.length; idx++) {   
+            /*===========Write excel file================*/     
+            var worksheet = this.activeSheet; 
+            rows = worksheet.getColumn(start_col); 
+            rowsCount = rows['_worksheet']['_rows'].length;
+            /*[vng-154/dvg] sheetModel.rows.length get wrong total rows */
+            for(let idx = start_row; idx <= rowsCount; idx++) {   
                 var r_item = worksheet.getRow(idx);
                 var maxcol = end_col + 1  ;
                 var seq_idx = r_item.getCell(maxcol).value;
-                // console.log('vng-154-dvg^_^: > file: ImportHelper.js > line 187 > ImportHelper > importDBData > seq_idx', seq_idx);
                 var itemdata = ""; var msg ="Success";  var flag = '1';
                 for(let arri = 0; arri<=arr_result.length-1; arri++)
                 {   
                     itemdata = arr_result[arri]; 
-                    // console.log('vng-154-dvg^_^: > file: ImportHelper.js > line 191 > ImportHelper > importDBData > itemdata', itemdata);
-                    // console.log('vng-154-dvg^_^: > file: ImportHelper.js > line 193 > ImportHelper > importDBData > itemdata.SEQ', itemdata.SEQ);
-                    // console.log('vng-154-dvg^_^: > file: ImportHelper.js > line 194 > ImportHelper > importDBData > seq_idx', seq_idx);
-                    if(itemdata.SEQ == seq_idx) 
+                    // console.log('[vng-154/dvg] > file: ImportHelper.js > line 218 > ImportHelper > importDBData > itemdata', itemdata);
+                    // console.log('[vng-154/dvg] >   itemdata', itemdata.SEQ + '=' + seq_idx); 
+                    if(Number(itemdata.SEQ) == Number(seq_idx)) 
                     {
                         if(itemdata.ERRCODE || itemdata.ERRCODE != undefined)
                         { 
@@ -216,11 +324,9 @@ class ImportHelper {
 
             this.returnFile = Helpers.tmpPath(_filenm);  
             await this.writeFile(); 
-
-            return  true ;//response.attachment(rtnfileData, file_name);
-            // return rtnfileData;
-             
+            return  true ;
         } catch (e) {
+            console.log('e',e)
             Utils.Logger({ LVL: "error", MODULE: "ImportHelper", FUNC: "importDBData", CONTENT: e.message })
             return false;
         } 

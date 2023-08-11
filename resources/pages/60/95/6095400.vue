@@ -50,8 +50,8 @@
                     <v-col md="3">
                         <GwImportExcelFile :label="$t('import_ar_invoice')" :impMultipleTemp="imp_MultipleTemp"
                             :impCboTemp="cboTemplate" @onrtnseltemp="selTemplate = $event"
-                            :impAddParam="[this.modelSearch.COMPANY_PK, this.modelSearch.TODATE]"
-                            @onAfterImport="onAfterImport"   :impProc="importPacking.prod"/>
+                            :impAddParam="[ this.modelSearch.TODATE, '',this.modelSearch.COMPANY_PK,'','','']"
+                            @onAfterImport="onAfterImport" />
                     </v-col>
                     <v-col md="1">
                         <BaseInput outlined :label="$t('total')" readonly v-model="totalAmount" number />
@@ -165,9 +165,6 @@ export default {
         txtFormNo: "",
 
         _arrData: [],
-        importPacking: {
-            prod: "EI_UPD_6095400_U_08_API"
-        }
     }),
     mounted() {
         this.onResize();
@@ -314,25 +311,7 @@ export default {
                 case "filenm":
                     const results = await this._getCommonCode2(["ACEIS130"], this.user.PK)
                     this.dataSearchList.selab_list = results[0];
-
-
-                    
                     break;
-                // case "template":
-                // //     await this._getInitList('cboTemplate', _arrayData, 'ACJS0320', _tco_compay_pk).then((result) => {
-                // //         result.forEach(item => {
-                // //             if (item.CODE.substr(0, 1) == this.selVoucherIO || item.CODE.substr(0, 1) == 'A') {
-                // //                 this.cboTemplate.push(item);
-                // //             }
-                // //         });
-                // //     });
-                //     const commoncode = await this._getCommonCode3(['ACJS0320'], this.user.PK);
-                //     commoncode[0].forEach(item => {
-                //         if (item.DESCRIPTION == 'EI-POST') {
-                //             this.cboTemplate.push(item);
-                //         }
-                //     });
-                //     break;
             }
         },
         async initCboFrm(_arrayData, _tco_compay_pk) {

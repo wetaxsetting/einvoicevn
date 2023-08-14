@@ -3846,6 +3846,340 @@ class EInvoiceController {
         return null;
       }
 
+      async weTaxSendPOSToTaxOffice({ request, response, auth }) {
+        try {
+            var p_language = request.header("accept-language", "ENG");
+            var p_crt_by = "";
+            const user = await auth.getUser();
+            if (user) {
+                p_crt_by = user.USER_ID;
+            }
+
+            const { proc, para } = request.all();
+
+            let rtnValue = [];
+            let res_data = [];
+            // checking ...
+            for (let i = 0; i < para.length; i++) {
+
+                const para_value = {
+                    master_pk: para[i].master_pk,
+                    form_no: para[i].form_no,
+                    serial_no: para[i].serial_no,
+                    invoice_date: para[i].invoice_date,
+                    currency: para[i].currency,
+                    exchange_rate: para[i].exchange_rate,
+                    payment_methods: para[i].payment_methods,
+                    seller_name: para[i].seller_name,
+                    seller_taxcode: para[i].seller_taxcode,
+                    seller_address: para[i].seller_address,
+                    seller_phone: para[i].seller_phone,
+                    seller_mail: para[i].seller_mail,
+                    seller_account: para[i].seller_account,
+                    seller_bank: para[i].seller_bank,
+                    seller_fax: para[i].seller_fax,
+                    seller_website: para[i].seller_website,
+                    buyer_name: para[i].buyer_name,
+                    buyer_taxcode: para[i].buyer_taxcode,
+                    buyer_address: para[i].buyer_address,
+                    buyer_code: para[i].buyer_code,
+                    buyer_phone: para[i].buyer_phone,
+                    buyer_mail: para[i].buyer_mail,
+                    buyer_for_name: para[i].buyer_for_name,
+                    buyer_account: para[i].buyer_account,
+                    buyer_of_name: para[i].buyer_of_name,
+                    vat_rate: para[i].vat_rate,
+                    net_amount: para[i].net_amount,
+                    vat_amount: para[i].vat_amount,
+                    total_net_amount: para[i].total_net_amount,
+                    total_vat_amount: para[i].total_vat_amount,
+                    free_name: para[i].free_name,
+                    free_amount: para[i].free_amount,
+                    total_free_amount: para[i].total_free_amount,
+                    total_amount_number: para[i].total_amount_number,
+                    total_amount_words: para[i].total_amount_words,
+                    create_by: para[i].create_by,
+                    create_date: para[i].create_date
+                };
+
+                rtnValue = await DBService.ExecuteSQLBlob(
+                    `BEGIN ei_upd_file_pit_ar ( :master_pk,
+                                                        :form_no,
+                                                        :serial_no,
+                                                        :invoice_date,
+                                                        :company_name,
+                                                        :company_taxcode,
+                                                        :company_address,
+                                                        :payer_name,
+                                                        :payer_address,
+                                                        :payer_taxcode,
+                                                        :payer_nation,
+                                                        :payer_resident,
+                                                        :id_passport_number,
+                                                        :place_of_issue,
+                                                        :date_of_issue,
+                                                        :income_amt,
+                                                        :income_time,
+                                                        :income_amt_total,
+                                                        :income_amt_total_defuct,
+                                                        :income_amt_recv,
+                                                        :income_type,
+                                                        :income_time_yyyy,
+                                                        :p_language, 
+                                                        :p_crt_by, 
+                                                        :p_rtn_cur); END;`,
+                    para_value,
+                    p_language,
+                    p_crt_by
+                );
+
+                for (let j = 0; j < para[i].details.length; j++) {
+                    console.log(" para details  ", para[i].details[j]);
+                }
+            }
+
+            return response.send(
+                Utils.response(
+                    true,
+                    `${para.length} invoices were sent successful.`,
+                    res_data
+                )
+            );
+        } catch (e) {
+            Utils.Logger({
+                LVL: "error",
+                MODULE: "EInvoiceController",
+                FUNC: "sendPITToTaxOffice",
+                CONTENT: e.message,
+            });
+            return response.send(Utils.response(false, "error", e.message));
+        }
+    }
+
+    async weTaxConvertPosInvoiceToXML({ request, response, auth }) {
+        try {
+            var p_language = request.header("accept-language", "ENG");
+            var p_crt_by = "";
+            const user = await auth.getUser();
+            if (user) {
+                p_crt_by = user.USER_ID;
+            }
+
+            const { invoices } = request.all();
+            console.log(" invoices  ", invoices);
+            //invoices = JSON.parse(invoices);
+            let rtnXML = [];
+            let objInvoice_M = {
+                HDon: {
+                    DLHDon: {
+                        TTChung: {
+                            PBan: "",
+                            THDon: "",
+                            KHMSHDon: "",
+                            KHHDon: "",
+                            SHDon: "",
+                            MHSo: "",
+                            NLap: "",
+                            NBKe: "",
+                            DVTTe: "",
+                            TGia: "",
+                            HTTToan: "",
+                        },
+                        NDHDon: {
+                            NBan: {
+                                Ten: "",
+                                MST: "",
+                                DChi: "",
+                                SDThoai: "",
+                                NNBSTKNHang: "",
+                            },
+                            NMua: {
+                                Ten: "",
+                                MST: "",
+                                DChi: "",
+                                SDThoai: "",
+                                HVTNMHang: "",
+                                CCCDan: "",
+                            },
+                            DSHHDVu: {},
+                            TToan: {
+                                THTTLTSuat: {
+                                    LTSuat: {
+                                        TSuat: "",
+                                        ThTien: "",
+                                        TThue: "",
+                                    },
+                                },
+                                TgTCTHue: "",
+                                TgTThue: "",
+                                DSLPhi: {
+                                    LPhi: {},
+                                },
+                                TTCKTMai: "",
+                                TgTTTBSo: "",
+                                TgTTTBChu: "",
+                                
+                            },
+                        },
+                    },
+                    DSCKS: {},
+                },
+            };
+            /*let invoices_sample=[
+                      {master:{},detail:[{}]},
+                      {master:{},detail:[{}]},
+                      {master:{},detail:[{}]},
+                  ];*/
+            //console.log("invoices1:", invoices)
+            if (invoices.length == undefined || invoices.length == 0) {
+                return response.send(
+                    Utils.response(false, `Invalid json format.`, invoices)
+                );
+            }
+            const lastInvoiceNo = await DBService.callProcCursor(
+                "ei_sel_last_invoice_no", [
+                invoices[0].master.seller_taxcode,
+                invoices[0].master.serial_no,
+                invoices[0].master.form_no,
+            ],
+                "ENG",
+                p_crt_by,
+                "N"
+            );
+            let last_invoice_no = lastInvoiceNo[0].INVOICE_NO;
+            const last_invoice_date = lastInvoiceNo[0].INVOICE_DATE;
+            const tomorrow_date = lastInvoiceNo[0].TOMORROW_DATE;
+            if (isNaN(last_invoice_no)) {
+                return response.send(
+                    Utils.response(
+                        false,
+                        `Failed to create invoice no. Please contact administrator for helping.`,
+                        null
+                    )
+                );
+            }
+            for (let i = 0; i < invoices.length; i++) {
+                //console.log("invoices:", invoices[i])
+                
+                if (invoices[i].master.form_no == 1) {
+                    objInvoice_M.HDon.DLHDon.TTChung.THDon = "Hóa đơn giá trị gia tăng khởi tạo từ máy tính tiền";
+                } else if (invoices[i].master.form_no == 2) {
+                    objInvoice_M.HDon.DLHDon.TTChung.THDon = "Hóa đơn bán hàng khởi tạo từ máy tính tiền";
+                } else if (invoices[i].master.form_no == 3) {
+                    objInvoice_M.HDon.DLHDon.TTChung.THDon = "Hóa đơn bán tài sản công khởi tạo từ máy tính tiền";
+                } else if (invoices[i].master.form_no == 4) {
+                    objInvoice_M.HDon.DLHDon.TTChung.THDon = "Hóa đơn bán hàng dự trữ quốc gia khởi tạo từ máy tính tiền";
+                } else if (invoices[i].master.form_no == 5) {
+                    objInvoice_M.HDon.DLHDon.TTChung.THDon = "Tem điện tử, vé điện tử, thẻ điện tử, phiếu thu điện tử, chứng từ thu phí DV ngân hàng khởi tạo từ máy tính tiền";
+                } else if (invoices[i].master.form_no == 6) {
+                    objInvoice_M.HDon.DLHDon.TTChung.THDon = "Phiếu xuất kho kiêm vận chuyển nội bộ, phiếu xuất kho hàng gửi bán đại lý khởi tạo từ máy tính tiền";
+                }
+                last_invoice_no++;
+                objInvoice_M.HDon.DLHDon.TTChung.PBan = invoices[i].version;
+                objInvoice_M.HDon.DLHDon.TTChung.KHMSHDon = invoices[i].master.form_no;
+                objInvoice_M.HDon.DLHDon.TTChung.KHHDon = invoices[i].master.serial_no;
+                objInvoice_M.HDon.DLHDon.TTChung.SHDon = invoices[i].master.invoice_no;  
+                objInvoice_M.HDon.DLHDon.TTChung.NLap = invoices[i].master.invoice_date;
+                objInvoice_M.HDon.DLHDon.TTChung.DVTTe = invoices[i].master.tr_ccy;
+                objInvoice_M.HDon.DLHDon.TTChung.TGia = invoices[i].master.tr_rate;
+                objInvoice_M.HDon.DLHDon.TTChung.HTTToan = invoices[i].master.payment_method;
+                objInvoice_M.HDon.DLHDon.TTChung.MSTTCGP = "1201496252"; //webcashgenuwin.com taxcode
+                
+                objInvoice_M.HDon.DLHDon.NDHDon.NBan.Ten = this.convertHtmlCode(invoices[i].master.seller_comp_name);
+                objInvoice_M.HDon.DLHDon.NDHDon.NBan.MST = this.convertHtmlCode(invoices[i].master.seller_taxcode);
+                objInvoice_M.HDon.DLHDon.NDHDon.NBan.DChi = this.convertHtmlCode(invoices[i].master.seller_address);
+                objInvoice_M.HDon.DLHDon.NDHDon.NBan.SDThoai = this.convertHtmlCode(invoices[i].master.seller_tel);
+                
+
+                objInvoice_M.HDon.DLHDon.NDHDon.NMua.Ten = this.convertHtmlCode(invoices[i].master.buyer_comp_name);
+                objInvoice_M.HDon.DLHDon.NDHDon.NMua.MST = this.convertHtmlCode(invoices[i].master.buyer_taxcode);
+                objInvoice_M.HDon.DLHDon.NDHDon.NMua.DChi = this.convertHtmlCode(invoices[i].master.buyer_address);
+                objInvoice_M.HDon.DLHDon.NDHDon.NMua.CCCDan = this.convertHtmlCode(invoices[i].master.buyer_cccd);
+                objInvoice_M.HDon.DLHDon.NDHDon.NMua.SDThoai = this.convertHtmlCode(invoices[i].master.buyer_tel);
+                
+                objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu = [];
+
+                objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu = {};
+                objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu = [];
+
+                for (let j = 0; j < invoices[i].detail.length; j++) {
+                    objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
+                        TChat: invoices[i].detail[j].nature,
+                        STT: invoices[i].detail[j].seq,
+                        MHHDVu: this.convertHtmlCode(invoices[i].detail[j].item_code),
+                        THHDVu: this.convertHtmlCode(invoices[i].detail[j].item_name),
+                        DVTinh: this.convertHtmlCode(invoices[i].detail[j].uom),
+                        SLuong: this.convertHtmlCode(invoices[i].detail[j].quantity),
+                        DGia: this.convertHtmlCode(invoices[i].detail[j].uprice),
+                        TLCKhau: this.convertHtmlCode(invoices[i].detail[j].dc_rate),
+                        STCKhau: this.convertHtmlCode(invoices[i].detail[j].dc_amt),
+                        ThTien: this.convertHtmlCode(invoices[i].detail[j].amt),
+                        TSuat: this.convertHtmlCode(invoices[i].detail[j].vat_rate),
+                        // TTKhac: {
+                        //     TTin: [{
+                        //         TTruong: "VATAmount",
+                        //         KDLieu: "decimal",
+                        //         DLieu: invoices[i].detail[j].vat_tr_amt,
+                        //     },
+                        //     {
+                        //         TTruong: "Amount",
+                        //         KDLieu: "decimal",
+                        //         DLieu: invoices[i].detail[j].net_tr_amt,
+                        //     },
+                        //     ],
+                        // },
+                    });
+                }
+
+
+                objInvoice_M.HDon.DLHDon.NDHDon.TToan = {};
+
+                objInvoice_M.HDon.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat = [];
+
+                for (let j = 0; j < invoices[i].list_amt_vat.length; j++) {
+
+                    objInvoice_M.HDon.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat.push({
+                        TSuat : invoices[i].list_amt_vat[j].sub_vat_rate,
+                        ThTien : invoices[i].list_amt_vat[j].sub_amt,
+                        TThue : invoices[i].list_amt_vat[j].sub_amt_vat
+                    });
+                   
+                }
+
+                objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTCThue = invoices[i].master.total_amt;
+                objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTThue = invoices[i].master.total_vat_amt;
+                
+                objInvoice_M.HDon.DLHDon.NDHDon.TToan.TTCKTMai =  invoices[i].master.total_dc_amt;
+                objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = invoices[i].master.total_payment;
+                objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = this.convertHtmlCode(invoices[i].master.total_payment_word_vie);
+               
+                objInvoice_M.HDon.DSCKS.NBan = "";
+               
+                objInvoice_M.HDon.MCCQT = invoices[i].master.mccqt; 
+
+                const xml = convertXML.json2xml(objInvoice_M, {
+                    compact: true,
+                    ignoreComment: true,
+                    spaces: 4,
+                });
+                const xmlStr = xml.toString().replace(/\n/g, '');
+                //console.log("xmlStr", xmlStr)
+                rtnXML.push({ master_pk: invoices[i].master.master_pk, invoice_no: last_invoice_no, xml: xmlStr });
+            }
+
+            return response.send(
+                Utils.response(true, `Convert json to xml was successful.`, rtnXML)
+            );
+        } catch (e) {
+            Utils.Logger({
+                LVL: "error",
+                MODULE: "EInvoiceController",
+                FUNC: "weTaxConvertPosInvoiceToXML",
+                CONTENT: e.message,
+            });
+            return response.send(Utils.response(false, "error", e.message));
+        }
+    }
 }
 
 module.exports = EInvoiceController;

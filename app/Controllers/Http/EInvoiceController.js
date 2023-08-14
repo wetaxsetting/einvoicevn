@@ -54,13 +54,13 @@ class EInvoiceController {
     async einvoicePdfConvert({ request, response, auth }) {
         var p_language = request.header("accept-language", "ENG");
         var p_crt_by = "";
-        const { tradecode } = request.all()
+        const { trade_code } = request.all()
         let EiExcel = new EiExcelHandler();
         const user = await auth.getUser();
         if (user) {
             p_crt_by = user.USER_ID;
         }
-        let result = await EiExcel.getEinvoice(tradecode, p_language, p_crt_by)
+        let result = await EiExcel.getEinvoice(trade_code, p_language, p_crt_by)
         return response.send(result);
     }
 
@@ -94,7 +94,7 @@ class EInvoiceController {
                 headers: { Authorization: request.headers().authorization },
             };
             //console.log(config)
-            const { tradecodes } = request.all();
+            const { trade_codes } = request.all();
             let smtp_info = {
                 host: SMTP_SERVER,
                 port: SMTP_PORT,
@@ -122,31 +122,31 @@ class EInvoiceController {
                 'N'
             );
             //console.log("template", template)
-            for (let i = 0; i < tradecodes.length; i++) {
-                const tradcode = tradecodes[i].tradecode;
-                const mail_to = tradecodes[i].mail_to;
-                const mail_cc = tradecodes[i].mail_cc;
-                let pdf_url = await Request.post(API_URL + "/einvoice/einvoicepdfconvert", { tradecode: tradcode }, config);
-                let xml_url = await Request.get(API_URL + "/dso/getfiledbtoken?proc=EI_SEL_XML_FILE_BY_TRADECODE&pk=" + tradcode);
+            for (let i = 0; i < trade_codes.length; i++) {
+                const trade_code = trade_codes[i].trade_code;
+                const mail_to = trade_codes[i].mail_to;
+                const mail_cc = trade_codes[i].mail_cc;
+                let pdf_url = await Request.post(API_URL + "/einvoice/einvoicepdfconvert", { trade_code: trade_code }, config);
+                let xml_url = await Request.get(API_URL + "/dso/getfiledbtoken?proc=EI_SEL_XML_FILE_BY_TRADECODE&pk=" + trade_code);
                 const subject = template[0].SUBJECT;
                 const body = template[0].BODY;
                 let pdf_file_name = "";
                 let xml_file_name = "";
 
                 if (pdf_url == null || pdf_url == undefined || pdf_url == "") {
-                    rtnResult.push({ tradcode: tradcode, success: false, errmsg: 'fail to create invoice pdf file' });
+                    rtnResult.push({ trade_code: trade_code, success: false, errmsg: 'fail to create invoice pdf file' });
                     continue;
                 }
 
                 if (xml_url == null || xml_url == undefined || xml_url == "") {
-                    rtnResult.push({ tradcode: tradcode, success: false, errmsg: 'fail to create invoice xml file' });
+                    rtnResult.push({ trade_code: trade_code, success: false, errmsg: 'fail to create invoice xml file' });
                     continue;
                 }
                 pdf_url = pdf_url.data;
                 xml_url = xml_url.data;
 
                 const invoice = await DBService.callProcCursor(
-                    "ei_sel_einvoice_by_tradecode", [tradcode],
+                    "ei_sel_einvoice_by_tradecode", [trade_code],
                     'ENG',
                     p_crt_by,
                     'N'
@@ -205,7 +205,7 @@ class EInvoiceController {
                 }
 
                 let subject_binding = { SELLER_COMPANY_NAME: invoice[0].SELLER_COMPANY_NAME, FORM_NO: invoice[0].FORM_NO, SERIAL_NO: invoice[0].SERIAL_NO, INVOICE_NO: invoice[0].INVOICE_NO };
-                let body_binding = { EINVOICE_LOOKUP_URL: '<a href="http://e-invoice.webcashgenuwin.com/tracuuhd" rel="noopener noreferrer" target="_blank">http://e-invoice.webcashgenuwin.com/tracuuhd</a>', TRADECODE: tradcode };
+                let body_binding = { EINVOICE_LOOKUP_URL: '<a href="http://e-invoice.webcashgenuwin.com/tracuuhd" rel="noopener noreferrer" target="_blank">http://e-invoice.webcashgenuwin.com/tracuuhd</a>', TRADE_CODE: trade_code };
                 pdf_file_name = invoice[0].INVOICE_NO + ".pdf";
                 xml_file_name = invoice[0].INVOICE_NO + ".xml";
                 let mail_option = {
@@ -227,7 +227,7 @@ class EInvoiceController {
                 //console.log("mail_option", mail_option)
                 //console.log("smtp_info", smtp_info)
                 const result = await Utils.smtpSendMail(mail_option, smtp_info);
-                rtnResult.push({ tradcode: tradcode, success: result });
+                rtnResult.push({ trade_code: trade_code, success: result });
             }
             return response.send(
                 Utils.response(
@@ -1127,14 +1127,14 @@ class EInvoiceController {
                     );
                     rtnValue.push({
                         tei_einvoice_m_pk: para[i].tei_einvoice_m_pk,
-                        tradecode: "",
+                        trade_code: "",
                         errmsg: "The issuer invoice has not register"
                     });
                     continue;
                 } else if (masterInvoicePK.PK == 0) {
                     rtnValue.push({
                         tei_einvoice_m_pk: para[i].tei_einvoice_m_pk,
-                        tradecode: "",
+                        trade_code: "",
                         errmsg: "Duplicated data. This invoice already sent"
                     });
                     continue;
@@ -1145,12 +1145,12 @@ class EInvoiceController {
                     );
                     rtnValue.push({
                         tei_einvoice_m_pk: para[i].tei_einvoice_m_pk,
-                        tradecode: "",
+                        trade_code: "",
                         errmsg: "Invalid xml format"
                     });
                     continue;
                 }
-                const tradeCode = await Request.post(
+                const trade_code = await Request.post(
                     url, { base64XML: Buffer.from(para[i].xml_signed).toString("base64") }, {
                     agent,
                     headers: {
@@ -1163,7 +1163,7 @@ class EInvoiceController {
                 );
                 //console.log("masterInvoicePK  ", masterInvoicePK);
                 
-                if (tradeCode && tradeCode.data) {
+                if (trade_code && trade_code.data) {
                     
                     const para_value = {
                         tei_einvoice_ar_pk: masterInvoicePK.PK,
@@ -1176,7 +1176,7 @@ class EInvoiceController {
                         notafter: para[i].notafter,
                         notbefore: para[i].notbefore,
                         serialnumber: para[i].tax_serial_number,
-                        tradecode: tradeCode.data.maGDich,
+                        trade_code: trade_code.data.maGDich,
                         cqt_code: "", //cqt_code
                         tei_einvoice_m_pk : masterInvoicePK.TEI_EINVOICE_M_PK,
                     };
@@ -1193,7 +1193,7 @@ class EInvoiceController {
                                         :notafter,
                                         :notbefore,
                                         :serialnumber,
-                                        :tradecode,
+                                        :trade_code,
                                         :cqt_code,
                                         :tei_einvoice_m_pk, 
                                         :p_language, 
@@ -1207,7 +1207,7 @@ class EInvoiceController {
                     let base64PDf ;
                     try{
                         let EiExcel = new EiExcelHandlerAuto(); 
-                        base64PDf = await EiExcel.getEinvoice(tradeCode.data.maGDich, p_language, p_crt_by); 
+                        base64PDf = await EiExcel.getEinvoice(trade_code.data.maGDich, p_language, p_crt_by); 
                         console.log("base64PDf  ", base64PDf);
                     }catch(e)
                     {
@@ -1235,7 +1235,7 @@ class EInvoiceController {
                     //console.log("rtnValue ", rtnValue);
                     rtnValue.push({
                         tac_crca_pk: para[i].tac_crca_pk,
-                        tradecode: tradeCode.data.maGDich,
+                        trade_code: trade_code.data.maGDich,
                     });
                 } else {
                     return response.send(
@@ -1689,7 +1689,7 @@ class EInvoiceController {
                 );
                 if (result[0].STATUS == "OK") {
                     rtnValue.push({
-                        tradecode: para.trade_code[i],
+                        trade_code: para.trade_code[i],
                         tax_confirmation_code: para.tei_einvoice_m_pk[i],
                         inform_code: maTBao,
                         inform_name: tenTBao,
@@ -1752,12 +1752,12 @@ class EInvoiceController {
             //                 "base64"
             //             ).toString("utf8");
             //             const para_value = {
-            //                 tradecode: para[i],
+            //                 trade_code: para[i],
             //                 macqt: maCQT,
             //                 xml_sign: base64XML,
             //             };
             //             const result = await DBService.ExecuteSQLBlob(
-            //                 `BEGIN ei_upd_file_xml_v5(:tradecode,:macqt,:xml_sign,:p_language, :p_crt_by, :p_rtn_cur); END;`,
+            //                 `BEGIN ei_upd_file_xml_v5(:trade_code,:macqt,:xml_sign,:p_language, :p_crt_by, :p_rtn_cur); END;`,
             //                 para_value,
             //                 p_language,
             //                 p_crt_by
@@ -1781,13 +1781,13 @@ class EInvoiceController {
             //     }
             // }
             // rtnValue.push({
-            //     tradecode: para[i],
+            //     trade_code: para[i],
             //     tax_confirmation_code: maCQT,
             //     inform_code: maTBao,
             //     inform_name: tenTBao,
             // });
             // rtnValue.push({
-            //     tradecode: para.trade_code[i],
+            //     trade_code: para.trade_code[i],
             //     tax_confirmation_code: para.tei_einvoice_m_pk[i],
             //     inform_code: maTBao,
             //     inform_name: tenTBao,
@@ -2002,7 +2002,7 @@ class EInvoiceController {
                     options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
                 },
             };
-            const tradeCode = await Request.post(
+            const trade_code = await Request.post(
                 url, { base64XML: Buffer.from(para.xml_signed).toString("base64") }, {
                 agent,
                 headers: {
@@ -2012,11 +2012,11 @@ class EInvoiceController {
             }
             );
 
-            if (tradeCode && tradeCode.data) {
+            if (trade_code && trade_code.data) {
                 const para_value = {
                     tei_declaration_m_pk: para.erp_declaration_m_pk,
                     xml_sign: para.xml_signed,
-                    trade_code: tradeCode.data.maGDich,
+                    trade_code: trade_code.data.maGDich,
                     cqt_code: "", //cqt_code
                 };
                 const res = await DBService.ExecuteSQLBlob(
@@ -2034,7 +2034,7 @@ class EInvoiceController {
             dataJson.push({
                 erp_declaration_m_pk: para.erp_declaration_m_pk,
                 xml_sign: para.xml_signed,
-                trade_code: tradeCode.data.maGDich,
+                trade_code: trade_code.data.maGDich,
             });
             return response.send(
                 Utils.response(true, `Declaration was sent successfull.`, dataJson)
@@ -2233,7 +2233,7 @@ class EInvoiceController {
                 },
             };
             let para_value;
-            for (let parent of para.tradecode) {
+            for (let parent of para.trade_code) {
                 console.log("checkingDeclarations parent " + JSON.stringify(parent));
                 // den day
                 const res = await Request.get(url + parent, {
@@ -2368,7 +2368,7 @@ class EInvoiceController {
                 },
             };
 
-            const tradeCode = await Request.post(
+            const trade_code = await Request.post(
                 url, { base64XML: Buffer.from(para.xml_signed).toString("base64") }, {
                 agent,
                 headers: {
@@ -2378,10 +2378,10 @@ class EInvoiceController {
             }
             );
 
-            if (tradeCode && tradeCode.data) {
+            if (trade_code && trade_code.data) {
                 const para_value = {
                     erp_einvoice_ss_m_pk: para.erp_einvoice_ss_m_pk,
-                    trade_code: tradeCode.data.maGDich,
+                    trade_code: trade_code.data.maGDich,
                     xml_sign: para.xml_signed,
                 };
                 const res = await DBService.ExecuteSQLBlob(
@@ -2395,7 +2395,7 @@ class EInvoiceController {
                 if (res.p_rtn_cur[0].STATUS == "OK") {
                     return Utils.response(true, `Call tax office api success.`, {
                         erp_einvoice_ss_m_pk: para.erp_einvoice_ss_m_pk,
-                        trade_code: tradeCode.data.maGDich,
+                        trade_code: trade_code.data.maGDich,
                     });
                 } else {
                     return response.send(
@@ -2487,11 +2487,10 @@ class EInvoiceController {
             };
 
             const authUserName = "GENUWIN"; // "GENUWIN";
-            const authPassword = "e_GX4v@"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+            const authPassword = "genuwin123"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
 
             //const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
-            let url =
-                "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+            let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
 
             const { proc, para } = request.all();
 
@@ -2501,12 +2500,12 @@ class EInvoiceController {
                 Utils.response(true, `checking_declare_success`, para)
             );
 
-            //console.log(para.tradecode.length)
+            //console.log(para.trade_code.length)
             let rtnValue = [];
             //for (let i = 0; i < para.length; i++) {
-            for (let i = 0; i < para.tradecode.length; i++) {
-                //console.log("para_value[i].tradeCode ", para.tradecode[i]);
-                const result = await Request.get(url + para.tradecode[i], {
+            for (let i = 0; i < para.trade_code.length; i++) {
+                //console.log("para_value[i].trade_code ", para.trade_code[i]);
+                const result = await Request.get(url + para.trade_code[i], {
                     agent,
                     headers: {
                         Authorization: "Basic " +
@@ -2539,7 +2538,7 @@ class EInvoiceController {
                     }
                 }
                 rtnValue.push({
-                    tradecode: para.tradecode[i],
+                    trade_code: para.trade_code[i],
                     inform_code: maTBao,
                     inform_desc: tenTBao,
                 });
@@ -3006,8 +3005,6 @@ class EInvoiceController {
             return response.send(Utils.response(false, "error", e.message));
         }
     }
-
-
 
     async getTaxCode({ request, response, auth }) {
         try {
@@ -3873,7 +3870,7 @@ class EInvoiceController {
            }
 
         return;
-        const { tradecodes } = request.all();
+        const { trade_codes } = request.all();
     }
 
     // async createSignedInfo() {

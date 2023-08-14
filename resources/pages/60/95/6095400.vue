@@ -35,12 +35,12 @@
                     </v-col>
                     <v-col md="1"></v-col>
                     <v-col md="2">
-                        <BaseSelect outlined :label="$t('combine_YN')" v-model="modelSearch.COMBINE_YN"
+                        <BaseSelect outlined :label="$t('combine_yn')" v-model="modelSearch.COMBINE_YN"
                             :lstData="dataSearchList.combineYN_list" item-text="NAME" item-value="CODE"
                             :text_all="$t('all')" />
                     </v-col>
                     <v-col md="2">
-                        <BaseSelect outlined :label="$t('process_YN')" v-model="modelSearch.PROCESS_YN"
+                        <BaseSelect outlined :label="$t('process_yn')" v-model="modelSearch.PROCESS_YN"
                             :lstData="dataSearchList.processYN_list" item-text="NAME" item-value="CODE"
                             :text_all="$t('all')" />
                     </v-col>

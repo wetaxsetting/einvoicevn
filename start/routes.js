@@ -129,6 +129,9 @@ Route.group(() => {
     Route.post("checkinformadjustinvoicefromclient", "EInvoiceController.checkInformAdjustToTaxOfficeFromClient")
     Route.post("signxmlesign", "EInvoiceController.SignXml")
     Route.post("checkingstatuseinvoice", "EInvoiceController.checkingStatusEInvoice")
+    // WeTax
+    Route.post("generate-declare-xml", "EInvoiceController.weTaxconvertDeclareUsingInvoiceToXML")
+
 }).prefix("api/einvoice").middleware("user");
 
 // Frontend

@@ -266,7 +266,7 @@ class EInvoiceController {
                 TKhai: {
                     DLTKhai: {
                         TTChung: {
-                            PBan: "2.0.0",
+                            PBan: "2.0.1",
                             MSo: "01/ĐKTĐ-HĐĐT",
                             Ten: "Tờ khai đăng ký/thay đổi thông tin sử dụng hóa đơn điện tử",
                             HThuc: 1,
@@ -365,7 +365,7 @@ class EInvoiceController {
                     HThuc: declare.digital_certificates[i].type
                 });
             }
-            const xml = convertXML.json2xml(jsonDeclare, { compact: true, ignoreComment: true, spaces: 4 });
+            const xml = this.OBJtoXML(jsonDeclare);
             // console.log("xmlxml ++++==?> ", xml);
             return response.send(
                 Utils.response(
@@ -385,6 +385,160 @@ class EInvoiceController {
             return response.send(Utils.response(false, "error", e.message));
         }
     }
+    async weTaxconvertDeclareUsingInvoiceToXML({ request, response, auth }) {
+        try {
+            var p_language = request.header("accept-language", "ENG");
+            var p_crt_by = "";
+            const user = await auth.getUser();
+            if (user) {
+                p_crt_by = user.USER_ID;
+            }
+            const { declare } = request.all();
+            console.log('+===> ', declare);
+            let jsonDeclare = {
+                TKhai: {
+                    DLTKhai: {
+                        TTChung: {
+                            PBan: "2.0.0",
+                            MSo: "01/ĐKTĐ-HĐĐT",
+                            Ten: "Tờ khai đăng ký/thay đổi thông tin sử dụng hóa đơn điện tử",
+                            HThuc: 1,
+                            TNNT: "Vinmart",
+                            MST: 104918404,
+                            CQTQLy: "Chi cục thuế Quận Hoàng Mai",
+                            MCQTQLy: 10108,
+                            NLHe: "NGUYỄN THỊ DUNG",
+                            DCLHe: "Quận Hoàng Mai, Hà Nội",
+                            DCTDTu: "dungnguyentran@gmail.com",
+                            DTLHe: "394552327",
+                            DDanh: "Hà Nội",
+                            NLap: "2021-15-11"
+                        },
+                        NDTKhai: {
+                            HTHDon: {
+                                CMa: 1,
+                                KCMa: 0,
+                                CMTMTTien: 0
+                            },
+                            HTGDLHDDT: {
+                                NNTDBKKhan: 0,
+                                NNTKTDNUBND: 0,
+                                CDLTTDCQT: 0,
+                                CDLQTVAN: 0
+                            },
+                            PThuc: {
+                                CDDu: 1,
+                                CBTHop: 0
+                            },
+                            LHDSDung: {
+                                HDGTGT: 1,
+                                HDBHang: 1,
+                                HDBTSCong: "",
+                                HDBHDTQGia: "",
+                                HDKhac: 0,
+                                CTu: 1
+                            },
+                            DSCTSSDung: {
+                                CTS: []
+                            }
+                        }
+                    },
+                    DSCKS: {
+                        NNT: ""
+                    }
+                }
+            };
+
+            if (declare && !declare.hasOwnProperty("seller_taxcode")) {
+                return response.send(
+                    Utils.response(
+                        false,
+                        `Invalid json format.`,
+                        declare
+                    )
+                );
+            }
+            jsonDeclare.TKhai.DLTKhai.TTChung.PBan = declare.version;
+            jsonDeclare.TKhai.DLTKhai.TTChung.Ten = declare.declare_name;
+            jsonDeclare.TKhai.DLTKhai.TTChung.HThuc = declare.declare_type;
+            jsonDeclare.TKhai.DLTKhai.TTChung.TNNT = declare.seller_company_name
+            jsonDeclare.TKhai.DLTKhai.TTChung.MST = declare.seller_taxcode;
+            jsonDeclare.TKhai.DLTKhai.TTChung.CQTQLy = declare.tax_office_name;
+            jsonDeclare.TKhai.DLTKhai.TTChung.MCQTQLy = declare.tax_office_code;
+            jsonDeclare.TKhai.DLTKhai.TTChung.NLHe = declare.contact_person;
+            jsonDeclare.TKhai.DLTKhai.TTChung.DCLHe = declare.contact_address;
+            jsonDeclare.TKhai.DLTKhai.TTChung.DCTDTu = declare.contact_email;
+            jsonDeclare.TKhai.DLTKhai.TTChung.DTLHe = declare.contact_phone;
+            jsonDeclare.TKhai.DLTKhai.TTChung.DDanh = declare.location_name;
+            jsonDeclare.TKhai.DLTKhai.TTChung.NLap = declare.created_date;
+            jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.CMa = declare.has_code;
+            jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.KCMa = declare.no_code;
+            jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.CMTMTTien = declare.pos_code;
+            jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NNTDBKKhan = declare.taxpayer_from_difficult_location;
+            jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NNTKTDNUBND = declare.taxpayer_from_people_committee_suggestions;
+            jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLTTDCQT = declare.transfer_data_directly_to_tax_office;
+            jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLQTVAN = declare.cdlqtvan;
+            jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CDDu = declare.full_transfer;
+            jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CBTHop = declare.summary_transfer;
+
+            jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDGTGT = declare.vat_invoice;
+            jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBHang = declare.saling_invoice;
+            jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBTSCong = declare.public_asset_invoice;
+            jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBHDTQGia = declare.national_reserve_goods_invoice;
+            jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDKhac = declare.other_invoice;
+            jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.CTu = declare.voucher;
+
+            for (let i = 0; i < declare.digital_certificates.length; i++) {
+                jsonDeclare.TKhai.DLTKhai.NDTKhai.DSCTSSDung.CTS.push({
+                    STT: declare.digital_certificates[i].sequence,
+                    TTChuc: declare.digital_certificates[i].organization_name,
+                    Seri: declare.digital_certificates[i].serial_no,
+                    TNgay: declare.digital_certificates[i].from_date,
+                    DNgay: declare.digital_certificates[i].to_date,
+                    HThuc: declare.digital_certificates[i].type
+                });
+            }
+            const xml = this.OBJtoXML(jsonDeclare);
+            // console.log("xmlxml ++++==?> ", xml);
+            return response.send(
+                Utils.response(
+                    true,
+                    `Convert declare using invoices to xml was succesful.`,
+                    xml.toString().replace(/\n/g, '')
+                )
+            );
+
+        } catch (e) {
+            Utils.Logger({
+                LVL: "error",
+                MODULE: "EInvoiceController",
+                FUNC: "convertDeclareUsingInvoiceToXML",
+                CONTENT: e.message,
+            });
+            return response.send(Utils.response(false, "error", e.message));
+        }
+    }
+    OBJtoXML(obj) {
+        var xml = '';
+        for (var prop in obj) {
+          xml += obj[prop] instanceof Array ? '' : "<" + prop + ">";
+          if (obj[prop] instanceof Array) {
+            for (var array in obj[prop]) {
+              xml += "<" + prop + ">";
+              xml += this.OBJtoXML(new Object(obj[prop][array]));
+              xml += "</" + prop + ">";
+            }
+          } else if (typeof obj[prop] == "object") {
+            xml += this.OBJtoXML(new Object(obj[prop]));
+          } else {
+            xml += obj[prop];
+          }
+          xml += obj[prop] instanceof Array ? '' : "</" + prop + ">";
+        }
+        var xml = xml.replace(/<\/?[0-9]{1,}>/g, '');
+        return xml
+      }
+      
 
     async convertInvoiceToXMLClient({ request, response, auth }) {
         try {
@@ -4027,7 +4181,7 @@ class EInvoiceController {
         }
     }
 
-    async weTaxConvertPosInvoiceToXML({ request, response, auth }) {
+     async weTaxConvertPosInvoiceToXML({ request, response, auth }) {
         try {
             var p_language = request.header("accept-language", "ENG");
             var p_crt_by = "";
@@ -4249,6 +4403,100 @@ class EInvoiceController {
                 CONTENT: e.message,
             });
             return response.send(Utils.response(false, "error", e.message));
+        }
+    }
+
+    async weTaxSendOrderInfo({ request, response, auth }) {
+        try {
+            var p_language = request.header("accept-language", "ENG");
+            var p_crt_by = "";
+            const user = await auth.getUser();
+            if (user) {
+                p_crt_by = user.USER_ID;
+            }
+            const { data } = request.all();
+
+              const para_value = {
+                    tei_company_pk : "",
+                    sale_date :  para[i].sale_date,
+                    store_code : para[i].store_code,
+                    store_name : para[i].store_name,
+                    pos_no: para[i].pos_no,
+                    bill_no : para[i].bill_no,
+                    version : para[i].version,
+                    invoice_name : para[i].invoice_name,
+                    symbol_type : para[i].symbol_type,
+                    form_no : para[i].form_no,
+                    serial_no : para[i].serial_no,
+                    invoice_date : para[i].invoice_date,
+                    invoice_no : para[i].invoice_no,
+                    currency : para[i].currency,
+                    ex_rate : para[i].ex_rate,
+                    payment_method : para[i].payment_method,
+                    seller_comp_name : para[i].seller_comp_name,
+                    seller_taxcode : para[i].seller_taxcode,
+                    seller_address : para[i].seller_address,
+                    seller_tel : para[i].seller_tel,
+                    buyer_comp_name : para[i].buyer_comp_name,
+                    buyer_taxcode : para[i].buyer_taxcode,
+                    buyer_tel : para[i].buyer_tel,
+                    buyer_address : para[i].buyer_address,
+                    buyer_cccd : para[i].buyer_cccd,
+                    buyer_email : para[i].buyer_email,
+                    buyer_email_cc : para[i].buyer_email_cc,
+                    total_amt : para[i].total_amt,
+                    total_dc_amt : para[i].total_dc_amt,
+                    total_vat_amt : para[i].total_vat_amt,
+                    total_payment : para[i].total_payment,
+                    total_payment_word_vie : para[i].total_payment_word_vie,
+                    mccqt : para[i].mccqt,
+                };
+
+                const rtnValue = await DBService.ExecuteSQLBlob(
+                    `BEGIN ei_upd_order_info (          
+                                                        :sale_date,
+                                                        :store_code,
+                                                        :store_name,
+                                                        :pos_no,
+                                                        :bill_no,
+                                                        :version,
+                                                        :invoice_name,
+                                                        :symbol_type,
+                                                        :form_no,
+                                                        :serial_no,
+                                                        :invoice_date,
+                                                        :invoice_no,
+                                                        :currency,
+                                                        :ex_rate,
+                                                        :payment_method,
+                                                        :seller_comp_name,
+                                                        :seller_taxcode,
+                                                        :seller_address,
+                                                        :seller_tel,
+                                                        :buyer_comp_name,
+                                                        :buyer_taxcode,
+                                                        :buyer_tel,
+                                                        :buyer_address,
+                                                        :buyer_cccd,
+                                                        :buyer_email,
+                                                        :buyer_email_cc,
+                                                        :total_amt,
+                                                        :total_dc_amt,
+                                                        :total_vat_amt,
+                                                        :total_payment,
+                                                        :total_payment_word_vie,
+                                                        :mccqt,
+                                                        :p_language, 
+                                                        :p_crt_by, 
+                                                        :p_rtn_cur); END;`,
+                    para_value,
+                    p_language,
+                    p_crt_by
+                );
+
+
+        } catch (error) {
+            
         }
     }
 }

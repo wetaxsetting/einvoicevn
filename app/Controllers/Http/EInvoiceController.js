@@ -458,18 +458,18 @@ class EInvoiceController {
                     )
                 );
             }
-            jsonDeclare.TKhai.DLTKhai.TTChung.PBan = this.convertHtmlCode(declare.version);
-            jsonDeclare.TKhai.DLTKhai.TTChung.Ten = this.convertHtmlCode(declare.declare_name);
+            jsonDeclare.TKhai.DLTKhai.TTChung.PBan = declare.version;
+            jsonDeclare.TKhai.DLTKhai.TTChung.Ten = declare.declare_name;
             jsonDeclare.TKhai.DLTKhai.TTChung.HThuc = declare.declare_type;
             jsonDeclare.TKhai.DLTKhai.TTChung.TNNT = declare.seller_company_name
             jsonDeclare.TKhai.DLTKhai.TTChung.MST = declare.seller_taxcode;
             jsonDeclare.TKhai.DLTKhai.TTChung.CQTQLy = declare.tax_office_name;
             jsonDeclare.TKhai.DLTKhai.TTChung.MCQTQLy = declare.tax_office_code;
-            jsonDeclare.TKhai.DLTKhai.TTChung.NLHe = this.convertHtmlCode(declare.contact_person);
-            jsonDeclare.TKhai.DLTKhai.TTChung.DCLHe = this.convertHtmlCode(declare.contact_address);
+            jsonDeclare.TKhai.DLTKhai.TTChung.NLHe = declare.contact_person;
+            jsonDeclare.TKhai.DLTKhai.TTChung.DCLHe = declare.contact_address;
             jsonDeclare.TKhai.DLTKhai.TTChung.DCTDTu = declare.contact_email;
             jsonDeclare.TKhai.DLTKhai.TTChung.DTLHe = declare.contact_phone;
-            jsonDeclare.TKhai.DLTKhai.TTChung.DDanh = this.convertHtmlCode(declare.location_name);
+            jsonDeclare.TKhai.DLTKhai.TTChung.DDanh = declare.location_name;
             jsonDeclare.TKhai.DLTKhai.TTChung.NLap = declare.created_date;
             jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.CMa = declare.has_code;
             jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.KCMa = declare.no_code;

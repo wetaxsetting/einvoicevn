@@ -266,7 +266,7 @@ class EInvoiceController {
                 TKhai: {
                     DLTKhai: {
                         TTChung: {
-                            PBan: "2.0.0",
+                            PBan: "2.0.1",
                             MSo: "01/ĐKTĐ-HĐĐT",
                             Ten: "Tờ khai đăng ký/thay đổi thông tin sử dụng hóa đơn điện tử",
                             HThuc: 1,
@@ -4027,7 +4027,7 @@ class EInvoiceController {
         }
     }
 
-    async weTaxConvertPosInvoiceToXML({ request, response, auth }) {
+     async weTaxConvertPosInvoiceToXML({ request, response, auth }) {
         try {
             var p_language = request.header("accept-language", "ENG");
             var p_crt_by = "";
@@ -4249,6 +4249,100 @@ class EInvoiceController {
                 CONTENT: e.message,
             });
             return response.send(Utils.response(false, "error", e.message));
+        }
+    }
+
+    async weTaxSendOrderInfo({ request, response, auth }) {
+        try {
+            var p_language = request.header("accept-language", "ENG");
+            var p_crt_by = "";
+            const user = await auth.getUser();
+            if (user) {
+                p_crt_by = user.USER_ID;
+            }
+            const { data } = request.all();
+
+              const para_value = {
+                    tei_company_pk : "",
+                    sale_date :  para[i].sale_date,
+                    store_code : para[i].store_code,
+                    store_name : para[i].store_name,
+                    pos_no: para[i].pos_no,
+                    bill_no : para[i].bill_no,
+                    version : para[i].version,
+                    invoice_name : para[i].invoice_name,
+                    symbol_type : para[i].symbol_type,
+                    form_no : para[i].form_no,
+                    serial_no : para[i].serial_no,
+                    invoice_date : para[i].invoice_date,
+                    invoice_no : para[i].invoice_no,
+                    currency : para[i].currency,
+                    ex_rate : para[i].ex_rate,
+                    payment_method : para[i].payment_method,
+                    seller_comp_name : para[i].seller_comp_name,
+                    seller_taxcode : para[i].seller_taxcode,
+                    seller_address : para[i].seller_address,
+                    seller_tel : para[i].seller_tel,
+                    buyer_comp_name : para[i].buyer_comp_name,
+                    buyer_taxcode : para[i].buyer_taxcode,
+                    buyer_tel : para[i].buyer_tel,
+                    buyer_address : para[i].buyer_address,
+                    buyer_cccd : para[i].buyer_cccd,
+                    buyer_email : para[i].buyer_email,
+                    buyer_email_cc : para[i].buyer_email_cc,
+                    total_amt : para[i].total_amt,
+                    total_dc_amt : para[i].total_dc_amt,
+                    total_vat_amt : para[i].total_vat_amt,
+                    total_payment : para[i].total_payment,
+                    total_payment_word_vie : para[i].total_payment_word_vie,
+                    mccqt : para[i].mccqt,
+                };
+
+                const rtnValue = await DBService.ExecuteSQLBlob(
+                    `BEGIN ei_upd_order_info (          
+                                                        :sale_date,
+                                                        :store_code,
+                                                        :store_name,
+                                                        :pos_no,
+                                                        :bill_no,
+                                                        :version,
+                                                        :invoice_name,
+                                                        :symbol_type,
+                                                        :form_no,
+                                                        :serial_no,
+                                                        :invoice_date,
+                                                        :invoice_no,
+                                                        :currency,
+                                                        :ex_rate,
+                                                        :payment_method,
+                                                        :seller_comp_name,
+                                                        :seller_taxcode,
+                                                        :seller_address,
+                                                        :seller_tel,
+                                                        :buyer_comp_name,
+                                                        :buyer_taxcode,
+                                                        :buyer_tel,
+                                                        :buyer_address,
+                                                        :buyer_cccd,
+                                                        :buyer_email,
+                                                        :buyer_email_cc,
+                                                        :total_amt,
+                                                        :total_dc_amt,
+                                                        :total_vat_amt,
+                                                        :total_payment,
+                                                        :total_payment_word_vie,
+                                                        :mccqt,
+                                                        :p_language, 
+                                                        :p_crt_by, 
+                                                        :p_rtn_cur); END;`,
+                    para_value,
+                    p_language,
+                    p_crt_by
+                );
+
+
+        } catch (error) {
+            
         }
     }
 }

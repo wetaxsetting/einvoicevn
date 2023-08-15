@@ -365,7 +365,7 @@ class EInvoiceController {
                     HThuc: declare.digital_certificates[i].type
                 });
             }
-            const xml = this.OBJtoXML(jsonDeclare, { compact: true, ignoreComment: true, spaces: 4 });
+            const xml = this.OBJtoXML(jsonDeclare);
             // console.log("xmlxml ++++==?> ", xml);
             return response.send(
                 Utils.response(

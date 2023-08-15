@@ -52,7 +52,7 @@
                                                         <v-col md="3">
                                                             <v-row dense>
                                                                 <v-col md="12">
-                                                                    <b style=" color: #B0BEC5">{{ $t("vietnamese_name")
+                                                                    <b style=" color: #B0BEC5; font: sans-serif ">{{ $t("vietnamese_name")
                                                                     }}</b>
                                                                 </v-col>
                                                                 <v-col md="12">

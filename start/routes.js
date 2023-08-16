@@ -129,6 +129,8 @@ Route.group(() => {
     Route.post("checkinformadjustinvoicefromclient", "EInvoiceController.checkInformAdjustToTaxOfficeFromClient")
     Route.post("signxmlesign", "EInvoiceController.SignXml")
     Route.post("checkingstatuseinvoice", "EInvoiceController.checkingStatusEInvoice")
+    Route.get("downloadxml", "EInvoiceController.DownloadXML")
+    Route.get("downloadpdf", "EInvoiceController.DownloadPDF")
     // WeTax
     Route.post("generate-declare-xml", "EInvoiceController.weTaxconvertDeclareUsingInvoiceToXML")
     Route.post("send-order-to-invoice", "EInvoiceController.weTaxSendOrderInfo")

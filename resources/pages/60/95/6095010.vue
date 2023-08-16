@@ -63,45 +63,47 @@
                   <v-card-title class="headline primary-gradient white--text py-1">{{ $t("company_info") }} </v-card-title>
                   <v-container fluid class="pt-1">
                     <v-row dense>
-                      <v-col md="12">
-                        <BaseInput outlined :label="$t('company')" v-model="txtInformation.COMPANY_NM" />
-                      </v-col>
-                      <v-col md="12">
-                        <BaseInput outlined :label="$t('company_name')" v-model="txtInformation.TAX_CODE" />
-                      </v-col>
-                      <v-col md="12">
-                        <BaseInput outlined :label="$t('address')" v-model="txtInformation.ADDR" />
-                      </v-col>
-                      <v-col md="12">
-                        <BaseInput outlined :label="$t('legal_representative')" v-model="txtInformation.REPRESENT" />
-                      </v-col>
-                      <v-col md="12">
-                        <BaseInput outlined :label="$t('fax')" v-model="txtInformation.FAX" />
-                      </v-col>
-                      <v-col md="12">
-                        <BaseInput outlined :label="$t('tel')" v-model="txtInformation.TEL" />
-                      </v-col>
                       <v-col md="11">
-                        <BaseInput outlined :label="$t('general_info')" />
+                        <BaseInput outlined :label="$t('company')" v-model="txtInformation.COMPANY_NM" />
                       </v-col>
                       <v-col md="1">
                         <v-badge offset-x="55" color="green" :content="$t('use_yn')" style="font-size: 0.35rem">
                           <v-checkbox v-model="txtInformation.USE_YN" color="red darken-3" true-value="Y" false-value="N" hide-details class="my-0 py-0"></v-checkbox>
                         </v-badge>
                       </v-col>
+                      <v-col md="6">
+                        <BaseInput outlined :label="$t('company_name')" v-model="txtInformation.TAX_CODE" />
+                      </v-col>
+                      <v-col md="6">
+                        <BaseInput outlined :label="$t('legal_representative')" v-model="txtInformation.REPRESENT" />
+                      </v-col>
+                      <v-col md="12">
+                        <BaseInput outlined :label="$t('address')" v-model="txtInformation.ADDR" />
+                      </v-col>
+                      
+                      <v-col md="6">
+                        <BaseInput outlined :label="$t('fax')" v-model="txtInformation.FAX" />
+                      </v-col>
+                      <v-col md="6">
+                        <BaseInput outlined :label="$t('tel')" v-model="txtInformation.TEL" />
+                      </v-col>
+                      <!-- <v-col md="11">
+                        <BaseInput outlined :label="$t('general_info')" />
+                      </v-col> -->
+                      
                       <v-col md="12">
                         <BaseInput outlined :label="$t('bank_name')" v-model="txtInformation.BANK_NAME" />
                       </v-col>
-                      <v-col md="12">
+                      <v-col md="6">
                         <BaseInput outlined :label="$t('account_holder')" v-model="txtInformation.ACC_HOLDER" />
                       </v-col>
-                      <v-col md="12">
+                      <v-col md="6">
                         <BaseInput outlined :label="$t('account_no')" v-model="txtInformation.ACC_NO" />
                       </v-col>
-                      <v-col md="12">
+                      <v-col md="6">
                         <BaseInput outlined :label="$t('email')" v-model="txtInformation.CONTACT_EMAIL" />
                       </v-col>
-                      <v-col md="12">
+                      <v-col md="6">
                         <BaseInput outlined :label="$t('contact_person')" v-model="txtInformation.CONTACT_PERSON" />
                       </v-col>
                       <v-col md="12">
@@ -110,11 +112,11 @@
                       <v-col md="12">
                         <BaseInput outlined :label="$t('remark')" v-model="txtInformation.REMARKS" />
                       </v-col>
-                      <v-col md="12">
+                      <v-col md="6">
                         <v-chip label>{{ $t("image_logo") }}</v-chip>
                         <BasePhoto ref="photo" v-model="txtInformation.PK" :table_name="'TEI_COMPANY'"></BasePhoto>
                       </v-col>
-                      <v-col md="12">
+                      <v-col md="6">
                         <v-chip label>{{ $t("image_backgound") }}</v-chip>
                         <BasePhoto ref="photo" :width="500" v-model="txtInformation.PK" :table_name="'TEI_COMPANY'"></BasePhoto>
                       </v-col>

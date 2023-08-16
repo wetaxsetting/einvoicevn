@@ -64,61 +64,61 @@
                   <v-container fluid class="pt-1">
                     <v-row dense>
                       <v-col md="11">
-                        <BaseInput outlined :label="$t('company')" v-model="txtInformation.COMPANY_NM" />
+                        <BaseInput outlined :label="$t('company')" v-model="MasterInfo.COMPANY_NM" />
                       </v-col>
                       <v-col md="1">
                         <v-badge offset-x="55" color="green" :content="$t('use_yn')" style="font-size: 0.35rem">
-                          <v-checkbox v-model="txtInformation.USE_YN" color="red darken-3" true-value="Y" false-value="N" hide-details class="my-0 py-0"></v-checkbox>
+                          <v-checkbox v-model="MasterInfo.USE_YN" color="red darken-3" true-value="Y" false-value="N" hide-details class="my-0 py-0"></v-checkbox>
                         </v-badge>
                       </v-col>
                       <v-col md="6">
-                        <BaseInput outlined :label="$t('company_name')" v-model="txtInformation.TAX_CODE" />
+                        <BaseInput outlined :label="$t('company_name')" v-model="MasterInfo.TAX_CODE" />
                       </v-col>
                       <v-col md="6">
-                        <BaseInput outlined :label="$t('legal_representative')" v-model="txtInformation.REPRESENT" />
+                        <BaseInput outlined :label="$t('legal_representative')" v-model="MasterInfo.REPRESENT" />
                       </v-col>
                       <v-col md="12">
-                        <BaseInput outlined :label="$t('address')" v-model="txtInformation.ADDR" />
+                        <BaseInput outlined :label="$t('address')" v-model="MasterInfo.ADDR" />
                       </v-col>
 
                       <v-col md="6">
-                        <BaseInput outlined :label="$t('fax')" v-model="txtInformation.FAX" />
+                        <BaseInput outlined :label="$t('fax')" v-model="MasterInfo.FAX" />
                       </v-col>
                       <v-col md="6">
-                        <BaseInput outlined :label="$t('tel')" v-model="txtInformation.TEL" />
+                        <BaseInput outlined :label="$t('tel')" v-model="MasterInfo.TEL" />
                       </v-col>
                       <!-- <v-col md="11">
                         <BaseInput outlined :label="$t('general_info')" />
                       </v-col> -->
 
                       <v-col md="12">
-                        <BaseInput outlined :label="$t('bank_name')" v-model="txtInformation.BANK_NAME" />
+                        <BaseInput outlined :label="$t('bank_name')" v-model="MasterInfo.BANK_NAME" />
                       </v-col>
                       <v-col md="6">
-                        <BaseInput outlined :label="$t('account_holder')" v-model="txtInformation.ACC_HOLDER" />
+                        <BaseInput outlined :label="$t('account_holder')" v-model="MasterInfo.ACC_HOLDER" />
                       </v-col>
                       <v-col md="6">
-                        <BaseInput outlined :label="$t('account_no')" v-model="txtInformation.ACC_NO" />
+                        <BaseInput outlined :label="$t('account_no')" v-model="MasterInfo.ACC_NO" />
                       </v-col>
                       <v-col md="6">
-                        <BaseInput outlined :label="$t('email')" v-model="txtInformation.CONTACT_EMAIL" />
+                        <BaseInput outlined :label="$t('email')" v-model="MasterInfo.CONTACT_EMAIL" />
                       </v-col>
                       <v-col md="6">
-                        <BaseInput outlined :label="$t('contact_person')" v-model="txtInformation.CONTACT_PERSON" />
+                        <BaseInput outlined :label="$t('contact_person')" v-model="MasterInfo.CONTACT_PERSON" />
                       </v-col>
                       <v-col md="12">
                         <BaseInput outlined :label="$t('tax_agency_name')" />
                       </v-col>
                       <v-col md="12">
-                        <BaseInput outlined :label="$t('remark')" v-model="txtInformation.REMARKS" />
+                        <BaseInput outlined :label="$t('remark')" v-model="MasterInfo.REMARKS" />
                       </v-col>
                       <v-col md="6">
                         <v-chip label>{{ $t("image_logo") }}</v-chip>
-                        <BasePhoto ref="photo" v-model="txtInformation.PK" :table_name="'TEI_COMPANY'"></BasePhoto>
+                        <BasePhoto ref="photoLogo" table_name="TEI_COMPANY" :value="MasterInfo.PK" :procedure="procedure_upload"></BasePhoto>
                       </v-col>
                       <v-col md="6">
                         <v-chip label>{{ $t("image_backgound") }}</v-chip>
-                        <BasePhoto ref="photo" :width="500" v-model="txtInformation.PK" :table_name="'TEI_COMPANY'"></BasePhoto>
+                        <BasePhoto ref="photoBackground" :width="500" v-model="MasterInfo.PK" table_name="TEI_COMPANY"></BasePhoto>
                       </v-col>
                     </v-row>
                   </v-container>
@@ -144,7 +144,7 @@
                     sel_procedure="AC_SEL_6095010_01_NC"
                     upd_procedure="AC_UPD_6095080_u_06"
                     :headertype="1"
-                    :filter_paras="['']"
+                    :filter_paras="[this.MasterInfo.PK]"
                     :update_paras="['PK', 'TEI_DECLARATION_M_PK', 'TTCHUC', 'MST', 'SERI', 'DNGAY', 'TNGAY', 'HTHUC']"
                     :max_height="limitHeightGridDetails"
                   />
@@ -193,7 +193,7 @@ export default {
     headerList: {
       grdDetail: [],
     },
-    txtInformation: {
+    MasterInfo: {
       COMPANY_NM: "",
       TAX_CODE: "",
       ADDR: "",
@@ -417,18 +417,21 @@ export default {
       this.scrollInvoked++;
     },
     async grdSearchClick(cell) {
-      console.log("file: 6095420.vue:236 [vng-304] grdSearchClick [vng-304] cell:", cell.data);
-      this.txtInformation = cell.data;
+      this.MasterInfo.PK = await cell.data.PK;
+      this.dsoMaster("select");
+      // console.log("file: 6095420.vue:236 [vng-304] grdSearchClick [vng-304] cell:", cell.data);
+      // this.MasterInfo = cell.data;
 
       await this.$refs.grdDetail.loadData();
+
     },
     async dsoMaster(action) {
       await this._dsoCall(
         {
           type: "control",
-          selpro: "",
-          updpro: "AC_UPD_6095010_LIST_COMPANY",
-          para: [this.txtInformation.PK, ""],
+          selpro: "AC_SEL_6095010_M_NC",
+          updpro: "AC_UPD_6095010_COMPANY",
+          para: [this.MasterInfo.PK],
           elname: [
             "_rowstatus",
             "PK",
@@ -463,7 +466,7 @@ export default {
             "WEBSITE_EI",
             "REPRESENT",
           ],
-          data: this.txtInformation,
+          data: this.MasterInfo,
         },
         action,
         true
@@ -471,18 +474,18 @@ export default {
         if (res) {
           switch (action) {
             case "select":
-              this.txtInformation = { ...res };
-              this.txtInformation._rowstatus = "u";
+              this.MasterInfo = { ...res };
+              this.MasterInfo._rowstatus = "u";
               break;
             case "update":
-              switch (this.txtInformation._rowstatus) {
+              switch (this.MasterInfo._rowstatus) {
                 case "i":
-                  this.txtInformation = { ...res };
-                  this.txtInformation._rowstatus = "u";
+                  this.MasterInfo = { ...res };
+                  this.MasterInfo._rowstatus = "u";
                   break;
                 case "u":
-                  this.txtInformation = { ...res };
-                  this.txtInformation._rowstatus = "u";
+                  this.MasterInfo = { ...res };
+                  this.MasterInfo._rowstatus = "u";
                   break;
                 case "d":
                   this.onClick("newMaster");
@@ -493,7 +496,7 @@ export default {
         }
       });
     },
-    onClickButton(obj) {
+   async onClickButton(obj) {
       switch (obj) {
         case "SEARCH":
           this.$refs.grdCompany.loadData();
@@ -503,6 +506,8 @@ export default {
           break;
         case "SAVE":
           this.dsoMaster("update");
+
+          // let savedPhoto = await this.$refs.photoLogo.Save();
           // this.objClick = "btnSave";
           break;
         case "DELETE":
@@ -521,27 +526,27 @@ export default {
       }
     },
     async addNewMaster() {
-      this.txtInformation._rowstatus = "i";
-      this.txtInformation.COMPANY_NM = "";
-      this.txtInformation.TAX_CODE = "";
-      this.txtInformation.ADDR = "";
-      this.txtInformation.REPRESENT = "";
-      this.txtInformation.FAX = "";
-      this.txtInformation.TEL = "";
-      this.txtInformation.USE_YN = "Y";
-      this.txtInformation.BANK_NAME = "";
-      this.txtInformation.ACC_HOLDER = "";
-      this.txtInformation.ACC_NO = "";
-      this.txtInformation.CONTACT_EMAIL = "";
-      this.txtInformation.CONTACT_PERSON = "";
-      this.txtInformation.REMARKS = "";
-      // this.txtInformation. = null;
-      // this.txtInformation. = null;
-      // this.txtInformation. = null;
+      this.MasterInfo._rowstatus = "i";
+      this.MasterInfo.COMPANY_NM = "";
+      this.MasterInfo.TAX_CODE = "";
+      this.MasterInfo.ADDR = "";
+      this.MasterInfo.REPRESENT = "";
+      this.MasterInfo.FAX = "";
+      this.MasterInfo.TEL = "";
+      this.MasterInfo.USE_YN = "Y";
+      this.MasterInfo.BANK_NAME = "";
+      this.MasterInfo.ACC_HOLDER = "";
+      this.MasterInfo.ACC_NO = "";
+      this.MasterInfo.CONTACT_EMAIL = "";
+      this.MasterInfo.CONTACT_PERSON = "";
+      this.MasterInfo.REMARKS = "";
+      // this.MasterInfo. = null;
+      // this.MasterInfo. = null;
+      // this.MasterInfo. = null;
       // this.$refs.grdCompany.Clear();
     },
     async onGetDetailDeclaration() {
-      if (this.modelMaster.PK != "") {
+      if (this.MasterInfo.PK != "") {
         let xml = `<TKhai>
                     <DLTKhai>
                       <TTChung>
@@ -557,7 +562,7 @@ export default {
 
         const objXml = [
           {
-            master_pk: this.modelMaster.PK,
+            master_pk: this.MasterInfo.PK,
             xml: JSON.stringify(xml).toString().replaceAll('"', "").replaceAll("<DLTKhai>", "<DLTKhai Id='ID1'>"),
           },
         ];
@@ -577,7 +582,7 @@ export default {
       }
     },
     async onGetDetailDeclaration() {
-      if (this.modelMaster.PK != "") {
+      if (this.MasterInfo.PK != "") {
         let xml = `<TKhai>
                     <DLTKhai>
                       <TTChung>
@@ -593,7 +598,7 @@ export default {
 
         const objXml = [
           {
-            master_pk: this.modelMaster.PK,
+            master_pk: this.MasterInfo.PK,
             xml: JSON.stringify(xml).toString().replaceAll('"', "").replaceAll("<DLTKhai>", "<DLTKhai Id='ID1'>"),
           },
         ];
@@ -623,7 +628,7 @@ export default {
         _rowstatus: "i",
         NO: this.$refs.grdDetail.getDataSource().length + 1,
         PK: "",
-        TEI_DECLARATION_M_PK: this.modelMaster.PK,
+        TEI_DECLARATION_M_PK: this.MasterInfo.PK,
         TTCHUC: this.getPara("CN", obj_token.issue_by),
         MST: obj_token.dn_mst,
         SERI: obj_token.serial_number,
@@ -631,6 +636,25 @@ export default {
         TNGAY: obj_token.not_before,
         HTHUC: "1",
       });
+    },
+    getPara(paraname, data) {
+      let result = "";
+      let start = data.indexOf(paraname + "=");
+      if (start >= 0 && start + paraname.length < data.length) {
+        start = start + paraname.length + 1;
+
+        let spa = data.indexOf(",", start);
+
+        if (spa >= 0 && data.length > spa && spa - start > 0) {
+          result = data.substring(start, spa);
+        }
+        else {
+          result = data.substring(start);
+        }
+
+        result.replace(paraname + "=", "");
+      }
+      return result;
     },
     async initHeaderList() {
       this.headerList.grdDetail = [
@@ -642,12 +666,12 @@ export default {
         {
           dataField: "PK",
           caption: this.$t("pk"),
-          hidden: true,
+          visible: false,
         },
         {
           dataField: "tei_declaration_m_pk",
           caption: this.$t("tei_declaration_m_pk"),
-          hidden: true,
+          visible: false,
         },
         {
           dataField: "TTCHUC",
@@ -659,7 +683,7 @@ export default {
           dataField: "MST",
           caption: this.$t("mst"),
           width: 150,
-          hidden: true,
+          visible: false,
         },
         {
           dataField: "SERI",

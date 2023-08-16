@@ -132,13 +132,22 @@
                     <!-- Add -->
                     <!-- <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')" @onclick="onClick('newDetail')" /> -->
                     <!-- Save -->
-                    <BaseButton icon_type="save" :btn_text="$t('save')" @onclick="onClick('saveDetail')"/>
+                    <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClick('saveDetail')"  />
                     <!-- Delete -->
-                    <BaseButtonupd icon_type="delete" :btn_text="$t('delete')" @onclick="onClick('deleteDetail')"/>
+                    <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClick('deleteDetail')" />
                   </GwFlexBox>
                 </v-col>
                 <v-col md="12">
-                  <DataGridView ref="grdDetail" :header="headerList.grdDetail" sel_procedure="AC_SEL_6095010_01_NC" :headertype="1" :filter_paras="['']" :max_height="limitHeightGridDetails" />
+                  <DataGridView
+                    ref="grdDetail"
+                    :header="headerList.grdDetail"
+                    sel_procedure="AC_SEL_6095010_01_NC"
+                    upd_procedure="AC_UPD_6095080_u_06"
+                    :headertype="1"
+                    :filter_paras="['']"
+                    :update_paras="['PK', 'TEI_DECLARATION_M_PK', 'TTCHUC', 'MST', 'SERI', 'DNGAY', 'TNGAY', 'HTHUC']"
+                    :max_height="limitHeightGridDetails"
+                  />
                 </v-col>
               </v-col>
             </v-card>
@@ -530,6 +539,98 @@ export default {
       // this.txtInformation. = null;
       // this.txtInformation. = null;
       // this.$refs.grdCompany.Clear();
+    },
+    async onGetDetailDeclaration() {
+      if (this.modelMaster.PK != "") {
+        let xml = `<TKhai>
+                    <DLTKhai>
+                      <TTChung>
+                      </TTChung>		
+                      <NDTKhai>
+                      </NDTKhai>	
+                    </DLTKhai>	
+                    <DSCKS>
+                      <NNT>
+                      </NNT>
+                    </DSCKS>
+                  </TKhai>`;
+
+        const objXml = [
+          {
+            master_pk: this.modelMaster.PK,
+            xml: JSON.stringify(xml).toString().replaceAll('"', "").replaceAll("<DLTKhai>", "<DLTKhai Id='ID1'>"),
+          },
+        ];
+
+        jQuery.support.cors = true;
+        $.ajax({
+          url: "http://localhost:1080/getDeclarationData",
+          dataType: "text",
+          method: "POST",
+          data: {
+            crt_by: this.user.USER_ID,
+            xml: JSON.stringify(objXml).toString(),
+          },
+          error: this.onErrorGetDetailDeclaration,
+          success: this.onSuccessGetDetailDeclaration,
+        });
+      }
+    },
+    async onGetDetailDeclaration() {
+      if (this.modelMaster.PK != "") {
+        let xml = `<TKhai>
+                    <DLTKhai>
+                      <TTChung>
+                      </TTChung>		
+                      <NDTKhai>
+                      </NDTKhai>	
+                    </DLTKhai>	
+                    <DSCKS>
+                      <NNT>
+                      </NNT>
+                    </DSCKS>
+                  </TKhai>`;
+
+        const objXml = [
+          {
+            master_pk: this.modelMaster.PK,
+            xml: JSON.stringify(xml).toString().replaceAll('"', "").replaceAll("<DLTKhai>", "<DLTKhai Id='ID1'>"),
+          },
+        ];
+
+        jQuery.support.cors = true;
+        $.ajax({
+          url: "http://localhost:1080/getDeclarationData",
+          dataType: "text",
+          method: "POST",
+          data: {
+            crt_by: this.user.USER_ID,
+            xml: JSON.stringify(objXml).toString(),
+          },
+          error: this.onErrorGetDetailDeclaration,
+          success: this.onSuccessGetDetailDeclaration,
+        });
+      }
+    },
+
+    async onErrorGetDetailDeclaration() {
+      this.showNotification("warning", this.$t("warning"), this.$t("pls_install_application_or_open_application"));
+    },
+
+    async onSuccessGetDetailDeclaration(data) {
+      let obj_token = $.parseJSON(data);
+      this.$refs.grdDetail.addRowStruct({
+        _rowstatus: "i",
+        NO: this.$refs.grdDetail.getDataSource().length + 1,
+        PK: "",
+        TEI_DECLARATION_M_PK: this.modelMaster.PK,
+        TTCHUC: this.getPara("CN", obj_token.issue_by),
+        MST: obj_token.dn_mst,
+        SERI: obj_token.serial_number,
+        DNGAY: obj_token.not_after,
+        TNGAY: obj_token.not_before,
+        HTHUC: "1",
+      });
     },
     async initHeaderList() {
       this.headerList.grdDetail = [

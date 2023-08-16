@@ -375,6 +375,7 @@ class EInvoiceController {
             return response.send(Utils.response(false, "error", e.message));
         }
     }
+
     async weTaxconvertDeclareUsingInvoiceToXML({ request, response, auth }) {
         try {
             var p_language = request.header("accept-language", "ENG");
@@ -676,7 +677,7 @@ class EInvoiceController {
             return response.send(Utils.response(false, "error", e.message));
         }
     }
-
+    
     async convertDeclareToXMLClient({ request, response, auth }) {
         try {
             var p_language = request.header("accept-language", "ENG");
@@ -4320,6 +4321,7 @@ class EInvoiceController {
             console.log("error  ", error);
         }
     }
+
 
 }
 

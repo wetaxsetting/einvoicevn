@@ -398,6 +398,7 @@ class EInvoiceController {
               MSo: "01/ĐKTĐ-HĐĐT",
               Ten: "Tờ khai đăng ký/thay đổi thông tin sử dụng hóa đơn điện tử",
               HThuc: 1,
+              Mso: '',
               TNNT: "Vinmart",
               MST: 104918404,
               CQTQLy: "Chi cục thuế Quận Hoàng Mai",
@@ -443,13 +444,10 @@ class EInvoiceController {
           },
         },
       };
-
-      //   if (declare && !declare.hasOwnProperty("seller_taxcode")) {
-      //     return response.send(Utils.response(false, `Invalid json format.`, declare));
-      //   }
       jsonDeclare.TKhai.DLTKhai.TTChung.PBan = declare.version;
       jsonDeclare.TKhai.DLTKhai.TTChung.Ten = declare.declare_name;
       jsonDeclare.TKhai.DLTKhai.TTChung.HThuc = declare.declare_type;
+      jsonDeclare.TKhai.DLTKhai.TTChung.Mso = declare.form_no;
       jsonDeclare.TKhai.DLTKhai.TTChung.TNNT = declare.seller_company_name;
       jsonDeclare.TKhai.DLTKhai.TTChung.MST = declare.seller_taxcode;
       jsonDeclare.TKhai.DLTKhai.TTChung.CQTQLy = declare.tax_office_name;
@@ -515,34 +513,35 @@ class EInvoiceController {
     const mess1 = "Invalid field";
     const mess2 = "Data invalid";
     const errorList = {
-      version: "xample data",
-      declare_name: "xample data",
-      declare_type: "xample data",
-      seller_company_name: "xample data",
-      seller_taxcode: "xample data",
-      tax_office_name: "xample data",
-      tax_office_code: "xample data",
-      contact_person: "xample data",
-      contact_address: "xample data",
-      contact_email: "xample data",
-      contact_phone: "xample data",
-      location_name: "xample data",
-      created_date: "xample data",
-      has_code: "xample data",
-      no_code: "xample data",
-      pos_code: "xample data",
-      taxpayer_from_difficult_location: "xample data",
-      taxpayer_from_people_committee_suggestions: "xample data",
-      transfer_data_directly_to_tax_office: "xample data",
-      cdlqtvan: "xample data",
-      full_transfer: "xample data",
-      summary_transfer: "xample data",
-      vat_invoice: "xample data",
-      sales_invoice: "xample data",
-      sales_invoice_passet: "xample data",
-      sales_invoice_national: "xample data",
-      other_invoice: "xample data",
-      voucher: "xample data",
+      version: 6,
+      declare_name: 100,
+      declare_type: 1,
+      form_no: 15,
+      seller_company_name: 400,
+      seller_taxcode: 14,
+      tax_office_name: 100,
+      tax_office_code: 5,
+      contact_person: 50,
+      contact_address: 400,
+      contact_email: 50,
+      contact_phone: 20,
+      location_name: 50,
+      created_date: 10,
+      has_code: 1,
+      no_code: 1,
+      pos_code: 1,
+      taxpayer_from_difficult_location: 1,
+      taxpayer_from_people_committee_suggestions: 1,
+      transfer_data_directly_to_tax_office: 1,
+      cdlqtvan: 1,
+      full_transfer: 1,
+      summary_transfer: 1,
+      vat_invoice: 1,
+      sales_invoice: 1,
+      sales_invoice_passet: 1,
+      sales_invoice_national: 1,
+      other_invoice: 1,
+      voucher: 1,
       digital_certificates: [
         {
           sequence: 1,
@@ -554,10 +553,10 @@ class EInvoiceController {
         },
       ],
     };
-    const valueReq = [0, 1];
 
     for (const key in errorList) {
-      if (declare[key] === undefined) {
+      // valid null of not null values
+      if (declare[key] === undefined || declare[key] == null) {
         status = false;
         resMess = `${mess1} ${key}.`;
         return {
@@ -565,6 +564,17 @@ class EInvoiceController {
           message: resMess,
         };
       }
+
+      // valid length
+      if(String(declare[key]).length > errorList[key] && key != 'digital_certificates'){
+        return {
+          status: false,
+          message: `Length of ${key} too long.`,
+        };
+      }
+
+      // valid data must be in valueReq
+      const valueReq = ["0", "1"];
       if (
         key == "has_code" ||
         key == "no_code" ||
@@ -582,7 +592,7 @@ class EInvoiceController {
         key == "other_invoice" ||
         key == "voucher"
       ) {
-        if (valueReq.includes(declare[key])) {
+        if (!valueReq.includes(String(declare[key]))) {
           status = false;
           resMess = `${mess2}. Field ${key}.`;
           return {
@@ -593,8 +603,17 @@ class EInvoiceController {
       }
     }
 
+    // valid digital_certificates
+    if(!declare.digital_certificates[0]){
+      return {
+        status: false,
+        message:`${mess1} digital_certificates.`,
+      };
+    }
+
     for (const key in errorList.digital_certificates[0]) {
-      if (declare.digital_certificates[0][key] === undefined) {
+      // valid digital_certificates 
+      if (declare.digital_certificates[0][key] === undefined || declare.digital_certificates[0][key] == null) {
         status = false;
         resMess = `${mess1} digital_certificates ${key}.`;
         return {
@@ -602,10 +621,19 @@ class EInvoiceController {
           message: resMess,
         };
       }
+      // vald date
+      if(key =='from_date' || key =='to_date'){
+        if(new Date(declare.digital_certificates[0][key]) == 'Invalid Date'){
+          return {
+            status: false,
+            message: `Invalid Date. key digital_certificates ${key}`,
+          };
+        }
+      }
     }
 
+    // valid declare_type must be in valueDT
     const valueDT = [1, 2];
-
     if (!valueDT.includes(declare.declare_type)) {
       return {
         status: false,
@@ -613,6 +641,7 @@ class EInvoiceController {
       };
     }
 
+    // if dont have any problem
     return {
       status,
       message: resMess,

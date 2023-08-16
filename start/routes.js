@@ -131,6 +131,7 @@ Route.group(() => {
     Route.post("checkingstatuseinvoice", "EInvoiceController.checkingStatusEInvoice")
     // WeTax
     Route.post("generate-declare-xml", "EInvoiceController.weTaxconvertDeclareUsingInvoiceToXML")
+    Route.post("send-order-to-invoice", "EInvoiceController.weTaxSendOrderInfo")
 
 }).prefix("api/einvoice").middleware("user");
 

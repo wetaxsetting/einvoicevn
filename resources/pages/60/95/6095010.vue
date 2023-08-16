@@ -1,23 +1,23 @@
 <template>
   <v-container fluid v-resize="onResize">
     <v-row dense>
-      <v-col md="7" :class="isShowLeft ? null : 'd-none'">
-        <v-card class="pt-1">
-          <v-row dense>
-            <v-col lg="5" cols="12">
+      <v-col md="7" :class="isShowLeft ? null : 'd-none'" class="pt-2">
+        <v-card>
+          <v-row dense class="pt-2">
+            <v-col lg="5" cols="12" class="pl-2">
               <v-text-field outlined clearable dense hide-details v-model="txtCompanyName" :label="$t('company')"></v-text-field>
             </v-col>
             <v-col lg="2" cols="12">
-              <div class="d-flex justify-end">
-                <BaseCheckbox :label="$t('use_yn')" true-value="Y" false-value="N" v-model="blUseYN" />
-              </div>
+              <v-badge offset-x="55" color="green" :content="$t('use_yn')" style="font-size: 0.35rem">
+                <v-checkbox v-model="blUseYN" color="red darken-3" true-value="Y" false-value="N" hide-details class="my-0 py-0"></v-checkbox>
+              </v-badge>
             </v-col>
             <v-col lg="5" cols="12" class="text-right">
               <div class="d-flex justify-end">
                 <BaseButton icon_type="search" :btn_text="$t('search')" :disabled="isProcessing" @onclick="onClickButton('SEARCH')" />
               </div>
             </v-col>
-            <v-col md="12">
+            <v-col md="12" class="pt-2">
               <DataGridView
                 column-resizing-mode="widget"
                 ref="grdCompany"
@@ -28,40 +28,9 @@
                 :onCellPrepared="onCellPrepared"
                 @cellClick="grdSearchClick"
                 sel_procedure="AC_SEL_6095010_LIST_COMPANY_NC"
-                upd_procedure="AC_UPD_6095010_LIST_COMPANY"
+                upd_procedure=""
                 :filter_paras="[this.txtCompanyName, this.blUseYN]"
-                :update_paras="[
-                  'PK',
-                  'COMPANY_CD',
-                  'COMPANY_NM',
-                  'COMPANY_LNM',
-                  'COMPANY_FNM',
-                  'TAX_CODE',
-                  'ADDR',
-                  'ADDR_L',
-                  'ADDR_F',
-                  'TEL',
-                  'FAX',
-                  'ACC_NO',
-                  'ACC_CCY',
-                  'ACC_HOLDER',
-                  'BANK_NAME',
-                  'CONTACT_PERSON',
-                  'REP_PERSON',
-                  'TAX_NAME',
-                  'REMARKS',
-                  'ERP_COMPANY_PK',
-                  'ERP_COMPANY_NAME',
-                  'USE_YN',
-                  'WEB_SITE',
-                  'TAX_CODE_DISPLAY',
-                  'CONTACT_COM_PHONE',
-                  'BRIEF_COM_NM',
-                  'CONTACT_ADDR',
-                  'CONTACT_EMAIL',
-                  'CONTACT_MOBI',
-                  'WEBSITE_EI',
-                ]"
+                :update_paras="[]"
               />
             </v-col>
           </v-row>
@@ -76,7 +45,87 @@
                 <v-col md="1" class="d-flex pl-2">
                   <BaseButton btn_type="icon" :icon_type="isShowLeft ? 'skip_prev' : 'skip_next'" :btn_text="isShowLeft ? $t('hide_left') : $t('show_left')" @onclick="isShowLeft = !isShowLeft" />
                 </v-col>
+                <v-col lg="3" cols="12"> </v-col>
+                <v-col lg="3" cols="12" justify="center"></v-col>
+                <v-col lg="5" cols="12" class="pr-3" align="center">
+                  <div class="d-flex justify-end">
+                    <!-- Add -->
+                    <BaseButton icon_type="add_new" :btn_text="$t('btn_add')" :disabled="isProcessing" @onclick="onClickButton('NEW')" />
+                    <!-- Save -->
+                    <BaseButton icon_type="save" :btn_text="$t('save')" :disabled="isProcessing" @onclick="onClickButton('SAVE')" />
+                    <!-- Delete -->
+                    <!-- <BaseButton icon_type="delete" :btn_text="$t('delete')" :disabled="isProcessing" @onclick="onClickButton('DELETE')" /> -->
+                  </div>
+                </v-col>
               </v-row>
+              <v-col md="12">
+                <v-card v-scroll.self="onScroll" class="overflow-y-auto" :max-height="scroll_height">
+                  <v-card-title class="headline primary-gradient white--text py-1">{{ $t("company_info") }} </v-card-title>
+                  <v-container fluid class="pt-1">
+                    <v-row dense>
+                      <v-col md="12">
+                        <BaseInput outlined :label="$t('company')" v-model="txtInformation.COMPANY_NM" />
+                      </v-col>
+                      <v-col md="12">
+                        <BaseInput outlined :label="$t('company_name')" v-model="txtInformation.TAX_CODE" />
+                      </v-col>
+                      <v-col md="12">
+                        <BaseInput outlined :label="$t('address')" v-model="txtInformation.ADDR" />
+                      </v-col>
+                      <v-col md="12">
+                        <BaseInput outlined :label="$t('legal_representative')" v-model="txtInformation.REPRESENT" />
+                      </v-col>
+                      <v-col md="12">
+                        <BaseInput outlined :label="$t('fax')" v-model="txtInformation.FAX" />
+                      </v-col>
+                      <v-col md="12">
+                        <BaseInput outlined :label="$t('tel')" v-model="txtInformation.TEL" />
+                      </v-col>
+                      <v-col md="11">
+                        <BaseInput outlined :label="$t('general_info')" />
+                      </v-col>
+                      <v-col md="1">
+                        <v-badge offset-x="55" color="green" :content="$t('use_yn')" style="font-size: 0.35rem">
+                          <v-checkbox v-model="txtInformation.USE_YN" color="red darken-3" true-value="Y" false-value="N" hide-details class="my-0 py-0"></v-checkbox>
+                        </v-badge>
+                      </v-col>
+                      <v-col md="12">
+                        <BaseInput outlined :label="$t('bank_name')" v-model="txtInformation.BANK_NAME" />
+                      </v-col>
+                      <v-col md="12">
+                        <BaseInput outlined :label="$t('account_holder')" v-model="txtInformation.ACC_HOLDER" />
+                      </v-col>
+                      <v-col md="12">
+                        <BaseInput outlined :label="$t('account_no')" v-model="txtInformation.ACC_NO" />
+                      </v-col>
+                      <v-col md="12">
+                        <BaseInput outlined :label="$t('email')" v-model="txtInformation.CONTACT_EMAIL" />
+                      </v-col>
+                      <v-col md="12">
+                        <BaseInput outlined :label="$t('contact_person')" v-model="txtInformation.CONTACT_PERSON" />
+                      </v-col>
+                      <v-col md="12">
+                        <BaseInput outlined :label="$t('tax_agency_name')" />
+                      </v-col>
+                      <v-col md="12">
+                        <BaseInput outlined :label="$t('remark')" v-model="txtInformation.REMARKS" />
+                      </v-col>
+                      <v-col md="12">
+                        <v-chip label>{{ $t("image_logo") }}</v-chip>
+                        <BasePhoto ref="photo" v-model="txtInformation.PK" :table_name="'TEI_COMPANY'"></BasePhoto>
+                      </v-col>
+                      <v-col md="12">
+                        <v-chip label>{{ $t("image_backgound") }}</v-chip>
+                        <BasePhoto ref="photo" :width="500" v-model="txtInformation.PK" :table_name="'TEI_COMPANY'"></BasePhoto>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card>
+              </v-col>
+
+              <v-col md="12">
+                <DataGridView ref="grdDetail" :header="headerList.grdDetail" sel_procedure="AC_SEL_6095010_01_NC" :headertype="1" :filter_paras="['']" :max_height="limitHeightGridDetails" />
+              </v-col>
             </v-card>
           </v-col>
         </v-row>
@@ -98,6 +147,7 @@ export default {
   },
   data: () => ({
     isShowLeft: true,
+    scrollInvoked: 0,
     txtCompanyName: "",
     dxg_gridCompany: [],
     objClick: "",
@@ -116,27 +166,79 @@ export default {
     selTemplate: [],
 
     txtMastersPK: "",
-
+    headerList: {
+      grdDetail: [],
+    },
     txtInformation: {
       COMPANY_NM: "",
       TAX_CODE: "",
       ADDR: "",
-
+      REPRESENT: "",
       BANK_NAME: "",
+      ACC_NO: "",
+      TEL: "",
+      FAX: "",
+      ACC_HOLDER: "",
+      CONTACT_PERSON: "",
+      CONTACT_EMAIL: "",
+      BANK_NAME: "",
+      REMARKS: "",
+      USE_YN: "",
+      IMG_LOGO: "",
+      IMG_BACKGROUP: "",
+
+      COMPANY_CD: "",
+      COMPANY_NM: "",
+      COMPANY_FNM: "",
+      TAX_CODE: "",
+      ADDR: "",
+      ADDR_L: "",
+      ADDR_F: "",
+      TEL: "",
+      FAX: "",
+      ACC_NO: "",
+      ACC_CCY: "",
+      ACC_HOLDER: "",
+      BANK_NAME: "",
+      CONTACT_PERSON: "",
+      REP_PERSON: "",
+      TAX_NAME: "",
+      REMARKS: "",
+      ERP_COMPANY_PK: "",
+      ERP_COMPANY_NAME: "",
+      USE_YN: "",
+      WEB_SITE: "",
+      TAX_CODE_DISPLAY: "",
+      CONTACT_COM_PHONE: "",
+      BRIEF_COM_NM: "",
+      CONTACT_ADDR: "",
+      CONTACT_EMAIL: "",
+      CONTACT_MOBI: "",
+      WEBSITE_EI: "",
     },
   }),
 
-  created() {},
+  created() {
+    this.initHeaderList();
+  },
 
   computed: {
     user() {
       return this.$store.getters["auth/user"];
+    },
+    scroll_height() {
+      return this.windowHeight / 2 + 30;
     },
     limitHeight() {
       if (this.$vuetify.breakpoint.smAndUp) {
         return 510;
       }
     }, // this.windowHeight },
+    limitHeightGridDetails() {
+      if (this.$vuetify.breakpoint.smAndUp) {
+        return 220;
+      }
+    },
     headerGrid() {
       const self = this;
       return [
@@ -287,51 +389,228 @@ export default {
   },
 
   methods: {
-    onSearch() {
-      this.$refs.grdCompany.loadData();
+    onScroll() {
+      this.scrollInvoked++;
     },
-    grdSearchClick(cell) {
+    async grdSearchClick(cell) {
       console.log("file: 6095420.vue:236 [vng-304] grdSearchClick [vng-304] cell:", cell.data);
       this.txtInformation = cell.data;
+
+      await  this.$refs.grdDetail.loadData();
     },
-    addNewMaster(item) {
-      this.$refs.grdCompany.addRowStruct(
+    async dsoMaster(action) {
+      await this._dsoCall(
         {
-          PK: "",
-          COMPANY_CD: "",
-          COMPANY_NM: "",
-          COMPANY_LNM: "",
-          COMPANY_FNM: "",
-          TAX_CODE: "",
-          ADDR: "",
-          ADDR_L: "",
-          ADDR_F: "",
-          TEL: "",
-          FAX: "",
-          ACC_NO: "",
-          ACC_CCY: "",
-          ACC_HOLDER: "",
-          BANK_NAME: "",
-          CONTACT_PERSON: "",
-          REP_PERSON: "",
-          TAX_NAME: "",
-          REMARKS: "",
-          ERP_COMPANY_PK: "",
-          ERP_COMPANY_NAME: "",
-          USE_YN: "Y",
-          WEB_SITE: "",
-          TAX_CODE_DISPLAY: "",
-          CONTACT_COM_PHONE: "",
-          BRIEF_COM_NM: "",
-          CONTACT_ADDR: "",
-          CONTACT_EMAIL: "",
-          CONTACT_MOBI: "",
-          WEBSITE_EI: "",
+          type: "control",
+          selpro: "",
+          updpro: "AC_UPD_6095010_LIST_COMPANY",
+          para: [this.txtInformation.PK, ""],
+          elname: [
+            "_rowstatus",
+            "PK",
+            "COMPANY_CD",
+            "COMPANY_NM",
+            "COMPANY_LNM",
+            "COMPANY_FNM",
+            "TAX_CODE",
+            "ADDR",
+            "ADDR_L",
+            "ADDR_F",
+            "TEL",
+            "FAX",
+            "ACC_NO",
+            "ACC_CCY",
+            "ACC_HOLDER",
+            "BANK_NAME",
+            "CONTACT_PERSON",
+            "REP_PERSON",
+            "TAX_NAME",
+            "REMARKS",
+            "ERP_COMPANY_PK",
+            "ERP_COMPANY_NAME",
+            "USE_YN",
+            "WEB_SITE",
+            "TAX_CODE_DISPLAY",
+            "CONTACT_COM_PHONE",
+            "BRIEF_COM_NM",
+            "CONTACT_ADDR",
+            "CONTACT_EMAIL",
+            "CONTACT_MOBI",
+            "WEBSITE_EI",
+            "REPRESENT"
+          ],
+          data: this.txtInformation,
         },
-        0
-      );
-      this.selectedItemAcc = { ...item };
+        action,
+        true
+      ).then((res) => {
+        if (res) {
+          switch (action) {
+            case "select":
+              this.txtInformation = { ...res };
+              this.txtInformation._rowstatus = "u";
+              break;
+            case "update":
+              switch (this.txtInformation._rowstatus) {
+                case "i":
+                  this.txtInformation = { ...res };
+                  this.txtInformation._rowstatus = "u";
+                  break;
+                case "u":
+                  this.txtInformation = { ...res };
+                  this.txtInformation._rowstatus = "u";
+                  break;
+                case "d":
+                  this.onClick("newMaster");
+                  break;
+              }
+              break;
+          }
+        }
+      });
     },
+    onClickButton(obj) {
+      switch (obj) {
+        case "SEARCH":
+          this.$refs.grdCompany.loadData();
+          break;
+        case "NEW":
+          this.addNewMaster(); //
+          break;
+        case "SAVE":
+          this.dsoMaster("update");
+          // this.objClick = "btnSave";
+          break;
+        case "DELETE":
+          this.objClick = "btnDelete";
+          this.$refs.confirmDialog.showConfirm(this.$t("do_you_want_delete"), "warning");
+          break;
+        case "OPTION":
+          if (this.objClick == "btnSave") {
+            this.$refs.grdCompany.saveData();
+          } else if (this.objClick == "btnDelete") {
+            this.$refs.grdCompany.deleteRows2();
+          } else if (this.objClick == "btnUpLoad") {
+            this.onCallUploadFile();
+          }
+          break;
+      }
+    },
+    async addNewMaster() {
+      this.txtInformation._rowstatus = "i";
+      this.txtInformation.COMPANY_NM = "";
+      this.txtInformation.TAX_CODE = "";
+      this.txtInformation.ADDR = "";
+      this.txtInformation.REPRESENT = "";
+      this.txtInformation.FAX = "";
+      this.txtInformation.TEL = "";
+      this.txtInformation.USE_YN = "Y";
+      this.txtInformation.BANK_NAME = "";
+      this.txtInformation.ACC_HOLDER = "";
+      this.txtInformation.ACC_NO = "";
+      this.txtInformation.CONTACT_EMAIL = "";
+      this.txtInformation.CONTACT_PERSON = "";
+      this.txtInformation.REMARKS = "";
+      // this.txtInformation. = null;
+      // this.txtInformation. = null;
+      // this.txtInformation. = null;
+      // this.$refs.grdCompany.Clear();
+    },
+    async initHeaderList() {
+      this.headerList.grdDetail = [
+        {
+          dataField: "NO",
+          caption: this.$t("no"),
+          width: 50,
+        },
+        {
+          dataField: "PK",
+          caption: this.$t("pk"),
+          hidden: true,
+        },
+        {
+          dataField: "tei_declaration_m_pk",
+          caption: this.$t("tei_declaration_m_pk"),
+          hidden: true,
+        },
+        {
+          dataField: "TTCHUC",
+          caption: this.$t("ttchuc"),
+          allowEditing: true,
+          width: 200,
+        },
+        {
+          dataField: "MST",
+          caption: this.$t("mst"),
+          width: 150,
+          hidden: true,
+        },
+        {
+          dataField: "SERI",
+          caption: this.$t("seti"),
+          width: 300,
+        },
+        {
+          dataField: "TNGAY",
+          caption: this.$t("tngay"),
+          width: 200,
+        },
+        {
+          dataField: "DNGAY",
+          caption: this.$t("dngay"),
+          width: 200,
+        },
+        {
+          dataField: "HTHUC",
+          caption: this.$t("hthuc"),
+          allowEditing: true,
+          lookup: {
+            displayExpr: "NAME",
+            valueExpr: "CODE",
+            dataSource: this.token_type_list,
+          },
+          width: 230,
+        },
+      ];
+    },
+    // addNewMaster(item) {
+    //   this.$refs.grdCompany.addRowStruct(
+    //     {
+    //       PK: "",
+    //       COMPANY_CD: "",
+    //       COMPANY_NM: "",
+    //       COMPANY_LNM: "",
+    //       COMPANY_FNM: "",
+    //       TAX_CODE: "",
+    //       ADDR: "",
+    //       ADDR_L: "",
+    //       ADDR_F: "",
+    //       TEL: "",
+    //       FAX: "",
+    //       ACC_NO: "",
+    //       ACC_CCY: "",
+    //       ACC_HOLDER: "",
+    //       BANK_NAME: "",
+    //       CONTACT_PERSON: "",
+    //       REP_PERSON: "",
+    //       TAX_NAME: "",
+    //       REMARKS: "",
+    //       ERP_COMPANY_PK: "",
+    //       ERP_COMPANY_NAME: "",
+    //       USE_YN: "Y",
+    //       WEB_SITE: "",
+    //       TAX_CODE_DISPLAY: "",
+    //       CONTACT_COM_PHONE: "",
+    //       BRIEF_COM_NM: "",
+    //       CONTACT_ADDR: "",
+    //       CONTACT_EMAIL: "",
+    //       CONTACT_MOBI: "",
+    //       WEBSITE_EI: "",
+    //     },
+    //     0
+    //   );
+    //   this.selectedItemAcc = { ...item };
+    // },
 
     onCellPrepared({ column, cellElement, rowType }) {
       if (this.txtInvoice_type === "E") {
@@ -405,37 +684,6 @@ export default {
       fr.addEventListener("load", () => {
         this.image = fr.result;
       });
-    },
-    onClickButton(obj) {
-      switch (obj) {
-        case "SEARCH":
-          this.$refs.grdCompany.loadData();
-          break;
-        case "NEW":
-          this.addNewMaster(); //
-          break;
-        case "SAVE":
-          this.objClick = "btnSave";
-          this.$refs.confirmDialog.showConfirm(this.$t("do_you_want_save"));
-          break;
-        case "DELETE":
-          this.objClick = "btnDelete";
-          this.$refs.confirmDialog.showConfirm(this.$t("do_you_want_delete"), "warning");
-          break;
-        case "OPTION":
-          if (this.objClick == "btnSave") {
-            this.$refs.grdCompany.saveData();
-          } else if (this.objClick == "btnDelete") {
-            this.$refs.grdCompany.deleteRows2();
-          } else if (this.objClick == "btnUpLoad") {
-            this.onCallUploadFile();
-          }
-          break;
-        case "UPLOAD":
-          this.objClick = "btnUpLoad";
-          this.$refs.confirmDialog.showConfirm(this.$t("do_you_want_upload_img"), "warning");
-          break;
-      }
     },
   },
 };

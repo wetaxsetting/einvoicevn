@@ -198,13 +198,13 @@ export default {
           dataField: "ADDR_L",
           caption: this.$t("addr_l"),
           width: 80,
-          hidden: true,
+          visible: false
         },
         {
           dataField: "ADDR_F",
           caption: this.$t("addr_f"),
           width: 80,
-          hidden: true,
+          visible: false
         },
         {
           dataField: "TEL",
@@ -251,12 +251,12 @@ export default {
         {
           dataField: "ERP_COMPANY_PK",
           caption: this.$t("erp_company_pk"),
-          hidden: true,
+          visible: false
         },
         {
           dataField: "ERP_COMPANY_NAME",
           caption: this.$t("erp_company_name"),
-          hidden: true,
+          visible: false
         },
         {
           dataField: "USE_YN",

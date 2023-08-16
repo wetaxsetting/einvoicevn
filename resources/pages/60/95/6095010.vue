@@ -14,9 +14,9 @@
                   </v-col>
                   <v-col lg="4" cols="12">
                     <div class="d-flex justify-end">
+                      <BaseCheckbox :label="$t('use_yn')" true-value="Y" false-value="N" v-model="blUseYN" />
                       <BaseCheckbox :label="$t('chk_imglogo')" true-value="Y" false-value="N" v-model="blImgLogo" />
                       <BaseCheckbox :label="$t('chk_imgbackgroup')" true-value="Y" false-value="N" v-model="blImgBackGroup" />
-                      <BaseCheckbox :label="$t('use_yn')" true-value="Y" false-value="N" v-model="blUseYN" />
                     </div>
                   </v-col>
                   <v-col lg="3" cols="12">
@@ -132,7 +132,7 @@ export default {
     txtFile: [],
     blImgLogo: "",
     blImgBackGroup: "",
-    blUseYN: "N",
+    blUseYN: "Y",
     txtFileName: "",
     table_name: "TEI_COMPANY",
     folder: "6095010",
@@ -172,27 +172,28 @@ export default {
         },
         {
           dataField: "COMPANY_NM",
-          width: 200,
+          width: 300,
           caption: this.$t("company_nm"),
         },
         {
           dataField: "COMPANY_LNM",
           caption: this.$t("company_lnm"),
+          visible: false
         },
         {
           dataField: "COMPANY_FNM",
           caption: this.$t("company_fnm"),
-          width: 80,
+          width: 180,
         },
         {
           dataField: "TAX_CODE",
           caption: this.$t("tax_code"),
-          width: 80,
+          width: 120,
         },
         {
           dataField: "ADDR",
           caption: this.$t("addr"),
-          width: 80,
+          width: 300,
         },
         {
           dataField: "ADDR_L",
@@ -219,6 +220,7 @@ export default {
         {
           dataField: "ACC_NO",
           caption: this.$t("acc_no"),
+          width: 80,
         },
         {
           dataField: "ACC_CCY",
@@ -227,10 +229,12 @@ export default {
         {
           dataField: "ACC_HOLDER",
           caption: this.$t("acc_holder"),
+          visible: false
         },
         {
           dataField: "BANK_NAME",
           caption: this.$t("bank_name"),
+          width: 80,
         },
         {
           dataField: "CONTACT_PERSON",
@@ -283,6 +287,7 @@ export default {
         {
           dataField: "CONTACT_ADDR",
           caption: this.$t("contact_addr"),
+          width: 150,
         },
         {
           dataField: "CONTACT_EMAIL",

@@ -163,7 +163,7 @@ export default {
           dataField: "PK",
           width: 80,
           caption: this.$t("pk"),
-          hidden: true,
+          visible: false
         },
         {
           dataField: "COMPANY_CD",

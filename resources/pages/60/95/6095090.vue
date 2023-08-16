@@ -439,8 +439,13 @@ export default {
           type: "text",
           width: 80,
           alignment: "left",
+          hidden:true
         },
-
+        {
+          dataField: "CQT_MAGD",
+          caption: this.$t("cqt_magd"),
+          width: 150,
+        },
         {
           dataField: "REPORT_CODE",
           caption: this.$t("report_code"),
@@ -470,6 +475,7 @@ export default {
           caption: this.$t("etax_result"),
           width: 150,
           allowEditing: true,
+          
         },
 
 
@@ -493,6 +499,7 @@ export default {
           dataField: "TAX_RATE_MULTI",
           caption: this.$t("tax_rate_multi"),
           alignment: "left",
+          hidden:true
         },
       ];
 

@@ -39,8 +39,8 @@ const oracledb = require("oracledb");
 // const { result_lodash } = require("lodash-es");
 const EiExcelHandler = use("App/Helpers/EiExcelHandler");
 const EiExcelHandlerAuto = use("App/Helpers/EiExcelHandlerAuto");
+const EiPosExcelConverter = use("App/Helpers/EiPosExcelConverter");
 const EiPosExcelHandler = use("App/Helpers/EiPosExcelHandler");
-const EiPosExcelHandlerAuto = use("App/Helpers/EiPosExcelHandlerAuto");
 const URL = "http://demosign.easyca.vn:8080/api";
 const Username = "demo_easysign";
 const Password = "demo_easysign";
@@ -4331,7 +4331,7 @@ class EInvoiceController {
             const { data } = request.all();
 
             console.log("data  ", data);
-            const data_xml = await this.createXMLByOne(data.data_invoice);
+            const data_xml = "";//await this.createXMLByOne(data.data_invoice);
             const para_value = {
                 sale_date: data.sale_date,
                 store_code: data.store_code,

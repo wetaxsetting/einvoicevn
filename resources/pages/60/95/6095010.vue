@@ -80,7 +80,7 @@
                       <v-col md="12">
                         <BaseInput outlined :label="$t('address')" v-model="txtInformation.ADDR" />
                       </v-col>
-                      
+
                       <v-col md="6">
                         <BaseInput outlined :label="$t('fax')" v-model="txtInformation.FAX" />
                       </v-col>
@@ -90,7 +90,7 @@
                       <!-- <v-col md="11">
                         <BaseInput outlined :label="$t('general_info')" />
                       </v-col> -->
-                      
+
                       <v-col md="12">
                         <BaseInput outlined :label="$t('bank_name')" v-model="txtInformation.BANK_NAME" />
                       </v-col>
@@ -126,7 +126,20 @@
               </v-col>
 
               <v-col md="12">
-                <DataGridView ref="grdDetail" :header="headerList.grdDetail" sel_procedure="AC_SEL_6095010_01_NC" :headertype="1" :filter_paras="['']" :max_height="limitHeightGridDetails" />
+                <v-col md="12">
+                  <GwFlexBox justify="end">
+                    <BaseButton icon_type="import" :btn_text="$t('import_token')" @onclick="onGetDetailDeclaration()" />
+                    <!-- Add -->
+                    <!-- <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')" @onclick="onClick('newDetail')" /> -->
+                    <!-- Save -->
+                    <BaseButton icon_type="save" :btn_text="$t('save')" @onclick="onClick('saveDetail')"/>
+                    <!-- Delete -->
+                    <BaseButtonupd icon_type="delete" :btn_text="$t('delete')" @onclick="onClick('deleteDetail')"/>
+                  </GwFlexBox>
+                </v-col>
+                <v-col md="12">
+                  <DataGridView ref="grdDetail" :header="headerList.grdDetail" sel_procedure="AC_SEL_6095010_01_NC" :headertype="1" :filter_paras="['']" :max_height="limitHeightGridDetails" />
+                </v-col>
               </v-col>
             </v-card>
           </v-col>
@@ -398,7 +411,7 @@ export default {
       console.log("file: 6095420.vue:236 [vng-304] grdSearchClick [vng-304] cell:", cell.data);
       this.txtInformation = cell.data;
 
-      await  this.$refs.grdDetail.loadData();
+      await this.$refs.grdDetail.loadData();
     },
     async dsoMaster(action) {
       await this._dsoCall(
@@ -439,7 +452,7 @@ export default {
             "CONTACT_EMAIL",
             "CONTACT_MOBI",
             "WEBSITE_EI",
-            "REPRESENT"
+            "REPRESENT",
           ],
           data: this.txtInformation,
         },

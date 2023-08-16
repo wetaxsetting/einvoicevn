@@ -259,7 +259,7 @@
                                         'STARTCELL',
                                         'ENDCELL',
                                         'CELLBORDER',
-                                        'FIELD',
+                                        'dataField',
                                         'TYPE',
                                         'ORD'
                                     ]" :filter_paras="[this.itemTemplatePK,
@@ -274,7 +274,7 @@
         <!-- Copy To Dialog -->
         <v-dialog persistent id="copy-to-dialog" max-width="500" v-model="copyToDialog">
             <v-card>
-                <v-card-title class="headline primary-gradient white--text py-2">{{ $t("copy_template_to") }}</v-card-title>
+                <v-card-caption class="headline primary-gradient white--text py-2">{{ $t("copy_template_to") }}</v-card-caption>
                 <v-card-text class="pa-4 pb-2 d-flex flex-column align-space-between">
                     <v-row>
                         <v-col md="6">
@@ -458,10 +458,10 @@ export default {
 
         grdHeader(){
             return   [
-                { field: "PK", width: 100, title: this.$t("pk"), alignment: "left", type: "text", visible: false },
-                { field: "TCO_COMPANY_PK", width: 100, title: this.$t("tco_company_pk"), alignment: "left", type: "text", visible: false },
+                { dataField: "PK", width: 100, caption: this.$t("pk"), alignment: "left", type: "text", visible: false },
+                { dataField: "TCO_COMPANY_PK", width: 100, caption: this.$t("tco_company_pk"), alignment: "left", type: "text", visible: false },
                 {
-                    field: "INVOICE_KIND", width: 200, title: this.$t("invoice_kind"), editable: true,
+                    dataField: "INVOICE_KIND", width: 200, caption: this.$t("invoice_kind"), editable: true,
                     lookup: {
                         dataSource: this.typeInvoiceList,
                         displayExpr: "NAME",
@@ -469,7 +469,7 @@ export default {
                     }, alignment: "left", type: "text"
                 },
                 {
-                    field: "INVOICE_SYMBOL", width: 200, title: this.$t("invoice_symbol"), editable: true,
+                    dataField: "INVOICE_SYMBOL", width: 200, caption: this.$t("invoice_symbol"), editable: true,
                     lookup: {
                         dataSource: this.invoiceKind,
                         displayExpr: "NAME",
@@ -477,12 +477,12 @@ export default {
                     },
                     alignment: "left", type: "text"
                 },
-                { field: "FORM_NO", width: 100, title: this.$t("form_no"), editable: true, alignment: "left", type: "text" },
-                { field: "SERIAL_NO", width: 100, title: this.$t("serial_no"), editable: true, alignment: "left", type: "text" },
-                { field: "FROM_DT", width: 100, title: this.$t("from_dt"), editable: true, alignment: "center", type: "date" },
-                { field: "TO_DT", width: 100, title: this.$t("to_dt"), editable: true, alignment: "center", type: "date" },
+                { dataField: "FORM_NO", width: 100, caption: this.$t("form_no"), editable: true, alignment: "left", type: "text" },
+                { dataField: "SERIAL_NO", width: 100, caption: this.$t("serial_no"), editable: true, alignment: "left", type: "text" },
+                { dataField: "FROM_DT", width: 100, caption: this.$t("from_dt"), editable: true, alignment: "center", type: "date" },
+                { dataField: "TO_DT", width: 100, caption: this.$t("to_dt"), editable: true, alignment: "center", type: "date" },
                 {
-                    field: "STATUS", width: 100, title: this.$t("status"),
+                    dataField: "STATUS", width: 100, caption: this.$t("status"),
                     lookup: {
                         dataSource: this.statusList,
                         displayExpr: "NAME",
@@ -490,9 +490,9 @@ export default {
                     },
                     editable: true, alignment: "left", type: "text"
                 },
-                { field: "TCO_BUSPLACE_PK", width: 100, title: this.$t("tco_busplace_pk"), alignment: "left", type: "text", visible: false },
-                { field: "REMARKS", width: 100, title: this.$t("remarks"), editable: true, alignment: "left", type: "text" },
-                { field: "USE_YN", width: 100, title: this.$t("use_yn"), editable: true, alignment: "center", type: "checkbox" },
+                { dataField: "TCO_BUSPLACE_PK", width: 100, caption: this.$t("tco_busplace_pk"), alignment: "left", type: "text", visible: false },
+                { dataField: "REMARKS", width: 100, caption: this.$t("remarks"), editable: true, alignment: "left", type: "text" },
+                { dataField: "USE_YN", width: 100, caption: this.$t("use_yn"), editable: true, alignment: "center", type: "checkbox" },
 
             ];
         },
@@ -500,171 +500,171 @@ export default {
         grdTemplate() {
             return [
                 {
-                    field: "PK",
+                    dataField: "PK",
                     width: 0,
-                    title: this.$t("pk"),
+                    caption: this.$t("pk"),
                     alignment: "left",
                     type: "text",
                     visible: false
                 },
                 {
-                    field: "TEMPLATE_CD",
+                    dataField: "TEMPLATE_CD",
                     width: 100,
-                    title: this.$t("template_cd"),
+                    caption: this.$t("template_cd"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                 },
                 {
-                    field: "TEMPLATE_NM",
+                    dataField: "TEMPLATE_NM",
                     width: 100,
-                    title: this.$t("template_nm"),
+                    caption: this.$t("template_nm"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                 },
                 {
-                    field: "TEMPLATE_LNM",
+                    dataField: "TEMPLATE_LNM",
                     width: 100,
-                    title: this.$t("template_lnm"),
+                    caption: this.$t("template_lnm"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                 },
                 {
-                    field: "TEMPLATE_FNM",
+                    dataField: "TEMPLATE_FNM",
                     width: 100,
-                    title: this.$t("template_fnm"),
+                    caption: this.$t("template_fnm"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                 },
                 {
-                    field: "FORM_NO",
+                    dataField: "FORM_NO",
                     width: 100,
-                    title: this.$t("form_no"),
+                    caption: this.$t("form_no"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                 },
                 {
-                    field: "USE_YN",
+                    dataField: "USE_YN",
                     width: 100,
-                    title: this.$t("use_yn"),
+                    caption: this.$t("use_yn"),
                     alignment: "center",
                     type: "checkbox",
                     editable: true,
                 },
                 {
-                    field: "TCO_COMPANY_PK",
+                    dataField: "TCO_COMPANY_PK",
                     width: 0,
-                    title: this.$t("tco_company_pk"),
+                    caption: this.$t("tco_company_pk"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                     visible: false
                 },
                 {
-                    field: "VALID_DATE_FROM",
+                    dataField: "VALID_DATE_FROM",
                     width: 150,
-                    title: this.$t("valid_date_from"),
+                    caption: this.$t("valid_date_from"),
                     alignment: "center",
                     type: "date",
                     editable: true,
                 },
                 {
-                    field: "VALID_DATE_TO",
+                    dataField: "VALID_DATE_TO",
                     width: 150,
-                    title: this.$t("valid_date_to"),
+                    caption: this.$t("valid_date_to"),
                     alignment: "center",
                     type: "date",
                     editable: true,
                 },
                 {
-                    field: "REPORT_ID",
+                    dataField: "REPORT_ID",
                     width: 200,
-                    title: this.$t("report_id"),
+                    caption: this.$t("report_id"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                     visible: false
                 },
                 {
-                    field: "TEL",
+                    dataField: "TEL",
                     width: 150,
-                    title: this.$t("tel"),
+                    caption: this.$t("tel"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                 },
                 {
-                    field: "FAX",
+                    dataField: "FAX",
                     width: 150,
-                    title: this.$t("fax"),
+                    caption: this.$t("fax"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                 },
                 {
-                    field: "BANK_ACCOUNT1",
+                    dataField: "BANK_ACCOUNT1",
                     width: 200,
-                    title: this.$t("bank_account1"),
+                    caption: this.$t("bank_account1"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                 },
                 {
-                    field: "BANK_ACCOUNT2",
+                    dataField: "BANK_ACCOUNT2",
                     width: 200,
-                    title: this.$t("bank_account2"),
+                    caption: this.$t("bank_account2"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                 },
                 {
-                    field: "BANK_NM1",
+                    dataField: "BANK_NM1",
                     width: 200,
-                    title: this.$t("bank_nm1"),
+                    caption: this.$t("bank_nm1"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                 },
                 {
-                    field: "BANK_NM2",
+                    dataField: "BANK_NM2",
                     width: 200,
-                    title: this.$t("bank_nm2"),
+                    caption: this.$t("bank_nm2"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                 },
                 {
-                    field: "TAX_CODE",
+                    dataField: "TAX_CODE",
                     width: 150,
-                    title: this.$t("tax_code"),
+                    caption: this.$t("tax_code"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                 },
                 {
-                    field: "WEBSITE",
+                    dataField: "WEBSITE",
                     width: 100,
-                    title: this.$t("website"),
+                    caption: this.$t("website"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                 },
                 {
-                    field: "TAX_CODE_DISPLAY",
+                    dataField: "TAX_CODE_DISPLAY",
                     width: 200,
-                    title: this.$t("tax_code_display"),
+                    caption: this.$t("tax_code_display"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                 },
                 {
-                    field: "PBAN",
+                    dataField: "PBAN",
                     width: 100,
-                    title: this.$t("pban"),
+                    caption: this.$t("pban"),
                     type: "text",
                     editable: true,
                     alignment: "center",
@@ -676,60 +676,60 @@ export default {
 
                 },
                 {
-                    field: "URL_FILE_EXCEL",
+                    dataField: "URL_FILE_EXCEL",
                     width: 200,
-                    title: this.$t("url_file_excel"),
+                    caption: this.$t("url_file_excel"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                 },
                 {
-                    field: "URL_IMG_LOGO",
+                    dataField: "URL_IMG_LOGO",
                     width: 200,
-                    title: this.$t("url_img_logo"),
+                    caption: this.$t("url_img_logo"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                 },
                 {
-                    field: "LOGO_START_ROW",
+                    dataField: "LOGO_START_ROW",
                     width: 100,
-                    title: this.$t("logo_start_row"),
+                    caption: this.$t("logo_start_row"),
                     alignment: "left",
                     type: "number",
                     formatFloat: 1,
                     editable: true,
                 },
                 {
-                    field: "LOGO_START_COL",
+                    dataField: "LOGO_START_COL",
                     width: 100,
-                    title: this.$t("logo_start_col"),
+                    caption: this.$t("logo_start_col"),
                     alignment: "left",
                     type: "number",
                     formatFloat: 1,
                     editable: true,
                 },
                 {
-                    field: "URL_IMG_BG",
+                    dataField: "URL_IMG_BG",
                     width: 200,
-                    title: this.$t("url_img_bg"),
+                    caption: this.$t("url_img_bg"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                 },
                 {
-                    field: "BG_START_ROW",
+                    dataField: "BG_START_ROW",
                     width: 100,
-                    title: this.$t("bg_start_row"),
+                    caption: this.$t("bg_start_row"),
                     alignment: "left",
                     type: "number",
                     formatFloat: 1,
                     editable: true,
                 },
                 {
-                    field: "BG_END_ROW",
+                    dataField: "BG_END_ROW",
                     width: 100,
-                    title: this.$t("bg_end_row"),
+                    caption: this.$t("bg_end_row"),
                     alignment: "left",
                     type: "number",
                     formatFloat: 1,
@@ -737,182 +737,172 @@ export default {
                 },
 
                 {
-                    field: "BG_WIDTH",
+                    dataField: "BG_WIDTH",
                     width: 100,
-                    title: this.$t("bg_width"),
+                    caption: this.$t("bg_width"),
                     alignment: "left",
                     type: "number",
                     formatFloat: 1,
                     editable: true,
                 },
                 {
-                    field: "BG_HEIGHT",
+                    dataField: "BG_HEIGHT",
                     width: 100,
-                    title: this.$t("bg_height"),
+                    caption: this.$t("bg_height"),
                     alignment: "left",
                     type: "number",
                     formatFloat: 1,
                     editable: true,
                 },
                 {
-                    field: "SIGN_START_CELL",
+                    dataField: "SIGN_START_CELL",
                     width: 100,
-                    title: this.$t("SIGN_START_CELL"),
+                    caption: this.$t("SIGN_START_CELL"),
                     alignment: "left",
                     type: "number",
                     formatFloat: 0,
                     editable: true,
                 },
                 {
-                    field: "SIGN_END_CELL",
+                    dataField: "SIGN_END_CELL",
                     width: 100,
-                    title: this.$t("SIGN_END_CELL"),
+                    caption: this.$t("SIGN_END_CELL"),
                     alignment: "left",
                     type: "number",
                     formatFloat: 0,
                     editable: true,
                 },
                 {
-                    field: "SIGN_BY_START_CELL",
+                    dataField: "SIGN_BY_START_CELL",
                     width: 100,
-                    title: this.$t("SIGN_BY_START_CELL"),
+                    caption: this.$t("SIGN_BY_START_CELL"),
                     alignment: "left",
                     type: "number",
                     formatFloat: 0,
                     editable: true,
                 },
                 {
-                    field: "SIGN_BY_END_CELL",
+                    dataField: "SIGN_BY_END_CELL",
                     width: 100,
-                    title: this.$t("SIGN_BY_END_CELL"),
+                    caption: this.$t("SIGN_BY_END_CELL"),
                     alignment: "left",
                     type: "number",
                     formatFloat: 0,
                     editable: true,
                 },
                 {
-                    field: "SIGN_CELL_BOX",
+                    dataField: "SIGN_CELL_BOX",
                     width: 100,
-                    title: this.$t("SIGN_CELL_BOX"),
+                    caption: this.$t("SIGN_CELL_BOX"),
                     alignment: "left",
                     type: "text",
                     // formatFloat: 0,
                     editable: true,
                 },
                 {
-                    field: "DETAILS_START_ROW",
+                    dataField: "DETAILS_START_ROW",
                     width: 100,
-                    title: this.$t("details_start_row"),
+                    caption: this.$t("details_start_row"),
                     alignment: "left",
                     type: "number",
                     formatFloat: 0,
                     editable: true,
                 },
                 {
-                    field: "RANGE_DETAILS_SIGN",
+                    dataField: "RANGE_DETAILS_SIGN",
                     width: 100,
-                    title: this.$t("range_details_sign"),
+                    caption: this.$t("range_details_sign"),
                     alignment: "left",
                     type: "number",
                     formatFloat: 0,
                     editable: true,
                 },
                 {
-                    field: "ATT01",
+                    dataField: "ATT01",
                     width: 200,
-                    title: this.$t("att01"),
+                    caption: this.$t("att01"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                 },
                 {
-                    field: "ATT02",
+                    dataField: "ATT02",
                     width: 200,
-                    title: this.$t("att02"),
+                    caption: this.$t("att02"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                 },
                 {
-                    field: "ATT03",
+                    dataField: "ATT03",
                     width: 200,
-                    title: this.$t("att03"),
+                    caption: this.$t("att03"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                 },
                 {
-                    field: "ATT04",
+                    dataField: "ATT04",
                     width: 200,
-                    title: this.$t("att04"),
+                    caption: this.$t("att04"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                 },
                 {
-                    field: "ATT05",
+                    dataField: "ATT05",
                     width: 200,
-                    title: this.$t("att05"),
+                    caption: this.$t("att05"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                 },
                 {
-                    field: "ATT06",
+                    dataField: "ATT06",
                     width: 200,
-                    title: this.$t("att06"),
+                    caption: this.$t("att06"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                 },
                 {
-                    field: "ATT07",
+                    dataField: "ATT07",
                     width: 200,
-                    title: this.$t("att07"),
+                    caption: this.$t("att07"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                 },
                 {
-                    field: "ATT08",
+                    dataField: "ATT08",
                     width: 200,
-                    title: this.$t("att08"),
+                    caption: this.$t("att08"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                 },
                 {
-                    field: "ATT09",
+                    dataField: "ATT09",
                     width: 200,
-                    title: this.$t("att09"),
-                    alignment: "left",
-                    type: "text",
-                    editable: true,
-                    visible: false
-                },
-                {
-                    field: "ATT10",
-                    width: 200,
-                    title: this.$t("att10"),
+                    caption: this.$t("att09"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                     visible: false
                 },
                 {
-                    field: "ATT01_NUM",
+                    dataField: "ATT10",
+                    width: 200,
+                    caption: this.$t("att10"),
+                    alignment: "left",
+                    type: "text",
+                    editable: true,
+                    visible: false
+                },
+                {
+                    dataField: "ATT01_NUM",
                     width: 100,
-                    title: this.$t("att01_num"),
-                    alignment: "left",
-                    type: "number",
-                    formatFloat: 0,
-                    editable: true,
-                    visible: false
-                },
-                {
-                    field: "ATT02_NUM",
-                    width: 100,
-                    title: this.$t("att02_num"),
+                    caption: this.$t("att01_num"),
                     alignment: "left",
                     type: "number",
                     formatFloat: 0,
@@ -920,9 +910,9 @@ export default {
                     visible: false
                 },
                 {
-                    field: "ATT03_NUM",
+                    dataField: "ATT02_NUM",
                     width: 100,
-                    title: this.$t("att03_num"),
+                    caption: this.$t("att02_num"),
                     alignment: "left",
                     type: "number",
                     formatFloat: 0,
@@ -930,9 +920,9 @@ export default {
                     visible: false
                 },
                 {
-                    field: "ATT04_NUM",
+                    dataField: "ATT03_NUM",
                     width: 100,
-                    title: this.$t("att04_num"),
+                    caption: this.$t("att03_num"),
                     alignment: "left",
                     type: "number",
                     formatFloat: 0,
@@ -940,9 +930,19 @@ export default {
                     visible: false
                 },
                 {
-                    field: "ATT05_NUM",
+                    dataField: "ATT04_NUM",
                     width: 100,
-                    title: this.$t("att05_num"),
+                    caption: this.$t("att04_num"),
+                    alignment: "left",
+                    type: "number",
+                    formatFloat: 0,
+                    editable: true,
+                    visible: false
+                },
+                {
+                    dataField: "ATT05_NUM",
+                    width: 100,
+                    caption: this.$t("att05_num"),
                     alignment: "left",
                     type: "number",
                     formatFloat: 0,
@@ -950,9 +950,9 @@ export default {
                     visible: true
                 },
                 {
-                    field: "ATT06_NUM",
+                    dataField: "ATT06_NUM",
                     width: 100,
-                    title: this.$t("att06_num"),
+                    caption: this.$t("att06_num"),
                     alignment: "left",
                     type: "number",
                     formatFloat: 0,
@@ -960,9 +960,9 @@ export default {
                     visible: true
                 },
                 {
-                    field: "ATT07_NUM",
+                    dataField: "ATT07_NUM",
                     width: 100,
-                    title: this.$t("att07_num"),
+                    caption: this.$t("att07_num"),
                     alignment: "left",
                     type: "number",
                     formatFloat: 0,
@@ -970,9 +970,9 @@ export default {
                     visible: true
                 },
                 {
-                    field: "ATT08_NUM",
+                    dataField: "ATT08_NUM",
                     width: 100,
-                    title: this.$t("att08_num"),
+                    caption: this.$t("att08_num"),
                     alignment: "left",
                     type: "number",
                     formatFloat: 0,
@@ -980,9 +980,9 @@ export default {
                     visible: true
                 },
                 {
-                    field: "ATT09_NUM",
+                    dataField: "ATT09_NUM",
                     width: 100,
-                    title: this.$t("att09_num"),
+                    caption: this.$t("att09_num"),
                     alignment: "left",
                     type: "number",
                     formatFloat: 0,
@@ -990,9 +990,9 @@ export default {
                     visible: false
                 },
                 {
-                    field: "ATT10_NUM",
+                    dataField: "ATT10_NUM",
                     width: 100,
-                    title: this.$t("att10_num"),
+                    caption: this.$t("att10_num"),
                     alignment: "left",
                     type: "number",
                     formatFloat: 0,
@@ -1005,25 +1005,25 @@ export default {
         grdParamM() {
             return [
                 {
-                    field: "PK",
+                    dataField: "PK",
                     width: 80,
-                    title: this.$t("PK"),
+                    caption: this.$t("PK"),
                     alignment: "left",
                     type: "text",
                     visible: false
                 },
                 {
-                    field: "CELL_CODE",
+                    dataField: "CELL_CODE",
                     width: 100,
-                    title: this.$t("cell_code"),
+                    caption: this.$t("cell_code"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                 },
                 {
-                    field: "DATA_MAPPING",
+                    dataField: "DATA_MAPPING",
                     width: 150,
-                    title: this.$t("data_mapping"),
+                    caption: this.$t("data_mapping"),
                     alignment: "left",
                     type: "text",
                     editable: true,
@@ -1034,18 +1034,18 @@ export default {
                     },
                 },
                 {
-                    field: "TEI_TEMPLATE_PK",
+                    dataField: "TEI_TEMPLATE_PK",
                     width: 200,
-                    title: this.$t("tei_template_pk"),
+                    caption: this.$t("tei_template_pk"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                     visible: false
                 },
                 {
-                    field: "TYPE_TEMPLATE",
+                    dataField: "TYPE_TEMPLATE",
                     width: 100,
-                    title: this.$t("type_template"),
+                    caption: this.$t("type_template"),
                     alignment: "center",
                     lookup: {
                         dataSource: this.typeTemplateList,
@@ -1056,9 +1056,9 @@ export default {
                     editable: true,
                 },
                 {
-                    field: "TYPE_TABLE",
+                    dataField: "TYPE_TABLE",
                     width: 100,
-                    title: this.$t("type_table"),
+                    caption: this.$t("type_table"),
                     alignment: "center",
                     lookup: {
                         dataSource: this.typeTableList,
@@ -1069,9 +1069,9 @@ export default {
                     editable: true,
                 },
                 {
-                    field: "TYPE",
+                    dataField: "TYPE",
                     width: 200,
-                    title: this.$t("type"),
+                    caption: this.$t("type"),
                     alignment: "left",
                     lookup: {
                         dataSource: this.typeList,
@@ -1082,9 +1082,9 @@ export default {
                     editable: true,
                 },
                 {
-                    field: "REMARKS",
+                    dataField: "REMARKS",
                     width: 400,
-                    title: this.$t("remarks"),
+                    caption: this.$t("remarks"),
                     alignment: "left",
                     type: "text",
                     editable: true,
@@ -1097,41 +1097,41 @@ export default {
         grdParamD() {
             return [
                 {
-                    field: "PK",
+                    dataField: "PK",
                     width: 80,
-                    title: this.$t("PK"),
+                    caption: this.$t("PK"),
                     alignment: "left",
                     type: "text",
-                    visible: false
+                    hidden: true,
                 },
                 {
-                    field: "ORD",
+                    dataField: "ORD",
                     width: 80,
-                    title: this.$t("ord"),
+                    caption: this.$t("ord"),
                     alignment: "right",
                     type: "text",
-                    editable: true,
+                    allowEditing: true,
                 },
                 {
-                    field: "STARTCELL",
+                    dataField: "STARTCELL",
                     width: 100,
-                    title: this.$t("startcell"),
+                    caption: this.$t("startcell"),
                     alignment: "right",
                     type: "number",
-                    editable: true,
+                    allowEditing: true,
                 },
                 {
-                    field: "ENDCELL",
+                    dataField: "ENDCELL",
                     width: 100,
-                    title: this.$t("endcell"),
+                    caption: this.$t("endcell"),
                     alignment: "right",
                     type: "number",
-                    editable: true,
+                    allowEditing: true,
                 },
                 {
-                    field: "CELLBORDER",
+                    dataField: "CELLBORDER",
                     width: 150,
-                    title: this.$t("cellborder"),
+                    caption: this.$t("cellborder"),
                     alignment: "center",
                     lookup: {
                         dataSource: this.styleList,
@@ -1139,12 +1139,12 @@ export default {
                         valueExpr: "CODE",
                     },
                     type: "text",
-                    editable: true,
+                    allowEditing: true,
                 },
                 {
-                    field: "FIELD",
+                    dataField: "FIELD",
                     width: 100,
-                    title: this.$t("field"),
+                    caption: this.$t("field"),
                     alignment: "left",
                     lookup: {
                         dataSource: this.paramDList,
@@ -1152,12 +1152,12 @@ export default {
                         valueExpr: "CODE",
                     },
                     type: "text",
-                    editable: true,
+                    allowEditing: true,
                 },
                 {
-                    field: "TYPE",
+                    dataField: "TYPE",
                     width: 200,
-                    title: this.$t("type"),
+                    caption: this.$t("type"),
                     alignment: "left",
                     lookup: {
                         dataSource: this.typeList,
@@ -1165,29 +1165,29 @@ export default {
                         valueExpr: "CODE",
                     },
                     type: "text",
-                    editable: true,
+                    allowEditing: true,
                 },
                 {
-                    field: "REMARKS",
+                    dataField: "REMARKS",
                     width: 200,
-                    title: this.$t("remarks"),
+                    caption: this.$t("remarks"),
                     alignment: "left",
                     type: "text",
-                    editable: true,
+                    allowEditing: true,
                 },
                 {
-                    field: "TEI_TEMPLATE_PK",
+                    dataField: "TEI_TEMPLATE_PK",
                     width: 200,
-                    title: this.$t("tei_template_pk"),
+                    caption: this.$t("tei_template_pk"),
                     alignment: "left",
                     type: "text",
                     editable: true,
                     visible: false
                 },
                 {
-                    field: "TYPE_TEMPLATE",
+                    dataField: "TYPE_TEMPLATE",
                     width: 100,
-                    title: this.$t("type_template"),
+                    caption: this.$t("type_template"),
                     alignment: "center",
                     lookup: {
                         dataSource: this.typeTemplateList,
@@ -1195,12 +1195,12 @@ export default {
                         valueExpr: "CODE",
                     },
                     type: "text",
-                    editable: true,
+                    allowEditing: true,
                 },
                 {
-                    field: "TYPE_TABLE",
+                    dataField: "TYPE_TABLE",
                     width: 100,
-                    title: this.$t("type_table"),
+                    caption: this.$t("type_table"),
                     alignment: "center",
                     lookup: {
                         dataSource: this.typeTableList,
@@ -1208,7 +1208,7 @@ export default {
                         valueExpr: "CODE",
                     },
                     type: "text",
-                    editable: true,
+                    allowEditing: true,
                 }
             ];
         },
@@ -1367,7 +1367,7 @@ export default {
         },
 
         async onSave_PD() {
-            let requireCol = ["ORD", "STARTCELL", "ENDCELL", "CELLBORDER","FIELD", "TYPE" ];
+            let requireCol = ["ORD", "STARTCELL", "ENDCELL", "CELLBORDER","dataField", "TYPE" ];
             let validate = this.$refs.grdParamD.onCheckValid(requireCol);
             if (validate) {
                 this.$refs.grdParamD.saveData();
@@ -1441,9 +1441,9 @@ export default {
                         "ACJS0410",         //4
                         "ACEI0220",         //5
                         "ACJS0430",         //6
-                        "ACEI0470",         //7
-                        "ACEI0480",         //8
-                        "ACEI0490"         //9
+                        "ACJS0470",         //7
+                        "ACJS0480",         //8
+                        "ACJS0490"         //9
                     ];
                     const results = await this._getCommonCode2(parentCodes,this.selected_company);
                     if (results.length) {
@@ -1591,7 +1591,7 @@ export default {
                 STARTCELL: "",
                 ENDCELL: "",
                 CELLBORDER: "",
-                FIELD: "",
+                dataField: "",
                 TYPE: "1"
             });
 
@@ -1609,7 +1609,7 @@ export default {
 
             let promise = Swal.fire({
                 icon: 'question',
-                title: this.$t(`do_you_want_to_${action.toLowerCase()}`),
+                caption: this.$t(`do_you_want_to_${action.toLowerCase()}`),
                 showCancelButton: true,
                 confirmButtonText: this.$t("yes"),
                 cancelButtonText: this.$t("no")

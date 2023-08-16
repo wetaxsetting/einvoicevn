@@ -488,7 +488,7 @@ class EInvoiceController {
             }
             const id = uuid.v4();
             const xml = this.OBJtoXML(jsonDeclare);
-            const xmlId = xml.toString().replace("<DLTKhai>", `<DLTKhai Id=\'${id}\' >`);
+            const xmlId = xml.toString().replace("<DLTKhai>", `<DLTKhai Id=\'${id}\'>`);
             const xmlRemoveLine = xmlId.toString().replace(/\n/g, "");
 
             return response.send(

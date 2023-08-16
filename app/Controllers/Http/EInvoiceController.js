@@ -393,85 +393,83 @@ class EInvoiceController {
                 return response.send(Utils.response(valid.status, valid.message, null));
             }
 
-            let jsonDeclare = {
-                TKhai: {
-                    DLTKhai: {
-                        TTChung: {
-                            PBan: "2.0.0",
-                            MSo: "01/ĐKTĐ-HĐĐT",
-                            Ten: "Tờ khai đăng ký/thay đổi thông tin sử dụng hóa đơn điện tử",
-                            HThuc: 1,
-                            TNNT: "Vinmart",
-                            MST: 104918404,
-                            CQTQLy: "Chi cục thuế Quận Hoàng Mai",
-                            MCQTQLy: 10108,
-                            NLHe: "NGUYỄN THỊ DUNG",
-                            DCLHe: "Quận Hoàng Mai, Hà Nội",
-                            DCTDTu: "dungnguyentran@gmail.com",
-                            DTLHe: "394552327",
-                            DDanh: "Hà Nội",
-                            NLap: "2021-15-11",
-                        },
-                        NDTKhai: {
-                            HTHDon: {
-                                CMa: 1,
-                                KCMa: 0,
-                                CMTMTTien: 0,
-                            },
-                            HTGDLHDDT: {
-                                NNTDBKKhan: 0,
-                                NNTKTDNUBND: 0,
-                                CDLTTDCQT: 0,
-                                CDLQTVAN: 0,
-                            },
-                            PThuc: {
-                                CDDu: 1,
-                                CBTHop: 0,
-                            },
-                            LHDSDung: {
-                                HDGTGT: 1,
-                                HDBHang: 1,
-                                HDBTSCong: "",
-                                HDBHDTQGia: "",
-                                HDKhac: 0,
-                                CTu: 1,
-                            },
-                            DSCTSSDung: {
-                                CTS: [],
-                            },
-                        },
-                    },
-                    DSCKS: {
-                        NNT: "",
-                    },
-                },
-            };
-
-            //   if (declare && !declare.hasOwnProperty("seller_taxcode")) {
-            //     return response.send(Utils.response(false, `Invalid json format.`, declare));
-            //   }
-            jsonDeclare.TKhai.DLTKhai.TTChung.PBan = declare.version;
-            jsonDeclare.TKhai.DLTKhai.TTChung.Ten = declare.declare_name;
-            jsonDeclare.TKhai.DLTKhai.TTChung.HThuc = declare.declare_type;
-            jsonDeclare.TKhai.DLTKhai.TTChung.TNNT = declare.seller_company_name;
-            jsonDeclare.TKhai.DLTKhai.TTChung.MST = declare.seller_taxcode;
-            jsonDeclare.TKhai.DLTKhai.TTChung.CQTQLy = declare.tax_office_name;
-            jsonDeclare.TKhai.DLTKhai.TTChung.MCQTQLy = declare.tax_office_code;
-            jsonDeclare.TKhai.DLTKhai.TTChung.NLHe = declare.contact_person;
-            jsonDeclare.TKhai.DLTKhai.TTChung.DCLHe = declare.contact_address;
-            jsonDeclare.TKhai.DLTKhai.TTChung.DCTDTu = declare.contact_email;
-            jsonDeclare.TKhai.DLTKhai.TTChung.DTLHe = declare.contact_phone;
-            jsonDeclare.TKhai.DLTKhai.TTChung.DDanh = declare.location_name;
-            jsonDeclare.TKhai.DLTKhai.TTChung.NLap = declare.created_date;
-            jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.CMa = declare.has_code;
-            jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.KCMa = declare.no_code;
-            jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.CMTMTTien = declare.pos_code;
-            jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NNTDBKKhan = declare.taxpayer_from_difficult_location;
-            jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NNTKTDNUBND = declare.taxpayer_from_people_committee_suggestions;
-            jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLTTDCQT = declare.transfer_data_directly_to_tax_office;
-            jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLQTVAN = declare.cdlqtvan;
-            jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CDDu = declare.full_transfer;
-            jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CBTHop = declare.summary_transfer;
+      let jsonDeclare = {
+        TKhai: {
+          DLTKhai: {
+            TTChung: {
+              PBan: "2.0.0",
+              MSo: "01/ĐKTĐ-HĐĐT",
+              Ten: "Tờ khai đăng ký/thay đổi thông tin sử dụng hóa đơn điện tử",
+              HThuc: 1,
+              Mso: '',
+              TNNT: "Vinmart",
+              MST: 104918404,
+              CQTQLy: "Chi cục thuế Quận Hoàng Mai",
+              MCQTQLy: 10108,
+              NLHe: "NGUYỄN THỊ DUNG",
+              DCLHe: "Quận Hoàng Mai, Hà Nội",
+              DCTDTu: "dungnguyentran@gmail.com",
+              DTLHe: "394552327",
+              DDanh: "Hà Nội",
+              NLap: "2021-15-11",
+            },
+            NDTKhai: {
+              HTHDon: {
+                CMa: 1,
+                KCMa: 0,
+                CMTMTTien: 0,
+              },
+              HTGDLHDDT: {
+                NNTDBKKhan: 0,
+                NNTKTDNUBND: 0,
+                CDLTTDCQT: 0,
+                CDLQTVAN: 0,
+              },
+              PThuc: {
+                CDDu: 1,
+                CBTHop: 0,
+              },
+              LHDSDung: {
+                HDGTGT: 1,
+                HDBHang: 1,
+                HDBTSCong: "",
+                HDBHDTQGia: "",
+                HDKhac: 0,
+                CTu: 1,
+              },
+              DSCTSSDung: {
+                CTS: [],
+              },
+            },
+          },
+          DSCKS: {
+            NNT: "",
+          },
+        },
+      };
+      jsonDeclare.TKhai.DLTKhai.TTChung.PBan = declare.version;
+      jsonDeclare.TKhai.DLTKhai.TTChung.Ten = declare.declare_name;
+      jsonDeclare.TKhai.DLTKhai.TTChung.HThuc = declare.declare_type;
+      jsonDeclare.TKhai.DLTKhai.TTChung.Mso = declare.form_no;
+      jsonDeclare.TKhai.DLTKhai.TTChung.TNNT = declare.seller_company_name;
+      jsonDeclare.TKhai.DLTKhai.TTChung.MST = declare.seller_taxcode;
+      jsonDeclare.TKhai.DLTKhai.TTChung.CQTQLy = declare.tax_office_name;
+      jsonDeclare.TKhai.DLTKhai.TTChung.MCQTQLy = declare.tax_office_code;
+      jsonDeclare.TKhai.DLTKhai.TTChung.NLHe = declare.contact_person;
+      jsonDeclare.TKhai.DLTKhai.TTChung.DCLHe = declare.contact_address;
+      jsonDeclare.TKhai.DLTKhai.TTChung.DCTDTu = declare.contact_email;
+      jsonDeclare.TKhai.DLTKhai.TTChung.DTLHe = declare.contact_phone;
+      jsonDeclare.TKhai.DLTKhai.TTChung.DDanh = declare.location_name;
+      jsonDeclare.TKhai.DLTKhai.TTChung.NLap = declare.created_date;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.CMa = declare.has_code;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.KCMa = declare.no_code;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.CMTMTTien = declare.pos_code;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NNTDBKKhan = declare.taxpayer_from_difficult_location;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NNTKTDNUBND = declare.taxpayer_from_people_committee_suggestions;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLTTDCQT = declare.transfer_data_directly_to_tax_office;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLQTVAN = declare.cdlqtvan;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CDDu = declare.full_transfer;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CBTHop = declare.summary_transfer;
 
             jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDGTGT = declare.vat_invoice;
             jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBHang = declare.sales_invoice;
@@ -512,115 +510,146 @@ class EInvoiceController {
         }
     }
 
-    validateJsonToXML(declare) {
-        let status = true;
-        let resMess = "";
-        const mess1 = "Invalid field";
-        const mess2 = "Data invalid";
-        const errorList = {
-            version: "xample data",
-            declare_name: "xample data",
-            declare_type: "xample data",
-            seller_company_name: "xample data",
-            seller_taxcode: "xample data",
-            tax_office_name: "xample data",
-            tax_office_code: "xample data",
-            contact_person: "xample data",
-            contact_address: "xample data",
-            contact_email: "xample data",
-            contact_phone: "xample data",
-            location_name: "xample data",
-            created_date: "xample data",
-            has_code: "xample data",
-            no_code: "xample data",
-            pos_code: "xample data",
-            taxpayer_from_difficult_location: "xample data",
-            taxpayer_from_people_committee_suggestions: "xample data",
-            transfer_data_directly_to_tax_office: "xample data",
-            cdlqtvan: "xample data",
-            full_transfer: "xample data",
-            summary_transfer: "xample data",
-            vat_invoice: "xample data",
-            sales_invoice: "xample data",
-            sales_invoice_passet: "xample data",
-            sales_invoice_national: "xample data",
-            other_invoice: "xample data",
-            voucher: "xample data",
-            digital_certificates: [
-                {
-                    sequence: 1,
-                    organization_name: "SmartSign",
-                    serial_no: "540101072FBF82CD8A4D89AEADEBCF88",
-                    from_date: "2023-04-27T08:47:43",
-                    to_date: "2024-07-27T08:47:42",
-                    type: "1",
-                },
-            ],
-        };
-        const valueReq = [0, 1];
+  validateJsonToXML(declare) {
+    let status = true;
+    let resMess = "";
+    const mess1 = "Invalid field";
+    const mess2 = "Data invalid";
+    const errorList = {
+      version: "xample data",
+      declare_name: "xample data",
+      declare_type: "xample data",
+      seller_company_name: "xample data",
+      seller_taxcode: "xample data",
+      tax_office_name: "xample data",
+      tax_office_code: "xample data",
+      contact_person: "xample data",
+      contact_address: "xample data",
+      contact_email: "xample data",
+      contact_phone: "xample data",
+      location_name: "xample data",
+      created_date: "xample data",
+      has_code: "xample data",
+      no_code: "xample data",
+      pos_code: "xample data",
+      taxpayer_from_difficult_location: "xample data",
+      taxpayer_from_people_committee_suggestions: "xample data",
+      transfer_data_directly_to_tax_office: "xample data",
+      cdlqtvan: "xample data",
+      full_transfer: "xample data",
+      summary_transfer: "xample data",
+      vat_invoice: "xample data",
+      sales_invoice: "xample data",
+      sales_invoice_passet: "xample data",
+      sales_invoice_national: "xample data",
+      other_invoice: "xample data",
+      voucher: "xample data",
+      digital_certificates: [
+        {
+          sequence: 1,
+          organization_name: "SmartSign",
+          serial_no: "540101072FBF82CD8A4D89AEADEBCF88",
+          from_date: "2023-04-27T08:47:43",
+          to_date: "2024-07-27T08:47:42",
+          type: "1",
+        },
+      ],
+    };
+    const valueReq = [0, 1];
 
-        for (const key in errorList) {
-            if (declare[key] === undefined) {
-                status = false;
-                resMess = `${mess1} ${key}.`;
-                return {
-                    status,
-                    message: resMess,
-                };
-            }
-            if (
-                key == "has_code" ||
-                key == "no_code" ||
-                key == "pos_code" ||
-                key == "taxpayer_from_difficult_location" ||
-                key == "taxpayer_from_people_committee_suggestions" ||
-                key == "transfer_data_directly_to_tax_office" ||
-                key == "cdlqtvan" ||
-                key == "full_transfer" ||
-                key == "summary_transfer" ||
-                key == "vat_invoice" ||
-                key == "sales_invoice" ||
-                key == "sales_invoice_passet" ||
-                key == "sales_invoice_national" ||
-                key == "other_invoice" ||
-                key == "voucher"
-            ) {
-                if (valueReq.includes(declare[key])) {
-                    status = false;
-                    resMess = `${mess2}. Field ${key}.`;
-                    return {
-                        status,
-                        message: resMess,
-                    };
-                }
-            }
-        }
-
-        for (const key in errorList.digital_certificates[0]) {
-            if (declare.digital_certificates[0][key] === undefined) {
-                status = false;
-                resMess = `${mess1} digital_certificates ${key}.`;
-                return {
-                    status,
-                    message: resMess,
-                };
-            }
-        }
-
-        const valueDT = [1, 2];
-
-        if (!valueDT.includes(declare.declare_type)) {
-            return {
-                status: false,
-                message: `declare_type must be 1 or 2. Receive: declare_type = ${declare.declare_type}`,
-            };
-        }
-
+    for (const key in errorList) {
+      // valid null of not null values
+      if (declare[key] === undefined || declare[key] == null) {
+        status = false;
+        resMess = `${mess1} ${key}.`;
         return {
+          status,
+          message: resMess,
+        };
+      }
+
+      // valid length
+      if(String(declare[key]).length > errorList[key] && key != 'digital_certificates'){
+        return {
+          status: false,
+          message: `Length of ${key} too long.`,
+        };
+      }
+
+      // valid data must be in valueReq
+      const valueReq = ["0", "1"];
+      if (
+        key == "has_code" ||
+        key == "no_code" ||
+        key == "pos_code" ||
+        key == "taxpayer_from_difficult_location" ||
+        key == "taxpayer_from_people_committee_suggestions" ||
+        key == "transfer_data_directly_to_tax_office" ||
+        key == "cdlqtvan" ||
+        key == "full_transfer" ||
+        key == "summary_transfer" ||
+        key == "vat_invoice" ||
+        key == "sales_invoice" ||
+        key == "sales_invoice_passet" ||
+        key == "sales_invoice_national" ||
+        key == "other_invoice" ||
+        key == "voucher"
+      ) {
+        if (!valueReq.includes(String(declare[key]))) {
+          status = false;
+          resMess = `${mess2}. Field ${key}.`;
+          return {
             status,
             message: resMess,
-        };
+          };
+        }
+      }
     }
+
+    // valid digital_certificates
+    if(!declare.digital_certificates[0]){
+      return {
+        status: false,
+        message:`${mess1} digital_certificates.`,
+      };
+    }
+
+    for (const key in errorList.digital_certificates[0]) {
+      // valid digital_certificates 
+      if (declare.digital_certificates[0][key] === undefined || declare.digital_certificates[0][key] == null) {
+        status = false;
+        resMess = `${mess1} digital_certificates ${key}.`;
+        return {
+          status,
+          message: resMess,
+        };
+      }
+      // vald date
+      if(key =='from_date' || key =='to_date'){
+        if(new Date(declare.digital_certificates[0][key]) == 'Invalid Date'){
+          return {
+            status: false,
+            message: `Invalid Date. key digital_certificates ${key}`,
+          };
+        }
+      }
+    }
+
+    // valid declare_type must be in valueDT
+    const valueDT = [1, 2];
+    if (!valueDT.includes(declare.declare_type)) {
+      return {
+        status: false,
+        message: `declare_type must be 1 or 2. Receive: declare_type = ${declare.declare_type}`,
+      };
+    }
+
+    // if dont have any problem
+    return {
+      status,
+      message: resMess,
+    };
+  }
 
     OBJtoXML(obj) {
         var xml = "";

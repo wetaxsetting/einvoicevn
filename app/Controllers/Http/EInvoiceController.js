@@ -254,68 +254,68 @@ class EInvoiceController {
     }
   }
 
-  async convertDeclareUsingInvoiceToXML({ request, response, auth }) {
-    try {
-      var p_language = request.header("accept-language", "ENG");
-      var p_crt_by = "";
-      const user = await auth.getUser();
-      if (user) {
-        p_crt_by = user.USER_ID;
-      }
-      const { declare } = request.all();
-      let jsonDeclare = {
-        TKhai: {
-          DLTKhai: {
-            TTChung: {
-              PBan: "2.0.0",
-              MSo: "01/ĐKTĐ-HĐĐT",
-              Ten: "Tờ khai đăng ký/thay đổi thông tin sử dụng hóa đơn điện tử",
-              HThuc: 1,
-              TNNT: "Vinmart",
-              MST: 104918404,
-              CQTQLy: "Chi cục thuế Quận Hoàng Mai",
-              MCQTQLy: 10108,
-              NLHe: "NGUYỄN THỊ DUNG",
-              DCLHe: "Quận Hoàng Mai, Hà Nội",
-              DCTDTu: "dungnguyentran@gmail.com",
-              DTLHe: "394552327",
-              DDanh: "Hà Nội",
-              NLap: "2021-15-11",
-            },
-            NDTKhai: {
-              HTHDon: {
-                CMa: 1,
-                KCMa: 0,
-                CMTMTTien: 0,
-              },
-              HTGDLHDDT: {
-                NNTDBKKhan: 0,
-                NNTKTDNUBND: 0,
-                CDLTTDCQT: 0,
-                CDLQTVAN: 0,
-              },
-              PThuc: {
-                CDDu: 1,
-                CBTHop: 0,
-              },
-              LHDSDung: {
-                HDGTGT: 1,
-                HDBHang: 1,
-                HDBTSCong: "",
-                HDBHDTQGia: "",
-                HDKhac: 0,
-                CTu: 1,
-              },
-              DSCTSSDung: {
-                CTS: [],
-              },
-            },
-          },
-          DSCKS: {
-            NNT: "",
-          },
-        },
-      };
+    async convertDeclareUsingInvoiceToXML({ request, response, auth }) {
+        try {
+            var p_language = request.header("accept-language", "ENG");
+            var p_crt_by = "";
+            const user = await auth.getUser();
+            if (user) {
+                p_crt_by = user.USER_ID;
+            }
+            const { declare } = request.all();
+            let jsonDeclare = {
+                TKhai: {
+                    DLTKhai: {
+                        TTChung: {
+                            PBan: "2.0.1",
+                            MSo: "01/ĐKTĐ-HĐĐT",
+                            Ten: "Tờ khai đăng ký/thay đổi thông tin sử dụng hóa đơn điện tử",
+                            HThuc: 1,
+                            TNNT: "Vinmart",
+                            MST: 104918404,
+                            CQTQLy: "Chi cục thuế Quận Hoàng Mai",
+                            MCQTQLy: 10108,
+                            NLHe: "NGUYỄN THỊ DUNG",
+                            DCLHe: "Quận Hoàng Mai, Hà Nội",
+                            DCTDTu: "dungnguyentran@gmail.com",
+                            DTLHe: "394552327",
+                            DDanh: "Hà Nội",
+                            NLap: "2021-15-11"
+                        },
+                        NDTKhai: {
+                            HTHDon: {
+                                CMa: 1,
+                                KCMa: 0,
+                                CMTMTTien: 0
+                            },
+                            HTGDLHDDT: {
+                                NNTDBKKhan: 0,
+                                NNTKTDNUBND: 0,
+                                CDLTTDCQT: 0,
+                                CDLQTVAN: 0
+                            },
+                            PThuc: {
+                                CDDu: 1,
+                                CBTHop: 0
+                            },
+                            LHDSDung: {
+                                HDGTGT: 1,
+                                HDBHang: 1,
+                                HDBTSCong: "",
+                                HDBHDTQGia: "",
+                                HDKhac: 0,
+                                CTu: 1
+                            },
+                            DSCTSSDung: {
+                                CTS: []
+                            }
+                        }
+                    },
+                    DSCKS: {
+                        NNT: ""
+                    }
+                }
+            };
 
       if (declare && !declare.hasOwnProperty("seller_taxcode")) {
         return response.send(Utils.response(false, `Invalid json format.`, declare));
@@ -3944,14 +3944,14 @@ class EInvoiceController {
     }
   }
 
-  async weTaxConvertPosInvoiceToXML({ request, response, auth }) {
-    try {
-      var p_language = request.header("accept-language", "ENG");
-      var p_crt_by = "";
-      const user = await auth.getUser();
-      if (user) {
-        p_crt_by = user.USER_ID;
-      }
+     async weTaxConvertPosInvoiceToXML({ request, response, auth }) {
+        try {
+            var p_language = request.header("accept-language", "ENG");
+            var p_crt_by = "";
+            const user = await auth.getUser();
+            if (user) {
+                p_crt_by = user.USER_ID;
+            }
 
       const { invoices } = request.all();
       console.log(" invoices  ", invoices);
@@ -4145,17 +4145,19 @@ class EInvoiceController {
         rtnXML.push({ master_pk: invoices[i].master.master_pk, invoice_no: last_invoice_no, xml: xmlStr });
       }
 
-      return response.send(Utils.response(true, `Convert json to xml was successful.`, rtnXML));
-    } catch (e) {
-      Utils.Logger({
-        LVL: "error",
-        MODULE: "EInvoiceController",
-        FUNC: "weTaxConvertPosInvoiceToXML",
-        CONTENT: e.message,
-      });
-      return response.send(Utils.response(false, "error", e.message));
+            return response.send(
+                Utils.response(true, `Convert json to xml was successful.`, rtnXML)
+            );
+        } catch (e) {
+            Utils.Logger({
+                LVL: "error",
+                MODULE: "EInvoiceController",
+                FUNC: "weTaxConvertPosInvoiceToXML",
+                CONTENT: e.message,
+            });
+            return response.send(Utils.response(false, "error", e.message));
+        }
     }
-  }
 }
 
 module.exports = EInvoiceController;

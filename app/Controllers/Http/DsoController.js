@@ -1129,7 +1129,7 @@ class DsoController {
             if (month < 10) {
                 month = "0" + month
             }
-            file_path="/"+file_path
+            //file_path="/"+file_path
             let token = AES.encrypt(file_path + "|" + year + month + day, APP_KEY)
             token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l')
             return response.send(APP_URL_LOCAL + "/api/dso/getfiletoken?file_name=" + file_path + "&token=" + token)            

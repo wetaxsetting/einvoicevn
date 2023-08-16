@@ -488,8 +488,9 @@ class ImportController {
                     Utils.response(false, "missing_[user_pk]_parameter", null)
                 );
             }
-            const root_directory = `${ROOT_DIR_FILES}/tkhq/${user_pk}`
-            const file_path = await Utils.putFileRootPath(file, root_directory);
+            const folder = `tkhq/${user_pk}`
+            let file_path = await Utils.putFileRootPath(file, folder);
+            file_path=ROOT_DIR_FILES + file_path
             // console.log("root_directory", root_directory)
             //  console.log("file_path", file_path)
             if (file_path && file_path.indexOf(".xml") > 0) {

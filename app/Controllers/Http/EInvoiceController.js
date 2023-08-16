@@ -4169,42 +4169,44 @@ class EInvoiceController {
             }
             const { data } = request.all();
 
+            console.log("data  ", data);
               const para_value = {
-                    tei_company_pk : "",
-                    sale_date :  para[i].sale_date,
-                    store_code : para[i].store_code,
-                    store_name : para[i].store_name,
-                    pos_no: para[i].pos_no,
-                    bill_no : para[i].bill_no,
-                    version : para[i].version,
-                    invoice_name : para[i].invoice_name,
-                    symbol_type : para[i].symbol_type,
-                    form_no : para[i].form_no,
-                    serial_no : para[i].serial_no,
-                    invoice_date : para[i].invoice_date,
-                    invoice_no : para[i].invoice_no,
-                    currency : para[i].currency,
-                    ex_rate : para[i].ex_rate,
-                    payment_method : para[i].payment_method,
-                    seller_comp_name : para[i].seller_comp_name,
-                    seller_taxcode : para[i].seller_taxcode,
-                    seller_address : para[i].seller_address,
-                    seller_tel : para[i].seller_tel,
-                    buyer_comp_name : para[i].buyer_comp_name,
-                    buyer_taxcode : para[i].buyer_taxcode,
-                    buyer_tel : para[i].buyer_tel,
-                    buyer_address : para[i].buyer_address,
-                    buyer_cccd : para[i].buyer_cccd,
-                    buyer_email : para[i].buyer_email,
-                    buyer_email_cc : para[i].buyer_email_cc,
-                    total_amt : para[i].total_amt,
-                    total_dc_amt : para[i].total_dc_amt,
-                    total_vat_amt : para[i].total_vat_amt,
-                    total_payment : para[i].total_payment,
-                    total_payment_word_vie : para[i].total_payment_word_vie,
-                    mccqt : para[i].mccqt,
+                    sale_date :  data.sale_date,
+                    store_code : data.store_code,
+                    store_name : data.store_name,
+                    pos_no: data.pos_no,
+                    bill_no : data.bill_no,
+                    version : data.data_invoice.version,
+                    invoice_name : data.data_invoice.invoice_name,
+                    symbol_type : data.data_invoice.form_no,//data.data_invoice.symbol_type,
+                    form_no : data.data_invoice.form_no,
+                    serial_no : data.data_invoice.serial_no,
+                    invoice_date : data.data_invoice.invoice_date,
+                    invoice_no : data.data_invoice.invoice_no,
+                    currency : data.data_invoice.currency,
+                    ex_rate : data.data_invoice.ex_rate,
+                    payment_method : data.data_invoice.payment_method,
+                    seller_comp_name : data.data_invoice.seller_comp_name,
+                    seller_taxcode : data.data_invoice.seller_taxcode,
+                    seller_address : data.data_invoice.seller_address,
+                    seller_tel : data.data_invoice.seller_tel,
+                    buyer_comp_name : data.data_invoice.buyer_comp_name,
+                    buyer_taxcode : data.data_invoice.buyer_taxcode,
+                    buyer_tel : data.data_invoice.buyer_tel,
+                    buyer_address : data.data_invoice.buyer_address,
+                    buyer_cccd : data.data_invoice.buyer_cccd,
+                    buyer_email : data.data_invoice.buyer_email,
+                    buyer_email_cc : data.data_invoice.buyer_email_cc,
+                    total_amt : data.data_invoice.total_amt,
+                    total_dc_amt : data.data_invoice.total_dc_amt,
+                    total_vat_amt : data.data_invoice.total_vat_amt,
+                    total_payment : data.data_invoice.total_payment,
+                    total_payment_word_vie : data.data_invoice.total_payment_word_vie,
+                    mccqt : data.data_invoice.mccqt,
                 };
 
+                 console.log("para_value  ", para_value)   
+                
                 const rtnValue = await DBService.ExecuteSQLBlob(
                     `BEGIN ei_upd_order_info (          
                                                         :sale_date,
@@ -4246,12 +4248,82 @@ class EInvoiceController {
                     p_language,
                     p_crt_by
                 );
+                console.log("rtnValue  ", rtnValue);
+                
+                if (rtnValue.p_rtn_cur[0].STATUS == "OK")
+                {
+                    const tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
+                    for(let j = 0; j < data.data_invoice.list_amt_vat.length; j++ )
+                    {
+                        const para_amt_vat = {
+                            tei_wt_sale_bill_pk : tei_wt_sale_bill_pk,
+                            sub_amt : data.data_invoice.list_amt_vat[j].sub_amt,
+                            sub_vat_rate : data.data_invoice.list_amt_vat[j].sub_vat_rate,
+                            sub_amt_vat : data.data_invoice.list_amt_vat[j].sub_amt_vat
+                        };
+                        const rtnValue_VAT = await DBService.ExecuteSQLBlob(
+                            `BEGIN ei_upd_sale_bill_vat (          
+                                                                :tei_wt_sale_bill_pk,
+                                                                :sub_amt,
+                                                                :sub_vat_rate,
+                                                                :sub_amt_vat,
+                                                                :p_language, 
+                                                                :p_crt_by, 
+                                                                :p_rtn_cur); END;`,
+                            para_amt_vat,
+                            p_language,
+                            p_crt_by
+                        );
+                    }
+                    
+                    for(let j = 0; j < data.data_invoice.detail_invoice.length; j++ )
+                    {
+                        const para_prod_details = {
+                            tei_wt_sale_bill_pk : tei_wt_sale_bill_pk,
+                            nature : data.data_invoice.detail_invoice[j].nature,
+                            seq : data.data_invoice.detail_invoice[j].seq,
+                            item_code : data.data_invoice.detail_invoice[j].item_code,
+                            item_name : data.data_invoice.detail_invoice[j].item_name,
+                            uom : data.data_invoice.detail_invoice[j].uom,
+                            quantity : data.data_invoice.detail_invoice[j].quantity,
+                            uprice : data.data_invoice.detail_invoice[j].uprice,
+                            dc_rate : data.data_invoice.detail_invoice[j].dc_rate,
+                            dc_amt : data.data_invoice.detail_invoice[j].dc_amt,
+                            amt : data.data_invoice.detail_invoice[j].amt,
+                            vat_rate : data.data_invoice.detail_invoice[j].vat_rate,
+                        };
+                        const rtnValue_VAT = await DBService.ExecuteSQLBlob(
+                            `BEGIN ei_upd_sale_prod (          
+                                                                :tei_wt_sale_bill_pk,
+                                                                :nature,
+                                                                :seq,
+                                                                :item_code,
+                                                                :item_name,
+                                                                :uom,
+                                                                :quantity,
+                                                                :uprice,
+                                                                :dc_rate,
+                                                                :dc_amt,
+                                                                :amt,
+                                                                :vat_rate,
+                                                                :p_language, 
+                                                                :p_crt_by, 
+                                                                :p_rtn_cur); END;`,
+                            para_prod_details,
+                            p_language,
+                            p_crt_by
+                        );
+                    }
+                }        
+                
+
 
 
         } catch (error) {
-            
+            console.log("error  ", error);
         }
     }
+
 }
 
 module.exports = EInvoiceController;

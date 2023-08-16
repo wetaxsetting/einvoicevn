@@ -7,10 +7,10 @@
             v-model="selected_company" filter_off />
         </v-col>
         <v-col lg="2">
-          <BaseInput outlined :label="$t('invoice_no')" v-model="invoice_no" filter_off />
+          <BaseInput outlined :label="$t('invoice_no')" v-model="txtFromInvoiceNo" filter_off />
         </v-col>
         <v-col lg="2">
-          <BaseInput outlined v-model="invoice_no_ip" filter_off />
+          <BaseInput outlined v-model="txtToInvoiceNo" filter_off />
         </v-col>
         <v-col lg="2">
           <BaseSelect outlined :label="$t('form_no')" item-text="NAME" item-value="VAL" filter_off :lstData="form_no_list"
@@ -74,7 +74,7 @@
 
       <v-row dense justify="space-between" class="pl-3 pr-3 pt-2">
         <v-col lg="2">
-          <BaseInput outlined :label="$t('partner')" v-model="itemPartner" />
+          <BaseInput outlined :label="$t('partner')" v-model="txtPartner" />
         </v-col>
         <v-col lg="2">
           <BaseSelect outlined :label="$t('directly_yn')" :lstData="yn_list" v-model="selected_yn" item-text="NAME"
@@ -97,9 +97,8 @@
       <v-row dense align="stretch" justify="space-between">
         <v-col cols="12">
           <v-card outlined>
-            <v-container fluid class="">
               <!-- :selectionmode="'checkbox'" -->
-              <BaseGridView ref="gridview" :header="this.headerGrid" sel_procedure="EI_SEL_6095090_SEL_DATA"
+              <BaseGridView ref="gridview" :header="grdReviewSign" sel_procedure="EI_SEL_6095090_SEL_DATA"
                 :multiselect="true" :selectionmode="'checkbox'" :autocheckbox="false" :headertype="1"
                 @onSelectionDataChanged="onGridSelectionChanged" :filter_paras="[
                   this.selected_company,
@@ -116,7 +115,6 @@
                   this.selected_etaxStatus,
                   this.selected_etaxResult
                 ]" @setDataSource="onAfterLoad" :height="limitHeight" @cellClick="onCellClick" />
-            </v-container>
           </v-card>
         </v-col>
       </v-row>
@@ -210,7 +208,7 @@ export default {
     }
   },
   mounted() {
-    this.onSetHeader();
+    
   },
   watch: {
     selected_status(val) {
@@ -246,6 +244,267 @@ export default {
         return 570;
       }
     }, // this.windowHeight },
+
+    grdReviewSign(){
+      let _headerObj = [
+        {
+          dataField: "RN",
+          caption: this.$t("no"),
+          type: "text",
+          width: 80,
+          alignment: "left",
+        },
+        {
+          dataField: "INVOICE_DATE",
+          caption: this.$t("invoice_date"),
+          type: "text",
+          width: 80,
+          alignment: "left",
+          format: this.curLang.DATE_FORMAT,
+        },
+        {
+          dataField: "CUS_CD",
+          caption: this.$t("cus_id"),
+          type: "text",
+          width: 100,
+          alignment: "left",
+        },
+        {
+          dataField: "CUS_NM",
+          caption: this.$t("cus_nm"),
+          type: "text",
+          width: 120,
+          alignment: "left",
+        },
+        {
+          dataField: "CUS_FNM",
+          caption: this.$t("cus_fnm"),
+          type: "text",
+          width: 120,
+          alignment: "left",
+        },
+        {
+          dataField: "TAX_CODE",
+          caption: this.$t("tax_code"),
+          type: "text",
+          width: 80,
+          alignment: "left",
+        },
+        {
+          dataField: "BUYER_NAME",
+          caption: this.$t("buyer_nm"),
+          type: "text",
+          width: 120,
+          alignment: "left",
+        },
+        {
+          dataField: "FORM_NO",
+          caption: this.$t("form_no"),
+          type: "text",
+          width: 80,
+          alignment: "left",
+        },
+        {
+          dataField: "SERIAL_NO",
+          caption: this.$t("serial_no"),
+          type: "text",
+          width: 80,
+          alignment: "left",
+        },
+        {
+          dataField: "INVOICE_NO",
+          caption: this.$t("invoice_no"),
+          type: "text",
+          width: 80,
+          alignment: "left",
+        },
+        {
+          dataField: "TR_CCY",
+          caption: this.$t("tr_ccy"),
+          type: "text",
+          width: 50,
+          alignment: "left",
+        },
+        {
+          dataField: "TR_RATE",
+          caption: this.$t("tr_rate"),
+          type: "text",
+          width: 50,
+          alignment: "left",
+        },
+        //
+        {
+          dataField: "TOT_NET_TR_AMT",
+          caption: this.$t("tot_net_tr_amt"),
+          type: "number",
+          formatFloat: 0,
+          width: 150,
+          alignment: "right",
+        },
+        {
+          dataField: "TOT_NET_BK_AMT",
+          caption: this.$t("tot_net_bk_amt"),
+          type: "number",
+          formatFloat: 0,
+          width: 150,
+          alignment: "right",
+          hidden: true
+        },
+        {
+          dataField: "TOT_VAT_TR_AMT",
+          caption: this.$t("tot_vat_tr_amt"),
+          type: "number",
+          formatFloat: 0,
+          width: 150,
+          alignment: "right",
+        },
+        {
+          dataField: "TOT_VAT_BK_AMT",
+          caption: this.$t("tot_vat_tr_amt"),
+          type: "number",
+          formatFloat: 0,
+          width: 150,
+          alignment: "right",
+          hidden: true
+        },
+        {
+          dataField: "TOTAL_AMT",
+          caption: this.$t("total_amt"),
+          type: "number",
+          formatFloat: 0,
+          width: 150,
+          alignment: "right",
+        },
+        {
+          dataField: "REMARK",
+          caption: this.$t("description"),
+          type: "text",
+          width: 80,
+          alignment: "left",
+          hidden: true
+        },
+        {
+          dataField: "REMARK2",
+          caption: this.$t("local_description"),
+          type: "text",
+          width: 80,
+          alignment: "left",
+          hidden: true
+        },
+        {
+          dataField: "EI_STATUS",
+          caption: this.$t("ei_status"),
+          type: "text",
+          width: 80,
+          alignment: "left",
+        },
+        {
+          dataField: "SIGN_BY",
+          caption: this.$t("sign_by"),
+          type: "text",
+          width: 80,
+          alignment: "left",
+        },
+        {
+          dataField: "SIGN_DT",
+          caption: this.$t("sign_dt"),
+          type: "text",
+          width: 80,
+          alignment: "left",
+        },
+        {
+          dataField: "INVOICE_TYPE",
+          caption: this.$t("invoice_type"),
+          type: "text",
+          width: 80,
+          alignment: "left",
+        },
+        {
+          dataField: "MAIL",
+          caption: this.$t("mail"),
+          type: "text",
+          width: 80,
+          alignment: "left",
+        },
+        {
+          dataField: "EMAIL_ADDRESS_CC",
+          caption: this.$t("email_address_cc"),
+          type: "text",
+          width: 150,
+          alignment: "left",
+        },
+        {
+          dataField: "DIRECTLY_YN",
+          caption: this.$t("directly_yn"),
+          type: "text",
+          width: 80,
+          alignment: "left",
+          hidden:true
+        },
+        {
+          dataField: "CQT_MAGD",
+          caption: this.$t("cqt_magd"),
+          width: 150,
+        },
+        {
+          dataField: "REPORT_CODE",
+          caption: this.$t("report_code"),
+          type: "text",
+          width: 80,
+          alignment: "left",
+          hidden: true
+        },
+        {
+          dataField: "CQT_MCCQT_ID",
+          caption: this.$t("cqt_mccqt_id"),
+          type: "text",
+          width: 100,
+          alignment: "left",
+        },
+
+
+
+        {
+          dataField: "ETAX_STATUS",
+          caption: this.$t("etax_status"),
+          width: 150,
+          allowEditing: true,
+        },
+        {
+          dataField: "ETAX_RESULT",
+          caption: this.$t("etax_result"),
+          width: 150,
+          allowEditing: true,
+          
+        },
+
+
+
+
+        {
+          dataField: "CQT_ERROR_CODE",
+          caption: this.$t("cqt_err_code"),
+          type: "text",
+          width: 80,
+          alignment: "left",
+        },
+        {
+          dataField: "CQT_NOTIFICATION",
+          caption: this.$t("cqt_noti"),
+          type: "text",
+          width: 80,
+          alignment: "left",
+        },
+        {
+          dataField: "TAX_RATE_MULTI",
+          caption: this.$t("tax_rate_multi"),
+          alignment: "left",
+          hidden:true
+        },
+      ];
+
+      return _headerObj;
+    }
   },
 
   methods: {
@@ -473,257 +732,6 @@ export default {
     },
     onClickExport(obj) {
       this.$refs.gridview.exportExcel();
-    },
-    onSetHeader() {
-      let headerObj = [
-        {
-          field: "RN",
-          title: this.$t("no"),
-          type: "text",
-          width: 80,
-          alignment: "left",
-        },
-        {
-          field: "INVOICE_DATE",
-          title: this.$t("invoice_date"),
-          type: "text",
-          width: 80,
-          alignment: "left",
-        },
-        {
-          field: "CUS_CD",
-          title: this.$t("cus_id"),
-          type: "text",
-          width: 100,
-          alignment: "left",
-        },
-        {
-          field: "CUS_NM",
-          title: this.$t("cus_nm"),
-          type: "text",
-          width: 120,
-          alignment: "left",
-        },
-        {
-          field: "CUS_FNM",
-          title: this.$t("cus_fnm"),
-          type: "text",
-          width: 120,
-          alignment: "left",
-        },
-        {
-          field: "TAX_CODE",
-          title: this.$t("tax_code"),
-          type: "text",
-          width: 80,
-          alignment: "left",
-        },
-        {
-          field: "BUYER_NAME",
-          title: this.$t("buyer_nm"),
-          type: "text",
-          width: 120,
-          alignment: "left",
-        },
-        {
-          field: "FORM_NO",
-          title: this.$t("form_no"),
-          type: "text",
-          width: 80,
-          alignment: "left",
-        },
-        {
-          field: "SERIAL_NO",
-          title: this.$t("serial_no"),
-          type: "text",
-          width: 80,
-          alignment: "left",
-        },
-        {
-          field: "INVOICE_NO",
-          title: this.$t("invoice_no"),
-          type: "text",
-          width: 80,
-          alignment: "left",
-        },
-        {
-          field: "TR_CCY",
-          title: this.$t("tr_ccy"),
-          type: "text",
-          width: 50,
-          alignment: "left",
-        },
-        {
-          field: "TR_RATE",
-          title: this.$t("tr_rate"),
-          type: "text",
-          width: 50,
-          alignment: "left",
-        },
-        //
-        {
-          field: "TOT_NET_TR_AMT",
-          title: this.$t("tot_net_tr_amt"),
-          type: "number",
-          formatFloat: 0,
-          width: 150,
-          alignment: "right",
-        },
-        {
-          field: "TOT_NET_BK_AMT",
-          title: this.$t("tot_net_bk_amt"),
-          type: "number",
-          formatFloat: 0,
-          width: 150,
-          alignment: "right",
-          hidden: true
-        },
-        {
-          field: "TOT_VAT_TR_AMT",
-          title: this.$t("tot_vat_tr_amt"),
-          type: "number",
-          formatFloat: 0,
-          width: 150,
-          alignment: "right",
-        },
-        {
-          field: "TOT_VAT_BK_AMT",
-          title: this.$t("tot_vat_tr_amt"),
-          type: "number",
-          formatFloat: 0,
-          width: 150,
-          alignment: "right",
-          hidden: true
-        },
-        {
-          field: "TOTAL_AMT",
-          title: this.$t("total_amt"),
-          type: "number",
-          formatFloat: 0,
-          width: 150,
-          alignment: "right",
-        },
-        {
-          field: "REMARK",
-          title: this.$t("description"),
-          type: "text",
-          width: 80,
-          alignment: "left",
-          hidden: true
-        },
-        {
-          field: "REMARK2",
-          title: this.$t("local_description"),
-          type: "text",
-          width: 80,
-          alignment: "left",
-          hidden: true
-        },
-        {
-          field: "EI_STATUS",
-          title: this.$t("ei_status"),
-          type: "text",
-          width: 80,
-          alignment: "left",
-        },
-        {
-          field: "SIGN_BY",
-          title: this.$t("sign_by"),
-          type: "text",
-          width: 80,
-          alignment: "left",
-        },
-        {
-          field: "SIGN_DT",
-          title: this.$t("sign_dt"),
-          type: "text",
-          width: 80,
-          alignment: "left",
-        },
-        {
-          field: "INVOICE_TYPE",
-          title: this.$t("invoice_type"),
-          type: "text",
-          width: 80,
-          alignment: "left",
-        },
-        {
-          field: "MAIL",
-          title: this.$t("mail"),
-          type: "text",
-          width: 80,
-          alignment: "left",
-        },
-        {
-          field: "EMAIL_ADDRESS_CC",
-          title: this.$t("email_address_cc"),
-          type: "text",
-          width: 150,
-          alignment: "left",
-        },
-        {
-          field: "DIRECTLY_YN",
-          title: this.$t("directly_yn"),
-          type: "text",
-          width: 80,
-          alignment: "left",
-        },
-
-        {
-          field: "REPORT_CODE",
-          title: this.$t("report_code"),
-          type: "text",
-          width: 80,
-          alignment: "left",
-          hidden: true
-        },
-        {
-          field: "CQT_MCCQT_ID",
-          title: this.$t("cqt_mccqt_id"),
-          type: "text",
-          width: 100,
-          alignment: "left",
-        },
-
-
-
-        {
-          field: "ETAX_STATUS",
-          title: this.$t("etax_status"),
-          width: 150,
-          allowEditing: true,
-        },
-        {
-          field: "ETAX_RESULT",
-          title: this.$t("etax_result"),
-          width: 150,
-          allowEditing: true,
-        },
-
-
-
-
-        {
-          field: "CQT_ERROR_CODE",
-          title: this.$t("cqt_err_code"),
-          type: "text",
-          width: 80,
-          alignment: "left",
-        },
-        {
-          field: "CQT_NOTIFICATION",
-          title: this.$t("cqt_noti"),
-          type: "text",
-          width: 80,
-          alignment: "left",
-        },
-        {
-          field: "TAX_RATE_MULTI",
-          title: this.$t("tax_rate_multi"),
-          alignment: "left",
-        },
-      ];
-      this.headerGrid = headerObj;
     },
     async getListCodes(pos) {
       const dso_company_list = {

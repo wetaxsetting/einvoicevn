@@ -586,7 +586,7 @@ export default {
           responseType: "json",
           para: {
             p_tei_einvoice_issuse_cqt_pk: this.modelMaster.PK,
-            tradecode: [this.modelMaster.CQT_MAGD],
+            trade_code: [this.modelMaster.CQT_MAGD],
           },
         }
       );

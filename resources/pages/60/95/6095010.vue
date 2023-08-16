@@ -1,115 +1,87 @@
 <template>
-  <v-container fluid class="pa-0">
-    <v-row no-gutters>
-      <v-col cols="12">
-        <!-- Search Panel -->
-        <v-row align="center" justify="center">
-          <v-col cols="12">
-            <v-card tile>
-              <v-container fluid class="py-1">
-                <v-row dense align="center" justify="space-between">
-                  <!-- Company -->
-                  <v-col lg="2" cols="12">
-                    <v-text-field outlined clearable dense hide-details v-model="txtCompanyName" :label="$t('company')"></v-text-field>
-                  </v-col>
-                  <v-col lg="4" cols="12">
-                    <div class="d-flex justify-end">
-                      <BaseCheckbox :label="$t('chk_imglogo')" true-value="Y" false-value="N" v-model="blImgLogo" />
-                      <BaseCheckbox :label="$t('chk_imgbackgroup')" true-value="Y" false-value="N" v-model="blImgBackGroup" />
-                      <BaseCheckbox :label="$t('use_yn')" true-value="Y" false-value="N" v-model="blUseYN" />
-                    </div>
-                  </v-col>
-                  <v-col lg="3" cols="12">
-                    <!-- input -->
-                    <v-file-input                                         
-                      prepend-icon="mdi-paperclip"
-                      :accept="'image/png, image/jpeg, image/bmp'"
-                      :label="$t('attach_File')"
-                      @change="onFilePicked"  
-                      v-model="txtFile"
-                    ></v-file-input>
-                    <!-- <GwImportExcelFile
-                      :label="$t('import_ar_invoice')"
-                      :impMultipleTemp="imp_MultipleTemp"
-                      :impCboTemp="cboTemplate"
-                      @onrtnseltemp="selTemplate = $event"
-                      :impAddParam="[ '', '', '', '']"
-                      @onAfterImport="onAfterImport"
-                    /> -->
-                  </v-col>
-                  <v-col lg="3" cols="12" class="text-right">
-                    <div class="d-flex justify-end">
-                      <!-- upload -->
-                      <BaseButton icon_type="attachment" :btn_text="$t('upload')" :disabled="isProcessing" @onclick="onClickButton('UPLOAD')" />
-                      <!-- search -->
-                      <BaseButton icon_type="search" :btn_text="$t('search')" :disabled="isProcessing" @onclick="onClickButton('SEARCH')" />
-                      <!-- Add -->
-                      <BaseButton icon_type="add_new" :btn_text="$t('btn_add')" :disabled="isProcessing" @onclick="onClickButton('NEW')" />
-                      <!-- addNewMaster()-->
-                      <!-- Save -->
-                      <BaseButton icon_type="save" :btn_text="$t('save')" :disabled="isProcessing" @onclick="onClickButton('SAVE')" />
-                      <!-- Delete -->
-                      <!-- <BaseButton icon_type="delete" :btn_text="$t('delete')" :disabled="isProcessing" @onclick="onClickButton('DELETE')" /> -->
-                    </div>
-                  </v-col>
-                </v-row>
-              </v-container>
+  <v-container fluid v-resize="onResize">
+    <v-row dense>
+      <v-col md="7" :class="isShowLeft ? null : 'd-none'">
+        <v-card class="pt-1">
+          <v-row dense>
+            <v-col lg="5" cols="12">
+              <v-text-field outlined clearable dense hide-details v-model="txtCompanyName" :label="$t('company')"></v-text-field>
+            </v-col>
+            <v-col lg="2" cols="12">
+              <div class="d-flex justify-end">
+                <BaseCheckbox :label="$t('use_yn')" true-value="Y" false-value="N" v-model="blUseYN" />
+              </div>
+            </v-col>
+            <v-col lg="5" cols="12" class="text-right">
+              <div class="d-flex justify-end">
+                <BaseButton icon_type="search" :btn_text="$t('search')" :disabled="isProcessing" @onclick="onClickButton('SEARCH')" />
+              </div>
+            </v-col>
+            <v-col md="12">
+              <DataGridView
+                column-resizing-mode="widget"
+                ref="grdCompany"
+                :auto_load="false"
+                select_mode="Single"
+                :max_height="limitHeight"
+                :header="headerGrid"
+                :onCellPrepared="onCellPrepared"
+                @cellClick="grdSearchClick"
+                sel_procedure="AC_SEL_6095010_LIST_COMPANY_NC"
+                upd_procedure="AC_UPD_6095010_LIST_COMPANY"
+                :filter_paras="[this.txtCompanyName, this.blUseYN]"
+                :update_paras="[
+                  'PK',
+                  'COMPANY_CD',
+                  'COMPANY_NM',
+                  'COMPANY_LNM',
+                  'COMPANY_FNM',
+                  'TAX_CODE',
+                  'ADDR',
+                  'ADDR_L',
+                  'ADDR_F',
+                  'TEL',
+                  'FAX',
+                  'ACC_NO',
+                  'ACC_CCY',
+                  'ACC_HOLDER',
+                  'BANK_NAME',
+                  'CONTACT_PERSON',
+                  'REP_PERSON',
+                  'TAX_NAME',
+                  'REMARKS',
+                  'ERP_COMPANY_PK',
+                  'ERP_COMPANY_NAME',
+                  'USE_YN',
+                  'WEB_SITE',
+                  'TAX_CODE_DISPLAY',
+                  'CONTACT_COM_PHONE',
+                  'BRIEF_COM_NM',
+                  'CONTACT_ADDR',
+                  'CONTACT_EMAIL',
+                  'CONTACT_MOBI',
+                  'WEBSITE_EI',
+                ]"
+              />
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+
+      <v-col :md="isShowLeft ? 5 : 12">
+        <v-row dense>
+          <v-col md="12">
+            <v-card>
+              <v-row dense>
+                <v-col md="1" class="d-flex pl-2">
+                  <BaseButton btn_type="icon" :icon_type="isShowLeft ? 'skip_prev' : 'skip_next'" :btn_text="isShowLeft ? $t('hide_left') : $t('show_left')" @onclick="isShowLeft = !isShowLeft" />
+                </v-col>
+              </v-row>
             </v-card>
-          </v-col>
-        </v-row>
-        <!-- Tabs & Tab Contents -->
-        <v-row no-gutters align="center" justify="start" class="mb-2">
-          <v-col cols="12">
-            <DataGridView
-              column-resizing-mode="widget"
-              ref="grdCompany"
-              :auto_load="false"
-              select_mode="Single"
-              :max_height="limitHeight"
-              :header="headerGrid"
-              :onCellPrepared="onCellPrepared"
-              @cellClick="onClickButton('SEARCH_M')"
-              sel_procedure="AC_SEL_6095010_LIST_COMPANY_NC"
-              upd_procedure="AC_UPD_6095010_LIST_COMPANY"
-              :filter_paras="[this.txtCompanyName, this.blUseYN]"
-              :update_paras="[
-                'PK',
-                'COMPANY_CD',
-                'COMPANY_NM',
-                'COMPANY_LNM',
-                'COMPANY_FNM',
-                'TAX_CODE',
-                'ADDR',
-                'ADDR_L',
-                'ADDR_F',
-                'TEL',
-                'FAX',
-                'ACC_NO',
-                'ACC_CCY',
-                'ACC_HOLDER',
-                'BANK_NAME',
-                'CONTACT_PERSON',
-                'REP_PERSON',
-                'TAX_NAME',
-                'REMARKS',
-                'ERP_COMPANY_PK',
-                'ERP_COMPANY_NAME',
-                'USE_YN',
-                'WEB_SITE',
-                'TAX_CODE_DISPLAY',
-                'CONTACT_COM_PHONE',
-                'BRIEF_COM_NM',
-                'CONTACT_ADDR',
-                'CONTACT_EMAIL',
-                'CONTACT_MOBI',
-                'WEBSITE_EI',
-              ]"
-            />
           </v-col>
         </v-row>
       </v-col>
     </v-row>
-    <confirm-dialog ref="confirmDialog" @onConfirm="onClickButton('OPTION')"></confirm-dialog>
   </v-container>
 </template>
 
@@ -125,6 +97,7 @@ export default {
     ConfirmDialog,
   },
   data: () => ({
+    isShowLeft: true,
     txtCompanyName: "",
     dxg_gridCompany: [],
     objClick: "",
@@ -132,7 +105,7 @@ export default {
     txtFile: [],
     blImgLogo: "",
     blImgBackGroup: "",
-    blUseYN: "N",
+    blUseYN: "Y",
     txtFileName: "",
     table_name: "TEI_COMPANY",
     folder: "6095010",
@@ -143,6 +116,14 @@ export default {
     selTemplate: [],
 
     txtMastersPK: "",
+
+    txtInformation: {
+      COMPANY_NM: "",
+      TAX_CODE: "",
+      ADDR: "",
+
+      BANK_NAME: "",
+    },
   }),
 
   created() {},
@@ -163,6 +144,7 @@ export default {
           dataField: "PK",
           width: 80,
           caption: this.$t("pk"),
+          visible: false,
         },
         {
           dataField: "COMPANY_CD",
@@ -171,39 +153,40 @@ export default {
         },
         {
           dataField: "COMPANY_NM",
-          width: 200,
+          width: 300,
           caption: this.$t("company_nm"),
         },
         {
           dataField: "COMPANY_LNM",
           caption: this.$t("company_lnm"),
+          visible: false,
         },
         {
           dataField: "COMPANY_FNM",
           caption: this.$t("company_fnm"),
-          width: 80,
+          width: 180,
         },
         {
           dataField: "TAX_CODE",
           caption: this.$t("tax_code"),
-          width: 80,
+          width: 120,
         },
         {
           dataField: "ADDR",
           caption: this.$t("addr"),
-          width: 80,
+          width: 300,
         },
         {
           dataField: "ADDR_L",
           caption: this.$t("addr_l"),
           width: 80,
-          hidden: true,
+          visible: false,
         },
         {
           dataField: "ADDR_F",
           caption: this.$t("addr_f"),
           width: 80,
-          hidden: true,
+          visible: false,
         },
         {
           dataField: "TEL",
@@ -218,6 +201,7 @@ export default {
         {
           dataField: "ACC_NO",
           caption: this.$t("acc_no"),
+          width: 80,
         },
         {
           dataField: "ACC_CCY",
@@ -226,10 +210,12 @@ export default {
         {
           dataField: "ACC_HOLDER",
           caption: this.$t("acc_holder"),
+          visible: false,
         },
         {
           dataField: "BANK_NAME",
           caption: this.$t("bank_name"),
+          width: 80,
         },
         {
           dataField: "CONTACT_PERSON",
@@ -250,12 +236,12 @@ export default {
         {
           dataField: "ERP_COMPANY_PK",
           caption: this.$t("erp_company_pk"),
-          hidden: true,
+          visible: false,
         },
         {
           dataField: "ERP_COMPANY_NAME",
           caption: this.$t("erp_company_name"),
-          hidden: true,
+          visible: false,
         },
         {
           dataField: "USE_YN",
@@ -282,6 +268,7 @@ export default {
         {
           dataField: "CONTACT_ADDR",
           caption: this.$t("contact_addr"),
+          width: 150,
         },
         {
           dataField: "CONTACT_EMAIL",
@@ -302,6 +289,10 @@ export default {
   methods: {
     onSearch() {
       this.$refs.grdCompany.loadData();
+    },
+    grdSearchClick(cell) {
+      console.log("file: 6095420.vue:236 [vng-304] grdSearchClick [vng-304] cell:", cell.data);
+      this.txtInformation = cell.data;
     },
     addNewMaster(item) {
       this.$refs.grdCompany.addRowStruct(
@@ -443,13 +434,6 @@ export default {
         case "UPLOAD":
           this.objClick = "btnUpLoad";
           this.$refs.confirmDialog.showConfirm(this.$t("do_you_want_upload_img"), "warning");
-          break;
-        case "SEARCH_M":
-          if (this.$refs.grdCompany.getSelectRowsData().length > 0) {
-            let row = this.$refs.grdCompany.getSelectRowsData()[0];
-            console.log(row);
-            this.txtMastersPK = row.PK;
-          }
           break;
       }
     },

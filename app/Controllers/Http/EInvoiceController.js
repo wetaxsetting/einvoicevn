@@ -4500,9 +4500,9 @@ class EInvoiceController {
                 subject: "gui mail",
                 body: "sesssss",
                 attachfile1: "aaaa.xml",
-                // attachfile2: "",
-                 filename1: "url_xml",
-                // filename2: "",
+                attachfile2: "aaaa.pdf",
+                filename1: url_xml,
+                filename2: url_pdf,
             });
 
             console.log("res_send_mail  ", res_send_mail);
@@ -4677,7 +4677,7 @@ class EInvoiceController {
         }
         let tokenEncrypted = AES.encrypt(proc + "|" + year + month + day, APP_KEY)
         tokenEncrypted = tokenEncrypted.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l')
-        let url_xml =  APP_URL_LOCAL+"/api/dso/getfiledbtoken?pk=" + pk + "&proc=" + proc + "&token=" + tokenEncrypted;
+        let url_xml =  response.send(APP_URL_LOCAL+"/api/dso/getfiledbtoken?pk=" + pk + "&proc=" + proc + "&token=" + tokenEncrypted);
 
         return url_xml;
     }

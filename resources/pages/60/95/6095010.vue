@@ -111,7 +111,7 @@
                       </v-col>
                       <v-col md="6">
                         <v-chip label>{{ $t("image_backgound") }}</v-chip>
-                        <BasePhoto ref="photoBackground" :width="150" :height="100" table_name="TEI_COMPANY_2"  v-model="MasterInfo.PK" :procedure="procedure_upload"></BasePhoto>
+                        <BasePhoto ref="photoBackground" :width="150" :height="100" table_name="TEI_COMPANY_2" v-model="MasterInfo.PK" :procedure="procedure_upload"></BasePhoto>
                       </v-col>
                       <v-col md="12">
                         <BaseInput outlined :label="$t('remark')" v-model="MasterInfo.REMARKS" />
@@ -121,7 +121,7 @@
                 </v-card>
               </v-col>
 
-              <v-col class='my-0 py-0'>
+              <v-col class="my-0 py-0">
                 <v-col md="12">
                   <GwFlexBox justify="end">
                     <BaseButton icon_type="import" :btn_text="$t('import_token')" @onclick="onGetDetailDeclaration()" />
@@ -131,7 +131,7 @@
                     <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClickButton('deleteDetail')" />
                   </GwFlexBox>
                 </v-col>
-                <v-col md="12" class='py-0'>
+                <v-col md="12" class="py-0">
                   <BaseGridView
                     ref="grdDetail"
                     :header="headerList.grdDetail"
@@ -187,7 +187,7 @@ export default {
     headerList: {
       grdDetail: [],
     },
-    taxOfficeList:[],
+    taxOfficeList: [],
     MasterInfo: {
       COMPANY_NM: "",
       TAX_CODE: "",
@@ -234,7 +234,7 @@ export default {
       CONTACT_EMAIL: "",
       CONTACT_MOBI: "",
       WEBSITE_EI: "",
-      MCQTQLY: ""
+      MCQTQLY: "",
     },
   }),
 
@@ -463,7 +463,7 @@ export default {
             "WEBSITE_EI",
             "REPRESENT",
             "CQTQLY",
-            "MCQTQLY"
+            "MCQTQLY",
           ],
           data: this.MasterInfo,
         },
@@ -504,10 +504,29 @@ export default {
           this.addNewMaster(); //
           break;
         case "SAVE":
-          this.dsoMaster("update");
-          let savedPhoto = await this.$refs.photoLogo.Save();
-          let savedPhotoBG = await this.$refs.photoBackground.Save();
-          // this.objClick = "btnSave";
+          if (this.MasterInfo.COMPANY_NM == "") {
+            this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_company"));
+            break;
+          } else if (this.MasterInfo.TAX_CODE == "") {
+            this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_from_no"));
+            break;
+          } else if (this.MasterInfo.REPRESENT == "") {
+            this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_represent"));
+            break;
+          }  else if (this.MasterInfo.ADDR == "") {
+            this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_represent"));
+            break;
+          }else if (this.MasterInfo.CONTACT_EMAIL == "") {
+            this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_represent"));
+            break;
+          }else if (this.MasterInfo.MCQTQLY == "00") {
+            this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_represent"));
+            break;
+          }else {
+            this.dsoMaster("update");
+            let savedPhoto = await this.$refs.photoLogo.Save();
+            let savedPhotoBG = await this.$refs.photoBackground.Save();
+          }
           break;
         case "DELETE":
           this.objClick = "btnDelete";
@@ -531,7 +550,7 @@ export default {
       }
     },
     async initDataList() {
-      const results = await this._getCommonCode2([ "ACEI0120","ACJS0460", "ACEIS320"], this.user.TEI_COMPANY_PK)
+      const results = await this._getCommonCode2(["ACEI0120", "ACJS0460", "ACEIS320"], this.user.TEI_COMPANY_PK);
 
       this.taxOfficeList = results[0];
       this.token_type_list = results[1];
@@ -562,10 +581,10 @@ export default {
         let xml = `<TKhai>
                     <DLTKhai>
                       <TTChung>
-                      </TTChung>		
+                      </TTChung>
                       <NDTKhai>
-                      </NDTKhai>	
-                    </DLTKhai>	
+                      </NDTKhai>
+                    </DLTKhai>
                     <DSCKS>
                       <NNT>
                       </NNT>
@@ -612,7 +631,7 @@ export default {
         NOTBEFORE: obj_token.not_before,
         TOKEN_TYPE: "1",
         STATUS: obj_token.status,
-        D_CERTIFICATE_TYPE: obj_token.d_certificate_type
+        D_CERTIFICATE_TYPE: obj_token.d_certificate_type,
       });
     },
     getPara(paraname, data) {

@@ -45,7 +45,7 @@
             </template>
 
             <v-sheet class="menuGroupBg">
-              <v-list-item nuxt active-class="primaryTextThree" v-for="favMenu in favMenuList" :key="favMenu.PK ? favMenu.PK : favMenu.pk" :to="favMenu.FORM_URL ? favMenu.FORM_URL : favMenu.form_url" :disabled="isClicked" @click.prevent="clickedMenu =  favMenu">
+              <v-list-item exact exact-path active-class="primaryTextThree" v-for="favMenu in favMenuList" :key="favMenu.PK ? favMenu.PK : favMenu.pk" :to="favMenu.FORM_URL ? favMenu.FORM_URL : favMenu.form_url" :disabled="isClicked" @click.prevent="clickedMenu =  favMenu">
                 <v-list-item-content class="ml-3">
                   <v-list-item-title class="font-weight-bold">
                     <v-icon small>{{ (favMenu.MENU_CD ? favMenu.MENU_CD : favMenu.menu_cd) === currentForm ? 'mdi-minus-thick' : 'mdi-circle-medium'}}</v-icon> {{ favMenu.FORM_NM ? favMenu.FORM_NM : favMenu.form_nm }}
@@ -71,7 +71,7 @@
                   </div>
                 </template>
                 
-                <v-list-item nuxt active-class="primaryTextThree" v-for="menu3 in menu2.childMenu" :key="menu3.PK ? menu3.PK : menu3.pk" :to="menu3.FORM_URL ? menu3.FORM_URL : menu3.form_url" :disabled="isClicked" @click.prevent="clickedMenu = menu3">
+                <v-list-item exact exact-path active-class="primaryTextThree" v-for="menu3 in menu2.childMenu" :key="menu3.PK ? menu3.PK : menu3.pk" :to="menu3.FORM_URL ? menu3.FORM_URL : menu3.form_url" :disabled="isClicked" @click.prevent="clickedMenu = menu3">
                   <v-list-item-content class="ml-3">
                     <v-list-item-title class="font-weight-bold">
                       <v-icon small>{{ menu3.MENU_CD === currentForm ? 'mdi-minus-thick' : 'mdi-circle-medium'}}</v-icon> {{ menu3.FORM_NM }}
@@ -438,7 +438,7 @@
                 <v-icon large :color="currentTheme">mdi-menu-right</v-icon>
               </v-btn>
             </template>
-            <v-chip close label link class="font-weight-bold py-0 my-0" color="white" text-color="#A1A1A1" style="height: 35px;" :id="`tab-${item.tabID}`" v-for="item in tabList" :key="item.tabID" @click="switchToTab(item)" @click:close="closeCurrentTab(item)">
+            <v-chip close label replace class="font-weight-bold py-0 my-0" :class="tab === index ? 'elevation-4' : ''" color="white" text-color="#A1A1A1" style="height: 35px;" :id="`tab-${item.tabID}`" :to="item.tabUrl" v-for="(item, index) in tabList" :key="item.tabID" @click="switchToTab(item)" @click:close="closeCurrentTab(item)">
               {{ item.tabName }}
             </v-chip>
           </v-chip-group>
@@ -613,7 +613,7 @@ export default {
     }
     this.$store.dispatch("auth/updateMenuDrawerWidth", this.navigation.width);
     if(!this.tabList.length && this.$route.fullPath !== "/") {
-      // console.log("tab list is empty but route is not clear, then redirect!");
+      console.log("tab list is empty but route is not clear, then redirect!");
       this.$router.push("/")
     }
   },
@@ -865,7 +865,7 @@ export default {
         await this.$store.dispatch("auth/setFormDictionary_i18n", { app: this.$store.app, lang: this.$store.getters["lang/language"], formID: item.MENU_CD ? item.MENU_CD : item.menu_cd, _db2: "N" }) ;
       // this.$store.dispatch("auth/setWaitingChangeLang", false);
         this.$store.dispatch("auth/setDictionaryFormID", item.MENU_CD ? item.MENU_CD : item.menu_cd);
-        // this.$router.push({ path: item.tabUrl });        
+        // this.$router.push({ path: item.tabUrl });
       } catch (error) {
         console.log("switchToTab-catch exception:", error.message)
       }

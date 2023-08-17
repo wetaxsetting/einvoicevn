@@ -1,7 +1,7 @@
 <template>
   <v-container fluid v-resize="onResize">
     <v-row dense>
-      <v-col md="7" :class="isShowLeft ? null : 'd-none'" class="pt-2">
+      <v-col md="6" :class="isShowLeft ? null : 'd-none'" class="pt-2">
         <v-card>
           <v-row dense class="pt-2">
             <v-col lg="5" cols="12" class="pl-2">
@@ -18,7 +18,7 @@
               </div>
             </v-col>
             <v-col md="12" class="pt-2">
-              <DataGridView
+              <BaseGridView
                 column-resizing-mode="widget"
                 ref="grdCompany"
                 :auto_load="false"
@@ -37,7 +37,7 @@
         </v-card>
       </v-col>
 
-      <v-col :md="isShowLeft ? 5 : 12">
+      <v-col :md="isShowLeft ? 6 : 12">
         <v-row dense>
           <v-col md="12">
             <v-card>
@@ -87,10 +87,6 @@
                       <v-col md="6">
                         <BaseInput outlined :label="$t('tel')" v-model="MasterInfo.TEL" />
                       </v-col>
-                      <!-- <v-col md="11">
-                        <BaseInput outlined :label="$t('general_info')" />
-                      </v-col> -->
-
                       <v-col md="12">
                         <BaseInput outlined :label="$t('bank_name')" v-model="MasterInfo.BANK_NAME" />
                       </v-col>
@@ -107,45 +103,43 @@
                         <BaseInput outlined :label="$t('contact_person')" v-model="MasterInfo.CONTACT_PERSON" />
                       </v-col>
                       <v-col md="12">
-                        <BaseInput outlined :label="$t('tax_agency_name')" />
-                      </v-col>
-                      <v-col md="12">
-                        <BaseInput outlined :label="$t('remark')" v-model="MasterInfo.REMARKS" />
+                        <BaseSelect outlined :label="$t('tax_agency_name')" v-model="MasterInfo.MCQTQLY" :lstData="taxOfficeList" item-text="NAME" item-value="CODE" />
                       </v-col>
                       <v-col md="6">
                         <v-chip label>{{ $t("image_logo") }}</v-chip>
-                        <BasePhoto ref="photoLogo" table_name="TEI_COMPANY" :value="MasterInfo.PK" :procedure="procedure_upload"></BasePhoto>
+                        <BasePhoto ref="photoLogo" :width="150" :height="100" table_name="TEI_COMPANY_1" v-model="MasterInfo.PK" :procedure="procedure_upload"></BasePhoto>
                       </v-col>
                       <v-col md="6">
                         <v-chip label>{{ $t("image_backgound") }}</v-chip>
-                        <BasePhoto ref="photoBackground" :width="500" v-model="MasterInfo.PK" table_name="TEI_COMPANY"></BasePhoto>
+                        <BasePhoto ref="photoBackground" :width="150" :height="100" table_name="TEI_COMPANY_2" v-model="MasterInfo.PK" :procedure="procedure_upload"></BasePhoto>
+                      </v-col>
+                      <v-col md="12">
+                        <BaseInput outlined :label="$t('remark')" v-model="MasterInfo.REMARKS" />
                       </v-col>
                     </v-row>
                   </v-container>
                 </v-card>
               </v-col>
 
-              <v-col md="12">
+              <v-col class="my-0 py-0">
                 <v-col md="12">
                   <GwFlexBox justify="end">
                     <BaseButton icon_type="import" :btn_text="$t('import_token')" @onclick="onGetDetailDeclaration()" />
-                    <!-- Add -->
-                    <!-- <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')" @onclick="onClick('newDetail')" /> -->
                     <!-- Save -->
-                    <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClick('saveDetail')"  />
+                    <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClickButton('saveDetail')" />
                     <!-- Delete -->
-                    <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClick('deleteDetail')" />
+                    <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClickButton('deleteDetail')" />
                   </GwFlexBox>
                 </v-col>
-                <v-col md="12">
-                  <DataGridView
+                <v-col md="12" class="py-0">
+                  <BaseGridView
                     ref="grdDetail"
                     :header="headerList.grdDetail"
                     sel_procedure="AC_SEL_6095010_01_NC"
-                    upd_procedure="AC_UPD_6095080_u_06"
+                    upd_procedure="AC_UPD_6095010_02"
                     :headertype="1"
                     :filter_paras="[this.MasterInfo.PK]"
-                    :update_paras="['PK', 'TEI_DECLARATION_M_PK', 'TTCHUC', 'MST', 'SERI', 'DNGAY', 'TNGAY', 'HTHUC']"
+                    :update_paras="['PK', 'TEI_COMPANY_PK', 'CA_NAME', 'DN_MST', 'SERIAL_NUMBER', 'NOTAFTER', 'NOTBEFORE', 'TOKEN_TYPE', 'STATUS', 'D_CERTIFICATE_TYPE']"
                     :max_height="limitHeightGridDetails"
                   />
                 </v-col>
@@ -183,7 +177,7 @@ export default {
     txtFileName: "",
     table_name: "TEI_COMPANY",
     folder: "6095010",
-    procedure_upload: "AC_UPD_6095010_IMG",
+    procedure_upload: "AC_UPD_6095010_IMG_v2",
 
     imp_MultipleTemp: true,
     cboTemplate: [],
@@ -193,6 +187,7 @@ export default {
     headerList: {
       grdDetail: [],
     },
+    taxOfficeList: [],
     MasterInfo: {
       COMPANY_NM: "",
       TAX_CODE: "",
@@ -239,10 +234,12 @@ export default {
       CONTACT_EMAIL: "",
       CONTACT_MOBI: "",
       WEBSITE_EI: "",
+      MCQTQLY: "",
     },
   }),
 
-  created() {
+  async created() {
+    await this.initDataList();
     this.initHeaderList();
   },
 
@@ -255,12 +252,12 @@ export default {
     },
     limitHeight() {
       if (this.$vuetify.breakpoint.smAndUp) {
-        return 510;
+        return 500;
       }
     }, // this.windowHeight },
     limitHeightGridDetails() {
       if (this.$vuetify.breakpoint.smAndUp) {
-        return 220;
+        return 200;
       }
     },
     headerGrid() {
@@ -276,6 +273,7 @@ export default {
           dataField: "COMPANY_CD",
           width: 120,
           caption: this.$t("company_cd"),
+          visible: false,
         },
         {
           dataField: "COMPANY_NM",
@@ -423,7 +421,6 @@ export default {
       // this.MasterInfo = cell.data;
 
       await this.$refs.grdDetail.loadData();
-
     },
     async dsoMaster(action) {
       await this._dsoCall(
@@ -465,6 +462,8 @@ export default {
             "CONTACT_MOBI",
             "WEBSITE_EI",
             "REPRESENT",
+            "CQTQLY",
+            "MCQTQLY",
           ],
           data: this.MasterInfo,
         },
@@ -496,7 +495,7 @@ export default {
         }
       });
     },
-   async onClickButton(obj) {
+    async onClickButton(obj) {
       switch (obj) {
         case "SEARCH":
           this.$refs.grdCompany.loadData();
@@ -505,14 +504,39 @@ export default {
           this.addNewMaster(); //
           break;
         case "SAVE":
-          this.dsoMaster("update");
-
-          // let savedPhoto = await this.$refs.photoLogo.Save();
-          // this.objClick = "btnSave";
+          if (this.MasterInfo.COMPANY_NM == "") {
+            this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_company"));
+            break;
+          } else if (this.MasterInfo.TAX_CODE == "") {
+            this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_from_no"));
+            break;
+          } else if (this.MasterInfo.REPRESENT == "") {
+            this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_represent"));
+            break;
+          }  else if (this.MasterInfo.ADDR == "") {
+            this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_represent"));
+            break;
+          }else if (this.MasterInfo.CONTACT_EMAIL == "") {
+            this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_represent"));
+            break;
+          }else if (this.MasterInfo.MCQTQLY == "00") {
+            this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_represent"));
+            break;
+          }else {
+            this.dsoMaster("update");
+            let savedPhoto = await this.$refs.photoLogo.Save();
+            let savedPhotoBG = await this.$refs.photoBackground.Save();
+          }
           break;
         case "DELETE":
           this.objClick = "btnDelete";
           this.$refs.confirmDialog.showConfirm(this.$t("do_you_want_delete"), "warning");
+          break;
+        case "saveDetail":
+          this.$refs.grdDetail.saveData();
+          break;
+        case "deleteDetail":
+          this.$refs.grdDetail.deleteRows();
           break;
         case "OPTION":
           if (this.objClick == "btnSave") {
@@ -524,6 +548,13 @@ export default {
           }
           break;
       }
+    },
+    async initDataList() {
+      const results = await this._getCommonCode2(["ACEI0120", "ACJS0460", "ACEIS320"], this.user.TEI_COMPANY_PK);
+
+      this.taxOfficeList = results[0];
+      this.token_type_list = results[1];
+      this.d_certificate_type_list = results[2];
     },
     async addNewMaster() {
       this.MasterInfo._rowstatus = "i";
@@ -540,7 +571,7 @@ export default {
       this.MasterInfo.CONTACT_EMAIL = "";
       this.MasterInfo.CONTACT_PERSON = "";
       this.MasterInfo.REMARKS = "";
-      // this.MasterInfo. = null;
+      this.MasterInfo.MCQTQLY = "00";
       // this.MasterInfo. = null;
       // this.MasterInfo. = null;
       // this.$refs.grdCompany.Clear();
@@ -550,46 +581,10 @@ export default {
         let xml = `<TKhai>
                     <DLTKhai>
                       <TTChung>
-                      </TTChung>		
+                      </TTChung>
                       <NDTKhai>
-                      </NDTKhai>	
-                    </DLTKhai>	
-                    <DSCKS>
-                      <NNT>
-                      </NNT>
-                    </DSCKS>
-                  </TKhai>`;
-
-        const objXml = [
-          {
-            master_pk: this.MasterInfo.PK,
-            xml: JSON.stringify(xml).toString().replaceAll('"', "").replaceAll("<DLTKhai>", "<DLTKhai Id='ID1'>"),
-          },
-        ];
-
-        jQuery.support.cors = true;
-        $.ajax({
-          url: "http://localhost:1080/getDeclarationData",
-          dataType: "text",
-          method: "POST",
-          data: {
-            crt_by: this.user.USER_ID,
-            xml: JSON.stringify(objXml).toString(),
-          },
-          error: this.onErrorGetDetailDeclaration,
-          success: this.onSuccessGetDetailDeclaration,
-        });
-      }
-    },
-    async onGetDetailDeclaration() {
-      if (this.MasterInfo.PK != "") {
-        let xml = `<TKhai>
-                    <DLTKhai>
-                      <TTChung>
-                      </TTChung>		
-                      <NDTKhai>
-                      </NDTKhai>	
-                    </DLTKhai>	
+                      </NDTKhai>
+                    </DLTKhai>
                     <DSCKS>
                       <NNT>
                       </NNT>
@@ -628,13 +623,15 @@ export default {
         _rowstatus: "i",
         NO: this.$refs.grdDetail.getDataSource().length + 1,
         PK: "",
-        TEI_DECLARATION_M_PK: this.MasterInfo.PK,
-        TTCHUC: this.getPara("CN", obj_token.issue_by),
-        MST: obj_token.dn_mst,
-        SERI: obj_token.serial_number,
-        DNGAY: obj_token.not_after,
-        TNGAY: obj_token.not_before,
-        HTHUC: "1",
+        TEI_COMPANY_PK: this.MasterInfo.PK,
+        CA_NAME: this.getPara("CN", obj_token.issue_by),
+        DN_MST: obj_token.dn_mst,
+        SERIAL_NUMBER: obj_token.serial_number,
+        NOTAFTER: obj_token.not_after,
+        NOTBEFORE: obj_token.not_before,
+        TOKEN_TYPE: "1",
+        STATUS: obj_token.status,
+        D_CERTIFICATE_TYPE: obj_token.d_certificate_type,
       });
     },
     getPara(paraname, data) {
@@ -647,8 +644,7 @@ export default {
 
         if (spa >= 0 && data.length > spa && spa - start > 0) {
           result = data.substring(start, spa);
-        }
-        else {
+        } else {
           result = data.substring(start);
         }
 
@@ -669,39 +665,39 @@ export default {
           visible: false,
         },
         {
-          dataField: "tei_declaration_m_pk",
-          caption: this.$t("tei_declaration_m_pk"),
+          dataField: "TEI_COMPANY_PK",
+          caption: this.$t("tei_company_pk"),
           visible: false,
         },
         {
-          dataField: "TTCHUC",
+          dataField: "CA_NAME",
           caption: this.$t("ttchuc"),
           allowEditing: true,
           width: 200,
         },
         {
-          dataField: "MST",
+          dataField: "DN_MST",
           caption: this.$t("mst"),
           width: 150,
           visible: false,
         },
         {
-          dataField: "SERI",
+          dataField: "SERIAL_NUMBER",
           caption: this.$t("seti"),
           width: 300,
         },
         {
-          dataField: "TNGAY",
+          dataField: "NOTAFTER",
           caption: this.$t("tngay"),
           width: 200,
         },
         {
-          dataField: "DNGAY",
+          dataField: "NOTBEFORE",
           caption: this.$t("dngay"),
           width: 200,
         },
         {
-          dataField: "HTHUC",
+          dataField: "TOKEN_TYPE",
           caption: this.$t("hthuc"),
           allowEditing: true,
           lookup: {
@@ -710,6 +706,17 @@ export default {
             dataSource: this.token_type_list,
           },
           width: 230,
+        },
+        {
+          dataField: "D_CERTIFICATE_TYPE",
+          caption: this.$t("d_certificate_type"),
+          width: 150,
+          allowEditing: true,
+          lookup: {
+            displayExpr: "NAME",
+            valueExpr: "CODE",
+            dataSource: this.d_certificate_type_list,
+          },
         },
       ];
     },

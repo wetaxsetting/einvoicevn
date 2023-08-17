@@ -1,7 +1,7 @@
 <template>
   <v-container fluid v-resize="onResize">
     <v-row dense>
-      <v-col md="7" :class="isShowLeft ? null : 'd-none'" class="pt-2">
+      <v-col md="6" :class="isShowLeft ? null : 'd-none'" class="pt-2">
         <v-card>
           <v-row dense class="pt-2">
             <v-col lg="5" cols="12" class="pl-2">
@@ -37,7 +37,7 @@
         </v-card>
       </v-col>
 
-      <v-col :md="isShowLeft ? 5 : 12">
+      <v-col :md="isShowLeft ? 6 : 12">
         <v-row dense>
           <v-col md="12">
             <v-card>
@@ -236,6 +236,7 @@ export default {
       CONTACT_EMAIL: "",
       CONTACT_MOBI: "",
       WEBSITE_EI: "",
+      MCQTQLY: ""
     },
   }),
 
@@ -463,6 +464,8 @@ export default {
             "CONTACT_MOBI",
             "WEBSITE_EI",
             "REPRESENT",
+            "CQTQLY",
+            "MCQTQLY"
           ],
           data: this.MasterInfo,
         },

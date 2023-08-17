@@ -4661,7 +4661,7 @@ class EInvoiceController {
                 security_code:"1234567bac"
             }
               console.log("res_send_mail  ", res_send_mail);
-            if(res_send_mail.success)
+            if(res_send_mail.data.success)
             {
                 return response.send(
                     Utils.response(true, `Send order to invoice was Successfully!`, data_r)
@@ -4669,7 +4669,7 @@ class EInvoiceController {
             }else
             {
                 return response.send(
-                    Utils.response(true, `Send order to invoice was Daile! .`, "")
+                    Utils.response(true, `Send order to invoice was Faile! .`, "")
                 );
             }
             // console.log("res_send_mail  ", res_send_mail);

@@ -443,17 +443,27 @@ export default {
         this.modelMaster.TEN = this.dataMasterList.declarationNameList.find(item => item.CODE == val).NAME;
       }
     },
+    
+    "modelSearch.COMPANY_PK"(val) {
+      if (val) {
+        this.modelMaster.TEI_COMPANY_PK = this.dataMasterList.companyList.find(item => item.VAL == val).VAL;
+        this.modelMaster.MST = this.dataMasterList.companyList.find(item => item.VAL == val).TAX_CODE;
+        this.modelMaster.DCLHE = this.dataMasterList.companyList.find(item => item.VAL == val).CONTACT_ADDR;
+
+        this.modelMaster.NLHE = this.dataMasterList.companyList.find(item => item.VAL == val).CONTACT_PERSON;
+        this.modelMaster.DTLHE = this.dataMasterList.companyList.find(item => item.VAL == val).TEL;
+        this.modelMaster.DCTDTU = this.dataMasterList.companyList.find(item => item.VAL == val).CONTACT_EMAIL;
+
+
+
+        this.modelMaster.MCQTQLY = this.dataMasterList.companyList.find(item => item.VAL == val).MCQTQLY;
+      }
+    },
     "modelMaster.MCQTQLY"(val) {
       if (val) {
         this.modelMaster.CQTQLY = this.dataMasterList.taxOfficeList.find(item => item.CODE == val).NAME;
       }
     },
-    "modelSearch.COMPANY_PK"(val) {
-      if (val) {
-        this.modelMaster.TEI_COMPANY_PK = this.dataMasterList.companyList.find(item => item.VAL == val).VAL;
-        this.modelMaster.MST = this.dataMasterList.companyList.find(item => item.VAL == val).TAX_CODE;
-      }
-    }
   },
   methods: {
     onScroll() {
@@ -996,17 +1006,27 @@ export default {
     },
 
     async initDataList() {
-      const companyInfo = await this._callProcedure("AC_SEL_6095080_CompanyInfo", [this.user.PK]);
+      const companyInfo = await this._callProcedure("AC_SEL_6095080_Company", [this.user.PK]);
       if (companyInfo.length > 0) {
+        
+        
         this.dataSearchList.companyList = companyInfo;
         this.dataMasterList.companyList = companyInfo;
       }
+
+      console.log("file: 6095080.vue:1001 [vng-304] initDataList [vng-304] companyInfo:", this.dataMasterList.companyList)
       const results = await this._getCommonCode2(["ACEI0010", "ACEI0220", "ACEI0120", "ACEI0190", "ACEI0140", "ACEIN010", "ACJS0460"], this.user.TCO_COMPANY_PK)
       this.dataSearchList.statusList = results[0];
       this.modelSearch.STATUS = "7";
       this.dataMasterList.versionList = results[1];
       this.dataMasterList.taxOfficeList = results[2];
-      this.dataMasterList.fromNoList = results[3];
+      // this.dataMasterList.fromNoList = results[3];
+      this.dataMasterList.fromNoList = results[3].filter(x => x.VAL1 == '6095080');
+      this.dataMasterList.fromNoList.forEach((e) => {
+                            if (e.DEF_YN == "Y") {
+                                this.modelMaster.MSO = e.CODE;
+                            }
+                        });
       this.dataMasterList.declarationNameList = results[4];
       this.dataMasterList.registrationFormList = results[5];
 

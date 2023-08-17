@@ -105,43 +105,41 @@
                       <v-col md="12">
                         <BaseSelect outlined :label="$t('tax_agency_name')" v-model="MasterInfo.MCQTQLY" :lstData="taxOfficeList" item-text="NAME" item-value="CODE" />
                       </v-col>
-                      <v-col md="12">
-                        <BaseInput outlined :label="$t('remark')" v-model="MasterInfo.REMARKS" />
-                      </v-col>
                       <v-col md="6">
                         <v-chip label>{{ $t("image_logo") }}</v-chip>
-                        <BasePhoto ref="photoLogo" table_name="TEI_COMPANY" :value="MasterInfo.PK" :procedure="procedure_upload"></BasePhoto>
+                        <BasePhoto ref="photoLogo" :width="150" :height="100" table_name="TEI_COMPANY_1" v-model="MasterInfo.PK" :procedure="procedure_upload"></BasePhoto>
                       </v-col>
                       <v-col md="6">
                         <v-chip label>{{ $t("image_backgound") }}</v-chip>
-                        <BasePhoto ref="photoBackground" :width="500" v-model="MasterInfo.PK" table_name="TEI_COMPANY"></BasePhoto>
+                        <BasePhoto ref="photoBackground" :width="150" :height="100" table_name="TEI_COMPANY_2"  v-model="MasterInfo.PK" :procedure="procedure_upload"></BasePhoto>
+                      </v-col>
+                      <v-col md="12">
+                        <BaseInput outlined :label="$t('remark')" v-model="MasterInfo.REMARKS" />
                       </v-col>
                     </v-row>
                   </v-container>
                 </v-card>
               </v-col>
 
-              <v-col md="12">
+              <v-col class='my-0 py-0'>
                 <v-col md="12">
                   <GwFlexBox justify="end">
                     <BaseButton icon_type="import" :btn_text="$t('import_token')" @onclick="onGetDetailDeclaration()" />
-                    <!-- Add -->
-                    <!-- <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')" @onclick="onClick('newDetail')" /> -->
                     <!-- Save -->
                     <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClickButton('saveDetail')" />
                     <!-- Delete -->
                     <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClickButton('deleteDetail')" />
                   </GwFlexBox>
                 </v-col>
-                <v-col md="12">
+                <v-col md="12" class='py-0'>
                   <BaseGridView
                     ref="grdDetail"
                     :header="headerList.grdDetail"
                     sel_procedure="AC_SEL_6095010_01_NC"
-                    upd_procedure="AC_UPD_6095080_u_06"
+                    upd_procedure="AC_UPD_6095010_02"
                     :headertype="1"
                     :filter_paras="[this.MasterInfo.PK]"
-                    :update_paras="['PK', 'TEI_COMPANY_PK', 'CA_NAME', 'DN_MST', 'SERIAL_NUMBER', 'NOTAFTER', 'NOTBEFORE', 'TOKEN_TYPE', 'STATUS']"
+                    :update_paras="['PK', 'TEI_COMPANY_PK', 'CA_NAME', 'DN_MST', 'SERIAL_NUMBER', 'NOTAFTER', 'NOTBEFORE', 'TOKEN_TYPE', 'STATUS', 'D_CERTIFICATE_TYPE']"
                     :max_height="limitHeightGridDetails"
                   />
                 </v-col>
@@ -179,7 +177,7 @@ export default {
     txtFileName: "",
     table_name: "TEI_COMPANY",
     folder: "6095010",
-    procedure_upload: "AC_UPD_6095010_IMG",
+    procedure_upload: "AC_UPD_6095010_IMG_v2",
 
     imp_MultipleTemp: true,
     cboTemplate: [],
@@ -254,12 +252,12 @@ export default {
     },
     limitHeight() {
       if (this.$vuetify.breakpoint.smAndUp) {
-        return 510;
+        return 500;
       }
     }, // this.windowHeight },
     limitHeightGridDetails() {
       if (this.$vuetify.breakpoint.smAndUp) {
-        return 220;
+        return 200;
       }
     },
     headerGrid() {
@@ -507,8 +505,8 @@ export default {
           break;
         case "SAVE":
           this.dsoMaster("update");
-
-          // let savedPhoto = await this.$refs.photoLogo.Save();
+          let savedPhoto = await this.$refs.photoLogo.Save();
+          let savedPhotoBG = await this.$refs.photoBackground.Save();
           // this.objClick = "btnSave";
           break;
         case "DELETE":
@@ -533,10 +531,11 @@ export default {
       }
     },
     async initDataList() {
-      const results = await this._getCommonCode2([ "ACEI0120","ACJS0460"], this.user.TEI_COMPANY_PK)
+      const results = await this._getCommonCode2([ "ACEI0120","ACJS0460", "ACEIS320"], this.user.TEI_COMPANY_PK)
 
       this.taxOfficeList = results[0];
       this.token_type_list = results[1];
+      this.d_certificate_type_list = results[2];
     },
     async addNewMaster() {
       this.MasterInfo._rowstatus = "i";
@@ -553,7 +552,7 @@ export default {
       this.MasterInfo.CONTACT_EMAIL = "";
       this.MasterInfo.CONTACT_PERSON = "";
       this.MasterInfo.REMARKS = "";
-      // this.MasterInfo. = null;
+      this.MasterInfo.MCQTQLY = "00";
       // this.MasterInfo. = null;
       // this.MasterInfo. = null;
       // this.$refs.grdCompany.Clear();
@@ -601,8 +600,6 @@ export default {
 
     async onSuccessGetDetailDeclaration(data) {
       let obj_token = $.parseJSON(data);
-      console.log("file: 6095010.vue:640 [vng-304] onSuccessGetDetailDeclaration [vng-304] obj_token:", obj_token)
-      
       this.$refs.grdDetail.addRowStruct({
         _rowstatus: "i",
         NO: this.$refs.grdDetail.getDataSource().length + 1,
@@ -614,7 +611,8 @@ export default {
         NOTAFTER: obj_token.not_after,
         NOTBEFORE: obj_token.not_before,
         TOKEN_TYPE: "1",
-        STATUS: obj_token.status
+        STATUS: obj_token.status,
+        D_CERTIFICATE_TYPE: obj_token.d_certificate_type
       });
     },
     getPara(paraname, data) {
@@ -689,6 +687,17 @@ export default {
             dataSource: this.token_type_list,
           },
           width: 230,
+        },
+        {
+          dataField: "D_CERTIFICATE_TYPE",
+          caption: this.$t("d_certificate_type"),
+          width: 150,
+          allowEditing: true,
+          lookup: {
+            displayExpr: "NAME",
+            valueExpr: "CODE",
+            dataSource: this.d_certificate_type_list,
+          },
         },
       ];
     },

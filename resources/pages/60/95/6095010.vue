@@ -41,7 +41,7 @@
         <v-row dense>
           <v-col md="12">
             <v-card>
-              <v-row dense>
+              <v-row dense class="pt-2">
                 <v-col md="1" class="d-flex pl-2">
                   <BaseButton btn_type="icon" :icon_type="isShowLeft ? 'skip_prev' : 'skip_next'" :btn_text="isShowLeft ? $t('hide_left') : $t('show_left')" @onclick="isShowLeft = !isShowLeft" />
                 </v-col>
@@ -134,7 +134,7 @@
                 <v-col md="12" class="py-0">
                   <BaseGridView
                     ref="grdDetail"
-                    :header="headerList.grdDetail"
+                    :header="grdDetail"
                     sel_procedure="AC_SEL_6095010_01_NC"
                     upd_procedure="AC_UPD_6095010_02"
                     :headertype="1"
@@ -184,9 +184,6 @@ export default {
     selTemplate: [],
 
     txtMastersPK: "",
-    headerList: {
-      grdDetail: [],
-    },
     taxOfficeList: [],
     MasterInfo: {
       COMPANY_NM: "",
@@ -240,7 +237,6 @@ export default {
 
   async created() {
     await this.initDataList();
-    this.initHeaderList();
   },
 
   computed: {
@@ -408,6 +404,75 @@ export default {
         },
       ];
     },
+
+    grdDetail(){
+      const self = this;
+      return[
+        {
+          dataField: "NO",
+          caption: this.$t("no"),
+          width: 50,
+        },
+        {
+          dataField: "PK",
+          caption: this.$t("pk"),
+          visible: false,
+        },
+        {
+          dataField: "TEI_COMPANY_PK",
+          caption: this.$t("tei_company_pk"),
+          visible: false,
+        },
+        {
+          dataField: "CA_NAME",
+          caption: this.$t("ttchuc"),
+          allowEditing: true,
+          width: 100,
+        },
+        {
+          dataField: "DN_MST",
+          caption: this.$t("mst"),
+          visible: false,
+        },
+        {
+          dataField: "SERIAL_NUMBER",
+          caption: this.$t("seti"),
+          width: 230,
+        },
+        {
+          dataField: "NOTAFTER",
+          caption: this.$t("tngay"),
+          width: 150,
+        },
+        {
+          dataField: "NOTBEFORE",
+          caption: this.$t("dngay"),
+          width: 150,
+        },
+        {
+          dataField: "TOKEN_TYPE",
+          caption: this.$t("hthuc"),
+          allowEditing: true,
+          lookup: {
+            displayExpr: "NAME",
+            valueExpr: "CODE",
+            dataSource: this.token_type_list,
+          },
+          width: 100,
+        },
+        {
+          dataField: "D_CERTIFICATE_TYPE",
+          caption: this.$t("d_certificate_type"),
+          width: 120,
+          allowEditing: true,
+          lookup: {
+            displayExpr: "NAME",
+            valueExpr: "CODE",
+            dataSource: this.d_certificate_type_list,
+          },
+        },
+      ];
+    }
   },
 
   methods: {
@@ -651,73 +716,6 @@ export default {
         result.replace(paraname + "=", "");
       }
       return result;
-    },
-    async initHeaderList() {
-      this.headerList.grdDetail = [
-        {
-          dataField: "NO",
-          caption: this.$t("no"),
-          width: 50,
-        },
-        {
-          dataField: "PK",
-          caption: this.$t("pk"),
-          visible: false,
-        },
-        {
-          dataField: "TEI_COMPANY_PK",
-          caption: this.$t("tei_company_pk"),
-          visible: false,
-        },
-        {
-          dataField: "CA_NAME",
-          caption: this.$t("ttchuc"),
-          allowEditing: true,
-          width: 100,
-        },
-        {
-          dataField: "DN_MST",
-          caption: this.$t("mst"),
-          visible: false,
-        },
-        {
-          dataField: "SERIAL_NUMBER",
-          caption: this.$t("seti"),
-          width: 230,
-        },
-        {
-          dataField: "NOTAFTER",
-          caption: this.$t("tngay"),
-          width: 150,
-        },
-        {
-          dataField: "NOTBEFORE",
-          caption: this.$t("dngay"),
-          width: 150,
-        },
-        {
-          dataField: "TOKEN_TYPE",
-          caption: this.$t("hthuc"),
-          allowEditing: true,
-          lookup: {
-            displayExpr: "NAME",
-            valueExpr: "CODE",
-            dataSource: this.token_type_list,
-          },
-          width: 100,
-        },
-        {
-          dataField: "D_CERTIFICATE_TYPE",
-          caption: this.$t("d_certificate_type"),
-          width: 120,
-          allowEditing: true,
-          lookup: {
-            displayExpr: "NAME",
-            valueExpr: "CODE",
-            dataSource: this.d_certificate_type_list,
-          },
-        },
-      ];
     },
     // addNewMaster(item) {
     //   this.$refs.grdCompany.addRowStruct(

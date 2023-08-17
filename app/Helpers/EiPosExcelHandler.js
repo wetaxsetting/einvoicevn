@@ -1,6 +1,6 @@
 'use strict'
 const DBService = use("DBService");
-const EiExcelConverter = use("App/Helpers/EiExcelConverter");
+const EiExcelConverter = use("App/Helpers/EiPosExcelConverter");
 class EiExcelHandler {
 
   constructor() {
@@ -47,13 +47,13 @@ class EiExcelHandler {
       let companyName = ""
 
       const einvoiceMasterData = await DBService.callProcCursor(
-        "ei_sel_einvoice_ar_pdf", [tradecode],
+        "ei_sel_einvoice_pos_pdf", [tradecode],
         p_language,
         p_crt_by,
         _db2
       );
       const einvoiceDetailData = await DBService.callProcCursor(
-        "ei_sel_einvoiced_ar_pdf", [tradecode],
+        "ei_sel_einvoiced_pos_pdf", [tradecode],
         p_language,
         p_crt_by,
         _db2
@@ -157,6 +157,7 @@ class EiExcelHandler {
       }
       //  Yupoong Daeyoung Kpx Suheung Daewon Ajtotal During
       // companyName="Sprint"
+      companyName = 'ParisVN'
       switch (companyName) {
 
              //////// *****************Ottogi_CNBN*********************\\\\\\\\\
@@ -877,9 +878,6 @@ class EiExcelHandler {
           break;
         //////// *****************Sprint*********************\\\\\\\\\
 
-
-
-
         //////// *****************Hiknit*********************\\\\\\\\\
         case "Hiknit":
           this.masterDataArray = []
@@ -1080,8 +1078,6 @@ class EiExcelHandler {
           break;
         //////// *****************Hiknit*********************\\\\\\\\\
 
-
-
         //////bugging//////////////////////
         //////// *****************Bkvina*********************\\\\\\\\\
         case "Bkvina":
@@ -1191,7 +1187,6 @@ class EiExcelHandler {
           }
           break;
         //////// *****************Bkvina*********************\\\\\\\\\
-
 
         //////// *****************Kukil*********************\\\\\\\\\
         case "Kukil":
@@ -1394,7 +1389,6 @@ class EiExcelHandler {
           break;
         //////// *****************Kukil*********************\\\\\\\\\
 
-
         //////// *****************Otm*********************\\\\\\\\\
         case "Otm":
           this.masterDataArray = []
@@ -1591,7 +1585,6 @@ class EiExcelHandler {
           break;
         //////// *****************Otm*********************\\\\\\\\\
 
-
         //////// *****************Samil*********************\\\\\\\\\
         case "Samil":
           this.masterDataArray = []
@@ -1784,7 +1777,6 @@ class EiExcelHandler {
           }
           break;
         //////// *****************Samil*********************\\\\\\\\\
-
 
         //////// *****************Cuckoo*********************\\\\\\\\\
         case "Cuckoo":
@@ -1984,8 +1976,6 @@ class EiExcelHandler {
           }
           break;
         //////// *****************Cuckoo*********************\\\\\\\\\
-
-
 
         //////// *****************Jungwoo*********************\\\\\\\\\
         case "Jungwoo":
@@ -2216,7 +2206,6 @@ class EiExcelHandler {
               logos = [
                 { start: 2, width: 1.17 * dpi, height: 1.03 * dpi, logoStartCount: 0.5, logoPath: "assets/images/einvoices_logo/Kyungbang/companylogo.png" },
               ]
-
 
               // console.log(qrCodeImage(qrCodeData))
               //mảng data của master
@@ -2604,18 +2593,10 @@ class EiExcelHandler {
           this.masterDataArray = []
           switch (einvoiceMasterData[0].TEMPLATECODE) {
             case "1":
-              if (convertYn == "Y") {
-                reportPath = 'report/60/95/einvoices_template/ParisVN/ParisVN_convert_1.xlsx'
-                reportSheet = "Invoice_PA.18"
-                this.masterDataArray.push(
-                  { Cell: `D9`, Info: [`convert`], Type: 2 },
-                  { Cell: `B32`, Info: [`CONVERT_NAME`], Type: 1 },
-                  { Cell: `B33`, Info: [`CONVERT_DATE`], Type: 1 },
-                )
-              } else {
+
                 reportPath = 'report/60/95/einvoices_template/ParisVN/ParisVN_1.xlsx'
                 reportSheet = "Invoice_PA.18"
-              }
+             
 
               bgPath = "assets/images/einvoices_logo/ParisVN/bg.png"
 
@@ -2675,7 +2656,7 @@ class EiExcelHandler {
                 { startCell: 14, endCell: 16, cellType: 1, cellBorder: "dotted", field: "ITEM_UOM" },//type 1: còn lại
                 { startCell: 17, endCell: 19, cellType: 1, cellBorder: "dotted", field: "QTY" },//type 1: còn lại
                 { startCell: 20, endCell: 22, cellType: 1, cellBorder: "dotted", field: "U_PRICE" },//type 1: còn lại
-                { startCell: 23, endCell: 26, cellType: 1, cellBorder: "dotted", field: "NET_TR_AMT" },//type 1: còn lại
+                { startCell: 23, endCell: 25, cellType: 1, cellBorder: "dotted", field: "NET_TR_AMT" },//type 1: còn lại
               ]
               backgroundCell = 4
               backgroundWidth = 300

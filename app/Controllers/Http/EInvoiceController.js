@@ -51,6 +51,9 @@ const { Builder, parseString } = require("xml2js");
 const { X509Certificate, crypto } = require("crypto");
 const { create, createCB } = require("xmlbuilder2");
 const EINVOICE_ESIGN_XML = "http://genuclouding.com/wseinvoice/BSService.asmx/SignXml";
+const EINVOICE_API_SEND_MAIL = "http://sendmail.genuwinsolution.com/api/user/sendmail";
+
+
 
 class EInvoiceController {
     async einvoicePdfConvert({ request, response, auth }) {
@@ -4331,7 +4334,10 @@ class EInvoiceController {
             const { data } = request.all();
 
             console.log("data  ", data);
-            const data_xml = "";//await this.createXMLByOne(data.data_invoice);
+            let tei_wt_sale_bill_pk = 0;
+            const data_xml = await this.createXMLByOne(data.data_invoice);
+            const count_length = data_xml.length;
+            const xml_type = "application/xml";
             const para_value = {
                 sale_date: data.sale_date,
                 store_code: data.store_code,
@@ -4366,9 +4372,11 @@ class EInvoiceController {
                 total_payment_word_vie: data.data_invoice.total_payment_word_vie,
                 mccqt: data.data_invoice.mccqt,
                 data_xml: data_xml,
+                count_length : count_length,
+                xml_type: xml_type,
             };
 
-            //console.log("para_value  ", para_value)
+            // console.log("para_value  ", para_value)
 
             const rtnValue = await DBService.ExecuteSQLBlob(
                 `BEGIN ei_upd_order_info (          
@@ -4405,6 +4413,8 @@ class EInvoiceController {
                                                         :total_payment_word_vie,
                                                         :mccqt,
                                                         :data_xml,
+                                                        :count_length,
+                                                        :xml_type,
                                                         :p_language, 
                                                         :p_crt_by, 
                                                         :p_rtn_cur); END;`,
@@ -4412,10 +4422,10 @@ class EInvoiceController {
                 p_language,
                 p_crt_by
             );
-            //console.log("rtnValue  ", rtnValue);
-
+            console.log("rtnValue  ", rtnValue);
+            tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
             if (rtnValue.p_rtn_cur[0].STATUS == "OK") {
-                const tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
+               
                 for (let j = 0; j < data.data_invoice.list_amt_vat.length; j++) {
                     const para_amt_vat = {
                         tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
@@ -4477,15 +4487,26 @@ class EInvoiceController {
                 }
             }
 
-            // convert data to XML 
 
-            
-            // const xml = convertXML.json2xml(objInvoice_M, {
-            //     compact: true,
-            //     ignoreComment: true,
-            //     spaces: 4,
-            // });
-            // const xmlStr = xml.toString().replace(/\n/g, "");
+            let EiExcel = new EiPosExcelHandler();
+            let url_pdf = await EiExcel.getEinvoice(tei_wt_sale_bill_pk , p_language, p_crt_by);
+            console.log("base64PDf  ", url_pdf);
+            let url_xml = await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
+            console.log("base64XXML  ", url_xml);
+
+            const res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {
+                mail_to: "lvthe.zh@gmail.com",
+                cc_to: "",
+                subject: "gui mail",
+                body: "sesssss",
+                attachfile1: "aaaa.xml",
+                // attachfile2: "",
+                 filename1: "url_xml",
+                // filename2: "",
+            });
+
+            console.log("res_send_mail  ", res_send_mail);
+           
 
 
         } catch (error) {
@@ -4635,11 +4656,31 @@ class EInvoiceController {
 
         objInvoice_M.HDon.MCCQT = dataObject.mccqt;
 
-        const xml = this.OBJtoXML(objInvoice_M);     
+        const xml = this.OBJtoXML(objInvoice_M);   
+        
+     
+
         return xml;
         //console.log("  xml   ", xml);
     }
 
+    async getUrlXML(pk, proc){
+        const current = new Date();
+        const year = current.getFullYear()
+        let month = current.getMonth() + 1
+        let day = current.getDate()
+        if (day < 10) {
+            day = "0" + day
+        }
+        if (month < 10) {
+            month = "0" + month
+        }
+        let tokenEncrypted = AES.encrypt(proc + "|" + year + month + day, APP_KEY)
+        tokenEncrypted = tokenEncrypted.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l')
+        let url_xml =  APP_URL_LOCAL+"/api/dso/getfiledbtoken?pk=" + pk + "&proc=" + proc + "&token=" + tokenEncrypted;
+
+        return url_xml;
+    }
 }
 
 module.exports = EInvoiceController;

@@ -4660,6 +4660,7 @@ class EInvoiceController {
                 link_invoice_preview :"https://einvoicevn.com/lookup", 
                 security_code:"1234567bac"
             }
+              console.log("res_send_mail  ", res_send_mail);
             if(res_send_mail.success)
             {
                 return response.send(

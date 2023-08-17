@@ -673,28 +673,27 @@ export default {
           dataField: "CA_NAME",
           caption: this.$t("ttchuc"),
           allowEditing: true,
-          width: 200,
+          width: 100,
         },
         {
           dataField: "DN_MST",
           caption: this.$t("mst"),
-          width: 150,
           visible: false,
         },
         {
           dataField: "SERIAL_NUMBER",
           caption: this.$t("seti"),
-          width: 300,
+          width: 230,
         },
         {
           dataField: "NOTAFTER",
           caption: this.$t("tngay"),
-          width: 200,
+          width: 150,
         },
         {
           dataField: "NOTBEFORE",
           caption: this.$t("dngay"),
-          width: 200,
+          width: 150,
         },
         {
           dataField: "TOKEN_TYPE",
@@ -705,12 +704,12 @@ export default {
             valueExpr: "CODE",
             dataSource: this.token_type_list,
           },
-          width: 230,
+          width: 100,
         },
         {
           dataField: "D_CERTIFICATE_TYPE",
           caption: this.$t("d_certificate_type"),
-          width: 150,
+          width: 120,
           allowEditing: true,
           lookup: {
             displayExpr: "NAME",

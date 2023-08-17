@@ -453,9 +453,6 @@ export default {
         this.modelMaster.NLHE = this.dataMasterList.companyList.find(item => item.VAL == val).CONTACT_PERSON;
         this.modelMaster.DTLHE = this.dataMasterList.companyList.find(item => item.VAL == val).TEL;
         this.modelMaster.DCTDTU = this.dataMasterList.companyList.find(item => item.VAL == val).CONTACT_EMAIL;
-
-
-
         this.modelMaster.MCQTQLY = this.dataMasterList.companyList.find(item => item.VAL == val).MCQTQLY;
       }
     },
@@ -472,7 +469,8 @@ export default {
     async onClick(pos) {
       switch (pos) {
         case "search":
-          this.$refs.grdSearch.loadData();
+        await this.$refs.grdSearch.loadData();
+        await this.$refs.grdDetail.Clear();
           break;
         case "grdSearchClick":
           this.modelMaster.PK = await this.$refs.grdSearch.getSelectedRows()[0].PK;
@@ -1013,8 +1011,6 @@ export default {
         this.dataSearchList.companyList = companyInfo;
         this.dataMasterList.companyList = companyInfo;
       }
-
-      console.log("file: 6095080.vue:1001 [vng-304] initDataList [vng-304] companyInfo:", this.dataMasterList.companyList)
       const results = await this._getCommonCode2(["ACEI0010", "ACEI0220", "ACEI0120", "ACEI0190", "ACEI0140", "ACEIN010", "ACJS0460"], this.user.TCO_COMPANY_PK)
       this.dataSearchList.statusList = results[0];
       this.modelSearch.STATUS = "7";

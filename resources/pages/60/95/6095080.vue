@@ -538,7 +538,6 @@ export default {
           this.$refs.grdDetail.saveData();
           break;
         case "deleteDetail":
-          console.log("deleteDetail");
           this.$refs.grdDetail.deleteRows();
           break;
         case "viewXML":

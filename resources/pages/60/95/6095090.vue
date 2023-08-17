@@ -477,10 +477,6 @@ export default {
           allowEditing: true,
           
         },
-
-
-
-
         {
           dataField: "CQT_ERROR_CODE",
           caption: this.$t("cqt_err_code"),

@@ -2184,12 +2184,12 @@ class EInvoiceController {
             if (user) {
                 p_crt_by = user.USER_ID;
             }
-            let dataJson = [];
+            
             const authUserName = "GENUWIN"; // "GENUWIN";
             const authPassword = "genuwin123"; // "e_GX4v@";
             //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon";
             const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/dkyhddt/dkysdung";
-            const { xml_signed, tax_code, erp_declaration_m_pk } = request.all();
+            const { xml_signed, tax_code, declare_key } = request.all();
 
             const agent = {
                 Agent: {
@@ -2211,13 +2211,13 @@ class EInvoiceController {
 
             if (tradeCode && tradeCode.data) {
                 const para_value = {
-                    tei_declaration_m_pk: erp_declaration_m_pk,
+                    declare_key: declare_key,
                     xml_sign: xml_signed,
                     trade_code: tradeCode.data.maGDich,
-                    cqt_code: tax_code,
+                    tax_code: tax_code,
                 };
                 const res = await DBService.ExecuteSQLBlob(
-                    `BEGIN ei_upd_einvoice_ss_xml_ar(:tei_declaration_m_pk, :xml_sign, :trade_code, :cqt_code,
+                    `BEGIN ei_upd_einvoice_ss_xml_ar(:declare_key, :xml_sign, :trade_code, :tax_code,
                                 :p_language, :p_crt_by, :p_rtn_cur); END;`,
                     para_value,
                     p_language,
@@ -2226,18 +2226,18 @@ class EInvoiceController {
             } else {
                 return response.send(Utils.response(false, `Failed to call tax office api.`, tradeCode));
             }
-            dataJson.push({
-                erp_declaration_m_pk: erp_declaration_m_pk,
+        
+            return response.send(Utils.response(true, `Declaration was sent successfully.`, {
+                declare_key: declare_key,
                 xml_sign: xml_signed,
                 trade_code: tradeCode.data.maGDich,
-                cqt_code: tax_code,
-            });
-            return response.send(Utils.response(true, `Declaration was sent successfully.`, dataJson));
+                tax_code: tax_code,
+            }));
         } catch (e) {
             Utils.Logger({
                 LVL: "error",
                 MODULE: "EInvoiceController",
-                FUNC: "sendInvoiceToTaxOffice",
+                FUNC: "weTaxSendInvoiceToTaxOffice",
                 CONTENT: e.message,
             });
             return response.send(Utils.response(false, "error", e.message));
@@ -2403,6 +2403,93 @@ class EInvoiceController {
                 LVL: "error",
                 MODULE: "EInvoiceController",
                 FUNC: "checkInvoiceStatusFromTaxOffice",
+                CONTENT: e.message,
+            });
+            return response.send(Utils.response(false, "error", e.message));
+        }
+    }
+    async weTaxCheckingDeclarations({ request, response, auth }) {
+        try {
+            var p_language = request.header("accept-language", "ENG");
+            var p_crt_by = "";
+            const user = await auth.getUser();
+            if (user) {
+                p_crt_by = user.USER_ID;
+            }
+
+            // const authUserName = "GENUWIN";
+            // const authPassword = "e_GX4v@";
+            const authUserName = "GENUWIN"; // "GENUWIN";
+            const authPassword = "genuwin123"; // "e_GX4v@";
+
+            // const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+            let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+
+            const { trade_code, tax_code, declare_key } = request.all();
+          
+            const agent = {
+                Agent: {
+                    defaultPort: 443,
+                    protocol: "https:",
+                    options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
+                },
+            };
+            let para_value;
+            const res = await Request.get(url + trade_code, {
+                    agent,
+                    headers: {
+                        Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
+                    },
+                });
+                console.log('===>res.data ', res.data);
+                let tenTBao = "",
+                    status = "",
+                    base64XML = "";
+                if (!res.data) {
+                    return response.send(Utils.response(false, `no data found.`));
+                }
+                for (let item of res.data) {
+                    for (let child of item) {
+                        if (child.loaiTBao == "1") {
+                            // base64XML = Buffer.from(child.ndungTBao.base64XML, "base64").toString("utf8");
+                            base64XML = child.ndungTBao.base64XML;
+                        } else if (child.loaiTBao == "3") {
+                            status = "0";
+                        } else {
+                            status = "1";
+                        }
+                        tenTBao = child.tenTBao;
+
+                        para_value = {
+                            declare_key: declare_key,
+                            content: base64XML,
+                            inform_desc: tenTBao,
+                            inform_code: status,
+                        };
+                        await DBService.ExecuteSQLBlob(
+                            `BEGIN ei_upd_file_xml_v6(
+                                :declare_key, :content, :inform_desc, :inform_code,
+                                :p_language, :p_crt_by, :p_rtn_cur
+                            ); END;`,
+                            para_value,
+                            p_language,
+                            p_crt_by
+                        );
+                    }
+                }
+            return response.send(Utils.response(true, `checking_declare_success`, {
+                tax_code: tax_code,
+                declare_key: declare_key,
+                content: base64XML,
+                inform_desc: tenTBao,
+                inform_code: status,
+                pos_key: null
+            }));
+        } catch (e) {
+            Utils.Logger({
+                LVL: "error",
+                MODULE: "EInvoiceController",
+                FUNC: "weTaxCheckInvoiceStatusFromTaxOffice",
                 CONTENT: e.message,
             });
             return response.send(Utils.response(false, "error", e.message));

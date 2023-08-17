@@ -133,6 +133,8 @@ Route.group(() => {
     Route.get("downloadpdf", "EInvoiceController.DownloadPDF")
     // WeTax
     Route.post("generate-declare-xml", "EInvoiceController.weTaxconvertDeclareUsingInvoiceToXML")
+    Route.post("send-declare", "EInvoiceController.weTaxSendDeclarationToTaxOffice")
+    Route.post("check-status-declare", "EInvoiceController.weTaxCheckingDeclarations")
     Route.post("send-order-to-invoice", "EInvoiceController.weTaxSendOrderInfo")
 
 }).prefix("api/einvoice").middleware("user");

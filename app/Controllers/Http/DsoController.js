@@ -93,7 +93,10 @@ class DsoController {
                     return response.send(Utils.response(false, "Token was expired", null));
                 }
             }
-
+            if (DB_CONNECTION == "oracle") {
+                oracledb.fetchAsBuffer = [oracledb.BLOB];
+                oracledb.fetchAsString = [oracledb.CLOB];
+            }
             const result = await DBService.callProcCursor(
                 proc, [pk],
                 "ENG",

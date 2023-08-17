@@ -4587,10 +4587,10 @@ class EInvoiceController {
                 cc_to: "",
                 subject: "gui mail",
                 body: "sesssss",
-                attachfile1: "aaaa.xml",
-                attachfile2: "aaaa.pdf",
-                filename1: url_xml,
-                filename2: url_pdf,
+                attachfile1:  url_xml,
+                attachfile2: url_pdf,
+                filename1: "aaaa.xml",
+                filename2: "aaaa.pdf",
             });
 
             console.log("res_send_mail  ", res_send_mail);

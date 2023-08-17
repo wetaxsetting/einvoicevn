@@ -4491,7 +4491,7 @@ class EInvoiceController {
             let EiExcel = new EiPosExcelHandler();
             let url_pdf = await EiExcel.getEinvoice(tei_wt_sale_bill_pk , p_language, p_crt_by);
             console.log("base64PDf  ", url_pdf);
-            let url_xml = await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
+            let url_xml = APP_URL_LOCAL+"/api/dso/getfiledbtoken?pk=" + pk + "&proc=" + proc + "&token=";//  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
             console.log("base64XXML  ", url_xml);
 
             const res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {
@@ -4500,9 +4500,9 @@ class EInvoiceController {
                 subject: "gui mail",
                 body: "sesssss",
                 attachfile1: "aaaa.xml",
-                // attachfile2: "",
-                 filename1: "url_xml",
-                // filename2: "",
+                attachfile2: "aaaa.pdf",
+                filename1: url_xml,
+                filename2: url_pdf,
             });
 
             console.log("res_send_mail  ", res_send_mail);

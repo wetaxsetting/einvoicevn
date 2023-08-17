@@ -18,7 +18,7 @@
               </div>
             </v-col>
             <v-col md="12" class="pt-2">
-              <DataGridView
+              <BaseGridView
                 column-resizing-mode="widget"
                 ref="grdCompany"
                 :auto_load="false"
@@ -87,10 +87,6 @@
                       <v-col md="6">
                         <BaseInput outlined :label="$t('tel')" v-model="MasterInfo.TEL" />
                       </v-col>
-                      <!-- <v-col md="11">
-                        <BaseInput outlined :label="$t('general_info')" />
-                      </v-col> -->
-
                       <v-col md="12">
                         <BaseInput outlined :label="$t('bank_name')" v-model="MasterInfo.BANK_NAME" />
                       </v-col>
@@ -107,7 +103,7 @@
                         <BaseInput outlined :label="$t('contact_person')" v-model="MasterInfo.CONTACT_PERSON" />
                       </v-col>
                       <v-col md="12">
-                        <BaseInput outlined :label="$t('tax_agency_name')" />
+                        <BaseSelect outlined :label="$t('tax_agency_name')" v-model="MasterInfo.MCQTQLY" :lstData="taxOfficeList" item-text="NAME" item-value="CODE" />
                       </v-col>
                       <v-col md="12">
                         <BaseInput outlined :label="$t('remark')" v-model="MasterInfo.REMARKS" />
@@ -132,13 +128,13 @@
                     <!-- Add -->
                     <!-- <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')" @onclick="onClick('newDetail')" /> -->
                     <!-- Save -->
-                    <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClick('saveDetail')"  />
+                    <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClickButton('saveDetail')" />
                     <!-- Delete -->
-                    <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClick('deleteDetail')" />
+                    <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClickButton('deleteDetail')" />
                   </GwFlexBox>
                 </v-col>
                 <v-col md="12">
-                  <DataGridView
+                  <BaseGridView
                     ref="grdDetail"
                     :header="headerList.grdDetail"
                     sel_procedure="AC_SEL_6095010_01_NC"
@@ -193,6 +189,7 @@ export default {
     headerList: {
       grdDetail: [],
     },
+    taxOfficeList:[],
     MasterInfo: {
       COMPANY_NM: "",
       TAX_CODE: "",
@@ -242,7 +239,8 @@ export default {
     },
   }),
 
-  created() {
+  async created() {
+    await this.initDataList();
     this.initHeaderList();
   },
 
@@ -276,6 +274,7 @@ export default {
           dataField: "COMPANY_CD",
           width: 120,
           caption: this.$t("company_cd"),
+          visible: false,
         },
         {
           dataField: "COMPANY_NM",
@@ -423,7 +422,6 @@ export default {
       // this.MasterInfo = cell.data;
 
       await this.$refs.grdDetail.loadData();
-
     },
     async dsoMaster(action) {
       await this._dsoCall(
@@ -496,7 +494,7 @@ export default {
         }
       });
     },
-   async onClickButton(obj) {
+    async onClickButton(obj) {
       switch (obj) {
         case "SEARCH":
           this.$refs.grdCompany.loadData();
@@ -514,6 +512,12 @@ export default {
           this.objClick = "btnDelete";
           this.$refs.confirmDialog.showConfirm(this.$t("do_you_want_delete"), "warning");
           break;
+        case "saveDetail":
+          this.$refs.grdDetail.saveData();
+          break;
+        case "deleteDetail":
+          this.$refs.grdDetail.deleteRows();
+          break;
         case "OPTION":
           if (this.objClick == "btnSave") {
             this.$refs.grdCompany.saveData();
@@ -524,6 +528,12 @@ export default {
           }
           break;
       }
+    },
+    async initDataList() {
+      const results = await this._getCommonCode2([ "ACEI0120","ACJS0460"], this.user.TEI_COMPANY_PK)
+
+      this.taxOfficeList = results[0];
+      this.token_type_list = results[1];
     },
     async addNewMaster() {
       this.MasterInfo._rowstatus = "i";
@@ -647,8 +657,7 @@ export default {
 
         if (spa >= 0 && data.length > spa && spa - start > 0) {
           result = data.substring(start, spa);
-        }
-        else {
+        } else {
           result = data.substring(start);
         }
 

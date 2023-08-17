@@ -141,7 +141,7 @@
                     upd_procedure="AC_UPD_6095080_u_06"
                     :headertype="1"
                     :filter_paras="[this.MasterInfo.PK]"
-                    :update_paras="['PK', 'TEI_DECLARATION_M_PK', 'TTCHUC', 'MST', 'SERI', 'DNGAY', 'TNGAY', 'HTHUC']"
+                    :update_paras="['PK', 'TEI_COMPANY_PK', 'CA_NAME', 'DN_MST', 'SERIAL_NUMBER', 'NOTAFTER', 'NOTBEFORE', 'TOKEN_TYPE', 'STATUS']"
                     :max_height="limitHeightGridDetails"
                   />
                 </v-col>
@@ -594,42 +594,6 @@ export default {
         });
       }
     },
-    async onGetDetailDeclaration() {
-      if (this.MasterInfo.PK != "") {
-        let xml = `<TKhai>
-                    <DLTKhai>
-                      <TTChung>
-                      </TTChung>		
-                      <NDTKhai>
-                      </NDTKhai>	
-                    </DLTKhai>	
-                    <DSCKS>
-                      <NNT>
-                      </NNT>
-                    </DSCKS>
-                  </TKhai>`;
-
-        const objXml = [
-          {
-            master_pk: this.MasterInfo.PK,
-            xml: JSON.stringify(xml).toString().replaceAll('"', "").replaceAll("<DLTKhai>", "<DLTKhai Id='ID1'>"),
-          },
-        ];
-
-        jQuery.support.cors = true;
-        $.ajax({
-          url: "http://localhost:1080/getDeclarationData",
-          dataType: "text",
-          method: "POST",
-          data: {
-            crt_by: this.user.USER_ID,
-            xml: JSON.stringify(objXml).toString(),
-          },
-          error: this.onErrorGetDetailDeclaration,
-          success: this.onSuccessGetDetailDeclaration,
-        });
-      }
-    },
 
     async onErrorGetDetailDeclaration() {
       this.showNotification("warning", this.$t("warning"), this.$t("pls_install_application_or_open_application"));
@@ -637,17 +601,20 @@ export default {
 
     async onSuccessGetDetailDeclaration(data) {
       let obj_token = $.parseJSON(data);
+      console.log("file: 6095010.vue:640 [vng-304] onSuccessGetDetailDeclaration [vng-304] obj_token:", obj_token)
+      
       this.$refs.grdDetail.addRowStruct({
         _rowstatus: "i",
         NO: this.$refs.grdDetail.getDataSource().length + 1,
         PK: "",
-        TEI_DECLARATION_M_PK: this.MasterInfo.PK,
-        TTCHUC: this.getPara("CN", obj_token.issue_by),
-        MST: obj_token.dn_mst,
-        SERI: obj_token.serial_number,
-        DNGAY: obj_token.not_after,
-        TNGAY: obj_token.not_before,
-        HTHUC: "1",
+        TEI_COMPANY_PK: this.MasterInfo.PK,
+        CA_NAME: this.getPara("CN", obj_token.issue_by),
+        DN_MST: obj_token.dn_mst,
+        SERIAL_NUMBER: obj_token.serial_number,
+        NOTAFTER: obj_token.not_after,
+        NOTBEFORE: obj_token.not_before,
+        TOKEN_TYPE: "1",
+        STATUS: obj_token.status
       });
     },
     getPara(paraname, data) {
@@ -681,39 +648,39 @@ export default {
           visible: false,
         },
         {
-          dataField: "tei_declaration_m_pk",
-          caption: this.$t("tei_declaration_m_pk"),
+          dataField: "TEI_COMPANY_PK",
+          caption: this.$t("tei_company_pk"),
           visible: false,
         },
         {
-          dataField: "TTCHUC",
+          dataField: "CA_NAME",
           caption: this.$t("ttchuc"),
           allowEditing: true,
           width: 200,
         },
         {
-          dataField: "MST",
+          dataField: "DN_MST",
           caption: this.$t("mst"),
           width: 150,
           visible: false,
         },
         {
-          dataField: "SERI",
+          dataField: "SERIAL_NUMBER",
           caption: this.$t("seti"),
           width: 300,
         },
         {
-          dataField: "TNGAY",
+          dataField: "NOTAFTER",
           caption: this.$t("tngay"),
           width: 200,
         },
         {
-          dataField: "DNGAY",
+          dataField: "NOTBEFORE",
           caption: this.$t("dngay"),
           width: 200,
         },
         {
-          dataField: "HTHUC",
+          dataField: "TOKEN_TYPE",
           caption: this.$t("hthuc"),
           allowEditing: true,
           lookup: {

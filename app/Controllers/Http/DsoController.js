@@ -100,7 +100,7 @@ class DsoController {
                 "public",
                 "N"
             );
-
+            console.log("result ", result);    
             if (result.length > 0) {
                 response.header("content-type", result[0].FILE_TYPE);
                 response.header(

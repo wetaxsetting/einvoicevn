@@ -1,7 +1,7 @@
 <template>
   <v-container fluid v-resize="onResize">
     <v-row dense>
-      <v-col md="12">
+      <v-col md="8" :class="isShowLeft ? null : 'd-none'">
         <v-card>
           <v-row dense>
             <v-col md="12" class="text-right">
@@ -9,7 +9,7 @@
                 <BaseButton icon_type="search" :btn_text="$t('search')" :disabled="isProcessing" @onclick="onClickButton('search')" />
                 <BaseButton icon_type="preview" :btn_text="$t('preview')" :disabled="isProcessing" @onclick="onClickButton('preview')" />
                 <BaseButton icon_type="viewxml" :btn_text="$t('viewxml')" :disabled="isProcessing" @onclick="onClickButton('viewxml')" />
-                <BaseButton icon_type="viewpdf" :btn_text="$t('viewpdf')" :disabled="isProcessing" @onclick="onClickButton('viewpdf')" />
+                <!-- <BaseButton icon_type="viewpdf" :btn_text="$t('viewpdf')" :disabled="isProcessing" @onclick="onClickButton('viewpdf')" /> -->
               </GwFlexBox>
             </v-col>
           </v-row>
@@ -17,20 +17,20 @@
             <v-col md="3" class="pl-2">
               <BaseSelect outlined v-model="sellerName" :lstData="dataSearchList.sellerNameList" item-value="CODE" item-text="NAME" :label="$t('seller_name')"></BaseSelect>
             </v-col>
-            <v-col lg="1">
-              <BaseSelect outlined v-model="sellerTaxcode" :lstData="dataSearchList.sellerTaxcodeList" item-value="CODE" item-text="NAME" :label="$t('seller_taxcode')"></BaseSelect>
-            </v-col>
             <v-col lg="2">
+              <BaseInput outlined readonly v-model="sellerTaxcode" :label="$t('seller_taxcode')"></BaseInput>
+            </v-col>
+            <v-col lg="1">
               <BaseSelect outlined v-model="form_No" :lstData="dataSearchList.formNoList" item-value="CODE" item-text="NAME" :label="$t('form_no')"></BaseSelect>
             </v-col>
             <v-col lg="2">
-              <BaseInput outlined :label="$t('serial_no')" v-model="serial_no" :lstData="dataSearchList.serialNoList" item-value="CODE" item-text="NAME"/>
+              <BaseSelect outlined :label="$t('serial_no')" v-model="serial_no" :lstData="dataSearchList.serialNoList" item-value="CODE" item-text="NAME" />
             </v-col>
             <v-col lg="2">
-              <BaseInput outlined :label="$t('invoice_no')" v-model="invoice_no" />
+              <BaseSelect outlined v-model="status" :lstData="dataSearchList.statusList" item-value="CODE" item-text="NAME" :label="$t('status')"></BaseSelect>
             </v-col>
             <v-col lg="2" class="pr-2">
-              <BaseSelect outlined v-model="status" :lstData="dataSearchList.statusList" item-value="CODE" item-text="NAME" :label="$t('status')"></BaseSelect>
+              <BaseInput outlined :label="$t('invoice_no')" v-model="invoice_no" @keyPressEnter="onClickButton('search')" />
             </v-col>
           </v-row>
           <v-row dense>
@@ -55,13 +55,13 @@
           </v-row>
           <v-row dense>
             <v-col lg="2" class="pl-2">
-              <BaseInput outlined :label="$t('store_id')" v-model="store_id" />
+              <BaseInput outlined :label="$t('store_id')" v-model="store_id" @keyPressEnter="onClickButton('search')" />
             </v-col>
             <v-col lg="2">
-              <BaseInput outlined :label="$t('pos')" v-model="pos" />
+              <BaseInput outlined :label="$t('pos')" v-model="pos_no" @keyPressEnter="onClickButton('search')" />
             </v-col>
             <v-col lg="2">
-              <BaseInput outlined :label="$t('bill_no')" v-model="bill_no" />
+              <BaseInput outlined :label="$t('bill_no')" v-model="bill_no" @keyPressEnter="onClickButton('search')" />
             </v-col>
             <v-col md="2">
               <BaseInput outlined :label="$t('net_amount')" readonly v-model="netAmount" number />
@@ -74,25 +74,72 @@
             </v-col>
           </v-row>
           <v-row dense>
-            <v-col md="8" class="pt-2">
-              <BaseGridView column-resizing-mode="widget" ref="grdCompany" :auto_load="false" select_mode="Single" :max_height="limitHeight" :header="headerGrid" @cellClick="grdSearchClick" />
-            </v-col>
-            <v-col md="4" class="pt-2">
-              <BaseGridView column-resizing-mode="widget" ref="grdCompany" :auto_load="false" select_mode="Single" :max_height="limitHeight" :header="headerProD" />
-            </v-col>
-          </v-row>
-
-          <v-row dense>
-            <v-col md="8" class="pt-2"></v-col>
-            <v-col md="4" class="pt-2">
-              <BaseGridView column-resizing-mode="widget" ref="grdCompany" :auto_load="false" select_mode="Single" :max_height="limitHeightGridDetails" :header="headerProVAT" />
+            <v-col md="12" class="pt-2">
+              <BaseGridView
+                ref="grdCompany"
+                :auto_load="false"
+                sel_procedure="AC_SEL_6095450_01_NC"
+                select_mode="Single"
+                :max_height="limitHeight"
+                :header="headerGrid"
+                @cellClick="grdSearchClick"
+                :filter_paras="[
+                  this.sellerName,
+                  this.form_No,
+                  this.serial_no,
+                  this.invoice_no,
+                  this.status,
+                  this.form_date,
+                  this.to_date,
+                  this.trading_type,
+                  this.mccqt,
+                  this.store_id,
+                  this.pos_no,
+                  this.bill_no,
+                ]"
+              />
             </v-col>
           </v-row>
         </v-card>
       </v-col>
-      <!-- <v-col :md="isShowLeft ? 4 : 12">
-        
-    </v-col> -->
+      <v-col :md="isShowLeft ? 4 : 12">
+        <v-card>
+          <v-row dense>
+            <v-col md="1" class="d-flex pl-2">
+              <BaseButton btn_type="icon" :icon_type="isShowLeft ? 'skip_prev' : 'skip_next'" :btn_text="isShowLeft ? $t('hide_left') : $t('show_left')" @onclick="isShowLeft = !isShowLeft" />
+            </v-col>
+          </v-row>
+          <v-row dense></v-row>
+          <v-row dense></v-row>
+          <v-row dense></v-row>
+          <v-row dense>
+            <v-col md="12" class="pt-2">
+              <BaseGridView
+                ref="grdMaster"
+                :auto_load="false"
+                select_mode="Single"
+                :max_height="limitHeightM"
+                sel_procedure="AC_SEL_6095450_02_NC"
+                :header="headerProD"
+                :filter_paras="[this.masterPK]"
+              />
+            </v-col>
+          </v-row>
+          <v-row dense>
+            <v-col md="12" class="pt-2">
+              <BaseGridView
+                ref="grdDetail"
+                :auto_load="false"
+                select_mode="Single"
+                :max_height="limitHeightGridDetails"
+                sel_procedure="AC_SEL_6095450_03_NC"
+                :header="headerProVAT"
+                :filter_paras="[this.masterPK]"
+              />
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -111,7 +158,7 @@ export default {
     serial_no: "",
     form_No: "",
     invoice_no: "",
-    status: "",
+    status: "1",
     //
     form_date: "",
     to_date: "",
@@ -121,7 +168,7 @@ export default {
     mccqt: "",
     //
     store_id: "",
-    pos: "",
+    pos_no: "",
     bill_no: "",
     netAmount: "",
     vatAmount: "",
@@ -135,13 +182,14 @@ export default {
       statusList: [],
       tradingTypeList: [],
     },
+    masterPK: ""
   }),
 
   async created() {
     await this.initDataList("company");
     await this.initDataList("form_no");
-    // await this.initDataList("serial_no");
-
+    await this.initDataList("serial_no");
+    this.getListCodes();
   },
 
   computed: {
@@ -150,9 +198,14 @@ export default {
     },
     limitHeight() {
       if (this.$vuetify.breakpoint.smAndUp) {
-        return 400;
+        return 600;
       }
     }, // this.windowHeight },
+    limitHeightM() {
+      if (this.$vuetify.breakpoint.smAndUp) {
+        return 520;
+      }
+    },
     limitHeightGridDetails() {
       if (this.$vuetify.breakpoint.smAndUp) {
         return 200;
@@ -162,107 +215,95 @@ export default {
       const self = this;
       return [
         {
-          dataField: "PK",
-          width: 80,
+          dataField: "RN",
           caption: this.$t("no"),
         },
         {
-          dataField: "COMPANY_CD",
-          width: 120,
+          dataField: "SALE_DATE",
           caption: this.$t("sale_date"),
         },
         {
-          dataField: "COMPANY_NM",
-          width: 300,
+          dataField: "STORE_CODE",
           caption: this.$t("store_id"),
         },
         {
-          dataField: "COMPANY_LNM",
+          dataField: "STORE_NAME",
           caption: this.$t("store_name"),
         },
         {
-          dataField: "COMPANY_FNM",
+          dataField: "POS_NO",
           caption: this.$t("pos"),
-          width: 180,
         },
         {
-          dataField: "TAX_CODE",
+          dataField: "BILL_NO",
           caption: this.$t("bill_number"),
-          width: 120,
         },
         {
-          dataField: "ADDR",
+          dataField: "SALES_CATEGORY",
           caption: this.$t("sales_category"),
-          width: 300,
         },
         {
-          dataField: "ADDR_L",
+          dataField: "PAYMENT_METHOD",
           caption: this.$t("payment_type"),
-          width: 80,
         },
         {
-          dataField: "ADDR_F",
+          dataField: "TOTAL_AMT",
           caption: this.$t("total_amount"),
-          width: 80,
         },
         {
-          dataField: "TEL",
+          dataField: "ACTUAL_SALES",
           caption: this.$t("actual_sales"),
-          width: 120,
         },
         {
-          dataField: "FAX",
+          dataField: "TOTAL_DC_AMT",
           caption: this.$t("discount"),
-          width: 80,
         },
         {
-          dataField: "ACC_NO",
+          dataField: "TOTAL_VAT_AMT",
           caption: this.$t("vat_amount"),
-          width: 80,
         },
         {
-          dataField: "ACC_CCY",
+          dataField: "FORM_NO",
           caption: this.$t("form_no"),
         },
         {
-          dataField: "ACC_HOLDER",
+          dataField: "SERIAL_NO",
           caption: this.$t("serial_no"),
         },
         {
-          dataField: "BANK_NAME",
+          dataField: "INVOICE_NO",
           caption: this.$t("invoice_no"),
-          width: 80,
         },
         {
-          dataField: "CONTACT_PERSON",
+          dataField: "MCCQT",
           caption: this.$t("mccqt"),
         },
         {
-          dataField: "REP_PERSON",
+          dataField: "BUYER_COMP_NAME",
           caption: this.$t("buyer_name"),
         },
         {
-          dataField: "TAX_NAME",
+          dataField: "BUYER_TAXCODE",
           caption: this.$t("buyer_taxcode"),
         },
         {
-          dataField: "REMARKS",
+          dataField: "BUYER_ADDRESS",
           caption: this.$t("buyer_address"),
         },
         {
-          dataField: "ERP_COMPANY_PK",
+          dataField: "BUYER_INDENTIFICATION",
           caption: this.$t("buyer_indentification"),
         },
         {
-          dataField: "ERP_COMPANY_NAME",
+          dataField: "BUYER_EMAIL",
           caption: this.$t("email"),
         },
         {
-          dataField: "WEB_SITE",
+          dataField: "BUYER_EMAIL_CC",
           caption: this.$t("email_cc"),
         },
         {
-          dataField: "TAX_CODE_DISPLAY",
+          dataField: "TRADE_CODE",
           caption: this.$t("trade_code"),
         },
       ];
@@ -272,19 +313,19 @@ export default {
       const self = this;
       return [
         {
-          dataField: "PK",
+          dataField: "RN",
           caption: this.$t("no"),
         },
         {
-          dataField: "PRODUCTION_CODE",
+          dataField: "ITEM_CODE",
           caption: this.$t("production_code"),
         },
         {
-          dataField: "PRODUCTION_NAME",
+          dataField: "ITEM_NAME",
           caption: this.$t("production_name"),
         },
         {
-          dataField: "UNIT",
+          dataField: "UOM",
           caption: this.$t("unit"),
         },
         {
@@ -292,23 +333,23 @@ export default {
           caption: this.$t("quantity"),
         },
         {
-          dataField: "PRICE",
+          dataField: "UPRICE",
           caption: this.$t("price"),
         },
         {
-          dataField: "DIC_RATE",
+          dataField: "DC_RATE",
           caption: this.$t("dic_rate"),
         },
         {
-          dataField: "DIC_AMOUNT",
+          dataField: "DC_AMT",
           caption: this.$t("dic_amount"),
         },
         {
-          dataField: "TAX_RATE",
+          dataField: "VAT_RATE",
           caption: this.$t("tax_rate"),
         },
         {
-          dataField: "AMOUNT",
+          dataField: "AMT",
           caption: this.$t("amount"),
         },
         {
@@ -322,36 +363,55 @@ export default {
       const self = this;
       return [
         {
-          dataField: "TAX_RATE",
+          dataField: "SUB_VAT_RATE",
           caption: this.$t("tax_rate"),
         },
         {
-          dataField: "NET_AMOUNT",
+          dataField: "SUB_AMT",
           caption: this.$t("net_amount"),
         },
         {
-          dataField: "VAT_AMOUNT",
+          dataField: "SUB_VAT_AMT",
           caption: this.$t("vat_amount"),
         },
       ];
     },
   },
   watch: {
-    "sellerName"(val) {
+    sellerName(val) {
       if (val) {
         this.sellerTaxcode = this.dataSearchList.sellerNameList.find((item) => item.CODE == val).TAX_CODE;
       }
       this.initDataList("form_no");
+      this.initDataList("serial_no");
+    },
+    form_No(val) {
+      this.initDataList("serial_no");
+    },
+    form_date(val) {
+      this.initDataList("form_no");
+      this.initDataList("serial_no");
+    },
+    to_date(val) {
+      this.initDataList("form_no");
+      this.initDataList("serial_no");
     },
   },
   methods: {
-    grdSearchClick() {},
+    async grdSearchClick(cell) {
+      console.log("file: 6095450.vue:372 [vng-304] grdSearchClick [vng-304] cell:", cell);
+      this.masterPK = await cell.data.PK;
+
+      await this.$refs.grdMaster.loadData();
+      await this.$refs.grdDetail.loadData();
+    },
     async initDataList(pos) {
       switch (pos) {
         case "company":
           const company = await this._callProcedure("AC_SEL_6095450_COMPANY", [this.user.PK]);
           if (company.length > 0) {
             this.dataSearchList.sellerNameList = company;
+            // this.dataSearchList.sellerTaxcodeList = company;
           }
           break;
 
@@ -370,12 +430,24 @@ export default {
           const dso_serial_list = {
             type: "list",
             selpro: "AC_SEL_6095450_SERIAL_NO",
-            para: [this.sellerName, this.form_No],
+            para: [this.sellerName, this.form_No, this.form_date, this.to_date],
           };
           this.dataSearchList.serialNoList = await this._dsoCall(dso_serial_list, "select", false);
           this.serial_no = this.dataSearchList.serialNoList[0].CODE;
           break;
       }
+    },
+    async onClickButton(pos) {
+      switch (pos) {
+        case "search":
+          await this.$refs.grdCompany.loadData();
+          break;
+      }
+    },
+    async getListCodes() {
+      const results = await this._getCommonCode2(["ACEI0010", "ACEI0040", "ACEI0120", "ACEI0190", "ACEI0140", "ACEIN010", "ACJS0460"], this.user.PK);
+      this.dataSearchList.statusList = results[0];
+      this.dataSearchList.tradingTypeList = results[1];
     },
   },
 };

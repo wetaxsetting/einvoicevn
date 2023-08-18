@@ -228,28 +228,35 @@ export default {
         {
           dataField: "STORE_CODE",
           caption: this.$t("store_id"),
+          dataType: "number",
+          formatFloat: 0,
         },
         {
           dataField: "STORE_NAME",
           caption: this.$t("store_name"),
+          dataType: "text",
         },
         {
           dataField: "POS_NO",
           caption: this.$t("pos"),
+          dataType: "number",
+          formatFloat: 0,
         },
         {
           dataField: "BILL_NO",
           caption: this.$t("bill_number"),
+          dataType: "number",
+          formatFloat: 0,
         },
         {
           dataField: "SALES_CATEGORY",
           caption: this.$t("sales_category"),
+          dataType: "text",
         },
         {
           dataField: "PAYMENT_METHOD",
           caption: this.$t("payment_type"),
-          formatFloat: 2,
-          dataType: "number",
+          dataType: "text",
         },
         {
           dataField: "TOTAL_AMT",
@@ -278,6 +285,8 @@ export default {
         {
           dataField: "FORM_NO",
           caption: this.$t("form_no"),
+          dataType: "number",
+          formatFloat: 0,
         },
         {
           dataField: "SERIAL_NO",
@@ -286,6 +295,8 @@ export default {
         {
           dataField: "INVOICE_NO",
           caption: this.$t("invoice_no"),
+          dataType: "number",
+          formatFloat: 0,
         },
         {
           dataField: "MCCQT",
@@ -294,14 +305,18 @@ export default {
         {
           dataField: "BUYER_COMP_NAME",
           caption: this.$t("buyer_name"),
+          dataType: "text",
         },
         {
           dataField: "BUYER_TAXCODE",
           caption: this.$t("buyer_taxcode"),
+          dataType: "number",
+          formatFloat: 0,
         },
         {
           dataField: "BUYER_ADDRESS",
           caption: this.$t("buyer_address"),
+          dataType: "text",
         },
         {
           dataField: "BUYER_INDENTIFICATION",
@@ -310,14 +325,16 @@ export default {
         {
           dataField: "BUYER_EMAIL",
           caption: this.$t("email"),
+          dataType: "text",
         },
         {
           dataField: "BUYER_EMAIL_CC",
           caption: this.$t("email_cc"),
+          dataType: "text",
         },
         {
           dataField: "TRADE_CODE",
-          caption: this.$t("trade_code"),
+          caption: this.$t("trade_code")
         },
       ];
     },
@@ -344,30 +361,44 @@ export default {
         {
           dataField: "QUANTITY",
           caption: this.$t("quantity"),
+          dataType: "number",
+          formatFloat: 0,
         },
         {
           dataField: "UPRICE",
           caption: this.$t("price"),
+          formatFloat: 2,
+          dataType: "number",
         },
         {
           dataField: "DC_RATE",
           caption: this.$t("dic_rate"),
+          formatFloat: 2,
+          dataType: "number",
         },
         {
           dataField: "DC_AMT",
           caption: this.$t("dic_amount"),
+          formatFloat: 2,
+          dataType: "number",
         },
         {
           dataField: "VAT_RATE",
           caption: this.$t("tax_rate"),
+          formatFloat: 2,
+          dataType: "number",
         },
         {
           dataField: "AMT",
           caption: this.$t("amount"),
+          formatFloat: 2,
+          dataType: "number",
         },
         {
           dataField: "NATURE",
           caption: this.$t("nature"),
+          dataType: "number",
+          formatFloat: 0,
         },
       ];
     },
@@ -382,10 +413,14 @@ export default {
         {
           dataField: "SUB_AMT",
           caption: this.$t("net_amount"),
+          formatFloat: 2,
+          dataType: "number",
         },
         {
           dataField: "SUB_VAT_AMT",
           caption: this.$t("vat_amount"),
+          formatFloat: 2,
+          dataType: "number",
         },
       ];
     },

@@ -157,7 +157,7 @@ class EiExcelHandler {
       }
       //  Yupoong Daeyoung Kpx Suheung Daewon Ajtotal During
       // companyName="Sprint"
-      companyName = 'ParisVN'
+      companyName = 'ParisVN_CNHN'
       switch (companyName) {
 
              //////// *****************Ottogi_CNBN*********************\\\\\\\\\

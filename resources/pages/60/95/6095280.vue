@@ -866,7 +866,13 @@ export default {
       const results = await this._getCommonCode2(["ACEI0010", "ACEI0120", "ACEI0190", "ACEI0170", "ACEI0180", "ACEIS310", "ACEI0210", "ACEI0220"], this.user.TCO_COMPANY_PK)
       this.dataSearchList.statusList = results[0];
       this.dataMasterList.taxOfficeList = results[1];
-      this.dataMasterList.fromNoList = results[2];
+      this.dataMasterList.fromNoList = results[2].filter(x => x.VAL1 == '6095280');
+      this.dataMasterList.fromNoList.forEach((e) => {
+                            if (e.DEF_YN == "Y") {
+                                this.modelMaster.MSO = e.CODE;
+                            }
+                        });
+
       this.dataMasterList.categoriesList = results[3];
       this.dataMasterList.declarationNameList = results[4];
       this.e_invoice_type_list = results[5];

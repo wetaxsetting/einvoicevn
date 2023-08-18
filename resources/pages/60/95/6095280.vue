@@ -547,10 +547,13 @@ export default {
         case "viewXML_04_SS":
           this.OnPreviewXMLSS();
           break;
-
         case "viewXML":
           this.OnPreviewXML();
           break;
+      case "preview" :
+          this.OnPreview();
+      break;
+        
       }
     },
     async dsoMaster(action) {
@@ -810,13 +813,13 @@ export default {
           dataField: "LADHDDT",
           caption: this.$t("type_invoice"),
           alignment: "left",
-          // type: "text",
+          type: "text",
         },
         {
           dataField: "LADHDDT_NM",
           caption: this.$t("type_invoice_name"),
           alignment: "left",
-          // type: "text",
+          type: "text",
         },
         {
           dataField: "TCTBAO",
@@ -947,7 +950,7 @@ export default {
       this.$refs.grdDetail.Clear();
     },
 
-
+    
 
     // async OnCheckingDec() {
     //   var count = 1;

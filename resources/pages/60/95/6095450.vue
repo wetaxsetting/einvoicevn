@@ -83,6 +83,7 @@
                 :max_height="limitHeight"
                 :header="headerGrid"
                 @cellClick="grdSearchClick"
+                @setDataSource="onAfterLoad"
                 :filter_paras="[
                   this.sellerName,
                   this.form_No,
@@ -442,6 +443,10 @@ export default {
         case "search":
           await this.$refs.grdCompany.loadData();
           break;
+          case "preview":
+          break;
+          case "viewxml":
+          break;
       }
     },
     async getListCodes() {
@@ -449,6 +454,13 @@ export default {
       this.dataSearchList.statusList = results[0];
       this.dataSearchList.tradingTypeList = results[1];
     },
+    async onAfterLoad(){
+        setTimeout(() => {
+                this.netAmount = this.$refs.grdCompany.getDataSource().reduce((n, { TOTAL_AMT }) => n + TOTAL_AMT, 0);
+                this.vatAmount = this.$refs.grdCompany.getDataSource().reduce((n, { TOTAL_VAT_AMT }) => n + TOTAL_VAT_AMT, 0);
+                this.totalAmount = this.$refs.grdCompany.getDataSource().reduce((n, { TOTAL_PAYMENT }) => n + TOTAL_PAYMENT, 0);
+            }, 1000);
+    }
   },
 };
 </script>

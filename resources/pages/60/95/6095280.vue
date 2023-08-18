@@ -223,7 +223,7 @@
                 item-value="VAL" />
             </v-col>
             <v-col md="3">
-              <BaseSelect :label="$t('serial_no')" item-value="CODE" item-text="NAME" :lstData="serial_no_list"
+              <BaseSelect :label="$t('serial_no')" item-value="VAL" item-text="NAME" :lstData="serial_no_list"
                 v-model="selected_serial_no" />
             </v-col>
             <v-col md="3">
@@ -769,69 +769,70 @@ export default {
       ];
       this.headerList.grdPopup = [
         {
-          field: "PK",
-          title: this.$t("v"),
+          dataField: "PK",
+          caption: this.$t("v"),
           alignment: "center",
           type: "text",
+          hidden: true,
         },
         {
-          field: "CQT_MCCQT_ID",
-          title: this.$t("cqt_code"),
+          dataField: "CQT_MCCQT_ID",
+          caption: this.$t("cqt_code"),
           width: 250,
           alignment: "left",
           type: "text",
         },
         {
-          field: "INVOICE_NO",
-          title: this.$t("invoice_no"),
+          dataField: "INVOICE_NO",
+          caption: this.$t("invoice_no"),
           alignment: "left",
           type: "text",
         },
         {
-          field: "SERIAL_NO",
-          title: this.$t("serial_no"),
+          dataField: "SERIAL_NO",
+          caption: this.$t("serial_no"),
           alignment: "left",
           type: "text",
         },
         {
-          field: "FORM_NO",
-          title: this.$t("form_no"),
+          dataField: "FORM_NO",
+          caption: this.$t("form_no"),
           alignment: "left",
           type: "text",
         },
         {
-          field: "NGAY",
-          title: this.$t("date"),
+          dataField: "NGAY",
+          caption: this.$t("date"),
           alignment: "left",
           type: "date",
         },
         {
-          field: "LADHDDT",
-          title: this.$t("type_invoice"),
+          dataField: "LADHDDT",
+          caption: this.$t("type_invoice"),
+          alignment: "left",
+          // type: "text",
+        },
+        {
+          dataField: "LADHDDT_NM",
+          caption: this.$t("type_invoice_name"),
+          alignment: "left",
+          // type: "text",
+        },
+        {
+          dataField: "TCTBAO",
+          caption: this.$t("invoice_type"),
           alignment: "left",
           type: "text",
         },
         {
-          field: "LADHDDT_NM",
-          title: this.$t("type_invoice_name"),
+          dataField: "TCTBAO_NM",
+          caption: this.$t("invoice_type_name"),
           alignment: "left",
           type: "text",
         },
         {
-          field: "TCTBAO",
-          title: this.$t("invoice_type"),
-          alignment: "left",
-          type: "text",
-        },
-        {
-          field: "TCTBAO_NM",
-          title: this.$t("invoice_type_name"),
-          alignment: "left",
-          type: "text",
-        },
-        {
-          field: "CANCEL_REASON",
-          title: this.$t("cancel_reason"),
+          dataField: "CANCEL_REASON",
+          caption: this.$t("cancel_reason"),
           alignment: "left",
           type: "text",
         },

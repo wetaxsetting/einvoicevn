@@ -802,7 +802,7 @@ export default {
         },
         {
           dataField: "NGAY",
-          caption: this.$t("date"),
+          caption: this.$t("date_d"),
           alignment: "left",
           type: "date",
         },

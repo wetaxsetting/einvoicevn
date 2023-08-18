@@ -51,7 +51,7 @@
                     </v-row>
                     <v-row>
                         <v-col>
-                            <BaseGridView ref="grdEinvoiceIssue" :header="grdHeader" sel_procedure="EI_SEL_6060230_1"
+                            <BaseGridView ref="grdEinvoiceIssue" :header="grdHeader" sel_procedure="EI_SEL_6095055_1"
                                 :multiselect="true" :headertype="1" :filter_paras="[
                                     this.selected_company,
                                     this.fromDate,
@@ -59,11 +59,11 @@
                                     this.txtSerialNo,
                                     this.lstStatus,
                                 ]" 
-                                upd_procedure="EI_UPD_6060230_2" :editable="true" :update_paras="[
+                                upd_procedure="EI_UPD_6095055_2" :editable="true" :update_paras="[
                                     'PK',
                                     'TCO_COMPANY_PK',
                                     'INVOICE_KIND',
-                                    'INVOICE_SYMBOL',
+                                    'SERIAL_NO_2',
                                     'FORM_NO',
                                     'SERIAL_NO',
                                     'FROM_DT',
@@ -128,8 +128,8 @@
                         <v-row>
                             <v-col>
                                 <BaseGridView :headertype="1" ref="grdTemplate" :header="grdTemplate"
-                                    :height="limitHeightmin" :multiselect="true" sel_procedure="EI_SEL_6060230_3"
-                                    :filter_paras="[this.item_pk]" upd_procedure="EI_UPD_6060230_4" :editable="true"
+                                    :height="limitHeightmin" :multiselect="true" sel_procedure="EI_SEL_6095055_3"
+                                    :filter_paras="[this.item_pk]" upd_procedure="EI_UPD_6095055_4" :editable="true"
                                     :update_paras="[
                                         'PK',
                                         'TEMPLATE_CD',
@@ -155,7 +155,7 @@
                                         'WEBSITE',
                                         'TAX_CODE_DISPLAY',
                                         'PBAN',
-                                        'INVOICE_SYMBOL',
+                                        'SERIAL_NO_2',
                                         'URL_FILE_EXCEL',
                                         'URL_IMG_LOGO',
                                         'LOGO_START_ROW',
@@ -216,7 +216,7 @@
                         <v-row>
                             <v-col>
                                 <BaseGridView :headertype="1" ref="grdParamM" :height="limitHeightmin" :header="grdParamM"
-                                    sel_procedure="EI_SEL_6060230_5" upd_procedure="EI_UPD_6060230_6" :editable="true"
+                                    sel_procedure="EI_SEL_6095055_5" upd_procedure="EI_UPD_6095055_6" :editable="true"
                                     :update_paras="[
                                         'PK',
                                         'CELL_CODE',
@@ -469,7 +469,7 @@ export default {
                     }, alignment: "left", type: "text"
                 },
                 {
-                    dataField: "INVOICE_SYMBOL", width: 200, caption: this.$t("invoice_symbol"), editable: true,
+                    dataField: "SERIAL_NO_2", width: 200, caption: this.$t("invoice_symbol"), editable: true,
                     lookup: {
                         dataSource: this.invoiceKind,
                         displayExpr: "NAME",
@@ -1525,7 +1525,7 @@ export default {
                 PK: "",
                 TCO_COMPANY_PK: this.selected_company,
                 INVOICE_KIND: "",
-                INVOICE_SYMBOL: "",
+                SERIAL_NO_2: "",
                 FORM_NO: "",
                 SERIAL_NO: "",
                 FROM_DT: "",

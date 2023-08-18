@@ -13,7 +13,7 @@ let EiExcelHandler = {
     //exec stacfdstac71_r_03_view_einv_nodejs ('255','', 'ENG', 'admingenuwin', :p_rtn_cur)
 
     const einvoiceMasterData = await that._callProcedure(
-      "AC_SEL_6060230_TEMPLATE",
+      "AC_SEL_6095055_TEMPLATE",
       [einvoicePk, '',]
     );
     

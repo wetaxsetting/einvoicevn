@@ -4663,11 +4663,44 @@ class EInvoiceController {
               console.log("res_send_mail  ", res_send_mail);
             if(res_send_mail.data.success)
             {
+                const para_inv_st = {
+                    tei_wt_sale_bill_pk : tei_wt_sale_bill_pk,
+                    status: "Sent Success",
+                };
+                const rtnValue_VAT = await DBService.ExecuteSQLBlob(
+                    `BEGIN ei_upd_sale_bill_status (          
+                                                            :tei_wt_sale_bill_pk,
+                                                            :status,
+                                                            :p_language, 
+                                                            :p_crt_by, 
+                                                            :p_rtn_cur); END;`,
+                                                            para_inv_st,
+                    p_language,
+                    p_crt_by
+                );
+
+
                 return response.send(
                     Utils.response(true, `Send order to invoice was Successfully!`, data_r)
                 );
             }else
             {
+                const para_inv_st = {
+                    tei_wt_sale_bill_pk : tei_wt_sale_bill_pk,
+                    status: "Sent Faile",
+                };
+                const rtnValue_VAT = await DBService.ExecuteSQLBlob(
+                    `BEGIN ei_upd_sale_bill_status (          
+                                                            :tei_wt_sale_bill_pk,
+                                                            :status,
+                                                            :p_language, 
+                                                            :p_crt_by, 
+                                                            :p_rtn_cur); END;`,
+                                                            para_inv_st,
+                    p_language,
+                    p_crt_by
+                );
+
                 return response.send(
                     Utils.response(true, `Send order to invoice was Faile! .`, "")
                 );
@@ -4675,6 +4708,44 @@ class EInvoiceController {
             // console.log("res_send_mail  ", res_send_mail);
            
 
+
+        } catch (error) {
+            console.log("error  ", error);
+        }
+    }
+
+    async weTaxCheckStausSendMail({ request, response, auth }) {
+        try {
+            var p_language = request.header("accept-language", "ENG");
+            var p_crt_by = "";
+            const user = await auth.getUser();
+            if (user) {
+                p_crt_by = user.USER_ID;
+            }
+            const { data } = request.all();
+
+            const para_amt_vat = {
+                invoice_date: data.invoice_date,
+                seller_taxcode: data.seller_taxcode,
+            };
+            const rtnValue_status = await DBService.ExecuteSQLBlob(
+                `BEGIN ei_sel_sendmail_inv_status (          
+                                                        :invoice_date,
+                                                        :seller_taxcode,
+                                                        :p_language, 
+                                                        :p_crt_by, 
+                                                        :p_rtn_cur); END;`,
+                para_amt_vat,
+                p_language,
+                p_crt_by
+            );
+            let data_resutl = rtnValue_status.p_rtn_cur;
+  
+            console.log("data  ", rtnValue_status);
+
+            return response.send(
+                Utils.response(true, `Get sendmail invoice list was Successfully!`, data_resutl)
+            );
 
         } catch (error) {
             console.log("error  ", error);
@@ -4848,6 +4919,8 @@ class EInvoiceController {
         let url_xml = await Request.get( APP_URL_LOCAL+"/api/dso/getfiledbtoken?pk=" + pk + "&proc=" + proc + "&token=");
         return url_xml;
     }
+
+
 }
 
 module.exports = EInvoiceController;

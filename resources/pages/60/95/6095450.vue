@@ -24,7 +24,7 @@
               <BaseSelect outlined v-model="form_No" :lstData="dataSearchList.formNoList" item-value="CODE" item-text="NAME" :label="$t('form_no')"></BaseSelect>
             </v-col>
             <v-col lg="2">
-              <BaseInput outlined :label="$t('serial_no')" v-model="serial_no" />
+              <BaseInput outlined :label="$t('serial_no')" v-model="serial_no" :lstData="dataSearchList.serialNoList" item-value="CODE" item-text="NAME"/>
             </v-col>
             <v-col lg="2">
               <BaseInput outlined :label="$t('invoice_no')" v-model="invoice_no" />
@@ -130,6 +130,7 @@ export default {
     dataSearchList: {
       sellerNameList: [],
       sellerTaxcodeList: [],
+      serialNoList: [],
       formNoList: [],
       statusList: [],
       tradingTypeList: [],
@@ -365,15 +366,15 @@ export default {
             this.form_No = this.dataSearchList.formNoList[0].CODE;
           }
           break;
-        // case "serial_no":
-        //   const dso_serial_list = {
-        //     type: "list",
-        //     selpro: "AC_SEL_6095450_SERIAL_NO",
-        //     para: [this.sellerName, this.lstForm],
-        //   };
-        //   this.dataSearchList. = await this._dsoCall(dso_serial_list, "select", false);
-        //   this.serial_no = this.serialList[0].VAL;
-        //   break;
+        case "serial_no":
+          const dso_serial_list = {
+            type: "list",
+            selpro: "AC_SEL_6095450_SERIAL_NO",
+            para: [this.sellerName, this.form_No],
+          };
+          this.dataSearchList.serialNoList = await this._dsoCall(dso_serial_list, "select", false);
+          this.serial_no = this.dataSearchList.serialNoList[0].CODE;
+          break;
       }
     },
   },

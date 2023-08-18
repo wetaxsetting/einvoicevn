@@ -56,16 +56,16 @@
                   <BaseButton btn_type="icon" :icon_type="isShowLeft ? 'skip_prev' : 'skip_next'"
                     :btn_text="isShowLeft ? $t('hide_left') : $t('show_left')" @onclick="isShowLeft = !isShowLeft" />
                 </v-col>
-                <v-col md="4">
+                <v-col md="3">
                   <b style=" color: red ">{{ modelMaster.TMESS_CQT }}</b>
                 </v-col>
-                <v-col md="7" class="pr-3">
+                <v-col md="8" class="pr-3">
                   <GwFlexBox justify="end">
                     <BaseButton icon_type="xml" :btn_text="$t('view_xml_04_ss')" @onclick="onClick('viewXML_04_SS')" />
                     <BaseButton icon_type="xml" :btn_text="$t('view_xml')" @onclick="onClick('viewXML')" />
-
+                    <BaseButton icon_type="eye_on" :btn_text="$t('preview')" @onclick="onClick('preview')" />
                     <BaseButton icon_type="eye_on" :btn_text="$t('checking_result_cqt')" @onclick="onClick('CHECKCQT')" />
-                    <BaseButton icon_type="pensign" :btn_text="$t('sign')" @onclick="onClick()"
+                    <BaseButton icon_type="sign" :btn_text="$t('sign')" @onclick="onClick()"
                       :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
                     <!-- Add -->
                     <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')"

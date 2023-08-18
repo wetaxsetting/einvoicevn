@@ -784,19 +784,19 @@ export default {
         },
         {
           dataField: "INVOICE_NO",
-          caption: this.$t("invoice_no"),
+          caption: this.$t("invoice_nod"),
           alignment: "left",
           type: "text",
         },
         {
           dataField: "SERIAL_NO",
-          caption: this.$t("serial_no"),
+          caption: this.$t("serial_nod"),
           alignment: "left",
           type: "text",
         },
         {
           dataField: "FORM_NO",
-          caption: this.$t("form_no"),
+          caption: this.$t("form_nod"),
           alignment: "left",
           type: "text",
         },

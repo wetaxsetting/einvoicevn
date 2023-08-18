@@ -1,10 +1,10 @@
 <template>
   <v-container fluid v-resize="onResize">
     <v-row dense>
-      <v-col md="8" :class="isShowLeft ? null : 'd-none'">
+      <v-col lg="8" :class="isShowLeft ? null : 'd-none'">
         <v-card>
           <v-row dense>
-            <v-col md="12" class="text-right">
+            <v-col lg="12" class="text-right">
               <GwFlexBox class="d-flex justify-end">
                 <BaseButton icon_type="search" :btn_text="$t('search')" :disabled="isProcessing" @onclick="onClickButton('search')" />
                 <BaseButton icon_type="preview" :btn_text="$t('preview')" :disabled="isProcessing" @onclick="onClickButton('preview')" />
@@ -14,7 +14,7 @@
             </v-col>
           </v-row>
           <v-row dense class="pt-2">
-            <v-col md="3" class="pl-2">
+            <v-col lg="3" class="pl-2">
               <BaseSelect outlined v-model="sellerName" :lstData="dataSearchList.sellerNameList" item-value="CODE" item-text="NAME" :label="$t('seller_name')"></BaseSelect>
             </v-col>
             <v-col lg="2">
@@ -63,18 +63,18 @@
             <v-col lg="2">
               <BaseInput outlined :label="$t('bill_no')" v-model="bill_no" @keyPressEnter="onClickButton('search')" />
             </v-col>
-            <v-col md="2">
+            <v-col lg="2">
               <BaseInput outlined :label="$t('net_amount')" readonly v-model="netAmount" number />
             </v-col>
-            <v-col md="2">
+            <v-col lg="2">
               <BaseInput outlined :label="$t('vat_amount')" readonly v-model="vatAmount" number />
             </v-col>
-            <v-col md="2" class="pr-2">
+            <v-col lg="2" class="pr-2">
               <BaseInput outlined :label="$t('total_amount')" readonly v-model="totalAmount" number />
             </v-col>
           </v-row>
           <v-row dense>
-            <v-col md="12" class="pt-2">
+            <v-col lg="12" class="pt-2">
               <BaseGridView
                 ref="grdCompany"
                 :auto_load="false"
@@ -103,18 +103,18 @@
           </v-row>
         </v-card>
       </v-col>
-      <v-col :md="isShowLeft ? 4 : 12">
+      <v-col :lg="isShowLeft ? 4 : 12">
         <v-card>
           <v-row dense>
-            <v-col md="1" class="d-flex pl-2">
-              <BaseButton btn_type="icon" :icon_type="isShowLeft ? 'skip_prev' : 'skip_next'" :btn_text="isShowLeft ? $t('hide_left') : $t('show_left')" @onclick="isShowLeft = !isShowLeft" />
+            <v-col lg="1" class="d-flex pl-2">
+              <BaseButton btn_type="icon" :icon_type="isShowLeft ? 'skip_prev' : 'skip_next'" :btn_text="isShowLeft ? $t('hide_left') : $t('show_left')" @onclick="isShowLeft = !isShowLeft; $refs.grdMaster.refresh()" />
             </v-col>
           </v-row>
           <v-row dense></v-row>
           <v-row dense></v-row>
           <v-row dense></v-row>
           <v-row dense>
-            <v-col md="12" class="pt-2">
+            <v-col lg="12" class="pt-2">
               <BaseGridView
                 ref="grdMaster"
                 :auto_load="false"
@@ -127,7 +127,7 @@
             </v-col>
           </v-row>
           <v-row dense>
-            <v-col md="12" class="pt-2">
+            <v-col lg="12" class="pt-2">
               <BaseGridView
                 ref="grdDetail"
                 :auto_load="false"
@@ -228,8 +228,7 @@ export default {
         {
           dataField: "STORE_CODE",
           caption: this.$t("store_id"),
-          dataType: "number",
-          formatFloat: 0,
+          dataType: "text",
         },
         {
           dataField: "STORE_NAME",
@@ -239,14 +238,12 @@ export default {
         {
           dataField: "POS_NO",
           caption: this.$t("pos"),
-          dataType: "number",
-          formatFloat: 0,
+          dataType: "text",
         },
         {
           dataField: "BILL_NO",
           caption: this.$t("bill_number"),
-          dataType: "number",
-          formatFloat: 0,
+          dataType: "text",
         },
         {
           dataField: "SALES_CATEGORY",

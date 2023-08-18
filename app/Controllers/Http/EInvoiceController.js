@@ -4741,7 +4741,7 @@ class EInvoiceController {
             );
             let data_resutl = rtnValue_status.p_rtn_cur;
   
-            console.log("data  ", rtnValue_status);
+            //console.log("data  ", rtnValue_status);
 
             return response.send(
                 Utils.response(true, `Get sendmail invoice list was Successfully!`, data_resutl)

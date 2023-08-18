@@ -183,7 +183,7 @@ export default {
       statusList: [],
       tradingTypeList: [],
     },
-    masterPK: ""
+    masterPK: "",
   }),
 
   async created() {
@@ -222,6 +222,8 @@ export default {
         {
           dataField: "SALE_DATE",
           caption: this.$t("sale_date"),
+          dataType: "date",
+          format: this.curLang.DATE_FORMAT,
         },
         {
           dataField: "STORE_CODE",
@@ -246,22 +248,32 @@ export default {
         {
           dataField: "PAYMENT_METHOD",
           caption: this.$t("payment_type"),
+          formatFloat: 2,
+          dataType: "number",
         },
         {
           dataField: "TOTAL_AMT",
           caption: this.$t("total_amount"),
+          formatFloat: 2,
+          dataType: "number",
         },
         {
           dataField: "ACTUAL_SALES",
           caption: this.$t("actual_sales"),
+          formatFloat: 2,
+          dataType: "number",
         },
         {
           dataField: "TOTAL_DC_AMT",
           caption: this.$t("discount"),
+          formatFloat: 2,
+          dataType: "number",
         },
         {
           dataField: "TOTAL_VAT_AMT",
           caption: this.$t("vat_amount"),
+          formatFloat: 2,
+          dataType: "number",
         },
         {
           dataField: "FORM_NO",
@@ -400,7 +412,7 @@ export default {
   },
   methods: {
     async grdSearchClick(cell) {
-      console.log("file: 6095450.vue:372 [vng-304] grdSearchClick [vng-304] cell:", cell);
+      //   console.log("file: 6095450.vue:372 [vng-304] grdSearchClick [vng-304] cell:", cell);
       this.masterPK = await cell.data.PK;
 
       await this.$refs.grdMaster.loadData();
@@ -443,10 +455,20 @@ export default {
         case "search":
           await this.$refs.grdCompany.loadData();
           break;
-          case "preview":
+        case "preview":
           break;
-          case "viewxml":
+        case "viewxml":
+          this.OnPreviewXML();
           break;
+      }
+    },
+    async OnPreviewXML() {
+      if (!this.masterPK == null) {
+        return this.showNotification("warning", this.$t("error_occurs"), "pls_select_invoice");
+      }
+
+      if (!this.modelMaster.DATA_XML) {
+        let data_xml = this.onGeneralXML();
       }
     },
     async getListCodes() {
@@ -454,13 +476,13 @@ export default {
       this.dataSearchList.statusList = results[0];
       this.dataSearchList.tradingTypeList = results[1];
     },
-    async onAfterLoad(){
-        setTimeout(() => {
-                this.netAmount = this.$refs.grdCompany.getDataSource().reduce((n, { TOTAL_AMT }) => n + TOTAL_AMT, 0);
-                this.vatAmount = this.$refs.grdCompany.getDataSource().reduce((n, { TOTAL_VAT_AMT }) => n + TOTAL_VAT_AMT, 0);
-                this.totalAmount = this.$refs.grdCompany.getDataSource().reduce((n, { TOTAL_PAYMENT }) => n + TOTAL_PAYMENT, 0);
-            }, 1000);
-    }
+    async onAfterLoad() {
+      setTimeout(() => {
+        this.netAmount = this.$refs.grdCompany.getDataSource().reduce((n, { TOTAL_AMT }) => n + TOTAL_AMT, 0);
+        this.vatAmount = this.$refs.grdCompany.getDataSource().reduce((n, { TOTAL_VAT_AMT }) => n + TOTAL_VAT_AMT, 0);
+        this.totalAmount = this.$refs.grdCompany.getDataSource().reduce((n, { TOTAL_PAYMENT }) => n + TOTAL_PAYMENT, 0);
+      }, 1000);
+    },
   },
 };
 </script>

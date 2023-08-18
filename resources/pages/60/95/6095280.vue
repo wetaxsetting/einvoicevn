@@ -56,16 +56,16 @@
                   <BaseButton btn_type="icon" :icon_type="isShowLeft ? 'skip_prev' : 'skip_next'"
                     :btn_text="isShowLeft ? $t('hide_left') : $t('show_left')" @onclick="isShowLeft = !isShowLeft" />
                 </v-col>
-                <v-col md="4">
+                <v-col md="3">
                   <b style=" color: red ">{{ modelMaster.TMESS_CQT }}</b>
                 </v-col>
-                <v-col md="7" class="pr-3">
+                <v-col md="8" class="pr-3">
                   <GwFlexBox justify="end">
                     <BaseButton icon_type="xml" :btn_text="$t('view_xml_04_ss')" @onclick="onClick('viewXML_04_SS')" />
                     <BaseButton icon_type="xml" :btn_text="$t('view_xml')" @onclick="onClick('viewXML')" />
-
+                    <BaseButton icon_type="eye_on" :btn_text="$t('preview')" @onclick="onClick('preview')" />
                     <BaseButton icon_type="eye_on" :btn_text="$t('checking_result_cqt')" @onclick="onClick('CHECKCQT')" />
-                    <BaseButton icon_type="pensign" :btn_text="$t('sign')" @onclick="onClick()"
+                    <BaseButton icon_type="sign" :btn_text="$t('sign')" @onclick="onClick()"
                       :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
                     <!-- Add -->
                     <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')"
@@ -223,7 +223,7 @@
                 item-value="VAL" />
             </v-col>
             <v-col md="3">
-              <BaseSelect :label="$t('serial_no')" item-value="CODE" item-text="NAME" :lstData="serial_no_list"
+              <BaseSelect :label="$t('serial_no')" item-value="VAL" item-text="NAME" :lstData="serial_no_list"
                 v-model="selected_serial_no" />
             </v-col>
             <v-col md="3">
@@ -769,69 +769,70 @@ export default {
       ];
       this.headerList.grdPopup = [
         {
-          field: "PK",
-          title: this.$t("v"),
+          dataField: "PK",
+          caption: this.$t("v"),
           alignment: "center",
           type: "text",
+          hidden: true,
         },
         {
-          field: "CQT_MCCQT_ID",
-          title: this.$t("cqt_code"),
+          dataField: "CQT_MCCQT_ID",
+          caption: this.$t("cqt_code"),
           width: 250,
           alignment: "left",
           type: "text",
         },
         {
-          field: "INVOICE_NO",
-          title: this.$t("invoice_no"),
+          dataField: "INVOICE_NO",
+          caption: this.$t("invoice_nod"),
           alignment: "left",
           type: "text",
         },
         {
-          field: "SERIAL_NO",
-          title: this.$t("serial_no"),
+          dataField: "SERIAL_NO",
+          caption: this.$t("serial_nod"),
           alignment: "left",
           type: "text",
         },
         {
-          field: "FORM_NO",
-          title: this.$t("form_no"),
+          dataField: "FORM_NO",
+          caption: this.$t("form_nod"),
           alignment: "left",
           type: "text",
         },
         {
-          field: "NGAY",
-          title: this.$t("date"),
+          dataField: "NGAY",
+          caption: this.$t("date_d"),
           alignment: "left",
           type: "date",
         },
         {
-          field: "LADHDDT",
-          title: this.$t("type_invoice"),
+          dataField: "LADHDDT",
+          caption: this.$t("type_invoice"),
+          alignment: "left",
+          // type: "text",
+        },
+        {
+          dataField: "LADHDDT_NM",
+          caption: this.$t("type_invoice_name"),
+          alignment: "left",
+          // type: "text",
+        },
+        {
+          dataField: "TCTBAO",
+          caption: this.$t("invoice_type"),
           alignment: "left",
           type: "text",
         },
         {
-          field: "LADHDDT_NM",
-          title: this.$t("type_invoice_name"),
+          dataField: "TCTBAO_NM",
+          caption: this.$t("invoice_type_name"),
           alignment: "left",
           type: "text",
         },
         {
-          field: "TCTBAO",
-          title: this.$t("invoice_type"),
-          alignment: "left",
-          type: "text",
-        },
-        {
-          field: "TCTBAO_NM",
-          title: this.$t("invoice_type_name"),
-          alignment: "left",
-          type: "text",
-        },
-        {
-          field: "CANCEL_REASON",
-          title: this.$t("cancel_reason"),
+          dataField: "CANCEL_REASON",
+          caption: this.$t("cancel_reason"),
           alignment: "left",
           type: "text",
         },
@@ -865,7 +866,13 @@ export default {
       const results = await this._getCommonCode2(["ACEI0010", "ACEI0120", "ACEI0190", "ACEI0170", "ACEI0180", "ACEIS310", "ACEI0210", "ACEI0220"], this.user.TCO_COMPANY_PK)
       this.dataSearchList.statusList = results[0];
       this.dataMasterList.taxOfficeList = results[1];
-      this.dataMasterList.fromNoList = results[2];
+      this.dataMasterList.fromNoList = results[2].filter(x => x.VAL1 == '6095280');
+      this.dataMasterList.fromNoList.forEach((e) => {
+                            if (e.DEF_YN == "Y") {
+                                this.modelMaster.MSO = e.CODE;
+                            }
+                        });
+
       this.dataMasterList.categoriesList = results[3];
       this.dataMasterList.declarationNameList = results[4];
       this.e_invoice_type_list = results[5];

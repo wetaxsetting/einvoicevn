@@ -4531,7 +4531,7 @@ class EInvoiceController {
                 p_language,
                 p_crt_by
             );
-            console.log("rtnValue  ", rtnValue);
+            // console.log("rtnValue  ", rtnValue);
             tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
             if (rtnValue.p_rtn_cur[0].STATUS == "OK") {
                

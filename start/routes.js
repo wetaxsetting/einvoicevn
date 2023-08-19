@@ -133,9 +133,10 @@ Route.group(() => {
     Route.get("downloadpdf", "EInvoiceController.DownloadPDF")
     // WeTax
     Route.post("json-to-excel", "EInvoiceController.renderJsonToExcelFile")
-    Route.post("generate-declare-xml", "EInvoiceController.weTaxconvertDeclareUsingInvoiceToXML")
+    Route.post("generate-declare-xml", "EInvoiceController.weTaxConvertDeclareUsingInvoiceToXML")
     Route.post("send-declare", "EInvoiceController.weTaxSendDeclarationToTaxOffice")
     Route.post("check-status-declare", "EInvoiceController.weTaxCheckingDeclarations")
+    Route.post("generate-notice-cancel-adjust-replace-xml", "EInvoiceController.weTaxConvertInvalidInvoiceToXML")
     Route.post("send-order-to-invoice", "EInvoiceController.weTaxSendOrderInfo")
     Route.post("get-sendmail-invoice-status", "EInvoiceController.weTaxCheckStausSendMail")
 

@@ -137,6 +137,7 @@ Route.group(() => {
     Route.post("send-declare", "EInvoiceController.weTaxSendDeclarationToTaxOffice")
     Route.post("check-status-declare", "EInvoiceController.weTaxCheckingDeclarations")
     Route.post("send-order-to-invoice", "EInvoiceController.weTaxSendOrderInfo")
+    Route.post("get-sendmail-invoice-status", "EInvoiceController.weTaxCheckStausSendMail")
 
 }).prefix("api/einvoice").middleware("user");
 

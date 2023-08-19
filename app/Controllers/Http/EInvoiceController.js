@@ -389,7 +389,7 @@ class EInvoiceController {
         }
     }
 
-    async weTaxconvertDeclareUsingInvoiceToXML({ request, response, auth }) {
+    async weTaxConvertDeclareUsingInvoiceToXML({ request, response, auth }) {
         try {
             var p_language = request.header("accept-language", "ENG");
             var p_crt_by = "";
@@ -514,153 +514,155 @@ class EInvoiceController {
             Utils.Logger({
                 LVL: "error",
                 MODULE: "EInvoiceController",
-                FUNC: "convertDeclareUsingInvoiceToXML",
+                FUNC: "weTaxConvertDeclareUsingInvoiceToXML",
                 CONTENT: e.message,
             });
             return response.send(Utils.response(false, "error", e.message));
         }
     }
 
-  validateJsonToXML(declare) {
-    let status = true;
-    let resMess = "";
-    const mess1 = "Invalid field";
-    const mess2 = "Data invalid";
-    const errorList = {
-      version: "xample data",
-      declare_name: "xample data",
-      declare_type: "xample data",
-      seller_company_name: "xample data",
-      seller_taxcode: "xample data",
-      tax_office_name: "xample data",
-      tax_office_code: "xample data",
-      contact_person: "xample data",
-      contact_address: "xample data",
-      contact_email: "xample data",
-      contact_phone: "xample data",
-      location_name: "xample data",
-      created_date: "xample data",
-      has_code: "xample data",
-      no_code: "xample data",
-      pos_code: "xample data",
-      taxpayer_from_difficult_location: "xample data",
-      taxpayer_from_people_committee_suggestions: "xample data",
-      transfer_data_directly_to_tax_office: "xample data",
-      cdlqtvan: "xample data",
-      full_transfer: "xample data",
-      summary_transfer: "xample data",
-      vat_invoice: "xample data",
-      sales_invoice: "xample data",
-      sales_invoice_passet: "xample data",
-      sales_invoice_national: "xample data",
-      other_invoice: "xample data",
-      voucher: "xample data",
-      digital_certificates: [
-        {
-          sequence: 1,
-          organization_name: "SmartSign",
-          serial_no: "540101072FBF82CD8A4D89AEADEBCF88",
-          from_date: "2023-04-27T08:47:43",
-          to_date: "2024-07-27T08:47:42",
-          type: "1",
-        },
-      ],
-    };
-    const valueReq = [0, 1];
-
-    for (const key in errorList) {
-      // valid null of not null values
-      if (declare[key] === undefined || declare[key] == null) {
-        status = false;
-        resMess = `${mess1} ${key}.`;
-        return {
-          status,
-          message: resMess,
+  
+    validateJsonToXML(declare) {
+        let status = true;
+        let resMess = "";
+        const mess1 = "Invalid field";
+        const mess2 = "Data invalid";
+        const errorList = {
+          version: 6,
+          declare_name: 100,
+          declare_type: 1,
+          form_no: 15,
+          seller_company_name: 400,
+          seller_taxcode: 14,
+          tax_office_name: 100,
+          tax_office_code: 5,
+          contact_person: 50,
+          contact_address: 400,
+          contact_email: 50,
+          contact_phone: 20,
+          location_name: 50,
+          created_date: 10,
+          has_code: 1,
+          no_code: 1,
+          pos_code: 1,
+          taxpayer_from_difficult_location: 1,
+          taxpayer_from_people_committee_suggestions: 1,
+          transfer_data_directly_to_tax_office: 1,
+          cdlqtvan: 1,
+          full_transfer: 1,
+          summary_transfer: 1,
+          vat_invoice: 1,
+          sales_invoice: 1,
+          sales_invoice_passet: 1,
+          sales_invoice_national: 1,
+          other_invoice: 1,
+          voucher: 1,
+          digital_certificates: [
+            {
+              sequence: 1,
+              organization_name: "SmartSign",
+              serial_no: "540101072FBF82CD8A4D89AEADEBCF88",
+              from_date: "2023-04-27T08:47:43",
+              to_date: "2024-07-27T08:47:42",
+              type: "1",
+            },
+          ],
         };
-      }
-
-      // valid length
-      if(String(declare[key]).length > errorList[key] && key != 'digital_certificates'){
-        return {
-          status: false,
-          message: `Length of ${key} too long.`,
-        };
-      }
-
-      // valid data must be in valueReq
-      const valueReq = ["0", "1"];
-      if (
-        key == "has_code" ||
-        key == "no_code" ||
-        key == "pos_code" ||
-        key == "taxpayer_from_difficult_location" ||
-        key == "taxpayer_from_people_committee_suggestions" ||
-        key == "transfer_data_directly_to_tax_office" ||
-        key == "cdlqtvan" ||
-        key == "full_transfer" ||
-        key == "summary_transfer" ||
-        key == "vat_invoice" ||
-        key == "sales_invoice" ||
-        key == "sales_invoice_passet" ||
-        key == "sales_invoice_national" ||
-        key == "other_invoice" ||
-        key == "voucher"
-      ) {
-        if (!valueReq.includes(String(declare[key]))) {
-          status = false;
-          resMess = `${mess2}. Field ${key}.`;
-          return {
-            status,
-            message: resMess,
-          };
+    
+        for (const key in errorList) {
+          // valid null of not null values
+          if (declare[key] === undefined || declare[key] == null) {
+            status = false;
+            resMess = `${mess1} ${key}.`;
+            return {
+              status,
+              message: resMess,
+            };
+          }
+    
+          // valid length
+          if(String(declare[key]).length > errorList[key] && key != 'digital_certificates'){
+            return {
+              status: false,
+              message: `Length of ${key} too long.`,
+            };
+          }
+    
+          // valid data must be in valueReq
+          const valueReq = ["0", "1"];
+          if (
+            key == "has_code" ||
+            key == "no_code" ||
+            key == "pos_code" ||
+            key == "taxpayer_from_difficult_location" ||
+            key == "taxpayer_from_people_committee_suggestions" ||
+            key == "transfer_data_directly_to_tax_office" ||
+            key == "cdlqtvan" ||
+            key == "full_transfer" ||
+            key == "summary_transfer" ||
+            key == "vat_invoice" ||
+            key == "sales_invoice" ||
+            key == "sales_invoice_passet" ||
+            key == "sales_invoice_national" ||
+            key == "other_invoice" ||
+            key == "voucher"
+          ) {
+            if (!valueReq.includes(String(declare[key]))) {
+              status = false;
+              resMess = `${mess2}. Field ${key}.`;
+              return {
+                status,
+                message: resMess,
+              };
+            }
+          }
         }
-      }
-    }
-
-    // valid digital_certificates
-    if(!declare.digital_certificates[0]){
-      return {
-        status: false,
-        message:`${mess1} digital_certificates.`,
-      };
-    }
-
-    for (const key in errorList.digital_certificates[0]) {
-      // valid digital_certificates 
-      if (declare.digital_certificates[0][key] === undefined || declare.digital_certificates[0][key] == null) {
-        status = false;
-        resMess = `${mess1} digital_certificates ${key}.`;
-        return {
-          status,
-          message: resMess,
-        };
-      }
-      // vald date
-      if(key =='from_date' || key =='to_date'){
-        if(new Date(declare.digital_certificates[0][key]) == 'Invalid Date'){
+    
+        // valid digital_certificates
+        if(!declare.digital_certificates[0]){
+            return {
+              status: false,
+              message:`${mess1} digital_certificates.`,
+            };
+          }
+        for (let i = 0; i < declare.digital_certificates.length; i++) {
+            for (const key in errorList.digital_certificates[0]) {
+                // valid digital_certificates 
+                if (declare.digital_certificates[i][key] === undefined || declare.digital_certificates[i][key] == null) {
+                  status = false;
+                  resMess = `${mess1} digital_certificates ${key}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                // vald date
+                if(key =='from_date' || key =='to_date'){
+                  if(new Date(declare.digital_certificates[i][key]) == 'Invalid Date'){
+                    return {
+                      status: false,
+                      message: `Invalid Date. key digital_certificates ${key}`,
+                    };
+                  }
+                }
+              }
+        }
+    
+        // valid declare_type must be in valueDT
+        const valueDT = ['1', '2'];
+        if (!valueDT.includes(String(declare.declare_type))) {
           return {
             status: false,
-            message: `Invalid Date. key digital_certificates ${key}`,
+            message: `declare_type must be 1 or 2. Receive: declare_type = ${declare.declare_type}`,
           };
         }
+    
+        // if dont have any problem
+        return {
+          status,
+          message: resMess,
+        };
       }
-    }
-
-    // valid declare_type must be in valueDT
-    const valueDT = [1, 2];
-    if (!valueDT.includes(declare.declare_type)) {
-      return {
-        status: false,
-        message: `declare_type must be 1 or 2. Receive: declare_type = ${declare.declare_type}`,
-      };
-    }
-
-    // if dont have any problem
-    return {
-      status,
-      message: resMess,
-    };
-  }
 
     OBJtoXML(obj) {
         var xml = "";
@@ -835,6 +837,197 @@ class EInvoiceController {
             });
             return response.send(Utils.response(false, "error", e.message));
         }
+    }
+
+   
+
+    async weTaxConvertInvalidInvoiceToXML({ request, response, auth }) {
+        try {
+            var p_language = request.header("accept-language", "ENG");
+            var p_crt_by = "";
+            const user = await auth.getUser();
+            if (user) {
+                p_crt_by = user.USER_ID;
+            }
+            const { invalid_invoices } = request.all();
+
+            const valid = this.validateJsonInvalidInvoiceToXML(invalid_invoices);
+            if (!valid.status) {
+                return response.send(Utils.response(valid.status, valid.message, null));
+            }
+
+            let jsonInvalidInvoices = {
+                TBao: {
+                    DLTBao: {
+                        PBan: "v2.0.0",
+                        MSo: "04/SS-HĐĐT",
+                        Ten: "Thông báo hóa đơn điện tử có sai sót",
+                        Loai: 1,
+                        So: "",
+                        NTBCCQT: "",
+                        TCQT: "Chi cục thuế thành phố Hà Nội",
+                        MCQT: 101,
+                        MST: 104918404,
+                        TNNT: "Vinmart",
+                        DDanh: "Hà Nội",
+                        NTBao: "2021-10-07",
+                        DSHDon: {
+                            HDon: [
+                                /*{
+                                                                                MCQTCap: 1234,
+                                                                                KHMSHDon: 4,
+                                                                                KHHDon: "C21TYY",
+                                                                                SHDon: 411,
+                                                                                Ngay: "2021-10-07",
+                                                                                LADHDDT: 1,
+                                                                                TCTBao: 2,
+                                                                                LDo: "Điều chỉnh tên người bán cho hóa đơn Mẫu số 6 ký hiệu C21TYY số 61 ngày 29 tháng 09 năm 2021"
+                                                                            },*/
+                            ],
+                        },
+                    },
+                    DSCKS: {
+                        NNT: "",
+                    },
+                },
+            };
+           
+            jsonInvalidInvoices.TBao.DLTBao.PBan = invalid_invoices.version;
+            jsonInvalidInvoices.TBao.DLTBao.MSo = invalid_invoices.declare_name;
+            jsonInvalidInvoices.TBao.DLTBao.Ten = invalid_invoices.declare_type;
+            jsonInvalidInvoices.TBao.DLTBao.Loai = invalid_invoices.form_no;
+            jsonInvalidInvoices.TBao.DLTBao.TCQT = invalid_invoices.tax_office_name;
+            jsonInvalidInvoices.TBao.DLTBao.MCQT = invalid_invoices.tax_office_code;
+            jsonInvalidInvoices.TBao.DLTBao.MST = invalid_invoices.seller_taxcode;
+            jsonInvalidInvoices.TBao.DLTBao.TNNT = invalid_invoices.seller_company_name;
+            jsonInvalidInvoices.TBao.DLTBao.DDanh = invalid_invoices.location_name;
+            jsonInvalidInvoices.TBao.DLTBao.NTBao = invalid_invoices.inform_date;
+
+            for (let i = 0; i < invalid_invoices.invoices.length; i++) {
+                jsonInvalidInvoices.TBao.DLTBao.DSHDon.HDon.push({
+                    MCQTCap: invalid_invoices.invoices[i].tax_confirmation_code,
+                    KHMSHDon: invalid_invoices.invoices[i].form_no,
+                    KHHDon: invalid_invoices.invoices[i].serial_no,
+                    SHDon: invalid_invoices.invoices[i].invoice_no,
+                    Ngay: invalid_invoices.invoices[i].invoice_date,
+                    LADHDDT: invalid_invoices.invoices[i].invoice_type,
+                    TCTBao: invalid_invoices.invoices[i].inform_type,
+                    LDo: invalid_invoices.invoices[i].reason,
+                });
+            }
+            const id = uuid.v4();
+            const xml = this.OBJtoXML(jsonInvalidInvoices);
+            const xmlId = xml.toString().replace("<DLTBao>", `<DLTBao Id=\'${id}\'>`);
+            const xmlRemoveLine = xmlId.toString().replace(/\n/g, "");
+
+            return response.send(
+                Utils.response(true, `Convert invalid invoices to xml was successful.`, {
+                    xml_data: xmlRemoveLine,
+                    sign_id: id,
+                })
+            );
+            
+        } catch (e) {
+            Utils.Logger({
+                LVL: "error",
+                MODULE: "EInvoiceController",
+                FUNC: "weTaxConvertInvaliInvoiceToXML",
+                CONTENT: e.message,
+            });
+            return response.send(Utils.response(false, "error", e.message));
+        }
+    }
+
+    validateJsonInvalidInvoiceToXML(invalid_invoices) {
+        let status = true;
+        let resMess = "";
+        const mess1 = "Invalid field";
+        const errorList = {
+            version: 6,
+            declare_name: 100,
+            declare_type: 1,
+            form_no: 15,
+            tax_office_code: 5,
+            tax_office_name: 100,
+            seller_taxcode: 14,
+            seller_company_name: 400,
+            location_name: 50,
+            inform_date: 10,
+            invoices: [{
+                tax_confirmation_code: 34,
+                form_no: 1,
+                serial_no: 8,
+                invoice_no: 8,
+                invoice_date: 10,
+                invoice_type: 1,
+                inform_type: 1,
+                reason: 255
+            }],
+        };
+    
+        for (const key in errorList) {
+          // valid null of not null values
+          if (invalid_invoices[key] === undefined || invalid_invoices[key] == null) {
+            status = false;
+            resMess = `${mess1} ${key}.`;
+            return {
+              status,
+              message: resMess,
+            };
+          }
+    
+          // valid length
+          if(String(invalid_invoices[key]).length > errorList[key] && key != 'invoices'){
+            return {
+              status: false,
+              message: `Length of ${key} too long.`,
+            };
+          }
+    
+        }
+    
+        // valid invoices
+        if(!invalid_invoices.invoices[0]){
+          return {
+            status: false,
+            message:`${mess1} invoices.`,
+          };
+        }
+        
+        for (let i = 0; i < invalid_invoices.invoices.length; i++) {
+            for (const key in errorList.invoices[0]) {
+                // valid digital_certificates 
+                if (invalid_invoices.invoices[i][key] === undefined || invalid_invoices.invoices[i][key] == null) {
+                  status = false;
+                  resMess = `${mess1} invoices ${key}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                // vald length
+                if(String(invalid_invoices.invoices[i][key]).length > errorList.invoices[0][key]){
+                    return {
+                      status: false,
+                      message: `Length of invoices.${key} too long.`,
+                    };
+                  }
+        }
+
+        const valueDT = ['1', '2'];
+        if (!valueDT.includes(String(invalid_invoices.declare_type))) {
+          return {
+            status: false,
+            message: `invalid_invoices must be 1 or 2. Receive: declare_type = ${invalid_invoices.declare_type}`,
+          };
+        }
+
+        // if dont have any problem
+        return {
+          status,
+          message: resMess,
+        };
+      }
     }
 
     async convertInvoiceToXML({ request, response, auth }) {
@@ -2457,7 +2650,7 @@ class EInvoiceController {
                     status = "",
                     base64XML = "",
                     XML = "";
-                if (!res.data) {
+                if (!res.data.length) {
                     return response.send(Utils.response(false, `no data found.`));
                 }
                 for (let item of res.data) {
@@ -2476,6 +2669,9 @@ class EInvoiceController {
                         } else if (child.loaiTBao == "5"){
                             status = "1";
                             tenTBao = child.tenTBao;
+                        }else{
+                            status = child.loaiTBao;
+                            tenTBao = child.tenTBao || child.message;
                         }
                         
 
@@ -5504,7 +5700,6 @@ class EInvoiceController {
                 return jsonBase64XML[0].MCCQT
             }else
             {
-                console.log("-1111");
                 return -1
             }
           

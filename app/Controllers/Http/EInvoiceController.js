@@ -399,7 +399,7 @@ class EInvoiceController {
             }
             const { declare } = request.all();
 
-            const valid = this.validateJsonToXML(declare);
+            const valid = this.validateDeclareJson(declare);
             if (!valid.status) {
                 return response.send(Utils.response(valid.status, valid.message, null));
             }
@@ -459,9 +459,9 @@ class EInvoiceController {
         },
       };
       jsonDeclare.TKhai.DLTKhai.TTChung.PBan = declare.version;
+      jsonDeclare.TKhai.DLTKhai.TTChung.Mso = declare.form_no;
       jsonDeclare.TKhai.DLTKhai.TTChung.Ten = declare.declare_name;
       jsonDeclare.TKhai.DLTKhai.TTChung.HThuc = declare.declare_type;
-      jsonDeclare.TKhai.DLTKhai.TTChung.Mso = declare.form_no;
       jsonDeclare.TKhai.DLTKhai.TTChung.TNNT = declare.seller_company_name;
       jsonDeclare.TKhai.DLTKhai.TTChung.MST = declare.seller_taxcode;
       jsonDeclare.TKhai.DLTKhai.TTChung.CQTQLy = declare.tax_office_name;
@@ -522,7 +522,7 @@ class EInvoiceController {
     }
 
   
-    validateJsonToXML(declare) {
+    validateDeclareJson(declare) {
         let status = true;
         let resMess = "";
         const mess1 = "Invalid field";
@@ -1028,8 +1028,20 @@ class EInvoiceController {
           status,
           message: resMess,
         };
-     
     }
+
+    parseXmlToJson(xml) {
+        const json = {};
+        for (const res of xml.matchAll(/(?:<(\w*)(?:\s[^>]*)*>)((?:(?!<\1).)*)(?:<\/\1>)|<(\w*)(?:\s*)*\/>/gm)) {
+            const key = res[1] || res[3];
+            const value = res[2] && this.parseXmlToJson(res[2]);
+            json[key] = ((value && Object.keys(value).length) ? value : res[2]) || null;
+
+        }
+        return json;
+    }
+
+
 
     async convertInvoiceToXML({ request, response, auth }) {
         try {
@@ -2396,6 +2408,11 @@ class EInvoiceController {
             const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/dkyhddt/dkysdung";
             const { xml_signed, tax_code, declare_key } = request.all();
 
+           const valid = this.validateDeclareXML(this.parseXmlToJson(xml_signed));
+           if (!valid.status) {
+            return response.send(Utils.response(valid.status, valid.message, null));
+            }
+
             const agent = {
                 Agent: {
                     defaultPort: 443,
@@ -2446,6 +2463,176 @@ class EInvoiceController {
                 CONTENT: e.message,
             });
             return response.send(Utils.response(false, "error", e.message));
+        }
+    }
+
+    validateDeclareXML(declare){
+        let status = true;
+        let resMess = "";
+        const mess1 = "Invalid field";
+        const mess2 = "Data invalid";
+        if(!declare.TKhai){
+            return {
+                status: false,
+                message: `${mess1} TKhai.`
+            }
+        }
+        if(!declare.TKhai.DLTKhai){
+            return {
+                status: false,
+                message: `${mess1} DLTKhai.`
+            }
+        }
+        if(!declare.TKhai.DSCKS){
+            return {
+                status: false,
+                message: `${mess1} DSCKS (unsigned).`
+            }
+        }
+        if(!declare.TKhai.DSCKS.NNT){
+            return {
+                status: false,
+                message: `${mess1} NNT (unsigned).`
+            }
+        }
+
+        const errorList = {
+            DLTKhai: {
+                TTChung:{
+                    PBan: 6,
+                    MSo: 15,
+                    Ten: 100,
+                    HThuc: 1,
+                    TNNT: 400,
+                    MST: 14,
+                    CQTQLy: 100,
+                    MCQTQLy: 5,
+                    NLHe: 50,
+                    DCLHe: 400,
+                    DCTDTu: 50,
+                    DTLHe: 20,
+                    DDanh: 50,
+                    NLap: 10,
+                },
+                NDTKhai: {
+                    HTHDon: {
+                      CMa: 1,
+                      KCMa: 1,
+                      CMTMTTien: 1,
+                    },
+                    HTGDLHDDT: {
+                      NNTDBKKhan: 1,
+                      NNTKTDNUBND: 1,
+                      CDLTTDCQT: 1,
+                      CDLQTVAN: 1,
+                    },
+                    PThuc: {
+                      CDDu: 1,
+                      CBTHop: 1,
+                    },
+                    LHDSDung: {
+                      HDGTGT: 1,
+                      HDBHang: 1,
+                      HDBTSCong: 1,
+                      HDBHDTQGia: 1,
+                      HDKhac: 1,
+                      CTu: 1,
+                    },
+                      DSCTSSDung: {
+                        CTS: {
+                            STT: 1,
+                            TTChuc: "SmartSign",
+                            Seri: "540101072FBF82CD8A4D89AEADEBCF88",
+                            TNgay: "2023-04-27T08:47:43",
+                            DNgay: "2024-07-27T08:47:42",
+                            HThuc: "1",
+                        },
+                        },
+                     },
+                },
+           
+        };
+
+        for (const key in errorList.DLTKhai) {
+            // valid null of not null values
+            if (declare.TKhai.DLTKhai[key] === undefined || declare.TKhai.DLTKhai[key] == null) {
+              status = false;
+              resMess = `${mess2} ${key}.`;
+              return {
+                status,
+                message: resMess,
+              };
+            }
+        }
+        for (const key in errorList.DLTKhai.TTChung) {
+           if(String(declare.TKhai.DLTKhai.TTChung[key]).length > errorList.DLTKhai.TTChung[key]){
+               return {
+               status: false,
+               message: `${mess2} ${key}.`,
+               };
+           }
+       }
+    //     for (const key in errorList.DLTKhai.NDTKhai) {
+    //         // if(status == false){
+    //         //     return {
+    //         //         status: status,
+    //         //         message: resMess,
+    //         //     };
+    //         // }
+    //         for (const childKey in errorList.DLTKhai.NDTKhai[key]) {
+    //             if(String(declare.TKhai.DLTKhai.NDTKhai[key][childKey]).length > errorList.DLTKhai.NDTKhai[key][childKey] && childKey != 'DSCTSSDung'){
+    //                 status= false;
+    //                 resMess = `Length of ${key} ${childKey} too long.`
+    //                 return {
+    //                     status: status,
+    //                     message: resMess,
+    //                 };
+    //             }
+        
+    //           // valid data must be in valueReq
+    //           const valueReq = ["0", "1"];
+    //           if (
+    //             key == 'CMa' ||
+    //             key == 'KCMa' ||
+    //             key == 'CMTMTTien' ||
+    //             key == 'NNTDBKKhan' ||
+    //             key == 'NNTKTDNUBND' ||
+    //             key == 'CDLTTDCQT' ||
+    //             // key == 'CDLQTVAN' ||
+    //             key == 'CDDu' ||
+    //             key == 'CBTHop' ||
+    //             key == 'HDGTGT' ||
+    //             key == 'HDBHang' ||
+    //             key == 'HDBTSCong' ||
+    //             key == 'HDBHDTQGia' ||
+    //             key == 'HDKhac' ||
+    //             key == 'CTuer'
+    //           ) {
+    //             if (!valueReq.includes(String(declare.TKhai.DLTKhai.NDTKhai[key][childKey]))) {
+    //               status = false;
+    //               resMess = `${mess2}. Field ${key} ${key}.`;
+    //               return {
+    //                 status: status,
+    //                 message: resMess,
+    //             };
+    //             }
+    //           }
+    //         }
+    //         console.log(resMess);
+    //    }
+        // for (const key in errorList.DLTKhai.NDTKhai.DSCTSSDung.CTS) {
+        //     if(!declare.TKhai.DLTKhai.NDTKhai.DSCTSSDung.CTS[key]) {
+        //         status = false;
+        //         resMess = `${mess1} CTS ${key}.`;
+        //         return {
+        //             status,
+        //             message: resMess,
+        //         };
+        //     }
+        // }
+        return {
+            status : status,
+            message: resMess,
         }
     }
 

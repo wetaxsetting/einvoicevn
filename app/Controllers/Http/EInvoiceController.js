@@ -975,7 +975,7 @@ class EInvoiceController {
               message: resMess,
             };
           }
-    
+          
           // valid length
           if(String(invalid_invoices[key]).length > errorList[key] && key != 'invoices'){
             return {
@@ -996,6 +996,7 @@ class EInvoiceController {
         
         for (let i = 0; i < invalid_invoices.invoices.length; i++) {
             for (const key in errorList.invoices[0]) {
+                
                 // valid digital_certificates 
                 if (invalid_invoices.invoices[i][key] === undefined || invalid_invoices.invoices[i][key] == null) {
                   status = false;
@@ -1012,8 +1013,8 @@ class EInvoiceController {
                       message: `Length of invoices.${key} too long.`,
                     };
                   }
+            }
         }
-
         const valueDT = ['1', '2'];
         if (!valueDT.includes(String(invalid_invoices.declare_type))) {
           return {
@@ -1027,7 +1028,7 @@ class EInvoiceController {
           status,
           message: resMess,
         };
-      }
+     
     }
 
     async convertInvoiceToXML({ request, response, auth }) {

@@ -280,7 +280,7 @@
                         <v-col md="6">
                             <v-select cache-items dense hide-details outlined clearable class="pb-3" item-value="PK"
                                 item-text="TEXT" :label="$t('from_company')" :items="company_list"
-                                v-model="selectedCompanyFrom"></v-select>
+                                v-model="selectedCompanyFrom" @change="onChangeCompanyFrom"></v-select>
                         </v-col>
                         <v-col md="6">
                             <v-select cache-items dense hide-details outlined class="pb-3" item-value="PK" item-text="TEXT"
@@ -1520,6 +1520,25 @@ export default {
             }
         },
 
+        async onChangeCompanyFromM() {
+            //this.selectedCompanyFrom = this.selected_company;
+            this.fromNoList = [];
+            this.serialNoList = [];
+
+            const dso_bizplace_list = {
+                type: "list",
+                selpro: "SYS_SEL_BIZ_PLACE_V2",
+                para: [this.selectedCompanyFrom, this.user.PK],
+            };
+            this.bizplaceListTo = await this._dsoCall(
+                dso_bizplace_list,
+                "select",
+                false
+            );
+            if (this.bizplaceList.length > 0) {
+                this.lstBizplaceTo = this.bizplaceListTo[0].PK;
+            }
+        },
         onNew() {
             this.$refs.grdEinvoiceIssue.addRowStruct({
                 PK: "",

@@ -14,7 +14,7 @@ class EiExcelConverter {
 		logos, signCell, signBoxCell, signByCell, cancelYn, backgroundCell,
 		backgroundWidth, backgroundHeight) {
 		let reportInfo = { CODE: '01', NAME: einvoiceMasterData[0]["PK"], PATH: reportPath };//that is the report template path.
-		// console.log(einvoiceMasterData)
+		 console.log(reportInfo)
 		//console.log(einvoiceDetailData)
 		try {
 
@@ -592,6 +592,7 @@ class EiExcelConverter {
 								}
 
 							}
+							console.log("bgPath " , bgPath, " backgroundCell ", backgroundCell, "  backgroundRow  ", backgroundRow, " backgroundWidth ", backgroundWidth, " backgroundHeight  " ,backgroundHeight )
 							if (bgPath != "") {
 								try {
 									worksheet.addImage(await exceljs.insertPathImage(bgPath), {
@@ -668,7 +669,6 @@ class EiExcelConverter {
 				}
 
 			}
-
 			else {
 				for (let j = 0; j < page.length; j++) {
 					const e = parseInt(page[j])
@@ -733,6 +733,7 @@ class EiExcelConverter {
 									}
 
 								}
+								console.log("bgPath " , bgPath, " backgroundCell ", backgroundCell, "  _sourceRow_2  ", _sourceRow_2, " backgroundWidth ", backgroundWidth, " backgroundHeight  " ,backgroundHeight )
 								if (bgPath != "") {
 									try {
 										worksheet.addImage(await exceljs.insertPathImage(bgPath), {

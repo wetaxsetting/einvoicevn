@@ -37,6 +37,7 @@ const DB_CONNECTION = Env.get("DB_CONNECTION");
 const DBService = use("DBService");
 const oracledb = require("oracledb");
 // const { result_lodash } = require("lodash-es");
+const RenderJsonToExcelFile = use("App/Helpers/RenderJsonToExcelFile");
 const EiExcelHandler = use("App/Helpers/EiExcelHandler");
 const EiExcelHandlerAuto = use("App/Helpers/EiExcelHandlerAuto");
 const EiPosExcelConverter = use("App/Helpers/EiPosExcelConverter");
@@ -56,6 +57,12 @@ const EINVOICE_API_SEND_MAIL = "http://sendmail.genuwinsolution.com/api/user/sen
 
 
 class EInvoiceController {
+    
+   async renderJsonToExcelFile(){
+        const exjs = new RenderJsonToExcelFile();
+        const res = await exjs.createFille();
+    }
+
     async einvoicePdfConvert({ request, response, auth }) {
         var p_language = request.header("accept-language", "ENG");
         var p_crt_by = "";
@@ -4768,6 +4775,7 @@ class EInvoiceController {
         let url_xml = await Request.get( APP_URL_LOCAL+"/api/dso/getfiledbtoken?pk=" + pk + "&proc=" + proc + "&token=");
         return url_xml;
     }
+   
 }
 
 module.exports = EInvoiceController;

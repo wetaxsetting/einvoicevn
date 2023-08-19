@@ -107,7 +107,7 @@
                                 <b> {{ $t('template_table') }} </b>
                             </v-col>
                             <v-col md="10" class="d-flex justify-end">
-                                <GwImportExcelFile :label="$t('import_ar_invoice')" :impMultipleTemp="imp_MultipleTemp"
+                                <GwPutFile :label="$t('import_ar_invoice')" :impMultipleTemp="imp_MultipleTemp"
                                     :impCboTemp="cboTemplate" @onrtnseltemp="selTemplate = $event" :impAddParam="[
                                         this.selected_company,
                                         this.lstBizplace,

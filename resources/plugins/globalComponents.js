@@ -38,7 +38,8 @@ import GwFlexBox from "@/components/control/GwFlexBox";
 import GwDashboardCard from "@/components/control/GwDashboardCard";
 import GwSlideGroup from "@/components/control/GwSlideGroup";
 import BaseXmlTree from "@/components/control/BaseXmlTree";
-
+import GwPutFile from "@/components/control/GwPutFile";
+import GwImportExcelFile from "@/components/control/GwImportExcelFile";
 
 Vue.component("DatePicker", DatePicker)
 Vue.component("DataGridView", DataGridView)
@@ -76,3 +77,5 @@ Vue.component("GwFlexBox", GwFlexBox)
 Vue.component("GwDashboardCard", GwDashboardCard)
 Vue.component("GwSlideGroup", GwSlideGroup)
 Vue.component("BaseXmlTree", BaseXmlTree)
+Vue.component("GwImportExcelFile", GwImportExcelFile)  
+Vue.component("GwPutFile", GwPutFile)

@@ -42,6 +42,7 @@ const EiExcelHandler = use("App/Helpers/EiExcelHandler");
 const EiExcelHandlerAuto = use("App/Helpers/EiExcelHandlerAuto");
 const EiPosExcelConverter = use("App/Helpers/EiPosExcelConverter");
 const EiPosExcelHandler = use("App/Helpers/EiPosExcelHandler");
+const EiPosExcelHandlerAuto = use("App/Helpers/EiPosExcelHandlerAuto");
 const URL = "http://demosign.easyca.vn:8080/api";
 const Username = "demo_easysign";
 const Password = "demo_easysign";
@@ -4792,7 +4793,7 @@ class EInvoiceController {
             }
 
 
-            let EiExcel = new EiPosExcelHandler();
+            let EiExcel = new EiPosExcelHandlerAuto();
             let url_pdf = await EiExcel.getEinvoice(tei_wt_sale_bill_pk , p_language, p_crt_by);
             // console.log("base64PDf  ", url_pdf);
             let re_url_xml = await Request.get( APP_URL_LOCAL+"/api/dso/getfiledbtoken?pk=" + tei_wt_sale_bill_pk + "&proc=" + "EI_SEL_XML_POS_EINVOICE" + "&token=");//  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );

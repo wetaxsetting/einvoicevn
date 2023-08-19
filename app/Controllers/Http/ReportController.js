@@ -876,7 +876,7 @@ class ReportController {
 
             let {  path } = request.all();
             let rtnFile = "";
-            //console.log("GetFileTemplate2", path);
+            console.log("GetFileTemplate2", path);
 
             if(path) {
                 rtnFile =  Helpers.resourcesPath(path);

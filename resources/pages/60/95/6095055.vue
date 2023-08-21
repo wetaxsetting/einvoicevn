@@ -110,7 +110,6 @@
                                 <GwPutFile :label="$t('import_ar_invoice')" :impMultipleTemp="imp_MultipleTemp"
                                     :impCboTemp="cboTemplate" @onrtnseltemp="selTemplate = $event" :impAddParam="[
                                         this.selected_company,
-                                        this.lstBizplace,
                                         this.itemTemplatePK
                                     ]" @onAfterImport="onAfterImport" />
                                 <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('template_file')"

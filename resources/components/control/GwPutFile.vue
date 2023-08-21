@@ -194,7 +194,7 @@ export default {
                 this.showNotification("danger", this.impValidate, "", 3001);
             } else {
                //console.log("impCboTemp " , this.impCboTemp);
-               let path = "", sProd = "AC_UPD_TEMPLATE_EINVOICE";
+               let path = "", sProd = "EI_UPD_TEMPLATE_EINVOICE";
                this.impCboTemp.forEach(item => {
                     if(item.CODE == this.selTempType)
                     {
@@ -204,7 +204,7 @@ export default {
                 });
                 // let jsonParam = [];
 
-                // console.log("this.fileSave  ", this.impAddParam);
+                console.log("this.fileSave  ", this.impAddParam);
                 const fd = new FormData();
                 fd.append("file", this.fileSave);
                 fd.append('proc', sProd);
@@ -216,10 +216,12 @@ export default {
                     url: "/dso/uploadfileexcel",
                     data: fd,
                 });
+                console.log("res  ", res);
                 if (res.data.data) {
                     // this.fileSave = null;
                     // this.fileName = null;
                     // this.txtFile = [];
+                    
                     this.showNotification(
                     "success",
                     this.$t("PROCESS_SUCCESS", "COMMON"),

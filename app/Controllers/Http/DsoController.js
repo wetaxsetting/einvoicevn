@@ -54,6 +54,76 @@ class DsoController {
             return response.send(Utils.response(false, e.message, null));
         }
     }
+    async UploadExcelToFolder({request, response, auth}) {
+    let p_crt_by = '';
+    console.log("request  ", request);
+    const user = await auth.getUser();
+    if (user) {
+      p_crt_by = user.USER_ID;
+    }
+    // console.log("request  ", request);
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      const file = request.file('file');
+      // const file_size = file.size;
+      // const file_name = file.clientName;
+      // const file_ext = file.extname;
+      // const file_type = file.type;
+
+      let {folder, proc, para, type_insert} = request.all();
+      if (!folder) {
+        return response.send(Utils.response(false, 'missing_folder_parameter', null));
+      }
+
+      // console.log("folder " + folder + " file_ext  " + file_ext);
+      let file_path = await Utils.putExcelRootPath(file, folder, type_insert);
+      let result;
+
+      // console.log("para  ", para);
+
+      const dbInfo = Utils.handleDBInfo(user);
+
+      if (file_path != '') {
+        const params = JSON.parse(para);
+        if (type_insert !== 'EXCEL') {
+          file_path = file_path.replace(folder + '/', '');
+        } else {
+          file_path = file_path.replace('/resources/', '');
+        }
+        console.log("params  ", params);
+        result = await DBService.ExecuteSQLBlob(
+          `BEGIN ${proc}(:p_tco_company_pk,
+                                    :p_tco_template_pk,
+                                    :p_type_update, 
+                                    :p_url,
+                                    :p_language,
+                                    :p_crt_by,
+                                    :p_rtn_cur); END;`,
+          {
+            p_tco_company_pk: params[0],
+            p_tco_template_pk: params[1],
+            p_type_update: type_insert,
+            p_url: file_path,
+          },
+          p_language,
+          p_crt_by,
+          dbInfo,
+        );
+        // console.log("result ==>   ", result);
+      }
+      return response.send(Utils.response(true, 'Upload file was sucessfull', file_path));
+    } catch (e) {
+      Utils.ConsoleLogError(e.message);
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'DsoController',
+        FUNC: 'UploadExcelToFolder',
+        CONTENT: e.message,
+        CRT_BY: p_crt_by,
+      });
+      return response.send(Utils.response(false, e.message, null));
+    }
+  }
     async DownloadFileDBToken({ request, response, auth }) {
         try {
             const { token, proc, pk } = request.all();

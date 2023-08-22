@@ -889,6 +889,72 @@ class Utils {
 
         }
         return _str;
+    } 
+    handleDBInfo(user) {
+        let dbinfo = {
+            pool_name: "",
+            db_user: "",
+            db_user_pw: "",
+            db_ip: "",
+            db_port: "",
+            db_sid: "",
+            company_code: "",
+        };
+        try {
+            if (user) {
+                dbinfo = {
+                    pool_name: user.COMPANY_CODE || user.company_code,
+                    db_user: user.DB_USER || user.db_user,
+                    db_user_pw: user.DB_USER_PW || user.db_user_pw,
+                    db_ip: user.DB_IP || user.db_ip,
+                    db_port: user.DB_PORT || user.db_port,
+                    db_sid: user.DB_SID || user.db_sid,
+                    company_code: user.COMPANY_CODE || user.company_code,
+                };
+            }
+            return dbinfo;
+        } catch (e) {
+            console.log("handleDBInfo: ", e);
+            return dbinfo;
+        }
+    }
+    async putExcelRootPath(file, folder, type_insert) {
+        try {
+            const type = typeof file;
+            const clientName =
+                type === "string" ?
+                    file
+                        .split("?")[0]
+                        .split(".")
+                        .pop() :
+                    file.clientName;
+            let path_result = ``;
+            let path = ``;
+
+            console.log("type_insert =>>  " + type_insert  +  "folder  ===> " + folder + " clientName ==>  " + clientName)
+            if (type_insert == "EXCEL") {
+                path_result = `/resources/report/${folder}/${clientName}`;
+                path = `/resources/report/${folder}`;
+            } else {
+                path_result = `${folder}/${clientName}`;
+                path = `/resources/${folder}`;
+            }
+
+
+            let savePath = Helpers.appRoot(path);
+            if (type !== "string") {
+                await file.move(savePath, {
+                    name: clientName,
+                    overwrite: true
+                });
+            }
+
+            return `${path_result}`;
+        } catch (e) {
+            console.log(" putExcelRootPath", e);
+        }
+
+
     }
 }
 

@@ -8,12 +8,12 @@
             <BaseSelect :label="$t('company')" v-model="selected_company" :lstData="company_list" item-text="TEXT" item-value="PK" @change="onChangeCompany" />
           </v-col>
           <v-col md="5" class="d-flex justify-end">
-            <BaseButton icon_type="search" btn_type="icon" :btn_text="$t('search')" :disabled="isProcessing" @onclick="onClickButton('SEARCH_M')" />
+            <BaseButton icon_type="search" btn_type="icon" :btn_text="$t('search')" @onclick="onClickButton('SEARCH_M')" />
 
-            <BaseButton btn_type="icon" icon_type="copy" @onclick="copyToDialog = true" :disabled="isProcessing" />
-            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="isProcessing" @onclick="onClickButton('NEW_M')" />
-            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="isProcessing" @onclick="onClickButton('DELETE_M')" />
-            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="isProcessing" @onclick="onClickButton('SAVE_M')" />
+            <BaseButton btn_type="icon" icon_type="copy" @onclick="copyToDialog = true" />
+            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" @onclick="onClickButton('NEW_M')" />
+            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClickButton('DELETE_M')" />
+            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClickButton('SAVE_M')" />
           </v-col>
         </v-row>
         <v-row dense>
@@ -94,10 +94,10 @@
               @onAfterImport="onAfterImport"
             />
             <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('template_file')" @onclick="getImpFile" />
-            <BaseButton btn_type="icon" icon_type="view" :btn_text="$t('view')" :disabled="isProcessing" @onclick="onClickButton('VIEW')" />
-            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="isProcessing" @onclick="onClickButton('NEW_T')" />
-            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="isProcessing" @onclick="onClickButton('DELETE_T')" />
-            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="isProcessing" @onclick="onClickButton('SAVE_T')" />
+            <BaseButton btn_type="icon" icon_type="view" :btn_text="$t('view')" @onclick="onClickButton('VIEW')" />
+            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="!item_pk" @onclick="onClickButton('NEW_T')" />
+            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="!item_pk" @onclick="onClickButton('DELETE_T')" />
+            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="!item_pk" @onclick="onClickButton('SAVE_T')" />
           </v-col>
           <v-row lg="12">
             <v-col>
@@ -189,9 +189,9 @@
             <BaseInput :outlined="true" :label="$t('param_code_master')" v-model="txtParamCodeMaster" @keyPressEnter="onLoadDataParamM" />
           </v-col>
           <v-col md="3" class="d-flex justify-end">
-            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="isProcessing" @onclick="onClickButton('NEW_PM')" />
-            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="isProcessing" @onclick="onClickButton('DELETE_PM')" />
-            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="isProcessing" @onclick="onClickButton('SAVE_PM')" />
+            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="!item_pk" @onclick="onClickButton('NEW_PM')" />
+            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="!item_pk" @onclick="onClickButton('DELETE_PM')" />
+            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="!item_pk" @onclick="onClickButton('SAVE_PM')" />
           </v-col>
           <v-row lg="12">
             <v-col>
@@ -219,25 +219,25 @@
             <BaseInput :outlined="true" :label="$t('param_code_details')" v-model="txtParamCodeDetails" @keyPressEnter="onLoadDataParamD" />
           </v-col>
           <v-col md="3" class="d-flex justify-end">
-            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="isProcessing" @onclick="onClickButton('NEW_PD')" />
-            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="isProcessing" @onclick="onClickButton('DELETE_PD')" />
-            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="isProcessing" @onclick="onClickButton('SAVE_PD')" />
+            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="!item_pk" @onclick="onClickButton('NEW_PD')" />
+            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="!item_pk" @onclick="onClickButton('DELETE_PD')" />
+            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="!item_pk" @onclick="onClickButton('SAVE_PD')" />
           </v-col>
           <v-row lg="12">
-              <v-col>
-                <BaseGridView
-                  :headertype="1"
-                  ref="grdParamD"
-                  :height="limitHeightmin"
-                  :header="grdParamD"
-                  sel_procedure="EI_SEL_6060230_7"
-                  upd_procedure="EI_UPD_6060230_8"
-                  :editable="true"
-                  :update_paras="['PK', 'REMARKS', 'TEI_TEMPLATE_PK', 'TYPE_TABLE', 'TYPE_TEMPLATE', 'STARTCELL', 'ENDCELL', 'CELLBORDER', 'dataField', 'TYPE', 'ORD']"
-                  :filter_paras="[this.itemTemplatePK, this.txtParamCodeDetails]"
-                />
-              </v-col>
-            </v-row>
+            <v-col>
+              <BaseGridView
+                :headertype="1"
+                ref="grdParamD"
+                :height="limitHeightmin"
+                :header="grdParamD"
+                sel_procedure="EI_SEL_6060230_7"
+                upd_procedure="EI_UPD_6060230_8"
+                :editable="true"
+                :update_paras="['PK', 'REMARKS', 'TEI_TEMPLATE_PK', 'TYPE_TABLE', 'TYPE_TEMPLATE', 'STARTCELL', 'ENDCELL', 'CELLBORDER', 'dataField', 'TYPE', 'ORD']"
+                :filter_paras="[this.itemTemplatePK, this.txtParamCodeDetails]"
+              />
+            </v-col>
+          </v-row>
         </v-row>
       </v-col>
     </v-row>
@@ -314,8 +314,8 @@
         <v-card-actions>
           <span class="red--text">{{ copyResult }}</span>
           <v-spacer></v-spacer>
-          <v-btn text :color="currentTheme" :disabled="isProcessing" @click="copyToDialog = false">{{ $t("cancel", "common") }}</v-btn>
-          <v-btn depressed class="white--text" :color="currentTheme" :disabled="isProcessing" :loading="isProcessing" @click="onProcessConfirm('copy')">{{ $t("copy") }}</v-btn>
+          <v-btn text :color="currentTheme" @click="copyToDialog = false">{{ $t("cancel", "common") }}</v-btn>
+          <v-btn depressed class="white--text" :color="currentTheme" @click="onProcessConfirm('copy')">{{ $t("copy") }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -339,7 +339,7 @@ export default {
   },
   /*############### data ##########################*/
   data: () => ({
-    item_pk: 0,
+    item_pk: null,
     itemTemplatePK: 0,
     file: null,
     selected_company: "",
@@ -1389,13 +1389,30 @@ export default {
     },
 
     async onSave_PD() {
-      let requireCol = ["ORD", "STARTCELL", "ENDCELL", "CELLBORDER", "dataField", "TYPE"];
-      let validate = this.$refs.grdParamD.onCheckValid(requireCol);
-      if (validate) {
+      let dataD = this.$refs.grdParamD.getData();
+      for (let i = 0; i < dataD.length; i++) {
+        if (!dataD[i].ORD) {
+          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_ord_at_" + (i + 1)));
+          return;
+        } else if (!dataD[i].STARTCELL) {
+          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_start_cell_at_" + (i + 1)));
+          return;
+        } else if (!dataD[i].ENDCELL) {
+          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_end_cell_at_" + (i + 1)));
+          return;
+        } else if (!dataD[i].CELLBORDER) {
+          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_cell_border_at_" + (i + 1)));
+          return;
+        } else if (!dataD[i].FIELD) {
+          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_feild_at_" + (i + 1)));
+          return;
+        } else if (!dataD[i].TYPE) {
+          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_to_type_at_" + (i + 1)));
+          return;
+        }
         this.$refs.grdParamD.saveData();
       }
     },
-
     async getListCodes(pos) {
       switch (pos) {
         case "company":
@@ -1650,16 +1667,12 @@ export default {
         return this.showNotification("warning", this.$t("error_occurs"), "pls_select_template");
       }
       try {
-        this.isProcessing = true;
-
         this.pdfUrl = await this.pdfUrlGetter(this.itemTemplatePK);
         // console.log("=====> pdfUrlv", this.pdfUrl);
         this.$nextTick(() => {
           this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
         });
-        this.isProcessing = false;
       } catch (e) {
-        this.isProcessing = false;
         return this.showNotification("danger", e.message);
       }
     },

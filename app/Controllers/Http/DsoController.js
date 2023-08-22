@@ -90,7 +90,7 @@ class DsoController {
         } else {
           file_path = file_path.replace('/resources/', '');
         }
-        console.log("params  ", params);
+        // console.log("params  ", params);
         result = await DBService.ExecuteSQLBlob(
           `BEGIN ${proc}(:p_tei_company_pk,
                                     :p_tei_template_pk,
@@ -109,7 +109,6 @@ class DsoController {
           p_crt_by,
           dbInfo,
         );
-        // console.log("result ==>   ", result);
       }
       return response.send(Utils.response(true, 'Upload file was sucessfull', file_path));
     } catch (e) {

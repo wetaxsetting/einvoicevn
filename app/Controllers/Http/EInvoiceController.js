@@ -3011,6 +3011,85 @@ class EInvoiceController {
         }
     }
 
+    async weTaxSendInformAdjustToTaxOffice({ request, response, auth }) {
+        try {
+            var p_language = request.header("accept-language", "ENG");
+            var p_crt_by = "";
+            const user = await auth.getUser();
+            if (user) {
+                p_crt_by = user.USER_ID;
+            }
+            const authUserName = "GENUWIN"; // "GENUWIN";
+            const authPassword = "genuwin123"; // "e_GX4v@";
+            //const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
+            const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
+            const { xml_signed, key_req } = request.all();
+            const agent = {
+                Agent: {
+                    defaultPort: 443,
+                    protocol: "https:",
+                    options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
+                },
+            };
+
+            const trade_code = await Request.post(
+                url,
+                { base64XML: Buffer.from(xml_signed).toString("base64") },
+                {
+                    agent,
+                    headers: {
+                        Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
+                    },
+                }
+            );
+
+            if (trade_code && trade_code.data) {
+                return Utils.response(true, `Call tax office api success.`, {
+                    key_req: key_req,
+                    trade_code: trade_code.data.maGDich,
+                });
+                // const para_value = {
+                //     key_req: key_req,
+                //     trade_code: trade_code.data.maGDich,
+                //     xml_sign: xml_signed,
+                // };
+                // const res = await DBService.ExecuteSQLBlob(
+                //     `BEGIN EI_UP_6095280_DATA_TRADE_CODE(:key_req,:trade_code, :xml_sign,
+                //             :p_language, :p_crt_by, :p_rtn_cur); END;`,
+                //     para_value,
+                //     p_language,
+                //     p_crt_by
+                // );
+
+                // if (res.p_rtn_cur[0].STATUS == "OK") {
+                //     return Utils.response(true, `Call tax office api success.`, {
+                //         key_req: key_req,
+                //         trade_code: trade_code.data.maGDich,
+                //     });
+                // } else {
+                //     return response.send(
+                //         Utils.response(
+                //             false,
+                //             `Something went wrong, please try again later.
+                //   EI_UP_6095280_DATA_TRADE_CODE`,
+                //             para_value
+                //         )
+                //     );
+                // }
+            } else {
+                return response.send(Utils.response(false, `Failed to call taxoffice api.`, null));
+            }
+        } catch (e) {
+            Utils.Logger({
+                LVL: "error",
+                MODULE: "EInvoiceController",
+                FUNC: "sendInvoiceToTaxOffice",
+                CONTENT: e.message,
+            });
+            return response.send(Utils.response(false, "error", e.message));
+        }
+    }
+
     async sendInformAdjustToTaxOfficeFromClient({ request, response, auth }) {
         try {
             var p_language = request.header("accept-language", "ENG");

@@ -3653,7 +3653,41 @@ class EInvoiceController {
             return response.send(Utils.response(false, "error", e.message));
         }
     }
-
+    async updateViewTemplateFromClient({request, response, auth}) {
+        try {
+          var p_language = request.header('accept-language', 'ENG');
+          var p_crt_by = '';
+          const user = await auth.getUser();
+          if (user) {
+            p_crt_by = user.USER_ID;
+          }
+    
+          const {proc, para} = request.all();
+    
+          const token = await this.callLogin(EINVOICE_URL_LOGIN, EINVOICE_USER, EINVOICE_PW);
+    
+          if (token) {
+            const config = {
+              headers: {Authorization: `Bearer ${token}`},
+            };
+            // console.log("EINVOICE_URL_API_VIEW_PDF ", EINVOICE_URL_API_VIEW_PDF);
+            const res = await Request.post(EINVOICE_URL_API_UPDATE_TEMPLATE, {para: para}, config);
+            // console.log("checkInvoiceStatusFromClient", res.data);
+            return response.send(res.data);
+          }
+          return response.send(Utils.response(false, `Failed to get api token.`, null));
+        } catch (e) {
+          Utils.ConsoleLogError(e.message);
+          Utils.Logger({
+            LVL: 'error',
+            MODULE: 'EInvoiceController',
+            FUNC: 'updateViewTemplateFromClient',
+            CONTENT: e.message,
+          });
+          return response.send(Utils.response(false, 'error', e.message));
+        }
+      }
+      
     async updateViewTemplate({ request, response, auth }) {
         try {
             var p_language = request.header("accept-language", "ENG");

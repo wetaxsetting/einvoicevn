@@ -1,9 +1,9 @@
 <!-- ================================================================= BEGIN DESIGN LAYOUT======================================================================================= -->
 <template>
-  <v-container fluid v-resize="onResize" class="pa-2">
-    <v-row no-gutters class="pl-2">
+  <v-container fluid v-resize="onResize" >
+    <v-row dense class="pt-1">
       <v-col v-show="showHilden" cols="12" :lg="showHilden ? 4 : 0">
-        <v-card class="pa-2">
+       
           <v-row dense>
             <v-col md="7">
               <BaseSelect :label="$t('company')" v-model="selected_company" :lstData="company_list" item-text="TEXT" item-value="PK" @change="onChangeCompany" />
@@ -18,10 +18,6 @@
             </v-col>
           </v-row>
           <v-row dense>
-            <!-- <v-col md="7">
-                             <BaseSelect :label="$t('biz_place')" v-model="lstBizplace" :lstData="bizplaceList"
-                                item-text="TEXT" item-value="PK" />
-                        </v-col> -->
             <v-col md="2">
               <datePicker :label="$t('month')" :type="'month'" @returnValue="month = $event"></datePicker>
             </v-col>
@@ -58,10 +54,9 @@
               />
             </v-col>
           </v-row>
-        </v-card>
       </v-col>
       <v-col class="pa-1" cols="12" :lg="showHilden ? 8 : 12">
-        <v-row dense>
+        <!-- <v-row dense>
           <v-col md="2" class="d-flex justify-start">
             <div class="d-flex">
               <BaseButton btn_type="icon" icon_type="hide_search_panel" :btn_text="$t('hide_search_panel')" v-if="showHilden" mdi-icon="mdi-backburger" @onclick="showHilden = !showHilden" />
@@ -69,22 +64,28 @@
             </div>
           </v-col>
           <v-col md="4">
-            <!-- <div class="d-flex justify-end">
+         <div class="d-flex justify-end">
               <BaseButton icon_type="process" :btn_text="$t('send_data_template')" @onclick="onGeneralData" />
-            </div> -->
+            </div>
           </v-col>
           <v-col md="2"> </v-col>
           <v-col md="2"> </v-col>
           <v-col md="2"> </v-col>
-        </v-row>
+        </v-row> -->
 
-        <v-row>
+        <v-row dense>
           <v-col md="12">
             <v-row>
+              <v-col md="1">
+                <div class="d-flex">
+                  <BaseButton btn_type="icon" icon_type="hide_search_panel" :btn_text="$t('hide_search_panel')" v-if="showHilden" mdi-icon="mdi-backburger" @onclick="showHilden = !showHilden" />
+                  <BaseButton btn_type="icon" icon_type="show_search_panel" :btn_text="$t('show_search_panel')" v-else mdi-icon="mdi-forwardburger" @onclick="showHilden = !showHilden" />
+                </div>
+              </v-col>
               <v-col md="2" class="d-flex justify-end">
                 <b> {{ $t("template_table") }} </b>
               </v-col>
-              <v-col md="10" class="d-flex justify-end">
+              <v-col md="9" class="d-flex justify-end">
                 <GwPutFile
                   :label="$t('import_ar_invoice')"
                   :impMultipleTemp="imp_MultipleTemp"
@@ -106,7 +107,7 @@
                   :headertype="1"
                   ref="grdTemplate"
                   :header="grdTemplate"
-                  :height="limitHeightmin"
+                  :height="limitHeightT"
                   :multiselect="true"
                   sel_procedure="EI_SEL_6095055_3"
                   :filter_paras="[this.item_pk]"
@@ -420,6 +421,13 @@ export default {
   computed: {
     user() {
       return this.$store.getters["auth/user"];
+    },
+    limitHeightT(){
+        if (this.windowHeight <= 768) {
+        return this.windowHeight * 0.8; //1366x768
+      } else {
+        return this.windowHeight * 0.16; //1920x1080
+      }
     },
     limitHeight() {
       if (this.windowHeight <= 768) {
@@ -1319,22 +1327,21 @@ export default {
         } else if (!data[i].FORM_NO) {
           this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_form_no_at_" + (i + 1)));
           return;
-        }else if (!data[i].SERIAL_NO) {
+        } else if (!data[i].SERIAL_NO) {
           this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_serial_no_at_" + (i + 1)));
           return;
-        }else if (!data[i].FROM_DT) {
+        } else if (!data[i].FROM_DT) {
           this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_form_date_at_" + (i + 1)));
           return;
-        }else if (!data[i].TO_DT) {
+        } else if (!data[i].TO_DT) {
           this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_to_date_at_" + (i + 1)));
           return;
-        }else if (!data[i].STATUS) {
+        } else if (!data[i].STATUS) {
           this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_status_at_" + (i + 1)));
           return;
         }
       }
       this.$refs.grdEinvoiceIssue.saveData();
-      
     },
 
     async onSave_T() {
@@ -1510,9 +1517,9 @@ export default {
     },
 
     onNew_T() {
-    let data = this.$refs.grdEinvoiceIssue.getData();
-    console.log("file: 6095055.vue:1514 [vng-304] onNew_T [vng-304] data:", data)
-    
+      let data = this.$refs.grdEinvoiceIssue.getData();
+      console.log("file: 6095055.vue:1514 [vng-304] onNew_T [vng-304] data:", data)
+
       this.$refs.grdTemplate.addRowStruct({
         PK: "",
         TEMPLATE_CD: data[0].SERIAL_NO,
@@ -1531,7 +1538,7 @@ export default {
         BANK_ACCOUNT2: "",
         BANK_NM1: "",
         BANK_NM2: "",
-        TEL: "",
+        TEL: data[0].TEL,
         FAX: "",
         TAX_CODE: "",
         TEI_EINVOICE_ISSUSE_PK: this.item_pk,

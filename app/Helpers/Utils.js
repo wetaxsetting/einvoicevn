@@ -10,6 +10,8 @@ const md5 = require("crypto-js/md5");
 const pdf = require('html-pdf')
 const getMAC = require('getmac').default
 const nodemailer = require('nodemailer')
+const libre = require('libreoffice-convert');
+libre.convertAsync = require('util').promisify(libre.convert);
 //const qpdf = require("node-qpdf");
 class Utils {
     constructor() {
@@ -77,33 +79,31 @@ class Utils {
             throw error;
         }
     }
-    async excelToPdf(fileName) {
-        const isWin = process.platform === "win32";
-        var outputFile = fileName.replace(fileName, (fileName.lastIndexOf('.') > -1 ? fileName.substring(0, fileName.lastIndexOf('.')) : fileName) + '.pdf');
-
-        let pros = new Promise((resolve, reject) => {
-
+    async excelToPdf(inputPath) {
+        try {
+            const isWin = process.platform === "win32";
+            const outputPath = inputPath.replace(inputPath, (inputPath.lastIndexOf('.') > -1 ? inputPath.substring(0, inputPath.lastIndexOf('.')) : inputPath) + '.pdf');
             if (isWin) {
-                exec('C:\\unoconv\\unoconv -f pdf "' + fileName + '"', function (error, stdout, stderr) {
-                    if (error) {
-                        console.error(error);
-                        return;
-                    }
-                    resolve(stdout);
-                });
+                const xlsxBuf = await fs.readFileSync(inputPath);
+                // Convert it to pdf format with undefined filter (see Libreoffice docs about filter)
+                let pdfBuf = await libre.convertAsync(xlsxBuf, ".pdf", undefined);
+                await fs.writeFileSync(outputPath, pdfBuf);
             } else {
-                exec('unoconv -f pdf "' + fileName + '"', function (error, stdout, stderr) {
-                    if (error) {
-                        console.error(error);
-                        return;
-                    }
-                    resolve(stdout);
+                let pros = new Promise((resolve, reject) => {
+                    exec('unoconv -f pdf "' + inputPath + '"', function (error, stdout, stderr) {
+                        if (error) {
+                            console.error(error);
+                            return;
+                        }
+                        resolve(stdout);
+                    });
                 });
+                await pros;
             }
-
-        });
-        await pros;
-        return outputFile;
+            return outputPath;
+        } catch (e) {
+            console.error(e)
+        }
     }
     getMacAddress(p_eth = null) {
         if (p_eth) {

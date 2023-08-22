@@ -2795,7 +2795,7 @@ class EInvoiceController {
             return response.send(Utils.response(false, "error", e.message));
         }
     }
-    
+
     async weTaxCheckingDeclarations({ request, response, auth }) {
         try {
             var p_language = request.header("accept-language", "ENG");
@@ -3649,6 +3649,7 @@ class EInvoiceController {
             return response.send(Utils.response(false, "error", e.message));
         }
     }
+    
     async updateViewTemplateFromClient({request, response, auth}) {
         try {
           var p_language = request.header('accept-language', 'ENG');

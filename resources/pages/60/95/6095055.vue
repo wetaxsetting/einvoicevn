@@ -1,61 +1,60 @@
 <!-- ================================================================= BEGIN DESIGN LAYOUT======================================================================================= -->
 <template>
-  <v-container fluid v-resize="onResize" >
+  <v-container fluid v-resize="onResize">
     <v-row dense class="pt-1">
       <v-col v-show="showHilden" cols="12" :lg="showHilden ? 4 : 0">
-       
-          <v-row dense>
-            <v-col md="7">
-              <BaseSelect :label="$t('company')" v-model="selected_company" :lstData="company_list" item-text="TEXT" item-value="PK" @change="onChangeCompany" />
-            </v-col>
-            <v-col md="5" class="d-flex justify-end">
-              <BaseButton icon_type="search" btn_type="icon" :btn_text="$t('search')" :disabled="isProcessing" @onclick="onClickButton('SEARCH_M')" />
+        <v-row dense>
+          <v-col md="7">
+            <BaseSelect :label="$t('company')" v-model="selected_company" :lstData="company_list" item-text="TEXT" item-value="PK" @change="onChangeCompany" />
+          </v-col>
+          <v-col md="5" class="d-flex justify-end">
+            <BaseButton icon_type="search" btn_type="icon" :btn_text="$t('search')" :disabled="isProcessing" @onclick="onClickButton('SEARCH_M')" />
 
-              <BaseButton btn_type="icon" icon_type="copy" @onclick="copyToDialog = true" :disabled="isProcessing" />
-              <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="isProcessing" @onclick="onClickButton('NEW_M')" />
-              <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="isProcessing" @onclick="onClickButton('DELETE_M')" />
-              <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="isProcessing" @onclick="onClickButton('SAVE_M')" />
-            </v-col>
-          </v-row>
-          <v-row dense>
-            <v-col md="2">
-              <datePicker :label="$t('month')" :type="'month'" @returnValue="month = $event"></datePicker>
-            </v-col>
-            <v-col md="5">
-              <datePicker :label="$t('fromdate')" :inputValue="fromDate" :defaultType="'startOfMonth'" @returnValue="fromDate = $event"></datePicker>
-            </v-col>
-            <v-col md="5">
-              <datePicker :inputValue="toDate" :defaultType="'endOfMonth'" :label="$t('to_date')" @returnValue="toDate = $event"></datePicker>
-            </v-col>
-          </v-row>
-          <v-row dense>
-            <v-col md="6">
-              <BaseInput :label="$t('serial_no')" v-model="txtSerialNo" />
-            </v-col>
-            <v-col md="6">
-              <BaseSelect :label="$t('status')" v-model="lstStatus" :lstData="statusList" item-text="NAME" item-value="CODE" />
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <BaseGridView
-                ref="grdEinvoiceIssue"
-                :header="grdHeader"
-                sel_procedure="EI_SEL_6095055_1"
-                :multiselect="true"
-                :headertype="1"
-                :filter_paras="[this.selected_company, this.fromDate, this.toDate, this.txtSerialNo, this.lstStatus]"
-                upd_procedure="EI_UPD_6095055_2"
-                :editable="true"
-                :update_paras="['PK', 'TCO_COMPANY_PK', 'INVOICE_KIND', 'SERIAL_NO_2', 'FORM_NO', 'SERIAL_NO', 'FROM_DT', 'TO_DT', 'STATUS', 'TCO_BUSPLACE_PK', 'REMARKS', 'USE_YN']"
-                :height="limitHeight"
-                @cellDblClick="onDblClickCell"
-                @cellClick="cellClickCell"
-              />
-            </v-col>
-          </v-row>
+            <BaseButton btn_type="icon" icon_type="copy" @onclick="copyToDialog = true" :disabled="isProcessing" />
+            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="isProcessing" @onclick="onClickButton('NEW_M')" />
+            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="isProcessing" @onclick="onClickButton('DELETE_M')" />
+            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="isProcessing" @onclick="onClickButton('SAVE_M')" />
+          </v-col>
+        </v-row>
+        <v-row dense>
+          <v-col md="2">
+            <datePicker :label="$t('month')" :type="'month'" @returnValue="month = $event"></datePicker>
+          </v-col>
+          <v-col md="5">
+            <datePicker :label="$t('fromdate')" :inputValue="fromDate" :defaultType="'startOfMonth'" @returnValue="fromDate = $event"></datePicker>
+          </v-col>
+          <v-col md="5">
+            <datePicker :inputValue="toDate" :defaultType="'endOfMonth'" :label="$t('to_date')" @returnValue="toDate = $event"></datePicker>
+          </v-col>
+        </v-row>
+        <v-row dense>
+          <v-col md="7">
+            <BaseInput :label="$t('serial_no')" v-model="txtSerialNo" />
+          </v-col>
+          <v-col md="5">
+            <BaseSelect :label="$t('status')" v-model="lstStatus" :lstData="statusList" item-text="NAME" item-value="CODE" />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <BaseGridView
+              ref="grdEinvoiceIssue"
+              :header="grdHeader"
+              sel_procedure="EI_SEL_6095055_1"
+              :multiselect="true"
+              :headertype="1"
+              :filter_paras="[this.selected_company, this.fromDate, this.toDate, this.txtSerialNo, this.lstStatus]"
+              upd_procedure="EI_UPD_6095055_2"
+              :editable="true"
+              :update_paras="['PK', 'TCO_COMPANY_PK', 'INVOICE_KIND', 'SERIAL_NO_2', 'FORM_NO', 'SERIAL_NO', 'FROM_DT', 'TO_DT', 'STATUS', 'TCO_BUSPLACE_PK', 'REMARKS', 'USE_YN']"
+              :height="limitHeight"
+              @cellDblClick="onDblClickCell"
+              @cellClick="cellClickCell"
+            />
+          </v-col>
+        </v-row>
       </v-col>
-      <v-col class="pa-1" cols="12" :lg="showHilden ? 8 : 12">
+      <v-col class="pt-1" cols="12" :lg="showHilden ? 8 : 12">
         <!-- <v-row dense>
           <v-col md="2" class="d-flex justify-start">
             <div class="d-flex">
@@ -181,10 +180,11 @@
               </v-col>
             </v-row>
             <v-row dense>
+              <v-col md="1"></v-col>
               <v-col md="2" class="d-flex justify-end">
                 <b> {{ $t("master_table") }} </b>
               </v-col>
-              <v-col md="6">
+              <v-col md="5">
                 <BaseInput :outlined="true" :label="$t('param_code_master')" v-model="txtParamCodeMaster" @keyPressEnter="onLoadDataParamM" />
               </v-col>
               <v-col md="4" class="d-flex justify-end">
@@ -209,10 +209,11 @@
               </v-col>
             </v-row>
             <v-row dense>
+              <v-col md="1"></v-col>
               <v-col md="2" class="d-flex justify-end">
                 <b> {{ $t("detail_table") }} </b>
               </v-col>
-              <v-col md="6">
+              <v-col md="5">
                 <BaseInput :outlined="true" :label="$t('param_code_details')" v-model="txtParamCodeDetails" @keyPressEnter="onLoadDataParamD" />
               </v-col>
               <v-col md="4" class="d-flex justify-end">
@@ -422,8 +423,8 @@ export default {
     user() {
       return this.$store.getters["auth/user"];
     },
-    limitHeightT(){
-        if (this.windowHeight <= 768) {
+    limitHeightT() {
+      if (this.windowHeight <= 768) {
         return this.windowHeight * 0.8; //1366x768
       } else {
         return this.windowHeight * 0.16; //1920x1080
@@ -1518,7 +1519,7 @@ export default {
 
     onNew_T() {
       let data = this.$refs.grdEinvoiceIssue.getData();
-      console.log("file: 6095055.vue:1514 [vng-304] onNew_T [vng-304] data:", data)
+      console.log("file: 6095055.vue:1514 [vng-304] onNew_T [vng-304] data:", data);
 
       this.$refs.grdTemplate.addRowStruct({
         PK: "",

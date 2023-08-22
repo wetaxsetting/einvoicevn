@@ -1181,7 +1181,7 @@ export default {
         },
         {
           dataField: "REMARKS",
-          width: 280,
+          width: 250,
           caption: this.$t("remarks"),
           alignment: "left",
           type: "text",

@@ -10,6 +10,8 @@ const md5 = require("crypto-js/md5");
 const pdf = require('html-pdf')
 const getMAC = require('getmac').default
 const nodemailer = require('nodemailer')
+const libre = require('libreoffice-convert');
+libre.convertAsync = require('util').promisify(libre.convert);
 //const qpdf = require("node-qpdf");
 class Utils {
     constructor() {
@@ -77,33 +79,31 @@ class Utils {
             throw error;
         }
     }
-    async excelToPdf(fileName) {
-        const isWin = process.platform === "win32";
-        var outputFile = fileName.replace(fileName, (fileName.lastIndexOf('.') > -1 ? fileName.substring(0, fileName.lastIndexOf('.')) : fileName) + '.pdf');
-
-        let pros = new Promise((resolve, reject) => {
-
+    async excelToPdf(inputPath) {
+        try {
+            const isWin = process.platform === "win32";
+            const outputPath = inputPath.replace(inputPath, (inputPath.lastIndexOf('.') > -1 ? inputPath.substring(0, inputPath.lastIndexOf('.')) : inputPath) + '.pdf');
             if (isWin) {
-                exec('C:\\unoconv\\unoconv -f pdf "' + fileName + '"', function (error, stdout, stderr) {
-                    if (error) {
-                        console.error(error);
-                        return;
-                    }
-                    resolve(stdout);
-                });
+                const xlsxBuf = await fs.readFileSync(inputPath);
+                // Convert it to pdf format with undefined filter (see Libreoffice docs about filter)
+                let pdfBuf = await libre.convertAsync(xlsxBuf, ".pdf", undefined);
+                await fs.writeFileSync(outputPath, pdfBuf);
             } else {
-                exec('unoconv -f pdf "' + fileName + '"', function (error, stdout, stderr) {
-                    if (error) {
-                        console.error(error);
-                        return;
-                    }
-                    resolve(stdout);
+                let pros = new Promise((resolve, reject) => {
+                    exec('unoconv -f pdf "' + inputPath + '"', function (error, stdout, stderr) {
+                        if (error) {
+                            console.error(error);
+                            return;
+                        }
+                        resolve(stdout);
+                    });
                 });
+                await pros;
             }
-
-        });
-        await pros;
-        return outputFile;
+            return outputPath;
+        } catch (e) {
+            console.error(e)
+        }
     }
     getMacAddress(p_eth = null) {
         if (p_eth) {
@@ -889,6 +889,72 @@ class Utils {
 
         }
         return _str;
+    } 
+    handleDBInfo(user) {
+        let dbinfo = {
+            pool_name: "",
+            db_user: "",
+            db_user_pw: "",
+            db_ip: "",
+            db_port: "",
+            db_sid: "",
+            company_code: "",
+        };
+        try {
+            if (user) {
+                dbinfo = {
+                    pool_name: user.COMPANY_CODE || user.company_code,
+                    db_user: user.DB_USER || user.db_user,
+                    db_user_pw: user.DB_USER_PW || user.db_user_pw,
+                    db_ip: user.DB_IP || user.db_ip,
+                    db_port: user.DB_PORT || user.db_port,
+                    db_sid: user.DB_SID || user.db_sid,
+                    company_code: user.COMPANY_CODE || user.company_code,
+                };
+            }
+            return dbinfo;
+        } catch (e) {
+            console.log("handleDBInfo: ", e);
+            return dbinfo;
+        }
+    }
+    async putExcelRootPath(file, folder, type_insert) {
+        try {
+            const type = typeof file;
+            const clientName =
+                type === "string" ?
+                    file
+                        .split("?")[0]
+                        .split(".")
+                        .pop() :
+                    file.clientName;
+            let path_result = ``;
+            let path = ``;
+
+            console.log("type_insert =>>  " + type_insert  +  "folder  ===> " + folder + " clientName ==>  " + clientName)
+            if (type_insert == "EXCEL") {
+                path_result = `/resources/report/${folder}/${clientName}`;
+                path = `/resources/report/${folder}`;
+            } else {
+                path_result = `${folder}/${clientName}`;
+                path = `/resources/${folder}`;
+            }
+
+
+            let savePath = Helpers.appRoot(path);
+            if (type !== "string") {
+                await file.move(savePath, {
+                    name: clientName,
+                    overwrite: true
+                });
+            }
+
+            return `${path_result}`;
+        } catch (e) {
+            console.log(" putExcelRootPath", e);
+        }
+
+
     }
 }
 

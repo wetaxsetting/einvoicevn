@@ -54,7 +54,7 @@
           </v-col>
         </v-row>
       </v-col>
-      <v-col class="pt-1" cols="12" :lg="showHilden ? 8 : 12">
+      <v-col cols="12" :lg="showHilden ? 8 : 12">
         <!-- <v-row dense>
           <v-col md="2" class="d-flex justify-start">
             <div class="d-flex">
@@ -1028,7 +1028,7 @@ export default {
         },
         {
           dataField: "DATA_MAPPING",
-          width: 150,
+          width: 200,
           caption: this.$t("data_mapping"),
           alignment: "left",
           type: "text",
@@ -1050,7 +1050,7 @@ export default {
         },
         {
           dataField: "TYPE_TEMPLATE",
-          width: 120,
+          width: 180,
           caption: this.$t("type_template"),
           alignment: "center",
           lookup: {
@@ -1072,7 +1072,7 @@ export default {
             valueExpr: "CODE",
           },
           type: "text",
-          editable: true,
+          hidden: true,
         },
         {
           dataField: "TYPE",
@@ -1085,7 +1085,7 @@ export default {
             valueExpr: "CODE",
           },
           type: "text",
-          editable: true,
+          hidden: true,
         },
         {
           dataField: "REMARKS",
@@ -1173,7 +1173,7 @@ export default {
         },
         {
           dataField: "REMARKS",
-          width: 200,
+          width: 250,
           caption: this.$t("remarks"),
           alignment: "left",
           type: "text",
@@ -1181,7 +1181,7 @@ export default {
         },
         {
           dataField: "TEI_TEMPLATE_PK",
-          width: 200,
+          width: 250,
           caption: this.$t("tei_template_pk"),
           alignment: "left",
           type: "text",
@@ -1199,7 +1199,7 @@ export default {
             valueExpr: "CODE",
           },
           type: "text",
-          allowEditing: true,
+          hidden: true,
         },
         {
           dataField: "TYPE_TABLE",
@@ -1212,7 +1212,7 @@ export default {
             valueExpr: "CODE",
           },
           type: "text",
-          allowEditing: true,
+          hidden: true,
         },
       ];
     },

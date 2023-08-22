@@ -325,7 +325,6 @@ export default {
                 });
             });
         },
-
         async initHeaderList() {
             this.headerGrdData = [
                 { dataField: "CHK", caption: this.$t("chk"), dataType: "checkbox" },

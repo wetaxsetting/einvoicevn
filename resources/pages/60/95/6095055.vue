@@ -61,7 +61,7 @@
         </v-card>
       </v-col>
       <v-col class="pa-1" cols="12" :lg="showHilden ? 8 : 12">
-        <v-row>
+        <v-row dense>
           <v-col md="2" class="d-flex justify-start">
             <div class="d-flex">
               <BaseButton btn_type="icon" icon_type="hide_search_panel" :btn_text="$t('hide_search_panel')" v-if="showHilden" mdi-icon="mdi-backburger" @onclick="showHilden = !showHilden" />
@@ -100,7 +100,7 @@
                 <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="isProcessing" @onclick="onClickButton('SAVE_T')" />
               </v-col>
             </v-row>
-            <v-row>
+            <v-row dense>
               <v-col>
                 <BaseGridView
                   :headertype="1"
@@ -179,7 +179,7 @@
                 />
               </v-col>
             </v-row>
-            <v-row>
+            <v-row dense>
               <v-col md="2" class="d-flex justify-end">
                 <b> {{ $t("master_table") }} </b>
               </v-col>
@@ -192,7 +192,7 @@
                 <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="isProcessing" @onclick="onClickButton('SAVE_PM')" />
               </v-col>
             </v-row>
-            <v-row>
+            <v-row dense>
               <v-col>
                 <BaseGridView
                   :headertype="1"
@@ -207,7 +207,7 @@
                 />
               </v-col>
             </v-row>
-            <v-row>
+            <v-row dense>
               <v-col md="2" class="d-flex justify-end">
                 <b> {{ $t("detail_table") }} </b>
               </v-col>

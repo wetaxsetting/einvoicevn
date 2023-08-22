@@ -49,8 +49,8 @@
                 <v-row dense>
                     <v-col md="3">
                         <GwImportExcelFile :label="$t('import_ar_invoice')" :impMultipleTemp="imp_MultipleTemp"
-                            :impCboTemp="cboTemplate" @onrtnseltemp="selTemplate = $event"
-                            :impAddParam="[ this.modelSearch.TODATE, '',this.modelSearch.COMPANY_PK,'','','']"
+                            :impCboTemp="cboTemplate" @onrtnseltemp="selTemplate = $event" 
+                            :impAddParam="[ this.modelSearch.COMPANY_PK,this.modelSearch.FORM_NO, this.modelSearch.SERIAL_NO]"
                             @onAfterImport="onAfterImport" />
                     </v-col>
                     <v-col md="1">
@@ -261,7 +261,9 @@ export default {
                     break;
             }
         },
-        onAfterImport() { },
+        async onAfterImport() {
+            await this.onClick("search");
+         },
         onAfterLoad() {
             setTimeout(() => {
                 this.totalAmount = this.$refs.grdData.getDataSource().reduce((n, { TOTAL_AMOUNT }) => n + TOTAL_AMOUNT, 0);
@@ -315,7 +317,7 @@ export default {
             }
         },
         async initCboFrm(_arrayData, _tco_compay_pk) {
-            await this._getInitList('cboTemplate', _arrayData, 'ACJS0320', _tco_compay_pk).then((result) => {
+            await this._getInitList('cboTemplate', _arrayData, 'ACEIS130', _tco_compay_pk).then((result) => {
                 result.forEach(item => {
                     if (item.DESCRIPTION == 'EI-POST') {
                             this.cboTemplate.push(item);
@@ -323,7 +325,6 @@ export default {
                 });
             });
         },
-
         async initHeaderList() {
             this.headerGrdData = [
                 { dataField: "CHK", caption: this.$t("chk"), dataType: "checkbox" },

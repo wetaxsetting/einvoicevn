@@ -92,7 +92,7 @@ export default {
 
         dsoMaster: {
             type: 'grid',
-            selpro: 'sys_sel_syco001_common_code',
+            selpro: 'sys_sel_syco001_common_code_nc',
             updpro: 'sys_upd_syco001_common_code',
             elname: [
                 "_rowstatus", "USER_PK",
@@ -104,7 +104,7 @@ export default {
         },
         dsoDetail: {
             type: 'grid',
-            selpro: 'sys_sel_syco001_common_code',
+            selpro: 'sys_sel_syco001_common_code_nc',
             updpro: 'sys_upd_syco001_common_code',
             elname: [
                 "_rowstatus", "USER_PK",

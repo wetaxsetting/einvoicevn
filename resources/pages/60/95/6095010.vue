@@ -1,7 +1,7 @@
 <template>
   <v-container fluid v-resize="onResize">
     <v-row dense>
-      <v-col md="6" :class="isShowLeft ? null : 'd-none'" class="pt-2">
+      <v-col md="5" :class="isShowLeft ? null : 'd-none'" class="pt-2">
         <v-card>
           <v-row dense class="pt-2">
             <v-col lg="5" cols="12" class="pl-2">
@@ -37,7 +37,7 @@
         </v-card>
       </v-col>
 
-      <v-col :md="isShowLeft ? 6 : 12">
+      <v-col :md="isShowLeft ? 7 : 12">
         <v-row dense>
           <v-col md="12">
             <v-card>
@@ -233,6 +233,8 @@ export default {
       WEBSITE_EI: "",
       MCQTQLY: "",
     },
+    token_type_list: [],
+    d_certificate_type_list: []
   }),
 
   async created() {
@@ -454,9 +456,9 @@ export default {
           caption: this.$t("hthuc"),
           allowEditing: true,
           lookup: {
+            dataSource: this.token_type_list,
             displayExpr: "NAME",
             valueExpr: "CODE",
-            dataSource: this.token_type_list,
           },
           width: 100,
         },
@@ -615,7 +617,7 @@ export default {
       }
     },
     async initDataList() {
-      const results = await this._getCommonCode2(["ACEI0120", "ACJS0460", "ACEIS320"], this.user.TEI_COMPANY_PK);
+      const results = await this._getCommonCode2(["ACEI0120", "ACJS0460", "ACEIS320"], this.txtCompanyName);
 
       this.taxOfficeList = results[0];
       this.token_type_list = results[1];

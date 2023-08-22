@@ -42,6 +42,9 @@ Route.group(() => {
     Route.post("createpassword", "UserController.createPassword")
     Route.post("updatepassword", "UserController.updatePassword");
     Route.post("updateuserpassword", "UserController.updateUserPassword")
+    Route.post("enable2fa", "UserController.enable2FA");
+    Route.post("update2fa", "UserController.update2FA");
+    Route.post("get2fakey", "UserController.get2FAKey");
 }).prefix("api/user").middleware("user");
 
 /**
@@ -93,6 +96,8 @@ Route.group(() => {
     Route.post("updateparamtemplate", "EInvoiceController.updateViewTemplate")
     Route.post("viewpdftest", "EInvoiceController.viewPDFTEST")
     Route.post("bulkinsertpro", "DsoController.CallBulkInsertProcedure")
+    Route.post("uploadfileexcel", "DsoController.UploadExcelToFolder");
+
 }).prefix("api/dso").middleware("user");
 
 Route.group(() => {
@@ -131,6 +136,7 @@ Route.group(() => {
     Route.post("checkingstatuseinvoice", "EInvoiceController.checkingStatusEInvoice")
     Route.get("downloadxml", "EInvoiceController.DownloadXML")
     Route.get("downloadpdf", "EInvoiceController.DownloadPDF")
+    Route.post("updatetemplate", "EInvoiceController.updateViewTemplateFromClient")   //VNG_304 
     // WeTax
     Route.post("json-to-excel", "EInvoiceController.renderJsonToExcelFile")
     Route.post("generate-declare-xml", "EInvoiceController.weTaxConvertDeclareUsingInvoiceToXML")
@@ -140,6 +146,8 @@ Route.group(() => {
     Route.post("send-notice-cancel-adjust-replace", "EInvoiceController.weTaxSendInformAdjustToTaxOffice")
     Route.post("send-order-to-invoice", "EInvoiceController.weTaxSendOrderInfo")
     Route.post("get-sendmail-invoice-status", "EInvoiceController.weTaxCheckStausSendMail")
+    Route.post("generate-pos-invoice-xml", "EInvoiceController.weTaxConvertPosInvoiceToXML")
+
 
 }).prefix("api/einvoice").middleware("user");
 

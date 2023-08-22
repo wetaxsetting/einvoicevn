@@ -19,13 +19,15 @@
         <v-row dense>
           <v-col md="2">
             <!-- <datePicker :label="$t('month')" :type="'month'" @returnValue="month = $event"></datePicker> -->
-            <BaseDatePicker  :label="$t('month')" v-model="year" year today />
+            <BaseDatePicker  :label="$t('year')" v-model="year" year today />
           </v-col>
           <v-col md="5">
-            <datePicker :label="$t('fromdate')" :inputValue="fromDate" :defaultType="'startOfMonth'" @returnValue="fromDate = $event"></datePicker>
+            <!-- <datePicker :label="$t('fromdate')" :inputValue="fromDate" :defaultType="'startOfMonth'" @returnValue="fromDate = $event"></datePicker> -->
+            <BaseDatePicker  :label="$t('fromdate')" v-model="fromDate"  />
           </v-col>
           <v-col md="5">
-            <datePicker :inputValue="toDate" :defaultType="'endOfMonth'" :label="$t('to_date')" @returnValue="toDate = $event"></datePicker>
+            <!-- <datePicker :inputValue="toDate" :defaultType="'endOfMonth'" :label="$t('to_date')" @returnValue="toDate = $event"></datePicker> -->
+            <BaseDatePicker  :label="$t('to_date')" v-model="toDate"  />
           </v-col>
         </v-row>
         <v-row dense>
@@ -424,25 +426,6 @@ export default {
           this.fromDate = this.year + "0101";
           this.toDate = this.year + "1231";
         }
-        // if (this.itemChooseTypeDate == "3") {
-        //   if (this.itemChooseTypeQuarter == "0") {
-        //     this.fromDate = this.year + "0101";
-        //     this.toDate = this.year + "0331";
-        //   }
-        //   if (this.itemChooseTypeQuarter == "1") {
-        //     this.fromDate = this.year + "0401";
-        //     this.toDate = this.year + "0630";
-        //   }
-        //   if (this.itemChooseTypeQuarter == "2") {
-        //     this.fromDate = this.year + "0701";
-        //     this.toDate = this.year + "0930";
-        //   }
-        //   if (this.itemChooseTypeQuarter == "3") {
-        //     this.fromDate = this.year + "1001";
-        //     this.toDate = this.year + "1231";
-        //   }
-        // }
-      
     },
   },
   /*############### computed ######################*/

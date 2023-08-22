@@ -92,16 +92,16 @@ class DsoController {
         }
         console.log("params  ", params);
         result = await DBService.ExecuteSQLBlob(
-          `BEGIN ${proc}(:p_tco_company_pk,
-                                    :p_tco_template_pk,
+          `BEGIN ${proc}(:p_tei_company_pk,
+                                    :p_tei_template_pk,
                                     :p_type_update, 
                                     :p_url,
                                     :p_language,
                                     :p_crt_by,
                                     :p_rtn_cur); END;`,
           {
-            p_tco_company_pk: params[0],
-            p_tco_template_pk: params[1],
+            p_tei_company_pk: params[0],
+            p_tei_template_pk: params[1],
             p_type_update: type_insert,
             p_url: file_path,
           },

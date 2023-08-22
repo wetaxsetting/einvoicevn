@@ -3031,7 +3031,8 @@ class EInvoiceController {
                     options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
                 },
             };
-
+            console.log('weTaxSendInformAdjustToTaxOffice');
+            
             const trade_code = await Request.post(
                 url,
                 { base64XML: Buffer.from(xml_signed).toString("base64") },
@@ -3042,7 +3043,7 @@ class EInvoiceController {
                     },
                 }
             );
-
+            console.log('trade_code ', trade_code);
             if (trade_code && trade_code.data) {
                 return Utils.response(true, `Call tax office api success.`, {
                     key_req: key_req,

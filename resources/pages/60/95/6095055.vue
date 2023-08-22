@@ -18,7 +18,8 @@
         </v-row>
         <v-row dense>
           <v-col md="2">
-            <datePicker :label="$t('month')" :type="'month'" @returnValue="month = $event"></datePicker>
+            <!-- <datePicker :label="$t('month')" :type="'month'" @returnValue="month = $event"></datePicker> -->
+            <BaseDatePicker  :label="$t('month')" v-model="year" year today />
           </v-col>
           <v-col md="5">
             <datePicker :label="$t('fromdate')" :inputValue="fromDate" :defaultType="'startOfMonth'" @returnValue="fromDate = $event"></datePicker>
@@ -71,7 +72,6 @@
           <v-col md="2"> </v-col>
           <v-col md="2"> </v-col>
         </v-row> -->
-
         <v-row dense>
           <v-col md="12">
             <v-row>
@@ -347,6 +347,7 @@ export default {
     bizplaceList: [],
     lstBizplace: "",
     month: "",
+    year: "",
     fromDate: "",
     toDate: "",
     lstStatus: "",
@@ -417,6 +418,32 @@ export default {
     lstFrom_No_From(val) {
       this.getListCodes("serial_no");
     },
+
+    year(val) {
+      if (val) {
+          this.fromDate = this.year + "0101";
+          this.toDate = this.year + "1231";
+        }
+        // if (this.itemChooseTypeDate == "3") {
+        //   if (this.itemChooseTypeQuarter == "0") {
+        //     this.fromDate = this.year + "0101";
+        //     this.toDate = this.year + "0331";
+        //   }
+        //   if (this.itemChooseTypeQuarter == "1") {
+        //     this.fromDate = this.year + "0401";
+        //     this.toDate = this.year + "0630";
+        //   }
+        //   if (this.itemChooseTypeQuarter == "2") {
+        //     this.fromDate = this.year + "0701";
+        //     this.toDate = this.year + "0930";
+        //   }
+        //   if (this.itemChooseTypeQuarter == "3") {
+        //     this.fromDate = this.year + "1001";
+        //     this.toDate = this.year + "1231";
+        //   }
+        // }
+      
+    },
   },
   /*############### computed ######################*/
   computed: {
@@ -484,7 +511,7 @@ export default {
         { dataField: "FORM_NO", width: 100, caption: this.$t("form_no"), editable: true, alignment: "left", type: "text" },
         { dataField: "SERIAL_NO", width: 100, caption: this.$t("serial_no"), editable: true, alignment: "left", type: "text" },
         { dataField: "FROM_DT", width: 100, caption: this.$t("from_dt"), editable: true, alignment: "center", type: "date" },
-        { dataField: "TO_DT", width: 100, caption: this.$t("to_dt"), editable: true, alignment: "center", type: "date" },
+    { dataField: "TO_DT", width: 100, caption: this.$t("to_dt"), editable: true, alignment: "center", type: "date"},
         {
           dataField: "STATUS",
           width: 100,
@@ -1059,7 +1086,7 @@ export default {
             valueExpr: "CODE",
           },
           type: "text",
-          editable: true,
+          hidden: true,
         },
         {
           dataField: "TYPE_TABLE",
@@ -1085,7 +1112,7 @@ export default {
             valueExpr: "CODE",
           },
           type: "text",
-          hidden: true,
+          editable: true,
         },
         {
           dataField: "REMARKS",

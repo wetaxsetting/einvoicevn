@@ -19,15 +19,15 @@
         <v-row dense>
           <v-col md="2">
             <!-- <datePicker :label="$t('month')" :type="'month'" @returnValue="month = $event"></datePicker> -->
-            <BaseDatePicker  :label="$t('year')" v-model="year" year today />
+            <BaseDatePicker :label="$t('year')" v-model="year" year today />
           </v-col>
           <v-col md="5">
             <!-- <datePicker :label="$t('fromdate')" :inputValue="fromDate" :defaultType="'startOfMonth'" @returnValue="fromDate = $event"></datePicker> -->
-            <BaseDatePicker  :label="$t('fromdate')" v-model="fromDate"  />
+            <BaseDatePicker :label="$t('fromdate')" v-model="fromDate" />
           </v-col>
           <v-col md="5">
             <!-- <datePicker :inputValue="toDate" :defaultType="'endOfMonth'" :label="$t('to_date')" @returnValue="toDate = $event"></datePicker> -->
-            <BaseDatePicker  :label="$t('to_date')" v-model="toDate"  />
+            <BaseDatePicker :label="$t('to_date')" v-model="toDate" />
           </v-col>
         </v-row>
         <v-row dense>
@@ -75,156 +75,155 @@
           <v-col md="2"> </v-col>
         </v-row> -->
         <v-row dense>
-          <v-col md="12">
-            <v-row>
-              <v-col md="1">
-                <div class="d-flex">
-                  <BaseButton btn_type="icon" icon_type="hide_search_panel" :btn_text="$t('hide_search_panel')" v-if="showHilden" mdi-icon="mdi-backburger" @onclick="showHilden = !showHilden" />
-                  <BaseButton btn_type="icon" icon_type="show_search_panel" :btn_text="$t('show_search_panel')" v-else mdi-icon="mdi-forwardburger" @onclick="showHilden = !showHilden" />
-                </div>
-              </v-col>
-              <v-col md="2" class="d-flex justify-end">
-                <b> {{ $t("template_table") }} </b>
-              </v-col>
-              <v-col md="9" class="d-flex justify-end">
-                <GwPutFile
-                  :label="$t('import_ar_invoice')"
-                  :impMultipleTemp="imp_MultipleTemp"
-                  :impCboTemp="cboTemplate"
-                  @onrtnseltemp="selTemplate = $event"
-                  :impAddParam="[this.selected_company, this.itemTemplatePK]"
-                  @onAfterImport="onAfterImport"
-                />
-                <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('template_file')" @onclick="getImpFile" />
-                <BaseButton btn_type="icon" icon_type="view" :btn_text="$t('view')" :disabled="isProcessing" @onclick="onClickButton('VIEW')" />
-                <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="isProcessing" @onclick="onClickButton('NEW_T')" />
-                <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="isProcessing" @onclick="onClickButton('DELETE_T')" />
-                <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="isProcessing" @onclick="onClickButton('SAVE_T')" />
-              </v-col>
-            </v-row>
-            <v-row dense>
-              <v-col>
-                <BaseGridView
-                  :headertype="1"
-                  ref="grdTemplate"
-                  :header="grdTemplate"
-                  :height="limitHeightT"
-                  :multiselect="true"
-                  sel_procedure="EI_SEL_6095055_3"
-                  :filter_paras="[this.item_pk]"
-                  upd_procedure="EI_UPD_6095055_4"
-                  :editable="true"
-                  :update_paras="[
-                    'PK',
-                    'TEMPLATE_CD',
-                    'TEMPLATE_NM',
-                    'TEMPLATE_LNM',
-                    'TEMPLATE_FNM',
-                    'FORM_NO',
-                    'USE_YN',
-                    'TEI_COMPANY_PK',
-                    'VALID_DATE_FROM',
-                    'VALID_DATE_TO',
-                    'REPORT_ID',
-                    'ADDR1',
-                    'ADDR2',
-                    'BANK_ACCOUNT1',
-                    'BANK_ACCOUNT2',
-                    'BANK_NM1',
-                    'BANK_NM2',
-                    'TEL',
-                    'FAX',
-                    'TAX_CODE',
-                    'TEI_EINVOICE_ISSUSE_PK',
-                    'WEBSITE',
-                    'TAX_CODE_DISPLAY',
-                    'PBAN',
-                    'SERIAL_NO_2',
-                    'URL_FILE_EXCEL',
-                    'URL_IMG_LOGO',
-                    'LOGO_START_ROW',
-                    'LOGO_START_COL',
-                    'URL_IMG_BG',
-                    'BG_START_ROW',
-                    'BG_END_ROW',
-                    'BG_WIDTH',
-                    'BG_HEIGHT',
-                    'SIGN_START_CELL',
-                    'SIGN_END_CELL',
-                    'SIGN_BY_START_CELL',
-                    'SIGN_BY_END_CELL',
-                    'DETAILS_START_ROW',
-                    'SIGN_CELL_BOX',
-                    'ATT01',
-                    'ATT02',
-                    'ATT03',
-                    'ATT04',
-                    'ATT05',
-                    'ATT06',
-                    'ATT07',
-                    'ATT08',
-                    'ATT09',
-                    'ATT10',
-                    'ATT01_NUM',
-                    'ATT02_NUM',
-                    'ATT03_NUM',
-                    'ATT04_NUM',
-                    'ATT05_NUM',
-                    'ATT06_NUM',
-                    'ATT07_NUM',
-                    'ATT08_NUM',
-                    'ATT09_NUM',
-                    'ATT10_NUM',
-                    'RANGE_DETAILS_SIGN',
-                  ]"
-                  @cellClick="cellClickCellTemplate"
-                />
-              </v-col>
-            </v-row>
-            <v-row dense>
-              <v-col md="1"></v-col>
-              <v-col md="2" class="d-flex justify-end">
-                <b> {{ $t("master_table") }} </b>
-              </v-col>
-              <v-col md="5">
-                <BaseInput :outlined="true" :label="$t('param_code_master')" v-model="txtParamCodeMaster" @keyPressEnter="onLoadDataParamM" />
-              </v-col>
-              <v-col md="4" class="d-flex justify-end">
-                <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="isProcessing" @onclick="onClickButton('NEW_PM')" />
-                <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="isProcessing" @onclick="onClickButton('DELETE_PM')" />
-                <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="isProcessing" @onclick="onClickButton('SAVE_PM')" />
-              </v-col>
-            </v-row>
-            <v-row dense>
-              <v-col>
-                <BaseGridView
-                  :headertype="1"
-                  ref="grdParamM"
-                  :height="limitHeightmin"
-                  :header="grdParamM"
-                  sel_procedure="EI_SEL_6095055_5"
-                  upd_procedure="EI_UPD_6095055_6"
-                  :editable="true"
-                  :update_paras="['PK', 'CELL_CODE', 'DATA_MAPPING', 'REMARKS', 'TEI_TEMPLATE_PK', 'TYPE_TABLE', 'TYPE_TEMPLATE', 'TYPE']"
-                  :filter_paras="[this.itemTemplatePK, this.txtParamCodeMaster]"
-                />
-              </v-col>
-            </v-row>
-            <v-row dense>
-              <v-col md="1"></v-col>
-              <v-col md="2" class="d-flex justify-end">
-                <b> {{ $t("detail_table") }} </b>
-              </v-col>
-              <v-col md="5">
-                <BaseInput :outlined="true" :label="$t('param_code_details')" v-model="txtParamCodeDetails" @keyPressEnter="onLoadDataParamD" />
-              </v-col>
-              <v-col md="4" class="d-flex justify-end">
-                <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="isProcessing" @onclick="onClickButton('NEW_PD')" />
-                <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="isProcessing" @onclick="onClickButton('DELETE_PD')" />
-                <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="isProcessing" @onclick="onClickButton('SAVE_PD')" />
-              </v-col>
-            </v-row>
-            <v-row>
+          <v-col md="1">
+            <div class="d-flex">
+              <BaseButton btn_type="icon" icon_type="hide_search_panel" :btn_text="$t('hide_search_panel')" v-if="showHilden" mdi-icon="mdi-backburger" @onclick="showHilden = !showHilden" />
+              <BaseButton btn_type="icon" icon_type="show_search_panel" :btn_text="$t('show_search_panel')" v-else mdi-icon="mdi-forwardburger" @onclick="showHilden = !showHilden" />
+            </div>
+          </v-col>
+          <v-col md="2" class="d-flex justify-end">
+            <b> {{ $t("template_table") }} </b>
+          </v-col>
+          <v-col md="9" class="d-flex justify-end">
+            <GwPutFile
+              :label="$t('import_ar_invoice')"
+              :impMultipleTemp="imp_MultipleTemp"
+              :impCboTemp="cboTemplate"
+              @onrtnseltemp="selTemplate = $event"
+              :impAddParam="[this.selected_company, this.itemTemplatePK]"
+              @onAfterImport="onAfterImport"
+            />
+            <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('template_file')" @onclick="getImpFile" />
+            <BaseButton btn_type="icon" icon_type="view" :btn_text="$t('view')" :disabled="isProcessing" @onclick="onClickButton('VIEW')" />
+            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="isProcessing" @onclick="onClickButton('NEW_T')" />
+            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="isProcessing" @onclick="onClickButton('DELETE_T')" />
+            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="isProcessing" @onclick="onClickButton('SAVE_T')" />
+          </v-col>
+          <v-row lg="12">
+            <v-col>
+              <BaseGridView
+                :headertype="1"
+                ref="grdTemplate"
+                :header="grdTemplate"
+                :height="limitHeightT"
+                :multiselect="true"
+                sel_procedure="EI_SEL_6095055_3"
+                :filter_paras="[this.item_pk]"
+                upd_procedure="EI_UPD_6095055_4"
+                :editable="true"
+                :update_paras="[
+                  'PK',
+                  'TEMPLATE_CD',
+                  'TEMPLATE_NM',
+                  'TEMPLATE_LNM',
+                  'TEMPLATE_FNM',
+                  'FORM_NO',
+                  'USE_YN',
+                  'TEI_COMPANY_PK',
+                  'VALID_DATE_FROM',
+                  'VALID_DATE_TO',
+                  'REPORT_ID',
+                  'ADDR1',
+                  'ADDR2',
+                  'BANK_ACCOUNT1',
+                  'BANK_ACCOUNT2',
+                  'BANK_NM1',
+                  'BANK_NM2',
+                  'TEL',
+                  'FAX',
+                  'TAX_CODE',
+                  'TEI_EINVOICE_ISSUSE_PK',
+                  'WEBSITE',
+                  'TAX_CODE_DISPLAY',
+                  'PBAN',
+                  'SERIAL_NO_2',
+                  'URL_FILE_EXCEL',
+                  'URL_IMG_LOGO',
+                  'LOGO_START_ROW',
+                  'LOGO_START_COL',
+                  'URL_IMG_BG',
+                  'BG_START_ROW',
+                  'BG_END_ROW',
+                  'BG_WIDTH',
+                  'BG_HEIGHT',
+                  'SIGN_START_CELL',
+                  'SIGN_END_CELL',
+                  'SIGN_BY_START_CELL',
+                  'SIGN_BY_END_CELL',
+                  'DETAILS_START_ROW',
+                  'SIGN_CELL_BOX',
+                  'ATT01',
+                  'ATT02',
+                  'ATT03',
+                  'ATT04',
+                  'ATT05',
+                  'ATT06',
+                  'ATT07',
+                  'ATT08',
+                  'ATT09',
+                  'ATT10',
+                  'ATT01_NUM',
+                  'ATT02_NUM',
+                  'ATT03_NUM',
+                  'ATT04_NUM',
+                  'ATT05_NUM',
+                  'ATT06_NUM',
+                  'ATT07_NUM',
+                  'ATT08_NUM',
+                  'ATT09_NUM',
+                  'ATT10_NUM',
+                  'RANGE_DETAILS_SIGN',
+                ]"
+                @cellClick="cellClickCellTemplate"
+              />
+            </v-col>
+          </v-row>
+        </v-row>
+
+        <v-row dense>
+          <v-col md="1"></v-col>
+          <v-col md="2" class="d-flex justify-end">
+            <b> {{ $t("master_table") }} </b>
+          </v-col>
+          <v-col md="6">
+            <BaseInput :outlined="true" :label="$t('param_code_master')" v-model="txtParamCodeMaster" @keyPressEnter="onLoadDataParamM" />
+          </v-col>
+          <v-col md="3" class="d-flex justify-end">
+            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="isProcessing" @onclick="onClickButton('NEW_PM')" />
+            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="isProcessing" @onclick="onClickButton('DELETE_PM')" />
+            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="isProcessing" @onclick="onClickButton('SAVE_PM')" />
+          </v-col>
+          <v-row lg="12">
+            <v-col>
+              <BaseGridView
+                :headertype="1"
+                ref="grdParamM"
+                :height="limitHeightmin"
+                :header="grdParamM"
+                sel_procedure="EI_SEL_6095055_5"
+                upd_procedure="EI_UPD_6095055_6"
+                :editable="true"
+                :update_paras="['PK', 'CELL_CODE', 'DATA_MAPPING', 'REMARKS', 'TEI_TEMPLATE_PK', 'TYPE_TABLE', 'TYPE_TEMPLATE', 'TYPE']"
+                :filter_paras="[this.itemTemplatePK, this.txtParamCodeMaster]"
+              />
+            </v-col>
+          </v-row>
+        </v-row>
+
+        <v-row dense>
+          <v-col md="1"></v-col>
+          <v-col md="2" class="d-flex justify-end">
+            <b> {{ $t("detail_table") }} </b>
+          </v-col>
+          <v-col md="6">
+            <BaseInput :outlined="true" :label="$t('param_code_details')" v-model="txtParamCodeDetails" @keyPressEnter="onLoadDataParamD" />
+          </v-col>
+          <v-col md="3" class="d-flex justify-end">
+            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="isProcessing" @onclick="onClickButton('NEW_PD')" />
+            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="isProcessing" @onclick="onClickButton('DELETE_PD')" />
+            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="isProcessing" @onclick="onClickButton('SAVE_PD')" />
+          </v-col>
+          <v-row lg="12">
               <v-col>
                 <BaseGridView
                   :headertype="1"
@@ -239,7 +238,6 @@
                 />
               </v-col>
             </v-row>
-          </v-col>
         </v-row>
       </v-col>
     </v-row>
@@ -423,9 +421,9 @@ export default {
 
     year(val) {
       if (val) {
-          this.fromDate = this.year + "0101";
-          this.toDate = this.year + "1231";
-        }
+        this.fromDate = this.year + "0101";
+        this.toDate = this.year + "1231";
+      }
     },
   },
   /*############### computed ######################*/
@@ -449,9 +447,9 @@ export default {
     },
     limitHeightmin() {
       if (this.windowHeight <= 768) {
-        return this.windowHeight * 0.15; //1366x768
+        return this.windowHeight * 0.14; //1366x768
       } else {
-        return this.windowHeight * 0.25; //1920x1080
+        return this.windowHeight * 0.24; //1920x1080
       }
     },
     gridHeight() {
@@ -494,7 +492,7 @@ export default {
         { dataField: "FORM_NO", width: 100, caption: this.$t("form_no"), editable: true, alignment: "left", type: "text" },
         { dataField: "SERIAL_NO", width: 100, caption: this.$t("serial_no"), editable: true, alignment: "left", type: "text" },
         { dataField: "FROM_DT", width: 100, caption: this.$t("from_dt"), editable: true, alignment: "center", type: "date" },
-    { dataField: "TO_DT", width: 100, caption: this.$t("to_dt"), editable: true, alignment: "center", type: "date"},
+        { dataField: "TO_DT", width: 100, caption: this.$t("to_dt"), editable: true, alignment: "center", type: "date" },
         {
           dataField: "STATUS",
           width: 100,
@@ -1157,7 +1155,7 @@ export default {
         },
         {
           dataField: "FIELD",
-          width: 100,
+          width: 200,
           caption: this.$t("field"),
           alignment: "left",
           lookup: {
@@ -1170,7 +1168,7 @@ export default {
         },
         {
           dataField: "TYPE",
-          width: 230,
+          width: 220,
           caption: this.$t("type"),
           alignment: "left",
           lookup: {
@@ -1183,7 +1181,7 @@ export default {
         },
         {
           dataField: "REMARKS",
-          width: 300,
+          width: 280,
           caption: this.$t("remarks"),
           alignment: "left",
           type: "text",

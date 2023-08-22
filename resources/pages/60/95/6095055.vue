@@ -1030,7 +1030,7 @@ export default {
         },
         {
           dataField: "CELL_CODE",
-          width: 100,
+          width: 150,
           caption: this.$t("cell_code"),
           alignment: "left",
           type: "text",
@@ -1038,7 +1038,7 @@ export default {
         },
         {
           dataField: "DATA_MAPPING",
-          width: 200,
+          width: 220,
           caption: this.$t("data_mapping"),
           alignment: "left",
           type: "text",
@@ -1086,7 +1086,7 @@ export default {
         },
         {
           dataField: "TYPE",
-          width: 200,
+          width: 280,
           caption: this.$t("type"),
           alignment: "left",
           lookup: {
@@ -1170,7 +1170,7 @@ export default {
         },
         {
           dataField: "TYPE",
-          width: 200,
+          width: 230,
           caption: this.$t("type"),
           alignment: "left",
           lookup: {
@@ -1183,7 +1183,7 @@ export default {
         },
         {
           dataField: "REMARKS",
-          width: 250,
+          width: 300,
           caption: this.$t("remarks"),
           alignment: "left",
           type: "text",

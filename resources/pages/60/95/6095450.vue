@@ -107,7 +107,15 @@
         <v-card>
           <v-row dense>
             <v-col lg="1" class="d-flex pl-2">
-              <BaseButton btn_type="icon" :icon_type="isShowLeft ? 'skip_prev' : 'skip_next'" :btn_text="isShowLeft ? $t('hide_left') : $t('show_left')" @onclick="isShowLeft = !isShowLeft; $refs.grdMaster.refresh()" />
+              <BaseButton
+                btn_type="icon"
+                :icon_type="isShowLeft ? 'skip_prev' : 'skip_next'"
+                :btn_text="isShowLeft ? $t('hide_left') : $t('show_left')"
+                @onclick="
+                  isShowLeft = !isShowLeft;
+                  $refs.grdMaster.refresh();
+                "
+              />
             </v-col>
           </v-row>
           <v-row dense></v-row>
@@ -142,15 +150,19 @@
         </v-card>
       </v-col>
     </v-row>
+    <view-einvoice-pdf-dialog ref="ViewEInvoicePDFDialog" :src_pdfUrl="pdfUrl"></view-einvoice-pdf-dialog>
   </v-container>
 </template>
 
 <script>
+import ViewEInvoicePDFDialog from "@/components/dialog/ViewEInvoicePDFDialog.vue";
 export default {
   layout: "default",
   middleware: "user",
 
-  components: {},
+  components: {
+    "view-einvoice-pdf-dialog": ViewEInvoicePDFDialog,
+  },
   data: () => ({
     isShowLeft: true,
 
@@ -184,6 +196,7 @@ export default {
       tradingTypeList: [],
     },
     masterPK: "",
+    pdfUrl: "",
   }),
 
   async created() {
@@ -331,7 +344,7 @@ export default {
         },
         {
           dataField: "TRADE_CODE",
-          caption: this.$t("trade_code")
+          caption: this.$t("trade_code"),
         },
       ];
     },
@@ -488,12 +501,53 @@ export default {
           await this.$refs.grdCompany.loadData();
           break;
         case "preview":
+          this.onPreview();
           break;
         case "viewxml":
           this.OnPreviewXML();
           break;
       }
     },
+    // async onPreview() {
+    //   // if (!this.$refs.grdCompany.getSelectedRows().length) {
+    //   //   return this.showNotification("warning", this.$t("error_occurs"), "pls_select_einvoice");
+    //   // }
+    //   let _Pk = "";
+    //   _Pk = this.masterPK ;
+    //   this.isProcessing = true;
+
+    //   // this.pdfUrl = await this.pdfUrlGetter(_Pk);
+    //   // console.log("file: 6095450.vue:520 [vng-304] onPreview [vng-304] pdfUrl:", this.pdfUrl)
+
+    //   // const pdfUrl = window.URL.createObjectURL(new Blob([new Uint8Array(this.$refs.grdCompany.getSelectRowsData()[0].FILE_CONTENT.data)], {type: "application/octet-stream",}));
+    //   // this.pdfUrl = pdfUrl;
+      
+    //   this.$nextTick(() => {
+    //     this.isProcessing = false;
+    //     this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+    //   });
+    // },
+    // async pdfUrlGetter(pk) {
+    //   console.log("file: 6095450.vue:526 [vng-304] pdfUrlGetter [vng-304] pk:", pk)
+    //   // const pdfUrlExcel = await this.getEinvoice(this, pk)
+    //   // return pdfUrlExcel
+
+    //   let _Pk = "";
+    //   this.masterPK = _Pk;
+
+    //   let res = await this.$axios.$post("/einvoice/downloadpdf", {
+    //     responseType: "json",
+    //     para: {
+    //       // tei_einvoice_m_pk: _Pk,
+    //       token: "",
+    //       proc: "EI_SEL_XML_FILE_F_CLIENT",
+    //       trade_code: pk,
+    //     },
+    //   });
+    //   console.log("file: 6095450.vue:540 [vng-304] pdfUrlGetter [vng-304] res:", res)
+    //   return res;
+      
+    // },
     async OnPreviewXML() {
       if (!this.masterPK == null) {
         return this.showNotification("warning", this.$t("error_occurs"), "pls_select_invoice");

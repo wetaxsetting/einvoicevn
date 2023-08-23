@@ -3011,6 +3011,86 @@ class EInvoiceController {
         }
     }
 
+    async weTaxSendInformAdjustToTaxOffice({ request, response, auth }) {
+        try {
+            var p_language = request.header("accept-language", "ENG");
+            var p_crt_by = "";
+            const user = await auth.getUser();
+            if (user) {
+                p_crt_by = user.USER_ID;
+            }
+            const authUserName = "GENUWIN"; // "GENUWIN";
+            const authPassword = "genuwin123"; // "e_GX4v@";
+            //const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
+            const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
+            const { xml_signed, key_req } = request.all();
+            const agent = {
+                Agent: {
+                    defaultPort: 443,
+                    protocol: "https:",
+                    options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
+                },
+            };
+            console.log('weTaxSendInformAdjustToTaxOffice');
+            
+            const trade_code = await Request.post(
+                url,
+                { base64XML: Buffer.from(xml_signed).toString("base64") },
+                {
+                    agent,
+                    headers: {
+                        Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
+                    },
+                }
+            );
+            console.log('trade_code ', trade_code);
+            if (trade_code && trade_code.data) {
+                return Utils.response(true, `Call tax office api success.`, {
+                    key_req: key_req,
+                    trade_code: trade_code.data.maGDich,
+                });
+                // const para_value = {
+                //     key_req: key_req,
+                //     trade_code: trade_code.data.maGDich,
+                //     xml_sign: xml_signed,
+                // };
+                // const res = await DBService.ExecuteSQLBlob(
+                //     `BEGIN EI_UP_6095280_DATA_TRADE_CODE(:key_req,:trade_code, :xml_sign,
+                //             :p_language, :p_crt_by, :p_rtn_cur); END;`,
+                //     para_value,
+                //     p_language,
+                //     p_crt_by
+                // );
+
+                // if (res.p_rtn_cur[0].STATUS == "OK") {
+                //     return Utils.response(true, `Call tax office api success.`, {
+                //         key_req: key_req,
+                //         trade_code: trade_code.data.maGDich,
+                //     });
+                // } else {
+                //     return response.send(
+                //         Utils.response(
+                //             false,
+                //             `Something went wrong, please try again later.
+                //   EI_UP_6095280_DATA_TRADE_CODE`,
+                //             para_value
+                //         )
+                //     );
+                // }
+            } else {
+                return response.send(Utils.response(false, `Failed to call taxoffice api.`, null));
+            }
+        } catch (e) {
+            Utils.Logger({
+                LVL: "error",
+                MODULE: "EInvoiceController",
+                FUNC: "sendInvoiceToTaxOffice",
+                CONTENT: e.message,
+            });
+            return response.send(Utils.response(false, "error", e.message));
+        }
+    }
+
     async sendInformAdjustToTaxOfficeFromClient({ request, response, auth }) {
         try {
             var p_language = request.header("accept-language", "ENG");
@@ -3649,7 +3729,7 @@ class EInvoiceController {
             return response.send(Utils.response(false, "error", e.message));
         }
     }
-    
+
     async updateViewTemplateFromClient({request, response, auth}) {
         try {
           var p_language = request.header('accept-language', 'ENG');
@@ -4643,6 +4723,7 @@ class EInvoiceController {
 
             const { invoices } = request.all();
             console.log(" invoices  ", invoices);
+
             //invoices = JSON.parse(invoices);
             let rtnXML = [];
             let objInvoice = {
@@ -4705,6 +4786,10 @@ class EInvoiceController {
                     DLieu :[]
                 }
             }
+            const valid = this.validateJsonInvalidInvoiceToXML(invalid_invoices);
+            if (!valid.status) {
+                return response.send(Utils.response(valid.status, valid.message, null));
+            }
             /*let invoices_sample=[
                             {master:{},detail:[{}]},
                             {master:{},detail:[{}]},
@@ -4714,21 +4799,7 @@ class EInvoiceController {
             if (invoices.length == undefined || invoices.length == 0) {
                 return response.send(Utils.response(false, `Invalid json format.`, invoices));
             }
-            // const lastInvoiceNo = await DBService.callProcCursor(
-            //     "ei_sel_last_invoice_no",
-            //     [invoices[0].master.seller_taxcode, invoices[0].master.serial_no, invoices[0].master.form_no],
-            //     "ENG",
-            //     p_crt_by,
-            //     "N"
-            // );
-            // let last_invoice_no = lastInvoiceNo[0].INVOICE_NO;
-            // const last_invoice_date = lastInvoiceNo[0].INVOICE_DATE;
-            // const tomorrow_date = lastInvoiceNo[0].TOMORROW_DATE;
-            // if (isNaN(last_invoice_no)) {
-            //     return response.send(
-            //         Utils.response(false, `Failed to create invoice no. Please contact administrator for helping.`, null)
-            //     );
-            // }
+           
             for (let i = 0; i < invoices.length; i++) {
                 //console.log("invoices:", invoices[i])
 
@@ -4747,7 +4818,6 @@ class EInvoiceController {
                     objInvoice.HDon.DLHDon.TTChung.THDon =
                         "Phiếu xuất kho kiêm vận chuyển nội bộ, phiếu xuất kho hàng gửi bán đại lý khởi tạo từ máy tính tiền";
                 }
-                last_invoice_no++;
                 objInvoice.HDon.DLHDon.TTChung.PBan = invoices[i].version;
                 objInvoice.HDon.DLHDon.TTChung.KHMSHDon = invoices[i].master.form_no;
                 objInvoice.HDon.DLHDon.TTChung.KHHDon = invoices[i].master.serial_no;
@@ -4827,12 +4897,6 @@ class EInvoiceController {
                 objInvoice.HDon.MCCQT = invoices[i].master.mccqt;
 
 
-                let objData = {
-                    TDiep : {
-                        DLieu :[]
-                    }
-                }
-
                 objData.TDiep.DLieu.push(objInvoice);
                 // const xml = convertXML.json2xml(objInvoice, {
                 //     compact: true,
@@ -4841,8 +4905,21 @@ class EInvoiceController {
                 // });
                 // const xmlStr = xml.toString().replace(/\n/g, "");
                 //console.log("xmlStr", xmlStr)
-                rtnXML.push({ master_pk: invoices[i].master.master_pk, invoice_no: last_invoice_no, xml: xmlStr });
+                //rtnXML.push({ master_pk: invoices[i].master.master_pk, invoice_no: last_invoice_no, xml: xmlStr });
             }
+
+            const id = uuid.v4();
+            const xml = this.OBJtoXML(objData);
+            const xmlId = xml.toString().replace("<DLieu>", `<DLieu Id=\'${id}\'>`);
+            const xmlRemoveLine = xmlId.toString().replace(/\n/g, "");
+            rtnXML = {
+                tax_code:"02131316464", 
+                store_code:"SAA0001",
+                store_name:"DUONG BA TRAC",
+                count_invoice_convert : "4",
+                xml_converted : xmlRemoveLine
+             };
+
 
             return response.send(
                 Utils.response(true, `Convert json to xml was successful.`, rtnXML)
@@ -4856,6 +4933,119 @@ class EInvoiceController {
             });
             return response.send(Utils.response(false, "error", e.message));
         }
+    }
+
+    weTaxValidateJsonInvalidPosInvoiceToXML(invalid_pos_invoices) {
+        let status = true;
+        let resMess = "";
+        const mess1 = "Invalid field";
+        const errorList = {
+            version: 6,
+            master_pk: 99,
+            invoice_name: 100,
+            form_no: 1,
+            serial_no: 6,
+            invoice_no: 8,
+            invoice_date: 10,
+            currency: 3,
+            ex_rate: 10,
+            payment_method: 50,
+            seller_comp_name: 400,
+            seller_taxcode: 14,
+            seller_address: 400,
+            seller_tel: 20,
+            buyer_comp_name: 400,
+            buyer_taxcode: 14,
+            buyer_address: 400,
+            buyer_tel: 20,
+            buyer_cccd: 12,
+            detail: [{
+                nature: 1,
+                seq: 4,
+                item_code: 50,
+                item_name: 500,
+                item_uom: 50,
+                quantity: 28,
+                uprice: 28,
+                discount_rate: 11,
+                discount_amt: 28,
+                amt: 28,
+                vat_rate_d: 11,
+                amt_vat: 28
+            }],
+            list_amt_vat: [
+                {
+                  sub_vat_rate: 11,
+                  sub_amt: 28,
+                  sub_amt_vat: 28
+                }
+              ],
+
+        };
+    
+        for (const key in errorList) {
+          // valid null of not null values
+          if (invalid_pos_invoices[key] === undefined || invalid_pos_invoices[key] == null) {
+            status = false;
+            resMess = `${mess1} ${key}.`;
+            return {
+              status,
+              message: resMess,
+            };
+          }
+          
+          // valid length
+          if(String(invalid_pos_invoices[key]).length > errorList[key] && key != 'invoices'){
+            return {
+              status: false,
+              message: `Length of ${key} too long.`,
+            };
+          }
+    
+        }
+    
+        // valid invoices
+        if(!invalid_pos_invoices.invoices[0]){
+          return {
+            status: false,
+            message:`${mess1} invoices.`,
+          };
+        }
+        
+        for (let i = 0; i < invalid_pos_invoices.invoices.length; i++) {
+            for (const key in errorList.invoices[0]) {
+                
+                // valid digital_certificates 
+                if (invalid_pos_invoices.invoices[i][key] === undefined || invalid_pos_invoices.invoices[i][key] == null) {
+                  status = false;
+                  resMess = `${mess1} invoices ${key}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                // vald length
+                if(String(invalid_pos_invoices.invoices[i][key]).length > errorList.invoices[0][key]){
+                    return {
+                      status: false,
+                      message: `Length of invoices.${key} too long.`,
+                    };
+                  }
+            }
+        }
+        const valueDT = ['1', '2'];
+        if (!valueDT.includes(String(invalid_pos_invoices.declare_type))) {
+          return {
+            status: false,
+            message: `invalid_pos_invoices must be 1 or 2. Receive: declare_type = ${invalid_pos_invoices.declare_type}`,
+          };
+        }
+
+        // if dont have any problem
+        return {
+          status,
+          message: resMess,
+        };
     }
 
     async weTaxSendOrderInfo({ request, response, auth }) {

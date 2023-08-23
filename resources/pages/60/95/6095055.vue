@@ -1172,7 +1172,7 @@ export default {
         },
         {
           dataField: "TYPE",
-          width: 220,
+          width: 200,
           caption: this.$t("type"),
           alignment: "left",
           lookup: {
@@ -1185,7 +1185,7 @@ export default {
         },
         {
           dataField: "REMARKS",
-          width: 250,
+          width: 300,
           caption: this.$t("remarks"),
           alignment: "left",
           type: "text",

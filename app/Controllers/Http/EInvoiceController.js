@@ -4609,6 +4609,11 @@ class EInvoiceController {
             }
     }
 
+    // weTAX
+
+
+
+
     async weTaxSendPOSToTaxOffice({ request, response, auth }) {
         try {
             var p_language = request.header("accept-language", "ENG");
@@ -5843,6 +5848,422 @@ class EInvoiceController {
         }
     }
 
+    async weTaxSendPosInvoiceToTaxOffice({ request, response, auth }) {
+        try {
+            var p_language = request.header("accept-language", "ENG");
+            var p_crt_by = "";
+            const user = await auth.getUser();
+            if (user) {
+                p_crt_by = user.USER_ID;
+            }
+            //const authPassword = "e_GX4v@"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+            //const url = "https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon";
+            //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon";
+            //const url = "http://118.71.250.233/ftvan-hddt/hdon/cmahdon";
+            const authUserName = "GENUWIN"; // "GENUWIN";
+            const authPassword = "genuwin123"; // "e_GX4v@";
+            const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien";
+          
+            const { data } = request.all();
+            //console.log("data  ", data);
+            const agent = {
+                Agent: {
+                    defaultPort: 443,
+                    protocol: "https:",
+                    options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
+                },
+            };
+            let trade_code = "";
+            let rtnValue = {};
+           await Request.post(
+                url,
+                { base64XML: Buffer.from(data.invoice_xml_signed).toString("base64") },
+                {
+                    agent,
+                    headers: {
+                        Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
+                    },
+                }
+            ).then((res) => {
+                 console.log("res  ++===> ",res);
+                 trade_code = res.data.maGDich;
+                 rtnValue = {
+                    trade_code : trade_code,
+                    seller_tax_code: data.seller_tax_code,
+                    seller_date: data.seller_date,
+                    store_code: data.store_code,
+                    store_name: data.store_name,
+                    tax_serial_number: data.tax_serial_number,
+                    pos_no: data.pos_no,
+
+                };
+    
+                //let json = JSON.parse(res.data.d);
+                //console.log("json ", json);
+                return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
+            })
+            .catch((error) => {
+                console.log(error);
+                return response.send(Utils.response(false, `e-Signing XML is faile !!`, error));
+            });;
+
+        
+           
+            // return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
+           // for (let i = 0; i < data.length; i++) {
+
+                // const masterInvoicePK = await this.weTaxExtractPosXMLContent(
+                //     data.invoice_xml_signed,
+                //     data.seller_tax_code,
+                //     data.seller_date,
+                //     data.store_code,
+                //     data.store_name,
+                //     data.tax_serial_number,
+                //     data.pos_no,
+                //     p_language,
+                //     p_crt_by
+                // );
+                // return;
+        //         if (masterInvoicePK.PK == -1) {
+        //             console.log(`The issuer invoice has not register [${para[i].tei_einvoice_m_pk}]`, para[i].xml_signed);
+        //             rtnValue.push({
+        //                 tei_einvoice_m_pk: para[i].tei_einvoice_m_pk,
+        //                 trade_code: "",
+        //                 errmsg: "The issuer invoice has not register",
+        //             });
+        //             continue;
+        //         } else if (masterInvoicePK.PK == 0) {
+        //             rtnValue.push({
+        //                 tei_einvoice_m_pk: para[i].tei_einvoice_m_pk,
+        //                 trade_code: "",
+        //                 errmsg: "Duplicated data. This invoice already sent",
+        //             });
+        //             continue;
+        //         } else if (masterInvoicePK.PK < -1) {
+        //             console.log(`invalid xml format [${para[i].tei_einvoice_m_pk}]`, para[i].xml_signed);
+        //             rtnValue.push({
+        //                 tei_einvoice_m_pk: para[i].tei_einvoice_m_pk,
+        //                 trade_code: "",
+        //                 errmsg: "Invalid xml format",
+        //             });
+        //             continue;
+        //         }
+        //         const trade_code = await Request.post(
+        //             url,
+        //             { base64XML: Buffer.from(para[i].xml_signed).toString("base64") },
+        //             {
+        //                 agent,
+        //                 headers: {
+        //                     Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
+        //                 },
+        //             }
+        //         );
+        //         //console.log("masterInvoicePK  ", masterInvoicePK);
+
+        //         if (trade_code && trade_code.data) {
+        //             const para_value = {
+        //                 tei_einvoice_ar_pk: masterInvoicePK.PK,
+        //                 xml_sign: para[i].xml_signed,
+        //                 issuer: para[i].issuer,
+        //                 issueby: para[i].issue_by,
+        //                 issueto: para[i].issue_to,
+        //                 dn_name: para[i].dn_name,
+        //                 dn_mst: para[i].dn_mst,
+        //                 notafter: para[i].notafter,
+        //                 notbefore: para[i].notbefore,
+        //                 serialnumber: para[i].tax_serial_number,
+        //                 trade_code: trade_code.data.maGDich,
+        //                 cqt_code: "", //cqt_code
+        //                 tei_einvoice_m_pk: masterInvoicePK.TEI_EINVOICE_M_PK,
+        //             };
+
+        //             await DBService.ExecuteSQLBlob(
+        //                 `BEGIN ei_upd_file_xml_ar(
+        //                                 :tei_einvoice_ar_pk,
+        //                                 :xml_sign,
+        //                                 :issuer,
+        //                                 :issueby,
+        //                                 :issueto,
+        //                                 :dn_name,
+        //                                 :dn_mst,
+        //                                 :notafter,
+        //                                 :notbefore,
+        //                                 :serialnumber,
+        //                                 :trade_code,
+        //                                 :cqt_code,
+        //                                 :tei_einvoice_m_pk, 
+        //                                 :p_language, 
+        //                                 :p_crt_by, 
+        //                                 :p_rtn_cur); 
+        //                 END;`,
+        //                 para_value,
+        //                 p_language,
+        //                 p_crt_by
+        //             );
+        //             let base64PDf;
+        //             try {
+        //                 let EiExcel = new EiExcelHandlerAuto();
+        //                 base64PDf = await EiExcel.getEinvoice(trade_code.data.maGDich, p_language, p_crt_by);
+        //                 console.log("base64PDf  ", base64PDf);
+        //             } catch (e) {
+        //                 base64PDf = "";
+        //             }
+
+        //             const para_pdf = {
+        //                 tei_einvoice_m_pk: masterInvoicePK.TEI_EINVOICE_M_PK,
+        //                 // base64 : "data:application/pdf;base64," + base64PDf
+        //                 url_pdf: base64PDf,
+        //             };
+        //             await DBService.ExecuteSQLBlob(
+        //                 `BEGIN ei_upd_file_pdf_ar(
+        //                                 :tei_einvoice_m_pk, 
+        //                                 :url_pdf,
+        //                                 :p_language, 
+        //                                 :p_crt_by, 
+        //                                 :p_rtn_cur); 
+        //                 END;`,
+        //                 para_pdf,
+        //                 p_language,
+        //                 p_crt_by
+        //             );
+
+        //             //console.log("rtnValue ", rtnValue);
+        //             rtnValue.push({
+        //                 tac_crca_pk: para[i].tac_crca_pk,
+        //                 trade_code: trade_code.data.maGDich,
+        //             });
+        //         } else {
+        //             return response.send(Utils.response(false, `Failed to call taxoffice api.`, null));
+        //         }
+
+
+
+        //   //  }
+        //     return response.send(Utils.response(true, `invoices successful`, rtnValue));
+        } catch (e) {
+            Utils.Logger({
+                LVL: "error",
+                MODULE: "EInvoiceController",
+                FUNC: "sendInvoiceToTaxOffice",
+                CONTENT: e.message,
+            });
+            console.log("e " , e);
+            return response.send(Utils.response(false, "error", e.message));
+        }
+    }
+
+    async weTaxExtractPosXMLContent(
+        p_xml_content,
+        p_seller_tax_code,
+        p_seller_date,
+        p_store_code,
+        p_store_name,
+        p_tax_serial_number,
+        p_pos_no,
+        p_language,
+        p_crt_by
+    ) {
+        let result_extra = {};
+        try {
+            console.log("weTaxExtractPosXMLContent")
+            const templateTTChung = [
+                "TDiep/DLieu/HDon/DLHDon/TTChung",
+                {
+                    PBan: "PBan",
+                    THDon: "THDon",
+                    KHMSHDon: "KHMSHDon",
+                    KHHDon: "KHHDon",
+                    SHDon: "SHDon",
+                    MHSo: "MHSo",
+                    NLap: "NLap",
+                },
+            ];
+            const jsonTTChung = await transform(p_xml_content, templateTTChung);
+            console.log("jsonTTChung", jsonTTChung)
+            // const templateTTHDLQuan = [
+            //     "TDiep/DLieu/HDon/DLHDon/TTChung/TTHDLQuan",
+            //     {
+            //         TCHDon: "TCHDon",
+            //         LHDCLQuan: "LHDCLQuan",
+            //         KHMSHDCLQuan: "KHMSHDCLQuan",
+            //         KHHDCLQuan: "KHHDCLQuan",
+            //         SHDCLQuan: "SHDCLQuan",
+            //         NLHDCLQuan: "NLHDCLQuan",
+            //         GChu: "GChu",
+            //     },
+            // ];
+            // const jsonTTHDLQuan = await transform(p_xml_content, templateTTHDLQuan);
+            // console.log("templateTTHDLQuan", jsonTTHDLQuan)
+
+            const arrTTChung = [
+                jsonTTChung[0].PBan,
+                jsonTTChung[0].THDon,
+                jsonTTChung[0].KHMSHDon,
+                jsonTTChung[0].KHHDon,
+                jsonTTChung[0].SHDon,
+                jsonTTChung[0].MHSo,
+                jsonTTChung[0].NLap,
+            ];
+
+            console.log("arrTTChung  ", arrTTChung)
+
+            const templateNBan = [
+                "TDiep/DLieu/HDon/DLHDon/NDHDon/NBan",
+                {
+                    Ten: "Ten",
+                    MST: "MST",
+                    DChi: "DChi",
+                    SDThoai: "SDThoai",
+                },
+            ];
+            const jsonNBan = await transform(p_xml_content, templateNBan);
+            const arrNBan = [
+                jsonNBan[0].Ten,
+                jsonNBan[0].MST,
+                jsonNBan[0].DChi,
+                jsonNBan[0].SDThoai,
+            ];
+            console.log("jsonNBan", jsonNBan)
+            const templateNMua = [
+                "TDiep/DLieu/HDon/DLHDon/NDHDon/NMua",
+                {
+                    Ten: "Ten",
+                    MST: "MST",
+                    DChi: "DChi",
+                    SDThoai: "SDThoai",
+                    CCCDan: "CCCDan",
+                },
+            ];
+            const jsonNMua = await transform(p_xml_content, templateNMua);
+            console.log("jsonNMua", jsonNMua)
+            const arrNMua = [
+                jsonNMua[0].Ten,
+                jsonNMua[0].MST,
+                jsonNMua[0].DChi,
+                jsonNMua[0].SDThoai,
+                jsonNMua[0].CCCDan,
+            ];
+            const templateLTSuat = [
+                "TDiep/DLieu/HDon/DLHDon/NDHDon/TToan/THTTLTSuat/LTSuat",
+                {
+                    TSuat: "TSuat",
+                    ThTien: "ThTien",
+                    TThue: "TThue",
+                },
+            ];
+            const jsonLTSuat = await transform(p_xml_content, templateLTSuat);
+            console.log("jsonLTSuat", jsonLTSuat)
+            const arrLTSuat = [jsonLTSuat[0].TSuat, jsonLTSuat[0].ThTien, jsonLTSuat[0].TThue];
+            const templateTToan = [
+                "TDiep/DLieu/HDon/DLHDon/NDHDon/TToan",
+                {
+                    TgTCThue: "TgTCThue",
+                    TgTThue: "TgTThue",
+                    TTCKTMai: "TTCKTMai",
+                    TgTTTBSo: "TgTTTBSo",
+                    TgTTTBChu: "TgTTTBChu",
+                },
+            ];
+            const jsonTToan = await transform(p_xml_content, templateTToan);
+            // console.log("jsonTToan", jsonTToan)
+            const arrTToan = [
+                jsonTToan[0].TgTCThue,
+                jsonTToan[0].TgTThue,
+                jsonTToan[0].TTCKTMai,
+                jsonTToan[0].TgTTTBSo,
+                jsonTToan[0].TgTTTBChu,
+            ];
+            //let v_vn_amount = Utils.Num2VNText(jsonTToan[0].TgTTTBSo, jsonTTChung[0].DVTTe);
+            // console.log("  v_vn_amount ", v_vn_amount);
+            /*const templateMCCQT = ['HDon', {
+                                  MCCQT: 'MCCQT'
+                              }]
+                              const jsonMCCQT = await transform(p_xml_content, templateMCCQT);
+                              //console.log(jsonMCCQT)
+                              */
+            const arrMCCQT = ""; //[jsonMCCQT[0].MCCQT];
+
+            const templateDSHHDVu = [
+                "TDiep/DLieu/HDon/DLHDon/NDHDon/DSHHDVu/HHDVu",
+                {
+                    TChat: "TChat",
+                    STT: "STT",
+                    MHHDVu: "MHHDVu",
+                    THHDVu: "THHDVu",
+                    DVTinh: "DVTinh",
+                    SLuong: "SLuong",
+                    DGia: "DGia",
+                    TLCKhau: "TLCKhau",
+                    STCKhau: "STCKhau",
+                    ThTien: "ThTien",
+                    TSuat: "TSuat",
+                },
+            ];
+            let masterPara = arrTTChung.concat(arrNBan).concat(arrNMua).concat(arrLTSuat).concat(arrTToan).concat(arrMCCQT);
+            //const xmlRelativePath = p_xml_path.replace(ROOT_DIR_FILES, "");
+            masterPara = masterPara.concat(["", "", "", ""]);
+           
+            // masterPara = masterPara.concat([
+            //     p_invoice_type,
+            //     v_vn_amount,
+            //     p_tr_type,
+            //     p_tax_serial_number,
+            //     p_tac_crca_pk,
+            //     p_invoice_form_symbol,
+            // ]);
+
+            // console.log("masterPara", masterPara)
+            //const master = await callAPI(_jwtToken, { proc: 'ei_upd_tei_einvoice_cloud', para: masterPara });
+            const master = await DBService.callProcCursor("ei_upd_tei_einvoice_ar", masterPara, p_language, p_crt_by);
+            // console.log("master", master);
+
+            if (master && master[0].PK > 0) {
+                const jsonDSHHDVu = await transform(p_xml_content, templateDSHHDVu);
+                //console.log(jsonDSHHDVu)
+                for (let i = 0; i < jsonDSHHDVu.length; i++) {
+                    const detailPara = [
+                        master[0].PK,
+                        jsonDSHHDVu[i].TChat,
+                        jsonDSHHDVu[i].STT,
+                        jsonDSHHDVu[i].MHHDVu,
+                        jsonDSHHDVu[i].THHDVu,
+                        jsonDSHHDVu[i].DVTinh,
+                        jsonDSHHDVu[i].SLuong,
+                        jsonDSHHDVu[i].DGia,
+                        jsonDSHHDVu[i].ThTien,
+                        jsonDSHHDVu[i].TLCKhau,
+                        jsonDSHHDVu[i].STCKhau,
+                        jsonDSHHDVu[i].TSuat,
+                        master[0].TEI_EINVOICE_M_PK,
+                    ];
+                    const detail = await DBService.callProcCursor("ei_upd_tei_einvoiced_ar", detailPara, p_language, p_crt_by);
+                    // console.log("detail", detail);
+                }
+                return (result_extra = {
+                    PK: master[0].PK,
+                    TEI_EINVOICE_M_PK: master[0].TEI_EINVOICE_M_PK,
+                });
+            } else {
+                return (result_extra = {
+                    PK: master[0].PK,
+                    TEI_EINVOICE_M_PK: master[0].TEI_EINVOICE_M_PK,
+                }); //master[0].PK;
+            }
+        } catch (e) {
+            Utils.Logger({
+                LVL: "error",
+                MODULE: "EInvoiceController",
+                FUNC: "extractXMLContent",
+                CONTENT: e.message,
+            });
+            console.log(e.message);
+            return (result_extra = {
+                PK: -2,
+                TEI_EINVOICE_M_PK: 0,
+            }); //master[0].PK;;
+        }
+    }
+
     Num2VNText(s, ccy) {
         console.log("Num2VNText  ", s)
 		//process minus case
@@ -6077,6 +6498,8 @@ class EInvoiceController {
 
 		return rtnf;
 	}
+
+    // end weTAX
 }
 
 module.exports = EInvoiceController;

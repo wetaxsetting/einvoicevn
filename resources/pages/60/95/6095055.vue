@@ -93,7 +93,7 @@
               :impAddParam="[this.selected_company, this.itemTemplatePK]"
               @onAfterImport="onAfterImport"
             />
-            <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('template_file')" :disabled="!item_pk"  @onclick="getImpFile" />
+            <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('template_file')" :disabled="!item_pk" @onclick="getImpFile" />
             <BaseButton btn_type="icon" icon_type="view" :btn_text="$t('view')" :disabled="!item_pk" @onclick="onClickButton('VIEW')" />
             <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="!item_pk" @onclick="onClickButton('NEW_T')" />
             <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="!item_pk" @onclick="onClickButton('DELETE_T')" />
@@ -245,7 +245,7 @@
     <!-- Copy To Dialog -->
     <v-dialog persistent id="copy-to-dialog" max-width="500" v-model="copyToDialog">
       <v-card>
-        <v-card-caption class="headline primary-gradient white--text py-2">{{ $t("copy_template_to") }}</v-card-caption>
+        <v-card-title class="headline primary-gradient white--text py-2">{{ $t("copy_template_to") }}</v-card-title>
         <v-card-text class="pa-4 pb-2 d-flex flex-column align-space-between">
           <v-row>
             <v-col md="6">
@@ -418,7 +418,11 @@ export default {
     lstFrom_No_From(val) {
       this.getListCodes("serial_no");
     },
-
+    selectedCompanyFrom(val) {
+        if (val) {
+        this.selectedCompanyTo = val;
+      }
+    },
     year(val) {
       if (val) {
         this.fromDate = this.year + "0101";
@@ -1660,6 +1664,7 @@ export default {
         this.copyToDialog = false;
         //this.copyResult =  this.$t( rtn);
       }
+      this.onSearch();
     },
 
     async onPreview() {

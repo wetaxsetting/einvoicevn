@@ -84,6 +84,7 @@
         "request": "^2.88.0",
         "sass": "^1.32.13",
         "speakeasy": "^2.0.0",
+        "sqlite3": "^5.1.6",
         "sweetalert2": "^10.1.0",
         "systeminformation": "^5.6.21",
         "tree-xml": "^0.1.4",

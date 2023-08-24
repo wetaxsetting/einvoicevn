@@ -30,16 +30,22 @@ class UserController {
                 ip = request.ip();
             }
             const { user_id, password } = request.all();
+            console.log("user_id ", user_id, "password  ", password);
             let user = await UserRepo.findBy({ USER_ID: user_id, DEL_IF: 0 });
             if (!user) {
                 return response.send(Utils.response(false, "user_not_found", null));
             }
             // const verify = await Hash.verify(password, user.USER_PW)
             const md5_64 = this.b64_md5(password);
+
+            console.log(" user ",  user);
+
+            console.log(" user.USER_PW ",  user.USER_PW, "md5_64  ", md5_64);
             let verify = md5_64 == user.USER_PW;
             if (!verify) {
                 verify = await Hash.verify(password, user.USER_PW);
             }
+            console.log("verify  ", verify)
             let result;
             if (!verify) {
                 result = await DBService.callProcCursor("sys_login_auth", [user_id, "invalid_userid_or_password", ip], "ENG", user_id);

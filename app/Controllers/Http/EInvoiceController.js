@@ -3022,7 +3022,7 @@ class EInvoiceController {
             const authPassword = "genuwin123"; // "e_GX4v@";
             //const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
             const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
-            const { xml_signed, key_req } = request.all();
+            const { xml_signed, req_key } = request.all();
             const agent = {
                 Agent: {
                     defaultPort: 443,
@@ -3045,16 +3045,16 @@ class EInvoiceController {
             console.log('trade_code ', trade_code);
             if (trade_code && trade_code.data) {
                 return Utils.response(true, `Call tax office api success.`, {
-                    key_req: key_req,
+                    req_key: req_key,
                     trade_code: trade_code.data.maGDich,
                 });
                 // const para_value = {
-                //     key_req: key_req,
+                //     req_key: req_key,
                 //     trade_code: trade_code.data.maGDich,
                 //     xml_sign: xml_signed,
                 // };
                 // const res = await DBService.ExecuteSQLBlob(
-                //     `BEGIN EI_UP_6095280_DATA_TRADE_CODE(:key_req,:trade_code, :xml_sign,
+                //     `BEGIN EI_UP_6095280_DATA_TRADE_CODE(:req_key,:trade_code, :xml_sign,
                 //             :p_language, :p_crt_by, :p_rtn_cur); END;`,
                 //     para_value,
                 //     p_language,
@@ -3063,7 +3063,7 @@ class EInvoiceController {
 
                 // if (res.p_rtn_cur[0].STATUS == "OK") {
                 //     return Utils.response(true, `Call tax office api success.`, {
-                //         key_req: key_req,
+                //         req_key: req_key,
                 //         trade_code: trade_code.data.maGDich,
                 //     });
                 // } else {

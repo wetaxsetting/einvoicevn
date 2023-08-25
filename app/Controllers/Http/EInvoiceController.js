@@ -2401,7 +2401,7 @@ class EInvoiceController {
             const authPassword = "genuwin123"; // "e_GX4v@";
             //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon";
             const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/dkyhddt/dkysdung";
-            const { xml_signed, tax_code, declare_key } = request.all();
+            const { xml_signed, tax_code, req_key } = request.all();
 
             const valid = this.validateDeclareXML(this.parseXmlToJson(xml_signed));
             if (!valid.status) {
@@ -2428,13 +2428,13 @@ class EInvoiceController {
 
             if (tradeCode && tradeCode.data) {
                 const para_value = {
-                    declare_key: declare_key,
+                    req_key: req_key,
                     xml_sign: xml_signed,
                     trade_code: tradeCode.data.maGDich,
                     tax_code: tax_code,
                 };
                 const res = await DBService.ExecuteSQLBlob(
-                    `BEGIN ei_upd_einvoice_ss_xml_ar(:declare_key, :xml_sign, :trade_code, :tax_code,
+                    `BEGIN ei_upd_einvoice_ss_xml_ar(:req_key, :xml_sign, :trade_code, :tax_code,
                                 :p_language, :p_crt_by, :p_rtn_cur); END;`,
                     para_value,
                     p_language,
@@ -2445,7 +2445,7 @@ class EInvoiceController {
             }
 
             return response.send(Utils.response(true, `Declaration was sent successfully.`, {
-                declare_key: declare_key,
+                req_key: req_key,
                 xml_sign: xml_signed,
                 trade_code: tradeCode.data.maGDich,
                 tax_code: tax_code,
@@ -2812,7 +2812,7 @@ class EInvoiceController {
             // const authPassword = "genuwin123"; // "e_GX4v@";
             // let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
 
-            const { trade_code, tax_code, declare_key } = request.all();
+            const { trade_code, tax_code, req_key } = request.all();
 
             const agent = {
                 Agent: {
@@ -2829,7 +2829,7 @@ class EInvoiceController {
                     Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
                 },
             });
-            console.log('===>res.data ', res.data);
+            // console.log('===>res.data ', res.data);
             let tenTBao = "",
                 status = "",
                 base64XML = "",
@@ -2859,7 +2859,7 @@ class EInvoiceController {
 
 
                     para_value = {
-                        declare_key: declare_key,
+                        req_key: req_key,
                         content: base64XML,
                         inform_desc: tenTBao,
                         inform_code: status,
@@ -2867,7 +2867,7 @@ class EInvoiceController {
                     };
                     await DBService.ExecuteSQLBlob(
                         `BEGIN ei_upd_file_xml_v6(
-                                        :declare_key, 
+                                        :req_key, 
                                         :content, 
                                         :inform_desc, 
                                         :inform_code,
@@ -2883,7 +2883,7 @@ class EInvoiceController {
             }
             return response.send(Utils.response(true, `checking_declare_success`, {
                 tax_code: tax_code,
-                declare_key: declare_key,
+                req_key: req_key,
                 content: base64XML,
                 inform_desc: tenTBao,
                 inform_code: status,

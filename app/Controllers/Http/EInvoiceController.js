@@ -5285,11 +5285,11 @@ class EInvoiceController {
 
             let EiExcels = new EiPosExcelHandlerAuto();
             let url_pdf = await EiExcels.getEinvoice(tei_wt_sale_bill_pk, p_language, p_crt_by);
-            console.log("base64PDf  ", url_pdf);
+            //console.log("base64PDf  ", url_pdf);
 
             let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + tei_wt_sale_bill_pk + "&proc=" + "EI_SEL_XML_POS_EINVOICE" + "&token=");//  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
             let url_xml = re_url_xml.data;
-            console.log("base64XXML  ", url_xml);
+            //console.log("base64XXML  ", url_xml);
 
             let subject = `${data.data_invoice.seller_comp_name}[Thông báo phát hành HĐĐT][${data.data_invoice.form_no}][${data.data_invoice.serial_no}][${data.data_invoice.invoice_no}]`;
             let body = `<html>
@@ -5365,12 +5365,8 @@ class EInvoiceController {
                 filename1: data.data_invoice.mccqt + ".xml",
                 filename2: data.data_invoice.mccqt + ".pdf",
             });
-            let data_r = {
-                link_invoice_preview: "https://einvoicevn.com/lookup",
-                security_code: "1234567bac",
-
-            }
-            console.log("res_send_mail  ", res_send_mail);
+           
+            //console.log("res_send_mail  ", res_send_mail);
             if (res_send_mail.data.success) {
                 const para_inv_st = {
                     tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
@@ -5388,6 +5384,22 @@ class EInvoiceController {
                     p_crt_by
                 );
 
+                let data_r = {
+                    link_invoice_preview: "https://einvoicevn.com/lookup",
+                    security_code: "1234567bac",
+                    status: "Sent Success",
+                    user_name: data.data_invoice.buyer_comp_name,
+                    send_date: res_send_mail.data.data.date_send,
+                    send_time: res_send_mail.data.data.time_send,
+                    mail_form: res_send_mail.data.data.mail_from,
+                    mail_to: res_send_mail.data.data.mail_to,
+                    mail_to_cc: res_send_mail.data.data.mail_to_cc,
+                    error_code: "",
+                    error_name: "",
+                    title: subject,
+                    content: body
+    
+                }
 
                 return response.send(
                     Utils.response(true, `Send order to invoice was Successfully!`, data_r)

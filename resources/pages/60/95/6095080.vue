@@ -22,7 +22,7 @@
               <BaseButton icon_type="search" :btn_text="$t('search')" :disabled="false" @onclick="onClick('search')" />
             </v-col>
             <v-col md="12">
-              <BaseGridView ref="grdSearch" autoresize :header="headerList.grdSearch" sel_procedure="AC_SEL_6095080_S_04"
+              <BaseGridView ref="grdSearch"  :header="headerList.grdSearch" sel_procedure="AC_SEL_6095080_S_04"
                 selectionmode="singlerow" :multiselect="true" :height="limitHeight" :headertype="1" :filter_paras="[
                   this.modelSearch.COMPANY_PK,
                   this.modelSearch.FROM_DATE,
@@ -732,8 +732,19 @@ export default {
         caption: this.$t("status"),
       },
       {
+        dataField: "NLAP",
+        caption: this.$t("red_date"),
+      },
+      {
         dataField: "TRADE_CODE",
         caption: this.$t("trade_code"),
+        width: 200
+      },
+      {
+        dataField: "CQT_NOTIFICATION",
+        caption: this.$t("cqt_notification"),
+        width: 200
+        // hidden:true
       },
       ];
       this.headerList.grdDetail =

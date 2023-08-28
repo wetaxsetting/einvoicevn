@@ -2852,21 +2852,11 @@ class EInvoiceController {
                     } else if (child.loaiTBao == "5") {
                         status = "1";
                         tenTBao = child.tenTBao;
-                    } 
-                    else if (child.loaiTBao == "0") {
-                        tenTBao = child.tenTBao;
-                        status = child.loaiTBao;
-                    } else if (child.loaiTBao == "17") {
-                        tenTBao = child.tenTBao;
-                        status = child.loaiTBao;
-                    } else if (child.loaiTBao == "15") {
-                        tenTBao = child.tenTBao;
-                        status = child.loaiTBao;
-                    }
-                    else {
+                    } else {
                         status = child.loaiTBao;
                         tenTBao = child.tenTBao || child.message;
                     }
+
 
                     para_value = {
                         req_key: req_key,
@@ -2891,7 +2881,7 @@ class EInvoiceController {
                     );
                 }
             }
-            return response.send(Utils.response(true, `checking_status_success`, {
+            return response.send(Utils.response(true, `checking_declare_success`, {
                 tax_code: tax_code,
                 req_key: req_key,
                 content: base64XML,
@@ -3129,6 +3119,89 @@ class EInvoiceController {
                 LVL: "error",
                 MODULE: "EInvoiceController",
                 FUNC: "sendInformAdjustToTaxOfficeFromClient",
+                CONTENT: e.message,
+            });
+            return response.send(Utils.response(false, "error", e.message));
+        }
+    }
+
+    async weTaxCheckInformAdjustToTaxOffice({ request, response, auth }) {
+        try {
+            var p_language = request.header("accept-language", "ENG");
+            var p_crt_by = "";
+            const user = await auth.getUser();
+            if (user) {
+                p_crt_by = user.USER_ID;
+            }
+            //console.log("ss",EINVOICE_URL_API)
+            const agent = {
+                Agent: {
+                    defaultPort: 443,
+                    protocol: "https:",
+                    options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
+                },
+            };
+            const authUserName = "GENUWIN";
+            const authPassword = "e_GX4v@";
+            const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+            // const authUserName = "GENUWIN"; // "GENUWIN";
+            // const authPassword = "genuwin123"; // "e_GX4v@";
+            // let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+
+            const { trade_code, tax_code, req_key } = request.all();
+
+            let rtnValue = [];
+          
+                const result = await Request.get(url + trade_code, {
+                    agent,
+                    headers: {
+                        Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
+                    },
+                });
+                // console.log("result", JSON.stringify(result.data));
+
+                if (!result.data.length) {
+                    return response.send(Utils.response(false, `no data found.`));
+                }
+                let tenTBao = "",
+                    maTBao = "";
+                let ndungTBao = '';    
+                for (let j = 0; j < result.data.length; j++) {
+                    const items = result.data[j];
+                    for (let k = 0; k < items.length; k++) {
+                        if (items[k].loaiTBao == "0") {
+                            tenTBao = items[k].tenTBao;
+                            maTBao = items[k].loaiTBao;
+                        } else if (items[k].loaiTBao == "17") {
+                            tenTBao = items[k].tenTBao;
+                            maTBao = items[k].loaiTBao;
+                            ndungTBao = items[k].ndungTBao;
+                        } else if (items[k].loaiTBao == "15") {
+                            tenTBao = items[k].tenTBao;
+                            maTBao = items[k].loaiTBao;
+                            ndungTBao = items[k].ndungTBao;
+                        }
+                        else {
+                            maTBao = items[k].loaiTBao;
+                            tenTBao = items[k].tenTBao || items[k].message;
+                        }
+                    }
+                }
+                rtnValue.push({
+                    trade_code: trade_code,
+                    inform_code: maTBao,
+                    inform_desc: tenTBao,
+                    tax_code: tax_code,
+                    req_key: req_key,
+                    result_content: ndungTBao
+                });
+
+            return response.send(Utils.response(true, `checking_success`, rtnValue));
+        } catch (e) {
+            Utils.Logger({
+                LVL: "error",
+                MODULE: "EInvoiceController",
+                FUNC: "weTaxCheckInformAdjustToTaxOffice",
                 CONTENT: e.message,
             });
             return response.send(Utils.response(false, "error", e.message));
@@ -5295,11 +5368,11 @@ class EInvoiceController {
 
             let EiExcels = new EiPosExcelHandlerAuto();
             let url_pdf = await EiExcels.getEinvoice(tei_wt_sale_bill_pk, p_language, p_crt_by);
-            //console.log("base64PDf  ", url_pdf);
+            console.log("base64PDf  ", url_pdf);
 
             let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + tei_wt_sale_bill_pk + "&proc=" + "EI_SEL_XML_POS_EINVOICE" + "&token=");//  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
             let url_xml = re_url_xml.data;
-            //console.log("base64XXML  ", url_xml);
+            console.log("base64XXML  ", url_xml);
 
             let subject = `${data.data_invoice.seller_comp_name}[Thông báo phát hành HĐĐT][${data.data_invoice.form_no}][${data.data_invoice.serial_no}][${data.data_invoice.invoice_no}]`;
             let body = `<html>
@@ -5375,8 +5448,12 @@ class EInvoiceController {
                 filename1: data.data_invoice.mccqt + ".xml",
                 filename2: data.data_invoice.mccqt + ".pdf",
             });
-           
-            //console.log("res_send_mail  ", res_send_mail);
+            let data_r = {
+                link_invoice_preview: "https://einvoicevn.com/lookup",
+                security_code: "1234567bac",
+
+            }
+            console.log("res_send_mail  ", res_send_mail);
             if (res_send_mail.data.success) {
                 const para_inv_st = {
                     tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
@@ -5394,22 +5471,6 @@ class EInvoiceController {
                     p_crt_by
                 );
 
-                let data_r = {
-                    link_invoice_preview: "https://einvoicevn.com/lookup",
-                    security_code: "1234567bac",
-                    status: "Sent Success",
-                    user_name: data.data_invoice.buyer_comp_name,
-                    send_date: res_send_mail.data.data.date_send,
-                    send_time: res_send_mail.data.data.time_send,
-                    mail_form: res_send_mail.data.data.mail_from,
-                    mail_to: res_send_mail.data.data.mail_to,
-                    mail_to_cc: res_send_mail.data.data.mail_to_cc,
-                    error_code: "",
-                    error_name: "",
-                    title: subject,
-                    content: body
-    
-                }
 
                 return response.send(
                     Utils.response(true, `Send order to invoice was Successfully!`, data_r)

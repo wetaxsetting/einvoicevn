@@ -5919,8 +5919,8 @@ class EInvoiceController {
             const authPassword = "genuwin123"; // "e_GX4v@";
             const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien";
 
-            const { data } = request.all();
-            //console.log("data  ", data);
+            const { invoices } = request.all();
+
             const agent = {
                 Agent: {
                     defaultPort: 443,
@@ -5928,40 +5928,28 @@ class EInvoiceController {
                     options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
                 },
             };
-            let trade_code = "";
-            let rtnValue = {};
-            await Request.post(
+           
+            let rtnValue = [];
+
+            for (let i = 0; i < invoices.length; i++) {
+             const res = await Request.post(
                 url,
-                { base64XML: Buffer.from(data.invoice_xml_signed).toString("base64") },
+                { base64XML: Buffer.from(invoices[i].xml_signed).toString("base64") },
                 {
                     agent,
                     headers: {
                         Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
                     },
-                }
-            ).then((res) => {
-                console.log("res  ++===> ", res);
-                trade_code = res.data.maGDich;
-                rtnValue = {
-                    trade_code: trade_code,
-                    seller_tax_code: data.seller_tax_code,
-                    seller_date: data.seller_date,
-                    store_code: data.store_code,
-                    store_name: data.store_name,
-                    tax_serial_number: data.tax_serial_number,
-                    pos_no: data.pos_no,
+                });
+              
+                rtnValue.push({
+                    req_key: invoices[i].req_key,
+                    invoice_no: invoices[i].invoice_no,
+                    trade_code: res.data.maGDich,
+                })
+            }
 
-                };
-
-                //let json = JSON.parse(res.data.d);
-                //console.log("json ", json);
-                return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
-            })
-                .catch((error) => {
-                    console.log(error);
-                    return response.send(Utils.response(false, `e-Signing XML is faile !!`, error));
-                });;
-
+            return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
 
 
             // return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));

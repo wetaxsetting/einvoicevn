@@ -1566,23 +1566,23 @@ class EInvoiceController {
 
                     await DBService.ExecuteSQLBlob(
                         `BEGIN ei_upd_file_xml_ar(
-                                :tei_einvoice_ar_pk,
-                                :xml_sign,
-                                :issuer,
-                                :issueby,
-                                :issueto,
-                                :dn_name,
-                                :dn_mst,
-                                :notafter,
-                                :notbefore,
-                                :serialnumber,
-                                :trade_code,
-                                :cqt_code,
-                                :tei_einvoice_m_pk, 
-                                :p_language, 
-                                :p_crt_by, 
-                                :p_rtn_cur); 
-                END;`,
+                                        :tei_einvoice_ar_pk,
+                                        :xml_sign,
+                                        :issuer,
+                                        :issueby,
+                                        :issueto,
+                                        :dn_name,
+                                        :dn_mst,
+                                        :notafter,
+                                        :notbefore,
+                                        :serialnumber,
+                                        :trade_code,
+                                        :cqt_code,
+                                        :tei_einvoice_m_pk, 
+                                        :p_language, 
+                                        :p_crt_by, 
+                                        :p_rtn_cur); 
+                        END;`,
                         para_value,
                         p_language,
                         p_crt_by
@@ -1603,12 +1603,12 @@ class EInvoiceController {
                     };
                     await DBService.ExecuteSQLBlob(
                         `BEGIN ei_upd_file_pdf_ar(
-                                :tei_einvoice_m_pk, 
-                                :url_pdf,
-                                :p_language, 
-                                :p_crt_by, 
-                                :p_rtn_cur); 
-                END;`,
+                                        :tei_einvoice_m_pk, 
+                                        :url_pdf,
+                                        :p_language, 
+                                        :p_crt_by, 
+                                        :p_rtn_cur); 
+                        END;`,
                         para_pdf,
                         p_language,
                         p_crt_by
@@ -1887,11 +1887,11 @@ class EInvoiceController {
             let v_vn_amount = Utils.Num2VNText(jsonTToan[0].TgTTTBSo, jsonTTChung[0].DVTTe);
             // console.log("  v_vn_amount ", v_vn_amount);
             /*const templateMCCQT = ['HDon', {
-                                    MCCQT: 'MCCQT'
-                                }]
-                                const jsonMCCQT = await transform(p_xml_content, templateMCCQT);
-                                //console.log(jsonMCCQT)
-                                */
+                                  MCCQT: 'MCCQT'
+                              }]
+                              const jsonMCCQT = await transform(p_xml_content, templateMCCQT);
+                              //console.log(jsonMCCQT)
+                              */
             const arrMCCQT = ""; //[jsonMCCQT[0].MCCQT];
 
             const templateDSHHDVu = [
@@ -2058,7 +2058,7 @@ class EInvoiceController {
                         Utils.response(
                             false,
                             `Something went wrong, please try again later.
-                ei_upd_file_xml_v8`,
+                        ei_upd_file_xml_v8`,
                             rtnValue
                         )
                     );
@@ -2363,7 +2363,7 @@ class EInvoiceController {
                 };
                 const res = await DBService.ExecuteSQLBlob(
                     `BEGIN ei_upd_einvoice_ss_xml_ar(:tei_declaration_m_pk, :xml_sign, :trade_code, :cqt_code,
-                        :p_language, :p_crt_by, :p_rtn_cur); END;`,
+                                :p_language, :p_crt_by, :p_rtn_cur); END;`,
                     para_value,
                     p_language,
                     p_crt_by
@@ -2435,7 +2435,7 @@ class EInvoiceController {
                 };
                 const res = await DBService.ExecuteSQLBlob(
                     `BEGIN ei_upd_einvoice_ss_xml_ar(:req_key, :xml_sign, :trade_code, :tax_code,
-                        :p_language, :p_crt_by, :p_rtn_cur); END;`,
+                                :p_language, :p_crt_by, :p_rtn_cur); END;`,
                     para_value,
                     p_language,
                     p_crt_by
@@ -2689,39 +2689,39 @@ class EInvoiceController {
             // @TODO: _______________________________________________________
 
             /*const para_value = {
-                        p_tei_einvoice_issuse_cqt_pk: para.p_tei_einvoice_issuse_cqt_pk,
-                        xml_sign: "xml_sign test.",
-                        p_messCQT: "mess cqt test.",
-                        p_status: "2",
-                    };
-                    const res = await DBService.ExecuteSQLBlob(
-                        `BEGIN ei_upd_file_xml_v6(
+                      p_tei_einvoice_issuse_cqt_pk: para.p_tei_einvoice_issuse_cqt_pk,
+                      xml_sign: "xml_sign test.",
+                      p_messCQT: "mess cqt test.",
+                      p_status: "2",
+                  };
+                  const res = await DBService.ExecuteSQLBlob(
+                      `BEGIN ei_upd_file_xml_v6(
                                 :p_tei_einvoice_issuse_cqt_pk, :xml_sign, :p_messCQT, :p_status,
                                 :p_language, :p_crt_by, :p_rtn_cur
                             ); END;`,
-                        para_value,
-                        p_language,
-                        p_crt_by
-                    );
-                    // console.log("checkingdeclaration res " + JSON.stringify(res));
-                    if (res.p_rtn_cur[0].STATUS == "OK") {
-                        return response.send(
-                            Utils.response(
-                                true,
-                                `Get declaration status from tax office successful.`,
-                                para_value
-                            )
-                        );
-                    } else {
-                        return response.send(
-                            Utils.response(
-                                false,
-                                `Something went wrong, please try again later.
-                    ei_upd_file_xml_v6`,
-                                para_value
-                            )
-                        );
-                    }*/
+                      para_value,
+                      p_language,
+                      p_crt_by
+                  );
+                  // console.log("checkingdeclaration res " + JSON.stringify(res));
+                  if (res.p_rtn_cur[0].STATUS == "OK") {
+                      return response.send(
+                          Utils.response(
+                              true,
+                              `Get declaration status from tax office successful.`,
+                              para_value
+                          )
+                      );
+                  } else {
+                      return response.send(
+                          Utils.response(
+                              false,
+                              `Something went wrong, please try again later.
+                  ei_upd_file_xml_v6`,
+                              para_value
+                          )
+                      );
+                  }*/
 
             // @TODO: _______________________________________________________
 
@@ -2774,9 +2774,9 @@ class EInvoiceController {
                         };
                         await DBService.ExecuteSQLBlob(
                             `BEGIN ei_upd_file_xml_v6(
-                        :p_tei_einvoice_issuse_cqt_pk, :xml_sign, :p_messCQT, :p_status,
-                        :p_language, :p_crt_by, :p_rtn_cur
-                    ); END;`,
+                                :p_tei_einvoice_issuse_cqt_pk, :xml_sign, :p_messCQT, :p_status,
+                                :p_language, :p_crt_by, :p_rtn_cur
+                            ); END;`,
                             para_value,
                             p_language,
                             p_crt_by
@@ -2867,14 +2867,14 @@ class EInvoiceController {
                     };
                     await DBService.ExecuteSQLBlob(
                         `BEGIN ei_upd_file_xml_v6(
-                                :req_key, 
-                                :content, 
-                                :inform_desc, 
-                                :inform_code,
-                                :pos_key,
-                                :p_language, 
-                                :p_crt_by, 
-                                :p_rtn_cur); END;`,
+                                        :req_key, 
+                                        :content, 
+                                        :inform_desc, 
+                                        :inform_code,
+                                        :pos_key,
+                                        :p_language, 
+                                        :p_crt_by, 
+                                        :p_rtn_cur); END;`,
                         para_value,
                         p_language,
                         p_crt_by
@@ -2975,7 +2975,7 @@ class EInvoiceController {
                 };
                 const res = await DBService.ExecuteSQLBlob(
                     `BEGIN EI_UP_6095280_DATA_TRADE_CODE(:erp_einvoice_ss_m_pk,:trade_code, :xml_sign,
-                    :p_language, :p_crt_by, :p_rtn_cur); END;`,
+                            :p_language, :p_crt_by, :p_rtn_cur); END;`,
                     para_value,
                     p_language,
                     p_crt_by
@@ -2991,7 +2991,7 @@ class EInvoiceController {
                         Utils.response(
                             false,
                             `Something went wrong, please try again later.
-            EI_UP_6095280_DATA_TRADE_CODE`,
+                  EI_UP_6095280_DATA_TRADE_CODE`,
                             para_value
                         )
                     );
@@ -3151,50 +3151,50 @@ class EInvoiceController {
             const { trade_code, tax_code, req_key } = request.all();
 
             let rtnValue = [];
+          
+                const result = await Request.get(url + trade_code, {
+                    agent,
+                    headers: {
+                        Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
+                    },
+                });
+                // console.log("result", JSON.stringify(result.data));
 
-            const result = await Request.get(url + trade_code, {
-                agent,
-                headers: {
-                    Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
-                },
-            });
-            // console.log("result", JSON.stringify(result.data));
-
-            if (!result.data.length) {
-                return response.send(Utils.response(false, `no data found.`));
-            }
-            let tenTBao = "",
-                maTBao = "";
-            let ndungTBao = '';
-            for (let j = 0; j < result.data.length; j++) {
-                const items = result.data[j];
-                for (let k = 0; k < items.length; k++) {
-                    if (items[k].loaiTBao == "0") {
-                        tenTBao = items[k].tenTBao;
-                        maTBao = items[k].loaiTBao;
-                    } else if (items[k].loaiTBao == "17") {
-                        tenTBao = items[k].tenTBao;
-                        maTBao = items[k].loaiTBao;
-                        ndungTBao = items[k].ndungTBao;
-                    } else if (items[k].loaiTBao == "15") {
-                        tenTBao = items[k].tenTBao;
-                        maTBao = items[k].loaiTBao;
-                        ndungTBao = items[k].ndungTBao;
-                    }
-                    else {
-                        maTBao = items[k].loaiTBao;
-                        tenTBao = items[k].tenTBao || items[k].message;
+                if (!result.data.length) {
+                    return response.send(Utils.response(false, `no data found.`));
+                }
+                let tenTBao = "",
+                    maTBao = "";
+                let ndungTBao = '';    
+                for (let j = 0; j < result.data.length; j++) {
+                    const items = result.data[j];
+                    for (let k = 0; k < items.length; k++) {
+                        if (items[k].loaiTBao == "0") {
+                            tenTBao = items[k].tenTBao;
+                            maTBao = items[k].loaiTBao;
+                        } else if (items[k].loaiTBao == "17") {
+                            tenTBao = items[k].tenTBao;
+                            maTBao = items[k].loaiTBao;
+                            ndungTBao = items[k].ndungTBao;
+                        } else if (items[k].loaiTBao == "15") {
+                            tenTBao = items[k].tenTBao;
+                            maTBao = items[k].loaiTBao;
+                            ndungTBao = items[k].ndungTBao;
+                        }
+                        else {
+                            maTBao = items[k].loaiTBao;
+                            tenTBao = items[k].tenTBao || items[k].message;
+                        }
                     }
                 }
-            }
-            rtnValue.push({
-                trade_code: trade_code,
-                inform_code: maTBao,
-                inform_desc: tenTBao,
-                tax_code: tax_code,
-                req_key: req_key,
-                result_content: ndungTBao
-            });
+                rtnValue.push({
+                    trade_code: trade_code,
+                    inform_code: maTBao,
+                    inform_desc: tenTBao,
+                    tax_code: tax_code,
+                    req_key: req_key,
+                    result_content: ndungTBao
+                });
 
             return response.send(Utils.response(true, `checking_success`, rtnValue));
         } catch (e) {
@@ -3368,30 +3368,30 @@ class EInvoiceController {
                 };
                 rtnValue = await DBService.ExecuteSQLBlob(
                     `BEGIN ei_upd_file_pit_ar(  :master_pk,
-                                        :form_no,
-                                        :serial_no,
-                                        :invoice_date,
-                                        :company_name,
-                                        :company_taxcode,
-                                        :company_address,
-                                        :payer_name,
-                                        :payer_address,
-                                        :payer_taxcode,
-                                        :payer_nation,
-                                        :payer_resident,
-                                        :id_passport_number,
-                                        :place_of_issue,
-                                        :date_of_issue,
-                                        :income_amt,
-                                        :income_time,
-                                        :income_amt_total,
-                                        :income_amt_total_defuct,
-                                        :income_amt_recv,
-                                        :income_type,
-                                        :income_time_yyyy,
-                                        :p_language, 
-                                        :p_crt_by, 
-                                        :p_rtn_cur); END;`,
+                                                :form_no,
+                                                :serial_no,
+                                                :invoice_date,
+                                                :company_name,
+                                                :company_taxcode,
+                                                :company_address,
+                                                :payer_name,
+                                                :payer_address,
+                                                :payer_taxcode,
+                                                :payer_nation,
+                                                :payer_resident,
+                                                :id_passport_number,
+                                                :place_of_issue,
+                                                :date_of_issue,
+                                                :income_amt,
+                                                :income_time,
+                                                :income_amt_total,
+                                                :income_amt_total_defuct,
+                                                :income_amt_recv,
+                                                :income_type,
+                                                :income_time_yyyy,
+                                                :p_language, 
+                                                :p_crt_by, 
+                                                :p_rtn_cur); END;`,
                     para_value,
                     p_language,
                     p_crt_by
@@ -3471,30 +3471,30 @@ class EInvoiceController {
 
                 rtnValue = await DBService.ExecuteSQLBlob(
                     `BEGIN ei_upd_file_pit_ar ( :master_pk,
-                                                :form_no,
-                                                :serial_no,
-                                                :invoice_date,
-                                                :company_name,
-                                                :company_taxcode,
-                                                :company_address,
-                                                :payer_name,
-                                                :payer_address,
-                                                :payer_taxcode,
-                                                :payer_nation,
-                                                :payer_resident,
-                                                :id_passport_number,
-                                                :place_of_issue,
-                                                :date_of_issue,
-                                                :income_amt,
-                                                :income_time,
-                                                :income_amt_total,
-                                                :income_amt_total_defuct,
-                                                :income_amt_recv,
-                                                :income_type,
-                                                :income_time_yyyy,
-                                                :p_language, 
-                                                :p_crt_by, 
-                                                :p_rtn_cur); END;`,
+                                                        :form_no,
+                                                        :serial_no,
+                                                        :invoice_date,
+                                                        :company_name,
+                                                        :company_taxcode,
+                                                        :company_address,
+                                                        :payer_name,
+                                                        :payer_address,
+                                                        :payer_taxcode,
+                                                        :payer_nation,
+                                                        :payer_resident,
+                                                        :id_passport_number,
+                                                        :place_of_issue,
+                                                        :date_of_issue,
+                                                        :income_amt,
+                                                        :income_time,
+                                                        :income_amt_total,
+                                                        :income_amt_total_defuct,
+                                                        :income_amt_recv,
+                                                        :income_type,
+                                                        :income_time_yyyy,
+                                                        :p_language, 
+                                                        :p_crt_by, 
+                                                        :p_rtn_cur); END;`,
                     para_value,
                     p_language,
                     p_crt_by
@@ -3572,42 +3572,42 @@ class EInvoiceController {
 
                 const rtnValue = await DBService.ExecuteSQLBlob(
                     `BEGIN ei_upd_file_pos_ar_list(     :master_pk, 
-                                                        :seller_name,      
-                                                        :seller_taxcode,             
-                                                        :seller_address,          
-                                                        :seller_phone,           
-                                                        :seller_mail,       
-                                                        :seller_account,         
-                                                        :seller_bank,       
-                                                        :seller_fax,        
-                                                        :seller_website,    
-                                                        :buyer_name, 
-                                                        :buyer_taxcode, 
-                                                        :buyer_cccdan,    
-                                                        :buyer_address,   
-                                                        :buyer_code,  
-                                                        :buyer_phone,      
-                                                        :buyer_mail,   
-                                                        :date_of_sales,     
-                                                        :store_code,   
-                                                        :store_name,     
-                                                        :pos,    
-                                                        :receipt_number,         
-                                                        :sales_category,        
-                                                        :payment_type,        
-                                                        :total_amount,        
-                                                        :actual_sales,          
-                                                        :general_discount,          
-                                                        :credit_card_discount,         
-                                                        :item_code,         
-                                                        :item_name,         
-                                                        :uom,    
-                                                        :qty,       
-                                                        :price,
-                                                        :p_language, 
-                                                        :p_crt_by, 
-                                                        :p_rtn_cur
-                                                        ); END;`,
+                                                                :seller_name,      
+                                                                :seller_taxcode,             
+                                                                :seller_address,          
+                                                                :seller_phone,           
+                                                                :seller_mail,       
+                                                                :seller_account,         
+                                                                :seller_bank,       
+                                                                :seller_fax,        
+                                                                :seller_website,    
+                                                                :buyer_name, 
+                                                                :buyer_taxcode, 
+                                                                :buyer_cccdan,    
+                                                                :buyer_address,   
+                                                                :buyer_code,  
+                                                                :buyer_phone,      
+                                                                :buyer_mail,   
+                                                                :date_of_sales,     
+                                                                :store_code,   
+                                                                :store_name,     
+                                                                :pos,    
+                                                                :receipt_number,         
+                                                                :sales_category,        
+                                                                :payment_type,        
+                                                                :total_amount,        
+                                                                :actual_sales,          
+                                                                :general_discount,          
+                                                                :credit_card_discount,         
+                                                                :item_code,         
+                                                                :item_name,         
+                                                                :uom,    
+                                                                :qty,       
+                                                                :price,
+                                                                :p_language, 
+                                                                :p_crt_by, 
+                                                                :p_rtn_cur
+                                                                ); END;`,
                     para_value,
                     p_language,
                     p_crt_by
@@ -3627,15 +3627,15 @@ class EInvoiceController {
 
             const rtnValue_re = await DBService.ExecuteSQLBlob(
                 `BEGIN ei_upd_inf_tax(              :master_pk, 
-                                            :seller_taxcode,     
-                                            :store_code,      
-                                            :pos,    
-                                            :receipt_number,         
-                                            :date_of_sales,   
-                                            :p_language, 
-                                            :p_crt_by, 
-                                            :p_rtn_cur
-                                            ); END;`,
+                                                    :seller_taxcode,     
+                                                    :store_code,      
+                                                    :pos,    
+                                                    :receipt_number,         
+                                                    :date_of_sales,   
+                                                    :p_language, 
+                                                    :p_crt_by, 
+                                                    :p_rtn_cur
+                                                    ); END;`,
                 para_value_taxcode,
                 p_language,
                 p_crt_by
@@ -3681,12 +3681,12 @@ class EInvoiceController {
 
             rtnValue = await DBService.ExecuteSQLBlob(
                 `BEGIN ei_pro_getinfo_inv_erp_nodejs (  :p_tco_company_pk,
-                                                :p_tei_company_pk,
-                                                :p_dt_from,
-                                                :p_dt_to,
-                                                :p_language, 
-                                                :p_crt_by, 
-                                                :p_rtn_cur); END;`,
+                                                        :p_tei_company_pk,
+                                                        :p_dt_from,
+                                                        :p_dt_to,
+                                                        :p_language, 
+                                                        :p_crt_by, 
+                                                        :p_rtn_cur); END;`,
                 para_value,
                 p_language,
                 p_crt_by
@@ -3892,26 +3892,26 @@ class EInvoiceController {
             };
             const res_issue = await DBService.ExecuteSQLBlob(
                 `BEGIN ei_update_issuse(                :p_tac_invoice_issuse, 
-                                                :p_invoice_type, 
-                                                :p_form_no,
-                                                :p_invoice_symbol,
-                                                :p_serial_no, 
-                                                :p_inv_qty,
-                                                :p_from_no,
-                                                :p_to_no, 
-                                                :p_from_dt, 
-                                                :p_to_dt, 
-                                                :p_status, 
-                                                :p_tco_busplace_pk, 
-                                                :p_remarks,
-                                                :p_use_yn, 
-                                                :p_tco_company_pk,
-                                                :p_tei_company_pk, 
-                                                :p_invoice_kind,
-                                                :p_tac_template_pk,
-                                                :p_language, 
-                                                :p_crt_by, 
-                                                :p_rtn_cur); END;`,
+                                                        :p_invoice_type, 
+                                                        :p_form_no,
+                                                        :p_invoice_symbol,
+                                                        :p_serial_no, 
+                                                        :p_inv_qty,
+                                                        :p_from_no,
+                                                        :p_to_no, 
+                                                        :p_from_dt, 
+                                                        :p_to_dt, 
+                                                        :p_status, 
+                                                        :p_tco_busplace_pk, 
+                                                        :p_remarks,
+                                                        :p_use_yn, 
+                                                        :p_tco_company_pk,
+                                                        :p_tei_company_pk, 
+                                                        :p_invoice_kind,
+                                                        :p_tac_template_pk,
+                                                        :p_language, 
+                                                        :p_crt_by, 
+                                                        :p_rtn_cur); END;`,
                 para_issue,
                 p_language,
                 p_crt_by
@@ -4003,83 +4003,83 @@ class EInvoiceController {
 
                 const res_template = await DBService.ExecuteSQLBlob(
                     `BEGIN ei_update_template(              :p_template_pk, 
-                                                    :p_template_cd, 
-                                                    :p_template_nm, 
-                                                    :p_template_lnm,
-                                                    :p_template_fnm, 
-                                                    :p_form_no, 
-                                                    :p_remarks, 
-                                                    :p_inv_content, 
-                                                    :p_use_yn, 
-                                                    :p_tco_company_pk, 
-                                                    :p_valid_date_from, 
-                                                    :p_valid_date_to, 
-                                                    :p_report_id, 
-                                                    :p_addr2,
-                                                    :p_addr1,
-                                                    :p_bank_account1,
-                                                    :p_bank_account2,
-                                                    :p_bank_nm1,
-                                                    :p_bank_nm2,
-                                                    :p_tel, 
-                                                    :p_fax,
-                                                    :p_tax_code, 
-                                                    :p_tac_einvoice_issuse_pk,
-                                                    :p_invoice_type, 
-                                                    :p_convert_yn,
-                                                    :p_report_id_type, 
-                                                    :p_swift_code,
-                                                    :p_company_nm, 
-                                                    :p_company_lnm, 
-                                                    :p_website, 
-                                                    :p_tax_code_display, 
-                                                    :p_logo_img,
-                                                    :p_logo_width,
-                                                    :p_logo_height,
-                                                    :p_logo_paddingtop, 
-                                                    :p_logo_paddingleft, 
-                                                    :p_cmtmttien, 
-                                                    :p_pban,
-                                                    :p_serial_no_2,
-                                                    :p_url_file_excel, 
-                                                    :p_url_img_logo,
-                                                    :p_url_img_bg, 
-                                                    :p_logo_start_row, 
-                                                    :p_logo_start_col, 
-                                                    :p_bg_start_row, 
-                                                    :p_bg_width, 
-                                                    :p_bg_height,
-                                                    :p_sign_start_cell,
-                                                    :p_sign_end_cell, 
-                                                    :p_sign_by_start_cell,
-                                                    :p_sign_by_end_cell,
-                                                    :p_bg_end_row, 
-                                                    :p_sign_cell_box, 
-                                                    :p_details_start_row, 
-                                                    :p_att01,
-                                                    :p_att02, 
-                                                    :p_att03, 
-                                                    :p_att04, 
-                                                    :p_att05, 
-                                                    :p_att06, 
-                                                    :p_att07, 
-                                                    :p_att08, 
-                                                    :p_att09, 
-                                                    :p_att10, 
-                                                    :p_att01_num,
-                                                    :p_att02_num,
-                                                    :p_att03_num,
-                                                    :p_att04_num,
-                                                    :p_att05_num,
-                                                    :p_att06_num,
-                                                    :p_att07_num,
-                                                    :p_att08_num,
-                                                    :p_att09_num,
-                                                    :p_att10_num,
-                                                    :p_range_details_sign,
-                                                    :p_language, 
-                                                    :p_crt_by, 
-                                                    :p_rtn_cur); END;`,
+                                                            :p_template_cd, 
+                                                            :p_template_nm, 
+                                                            :p_template_lnm,
+                                                            :p_template_fnm, 
+                                                            :p_form_no, 
+                                                            :p_remarks, 
+                                                            :p_inv_content, 
+                                                            :p_use_yn, 
+                                                            :p_tco_company_pk, 
+                                                            :p_valid_date_from, 
+                                                            :p_valid_date_to, 
+                                                            :p_report_id, 
+                                                            :p_addr2,
+                                                            :p_addr1,
+                                                            :p_bank_account1,
+                                                            :p_bank_account2,
+                                                            :p_bank_nm1,
+                                                            :p_bank_nm2,
+                                                            :p_tel, 
+                                                            :p_fax,
+                                                            :p_tax_code, 
+                                                            :p_tac_einvoice_issuse_pk,
+                                                            :p_invoice_type, 
+                                                            :p_convert_yn,
+                                                            :p_report_id_type, 
+                                                            :p_swift_code,
+                                                            :p_company_nm, 
+                                                            :p_company_lnm, 
+                                                            :p_website, 
+                                                            :p_tax_code_display, 
+                                                            :p_logo_img,
+                                                            :p_logo_width,
+                                                            :p_logo_height,
+                                                            :p_logo_paddingtop, 
+                                                            :p_logo_paddingleft, 
+                                                            :p_cmtmttien, 
+                                                            :p_pban,
+                                                            :p_serial_no_2,
+                                                            :p_url_file_excel, 
+                                                            :p_url_img_logo,
+                                                            :p_url_img_bg, 
+                                                            :p_logo_start_row, 
+                                                            :p_logo_start_col, 
+                                                            :p_bg_start_row, 
+                                                            :p_bg_width, 
+                                                            :p_bg_height,
+                                                            :p_sign_start_cell,
+                                                            :p_sign_end_cell, 
+                                                            :p_sign_by_start_cell,
+                                                            :p_sign_by_end_cell,
+                                                            :p_bg_end_row, 
+                                                            :p_sign_cell_box, 
+                                                            :p_details_start_row, 
+                                                            :p_att01,
+                                                            :p_att02, 
+                                                            :p_att03, 
+                                                            :p_att04, 
+                                                            :p_att05, 
+                                                            :p_att06, 
+                                                            :p_att07, 
+                                                            :p_att08, 
+                                                            :p_att09, 
+                                                            :p_att10, 
+                                                            :p_att01_num,
+                                                            :p_att02_num,
+                                                            :p_att03_num,
+                                                            :p_att04_num,
+                                                            :p_att05_num,
+                                                            :p_att06_num,
+                                                            :p_att07_num,
+                                                            :p_att08_num,
+                                                            :p_att09_num,
+                                                            :p_att10_num,
+                                                            :p_range_details_sign,
+                                                            :p_language, 
+                                                            :p_crt_by, 
+                                                            :p_rtn_cur); END;`,
                     para_template,
                     p_language,
                     p_crt_by
@@ -4104,16 +4104,16 @@ class EInvoiceController {
                         //const res_para_master =
                         await DBService.ExecuteSQLBlob(
                             `BEGIN ei_update_param_m(   :p_tei_param_m_pk,   
-                                                :p_cell_code,         
-                                                :p_data_mapping,      
-                                                :p_remarks,           
-                                                :p_tei_template_pk,   
-                                                :p_type_table,        
-                                                :p_type_template,     
-                                                :p_type,
-                                                :p_language, 
-                                                :p_crt_by, 
-                                                :p_rtn_cur); END;`,
+                                                        :p_cell_code,         
+                                                        :p_data_mapping,      
+                                                        :p_remarks,           
+                                                        :p_tei_template_pk,   
+                                                        :p_type_table,        
+                                                        :p_type_template,     
+                                                        :p_type,
+                                                        :p_language, 
+                                                        :p_crt_by, 
+                                                        :p_rtn_cur); END;`,
                             para_master,
                             p_language,
                             p_crt_by
@@ -4138,19 +4138,19 @@ class EInvoiceController {
                         // const res_para_details =
                         await DBService.ExecuteSQLBlob(
                             `BEGIN ei_update_param_d(   :p_tei_param_d_pk,   
-                                                :p_remarks,         
-                                                :p_tei_template_pk,      
-                                                :p_type_table,           
-                                                :p_type_template,   
-                                                :p_startcell,        
-                                                :p_endcell,     
-                                                :p_cellborder,
-                                                :p_field,
-                                                :p_type,
-                                                :p_ord,
-                                                :p_language, 
-                                                :p_crt_by, 
-                                                :p_rtn_cur); END;`,
+                                                        :p_remarks,         
+                                                        :p_tei_template_pk,      
+                                                        :p_type_table,           
+                                                        :p_type_template,   
+                                                        :p_startcell,        
+                                                        :p_endcell,     
+                                                        :p_cellborder,
+                                                        :p_field,
+                                                        :p_type,
+                                                        :p_ord,
+                                                        :p_language, 
+                                                        :p_crt_by, 
+                                                        :p_rtn_cur); END;`,
                             para_details,
                             p_language,
                             p_crt_by
@@ -4748,30 +4748,30 @@ class EInvoiceController {
 
                 rtnValue = await DBService.ExecuteSQLBlob(
                     `BEGIN ei_upd_file_pit_ar ( :master_pk,
-                                                :form_no,
-                                                :serial_no,
-                                                :invoice_date,
-                                                :company_name,
-                                                :company_taxcode,
-                                                :company_address,
-                                                :payer_name,
-                                                :payer_address,
-                                                :payer_taxcode,
-                                                :payer_nation,
-                                                :payer_resident,
-                                                :id_passport_number,
-                                                :place_of_issue,
-                                                :date_of_issue,
-                                                :income_amt,
-                                                :income_time,
-                                                :income_amt_total,
-                                                :income_amt_total_defuct,
-                                                :income_amt_recv,
-                                                :income_type,
-                                                :income_time_yyyy,
-                                                :p_language, 
-                                                :p_crt_by, 
-                                                :p_rtn_cur); END;`,
+                                                        :form_no,
+                                                        :serial_no,
+                                                        :invoice_date,
+                                                        :company_name,
+                                                        :company_taxcode,
+                                                        :company_address,
+                                                        :payer_name,
+                                                        :payer_address,
+                                                        :payer_taxcode,
+                                                        :payer_nation,
+                                                        :payer_resident,
+                                                        :id_passport_number,
+                                                        :place_of_issue,
+                                                        :date_of_issue,
+                                                        :income_amt,
+                                                        :income_time,
+                                                        :income_amt_total,
+                                                        :income_amt_total_defuct,
+                                                        :income_amt_recv,
+                                                        :income_type,
+                                                        :income_time_yyyy,
+                                                        :p_language, 
+                                                        :p_crt_by, 
+                                                        :p_rtn_cur); END;`,
                     para_value,
                     p_language,
                     p_crt_by
@@ -5253,44 +5253,44 @@ class EInvoiceController {
 
             const rtnValue = await DBService.ExecuteSQLBlob(
                 `BEGIN ei_upd_order_info (          
-                                                :sale_date,
-                                                :store_code,
-                                                :store_name,
-                                                :pos_no,
-                                                :bill_no,
-                                                :version,
-                                                :invoice_name,
-                                                :symbol_type,
-                                                :form_no,
-                                                :serial_no,
-                                                :invoice_date,
-                                                :invoice_no,
-                                                :currency,
-                                                :ex_rate,
-                                                :payment_method,
-                                                :seller_comp_name,
-                                                :seller_taxcode,
-                                                :seller_address,
-                                                :seller_tel,
-                                                :buyer_comp_name,
-                                                :buyer_taxcode,
-                                                :buyer_tel,
-                                                :buyer_address,
-                                                :buyer_cccd,
-                                                :buyer_email,
-                                                :buyer_email_cc,
-                                                :total_amt,
-                                                :total_dc_amt,
-                                                :total_vat_amt,
-                                                :total_payment,
-                                                :total_payment_word_vie,
-                                                :mccqt,
-                                                :data_xml,
-                                                :count_length,
-                                                :xml_type,
-                                                :p_language, 
-                                                :p_crt_by, 
-                                                :p_rtn_cur); END;`,
+                                                        :sale_date,
+                                                        :store_code,
+                                                        :store_name,
+                                                        :pos_no,
+                                                        :bill_no,
+                                                        :version,
+                                                        :invoice_name,
+                                                        :symbol_type,
+                                                        :form_no,
+                                                        :serial_no,
+                                                        :invoice_date,
+                                                        :invoice_no,
+                                                        :currency,
+                                                        :ex_rate,
+                                                        :payment_method,
+                                                        :seller_comp_name,
+                                                        :seller_taxcode,
+                                                        :seller_address,
+                                                        :seller_tel,
+                                                        :buyer_comp_name,
+                                                        :buyer_taxcode,
+                                                        :buyer_tel,
+                                                        :buyer_address,
+                                                        :buyer_cccd,
+                                                        :buyer_email,
+                                                        :buyer_email_cc,
+                                                        :total_amt,
+                                                        :total_dc_amt,
+                                                        :total_vat_amt,
+                                                        :total_payment,
+                                                        :total_payment_word_vie,
+                                                        :mccqt,
+                                                        :data_xml,
+                                                        :count_length,
+                                                        :xml_type,
+                                                        :p_language, 
+                                                        :p_crt_by, 
+                                                        :p_rtn_cur); END;`,
                 para_value,
                 p_language,
                 p_crt_by
@@ -5308,13 +5308,13 @@ class EInvoiceController {
                     };
                     const rtnValue_VAT = await DBService.ExecuteSQLBlob(
                         `BEGIN ei_upd_sale_bill_vat (          
-                                                        :tei_wt_sale_bill_pk,
-                                                        :sub_amt,
-                                                        :sub_vat_rate,
-                                                        :sub_amt_vat,
-                                                        :p_language, 
-                                                        :p_crt_by, 
-                                                        :p_rtn_cur); END;`,
+                                                                :tei_wt_sale_bill_pk,
+                                                                :sub_amt,
+                                                                :sub_vat_rate,
+                                                                :sub_amt_vat,
+                                                                :p_language, 
+                                                                :p_crt_by, 
+                                                                :p_rtn_cur); END;`,
                         para_amt_vat,
                         p_language,
                         p_crt_by
@@ -5338,21 +5338,21 @@ class EInvoiceController {
                     };
                     const rtnValue_VAT = await DBService.ExecuteSQLBlob(
                         `BEGIN ei_upd_sale_prod (          
-                                                        :tei_wt_sale_bill_pk,
-                                                        :nature,
-                                                        :seq,
-                                                        :item_code,
-                                                        :item_name,
-                                                        :uom,
-                                                        :quantity,
-                                                        :uprice,
-                                                        :dc_rate,
-                                                        :dc_amt,
-                                                        :amt,
-                                                        :vat_rate,
-                                                        :p_language, 
-                                                        :p_crt_by, 
-                                                        :p_rtn_cur); END;`,
+                                                                :tei_wt_sale_bill_pk,
+                                                                :nature,
+                                                                :seq,
+                                                                :item_code,
+                                                                :item_name,
+                                                                :uom,
+                                                                :quantity,
+                                                                :uprice,
+                                                                :dc_rate,
+                                                                :dc_amt,
+                                                                :amt,
+                                                                :vat_rate,
+                                                                :p_language, 
+                                                                :p_crt_by, 
+                                                                :p_rtn_cur); END;`,
                         para_prod_details,
                         p_language,
                         p_crt_by
@@ -5376,68 +5376,68 @@ class EInvoiceController {
 
             let subject = `${data.data_invoice.seller_comp_name}[Thông báo phát hành HĐĐT][${data.data_invoice.form_no}][${data.data_invoice.serial_no}][${data.data_invoice.invoice_no}]`;
             let body = `<html>
-                    <body>
-                        <div id="page">
-                            <div id="d2">
-                                <p>Dear: ${data.data_invoice.buyer_comp_name}
-                                    <br />
-                                    <br />${data.data_invoice.seller_comp_name}.
-                                    <br />            Trân trọng cảm ơn Quý khách hàng đã sử dụng sản phẩm của chúng tôi.
-                                    <br/> Chúng tôi đã 
-                                    <b>PHÁT HÀNH </b> hóa đơn điện tử với các thông tin như sau:
-                                    <br/>- Mẫu số: ${data.data_invoice.form_no}
-                                    <br/>- Ký hiệu: 
-                                    <b>${data.data_invoice.serial_no}</b>
-                                    <br/>- Số hóa đơn: 
-                                    <b>${data.data_invoice.invoice_no}</b>
-                                    <br/>- Tổng thanh toán: 
-                                    <b>       ${data.data_invoice.total_payment}</b>
-                                    <br />- Link download file PDF: 
-                                    <a href=${url_pdf}>Tải file PDF</a>
-                                    <br />- Link download file XML: 
-                                    <a href=${url_xml}>Tải file XML</a>
-                                    <br />
-                                </div>
-                                <br/>
-                                <div id="d6">
-                                    <p>
-                                        <i>* Xin lưu ý: Đây là email gửi tự động từ hệ thống, vui lòng không trả lời về địa chỉ email này</i>
-                                        <br />
-                                        <i>Cám ơn sự hợp tác. </i>
-                                        <br />
-                                --------------------------------------------------------------------------
-                            
-                                    </p>
-                                </div>
-                                <div id="d7"> Would like to send you our warmest greetings and most sincere thanks for choosing our product. 
-                                    <br/> We 
-                                    <b>issued </b> your e-invoice with the information as below: 
-                                    <br/>- Form No: 
-                                    <b>${data.data_invoice.form_no}</b>
-                                    <br/>- Serial: 
-                                    <b>${data.data_invoice.serial_no}</b>
-                                    <br/>- Invoice No:  
-                                    <b>${data.data_invoice.invoice_no}</b>
-                                    <br/>- Total amount :  
-                                    <b>       ${data.data_invoice.total_payment}</b>
-                                    <br />- Download file PDF link:  
-                                    <a href=${url_pdf}>Download file PDF</a>
-                                    <br />- Download file XML link:  
-                                    <a href=${url_xml}>Download file XML</a>
-                                    <br />
-                                </p>
-                            </div>
-                            <div id="d8">
-                                <p>
-                                    <br/>* Note: This is an automatic email. Please do not feedback to this email.
-                                    <br/>
-                                Thank you for your corporation!
-                                
-                                </p>
-                            </div>
-                        </body>
-                    </html>
-                    `;
+                            <body>
+                                <div id="page">
+                                    <div id="d2">
+                                        <p>Dear: ${data.data_invoice.buyer_comp_name}
+                                            <br />
+                                            <br />${data.data_invoice.seller_comp_name}.
+                                            <br />            Trân trọng cảm ơn Quý khách hàng đã sử dụng sản phẩm của chúng tôi.
+                                            <br/> Chúng tôi đã 
+                                            <b>PHÁT HÀNH </b> hóa đơn điện tử với các thông tin như sau:
+                                            <br/>- Mẫu số: ${data.data_invoice.form_no}
+                                            <br/>- Ký hiệu: 
+                                            <b>${data.data_invoice.serial_no}</b>
+                                            <br/>- Số hóa đơn: 
+                                            <b>${data.data_invoice.invoice_no}</b>
+                                            <br/>- Tổng thanh toán: 
+                                            <b>       ${data.data_invoice.total_payment}</b>
+                                            <br />- Link download file PDF: 
+                                            <a href=${url_pdf}>Tải file PDF</a>
+                                            <br />- Link download file XML: 
+                                            <a href=${url_xml}>Tải file XML</a>
+                                            <br />
+                                        </div>
+                                        <br/>
+                                        <div id="d6">
+                                            <p>
+                                                <i>* Xin lưu ý: Đây là email gửi tự động từ hệ thống, vui lòng không trả lời về địa chỉ email này</i>
+                                                <br />
+                                                <i>Cám ơn sự hợp tác. </i>
+                                                <br />
+                                        --------------------------------------------------------------------------
+                                    
+                                            </p>
+                                        </div>
+                                        <div id="d7"> Would like to send you our warmest greetings and most sincere thanks for choosing our product. 
+                                            <br/> We 
+                                            <b>issued </b> your e-invoice with the information as below: 
+                                            <br/>- Form No: 
+                                            <b>${data.data_invoice.form_no}</b>
+                                            <br/>- Serial: 
+                                            <b>${data.data_invoice.serial_no}</b>
+                                            <br/>- Invoice No:  
+                                            <b>${data.data_invoice.invoice_no}</b>
+                                            <br/>- Total amount :  
+                                            <b>       ${data.data_invoice.total_payment}</b>
+                                            <br />- Download file PDF link:  
+                                            <a href=${url_pdf}>Download file PDF</a>
+                                            <br />- Download file XML link:  
+                                            <a href=${url_xml}>Download file XML</a>
+                                            <br />
+                                        </p>
+                                    </div>
+                                    <div id="d8">
+                                        <p>
+                                            <br/>* Note: This is an automatic email. Please do not feedback to this email.
+                                            <br/>
+                                        Thank you for your corporation!
+                                        
+                                        </p>
+                                    </div>
+                                </body>
+                            </html>
+                            `;
             const res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {
                 mail_to: data.data_invoice.buyer_email,
                 cc_to: data.data_invoice.buyer_email_cc,
@@ -5448,11 +5448,11 @@ class EInvoiceController {
                 filename1: data.data_invoice.mccqt + ".xml",
                 filename2: data.data_invoice.mccqt + ".pdf",
             });
-            // let data_r = {
-            //     link_invoice_preview: "https://einvoicevn.com/lookup",
-            //     security_code: "1234567bac",
+            let data_r = {
+                link_invoice_preview: "https://einvoicevn.com/lookup",
+                security_code: "1234567bac",
 
-            // }
+            }
             console.log("res_send_mail  ", res_send_mail);
             if (res_send_mail.data.success) {
                 const para_inv_st = {
@@ -5461,32 +5461,16 @@ class EInvoiceController {
                 };
                 const rtnValue_VAT = await DBService.ExecuteSQLBlob(
                     `BEGIN ei_upd_sale_bill_status (          
-                                                    :tei_wt_sale_bill_pk,
-                                                    :status,
-                                                    :p_language, 
-                                                    :p_crt_by, 
-                                                    :p_rtn_cur); END;`,
+                                                            :tei_wt_sale_bill_pk,
+                                                            :status,
+                                                            :p_language, 
+                                                            :p_crt_by, 
+                                                            :p_rtn_cur); END;`,
                     para_inv_st,
                     p_language,
                     p_crt_by
                 );
 
-                let data_r = {
-                    link_invoice_preview: "https://einvoicevn.com/lookup",
-                    security_code: "1234567bac",
-                    status: "Sent Success",
-                    user_name: data.data_invoice.buyer_comp_name,
-                    send_date: res_send_mail.data.data.date_send,
-                    send_time: res_send_mail.data.data.time_send,
-                    mail_form: res_send_mail.data.data.mail_from,
-                    mail_to: res_send_mail.data.data.mail_to,
-                    mail_to_cc: res_send_mail.data.data.mail_to_cc,
-                    error_code: "",
-                    error_name: "",
-                    title: subject,
-                    content: body
-
-                }
 
                 return response.send(
                     Utils.response(true, `Send order to invoice was Successfully!`, data_r)
@@ -5498,11 +5482,11 @@ class EInvoiceController {
                 };
                 const rtnValue_VAT = await DBService.ExecuteSQLBlob(
                     `BEGIN ei_upd_sale_bill_status (          
-                                                    :tei_wt_sale_bill_pk,
-                                                    :status,
-                                                    :p_language, 
-                                                    :p_crt_by, 
-                                                    :p_rtn_cur); END;`,
+                                                            :tei_wt_sale_bill_pk,
+                                                            :status,
+                                                            :p_language, 
+                                                            :p_crt_by, 
+                                                            :p_rtn_cur); END;`,
                     para_inv_st,
                     p_language,
                     p_crt_by
@@ -5537,11 +5521,11 @@ class EInvoiceController {
             };
             const rtnValue_status = await DBService.ExecuteSQLBlob(
                 `BEGIN ei_sel_sendmail_inv_status (          
-                                                :invoice_date,
-                                                :seller_taxcode,
-                                                :p_language, 
-                                                :p_crt_by, 
-                                                :p_rtn_cur); END;`,
+                                                        :invoice_date,
+                                                        :seller_taxcode,
+                                                        :p_language, 
+                                                        :p_crt_by, 
+                                                        :p_rtn_cur); END;`,
                 para_amt_vat,
                 p_language,
                 p_crt_by
@@ -5817,24 +5801,24 @@ class EInvoiceController {
                                 // );
                             }
                         }
-
+                        
                     }
 
-
+                   
                 }).catch((error) => {
-                    console.log(error);
-                    return response.send(Utils.response(false, `e-Signing XML is faile !!`, error));
-                });
+                        console.log(error);
+                        return response.send(Utils.response(false, `e-Signing XML is faile !!`, error));
+                    });
 
                 rtnValue.push({
-                    trade_code: data[i].trade_code,
-                    mccqt: maCQT,
-                    inform_code: maTBao,
-                    inform_name: tenTBao,
-                    base64XML: base64XMLCQT,
-                    tax_code: data[i].tax_code,
-                    erp_declaration_m_pk: data[i].erp_declaration_m_pk
-                });
+                        trade_code: data[i].trade_code,
+                        mccqt: maCQT,
+                        inform_code: maTBao,
+                        inform_name: tenTBao,
+                        base64XML: base64XMLCQT,
+                        tax_code: data[i].tax_code,    
+                        erp_declaration_m_pk: data[i].erp_declaration_m_pk
+                    });    
 
             }
 
@@ -5929,14 +5913,14 @@ class EInvoiceController {
             }
             //const authPassword = "e_GX4v@"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
             //const url = "https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon";
-           
+            //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon";
             //const url = "http://118.71.250.233/ftvan-hddt/hdon/cmahdon";
             const authUserName = "GENUWIN"; // "GENUWIN";
             const authPassword = "genuwin123"; // "e_GX4v@";
-            const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon";
+            const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien";
 
-            const { invoices } = request.all();
-
+            const { data } = request.all();
+            //console.log("data  ", data);
             const agent = {
                 Agent: {
                     defaultPort: 443,
@@ -5944,52 +5928,41 @@ class EInvoiceController {
                     options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
                 },
             };
-           
-            let rtnValue = [];
-
-            for (let i = 0; i < invoices.length; i++) {
-             const res = await Request.post(
+            let trade_code = "";
+            let rtnValue = {};
+            await Request.post(
                 url,
-                { base64XML: Buffer.from(invoices[i].xml_signed).toString("base64") },
+                { base64XML: Buffer.from(data.invoice_xml_signed).toString("base64") },
                 {
                     agent,
                     headers: {
                         Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
                     },
-                });
-              
-                rtnValue.push({
-                    req_key: invoices[i].req_key,
-                    invoice_no: invoices[i].invoice_no,
-                    trade_code: res.data.maGDich,
-                })
-            }
+                }
+            ).then((res) => {
+                console.log("res  ++===> ", res);
+                trade_code = res.data.maGDich;
+                rtnValue = {
+                    trade_code: trade_code,
+                    seller_tax_code: data.seller_tax_code,
+                    seller_date: data.seller_date,
+                    store_code: data.store_code,
+                    store_name: data.store_name,
+                    tax_serial_number: data.tax_serial_number,
+                    pos_no: data.pos_no,
 
-            return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
+                };
 
-            //     //let json = JSON.parse(res.data.d);
-            //     //console.log("json ", json);
-            //     return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
-            // })
-            //     .catch((error) => {
-            //         console.log(error);
-            //         return response.send(Utils.response(false, `e-Signing XML is faile !!`, error));
-            //     });;
+                //let json = JSON.parse(res.data.d);
+                //console.log("json ", json);
+                return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
+            })
+                .catch((error) => {
+                    console.log(error);
+                    return response.send(Utils.response(false, `e-Signing XML is faile !!`, error));
+                });;
 
-            const masterInvoicePK = await this.weTaxExtractPosXMLContent(
-                            data.invoice_xml_signed,
-                            data.seller_tax_code,
-                            data.seller_date,
-                            data.store_code,
-                            data.store_name,
-                            data.tax_serial_number,
-                            data.pos_no,
-                            p_language,
-                            p_crt_by
-                        );
-                        ;
 
-            return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, masterInvoicePK));
 
             // return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
             // for (let i = 0; i < data.length; i++) {
@@ -6135,92 +6108,19 @@ class EInvoiceController {
     }
 
     async weTaxExtractPosXMLContent(
-        xml_content,
-        seller_tax_code,
-        seller_date,
-        store_code,
-        store_name,
-        tax_serial_number,
-        pos_no,
+        p_xml_content,
+        p_seller_tax_code,
+        p_seller_date,
+        p_store_code,
+        p_store_name,
+        p_tax_serial_number,
+        p_pos_no,
         p_language,
         p_crt_by
     ) {
         let result_extra = {};
         try {
             console.log("weTaxExtractPosXMLContent")
-
-            const template = [
-                "TDiep/DLieu",
-                {
-
-                    HDon:{
-                        DLHDon:{
-                            TTChung:{
-                                PBan: "PBan",
-                                THDon: "THDon",
-                                KHMSHDon: "KHMSHDon",
-                                KHHDon: "KHHDon",
-                                SHDon: "SHDon",
-                                MHSo: "MHSo",
-                                NLap: "NLap",
-                            },
-                            NDHDon:{
-                                NBan:{
-                                    Ten: "Ten",
-                                    MST: "MST",
-                                    DChi: "DChi",
-                                    SDThoai: "SDThoai",
-                                },
-                                NMua:{
-                                    Ten: "Ten",
-                                    MST: "MST",
-                                    DChi: "DChi",
-                                    SDThoai: "SDThoai",
-                                    CCCDan: "CCCDan",
-                                },
-                                DSHHDVu:{
-                                    HHDVu:[{
-                                        TChat: "TChat",
-                                        STT: "STT",
-                                        MHHDVu: "MHHDVu",
-                                        THHDVu: "THHDVu",
-                                        DVTinh: "DVTinh",
-                                        SLuong: "SLuong",
-                                        DGia: "DGia",
-                                        TLCKhau: "TLCKhau",
-                                        STCKhau: "STCKhau",
-                                        ThTien: "ThTien",
-                                        TSuat: "TSuat",
-                                    }]
-                                },
-                                TToan:{
-                                    THTTLTSuat:
-                                    {
-                                        LTSuat:{
-                                            TSuat: "TSuat",
-                                            ThTien: "ThTien",
-                                            TThue: "TThue",
-                                        },
-                                       
-                                    },
-                                    TgTCThue: "TgTCThue",
-                                    TgTThue: "TgTThue",
-                                    TTCKTMai: "TTCKTMai",
-                                    TgTTTBSo: "TgTTTBSo",
-                                    TgTTTBChu: "TgTTTBChu",
-                                }  
-                            },
-                            DSCKS:{
-                                
-                            }
-                        }
-                    }
-
-                    
-                },
-            ];
-            const jsonTT = await transform(xml_content, template);
-
             const templateTTChung = [
                 "TDiep/DLieu/HDon/DLHDon/TTChung",
                 {
@@ -6233,7 +6133,7 @@ class EInvoiceController {
                     NLap: "NLap",
                 },
             ];
-            const jsonTTChung = await transform(xml_content, templateTTChung);
+            const jsonTTChung = await transform(p_xml_content, templateTTChung);
             console.log("jsonTTChung", jsonTTChung)
             // const templateTTHDLQuan = [
             //     "TDiep/DLieu/HDon/DLHDon/TTChung/TTHDLQuan",
@@ -6271,7 +6171,7 @@ class EInvoiceController {
                     SDThoai: "SDThoai",
                 },
             ];
-            const jsonNBan = await transform(xml_content, templateNBan);
+            const jsonNBan = await transform(p_xml_content, templateNBan);
             const arrNBan = [
                 jsonNBan[0].Ten,
                 jsonNBan[0].MST,
@@ -6289,7 +6189,7 @@ class EInvoiceController {
                     CCCDan: "CCCDan",
                 },
             ];
-            const jsonNMua = await transform(xml_content, templateNMua);
+            const jsonNMua = await transform(p_xml_content, templateNMua);
             console.log("jsonNMua", jsonNMua)
             const arrNMua = [
                 jsonNMua[0].Ten,
@@ -6306,7 +6206,7 @@ class EInvoiceController {
                     TThue: "TThue",
                 },
             ];
-            const jsonLTSuat = await transform(xml_content, templateLTSuat);
+            const jsonLTSuat = await transform(p_xml_content, templateLTSuat);
             console.log("jsonLTSuat", jsonLTSuat)
             const arrLTSuat = [jsonLTSuat[0].TSuat, jsonLTSuat[0].ThTien, jsonLTSuat[0].TThue];
             const templateTToan = [
@@ -6319,7 +6219,7 @@ class EInvoiceController {
                     TgTTTBChu: "TgTTTBChu",
                 },
             ];
-            const jsonTToan = await transform(xml_content, templateTToan);
+            const jsonTToan = await transform(p_xml_content, templateTToan);
             // console.log("jsonTToan", jsonTToan)
             const arrTToan = [
                 jsonTToan[0].TgTCThue,
@@ -6655,13 +6555,15 @@ class EInvoiceController {
                 p_crt_by = user.USER_ID;
             }
 
+            
+
             const authUserName = "GENUWIN"; // "GENUWIN";
             //const authPassword = "e_GX4v@"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
             const authPassword = "genuwin123"; // "e_GX4v@";
             //const url = "https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon";
             const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon";
             //const url = "http://118.71.250.233/ftvan-hddt/hdon/cmahdon";
-            const { proc, para } = request.all();
+            const { invoices } = request.all();
 
             const agent = {
                 Agent: {
@@ -6672,38 +6574,39 @@ class EInvoiceController {
             };
 
             let rtnValue = [];
-            for (let i = 0; i < para.length; i++) {
+            for (let i = 0; i < invoices.length; i++) {
+                /*
                 const masterInvoicePK = await this.extractXMLContent(
-                    para[i].xml_signed,
-                    para[i].mail_to,
-                    para[i].mail_cc,
-                    para[i].invoice_type,
-                    para[i].tr_type,
-                    para[i].tax_serial_number,
-                    para[i].tac_crca_pk,
-                    para[i].invoice_form_symbol,
+                    invoices[i].xml_signed,
+                    invoices[i].mail_to || '',
+                    invoices[i].mail_cc || '',
+                    invoices[i].invoice_type || '',
+                    invoices[i].tr_type || '',
+                    invoices[i].token_serial_number || '',
+                    invoices[i].req_key || '',
+                    invoices[i].invoice_form_symbol || '',
                     p_language,
                     p_crt_by
                 );
                 if (masterInvoicePK.PK == -1) {
-                    console.log(`The issuer invoice has not register [${para[i].tei_einvoice_m_pk}]`, para[i].xml_signed);
+                    console.log(`The issuer invoice has not register [${invoices[i].req_key}]`, invoices[i].xml_signed);
                     rtnValue.push({
-                        tei_einvoice_m_pk: para[i].tei_einvoice_m_pk,
+                        req_key: invoices[i].req_key,
                         trade_code: "",
                         errmsg: "The issuer invoice has not register",
                     });
                     continue;
                 } else if (masterInvoicePK.PK == 0) {
                     rtnValue.push({
-                        tei_einvoice_m_pk: para[i].tei_einvoice_m_pk,
+                        req_key: invoices[i].req_key,
                         trade_code: "",
                         errmsg: "Duplicated data. This invoice already sent",
                     });
                     continue;
                 } else if (masterInvoicePK.PK < -1) {
-                    console.log(`invalid xml format [${para[i].tei_einvoice_m_pk}]`, para[i].xml_signed);
+                    console.log(`invalid xml format [${invoices[i].req_key}]`, invoices[i].xml_signed);
                     rtnValue.push({
-                        tei_einvoice_m_pk: para[i].tei_einvoice_m_pk,
+                        req_key: invoices[i].req_key,
                         trade_code: "",
                         errmsg: "Invalid xml format",
                     });
@@ -6711,7 +6614,7 @@ class EInvoiceController {
                 }
                 const trade_code = await Request.post(
                     url,
-                    { base64XML: Buffer.from(para[i].xml_signed).toString("base64") },
+                    { base64XML: Buffer.from(invoices[i].xml_signed).toString("base64") },
                     {
                         agent,
                         headers: {
@@ -6724,15 +6627,15 @@ class EInvoiceController {
                 if (trade_code && trade_code.data) {
                     const para_value = {
                         tei_einvoice_ar_pk: masterInvoicePK.PK,
-                        xml_sign: para[i].xml_signed,
-                        issuer: para[i].issuer,
-                        issueby: para[i].issue_by,
-                        issueto: para[i].issue_to,
-                        dn_name: para[i].dn_name,
-                        dn_mst: para[i].dn_mst,
-                        notafter: para[i].notafter,
-                        notbefore: para[i].notbefore,
-                        serialnumber: para[i].tax_serial_number,
+                        xml_sign: invoices[i].xml_signed,
+                        issuer: invoices[i].issuer,
+                        issueby: invoices[i].token_issue_by,
+                        issueto: invoices[i].token_issue_to,
+                        dn_name: invoices[i].buyer_name,
+                        dn_mst: invoices[i].buyer_tax_code,
+                        notafter: invoices[i].token_date_to,
+                        notbefore: invoices[i].token_date_from,
+                        serialnumber: invoices[i].token_serial_number,
                         trade_code: trade_code.data.maGDich,
                         cqt_code: "", //cqt_code
                         tei_einvoice_m_pk: masterInvoicePK.TEI_EINVOICE_M_PK,
@@ -6740,49 +6643,46 @@ class EInvoiceController {
 
                     await DBService.ExecuteSQLBlob(
                         `BEGIN ei_upd_file_xml_ar(
-                                :tei_einvoice_ar_pk,
-                                :xml_sign,
-                                :issuer,
-                                :issueby,
-                                :issueto,
-                                :dn_name,
-                                :dn_mst,
-                                :notafter,
-                                :notbefore,
-                                :serialnumber,
-                                :trade_code,
-                                :cqt_code,
-                                :tei_einvoice_m_pk, 
-                                :p_language, 
-                                :p_crt_by, 
-                                :p_rtn_cur); 
-                END;`,
+                                        :tei_einvoice_ar_pk,
+                                        :xml_sign,
+                                        :issuer,
+                                        :issueby,
+                                        :issueto,
+                                        :dn_name,
+                                        :dn_mst,
+                                        :notafter,
+                                        :notbefore,
+                                        :serialnumber,
+                                        :trade_code,
+                                        :cqt_code,
+                                        :tei_einvoice_m_pk, 
+                                        :p_language, 
+                                        :p_crt_by, 
+                                        :p_rtn_cur); 
+                        END;`,
                         para_value,
                         p_language,
                         p_crt_by
                     );
-                    let base64PDf;
-                    try {
+                    let base64PDf = '';
+                  
                         let EiExcel = new EiExcelHandlerAuto();
                         base64PDf = await EiExcel.getEinvoice(trade_code.data.maGDich, p_language, p_crt_by);
                         console.log("base64PDf  ", base64PDf);
-                    } catch (e) {
-                        base64PDf = "";
-                    }
+                  
 
                     const para_pdf = {
                         tei_einvoice_m_pk: masterInvoicePK.TEI_EINVOICE_M_PK,
-                        // base64 : "data:application/pdf;base64," + base64PDf
                         url_pdf: base64PDf,
                     };
                     await DBService.ExecuteSQLBlob(
                         `BEGIN ei_upd_file_pdf_ar(
-                                :tei_einvoice_m_pk, 
-                                :url_pdf,
-                                :p_language, 
-                                :p_crt_by, 
-                                :p_rtn_cur); 
-                END;`,
+                                        :tei_einvoice_m_pk, 
+                                        :url_pdf,
+                                        :p_language, 
+                                        :p_crt_by, 
+                                        :p_rtn_cur); 
+                        END;`,
                         para_pdf,
                         p_language,
                         p_crt_by
@@ -6790,14 +6690,33 @@ class EInvoiceController {
 
                     //console.log("rtnValue ", rtnValue);
                     rtnValue.push({
-                        tac_crca_pk: para[i].tac_crca_pk,
+                        req_key: invoices[i].req_key,
                         trade_code: trade_code.data.maGDich,
                     });
                 } else {
                     return response.send(Utils.response(false, `Failed to call taxoffice api.`, null));
                 }
+                */
+
+                // ======================== tam thoi =========================
+                const trade_code = await Request.post(
+                    url,
+                    { base64XML: Buffer.from(invoices[i].xml_signed).toString("base64") },
+                    {
+                        agent,
+                        headers: {
+                            Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
+                        },
+                    }
+                );
+
+                rtnValue.push({
+                    req_key: invoices[i].req_key,
+                    trade_code: trade_code.data.maGDich,
+                });
+
             }
-            return response.send(Utils.response(true, `invoices successful`, rtnValue));
+            return response.send(Utils.response(true, `Invoices successful`, rtnValue));
         } catch (e) {
             Utils.Logger({
                 LVL: "error",
@@ -6818,7 +6737,7 @@ class EInvoiceController {
                 p_crt_by = user.USER_ID;
             }
 
-            const { tax_code, count_invoice, list_invoice, } = request.all();
+            const { tax_code, count_invoice , list_invoice, } = request.all();
             //  console.log(" invoices  ", list_invoice);
             //invoices = JSON.parse(invoices);
             let rtnXML = [];
@@ -6877,7 +6796,7 @@ class EInvoiceController {
                                 TTCKTMai: "",
                                 TgTTTBSo: "",
                                 TgTTTBChu: "",
-
+                               
                             },
                         },
                     },
@@ -6887,7 +6806,7 @@ class EInvoiceController {
             if (list_invoice.length == undefined || list_invoice.length == 0) {
                 return response.send(Utils.response(false, `Invalid json format.`, list_invoice));
             }
-
+           
             for (let i = 0; i < list_invoice.length; i++) {
                 //console.log("invoices:", invoices[i])
 
@@ -6915,7 +6834,7 @@ class EInvoiceController {
                 objInvoice_M.HDon.DLHDon.TTChung.TGia = list_invoice[i].ex_rate;
                 objInvoice_M.HDon.DLHDon.TTChung.HTTToan = list_invoice[i].payment_method;
                 objInvoice_M.HDon.DLHDon.TTChung.MSTTCGP = "1201496252"; //webcashgenuwin.com taxcode
-
+               
 
                 objInvoice_M.HDon.DLHDon.TTChung.TTHDLQuan = [];
                 if (list_invoice[i].invoice_nature !== "0") {
@@ -6969,7 +6888,7 @@ class EInvoiceController {
                 objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTThue = list_invoice[i].total_vat_amt;
                 objInvoice_M.HDon.DLHDon.NDHDon.TToan.TTCKTMai = list_invoice[i].total_dc_amt;
                 objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = list_invoice[i].total_payment;
-                objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await this.Num2VNText(list_invoice[i].total_payment.toString(), list_invoice[i].currency);
+                objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await this.Num2VNText(list_invoice[i].total_payment.toString(),list_invoice[i].currency );
 
 
                 objInvoice_M.HDon.DSCKS.NBan = "";
@@ -6989,16 +6908,16 @@ class EInvoiceController {
                         STCKhau: list_invoice[i].detail[j].dc_amt,
                         ThTien: list_invoice[i].detail[j].amt,
                         TSuat: list_invoice[i].detail[j].vat_rate,
-
+                       
                     });
                 }
                 count_inv++;
                 const id = uuid.v4();
                 const xml = this.OBJtoXML(objInvoice_M);
                 const xmlStr = xml.toString().replace("<DLHDon>", `<DLHDon Id=\'${id}\'>`);
-
+                
                 //console.log("xmlStr", xmlStr)
-                rtnXML.push({ master_pk: list_invoice[i].master_pk, xml: xmlStr, id_signing: id });
+                rtnXML.push({ master_pk: list_invoice[i].master_pk, xml: xmlStr, id_signing : id });
             }
 
             return response.send(Utils.response(true, `Convert json to xml was successful. ${count_inv}/${list_invoice.length} `, rtnXML));

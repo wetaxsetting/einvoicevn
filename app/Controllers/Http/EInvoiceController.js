@@ -5929,11 +5929,11 @@ class EInvoiceController {
             }
             //const authPassword = "e_GX4v@"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
             //const url = "https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon";
-            //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon";
+           
             //const url = "http://118.71.250.233/ftvan-hddt/hdon/cmahdon";
             const authUserName = "GENUWIN"; // "GENUWIN";
             const authPassword = "genuwin123"; // "e_GX4v@";
-            const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien";
+            const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon";
 
             const { invoices } = request.all();
 

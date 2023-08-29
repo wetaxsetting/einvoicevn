@@ -5392,7 +5392,7 @@ class EInvoiceController {
                     send_date: res_send_mail.data.data.date_send,
                     send_time: res_send_mail.data.data.time_send,
                     mail_form: res_send_mail.data.data.mail_from,
-                    mail_to: res_send_mail.data.data.mail_to,
+                    mail_to:   res_send_mail.data.data.mail_to,
                     mail_to_cc: res_send_mail.data.data.mail_to_cc,
                     error_code: "",
                     error_name: "",

@@ -6716,7 +6716,7 @@ class EInvoiceController {
                 });
 
             }
-            return response.send(Utils.response(true, `Invoices successful`, rtnValue));
+            return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
         } catch (e) {
             Utils.Logger({
                 LVL: "error",

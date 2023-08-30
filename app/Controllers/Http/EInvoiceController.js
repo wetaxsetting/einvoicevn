@@ -2388,6 +2388,94 @@ class EInvoiceController {
         }
     }
 
+    async weTaxSendCompanyInfor({ request, response, auth }) {
+        try {
+            var p_language = request.header("accept-language", "ENG");
+            var p_crt_by = "";
+            const user = await auth.getUser();
+            if (user) {
+                p_crt_by = user.USER_ID;
+            }
+
+            const { 
+                seller_company_id = "",
+                seller_company_nm,
+                seller_company_fnm,
+                seller_taxcode,
+                representative = "",
+                seller_address,
+                seller_tel = "",
+                seller_fax = "",
+                seller_email = "",
+                seller_bank_no = "",
+                seller_bank_name = "",
+                tax_office_name = "",
+                tax_office_code = "",
+                seller_website = "" } = request.all() ;
+
+                if(!seller_company_nm){
+                    return response.send(Utils.response(false, `Invalid: seller_company_nm` ));
+                }
+                if(!seller_company_fnm){
+                    return response.send(Utils.response(false, `Invalid: seller_company_fnm` ));
+                }
+                if(!seller_taxcode){
+                    return response.send(Utils.response(false, `Invalid: seller_taxcode` ));
+                }
+                if(!seller_address){
+                    return response.send(Utils.response(false, `Invalid: seller_address` ));
+                }
+
+            const para_value = {
+                seller_company_id,
+                seller_company_nm, 
+                seller_company_fnm, 
+                seller_taxcode, 
+                representative, 
+                seller_address, 
+                seller_tel,
+                seller_fax,
+                seller_email,
+                seller_bank_no,
+                seller_bank_name,
+                tax_office_name,
+                tax_office_code,
+                seller_website
+            }
+            const res = await DBService.ExecuteSQLBlob(
+                `BEGIN WETAX_PRO_COMPANY_INFO(
+                    :seller_company_id,
+                    :seller_company_nm, 
+                    :seller_company_fnm, 
+                    :seller_taxcode, 
+                    :representative, 
+                    :seller_address, 
+                    :seller_tel,
+                    :seller_fax,
+                    :seller_email,
+                    :seller_bank_no,
+                    :seller_bank_name,
+                    :tax_office_name,
+                    :tax_office_code,
+                    :seller_website
+                    ,:p_language, :p_crt_by, :p_rtn_cur); END;`,
+                para_value,
+                p_language,
+                p_crt_by
+            );
+
+            return response.send(Utils.response(true, res.p_rtn_cur[0].STATUS_NM, {company_id: res.p_rtn_cur[0].COMPANY_ID} ));
+        } catch (e) {
+            Utils.Logger({
+                LVL: "error",
+                MODULE: "EInvoiceController",
+                FUNC: "weTaxSendCompanyInfor",
+                CONTENT: e.message,
+            });
+            return response.send(Utils.response(false, "error", e.message));
+        }
+    }
+
     async weTaxSendDeclarationToTaxOffice({ request, response, auth }) {
         try {
             var p_language = request.header("accept-language", "ENG");
@@ -6554,9 +6642,6 @@ class EInvoiceController {
             if (user) {
                 p_crt_by = user.USER_ID;
             }
-
-            
-
             const authUserName = "GENUWIN"; // "GENUWIN";
             //const authPassword = "e_GX4v@"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
             const authPassword = "genuwin123"; // "e_GX4v@";

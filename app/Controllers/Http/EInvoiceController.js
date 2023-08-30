@@ -5775,11 +5775,11 @@ class EInvoiceController {
 
             let EiExcels = new EiPosExcelHandlerAuto();
             let url_pdf = await EiExcels.getEinvoice(tei_wt_sale_bill_pk, p_language, p_crt_by);
-            console.log("base64PDf  ", url_pdf);
+            //console.log("base64PDf  ", url_pdf);
 
             let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + tei_wt_sale_bill_pk + "&proc=" + "EI_SEL_XML_POS_EINVOICE" + "&token=");//  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
             let url_xml = re_url_xml.data;
-            console.log("base64XXML  ", url_xml);
+            //console.log("base64XXML  ", url_xml);
 
             let subject = `${data.data_invoice.seller_comp_name}[Thông báo phát hành HĐĐT][${data.data_invoice.form_no}][${data.data_invoice.serial_no}][${data.data_invoice.invoice_no}]`;
             let body = `<html>
@@ -5911,6 +5911,7 @@ class EInvoiceController {
             console.log("error  ", error);
         }
     }
+    
     async weTaxUpdateSendOrderInfo({ request, response, auth }) {
         try {
             var p_language = request.header("accept-language", "ENG");

@@ -191,6 +191,7 @@ export default {
     txtISSUETO: "",
     txtDN_NAME: "",
     txtDN_MST: "",
+    invoice : []
   }),
 
   async created() {
@@ -514,95 +515,146 @@ export default {
     async onGridSelectionChanged(data) {
       this.selected_rows = data;
     },
-    InvoiceSign() {
+    
+    getObjectJsonInvoice(){
+
+
+    },
+
+    async InvoiceSign() {
       let count = 1;
 
-      let grdSelectedRow = this.selected_rows;
-      for (var i = 0; i < grdSelectedRow.length; i++) {
-        if (grdSelectedRow[i].ei_status != "Issued") {
-          if (
-            !this.ValidateEmail(grdSelectedRow[i].mail) &&
-            grdSelectedRow[i].mail.length > 0
-          ) {
-            alert(
-              "E-Mail của công ty : " +
-              grdSelectedRow[i].cus_cd +
-              " chưa đúng. Chỉ sử dụng được 1 mail hoặc định dạng mail chưa đúng."
-            );
-            return;
-          }
-          this.PKs = grdSelectedRow[i].pk + "-" + this.PKs;
-          this.tei_einvoice_m_PK =
-            grdSelectedRow[i].pk + "-" + this.tei_einvoice_m_PK;
-          this.PK_Send = grdSelectedRow[i].tac_crca_pk + "-" + this.PK_Send;
-          this.FormNo =
-            grdSelectedRow[i].form_no.replace("/", "") + "-" + this.FormNo;
-          this.SerialNo =
-            grdSelectedRow[i].serial_no.replace("/", "") + "-" + this.SerialNo;
-          this.Invoice_No =
-            grdSelectedRow[i].invoice_no + "-" + this.Invoice_No;
-          this.PK_Send = grdSelectedRow[i].tac_crca_pk + "-" + this.PK_Send;
-          this.Count_Pk = count++;
-        }
-      }
-      jQuery.support.cors = true;
-      $.ajax({
-        url: "http://genuclouding.com/wseinvoice/BSService.asmx/GeneralXmlList_v2",
-        dataType: "text",
-        method: "POST",
-        data: { tei_einvoice_m_pk: this.PKs },
-        error: this.onError,
-        success: this.onSuccess,
-      });
-    },
-    async onError(response, json, textStatus, errorThrown) {
-      alert(" Error :" + errorThrown);
-    },
-    async onSuccess(response) {
-      var xmlDoc = $.parseXML(response);
-      var xml = $(xmlDoc);
-      let obj = $.parseJSON(xml.text());
-      if (obj.msg == "OK") {
-        this.txtXMl_T = obj.result;
+      //let grdSelectedRow = this.selected_rows;
 
-        if (this.PKs != "") {
+      const grdSelectedRow = this.$refs.gridview.getSelectedRows();
+       this.invoice = []
+
+      // console.log("grdSelectedRow  ", grdSelectedRow.length);
+
+      // console.log("grdSelectedRow  ", grdSelectedRow);
+      for(let i =0; i< grdSelectedRow.length; i++)
+      {
+        this.invoice.push({
+            PK : grdSelectedRow[i].PK,
+            USER_ID : this.user.USER_ID,
+          })
+        
+      }
+      //console.log("invoice  ",this.invoice);
+
+      let res = await this.$axios.$post("/einvoice/general-invoice-xml", {
+          responseType: "json",
+          list_invoice: this.invoice,
+        });
+
+        //console.log("res  ", res);
+  
+        if (res.success) {
+          // console.log("response", res.data);
           jQuery.support.cors = true;
           $.ajax({
-            url: "http://localhost:1080/issueXmlList",
-            dataType: "text",
+            url: "http://localhost:1080/issueXmlPOSList",
+            dataType: "json",
             method: "POST",
             data: {
-              tei_invoice_m_pk: this.PKs,
-              tei_company_pk: this.selected_company,
               crt_by: this.user.USER_ID,
-              xml: this.txtXMl_T,
+              xml: JSON.stringify(res.data.xml_converted),
             },
             error: this.onErrorissueXmlList,
             success: this.onSuccessissueXmlList,
           });
+
         }
-      }
     },
 
     async onErrorissueXmlList(json, textStatus, errorThrown) {
       alert(" Error :" + errorThrown);
     },
+
     async onSuccessissueXmlList(data) {
-      let obj_token = $.parseJSON(data);
+      //let obj_token = $.parseJSON(data);
 
-      this.txtXMl_T = obj_token.result;
-      this.txtSerial_Number = obj_token.SerialNumber;
-      this.txtNOTBEFORE = obj_token.NotBefore;
-      this.txtNOTAFTER = obj_token.NotAfter;
-      this.txtRAWDATA = obj_token.RAWDATA;
-      this.txtISSUER = obj_token.IsSuer;
-      this.txtISSUEBY = obj_token.IssueBy;
-      this.txtISSUETO = obj_token.IssueTo;
-      this.txtDN_NAME = obj_token.DN_Name;
-      this.txtDN_MST = obj_token.DN_MST;
+      console.log(data);
+      this.txtXMl_T = data.result[0].xml;
+      this.txtSerial_Number = data.serial_number;
+      this.txtNOTBEFORE = data.not_before;
+      this.txtNOTAFTER = data.not_after;
+      this.txtRAWDATA = data.raw_data;
+      this.txtISSUER = data.issuer;
+      this.txtISSUEBY = data.issue_by;
+      this.txtISSUETO = data.issue_to;
+      this.txtDN_NAME = data.dn_name;
+      this.txtDN_MST = data.dn_mst;
 
+      const dso_process_check_serialno = {
+        type: "list",
+        selpro: "EI_SEL_6095410_SERIAL_CHECK",
+        para: [
+          this.selected_company,
+          this.txtSerial_Number,
+          this.txtNOTBEFORE,
+          this.txtNOTAFTER,
+        ],
+      };
+      const check_serial_no_result = await this._dsoCall(
+        dso_process_check_serialno,
+        "select",
+        false
+      );
+
+      //console.log("check_serial_no_result  ", check_serial_no_result);
+
+        if (check_serial_no_result[0].STATUS == "1") {
+          let data_invoice = {
+            tax_serial_number : this.txtSerial_Number,
+            seller_tax_code : "",
+            sale_date : "",
+            store_code: "",
+            store_name: "",
+            pos_no: "",
+            invoice_xml_signed:this.txtXMl_T,
+          }
+
+          let res_send = await this.$axios.$post("/einvoice/send-pos-invoice", {
+            responseType: "json",
+            data: data_invoice,
+          });
+
+          //console.log("res  ", res_send);
+          if(res_send.success)
+          {
+            let list_invoice_pk;
+            // this.invoice.forEach((e => {
+            //   console.log(e);
+            //   list_invoice_pk =  e.PK + "-"  + list_invoice_pk;
+            // });
+
+
+            this.invoice.forEach(e => {
+              //console.log(e);
+              list_invoice_pk =  e.PK + "-"  + list_invoice_pk
+            });
+            list_invoice_pk = list_invoice_pk.replace("undefined", "");
+            const response = await this._callProcedure("EI_SEL_6095410_TRADECODE", [list_invoice_pk, res_send.data.trade_code]);
+
+            if (response[0].STATUS == "OK") {
+              this.funcSearch();
+              this.showNotification("success", "Send invoice to Tax Office was Successfully!", "");
+
+            } else {
+              this.funcSearch();
+              this.showNotification("danger", "Send invoice to Tax Office was Faile!");
+            }
+
+          }
+         
+        } else {
+          alert("Token not suitable !!!");
+        }
+      
       //************call something */ dso_process_check_serialno.Call();
     },
+
     async SerialNoCheck() {
       const dso_process_check_serialno = {
         type: "list",
@@ -655,9 +707,11 @@ export default {
         }
       }
     },
+
     onErrorUpdateXmlList_v3(json, textStatus, errorThrown) {
       alert(" Error :" + errorThrown);
     },
+
     onSuccessUpdateXmlList_v3(response) {
       var xmlDoc_serial = $.parseXML(response);
       var xml_serial = $(xmlDoc_serial);
@@ -698,6 +752,7 @@ export default {
         this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
       });
     },
+
     async pdfUrlGetter(pk) {
       const pdfUrlExcel = await this.getEinvoice(this, pk)
       console.log("pdfUrlExcel ", pdfUrlExcel);
@@ -719,15 +774,19 @@ export default {
         this.total_bk = this.tot_net_bk_amt + this.tot_net_bk_vat_amt;
       });
     },
+
     funcSearch() {
       this.$refs.gridview.loadData();
     },
+    
     async onCellClick({ column, data, rowIndex, rowType }) {
       this.tei_einvoice_m_pk_row = data.PK;
     },
+
     onClickExport(obj) {
       this.$refs.gridview.exportExcel();
     },
+
     async getListCodes(pos) {
       const dso_company_list = {
         type: "list",
@@ -841,6 +900,7 @@ export default {
           break;
       }
     },
+
   },
 };
 </script>

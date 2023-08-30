@@ -155,6 +155,9 @@ Route.group(() => {
     Route.post("generate-invoice-xml", "EInvoiceController.weTaxConvertInvoiceToXML")
     Route.post("send-company-info", "EInvoiceController.weTaxSendCompanyInfor")
 
+    // e-invoice
+    Route.post("general-invoice-xml", "EInvoiceController.generalXmlInvoice")
+
     
 
 }).prefix("api/einvoice").middleware("user");

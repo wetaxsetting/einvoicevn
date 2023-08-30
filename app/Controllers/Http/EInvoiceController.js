@@ -6018,6 +6018,8 @@ class EInvoiceController {
             };
             let trade_code = "";
             let rtnValue = {};
+            
+            // phần này đã OK
             await Request.post(
                 url,
                 { base64XML: Buffer.from(data.invoice_xml_signed).toString("base64") },
@@ -6039,54 +6041,31 @@ class EInvoiceController {
                     tax_serial_number: data.tax_serial_number,
                     pos_no: data.pos_no,
 
-            
-            // phần này đã OK
-            // await Request.post(
-            //     url,
-            //     { base64XML: Buffer.from(data.invoice_xml_signed).toString("base64") },
-            //     {
-            //         agent,
-            //         headers: {
-            //             Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
-            //         },
-            //     }
-            // ).then((res) => {
-            //     console.log("res  ++===> ", res);
-            //     trade_code = res.data.maGDich;
-            //     rtnValue = {
-            //         trade_code: trade_code,
-            //         seller_tax_code: data.seller_tax_code,
-            //         seller_date: data.seller_date,
-            //         store_code: data.store_code,
-            //         store_name: data.store_name,
-            //         tax_serial_number: data.tax_serial_number,
-            //         pos_no: data.pos_no,
+                };
 
-            //     };
+                //let json = JSON.parse(res.data.d);
+                //console.log("json ", json);
+                return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
+            })
+                .catch((error) => {
+                    console.log(error);
+                    return response.send(Utils.response(false, `e-Signing XML is faile !!`, error));
+                });
 
-            //     //let json = JSON.parse(res.data.d);
-            //     //console.log("json ", json);
-            //     return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
-            // })
-            //     .catch((error) => {
-            //         console.log(error);
-            //         return response.send(Utils.response(false, `e-Signing XML is faile !!`, error));
-            //     });;
+            // const masterInvoicePK = await this.weTaxExtractPosXMLContent(
+            //                 data.invoice_xml_signed,
+            //                 data.seller_tax_code,
+            //                 data.seller_date,
+            //                 data.store_code,
+            //                 data.store_name,
+            //                 data.tax_serial_number,
+            //                 data.pos_no,
+            //                 p_language,
+            //                 p_crt_by
+            //             );
+            //             ;
 
-            const masterInvoicePK = await this.weTaxExtractPosXMLContent(
-                            data.invoice_xml_signed,
-                            data.seller_tax_code,
-                            data.seller_date,
-                            data.store_code,
-                            data.store_name,
-                            data.tax_serial_number,
-                            data.pos_no,
-                            p_language,
-                            p_crt_by
-                        );
-                        ;
-
-            return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, masterInvoicePK));
+            // return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, masterInvoicePK));
 
             // return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
             // for (let i = 0; i < data.length; i++) {

@@ -152,6 +152,9 @@ Route.group(() => {
     Route.post("check-status-invoice", "EInvoiceController.weTaxCheckInvoiceStatusFromTaxOffice")
     Route.post("generate-invoice-xml", "EInvoiceController.weTaxConvertInvoiceToXML")
 
+    // e-invoice
+    Route.post("general-invoice-xml", "EInvoiceController.generalXmlInvoice")
+
     
 
 }).prefix("api/einvoice").middleware("user");

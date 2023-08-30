@@ -31,7 +31,7 @@ const EMAIL_USER = Env.get("EMAIL_USER");
 const EMAIL_PW = Env.get("EMAIL_PW");
 const _send_from_users = eval(Env.get("send_from_users"));
 const fs = use("fs");
-const { transform } = require("camaro");
+const { transform, prettyPrint } = require("camaro");
 const convertXML = require("xml-js");
 const DB_CONNECTION = Env.get("DB_CONNECTION");
 const DBService = use("DBService");
@@ -5947,54 +5947,54 @@ class EInvoiceController {
             let trade_code = "";
             let rtnValue = {};
 
-            
-            // phần này đã OK
-            // await Request.post(
-            //     url,
-            //     { base64XML: Buffer.from(data.invoice_xml_signed).toString("base64") },
-            //     {
-            //         agent,
-            //         headers: {
-            //             Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
-            //         },
-            //     }
-            // ).then((res) => {
-            //     console.log("res  ++===> ", res);
-            //     trade_code = res.data.maGDich;
-            //     rtnValue = {
-            //         trade_code: trade_code,
-            //         seller_tax_code: data.seller_tax_code,
-            //         seller_date: data.seller_date,
-            //         store_code: data.store_code,
-            //         store_name: data.store_name,
-            //         tax_serial_number: data.tax_serial_number,
-            //         pos_no: data.pos_no,
 
-            //     };
+            //phần này đã OK
+            await Request.post(
+                url,
+                { base64XML: Buffer.from(data.invoice_xml_signed).toString("base64") },
+                {
+                    agent,
+                    headers: {
+                        Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
+                    },
+                }
+            ).then((res) => {
+                console.log("res  ++===> ", res);
+                trade_code = res.data.maGDich;
+                rtnValue = {
+                    trade_code: trade_code,
+                    seller_tax_code: data.seller_tax_code,
+                    seller_date: data.seller_date,
+                    store_code: data.store_code,
+                    store_name: data.store_name,
+                    tax_serial_number: data.tax_serial_number,
+                    pos_no: data.pos_no,
 
-            //     //let json = JSON.parse(res.data.d);
-            //     //console.log("json ", json);
-            //     return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
-            // })
-            //     .catch((error) => {
-            //         console.log(error);
-            //         return response.send(Utils.response(false, `e-Signing XML is faile !!`, error));
-            //     });;
+                };
 
-            const masterInvoicePK = await this.weTaxExtractPosXMLContent(
-                            data.invoice_xml_signed,
-                            data.seller_tax_code,
-                            data.seller_date,
-                            data.store_code,
-                            data.store_name,
-                            data.tax_serial_number,
-                            data.pos_no,
-                            p_language,
-                            p_crt_by
-                        );
-                        ;
+                //let json = JSON.parse(res.data.d);
+                //console.log("json ", json);
+                return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
+            })
+                .catch((error) => {
+                    console.log(error);
+                    return response.send(Utils.response(false, `e-Signing XML is faile !!`, error));
+                });;
 
-            return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, masterInvoicePK));
+            // const masterInvoicePK = await this.weTaxExtractPosXMLContent(
+            //     data.invoice_xml_signed,
+            //     data.seller_tax_code,
+            //     data.seller_date,
+            //     data.store_code,
+            //     data.store_name,
+            //     data.tax_serial_number,
+            //     data.pos_no,
+            //     p_language,
+            //     p_crt_by
+            // );
+            // ;
+
+            // return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, masterInvoicePK));
 
             // return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
             // for (let i = 0; i < data.length; i++) {
@@ -6152,15 +6152,11 @@ class EInvoiceController {
     ) {
         let result_extra = {};
         try {
-            console.log("weTaxExtractPosXMLContent")
-
-            const template = [
-                "TDiep/DLieu",
-                {
-
-                    HDon:{
-                        DLHDon:{
-                            TTChung:{
+            const template =
+                ["//HDon", {
+                    DLHDon: ["DLHDon", {
+                        TTChung: ["TTChung",
+                            {
                                 PBan: "PBan",
                                 THDon: "THDon",
                                 KHMSHDon: "KHMSHDon",
@@ -6169,22 +6165,28 @@ class EInvoiceController {
                                 MHSo: "MHSo",
                                 NLap: "NLap",
                             },
-                            NDHDon:{
-                                NBan:{
+                        ],
+                        NDHDon: ["NDHDon", {
+                            NBan: ["NBan",
+                                {
                                     Ten: "Ten",
                                     MST: "MST",
                                     DChi: "DChi",
                                     SDThoai: "SDThoai",
-                                },
-                                NMua:{
+                                }
+                            ],
+                            NMua: ["NMua",
+                                {
                                     Ten: "Ten",
                                     MST: "MST",
                                     DChi: "DChi",
                                     SDThoai: "SDThoai",
                                     CCCDan: "CCCDan",
-                                },
-                                DSHHDVu:{
-                                    HHDVu:[{
+                                }
+                            ],
+                            DSHHDVu: {
+                                HHDVu: ["DSHHDVu/HHDVu",
+                                    {
                                         TChat: "TChat",
                                         STT: "STT",
                                         MHHDVu: "MHHDVu",
@@ -6196,36 +6198,164 @@ class EInvoiceController {
                                         STCKhau: "STCKhau",
                                         ThTien: "ThTien",
                                         TSuat: "TSuat",
-                                    }]
-                                },
-                                TToan:{
-                                    THTTLTSuat:
-                                    {
-                                        LTSuat:{
-                                            TSuat: "TSuat",
-                                            ThTien: "ThTien",
-                                            TThue: "TThue",
-                                        },
-                                       
+                                    }
+
+                                ]
+                            },
+                            TToan: ["TToan",
+                                {
+                                    THTTLTSuat: ["THTTLTSuat", {
+                                        LTSuat: ["LTSuat",
+                                            {
+                                                TSuat: "TSuat",
+                                                ThTien: "ThTien",
+                                                TThue: "TThue",
+                                            }
+                                        ]
                                     },
+
+                                    ],
                                     TgTCThue: "TgTCThue",
                                     TgTThue: "TgTThue",
                                     TTCKTMai: "TTCKTMai",
                                     TgTTTBSo: "TgTTTBSo",
                                     TgTTTBChu: "TgTTTBChu",
-                                }  
-                            },
-                            DSCKS:{
-                                
-                            }
+
+                                }
+                            ]
                         }
+                        ]
                     }
 
-                    
-                },
-            ];
-            const jsonTT = await transform(xml_content, template);
+                    ],
+                    DSCKS: ["DSCKS", {
+                        NBan: "NBan"
+                    },
+                    ],
+                    MCCQT: "MCCQT"
+                }
+                ];
+            const jsonInvoice = await transform(xml_content, template);
 
+            for(let i = 0;i < jsonInvoice.length; i ++)
+            {
+                const paraMaster = {
+                    PBan: jsonInvoice[i].DLHDon[0].TTChung[0].PBan,
+                    THDon: jsonInvoice[i].DLHDon[0].TTChung[0].THDon,
+                    KHMSHDon: jsonInvoice[i].DLHDon[0].TTChung[0].KHMSHDon,
+                    KHHDon: jsonInvoice[i].DLHDon[0].TTChung[0].KHHDon,
+                    SHDon: jsonInvoice[i].DLHDon[0].TTChung[0].SHDon,
+                    NLap: jsonInvoice[i].DLHDon[0].TTChung[0].NLap,
+                    NBan_Ten: jsonInvoice[i].DLHDon[0].NDHDon[0].NBan[0].Ten,
+                    NBan_MST: jsonInvoice[i].DLHDon[0].NDHDon[0].NBan[0].MST,
+                    NBan_DChi: jsonInvoice[i].DLHDon[0].NDHDon[0].NBan[0].DChi,
+                    NBan_SDThoai: jsonInvoice[i].DLHDon[0].NDHDon[0].NBan[0].SDThoai,
+
+                    NMua_Ten: jsonInvoice[i].DLHDon[0].NDHDon[0].NMua[0].Ten,
+                    NMua_MST: jsonInvoice[i].DLHDon[0].NDHDon[0].NMua[0].MST,
+                    NMua_DChi: jsonInvoice[i].DLHDon[0].NDHDon[0].NMua[0].DChi,
+                    NMua_SDThoai: jsonInvoice[i].DLHDon[0].NDHDon[0].NMua[0].SDThoai,
+                    NMua_CCCDan: jsonInvoice[i].DLHDon[0].NDHDon[0].NMua[0].CCCDan,
+
+                    TgTCThue: jsonInvoice[i].DLHDon[0].NDHDon[0].TToan[0].TgTCThue,
+                    TgTThue: jsonInvoice[i].DLHDon[0].NDHDon[0].TToan[0].TgTThue,
+                    TTCKTMai: jsonInvoice[i].DLHDon[0].NDHDon[0].TToan[0].TTCKTMai,
+                    TgTTTBSo: jsonInvoice[i].DLHDon[0].NDHDon[0].TToan[0].TgTTTBSo,
+                    TgTTTBChu: jsonInvoice[i].DLHDon[0].NDHDon[0].TToan[0].TgTTTBChu,
+                    MCCQT:  jsonInvoice[i].MCCQT,
+                    seller_tax_code: seller_tax_code,
+                    seller_date: seller_date,
+                    store_code: store_code,
+                    store_name: store_name,
+                    tax_serial_number: tax_serial_number,
+                    pos_no: pos_no,
+                } 
+
+                const rtnValueMaster = await DBService.ExecuteSQLBlob(
+                    `BEGIN ei_upd_sale_bill_status (          
+                                                    :tei_wt_sale_bill_pk,
+                                                    :status,
+                                                    :p_language, 
+                                                    :p_crt_by, 
+                                                    :p_rtn_cur); END;`,
+                    para_inv_st,
+                    p_language,
+                    p_crt_by
+                );
+                console.log("==================")
+                console.log("jsonTT", paraMaster)
+            }
+           
+            // const template = [
+            //     "TDiep/DLieu/HDon",
+            //     {
+            //         DLHDon:{
+            //             TTChung:{
+            //                 PBan: "PBan",
+            //                 THDon: "THDon",
+            //                 KHMSHDon: "KHMSHDon",
+            //                 KHHDon: "KHHDon",
+            //                 SHDon: "SHDon",
+            //                 MHSo: "MHSo",
+            //                 NLap: "NLap",
+            //             },
+            //             // NDHDon:{
+            //             //     NBan:{
+            //             //         Ten: "Ten",
+            //             //         MST: "MST",
+            //             //         DChi: "DChi",
+            //             //         SDThoai: "SDThoai",
+            //             //     },
+            //             //     NMua:{
+            //             //         Ten: "Ten",
+            //             //         MST: "MST",
+            //             //         DChi: "DChi",
+            //             //         SDThoai: "SDThoai",
+            //             //         CCCDan: "CCCDan",
+            //             //     },
+            //             //     DSHHDVu:{
+            //             //         HHDVu:[{
+            //             //             TChat: "TChat",
+            //             //             STT: "STT",
+            //             //             MHHDVu: "MHHDVu",
+            //             //             THHDVu: "THHDVu",
+            //             //             DVTinh: "DVTinh",
+            //             //             SLuong: "SLuong",
+            //             //             DGia: "DGia",
+            //             //             TLCKhau: "TLCKhau",
+            //             //             STCKhau: "STCKhau",
+            //             //             ThTien: "ThTien",
+            //             //             TSuat: "TSuat",
+            //             //         }]
+            //             //     },
+            //             //     TToan:{
+            //             //         THTTLTSuat:
+            //             //         {
+            //             //             LTSuat:{
+            //             //                 TSuat: "TSuat",
+            //             //                 ThTien: "ThTien",
+            //             //                 TThue: "TThue",
+            //             //             },
+
+            //             //         },
+            //             //         TgTCThue: "TgTCThue",
+            //             //         TgTThue: "TgTThue",
+            //             //         TTCKTMai: "TTCKTMai",
+            //             //         TgTTTBSo: "TgTTTBSo",
+            //             //         TgTTTBChu: "TgTTTBChu",
+            //             //     }  
+            //             // },
+            //             // DSCKS:{
+            //             //     NBan:"NBan"
+            //             // },
+            //             // MCCQT:"MCCQT"
+            //         }
+
+            //     },
+            // ];
+          
+
+            return jsonTT;
             const templateTTChung = [
                 "TDiep/DLieu/HDon/DLHDon/TTChung",
                 {
@@ -6240,20 +6370,20 @@ class EInvoiceController {
             ];
             const jsonTTChung = await transform(xml_content, templateTTChung);
             console.log("jsonTTChung", jsonTTChung)
-            // const templateTTHDLQuan = [
-            //     "TDiep/DLieu/HDon/DLHDon/TTChung/TTHDLQuan",
-            //     {
-            //         TCHDon: "TCHDon",
-            //         LHDCLQuan: "LHDCLQuan",
-            //         KHMSHDCLQuan: "KHMSHDCLQuan",
-            //         KHHDCLQuan: "KHHDCLQuan",
-            //         SHDCLQuan: "SHDCLQuan",
-            //         NLHDCLQuan: "NLHDCLQuan",
-            //         GChu: "GChu",
-            //     },
-            // ];
-            // const jsonTTHDLQuan = await transform(p_xml_content, templateTTHDLQuan);
-            // console.log("templateTTHDLQuan", jsonTTHDLQuan)
+            const templateTTHDLQuan = [
+                "TDiep/DLieu/HDon/DLHDon/TTChung/TTHDLQuan",
+                {
+                    TCHDon: "TCHDon",
+                    LHDCLQuan: "LHDCLQuan",
+                    KHMSHDCLQuan: "KHMSHDCLQuan",
+                    KHHDCLQuan: "KHHDCLQuan",
+                    SHDCLQuan: "SHDCLQuan",
+                    NLHDCLQuan: "NLHDCLQuan",
+                    GChu: "GChu",
+                },
+            ];
+            const jsonTTHDLQuan = await transform(xml_content, templateTTHDLQuan);
+            console.log("templateTTHDLQuan", jsonTTHDLQuan)
 
             const arrTTChung = [
                 jsonTTChung[0].PBan,
@@ -6352,6 +6482,7 @@ class EInvoiceController {
                 },
             ];
             let masterPara = arrTTChung.concat(arrNBan).concat(arrNMua).concat(arrLTSuat).concat(arrTToan).concat(arrMCCQT);
+            //console.log("templateDSHHDVu", templateDSHHDVu)
             //const xmlRelativePath = p_xml_path.replace(ROOT_DIR_FILES, "");
             masterPara = masterPara.concat(["", "", "", ""]);
 
@@ -6366,41 +6497,42 @@ class EInvoiceController {
 
             // console.log("masterPara", masterPara)
             //const master = await callAPI(_jwtToken, { proc: 'ei_upd_tei_einvoice_cloud', para: masterPara });
-            const master = await DBService.callProcCursor("ei_upd_tei_einvoice_ar", masterPara, p_language, p_crt_by);
+            //let master = await DBService.callProcCursor("ei_upd_tei_einvoice_ar", masterPara, p_language, p_crt_by);
             // console.log("master", master);
-
-            if (master && master[0].PK > 0) {
-                const jsonDSHHDVu = await transform(p_xml_content, templateDSHHDVu);
-                //console.log(jsonDSHHDVu)
-                for (let i = 0; i < jsonDSHHDVu.length; i++) {
-                    const detailPara = [
-                        master[0].PK,
-                        jsonDSHHDVu[i].TChat,
-                        jsonDSHHDVu[i].STT,
-                        jsonDSHHDVu[i].MHHDVu,
-                        jsonDSHHDVu[i].THHDVu,
-                        jsonDSHHDVu[i].DVTinh,
-                        jsonDSHHDVu[i].SLuong,
-                        jsonDSHHDVu[i].DGia,
-                        jsonDSHHDVu[i].ThTien,
-                        jsonDSHHDVu[i].TLCKhau,
-                        jsonDSHHDVu[i].STCKhau,
-                        jsonDSHHDVu[i].TSuat,
-                        master[0].TEI_EINVOICE_M_PK,
-                    ];
-                    const detail = await DBService.callProcCursor("ei_upd_tei_einvoiced_ar", detailPara, p_language, p_crt_by);
-                    // console.log("detail", detail);
-                }
-                return (result_extra = {
-                    PK: master[0].PK,
-                    TEI_EINVOICE_M_PK: master[0].TEI_EINVOICE_M_PK,
-                });
-            } else {
-                return (result_extra = {
-                    PK: master[0].PK,
-                    TEI_EINVOICE_M_PK: master[0].TEI_EINVOICE_M_PK,
-                }); //master[0].PK;
-            }
+            const jsonDSHHDVu = await transform(xml_content, templateDSHHDVu);
+            console.log("jsonDSHHDVu  ", jsonDSHHDVu)
+            // if (master && master[0].PK > 0) {
+            //     const jsonDSHHDVu = await transform(xml_content, templateDSHHDVu);
+            //     console.log("jsonDSHHDVu  ", jsonDSHHDVu)
+            //     for (let i = 0; i < jsonDSHHDVu.length; i++) {
+            //         const detailPara = [
+            //             master[0].PK,
+            //             jsonDSHHDVu[i].TChat,
+            //             jsonDSHHDVu[i].STT,
+            //             jsonDSHHDVu[i].MHHDVu,
+            //             jsonDSHHDVu[i].THHDVu,
+            //             jsonDSHHDVu[i].DVTinh,
+            //             jsonDSHHDVu[i].SLuong,
+            //             jsonDSHHDVu[i].DGia,
+            //             jsonDSHHDVu[i].ThTien,
+            //             jsonDSHHDVu[i].TLCKhau,
+            //             jsonDSHHDVu[i].STCKhau,
+            //             jsonDSHHDVu[i].TSuat,
+            //             master[0].TEI_EINVOICE_M_PK,
+            //         ];
+            //         const detail = await DBService.callProcCursor("ei_upd_tei_einvoiced_ar", detailPara, p_language, p_crt_by);
+            //         // console.log("detail", detail);
+            //     }
+            //     return (result_extra = {
+            //         PK: master[0].PK,
+            //         TEI_EINVOICE_M_PK: master[0].TEI_EINVOICE_M_PK,
+            //     });
+            // } else {
+            //     return (result_extra = {
+            //         PK: master[0].PK,
+            //         TEI_EINVOICE_M_PK: master[0].TEI_EINVOICE_M_PK,
+            //     }); //master[0].PK;
+            // }
         } catch (e) {
             Utils.Logger({
                 LVL: "error",
@@ -7019,8 +7151,304 @@ class EInvoiceController {
         }
     }
 
-
     // end weTAX
+
+    // e -invoice 
+    async generalXmlInvoice({ request, response, auth }) {
+        try {
+            var p_language = request.header("accept-language", "ENG");
+            var p_crt_by = "";
+            const user = await auth.getUser();
+            if (user) {
+                p_crt_by = user.USER_ID;
+            }
+
+            const { tax_code, count_invoice, list_invoice } = request.all();
+            
+            console.log("list_invoice " ,list_invoice)
+            let rtnXML = [];
+                let objInvoice = {
+                    DLHDon: {
+                        TTChung: {
+                            PBan: "",
+                            THDon: "",
+                            KHMSHDon: "",
+                            KHHDon: "",
+                            SHDon: "",
+                            MHSo: "",
+                            NLap: "",
+                            NBKe: "",
+                            DVTTe: "",
+                            TGia: "",
+                            HTTToan: "",
+                        },
+                        NDHDon: {
+                            NBan: {
+                                Ten: "",
+                                MST: "",
+                                DChi: "",
+                                SDThoai: "",
+                                NNBSTKNHang: "",
+                            },
+                            NMua: {
+                                Ten: "",
+                                MST: "",
+                                DChi: "",
+                                SDThoai: "",
+                                HVTNMHang: "",
+                                CCCDan: "",
+                            },
+                            DSHHDVu: {},
+                            TToan: {
+                                THTTLTSuat: {
+                                    LTSuat: {
+                                        TSuat: "",
+                                        ThTien: "",
+                                        TThue: "",
+                                    },
+                                },
+                                TgTCTHue: "",
+                                TgTThue: "",
+                                DSLPhi: {
+                                    LPhi: {},
+                                },
+                                TTCKTMai: "",
+                                TgTTTBSo: "",
+                                TgTTTBChu: "",
+                            },
+                        },
+                    },
+                    DSCKS: {},
+
+                };
+                let objData = {
+                    TDiep: {
+                        DLieu: {
+                            HDon: []
+                        }
+                    }
+                }  
+            for(let i = 0; i < list_invoice.length; i++)
+            {
+                const para_value = {
+                    p_tei_einvoice_m_pk : list_invoice[i].PK,
+                    p_user_id : list_invoice[i].USER_ID,
+                }
+                // console.log("para_value  ", para_value);
+
+                const rtnValueMaster = await DBService.ExecuteSQLBlob(
+                    `BEGIN ei_sel_einvoice_xml_m (  :p_tei_einvoice_m_pk,
+                                                    :p_user_id,
+                                                    :p_language, 
+                                                    :p_crt_by, 
+                                                    :p_rtn_cur); END;`,
+                    para_value,
+                    p_language,
+                    p_crt_by
+                );
+
+                // console.log("rtnValueMaster  ", rtnValueMaster);
+
+                const rtnValueDetail = await DBService.ExecuteSQLBlob(
+                    `BEGIN ei_sel_einvoice_xml_d (  :p_tei_einvoice_m_pk,
+                                                    :p_user_id,
+                                                    :p_language, 
+                                                    :p_crt_by, 
+                                                    :p_rtn_cur); END;`,
+                    para_value,
+                    p_language,
+                    p_crt_by
+                );
+                
+                // console.log("rtnValueDetail  ", rtnValueDetail);
+
+                const rtnValueVAT = await DBService.ExecuteSQLBlob(
+                    `BEGIN ei_sel_einvoice_xml_vat (  :p_tei_einvoice_m_pk,
+                                                    :p_user_id,
+                                                    :p_language, 
+                                                    :p_crt_by, 
+                                                    :p_rtn_cur); END;`,
+                    para_value,
+                    p_language,
+                    p_crt_by
+                );
+                
+                //console.log("rtnValueVAT  ", rtnValueVAT);
+
+                const invoiceM = rtnValueMaster.p_rtn_cur[0];
+                const invoiceD = rtnValueDetail.p_rtn_cur[0];
+                const invoiceVAT = rtnValueVAT.p_rtn_cur[0];
+                
+              
+       
+                     
+                
+                if (invoiceM.FORM_NO == 1) {
+                    objInvoice.DLHDon.TTChung.THDon = "Hóa đơn giá trị gia tăng khởi tạo từ máy tính tiền";
+                } else if (invoiceM.FORM_NO == 2) {
+                    objInvoice.DLHDon.TTChung.THDon = "Hóa đơn bán hàng khởi tạo từ máy tính tiền";
+                } else if (invoiceM.FORM_NO == 3) {
+                    objInvoice.DLHDon.TTChung.THDon = "Hóa đơn bán tài sản công khởi tạo từ máy tính tiền";
+                } else if (invoiceM.FORM_NO == 4) {
+                    objInvoice.DLHDon.TTChung.THDon = "Hóa đơn bán hàng dự trữ quốc gia khởi tạo từ máy tính tiền";
+                } else if (invoiceM.FORM_NO == 5) {
+                    objInvoice.DLHDon.TTChung.THDon =
+                        "Tem điện tử, vé điện tử, thẻ điện tử, phiếu thu điện tử, chứng từ thu phí DV ngân hàng khởi tạo từ máy tính tiền";
+                } else if (invoiceM.FORM_NO == 6) {
+                    objInvoice.DLHDon.TTChung.THDon =
+                        "Phiếu xuất kho kiêm vận chuyển nội bộ, phiếu xuất kho hàng gửi bán đại lý khởi tạo từ máy tính tiền";
+                }
+                objInvoice.DLHDon.TTChung.PBan = invoiceM.VERSION;
+                objInvoice.DLHDon.TTChung.KHMSHDon = invoiceM.FORM_NO;
+                objInvoice.DLHDon.TTChung.KHHDon = invoiceM.SERIAL_NO;
+                objInvoice.DLHDon.TTChung.SHDon = invoiceM.INVOICE_NO;
+                objInvoice.DLHDon.TTChung.NLap = invoiceM.INVOICE_DATE;
+                objInvoice.DLHDon.TTChung.DVTTe = invoiceM.CURRENCY;
+                objInvoice.DLHDon.TTChung.TGia = invoiceM.EX_RATE;
+                objInvoice.DLHDon.TTChung.HTTToan = invoiceM.PAYMENT_METHOD;
+                objInvoice.DLHDon.TTChung.MSTTCGP = "1201496252"; //webcashgenuwin.com taxcode
+
+                objInvoice.DLHDon.NDHDon.NBan.Ten = invoiceM.SELLER_NAME;
+                objInvoice.DLHDon.NDHDon.NBan.MST = invoiceM.SELLER_TAXCODE;
+                objInvoice.DLHDon.NDHDon.NBan.DChi = invoiceM.SELLER_ADDRESS;
+                objInvoice.DLHDon.NDHDon.NBan.SDThoai = invoiceM.SELLER_TEL;
+
+                objInvoice.DLHDon.NDHDon.NMua.Ten = invoiceM.BUYER_COMP_NAME;
+                objInvoice.DLHDon.NDHDon.NMua.MST = invoiceM.BUYER_TAXCODE;
+                objInvoice.DLHDon.NDHDon.NMua.DChi = invoiceM.BUYER_ADDRESS;
+                objInvoice.DLHDon.NDHDon.NMua.CCCDan = invoiceM.BUYER_CCCD;
+                objInvoice.DLHDon.NDHDon.NMua.SDThoai = invoiceM.BUYER_TEL;
+
+                objInvoice.DLHDon.NDHDon.DSHHDVu = [];
+
+                objInvoice.DLHDon.NDHDon.DSHHDVu = {};
+                objInvoice.DLHDon.NDHDon.DSHHDVu.HHDVu = [];
+
+                for (let j = 0; j < invoiceD.length; j++) {
+                    objInvoice.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
+                        TChat: invoiceD[j].TCHAT,
+                        STT: invoiceD[j].SEQ_DIS,
+                        MHHDVu: invoiceD[j].ITEM_CODE,
+                        THHDVu: invoiceD[j].ITEM_NAME,
+                        DVTinh: invoiceD[j].ITEM_UOM,
+                        SLuong: invoiceD[j].QTY,
+                        DGia: invoiceD[j].U_PRICE,
+                        TLCKhau: '',//invoiceD[j].dc_rate,
+                        STCKhau: '',//invoiceD[j].dc_amt,
+                        ThTien: invoiceD[j].NET_TR_AMT,
+                        TSuat: invoiceD[j].VAT_RATE,
+                    });
+                }
+
+                objInvoice.DLHDon.NDHDon.TToan = {};
+                objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat = {};
+                objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat = [];
+
+                for (let j = 0; j < invoiceVAT.length; j++) {
+                    objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat.push({
+                        TSuat: invoiceVAT[j].SUB_VAT_RATE,
+                        ThTien: invoiceVAT[j].sub_amt,
+                        TThue: invoiceVAT[j].sub_amt_vat,
+                    });
+                }
+
+                objInvoice.DLHDon.NDHDon.TToan.TgTCThue = invoiceM.TOTAL_AMT;
+                objInvoice.DLHDon.NDHDon.TToan.TgTThue = invoiceM.TOTAL_VAT_AMT;
+
+                objInvoice.DLHDon.NDHDon.TToan.TTCKTMai = invoiceM.TOTAL_DC_AMT;
+                objInvoice.DLHDon.NDHDon.TToan.TgTTTBSo = invoiceM.TOTAL_PAYMENT;
+                objInvoice.DLHDon.NDHDon.TToan.TgTTTBChu = await this.Num2VNText(invoiceM.TOTAL_PAYMENT.toString(), invoiceM.CURRENCY);
+
+                objInvoice.DSCKS.NBan = "";
+
+                objInvoice.MCCQT = invoiceM.MCCQT;
+
+
+                objData.TDiep.DLieu.HDon.push(objInvoice);
+                objInvoice = {
+                    DLHDon: {
+                        TTChung: {
+                            PBan: "",
+                            THDon: "",
+                            KHMSHDon: "",
+                            KHHDon: "",
+                            SHDon: "",
+                            MHSo: "",
+                            NLap: "",
+                            NBKe: "",
+                            DVTTe: "",
+                            TGia: "",
+                            HTTToan: "",
+                        },
+                        NDHDon: {
+                            NBan: {
+                                Ten: "",
+                                MST: "",
+                                DChi: "",
+                                SDThoai: "",
+                                NNBSTKNHang: "",
+                            },
+                            NMua: {
+                                Ten: "",
+                                MST: "",
+                                DChi: "",
+                                SDThoai: "",
+                                HVTNMHang: "",
+                                CCCDan: "",
+                            },
+                            DSHHDVu: {},
+                            TToan: {
+                                THTTLTSuat: {
+                                    LTSuat: {
+                                        TSuat: "",
+                                        ThTien: "",
+                                        TThue: "",
+                                    },
+                                },
+                                TgTCTHue: "",
+                                TgTThue: "",
+                                DSLPhi: {
+                                    LPhi: {},
+                                },
+                                TTCKTMai: "",
+                                TgTTTBSo: "",
+                                TgTTTBChu: "",
+                            },
+                        },
+                    },
+                    DSCKS: {},
+
+                };
+            }
+
+            const id = uuid.v4();
+            const xml = this.OBJtoXML(objData);
+            //const xmlId = xml.toString().replace("<DLieu>", `<DLieu Id=\'${id}\'>`);
+            const xmlId =  xml.toString().replace("<DLieu>", `<DLieu Id='ID1'>`);
+            const xmlRemoveLine = xmlId.toString().replace(/\n/g, "");
+            rtnXML = {
+                //tax_code: data.tax_code,
+                //store_code: data.store_code,
+                //store_name: data.store_name,
+                //count_invoice_convert: invoices.length,
+                id_signing: "ID1",
+                xml_converted: xmlRemoveLine
+            };
+
+            return response.send(Utils.response(true, `Convert json to xml was successful. `, rtnXML));
+        } catch (e) {
+            Utils.Logger({
+                LVL: "error",
+                MODULE: "EInvoiceController",
+                FUNC: "convertInvoiceToXML",
+                CONTENT: e.message,
+            });
+            console.log(e);
+            return response.send(Utils.response(false, "error", e.message));
+        }
+    }
+
+    // end e - invoce
 }
 
 module.exports = EInvoiceController;

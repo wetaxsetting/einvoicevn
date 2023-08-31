@@ -4904,7 +4904,7 @@ class EInvoiceController {
 
             const { data } = request.all();
 
-            console.log(" data  ", data);
+            // console.log(" data  ", data);
 
             //invoices = JSON.parse(invoices);
             let rtnXML = [];
@@ -4970,6 +4970,7 @@ class EInvoiceController {
                 }
             }
             // console.log(" data.list_invoice  ", data.list_invoice);
+            let req_key = []
             const invoices = data.list_invoice;
             const valid = this.weTaxValidateJsonInvalidPosInvoiceToXML(invoices);
             if (!valid.status) {
@@ -4987,6 +4988,7 @@ class EInvoiceController {
 
             for (let i = 0; i < invoices.length; i++) {
                 //console.log("invoices:", invoices[i])
+                req_key.push(invoices[i].req_key);
 
                 if (invoices[i].form_no == 1) {
                     objInvoice.DLHDon.TTChung.THDon = "Hóa đơn giá trị gia tăng khởi tạo từ máy tính tiền";
@@ -5135,8 +5137,9 @@ class EInvoiceController {
                 store_code: data.store_code,
                 store_name: data.store_name,
                 count_invoice_convert: invoices.length,
-                id_signing: id,
-                xml_converted: xmlRemoveLine
+                sign_id: id,
+                xml_data: xmlRemoveLine,
+                req_key
             };
 
 
@@ -7546,7 +7549,7 @@ class EInvoiceController {
                 const xmlStr = xml.toString().replace("<DLHDon>", `<DLHDon Id=\'${id}\'>`);
                 
                 //console.log("xmlStr", xmlStr)
-                rtnXML.push({ master_pk: list_invoice[i].master_pk, xml: xmlStr, id_signing : id });
+                rtnXML.push({ master_pk: list_invoice[i].master_pk, xml_data: xmlStr, sign_id : id });
             }
 
             return response.send(Utils.response(true, `Convert json to xml was successful. ${count_inv}/${list_invoice.length} `, rtnXML));

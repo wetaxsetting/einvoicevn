@@ -6284,9 +6284,9 @@ class EInvoiceController {
                         mccqt: maCQT,
                         inform_code: maTBao,
                         inform_name: tenTBao,
-                        base64XML: base64XMLCQT,
+                        xml_tax_signed: base64XMLCQT,
                         tax_code: data[i].tax_code,    
-                        erp_declaration_m_pk: data[i].erp_declaration_m_pk
+                        req_key: data[i].req_key
                     });    
 
             }
@@ -6387,6 +6387,7 @@ class EInvoiceController {
             const authUserName = "GENUWIN"; // "GENUWIN";
             const authPassword = "genuwin123"; // "e_GX4v@";
             const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien";
+            const urlCheck = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
 
             const { data } = request.all();
             //console.log("data  ", data);
@@ -6398,10 +6399,13 @@ class EInvoiceController {
                 },
             };
             let trade_code = "";
+            let maCQT = "";
+            let maTBao = "";
+            let tenTBao = "";
+            let xml_tax_signed = "";
             let rtnValue = {};
             
-            // phần này đã OK
-            await Request.post(
+            const res =  await Request.post(
                 url,
                 { base64XML: Buffer.from(data.invoice_xml_signed).toString("base64") },
                 {
@@ -6410,33 +6414,61 @@ class EInvoiceController {
                         Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
                     },
                 }
-            ).then((res) => {
-                console.log("res  ++===> ", res);
-                trade_code = res.data.maGDich;
+            )
+           
+            trade_code = res.data.maGDich;
+            // 
+            await Request.get(urlCheck + trade_code, {
+                agent,
+                headers: {
+                    Authorization: "Basic " +
+                        Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
+                },
+            }).then(async (res) => {
+                if (res.data.length) {
+                    for (let j = 0; j < res.data.length; j++) {
+                        const items = res.data[j];
+                        for (let k = 0; k < items.length; k++) {
+                            // console.log("items[k].loaiTBao " + items[k].loaiTBao);
+                            if (items[k].loaiTBao == "10") {
+                                maCQT = items[k].ndungTBao.maCQT;
+                                xml_tax_signed = Buffer.from(
+                                    items[k].ndungTBao.base64XML,
+                                    "base64"
+                                ).toString("utf8");
+                                maTBao = items[k].loaiTBao;
+                                tenTBao = items[k].tenTBao;
+                            } else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "16") {
+                                maTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].maLoi;
+                                tenTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].mtaLoi;
+                            } else if (items[k].loaiTBao == "15") {
+                                tenTBao = items[k].tenTBao;
+                                maTBao = items[k].loaiTBao;
+                            }
+                        }
+                    }
+                }
+                })
                 rtnValue = {
                     trade_code: trade_code,
                     seller_tax_code: data.seller_tax_code,
-                    seller_date: data.seller_date,
+                    sale_date: data.sale_date,
                     store_code: data.store_code,
                     store_name: data.store_name,
                     tax_serial_number: data.tax_serial_number,
                     pos_no: data.pos_no,
-
+                    inform_code: maTBao,
+                    inform_name: tenTBao,
+                    mccqt: maCQT,
+                    xml_tax_signed
                 };
 
-                //let json = JSON.parse(res.data.d);
-                //console.log("json ", json);
                 return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
-            })
-                .catch((error) => {
-                    console.log(error);
-                    return response.send(Utils.response(false, `e-Signing XML is faile !!`, error));
-                });
-
+                
             // const masterInvoicePK = await this.weTaxExtractPosXMLContent(
             //                 data.invoice_xml_signed,
             //                 data.seller_tax_code,
-            //                 data.seller_date,
+            //                 data.sale_date,
             //                 data.store_code,
             //                 data.store_name,
             //                 data.tax_serial_number,
@@ -6454,7 +6486,7 @@ class EInvoiceController {
             // const masterInvoicePK = await this.weTaxExtractPosXMLContent(
             //     data.invoice_xml_signed,
             //     data.seller_tax_code,
-            //     data.seller_date,
+            //     data.sale_date,
             //     data.store_code,
             //     data.store_name,
             //     data.tax_serial_number,
@@ -6574,8 +6606,6 @@ class EInvoiceController {
             //         } else {
             //             return response.send(Utils.response(false, `Failed to call taxoffice api.`, null));
             //         }
-
-
 
             //   //  }
             //     return response.send(Utils.response(true, `invoices successful`, rtnValue));
@@ -7118,7 +7148,7 @@ class EInvoiceController {
             const authPassword = "genuwin123"; // "e_GX4v@";
             //const url = "https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon";
             const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon";
-            //const url = "http://118.71.250.233/ftvan-hddt/hdon/cmahdon";
+            const urlCheck = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
             const { invoices } = request.all();
 
             const agent = {
@@ -7266,9 +7296,51 @@ class EInvoiceController {
                     }
                 );
 
+                let maTBao = '';
+                let tenTBao = '';
+                let maCQT = '';
+                let xml_tax_signed;
+
+                await Request.get(urlCheck + trade_code.data.maGDich, {
+                    agent,
+                    headers: {
+                        Authorization: "Basic " +
+                            Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
+                    },
+                }).then(async (res) => {
+                    if (res.data.length) {
+                        for (let j = 0; j < res.data.length; j++) {
+                            const items = res.data[j];
+                            for (let k = 0; k < items.length; k++) {
+                                // console.log("items[k].loaiTBao " + items[k].loaiTBao);
+                                if (items[k].loaiTBao == "10") {
+                                    maCQT = items[k].ndungTBao.maCQT;
+                                    xml_tax_signed = Buffer.from(
+                                        items[k].ndungTBao.base64XML,
+                                        "base64"
+                                    ).toString("utf8");
+                                    maTBao = items[k].loaiTBao;
+                                    tenTBao = items[k].tenTBao;
+                                } else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "16") {
+                                    maTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].maLoi;
+                                    tenTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].mtaLoi;
+                                } else if (items[k].loaiTBao == "15") {
+                                    tenTBao = items[k].tenTBao;
+                                    maTBao = items[k].loaiTBao;
+                                }
+                            }
+                            
+                        }
+                    }
+                })
+
                 rtnValue.push({
                     req_key: invoices[i].req_key,
                     trade_code: trade_code.data.maGDich,
+                    inform_code: maTBao,
+                    inform_name:tenTBao ,
+                    xml_tax_signed,
+                    mcct: maCQT
                 });
 
             }

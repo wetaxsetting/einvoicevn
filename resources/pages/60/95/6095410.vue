@@ -88,7 +88,7 @@
           <BaseButton icon_type="view" :btn_text="$t('preview')" :disabled="isProcessing" @onclick="onPreview" />
           <BaseButton icon_type="xml" :btn_text="$t('view_xml')" @onclick="onClick('viewXML')" />
           <BaseButton icon_type="attach" :btn_text="$t('invoice_sign')" :disabled="isProcessing"  @onclick="InvoiceSign()" />
-          <BaseButton icon_type="add_new" :btn_text="$t('check_code_cqt')" :disabled="isProcessing" />
+          <BaseButton icon_type="add_new" :btn_text="$t('check_code_cqt')" :disabled="isProcessing" @onclick="checkingCQT()" />
         </v-col>
       </v-row>
 
@@ -517,15 +517,33 @@ export default {
     },
     
     getObjectJsonInvoice(){
-
-
     },
+    async checkingCQT(){
+      this.invoice = [];
+      const grdSelectedRow = this.$refs.gridview.getSelectedRows();
+      for(let i =0; i< grdSelectedRow.length; i++)
+      {
+        this.invoice.push({
+            req_key : grdSelectedRow[i].PK,
+            trade_code : grdSelectedRow[i].CQT_MAGD,
+            tax_code: grdSelectedRow[i].SELLER_TAXCODE,
+          })
+        
+      }
 
+      let res_check = await this.$axios.$post("/einvoice/check-status-invoice", {
+          responseType: "json",
+          data: this.invoice,
+        });
+
+        if (res_check.success) {
+          this.funcSearch();
+          this.showNotification("success", "Checking invoice to Tax Office was Successfully!", "");
+        }
+
+      console.log("sss",this.invoice );
+    },
     async InvoiceSign() {
-      let count = 1;
-
-      //let grdSelectedRow = this.selected_rows;
-
       const grdSelectedRow = this.$refs.gridview.getSelectedRows();
        this.invoice = []
 
@@ -540,6 +558,7 @@ export default {
           })
         
       }
+      
       //console.log("invoice  ",this.invoice);
 
       let res = await this.$axios.$post("/einvoice/general-invoice-xml", {
@@ -655,76 +674,6 @@ export default {
       //************call something */ dso_process_check_serialno.Call();
     },
 
-    async SerialNoCheck() {
-      const dso_process_check_serialno = {
-        type: "list",
-        selpro: "EI_SEL_6095090_SERIAL_CHECK",
-        para: [
-          this.selected_company,
-          this.selected_serial_no,
-          this.txtFromInvoiceNo,
-          this.txtToInvoiceNo,
-        ],
-      };
-      const check_serial_no_result = await this._dsoCall(
-        dso_process_check_serialno,
-        "select",
-        false
-      );
-      // console.log(checkCompany);
-      if (check_serial_no_result != null) {
-        if (check_serial_no_result == "1") {
-          $.ajax({
-            url: "http://genuclouding.com/wseinvoice/BSService.asmx/UpdateXmlList_v3",
-            dataType: "text",
-            method: "POST",
-
-            data: {
-              tei_einvoice_m_pk: this.PKs,
-              tei_company_pk: this.selected_company,
-              arg_XmlStr: this.txtXMl_T,
-              form_no: this.FormNo,
-              serial_no: this.SerialNo,
-              invoice_no: this.Invoice_No,
-              ctr_by: this.user.USER_ID,
-              serialNumber: this.txtSerial_Number,
-              notBefore: this.txtNOTBEFORE,
-              notAfter: this.txtNOTAFTER,
-              rawData: this.txtRAWDATA,
-              isSuer: this.txtISSUER,
-              issueBy: this.txtISSUEBY,
-              issueTo: this.txtISSUETO,
-              dn_Name: this.txtDN_NAME,
-              dm_MST: this.txtDN_MST,
-              type_send_data: txtInvoice_Form_Symbol.value,
-            },
-
-            error: this.onErrorUpdateXmlList_v3,
-            success: this.onSuccessUpdateXmlList_v3,
-          });
-        } else {
-          alert("Token not suitable !!!");
-        }
-      }
-    },
-
-    onErrorUpdateXmlList_v3(json, textStatus, errorThrown) {
-      alert(" Error :" + errorThrown);
-    },
-
-    onSuccessUpdateXmlList_v3(response) {
-      var xmlDoc_serial = $.parseXML(response);
-      var xml_serial = $(xmlDoc_serial);
-      //alert(xml_serial.text());
-      let obj_serial = $.parseJSON(xml_serial.text());
-      if (obj_serial.msg == "OK") {
-        alert("STAMP E-INVOICE FINISHED.");
-        //dso_process_data_sign.Call();
-        //dso_process_check_serialno.Call();
-        //txtXMl_T.value = obj.result;
-        dso_steafrstea010003_s_01.Call("SELECT");
-      }
-    },
 
     async onPreview() {
       // jQuery.support.cors = true;

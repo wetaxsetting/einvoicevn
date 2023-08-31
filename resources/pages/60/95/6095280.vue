@@ -460,6 +460,7 @@ export default {
             // this.onClick("search");
           } break;
         case "btnPrint":
+          this.onReport();
           break;
         case "newDetail":
 
@@ -557,6 +558,8 @@ export default {
       }
     },
     async dsoMaster(action) {
+      let abc = this.dataMasterList.taxOfficeList.find(item => item.CODE == this.modelMaster.MCQT)
+      this.modelMaster.TCQT = abc.NAME;
       await this._dsoCall({
         type: "control",
         selpro: "AC_SEL_6095280_2",
@@ -1039,6 +1042,69 @@ export default {
         //   this.isProcessing = false;
         //   return this.showNotification("danger", e.message);
         // }
+      }
+    },
+
+    async onReport() {
+      let report_path = "report/60/95/rpt_6095280.xlsx";
+      let hiddenCols = [];
+      let excel = [];
+      // this.$refs.gridview.exportExcel();
+      excel = [
+        {
+          sheet: 1,
+          insertRange: [
+            {
+              range: "A1:I17",
+              proc: "AC_RPT_6095280_M",
+              params: [
+                  this.modelMaster.PK,
+                  this.modelSearch.COMPANY_PK,
+                  this.modelSearch.FROM_DATE,
+                  this.modelSearch.TO_DATE,
+                  this.modelSearch.STATUS,
+                  this.modelSearch.VOUCHER_NO,
+                  this.modelSearch.SYMBOLS,
+                  this.modelSearch.INVOICE
+              ],
+            }, //header
+          ],
+          insertRows: [
+            {
+              sequence: "break",
+              startRow: 13,
+              proc: "AC_RPT_6095280_D",
+              params: [
+                this.modelMaster.PK
+              ],
+              dateColumns: ["NGAY", ],
+            },
+          ],
+          hideColumns: hiddenCols,
+        },
+      ];
+      if (!report_path) {
+        this.salaryStatus = this.$t("template_not_available");
+        return;
+      }
+
+      const res = await this.$axios.$get("/dso/makereport", {
+        responseType: "blob",
+        params: {
+          template: report_path,
+          excel: JSON.stringify(excel),
+        },
+      });
+      if (res && res.size > 0) {
+        let blob = new Blob([res], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        saveAs(blob, ["rpt_6095280_HDĐT_SS"]);
+        // let url = window.URL.createObjectURL(blob);
+        // window.open(url);
+        // this.salaryStatus = this.$t("complete");
+      } else {
+        this.salaryStatus = this.$t("fail_to_export_report");
       }
     },
   }

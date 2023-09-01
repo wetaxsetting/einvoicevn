@@ -5586,7 +5586,6 @@ class EInvoiceController {
                     content: body
     
                 }
-
                 return response.send(
                     Utils.response(true, `Send order to invoice was Successfully!`, data_r)
                 );
@@ -8196,6 +8195,7 @@ class EInvoiceController {
                 filename1: data.data_invoice.mccqt + ".xml",
                 filename2: data.data_invoice.mccqt + ".pdf",
             });
+            console.log("res_send_mail  ", res_send_mail);
             if (res_send_mail.success) {
                 return true;
             }else

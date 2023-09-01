@@ -5458,7 +5458,7 @@ class EInvoiceController {
                 }
             }
 
-            const res_send_mail = await this.sendMaiToCustomer(tei_wt_sale_bill_pk, data, p_language, p_crt_by);
+            const  { res_send_mail, subject, body}  = await this.sendMaiToCustomer(tei_wt_sale_bill_pk, data, p_language, p_crt_by);
 
             console.log("res_send_mail  ", res_send_mail);
             if (res_send_mail.data.success) {
@@ -8104,7 +8104,7 @@ class EInvoiceController {
                 filename2: data.data_invoice.mccqt + ".pdf",
             });
             console.log("res_send_mail  ", res_send_mail);
-            return res_send_mail
+            return { res_send_mail, subject, body}
     }
     // end e - invoce
 }

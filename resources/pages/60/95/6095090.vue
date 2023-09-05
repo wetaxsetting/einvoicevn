@@ -49,27 +49,26 @@
 
 
       <v-row dense justify="space-between" class="pl-3 pr-3 pt-2">
-        <v-col lg="2">
+        <v-col lg="4">
           <BaseInput outlined :label="$t('tot_net_tr_amt')" v-model="tot_net_tr_amt" number />
         </v-col>
         <!-- <v-col lg="2">
           <BaseInput outlined :label="$t('tot_net_bk_amt')" v-model="tot_net_bk_amt" number />
         </v-col> -->
-        <v-col lg="2">
-        </v-col>
-        <v-col lg="2">
+       
+        <v-col lg="4">
           <BaseInput outlined :label="$t('tot_net_tr_vat_amt')" v-model="tot_net_tr_vat_amt" number />
         </v-col>
 
-        <v-col lg="2">
-          <!-- <BaseInput outlined :label="$t('tot_net_bk_vat_amt')" v-model="tot_net_bk_vat_amt" number /> -->
-        </v-col>
-        <v-col lg="2">
+        <!-- <v-col lg="2">
+          <BaseInput outlined :label="$t('tot_net_bk_vat_amt')" v-model="tot_net_bk_vat_amt" number />
+        </v-col> -->
+        <v-col lg="4">
           <BaseInput outlined :label="$t('total')" v-model="total" number />
         </v-col>
-        <v-col lg="2">
-          <!-- <BaseInput outlined :label="$t('total_bk')" v-model="total_bk" number /> -->
-        </v-col>
+        <!-- <v-col lg="2">
+          <BaseInput outlined :label="$t('total_bk')" v-model="total_bk" number />
+        </v-col> -->
       </v-row>
 
       <v-row dense justify="space-between" class="pl-3 pr-3 pt-2">
@@ -87,9 +86,8 @@
           <BaseButton icon_type="search" :btn_text="$t('search')" :disabled="isProcessing" @onclick="funcSearch()" />
           <BaseButton icon_type="view" :btn_text="$t('preview')" :disabled="isProcessing" @onclick="onPreview" />
           <BaseButton icon_type="xml" :btn_text="$t('view_xml')" @onclick="onClick('viewXML')" />
-          <BaseButton icon_type="attach" :btn_text="$t('invoice_sign')" :disabled="isProcessing"
-            @onclick="InvoiceSign()" />
-          <BaseButton icon_type="add_new" :btn_text="$t('check_code_cqt')" :disabled="isProcessing" />
+          <BaseButton icon_type="attach" :btn_text="$t('invoice_sign')" :disabled="isProcessing" @onclick="InvoiceSign()" />
+          <BaseButton icon_type="add_new" :btn_text="$t('check_code_cqt')" :disabled="isProcessing" @onclick="checkingCQT()"/>
         </v-col>
       </v-row>
 
@@ -98,7 +96,7 @@
         <v-col cols="12">
           <v-card outlined>
               <!-- :selectionmode="'checkbox'" -->
-              <BaseGridView ref="gridview" :header="grdReviewSign" sel_procedure="EI_SEL_6095090_SEL_DATA"
+              <BaseGridView ref="gridview" :header="grdReviewSign" sel_procedure="EI_SEL_6095090_SEL_DATA_NC"
                 :multiselect="true" :selectionmode="'checkbox'" :autocheckbox="false" :headertype="1"
                 @onSelectionDataChanged="onGridSelectionChanged" :filter_paras="[
                   this.selected_company,
@@ -515,104 +513,97 @@ export default {
     async onGridSelectionChanged(data) {
       this.selected_rows = data;
     },
-    InvoiceSign() {
-      let count = 1;
 
-      let grdSelectedRow = this.selected_rows;
-      for (var i = 0; i < grdSelectedRow.length; i++) {
-        if (grdSelectedRow[i].ei_status != "Issued") {
-          if (
-            !this.ValidateEmail(grdSelectedRow[i].mail) &&
-            grdSelectedRow[i].mail.length > 0
-          ) {
-            alert(
-              "E-Mail của công ty : " +
-              grdSelectedRow[i].cus_cd +
-              " chưa đúng. Chỉ sử dụng được 1 mail hoặc định dạng mail chưa đúng."
-            );
-            return;
-          }
-          this.PKs = grdSelectedRow[i].pk + "-" + this.PKs;
-          this.tei_einvoice_m_PK =
-            grdSelectedRow[i].pk + "-" + this.tei_einvoice_m_PK;
-          this.PK_Send = grdSelectedRow[i].tac_crca_pk + "-" + this.PK_Send;
-          this.FormNo =
-            grdSelectedRow[i].form_no.replace("/", "") + "-" + this.FormNo;
-          this.SerialNo =
-            grdSelectedRow[i].serial_no.replace("/", "") + "-" + this.SerialNo;
-          this.Invoice_No =
-            grdSelectedRow[i].invoice_no + "-" + this.Invoice_No;
-          this.PK_Send = grdSelectedRow[i].tac_crca_pk + "-" + this.PK_Send;
-          this.Count_Pk = count++;
-        }
+    async checkingCQT(){
+      this.invoice = [];
+      const grdSelectedRow = this.$refs.gridview.getSelectedRows();
+      for(let i =0; i< grdSelectedRow.length; i++)
+      {
+        this.invoice.push({
+            req_key : grdSelectedRow[i].PK,
+            trade_code : grdSelectedRow[i].CQT_MAGD,
+            tax_code: grdSelectedRow[i].SELLER_TAXCODE,
+          })
+        
       }
-      jQuery.support.cors = true;
-      $.ajax({
-        url: "http://genuclouding.com/wseinvoice/BSService.asmx/GeneralXmlList_v2",
-        dataType: "text",
-        method: "POST",
-        data: { tei_einvoice_m_pk: this.PKs },
-        error: this.onError,
-        success: this.onSuccess,
-      });
-    },
-    async onError(response, json, textStatus, errorThrown) {
-      alert(" Error :" + errorThrown);
-    },
-    async onSuccess(response) {
-      var xmlDoc = $.parseXML(response);
-      var xml = $(xmlDoc);
-      let obj = $.parseJSON(xml.text());
-      if (obj.msg == "OK") {
-        this.txtXMl_T = obj.result;
 
-        if (this.PKs != "") {
+      let res_check = await this.$axios.$post("/einvoice/check-status-invoice", {
+          responseType: "json",
+          data: this.invoice,
+        });
+
+        if (res_check.success) {
+          this.funcSearch();
+          this.showNotification("success", "Checking invoice to Tax Office was Successfully!", "");
+        }
+
+      console.log("sss",this.invoice );
+    },
+    
+    async InvoiceSign() {
+      const grdSelectedRow = this.$refs.gridview.getSelectedRows();
+      this.invoice = [];
+
+      for(let i =0; i< grdSelectedRow.length; i++)
+      {
+        this.invoice.push({
+            PK : grdSelectedRow[i].PK,
+            USER_ID : this.user.USER_ID,
+          })
+        
+      }
+  
+      let res = await this.$axios.$post("/einvoice/general-invoice-xml", {
+          responseType: "json",
+          list_invoice: this.invoice,
+        });
+  
+        console.log("this.invoice  ", this.invoice);
+        if (res.success) {
+          console.log("response", res.data);
           jQuery.support.cors = true;
           $.ajax({
             url: "http://localhost:1080/issueXmlList",
-            dataType: "text",
+            dataType: "json",
             method: "POST",
             data: {
-              tei_invoice_m_pk: this.PKs,
-              tei_company_pk: this.selected_company,
               crt_by: this.user.USER_ID,
-              xml: this.txtXMl_T,
+              xml: JSON.stringify(res.data),
             },
             error: this.onErrorissueXmlList,
             success: this.onSuccessissueXmlList,
           });
+
         }
-      }
     },
 
     async onErrorissueXmlList(json, textStatus, errorThrown) {
       alert(" Error :" + errorThrown);
     },
+
     async onSuccessissueXmlList(data) {
-      let obj_token = $.parseJSON(data);
 
-      this.txtXMl_T = obj_token.result;
-      this.txtSerial_Number = obj_token.SerialNumber;
-      this.txtNOTBEFORE = obj_token.NotBefore;
-      this.txtNOTAFTER = obj_token.NotAfter;
-      this.txtRAWDATA = obj_token.RAWDATA;
-      this.txtISSUER = obj_token.IsSuer;
-      this.txtISSUEBY = obj_token.IssueBy;
-      this.txtISSUETO = obj_token.IssueTo;
-      this.txtDN_NAME = obj_token.DN_Name;
-      this.txtDN_MST = obj_token.DN_MST;
+      console.log(data);
+      let jsonXML = data.result;
+      // this.txtXMl_T = data.result[0].xml;
+      // this.txtSerial_Number = data.serial_number;
+      // this.txtNOTBEFORE = data.not_before;
+      // this.txtNOTAFTER = data.not_after;
+      // this.txtRAWDATA = data.raw_data;
+      // this.txtISSUER = data.issuer;
+      // this.txtISSUEBY = data.issue_by;
+      // this.txtISSUETO = data.issue_to;
+      // this.txtDN_NAME = data.dn_name;
+      // this.txtDN_MST = data.dn_mst;
 
-      //************call something */ dso_process_check_serialno.Call();
-    },
-    async SerialNoCheck() {
       const dso_process_check_serialno = {
         type: "list",
         selpro: "EI_SEL_6095090_SERIAL_CHECK",
         para: [
           this.selected_company,
-          this.selected_serial_no,
-          this.txtFromInvoiceNo,
-          this.txtToInvoiceNo,
+          this.txtSerial_Number,
+          this.txtNOTBEFORE,
+          this.txtNOTAFTER,
         ],
       };
       const check_serial_no_result = await this._dsoCall(
@@ -620,57 +611,40 @@ export default {
         "select",
         false
       );
-      // console.log(checkCompany);
-      if (check_serial_no_result != null) {
-        if (check_serial_no_result == "1") {
-          $.ajax({
-            url: "http://genuclouding.com/wseinvoice/BSService.asmx/UpdateXmlList_v3",
-            dataType: "text",
-            method: "POST",
 
-            data: {
-              tei_einvoice_m_pk: this.PKs,
-              tei_company_pk: this.selected_company,
-              arg_XmlStr: this.txtXMl_T,
-              form_no: this.FormNo,
-              serial_no: this.SerialNo,
-              invoice_no: this.Invoice_No,
-              ctr_by: this.user.USER_ID,
-              serialNumber: this.txtSerial_Number,
-              notBefore: this.txtNOTBEFORE,
-              notAfter: this.txtNOTAFTER,
-              rawData: this.txtRAWDATA,
-              isSuer: this.txtISSUER,
-              issueBy: this.txtISSUEBY,
-              issueTo: this.txtISSUETO,
-              dn_Name: this.txtDN_NAME,
-              dm_MST: this.txtDN_MST,
-              type_send_data: txtInvoice_Form_Symbol.value,
-            },
+        if (check_serial_no_result[0].STATUS == "1") {
 
-            error: this.onErrorUpdateXmlList_v3,
-            success: this.onSuccessUpdateXmlList_v3,
+          let data_invoice = [];
+          for(let i = 0; i < jsonXML.length; i++)
+          {
+            data_invoice.push({
+                req_key: jsonXML[i].req_key,
+                token_serial_number: data.serial_number,
+                buyer_tax_code: data.dn_mst,
+                buyer_name: data.dn_name,
+                xml_signed: jsonXML[i].xml,
+            });
+          }
+
+          let res_send = await this.$axios.$post("/einvoice/send-invoice-at", {
+            responseType: "json",
+            invoices: data_invoice,
           });
+
+          if(res_send.success)
+          {
+            this.funcSearch();
+              this.showNotification("success", "Send invoice to Tax Office was Successfully!", "");
+
+          } else {
+              this.funcSearch();
+              this.showNotification("danger", "Send invoice to Tax Office was Faile!");
+          }
+         
         } else {
           alert("Token not suitable !!!");
         }
-      }
-    },
-    onErrorUpdateXmlList_v3(json, textStatus, errorThrown) {
-      alert(" Error :" + errorThrown);
-    },
-    onSuccessUpdateXmlList_v3(response) {
-      var xmlDoc_serial = $.parseXML(response);
-      var xml_serial = $(xmlDoc_serial);
-      //alert(xml_serial.text());
-      let obj_serial = $.parseJSON(xml_serial.text());
-      if (obj_serial.msg == "OK") {
-        alert("STAMP E-INVOICE FINISHED.");
-        //dso_process_data_sign.Call();
-        //dso_process_check_serialno.Call();
-        //txtXMl_T.value = obj.result;
-        dso_steafrstea010003_s_01.Call("SELECT");
-      }
+      
     },
 
     async onPreview() {
@@ -707,6 +681,10 @@ export default {
 
     onAfterLoad() {
       let gridArray = [];
+      this.tot_net_tr_amt = 0;
+      this.tot_net_bk_amt = 0;
+      this.tot_net_tr_vat_amt = 0;
+      this.tot_net_bk_vat_amt = 0;
       this.$nextTick(() => {
         gridArray = this.$refs.gridview.getDataSource();
 

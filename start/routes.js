@@ -156,7 +156,12 @@ Route.group(() => {
     Route.post("send-company-info", "EInvoiceController.weTaxSendCompanyInfor")
 
     // e-invoice
+    Route.post("general-pos-invoice-xml", "EInvoiceController.generalXmlPosInvoice")
     Route.post("general-invoice-xml", "EInvoiceController.generalXmlInvoice")
+    Route.post("send-invoice-at", "EInvoiceController.sendInvoice")
+    Route.post("check-status-invoice-at", "EInvoiceController.checkInvoiceStatus")
+
+
 
     
 

@@ -4904,7 +4904,7 @@ class EInvoiceController {
 
             const { data } = request.all();
 
-            console.log(" data  ", data);
+            // console.log(" data  ", data);
 
             //invoices = JSON.parse(invoices);
             let rtnXML = [];
@@ -4970,6 +4970,7 @@ class EInvoiceController {
                 }
             }
             // console.log(" data.list_invoice  ", data.list_invoice);
+            let req_key = []
             const invoices = data.list_invoice;
             const valid = this.weTaxValidateJsonInvalidPosInvoiceToXML(invoices);
             if (!valid.status) {
@@ -4987,6 +4988,7 @@ class EInvoiceController {
 
             for (let i = 0; i < invoices.length; i++) {
                 //console.log("invoices:", invoices[i])
+                req_key.push(invoices[i].req_key);
 
                 if (invoices[i].form_no == 1) {
                     objInvoice.DLHDon.TTChung.THDon = "Hóa đơn giá trị gia tăng khởi tạo từ máy tính tiền";
@@ -5135,8 +5137,9 @@ class EInvoiceController {
                 store_code: data.store_code,
                 store_name: data.store_name,
                 count_invoice_convert: invoices.length,
-                id_signing: id,
-                xml_converted: xmlRemoveLine
+                sign_id: id,
+                xml_data: xmlRemoveLine,
+                req_key
             };
 
 
@@ -5278,11 +5281,7 @@ class EInvoiceController {
                         }
                     }
                 }
-
-
             }
-
-
             console.log("status ", status, " resMess ", resMess)
             // if dont have any problem
             return {
@@ -5459,99 +5458,8 @@ class EInvoiceController {
                 }
             }
 
+            const  { res_send_mail, subject, body}  = await this.sendMaiToCustomer(tei_wt_sale_bill_pk, data, p_language, p_crt_by);
 
-            // let EiExcel = new EiPosExcelHandlerAuto();
-            // let EiExcel = new EiPosExcelHandler();
-            // let url_pdf = await EiExcel.getEinvoice(tei_wt_sale_bill_pk , p_language, p_crt_by);
-            //  console.log("base64PDf  ", url_pdf);
-
-            let EiExcels = new EiPosExcelHandlerAuto();
-            let url_pdf = await EiExcels.getEinvoice(tei_wt_sale_bill_pk, p_language, p_crt_by);
-            console.log("base64PDf  ", url_pdf);
-
-            let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + tei_wt_sale_bill_pk + "&proc=" + "EI_SEL_XML_POS_EINVOICE" + "&token=");//  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
-            let url_xml = re_url_xml.data;
-            console.log("base64XXML  ", url_xml);
-
-            let subject = `${data.data_invoice.seller_comp_name}[Thông báo phát hành HĐĐT][${data.data_invoice.form_no}][${data.data_invoice.serial_no}][${data.data_invoice.invoice_no}]`;
-            let body = `<html>
-                            <body>
-                                <div id="page">
-                                    <div id="d2">
-                                        <p>Dear: ${data.data_invoice.buyer_comp_name}
-                                            <br />
-                                            <br />${data.data_invoice.seller_comp_name}.
-                                            <br />            Trân trọng cảm ơn Quý khách hàng đã sử dụng sản phẩm của chúng tôi.
-                                            <br/> Chúng tôi đã 
-                                            <b>PHÁT HÀNH </b> hóa đơn điện tử với các thông tin như sau:
-                                            <br/>- Mẫu số: ${data.data_invoice.form_no}
-                                            <br/>- Ký hiệu: 
-                                            <b>${data.data_invoice.serial_no}</b>
-                                            <br/>- Số hóa đơn: 
-                                            <b>${data.data_invoice.invoice_no}</b>
-                                            <br/>- Tổng thanh toán: 
-                                            <b>       ${data.data_invoice.total_payment}</b>
-                                            <br />- Link download file PDF: 
-                                            <a href=${url_pdf}>Tải file PDF</a>
-                                            <br />- Link download file XML: 
-                                            <a href=${url_xml}>Tải file XML</a>
-                                            <br />
-                                        </div>
-                                        <br/>
-                                        <div id="d6">
-                                            <p>
-                                                <i>* Xin lưu ý: Đây là email gửi tự động từ hệ thống, vui lòng không trả lời về địa chỉ email này</i>
-                                                <br />
-                                                <i>Cám ơn sự hợp tác. </i>
-                                                <br />
-                                        --------------------------------------------------------------------------
-                                    
-                                            </p>
-                                        </div>
-                                        <div id="d7"> Would like to send you our warmest greetings and most sincere thanks for choosing our product. 
-                                            <br/> We 
-                                            <b>issued </b> your e-invoice with the information as below: 
-                                            <br/>- Form No: 
-                                            <b>${data.data_invoice.form_no}</b>
-                                            <br/>- Serial: 
-                                            <b>${data.data_invoice.serial_no}</b>
-                                            <br/>- Invoice No:  
-                                            <b>${data.data_invoice.invoice_no}</b>
-                                            <br/>- Total amount :  
-                                            <b>       ${data.data_invoice.total_payment}</b>
-                                            <br />- Download file PDF link:  
-                                            <a href=${url_pdf}>Download file PDF</a>
-                                            <br />- Download file XML link:  
-                                            <a href=${url_xml}>Download file XML</a>
-                                            <br />
-                                        </p>
-                                    </div>
-                                    <div id="d8">
-                                        <p>
-                                            <br/>* Note: This is an automatic email. Please do not feedback to this email.
-                                            <br/>
-                                        Thank you for your corporation!
-                                        
-                                        </p>
-                                    </div>
-                                </body>
-                            </html>
-                            `;
-            const res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {
-                mail_to: data.data_invoice.buyer_email,
-                cc_to: data.data_invoice.buyer_email_cc,
-                subject: subject,
-                body: body,
-                attachfile1: url_xml,
-                attachfile2: url_pdf,
-                filename1: data.data_invoice.mccqt + ".xml",
-                filename2: data.data_invoice.mccqt + ".pdf",
-            });
-            let data_r = {
-                link_invoice_preview: "https://einvoicevn.com/lookup",
-                security_code: "1234567bac",
-
-            }
             console.log("res_send_mail  ", res_send_mail);
             if (res_send_mail.data.success) {
                 const para_inv_st = {
@@ -5570,315 +5478,22 @@ class EInvoiceController {
                     p_crt_by
                 );
 
-
-                return response.send(
-                    Utils.response(true, `Send order to invoice was Successfully!`, data_r)
-                );
-            } else {
-                const para_inv_st = {
-                    tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
-                    status: "Sent Faile",
-                };
-                const rtnValue_VAT = await DBService.ExecuteSQLBlob(
-                    `BEGIN ei_upd_sale_bill_status (          
-                                                            :tei_wt_sale_bill_pk,
-                                                            :status,
-                                                            :p_language, 
-                                                            :p_crt_by, 
-                                                            :p_rtn_cur); END;`,
-                    para_inv_st,
-                    p_language,
-                    p_crt_by
-                );
-
-                return response.send(
-                    Utils.response(true, `Send order to invoice was Faile! .`, "")
-                );
-            }
-            // console.log("res_send_mail  ", res_send_mail);
-
-
-
-        } catch (error) {
-            console.log("error  ", error);
-        }
-    }
-    async weTaxSendOrderInfo({ request, response, auth }) {
-        try {
-            var p_language = request.header("accept-language", "ENG");
-            var p_crt_by = "";
-            const user = await auth.getUser();
-            if (user) {
-                p_crt_by = user.USER_ID;
-            }
-            const { data } = request.all();
-
-            console.log("data  ", data);
-            let tei_wt_sale_bill_pk = 0;
-            const data_xml = await this.createXMLByOne(data.data_invoice);
-            const count_length = data_xml.length;
-            const xml_type = "application/xml";
-            const para_value = {
-                sale_date: data.sale_date,
-                store_code: data.store_code,
-                store_name: data.store_name,
-                pos_no: data.pos_no,
-                bill_no: data.bill_no,
-                version: data.data_invoice.version,
-                invoice_name: data.data_invoice.invoice_name,
-                symbol_type: data.data_invoice.form_no,//data.data_invoice.symbol_type,
-                form_no: data.data_invoice.form_no,
-                serial_no: data.data_invoice.serial_no,
-                invoice_date: data.data_invoice.invoice_date,
-                invoice_no: data.data_invoice.invoice_no,
-                currency: data.data_invoice.currency,
-                ex_rate: data.data_invoice.ex_rate,
-                payment_method: data.data_invoice.payment_method,
-                seller_comp_name: data.data_invoice.seller_comp_name,
-                seller_taxcode: data.data_invoice.seller_taxcode,
-                seller_address: data.data_invoice.seller_address,
-                seller_tel: data.data_invoice.seller_tel,
-                buyer_comp_name: data.data_invoice.buyer_comp_name,
-                buyer_taxcode: data.data_invoice.buyer_taxcode,
-                buyer_tel: data.data_invoice.buyer_tel,
-                buyer_address: data.data_invoice.buyer_address,
-                buyer_cccd: data.data_invoice.buyer_cccd,
-                buyer_email: data.data_invoice.buyer_email,
-                buyer_email_cc: data.data_invoice.buyer_email_cc,
-                total_amt: data.data_invoice.total_amt,
-                total_dc_amt: data.data_invoice.total_dc_amt,
-                total_vat_amt: data.data_invoice.total_vat_amt,
-                total_payment: data.data_invoice.total_payment,
-                total_payment_word_vie: data.data_invoice.total_payment_word_vie,
-                mccqt: data.data_invoice.mccqt,
-                data_xml: data_xml,
-                count_length: count_length,
-                xml_type: xml_type,
-            };
-
-            // console.log("para_value  ", para_value)
-
-            const rtnValue = await DBService.ExecuteSQLBlob(
-                `BEGIN ei_upd_order_info (          
-                                                        :sale_date,
-                                                        :store_code,
-                                                        :store_name,
-                                                        :pos_no,
-                                                        :bill_no,
-                                                        :version,
-                                                        :invoice_name,
-                                                        :symbol_type,
-                                                        :form_no,
-                                                        :serial_no,
-                                                        :invoice_date,
-                                                        :invoice_no,
-                                                        :currency,
-                                                        :ex_rate,
-                                                        :payment_method,
-                                                        :seller_comp_name,
-                                                        :seller_taxcode,
-                                                        :seller_address,
-                                                        :seller_tel,
-                                                        :buyer_comp_name,
-                                                        :buyer_taxcode,
-                                                        :buyer_tel,
-                                                        :buyer_address,
-                                                        :buyer_cccd,
-                                                        :buyer_email,
-                                                        :buyer_email_cc,
-                                                        :total_amt,
-                                                        :total_dc_amt,
-                                                        :total_vat_amt,
-                                                        :total_payment,
-                                                        :total_payment_word_vie,
-                                                        :mccqt,
-                                                        :data_xml,
-                                                        :count_length,
-                                                        :xml_type,
-                                                        :p_language, 
-                                                        :p_crt_by, 
-                                                        :p_rtn_cur); END;`,
-                para_value,
-                p_language,
-                p_crt_by
-            );
-            // console.log("rtnValue  ", rtnValue);
-            tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
-            if (rtnValue.p_rtn_cur[0].STATUS == "OK") {
-
-                for (let j = 0; j < data.data_invoice.list_amt_vat.length; j++) {
-                    const para_amt_vat = {
-                        tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
-                        sub_amt: data.data_invoice.list_amt_vat[j].sub_amt,
-                        sub_vat_rate: data.data_invoice.list_amt_vat[j].sub_vat_rate,
-                        sub_amt_vat: data.data_invoice.list_amt_vat[j].sub_amt_vat
-                    };
-                    const rtnValue_VAT = await DBService.ExecuteSQLBlob(
-                        `BEGIN ei_upd_sale_bill_vat (          
-                                                                :tei_wt_sale_bill_pk,
-                                                                :sub_amt,
-                                                                :sub_vat_rate,
-                                                                :sub_amt_vat,
-                                                                :p_language, 
-                                                                :p_crt_by, 
-                                                                :p_rtn_cur); END;`,
-                        para_amt_vat,
-                        p_language,
-                        p_crt_by
-                    );
-                }
-
-                for (let j = 0; j < data.data_invoice.detail_invoice.length; j++) {
-                    const para_prod_details = {
-                        tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
-                        nature: data.data_invoice.detail_invoice[j].nature,
-                        seq: data.data_invoice.detail_invoice[j].seq,
-                        item_code: data.data_invoice.detail_invoice[j].item_code,
-                        item_name: data.data_invoice.detail_invoice[j].item_name,
-                        uom: data.data_invoice.detail_invoice[j].uom,
-                        quantity: data.data_invoice.detail_invoice[j].quantity,
-                        uprice: data.data_invoice.detail_invoice[j].uprice,
-                        dc_rate: data.data_invoice.detail_invoice[j].dc_rate,
-                        dc_amt: data.data_invoice.detail_invoice[j].dc_amt,
-                        amt: data.data_invoice.detail_invoice[j].amt,
-                        vat_rate: data.data_invoice.detail_invoice[j].vat_rate,
-                    };
-                    const rtnValue_VAT = await DBService.ExecuteSQLBlob(
-                        `BEGIN ei_upd_sale_prod (          
-                                                                :tei_wt_sale_bill_pk,
-                                                                :nature,
-                                                                :seq,
-                                                                :item_code,
-                                                                :item_name,
-                                                                :uom,
-                                                                :quantity,
-                                                                :uprice,
-                                                                :dc_rate,
-                                                                :dc_amt,
-                                                                :amt,
-                                                                :vat_rate,
-                                                                :p_language, 
-                                                                :p_crt_by, 
-                                                                :p_rtn_cur); END;`,
-                        para_prod_details,
-                        p_language,
-                        p_crt_by
-                    );
-                }
-            }
-
-
-            // let EiExcel = new EiPosExcelHandlerAuto();
-            // let EiExcel = new EiPosExcelHandler();
-            // let url_pdf = await EiExcel.getEinvoice(tei_wt_sale_bill_pk , p_language, p_crt_by);
-            //  console.log("base64PDf  ", url_pdf);
-
-            let EiExcels = new EiPosExcelHandlerAuto();
-            let url_pdf = await EiExcels.getEinvoice(tei_wt_sale_bill_pk, p_language, p_crt_by);
-            //console.log("base64PDf  ", url_pdf);
-
-            let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + tei_wt_sale_bill_pk + "&proc=" + "EI_SEL_XML_POS_EINVOICE" + "&token=");//  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
-            let url_xml = re_url_xml.data;
-            //console.log("base64XXML  ", url_xml);
-
-            let subject = `${data.data_invoice.seller_comp_name}[Thông báo phát hành HĐĐT][${data.data_invoice.form_no}][${data.data_invoice.serial_no}][${data.data_invoice.invoice_no}]`;
-            let body = `<html>
-                            <body>
-                                <div id="page">
-                                    <div id="d2">
-                                        <p>Dear: ${data.data_invoice.buyer_comp_name}
-                                            <br />
-                                            <br />${data.data_invoice.seller_comp_name}.
-                                            <br />            Trân trọng cảm ơn Quý khách hàng đã sử dụng sản phẩm của chúng tôi.
-                                            <br/> Chúng tôi đã 
-                                            <b>PHÁT HÀNH </b> hóa đơn điện tử với các thông tin như sau:
-                                            <br/>- Mẫu số: ${data.data_invoice.form_no}
-                                            <br/>- Ký hiệu: 
-                                            <b>${data.data_invoice.serial_no}</b>
-                                            <br/>- Số hóa đơn: 
-                                            <b>${data.data_invoice.invoice_no}</b>
-                                            <br/>- Tổng thanh toán: 
-                                            <b>       ${data.data_invoice.total_payment}</b>
-                                            <br />- Link download file PDF: 
-                                            <a href=${url_pdf}>Tải file PDF</a>
-                                            <br />- Link download file XML: 
-                                            <a href=${url_xml}>Tải file XML</a>
-                                            <br />
-                                        </div>
-                                        <br/>
-                                        <div id="d6">
-                                            <p>
-                                                <i>* Xin lưu ý: Đây là email gửi tự động từ hệ thống, vui lòng không trả lời về địa chỉ email này</i>
-                                                <br />
-                                                <i>Cám ơn sự hợp tác. </i>
-                                                <br />
-                                        --------------------------------------------------------------------------
-                                    
-                                            </p>
-                                        </div>
-                                        <div id="d7"> Would like to send you our warmest greetings and most sincere thanks for choosing our product. 
-                                            <br/> We 
-                                            <b>issued </b> your e-invoice with the information as below: 
-                                            <br/>- Form No: 
-                                            <b>${data.data_invoice.form_no}</b>
-                                            <br/>- Serial: 
-                                            <b>${data.data_invoice.serial_no}</b>
-                                            <br/>- Invoice No:  
-                                            <b>${data.data_invoice.invoice_no}</b>
-                                            <br/>- Total amount :  
-                                            <b>       ${data.data_invoice.total_payment}</b>
-                                            <br />- Download file PDF link:  
-                                            <a href=${url_pdf}>Download file PDF</a>
-                                            <br />- Download file XML link:  
-                                            <a href=${url_xml}>Download file XML</a>
-                                            <br />
-                                        </p>
-                                    </div>
-                                    <div id="d8">
-                                        <p>
-                                            <br/>* Note: This is an automatic email. Please do not feedback to this email.
-                                            <br/>
-                                        Thank you for your corporation!
-                                        
-                                        </p>
-                                    </div>
-                                </body>
-                            </html>
-                            `;
-            const res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {
-                mail_to: data.data_invoice.buyer_email,
-                cc_to: data.data_invoice.buyer_email_cc,
-                subject: subject,
-                body: body,
-                attachfile1: url_xml,
-                attachfile2: url_pdf,
-                filename1: data.data_invoice.mccqt + ".xml",
-                filename2: data.data_invoice.mccqt + ".pdf",
-            });
-            let data_r = {
-                link_invoice_preview: "https://einvoicevn.com/lookup",
-                security_code: "1234567bac",
-
-            }
-            console.log("res_send_mail  ", res_send_mail);
-            if (res_send_mail.data.success) {
-                const para_inv_st = {
-                    tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
+                let data_r = {
+                    link_invoice_preview: "https://einvoicevn.com/lookup",
+                    security_code: "1234567bac",
                     status: "Sent Success",
-                };
-                const rtnValue_VAT = await DBService.ExecuteSQLBlob(
-                    `BEGIN ei_upd_sale_bill_status (          
-                                                            :tei_wt_sale_bill_pk,
-                                                            :status,
-                                                            :p_language, 
-                                                            :p_crt_by, 
-                                                            :p_rtn_cur); END;`,
-                    para_inv_st,
-                    p_language,
-                    p_crt_by
-                );
-
-
+                    user_name: data.data_invoice.buyer_comp_name,
+                    send_date: res_send_mail.data.data.date_send,
+                    send_time: res_send_mail.data.data.time_send,
+                    mail_form: res_send_mail.data.data.mail_from,
+                    mail_to:   res_send_mail.data.data.mail_to,
+                    mail_to_cc: res_send_mail.data.data.mail_to_cc,
+                    error_code: "",
+                    error_name: "",
+                    title: subject,
+                    content: body
+    
+                }
                 return response.send(
                     Utils.response(true, `Send order to invoice was Successfully!`, data_r)
                 );
@@ -7546,7 +7161,7 @@ class EInvoiceController {
                 const xmlStr = xml.toString().replace("<DLHDon>", `<DLHDon Id=\'${id}\'>`);
                 
                 //console.log("xmlStr", xmlStr)
-                rtnXML.push({ master_pk: list_invoice[i].master_pk, xml: xmlStr, id_signing : id });
+                rtnXML.push({ master_pk: list_invoice[i].master_pk, xml_data: xmlStr, sign_id : id });
             }
 
             return response.send(Utils.response(true, `Convert json to xml was successful. ${count_inv}/${list_invoice.length} `, rtnXML));
@@ -7565,7 +7180,7 @@ class EInvoiceController {
     // end weTAX
 
     // e -invoice 
-    async generalXmlInvoice({ request, response, auth }) {
+    async generalXmlPosInvoice({ request, response, auth }) {
         try {
             var p_language = request.header("accept-language", "ENG");
             var p_crt_by = "";
@@ -7578,7 +7193,7 @@ class EInvoiceController {
             
             console.log("list_invoice " ,list_invoice)
             let rtnXML = [];
-                let objInvoice = {
+            let objInvoice = {
                     DLHDon: {
                         TTChung: {
                             PBan: "",
@@ -7859,6 +7474,638 @@ class EInvoiceController {
         }
     }
 
+    async generalXmlInvoice({ request, response, auth }) {
+        try {
+            var p_language = request.header("accept-language", "ENG");
+            var p_crt_by = "";
+            const user = await auth.getUser();
+            if (user) {
+                p_crt_by = user.USER_ID;
+            }
+
+            const { tax_code, count_invoice, list_invoice } = request.all();
+            
+            console.log("list_invoice " ,list_invoice);
+            let rtnXML= [];
+            let objInvoice = {
+                HDon: {
+                    DLHDon: {
+                        TTChung: {
+                            PBan: "",
+                            THDon: "",
+                            KHMSHDon: "",
+                            KHHDon: "",
+                            SHDon: "",
+                            NLap: "",
+                            DVTTe: "",
+                            TGia: "",
+                            HTTToan: "",
+                            MSTTCGP: "",
+                        },
+                        NDHDon: {
+                            NBan: {
+                                Ten: "",
+                                MST: "",
+                                DChi: "",
+                                SDThoai: "",
+                                DCTDTu: "",
+                                STKNHang: "",
+                                NNBSTKNHang: "",
+                                TNHang: "",
+                                Fax: "",
+                                Website: "",
+                                TTKhac: "",
+                            },
+                            NMua: {
+                                Ten: "",
+                                MST: "",
+                                DChi: "",
+                                MKHang: "",
+                                SDThoai: "",
+                                DCTDTu: "",
+                                HVTNMHang: "",
+                                TNHang: "",
+                                TTKhac: "",
+                            },
+                            DSHHDVu: {},
+                            TToan: {
+                                THTTLTSuat: {
+                                    LTSuat: {
+                                        TSuat: "",
+                                        ThTien: "",
+                                        TThue: "",
+                                    },
+                                },
+                                TgTCThue: "",
+                                TgTThue: "",
+                                TTCKTMai: "",
+                                TgTTTBSo: "",
+                                TgTTTBChu: "",
+                               
+                            },
+                        },
+                    },
+                    DSCKS: {},
+                },
+            };
+            for(let i = 0; i < list_invoice.length; i++)
+            {
+                const para_value = {
+                    p_tei_einvoice_m_pk : list_invoice[i].PK,
+                    p_user_id : list_invoice[i].USER_ID,
+                }
+                // console.log("para_value  ", para_value);
+
+                const rtnValueMaster = await DBService.ExecuteSQLBlob(
+                    `BEGIN ei_sel_einvoice_xml_m (  :p_tei_einvoice_m_pk,
+                                                    :p_user_id,
+                                                    :p_language, 
+                                                    :p_crt_by, 
+                                                    :p_rtn_cur); END;`,
+                    para_value,
+                    p_language,
+                    p_crt_by
+                );
+
+                console.log("rtnValueMaster  ", rtnValueMaster);
+
+                const rtnValueDetail = await DBService.ExecuteSQLBlob(
+                    `BEGIN ei_sel_einvoice_xml_d (  :p_tei_einvoice_m_pk,
+                                                    :p_user_id,
+                                                    :p_language, 
+                                                    :p_crt_by, 
+                                                    :p_rtn_cur); END;`,
+                    para_value,
+                    p_language,
+                    p_crt_by
+                );
+                
+                // console.log("rtnValueDetail  ", rtnValueDetail);
+
+                const rtnValueVAT = await DBService.ExecuteSQLBlob(
+                    `BEGIN ei_sel_einvoice_xml_vat (  :p_tei_einvoice_m_pk,
+                                                    :p_user_id,
+                                                    :p_language, 
+                                                    :p_crt_by, 
+                                                    :p_rtn_cur); END;`,
+                    para_value,
+                    p_language,
+                    p_crt_by
+                );
+                
+                //console.log("rtnValueVAT  ", rtnValueVAT);
+
+                const invoiceM = rtnValueMaster.p_rtn_cur[0];
+                const invoiceD = rtnValueDetail.p_rtn_cur[0];
+                const invoiceVAT = rtnValueVAT.p_rtn_cur[0];
+                
+              
+       
+                     
+                
+                if (invoiceM.FORM_NO == 1) {
+                    objInvoice.HDon.DLHDon.TTChung.THDon = "Hóa đơn giá trị gia tăng";
+                } else if (invoiceM.FORM_NO == 2) {
+                    objInvoice.HDon.DLHDon.TTChung.THDon = "Hóa đơn bán hàng";
+                } else if (invoiceM.FORM_NO == 3) {
+                    objInvoice.HDon.DLHDon.TTChung.THDon = "Hóa đơn bán tài sản công";
+                } else if (invoiceM.FORM_NO == 4) {
+                    objInvoice.HDon.DLHDon.TTChung.THDon = "Hóa đơn bán hàng dự trữ quốc gia";
+                } else if (invoiceM.FORM_NO == 5) {
+                    objInvoice.HDon.DLHDon.TTChung.THDon = "Tem điện tử, vé điện tử, thẻ điện tử, phiếu thu điện tử, chứng từ thu phí DV ngân hàng";
+                } else if (invoiceM.FORM_NO == 6) {
+                    objInvoice.HDon.DLHDon.TTChung.THDon = "Phiếu xuất kho kiêm vận chuyển nội bộ, phiếu xuất kho hàng gửi bán đại lý";
+                }
+                objInvoice.HDon.DLHDon.TTChung.PBan = invoiceM.VERSION;
+                objInvoice.HDon.DLHDon.TTChung.KHMSHDon = invoiceM.FORM_NO;
+                objInvoice.HDon.DLHDon.TTChung.KHHDon = invoiceM.SERIAL_NO;
+                objInvoice.HDon.DLHDon.TTChung.SHDon = invoiceM.INVOICE_NO;
+                objInvoice.HDon.DLHDon.TTChung.NLap = invoiceM.INVOICE_DATE;
+                objInvoice.HDon.DLHDon.TTChung.DVTTe = invoiceM.CURRENCY;
+                objInvoice.HDon.DLHDon.TTChung.TGia = invoiceM.EX_RATE;
+                objInvoice.HDon.DLHDon.TTChung.HTTToan = invoiceM.PAYMENT_METHOD;
+                objInvoice.HDon.DLHDon.TTChung.MSTTCGP = "1201496252"; //webcashgenuwin.com taxcode
+
+            
+
+                objInvoice.HDon.DLHDon.NDHDon.NBan.Ten = invoiceM.SELLER_NAME;
+                objInvoice.HDon.DLHDon.NDHDon.NBan.MST = invoiceM.SELLER_TAXCODE;
+                objInvoice.HDon.DLHDon.NDHDon.NBan.DChi = invoiceM.SELLER_ADDRESS;
+                objInvoice.HDon.DLHDon.NDHDon.NBan.SDThoai = invoiceM.SELLER_TEL;
+                objInvoice.HDon.DLHDon.NDHDon.NBan.DCTDTu = "";
+                objInvoice.HDon.DLHDon.NDHDon.NBan.STKNHang = invoiceM.SELLER_ACCOUNTNO;
+                objInvoice.HDon.DLHDon.NDHDon.NBan.NNBSTKNHang = "";
+                objInvoice.HDon.DLHDon.NDHDon.NBan.TNHang = invoiceM.SELLER_ACCOUNTNAME;
+                objInvoice.HDon.DLHDon.NDHDon.NBan.Fax = invoiceM.SELLER_FAX;
+                objInvoice.HDon.DLHDon.NDHDon.NBan.Website = invoiceM.SELLER_WEBSITE;
+                objInvoice.HDon.DLHDon.NDHDon.NBan.TTKhac = "";
+
+
+                objInvoice.HDon.DLHDon.NDHDon.NMua.Ten = invoiceM.BUYER_COMP_NAME;
+                objInvoice.HDon.DLHDon.NDHDon.NMua.MST = invoiceM.BUYER_TAXCODE;
+                objInvoice.HDon.DLHDon.NDHDon.NMua.DChi = invoiceM.BUYER_ADDRESS;
+                objInvoice.HDon.DLHDon.NDHDon.NMua.MKHang = invoiceM.BUYERLEGALCODE;
+                objInvoice.HDon.DLHDon.NDHDon.NMua.SDThoai = invoiceM.BUYER_TEL;
+                objInvoice.HDon.DLHDon.NDHDon.NMua.DCTDTu = invoiceM.MAIL;
+                objInvoice.HDon.DLHDon.NDHDon.NMua.HVTNMHang = invoiceM.BUYER;
+                objInvoice.HDon.DLHDon.NDHDon.NMua.STKNHang = invoiceM.BUYER_ACCOUNTNO;
+                objInvoice.HDon.DLHDon.NDHDon.NMua.TNHang = "";
+                objInvoice.HDon.DLHDon.NDHDon.NMua.TTKhac = "";
+
+                objInvoice.HDon.DLHDon.NDHDon.DSHHDVu = [];
+
+                objInvoice.HDon.DLHDon.NDHDon.DSHHDVu = {};
+                objInvoice.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu = [];
+
+                for (let j = 0; j < invoiceD.length; j++) {
+                    objInvoice.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
+                        TChat: invoiceD[j].TCHAT,
+                        STT: invoiceD[j].SEQ_DIS,
+                        MHHDVu: invoiceD[j].ITEM_CODE,
+                        THHDVu: invoiceD[j].ITEM_NAME,
+                        DVTinh: invoiceD[j].ITEM_UOM,
+                        SLuong: invoiceD[j].QTY,
+                        DGia: invoiceD[j].U_PRICE,
+                        TLCKhau: '',//invoiceD[j].dc_rate,
+                        STCKhau: '',//invoiceD[j].dc_amt,
+                        ThTien: invoiceD[j].NET_TR_AMT,
+                        TSuat: invoiceD[j].VAT_RATE,
+                    });
+                }
+
+                objInvoice.HDon.DLHDon.NDHDon.TToan = {};
+                objInvoice.HDon.DLHDon.NDHDon.TToan.THTTLTSuat = {};
+                objInvoice.HDon.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat = [];
+
+                for (let j = 0; j < invoiceVAT.length; j++) {
+                    objInvoice.HDon.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat.push({
+                        TSuat: invoiceVAT[j].SUB_VAT_RATE,
+                        ThTien: invoiceVAT[j].sub_amt,
+                        TThue: invoiceVAT[j].sub_amt_vat,
+                    });
+                }
+
+                objInvoice.HDon.DLHDon.NDHDon.TToan.TgTCThue = invoiceM.TOTAL_AMT;
+                objInvoice.HDon.DLHDon.NDHDon.TToan.TgTThue = invoiceM.TOTAL_VAT_AMT;
+
+                objInvoice.HDon.DLHDon.NDHDon.TToan.TTCKTMai = invoiceM.TOTAL_DC_AMT;
+                objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = invoiceM.TOTAL_PAYMENT;
+                objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await this.Num2VNText(invoiceM.TOTAL_PAYMENT.toString(), invoiceM.CURRENCY);
+
+                objInvoice.HDon.DSCKS.NBan = "";
+
+                //objInvoice.MCCQT = invoiceM.MCCQT;
+
+
+                //objData.TDiep.DLieu.HDon.push(objInvoice);
+                const id = uuid.v4();
+                const xml = this.OBJtoXML(objInvoice);
+                //const xmlId = xml.toString().replace("<DLieu>", `<DLieu Id=\'${id}\'>`);
+                const xmlId =  xml.toString().replace("<DLHDon>", `<DLHDon Id='ID1'>`);
+                const xmlRemoveLine = xmlId.toString().replace(/\n/g, "");
+                rtnXML.push({
+                    req_key: list_invoice[i].PK,
+                    xml: xmlRemoveLine,
+                    id_signing:'ID1'
+                });
+                // rtnXML = {
+                //     //tax_code: data.tax_code,
+                //     //store_code: data.store_code,
+                //     //store_name: data.store_name,
+                //     //count_invoice_convert: invoices.length,
+                //     id_signing: "ID1",
+                //     xml_converted: xmlRemoveLine
+                // };
+                objInvoice = {
+                    HDon: {
+                        DLHDon: {
+                            TTChung: {
+                                PBan: "",
+                                THDon: "",
+                                KHMSHDon: "",
+                                KHHDon: "",
+                                SHDon: "",
+                                NLap: "",
+                                DVTTe: "",
+                                TGia: "",
+                                HTTToan: "",
+                                MSTTCGP: "",
+                            },
+                            NDHDon: {
+                                NBan: {
+                                    Ten: "",
+                                    MST: "",
+                                    DChi: "",
+                                    SDThoai: "",
+                                    DCTDTu: "",
+                                    STKNHang: "",
+                                    NNBSTKNHang: "",
+                                    TNHang: "",
+                                    Fax: "",
+                                    Website: "",
+                                    TTKhac: "",
+                                },
+                                NMua: {
+                                    Ten: "",
+                                    MST: "",
+                                    DChi: "",
+                                    MKHang: "",
+                                    SDThoai: "",
+                                    DCTDTu: "",
+                                    HVTNMHang: "",
+                                    TNHang: "",
+                                    TTKhac: "",
+                                },
+                                DSHHDVu: {},
+                                TToan: {
+                                    THTTLTSuat: {
+                                        LTSuat: {
+                                            TSuat: "",
+                                            ThTien: "",
+                                            TThue: "",
+                                        },
+                                    },
+                                    TgTCThue: "",
+                                    TgTThue: "",
+                                    TTCKTMai: "",
+                                    TgTTTBSo: "",
+                                    TgTTTBChu: "",
+                                   
+                                },
+                            },
+                        },
+                        DSCKS: {},
+                    },
+                };
+            }
+
+            
+
+            return response.send(Utils.response(true, `Convert json to xml was successful. `, rtnXML));
+        } catch (e) {
+            Utils.Logger({
+                LVL: "error",
+                MODULE: "EInvoiceController",
+                FUNC: "convertInvoiceToXML",
+                CONTENT: e.message,
+            });
+            console.log(e);
+            return response.send(Utils.response(false, "error", e.message));
+        }
+    }
+
+    async sendInvoice({ request, response, auth }) {
+        try {
+            var p_language = request.header("accept-language", "ENG");
+            var p_crt_by = "";
+            const user = await auth.getUser();
+            if (user) {
+                p_crt_by = user.USER_ID;
+            }
+            const authUserName = "GENUWIN"; // "GENUWIN";
+            //const authPassword = "e_GX4v@"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+            const authPassword = "genuwin123"; // "e_GX4v@";
+            //const url = "https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon";
+            const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon";
+            //const url = "http://118.71.250.233/ftvan-hddt/hdon/cmahdon";
+            const { invoices } = request.all();
+
+            const agent = {
+                Agent: {
+                    defaultPort: 443,
+                    protocol: "https:",
+                    options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
+                },
+            };
+
+            let rtnValue = [];
+            for (let i = 0; i < invoices.length; i++) {
+
+                // ======================== tam thoi =========================
+                const trade_code = await Request.post(
+                    url,
+                    { base64XML: Buffer.from(invoices[i].xml_signed).toString("base64") },
+                    {
+                        agent,
+                        headers: {
+                            Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
+                        },
+                    }
+                );
+
+
+                const para_value = {
+                    req_key: invoices[i].req_key,
+                    trade_code: trade_code.data.maGDich,
+                };
+
+                await DBService.ExecuteSQLBlob(
+                    `BEGIN EI_SEL_6095090_TRADECODE(
+                                    :req_key,
+                                    :trade_code,
+                                    :p_language, 
+                                    :p_crt_by, 
+                                    :p_rtn_cur); 
+                    END;`,
+                    para_value,
+                    p_language,
+                    p_crt_by
+                )
+
+
+                rtnValue.push({
+                    req_key: invoices[i].req_key,
+                    trade_code: trade_code.data.maGDich,
+                });
+
+            }
+            return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
+        } catch (e) {
+            Utils.Logger({
+                LVL: "error",
+                MODULE: "EInvoiceController",
+                FUNC: "sendInvoiceToTaxOffice",
+                CONTENT: e.message,
+            });
+            return response.send(Utils.response(false, "error", e.message));
+        }
+    }
+
+    async checkInvoiceStatus({ request, response, auth }) {
+        try {
+            var p_language = request.header("accept-language", "ENG");
+            var p_crt_by = "";
+            const user = await auth.getUser();
+            if (user) {
+                p_crt_by = user.USER_ID;
+            }
+            // let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+            // const authUserName = "GENUWIN"; // "GENUWIN";
+            // const authPassword = "genuwin123"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+
+
+            const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+            const authUserName = "GENUWIN"; // "GENUWIN";
+            const authPassword = "e_GX4v@"; // "e_GX4v@";
+
+            const { data } = request.all();
+            // console.log("data  ", data);
+            let rtnValue = [];
+            let maCQT = "",
+                maTBao = "",
+                tenTBao = "",
+                base64XMLCQT = "";
+            for (let i = 0; i < data.length; i++) {
+
+                //console.log("SSS ", url + data[i].trade_code);
+
+                const agent = {
+                    Agent: {
+                        defaultPort: 443,
+                        protocol: "https:",
+                        options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
+                    },
+                };
+                // const res ;
+                await Request.get(url + data[i].trade_code, {
+                    agent,
+                    headers: {
+                        Authorization: "Basic " +
+                            Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
+                    },
+                }).then(async (res) => {
+                    // console.log("res  ++===> ", res.data);
+
+                    if (!res.data.length) {
+                        return response.send(Utils.response(false, `no data found.`));
+                    }
+                    for (let j = 0; j < res.data.length; j++) {
+                        const items = res.data[j];
+                        for (let k = 0; k < items.length; k++) {
+                            // console.log("items[k].loaiTBao " + items[k].loaiTBao);
+                            if (items[k].loaiTBao == "10") {
+                                maCQT = items[k].ndungTBao.maCQT;
+                                base64XMLCQT = items[k].ndungTBao.base64XML;
+                                const base64XML = Buffer.from(items[k].ndungTBao.base64XML,"base64").toString("utf8");
+
+                                maTBao = items[k].loaiTBao;
+                                tenTBao = items[k].tenTBao;
+                                const para_value = {
+                                    trade_code: data[i].trade_code,
+                                    macqt: maCQT,
+                                    xml_sign: base64XML,
+                                };
+                                const result = await DBService.ExecuteSQLBlob(
+                                    `BEGIN ei_upd_file_xml_v5(:trade_code,:macqt,:xml_sign,:p_language, :p_crt_by, :p_rtn_cur); END;`,
+                                    para_value,
+                                    p_language,
+                                    p_crt_by
+                                );
+                            } else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "16") {
+                                maTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].maLoi;
+                                tenTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].mtaLoi;
+                                const result = await DBService.callProcCursor(
+                                    "ei_upd_file_xml_v8", [para[i], maTBao, tenTBao],
+                                    p_language,
+                                    p_crt_by
+                                );
+                            } else if (items[k].loaiTBao == "15") {
+                                tenTBao = items[k].tenTBao;
+                                maTBao = items[k].loaiTBao;
+                                const result = await DBService.callProcCursor(
+                                    "ei_upd_file_xml_v9", [para[i], tenTBao],
+                                    p_language,
+                                    p_crt_by
+                                );
+                            }
+                        }
+                        
+                    }
+
+                   
+                }).catch((error) => {
+                        console.log(error);
+                        return response.send(Utils.response(false, `e-Signing XML is faile !!`, error));
+                });
+
+                rtnValue.push({
+                        trade_code: data[i].trade_code,
+                        mccqt: maCQT,
+                        inform_code: maTBao,
+                        inform_name: tenTBao,
+                        base64XML: base64XMLCQT,
+                        tax_code: data[i].tax_code,    
+                        erp_declaration_m_pk: data[i].erp_declaration_m_pk
+                    });    
+
+            }
+
+            return response.send(
+                Utils.response(
+                    true,
+                    `${data.length} invoices was update status from tax office.`,
+                    rtnValue
+                )
+            );
+
+            // rtnValue.push({
+            //     trade_code: para.trade_code[i],
+            //     tax_confirmation_code: para.tei_einvoice_m_pk[i],
+            //     inform_code: maTBao,
+            //     inform_name: tenTBao,
+            // });
+            // }
+            // return response.send(
+            //     Utils.response(
+            //         true,
+            //         `${para.trade_code.length} invoices was update status from tax office.`,
+            //         rtnValue
+            //     )
+            // );
+        } catch (e) {
+            Utils.Logger({
+                LVL: "error",
+                MODULE: "EInvoiceController",
+                FUNC: "checkInvoiceStatusFromTaxOffice",
+                CONTENT: e.message,
+            });
+            console.log(e)
+            return response.send(Utils.response(false, "error", e.message));
+        }
+    }
+
+    async sendMaiToCustomer(tei_wt_sale_bill_pk, data, p_language, p_crt_by  )
+    {
+            // let EiExcel = new EiPosExcelHandlerAuto();
+            // let EiExcel = new EiPosExcelHandler();
+            // let url_pdf = await EiExcel.getEinvoice(tei_wt_sale_bill_pk , p_language, p_crt_by);
+            //  console.log("base64PDf  ", url_pdf);
+
+            let EiExcels = new EiPosExcelHandlerAuto();
+            let url_pdf = await EiExcels.getEinvoice(tei_wt_sale_bill_pk, p_language, p_crt_by);
+            console.log("base64PDf  ", url_pdf);
+
+            let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + tei_wt_sale_bill_pk + "&proc=" + "EI_SEL_XML_POS_EINVOICE" + "&token=");//  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
+            let url_xml = re_url_xml.data;
+            console.log("base64XXML  ", url_xml);
+
+            let subject = `${data.data_invoice.seller_comp_name}[Thông báo phát hành HĐĐT][${data.data_invoice.form_no}][${data.data_invoice.serial_no}][${data.data_invoice.invoice_no}]`;
+            let body = `<html>
+                            <body>
+                                <div id="page">
+                                    <div id="d2">
+                                        <p>Dear: ${data.data_invoice.buyer_comp_name}
+                                            <br />
+                                            <br />${data.data_invoice.seller_comp_name}.
+                                            <br />            Trân trọng cảm ơn Quý khách hàng đã sử dụng sản phẩm của chúng tôi.
+                                            <br/> Chúng tôi đã 
+                                            <b>PHÁT HÀNH </b> hóa đơn điện tử với các thông tin như sau:
+                                            <br/>- Mẫu số: ${data.data_invoice.form_no}
+                                            <br/>- Ký hiệu: 
+                                            <b>${data.data_invoice.serial_no}</b>
+                                            <br/>- Số hóa đơn: 
+                                            <b>${data.data_invoice.invoice_no}</b>
+                                            <br/>- Tổng thanh toán: 
+                                            <b>       ${data.data_invoice.total_payment}</b>
+                                            <br />- Link download file PDF: 
+                                            <a href=${url_pdf}>Tải file PDF</a>
+                                            <br />- Link download file XML: 
+                                            <a href=${url_xml}>Tải file XML</a>
+                                            <br />
+                                        </div>
+                                        <br/>
+                                        <div id="d6">
+                                            <p>
+                                                <i>* Xin lưu ý: Đây là email gửi tự động từ hệ thống, vui lòng không trả lời về địa chỉ email này</i>
+                                                <br />
+                                                <i>Cám ơn sự hợp tác. </i>
+                                                <br />
+                                        --------------------------------------------------------------------------
+                                    
+                                            </p>
+                                        </div>
+                                        <div id="d7"> Would like to send you our warmest greetings and most sincere thanks for choosing our product. 
+                                            <br/> We 
+                                            <b>issued </b> your e-invoice with the information as below: 
+                                            <br/>- Form No: 
+                                            <b>${data.data_invoice.form_no}</b>
+                                            <br/>- Serial: 
+                                            <b>${data.data_invoice.serial_no}</b>
+                                            <br/>- Invoice No:  
+                                            <b>${data.data_invoice.invoice_no}</b>
+                                            <br/>- Total amount :  
+                                            <b>       ${data.data_invoice.total_payment}</b>
+                                            <br />- Download file PDF link:  
+                                            <a href=${url_pdf}>Download file PDF</a>
+                                            <br />- Download file XML link:  
+                                            <a href=${url_xml}>Download file XML</a>
+                                            <br />
+                                        </p>
+                                    </div>
+                                    <div id="d8">
+                                        <p>
+                                            <br/>* Note: This is an automatic email. Please do not feedback to this email.
+                                            <br/>
+                                        Thank you for your corporation!
+                                        
+                                        </p>
+                                    </div>
+                                </body>
+                            </html>
+                            `;
+            const res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {
+                mail_to: data.data_invoice.buyer_email,
+                cc_to: data.data_invoice.buyer_email_cc,
+                subject: subject,
+                body: body,
+                attachfile1: url_xml,
+                attachfile2: url_pdf,
+                filename1: data.data_invoice.mccqt + ".xml",
+                filename2: data.data_invoice.mccqt + ".pdf",
+            });
+            console.log("res_send_mail  ", res_send_mail);
+            return { res_send_mail, subject, body}
+    }
     // end e - invoce
 }
 

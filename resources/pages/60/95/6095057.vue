@@ -1,85 +1,29 @@
-<!-- ================================================================= BEGIN DESIGN LAYOUT======================================================================================= -->
 <template>
   <v-container fluid v-resize="onResize">
     <v-row dense class="pt-1">
-      <v-col v-show="showHilden" cols="12" :lg="showHilden ? 4 : 0">
-        <v-row dense>
-          <v-col md="7">
-            <BaseSelect :label="$t('company')" v-model="selected_company" :lstData="company_list" item-text="TEXT" item-value="PK" @change="onChangeCompany" />
-          </v-col>
-          <v-col md="5" class="d-flex justify-end">
-            <BaseButton icon_type="search" btn_type="icon" :btn_text="$t('search')" @onclick="onClickButton('SEARCH_M')" />
-
-            <BaseButton btn_type="icon" icon_type="copy" @onclick="copyToDialog = true" />
-            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" @onclick="onClickButton('NEW_M')" />
-            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClickButton('DELETE_M')" />
-            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClickButton('SAVE_M')" />
-          </v-col>
-        </v-row>
-        <v-row dense>
-          <v-col md="2">
-            <!-- <datePicker :label="$t('month')" :type="'month'" @returnValue="month = $event"></datePicker> -->
-            <BaseDatePicker :label="$t('year')" v-model="year" year today />
-          </v-col>
-          <v-col md="5">
-            <!-- <datePicker :label="$t('fromdate')" :inputValue="fromDate" :defaultType="'startOfMonth'" @returnValue="fromDate = $event"></datePicker> -->
-            <BaseDatePicker :label="$t('fromdate')" v-model="fromDate" />
-          </v-col>
-          <v-col md="5">
-            <!-- <datePicker :inputValue="toDate" :defaultType="'endOfMonth'" :label="$t('to_date')" @returnValue="toDate = $event"></datePicker> -->
-            <BaseDatePicker :label="$t('to_date')" v-model="toDate" />
-          </v-col>
-        </v-row>
-        <v-row dense>
-          <v-col md="7">
-            <BaseInput :label="$t('serial_no')" v-model="txtSerialNo" />
-          </v-col>
-          <v-col md="5">
-            <BaseSelect :label="$t('status')" v-model="lstStatus" :lstData="statusList" item-text="NAME" item-value="CODE" />
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <BaseGridView
-              ref="grdEinvoiceIssue"
-              :header="grdHeader"
-              sel_procedure="EI_SEL_6095055_1"
-              :multiselect="true"
-              :headertype="1"
-              :filter_paras="[this.selected_company, this.fromDate, this.toDate, this.txtSerialNo, this.lstStatus]"
-              upd_procedure="EI_UPD_6095055_2"
-              :editable="true"
-              :update_paras="['PK', 'TCO_COMPANY_PK', 'INVOICE_KIND', 'SERIAL_NO_2', 'FORM_NO', 'SERIAL_NO', 'FROM_DT', 'TO_DT', 'STATUS', 'TCO_BUSPLACE_PK', 'REMARKS', 'USE_YN']"
-              :height="limitHeight"
-              @cellDblClick="onDblClickCell"
-              @cellClick="cellClickCell"
-            />
-          </v-col>
-        </v-row>
-      </v-col>
-      <v-col cols="12" :lg="showHilden ? 8 : 12">
+      <v-col cols="12">
         <!-- <v-row dense>
-          <v-col md="2" class="d-flex justify-start">
-            <div class="d-flex">
-              <BaseButton btn_type="icon" icon_type="hide_search_panel" :btn_text="$t('hide_search_panel')" v-if="showHilden" mdi-icon="mdi-backburger" @onclick="showHilden = !showHilden" />
-              <BaseButton btn_type="icon" icon_type="show_search_panel" :btn_text="$t('show_search_panel')" v-else mdi-icon="mdi-forwardburger" @onclick="showHilden = !showHilden" />
-            </div>
-          </v-col>
-          <v-col md="4">
-         <div class="d-flex justify-end">
-              <BaseButton icon_type="process" :btn_text="$t('send_data_template')" @onclick="onGeneralData" />
-            </div>
-          </v-col>
-          <v-col md="2"> </v-col>
-          <v-col md="2"> </v-col>
-          <v-col md="2"> </v-col>
-        </v-row> -->
+      <v-col md="2" class="d-flex justify-start">
+        <div class="d-flex">
+          <BaseButton btn_type="icon" icon_type="hide_search_panel" :btn_text="$t('hide_search_panel')" v-if="showHilden" mdi-icon="mdi-backburger" @onclick="showHilden = !showHilden" />
+          <BaseButton btn_type="icon" icon_type="show_search_panel" :btn_text="$t('show_search_panel')" v-else mdi-icon="mdi-forwardburger" @onclick="showHilden = !showHilden" />
+        </div>
+      </v-col>
+      <v-col md="4">
+     <div class="d-flex justify-end">
+          <BaseButton icon_type="process" :btn_text="$t('send_data_template')" @onclick="onGeneralData" />
+        </div>
+      </v-col>
+      <v-col md="2"> </v-col>
+      <v-col md="2"> </v-col>
+      <v-col md="2"> </v-col>
+    </v-row> -->
         <v-row dense>
           <v-col md="1">
-            <div class="d-flex">
+            <!-- <div class="d-flex">
               <BaseButton btn_type="icon" icon_type="hide_search_panel" :btn_text="$t('hide_search_panel')" v-if="showHilden" mdi-icon="mdi-backburger" @onclick="showHilden = !showHilden" />
               <BaseButton btn_type="icon" icon_type="show_search_panel" :btn_text="$t('show_search_panel')" v-else mdi-icon="mdi-forwardburger" @onclick="showHilden = !showHilden" />
-            </div>
+            </div> -->
           </v-col>
           <v-col md="2" class="d-flex justify-end">
             <b> {{ $t("template_table") }} </b>
@@ -93,11 +37,11 @@
               :impAddParam="[this.selected_company, this.itemTemplatePK]"
               @onAfterImport="onAfterImport"
             />
-            <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('template_file')" :disabled="!item_pk" @onclick="getImpFile" />
-            <BaseButton btn_type="icon" icon_type="view" :btn_text="$t('view')" :disabled="!item_pk" @onclick="onClickButton('VIEW')" />
-            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="!item_pk" @onclick="onClickButton('NEW_T')" />
-            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="!item_pk" @onclick="onClickButton('DELETE_T')" />
-            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="!item_pk" @onclick="onClickButton('SAVE_T')" />
+            <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('template_file')"  @onclick="getImpFile" />
+            <BaseButton btn_type="icon" icon_type="view" :btn_text="$t('view')"  @onclick="onClickButton('VIEW')" />
+            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')"  @onclick="onClickButton('NEW_T')" />
+            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')"  @onclick="onClickButton('DELETE_T')" />
+            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')"  @onclick="onClickButton('SAVE_T')" />
           </v-col>
           <v-row lg="12">
             <v-col>
@@ -189,9 +133,9 @@
             <BaseInput :outlined="true" :label="$t('param_code_master')" v-model="txtParamCodeMaster" @keyPressEnter="onLoadDataParamM" />
           </v-col>
           <v-col md="3" class="d-flex justify-end">
-            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="!item_pk" @onclick="onClickButton('NEW_PM')" />
-            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="!item_pk" @onclick="onClickButton('DELETE_PM')" />
-            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="!item_pk" @onclick="onClickButton('SAVE_PM')" />
+            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')"  @onclick="onClickButton('NEW_PM')" />
+            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')"  @onclick="onClickButton('DELETE_PM')" />
+            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')"  @onclick="onClickButton('SAVE_PM')" />
           </v-col>
           <v-row lg="12">
             <v-col>
@@ -219,9 +163,9 @@
             <BaseInput :outlined="true" :label="$t('param_code_details')" v-model="txtParamCodeDetails" @keyPressEnter="onLoadDataParamD" />
           </v-col>
           <v-col md="3" class="d-flex justify-end">
-            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="!item_pk" @onclick="onClickButton('NEW_PD')" />
-            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="!item_pk" @onclick="onClickButton('DELETE_PD')" />
-            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="!item_pk" @onclick="onClickButton('SAVE_PD')" />
+            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')"  @onclick="onClickButton('NEW_PD')" />
+            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')"  @onclick="onClickButton('DELETE_PD')" />
+            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')"  @onclick="onClickButton('SAVE_PD')" />
           </v-col>
           <v-row lg="12">
             <v-col>
@@ -241,88 +185,10 @@
         </v-row>
       </v-col>
     </v-row>
-    <view-einvoice-pdf-dialog ref="ViewEInvoicePDFDialog" :src_pdfUrl="pdfUrl"></view-einvoice-pdf-dialog>
-    <!-- Copy To Dialog -->
-    <v-dialog persistent id="copy-to-dialog" max-width="500" v-model="copyToDialog">
-      <v-card>
-        <v-card-title class="headline primary-gradient white--text py-2">{{ $t("copy_template_to") }}</v-card-title>
-        <v-card-text class="pa-4 pb-2 d-flex flex-column align-space-between">
-          <v-row>
-            <v-col md="6">
-              <v-select
-                cache-items
-                dense
-                hide-details
-                outlined
-                clearable
-                class="pb-3"
-                item-value="PK"
-                item-text="TEXT"
-                :label="$t('from_company')"
-                :items="company_list"
-                v-model="selectedCompanyFrom"
-                @change="onChangeCompanyFrom"
-              ></v-select>
-            </v-col>
-            <v-col md="6">
-              <v-select
-                cache-items
-                dense
-                hide-details
-                outlined
-                class="pb-3"
-                item-value="PK"
-                item-text="TEXT"
-                :label="$t('to_company')"
-                :items="company_list"
-                v-model="selectedCompanyTo"
-                @change="onChangeCompanyFrom"
-              ></v-select>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col md="6">
-              <v-select cache-items dense hide-details outlined class="pb-3" item-value="CODE" item-text="NAME" :label="$t('from_no_from')" :items="fromNoList" v-model="lstFrom_No_From"></v-select>
-            </v-col>
-            <v-col md="6">
-              <BaseInput :label="$t('from_no_to')" w v-model="txtForm_No_To" />
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col md="6">
-              <v-select
-                cache-items
-                dense
-                hide-details
-                outlined
-                class="pb-3"
-                item-value="CODE"
-                item-text="NAME"
-                :label="$t('seria_no_from')"
-                :items="serialNoList"
-                v-model="lstSerial_No_From"
-              ></v-select>
-            </v-col>
-            <v-col md="6">
-              <BaseInput :label="$t('seria_no_to')" v-model="txtSerial_No_To" />
-            </v-col>
-          </v-row>
-
-          <v-checkbox v-show="false" dense hide-details class="my-0 py-0" true-value="Y" false-value="N" :label="$t('overwrite')" v-model="overWriteYN"></v-checkbox>
-        </v-card-text>
-        <v-divider></v-divider>
-        <v-card-actions>
-          <span class="red--text">{{ copyResult }}</span>
-          <v-spacer></v-spacer>
-          <v-btn text :color="currentTheme" @click="copyToDialog = false">{{ $t("cancel", "common") }}</v-btn>
-          <v-btn depressed class="white--text" :color="currentTheme" @click="onProcessConfirm('copy')">{{ $t("copy") }}</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </v-container>
 </template>
 
-<!-- ================================================================= END DESIGN LAYOUT & BEGIN SCRIPT ========================================================================= -->
+!-- ================================================================= END DESIGN LAYOUT & BEGIN SCRIPT ========================================================================= -->
 
 <script>
 import moment from "moment";
@@ -546,30 +412,30 @@ export default {
           type: "text",
           editable: true,
         },
-        {
-          dataField: "TEMPLATE_NM",
-          width: 100,
-          caption: this.$t("template_nm"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "TEMPLATE_LNM",
-          width: 100,
-          caption: this.$t("template_lnm"),
-          alignment: "left",
-          type: "text",
-          hidden: true,
-        },
-        {
-          dataField: "TEMPLATE_FNM",
-          width: 100,
-          caption: this.$t("template_fnm"),
-          alignment: "left",
-          type: "text",
-          hidden: true,
-        },
+        // {
+        //   dataField: "TEMPLATE_NM",
+        //   width: 100,
+        //   caption: this.$t("template_nm"),
+        //   alignment: "left",
+        //   type: "text",
+        //   editable: true,
+        // },
+        // {
+        //   dataField: "TEMPLATE_LNM",
+        //   width: 100,
+        //   caption: this.$t("template_lnm"),
+        //   alignment: "left",
+        //   type: "text",
+        //   hidden: true,
+        // },
+        // {
+        //   dataField: "TEMPLATE_FNM",
+        //   width: 100,
+        //   caption: this.$t("template_fnm"),
+        //   alignment: "left",
+        //   type: "text",
+        //   hidden: true,
+        // },
         {
           dataField: "FORM_NO",
           width: 100,
@@ -600,116 +466,116 @@ export default {
           editable: true,
           visible: false,
         },
-        {
-          dataField: "VALID_DATE_FROM",
-          width: 150,
-          caption: this.$t("valid_date_from"),
-          alignment: "center",
-          type: "date",
-          editable: true,
-        },
-        {
-          dataField: "VALID_DATE_TO",
-          width: 150,
-          caption: this.$t("valid_date_to"),
-          alignment: "center",
-          type: "date",
-          editable: true,
-        },
-        {
-          dataField: "REPORT_ID",
-          width: 200,
-          caption: this.$t("report_id"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-          visible: false,
-        },
-        {
-          dataField: "TEL",
-          width: 150,
-          caption: this.$t("tel"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "FAX",
-          width: 150,
-          caption: this.$t("fax"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "BANK_ACCOUNT1",
-          width: 200,
-          caption: this.$t("bank_account1"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "BANK_ACCOUNT2",
-          width: 200,
-          caption: this.$t("bank_account2"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "BANK_NM1",
-          width: 200,
-          caption: this.$t("bank_nm1"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "BANK_NM2",
-          width: 200,
-          caption: this.$t("bank_nm2"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "TAX_CODE",
-          width: 150,
-          caption: this.$t("tax_code"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "WEBSITE",
-          width: 100,
-          caption: this.$t("website"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "TAX_CODE_DISPLAY",
-          width: 200,
-          caption: this.$t("tax_code_display"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "PBAN",
-          width: 100,
-          caption: this.$t("pban"),
-          type: "text",
-          editable: true,
-          alignment: "center",
-          lookup: {
-            dataSource: this.versionList,
-            displayExpr: "NAME",
-            valueExpr: "CODE",
-          },
-        },
+        // {
+        //   dataField: "VALID_DATE_FROM",
+        //   width: 150,
+        //   caption: this.$t("valid_date_from"),
+        //   alignment: "center",
+        //   type: "date",
+        //   editable: true,
+        // },
+        // {
+        //   dataField: "VALID_DATE_TO",
+        //   width: 150,
+        //   caption: this.$t("valid_date_to"),
+        //   alignment: "center",
+        //   type: "date",
+        //   editable: true,
+        // },
+        // {
+        //   dataField: "REPORT_ID",
+        //   width: 200,
+        //   caption: this.$t("report_id"),
+        //   alignment: "left",
+        //   type: "text",
+        //   editable: true,
+        //   visible: false,
+        // },
+        // {
+        //   dataField: "TEL",
+        //   width: 150,
+        //   caption: this.$t("tel"),
+        //   alignment: "left",
+        //   type: "text",
+        //   editable: true,
+        // },
+        // {
+        //   dataField: "FAX",
+        //   width: 150,
+        //   caption: this.$t("fax"),
+        //   alignment: "left",
+        //   type: "text",
+        //   editable: true,
+        // },
+        // {
+        //   dataField: "BANK_ACCOUNT1",
+        //   width: 200,
+        //   caption: this.$t("bank_account1"),
+        //   alignment: "left",
+        //   type: "text",
+        //   editable: true,
+        // },
+        // {
+        //   dataField: "BANK_ACCOUNT2",
+        //   width: 200,
+        //   caption: this.$t("bank_account2"),
+        //   alignment: "left",
+        //   type: "text",
+        //   editable: true,
+        // },
+        // {
+        //   dataField: "BANK_NM1",
+        //   width: 200,
+        //   caption: this.$t("bank_nm1"),
+        //   alignment: "left",
+        //   type: "text",
+        //   editable: true,
+        // },
+        // {
+        //   dataField: "BANK_NM2",
+        //   width: 200,
+        //   caption: this.$t("bank_nm2"),
+        //   alignment: "left",
+        //   type: "text",
+        //   editable: true,
+        // },
+        // {
+        //   dataField: "TAX_CODE",
+        //   width: 150,
+        //   caption: this.$t("tax_code"),
+        //   alignment: "left",
+        //   type: "text",
+        //   editable: true,
+        // },
+        // {
+        //   dataField: "WEBSITE",
+        //   width: 100,
+        //   caption: this.$t("website"),
+        //   alignment: "left",
+        //   type: "text",
+        //   editable: true,
+        // },
+        // {
+        //   dataField: "TAX_CODE_DISPLAY",
+        //   width: 200,
+        //   caption: this.$t("tax_code_display"),
+        //   alignment: "left",
+        //   type: "text",
+        //   editable: true,
+        // },
+        // {
+        //   dataField: "PBAN",
+        //   width: 100,
+        //   caption: this.$t("pban"),
+        //   type: "text",
+        //   editable: true,
+        //   alignment: "center",
+        //   lookup: {
+        //     dataSource: this.versionList,
+        //     displayExpr: "NAME",
+        //     valueExpr: "CODE",
+        //   },
+        // },
         {
           dataField: "URL_FILE_EXCEL",
           width: 200,
@@ -1780,4 +1646,4 @@ export default {
 };
 /*==================================================================== END export default  ========================================================================================*/
 </script>
-<!-- ================================================================= END SCRIPT  ============================================================================================== -->
+<!-- =======

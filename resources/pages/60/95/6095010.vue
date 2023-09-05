@@ -442,12 +442,12 @@ export default {
           width: 230,
         },
         {
-          dataField: "NOTAFTER",
+          dataField: "NOTBEFORE",
           caption: this.$t("tngay"),
           width: 150,
         },
         {
-          dataField: "NOTBEFORE",
+          dataField: "NOTAFTER",
           caption: this.$t("dngay"),
           width: 150,
         },

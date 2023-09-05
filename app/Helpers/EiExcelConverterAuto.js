@@ -753,7 +753,7 @@ class EiExcelConverterAuto {
 							}
 							else
 							{
-								const _item_name = longRow[itl];
+								const _item_name = _e["ITEM_NAME"];//longRow[itl];
 									this.addValueToCellsWithItemName(worksheet, _sourceRow + totalRowCount, _e, _item_name, detailCellFormat, excCols)
 							}
 							
@@ -984,15 +984,19 @@ class EiExcelConverterAuto {
 
 		//END-this part add more style to missing part of the footer(optional).
 
-        const reportFilePdf = await exceljs.writeFile();
+        // const reportFilePdf = await exceljs.writeFile();
+		// let base64PDF =  await fs.readFileSync(reportFilePdf, {encoding: 'base64'}); //await Utils._blobFileToBase64(reportFilePdf)
+		// return base64PDF
+
 		// console.log("reportFilePdf ", reportFilePdf);
 		// const reportFilePdf =  await Utils.excelToPdf(reportFile);
 		// let url_pdf = exceljs.reportPath.replace("xlsx", "pdf");
-		let base64PDF =  await fs.readFileSync(reportFilePdf, {encoding: 'base64'}); //await Utils._blobFileToBase64(reportFilePdf)
 		//let excelUrl = await exceljs.returnPdfFormExcel();
 		// console.log(" base64PDF  " , base64PDF);
-		return base64PDF
+		//return base64PDF
 		////await exceljs.dowloadWorkbook(reportInfo.NAME + ".xlsx");
+		let excelUrl = await exceljs.dowloadWorkbook();
+		return excelUrl
 	} catch (error) {
 		console.log(error)
 		//Utils.Logger({ LVL: "error", MODULE: "ReportHelper", FUNC: "TestReport", CONTENT: error.message, });

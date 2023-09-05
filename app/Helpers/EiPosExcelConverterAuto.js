@@ -994,7 +994,7 @@ class EiExcelConverterAuto {
 		//return base64PDF
 		////await exceljs.dowloadWorkbook(reportInfo.NAME + ".xlsx");
 		let excelUrl = await exceljs.dowloadWorkbook();
-			return excelUrl
+		return excelUrl
 	} catch (error) {
 		console.log(error)
 		//Utils.Logger({ LVL: "error", MODULE: "ReportHelper", FUNC: "TestReport", CONTENT: error.message, });

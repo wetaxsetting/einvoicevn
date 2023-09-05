@@ -419,7 +419,7 @@ export default {
       this.getListCodes("serial_no");
     },
     selectedCompanyFrom(val) {
-        if (val) {
+      if (val) {
         this.selectedCompanyTo = val;
       }
     },
@@ -469,7 +469,7 @@ export default {
         { dataField: "TCO_COMPANY_PK", width: 100, caption: this.$t("tco_company_pk"), alignment: "left", type: "text", visible: false },
         {
           dataField: "INVOICE_KIND",
-          width: 200,
+          width: 180,
           caption: this.$t("invoice_kind"),
           editable: true,
           lookup: {
@@ -493,7 +493,19 @@ export default {
           alignment: "left",
           type: "text",
         },
-        { dataField: "FORM_NO", width: 100, caption: this.$t("form_no"), editable: true, alignment: "left", type: "text" },
+        {
+          dataField: "FORM_NO",
+          width: 150,
+          caption: this.$t("form_no"),
+          editable: true,
+          alignment: "left",
+          type: "text",
+          lookup: {
+            dataSource: this.Form_noList,
+            displayExpr: "NAME",
+            valueExpr: "CODE",
+          },
+        },
         { dataField: "SERIAL_NO", width: 100, caption: this.$t("serial_no"), editable: true, alignment: "left", type: "text" },
         { dataField: "FROM_DT", width: 100, caption: this.$t("from_dt"), editable: true, alignment: "center", type: "date" },
         { dataField: "TO_DT", width: 100, caption: this.$t("to_dt"), editable: true, alignment: "center", type: "date" },
@@ -529,7 +541,7 @@ export default {
         {
           dataField: "TEMPLATE_CD",
           width: 100,
-          caption: this.$t("template_cd"),
+          caption: this.$t("template_id"),
           alignment: "left",
           type: "text",
           editable: true,
@@ -564,6 +576,11 @@ export default {
           caption: this.$t("form_no"),
           alignment: "left",
           type: "text",
+          lookup: {
+            dataSource: this.Form_noList,
+            displayExpr: "NAME",
+            valueExpr: "CODE",
+          },
           editable: true,
         },
         {
@@ -1089,7 +1106,7 @@ export default {
         {
           dataField: "TYPE",
           width: 280,
-          caption: this.$t("type"),
+          caption: this.$t("type_m"),
           alignment: "left",
           lookup: {
             dataSource: this.typeList,
@@ -1173,7 +1190,7 @@ export default {
         {
           dataField: "TYPE",
           width: 200,
-          caption: this.$t("type"),
+          caption: this.$t("type_d"),
           alignment: "left",
           lookup: {
             dataSource: this.typeList,
@@ -1477,6 +1494,7 @@ export default {
             "ACJS0470", //7
             "ACJS0480", //8
             "ACJS0490", //9
+            "ACEIS330"   //10
           ];
           const results = await this._getCommonCode2(parentCodes, this.selected_company);
           if (results.length) {
@@ -1490,6 +1508,7 @@ export default {
             this.styleList = results[7];
             this.paramDList = results[8];
             this.cboTemplate = results[9];
+            this.Form_noList = results[10];
           }
           break;
       }
@@ -1533,13 +1552,13 @@ export default {
       this.$refs.grdEinvoiceIssue.addRowStruct({
         PK: "",
         TCO_COMPANY_PK: this.selected_company,
-        INVOICE_KIND: "",
-        SERIAL_NO_2: "",
-        FORM_NO: "",
+        INVOICE_KIND: "C",
+        SERIAL_NO_2: "T",
+        FORM_NO: "1",
         SERIAL_NO: "",
         FROM_DT: "",
         TO_DT: "",
-        STATUS: "",
+        STATUS: "2",
         TCO_BUSPLACE_PK: this.lstBizplace,
         REMARKS: "",
         USE_YN: "Y",

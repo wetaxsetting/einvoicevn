@@ -691,15 +691,34 @@ export default {
       // });
 
       //351913 265263 304524  313069
-      this.isProcessing = true
+      // this.isProcessing = true
       //this.pdfUrl = await this.pdfUrlGetter(385207);
-      this.pdfUrl = await this.pdfUrlGetter(this.tei_einvoice_m_pk_row);
+      // this.pdfUrl = await this.pdfUrlGetter(tei_wt_sale_bill_pk);
       //   this.pdfUrl = await this.$axios.$post("/einvoice/einvoicepdfconvert", { tradecode:this.tei_einvoice_m_pk_row });
+      // this.$nextTick(() => {
+      //   this.isProcessing = false
+      //   this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+      // });
+      if(this.tei_einvoice_m_pk_row != "")
+      {
+        let res_url = await this.$axios.$post("/einvoice/general-url-pdf", {
+              responseType: "json",
+              tei_wt_sale_bill_pk: this.tei_einvoice_m_pk_row,
+            });
+        if(res_url.success)
+        {
+          this.pdfUrl = res_url.data;
 
-      this.$nextTick(() => {
-        this.isProcessing = false
-        this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
-      });
+          this.$nextTick(() => {
+            this.isProcessing = false
+            this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+          });
+        }
+      }else
+      {
+        this.showNotification("warning", this.$t("no_row_selected"), '');
+      }
+      
     },
 
     async pdfUrlGetter(pk) {

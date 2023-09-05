@@ -5466,7 +5466,7 @@ class EInvoiceController {
                     tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
                     status: "Sent Success",
                 };
-                const rtnValue_VAT = await DBService.ExecuteSQLBlob(
+                const rtnValueSendMail = await DBService.ExecuteSQLBlob(
                     `BEGIN ei_upd_sale_bill_status (          
                                                             :tei_wt_sale_bill_pk,
                                                             :status,
@@ -5481,7 +5481,8 @@ class EInvoiceController {
                 let data_r = {
                     link_invoice_preview: "https://einvoicevn.com/lookup",
                     security_code: "1234567bac",
-                    status: "Sent Success",
+                    status_code: "1",
+                    status_name: "Sent Success",
                     user_name: data.data_invoice.buyer_comp_name,
                     send_date: res_send_mail.data.data.date_send,
                     send_time: res_send_mail.data.data.time_send,
@@ -5502,7 +5503,7 @@ class EInvoiceController {
                     tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
                     status: "Sent Faile",
                 };
-                const rtnValue_VAT = await DBService.ExecuteSQLBlob(
+                const rtnValueSendMail = await DBService.ExecuteSQLBlob(
                     `BEGIN ei_upd_sale_bill_status (          
                                                             :tei_wt_sale_bill_pk,
                                                             :status,
@@ -5513,9 +5514,25 @@ class EInvoiceController {
                     p_language,
                     p_crt_by
                 );
-
+                let data_r = {
+                    link_invoice_preview: "https://einvoicevn.com/lookup",
+                    security_code: "1234567bac",
+                    status_code: "0",
+                    status_name: "Sent Faile",
+                    user_name: data.data_invoice.buyer_comp_name,
+                    send_date: res_send_mail.data.data.date_send,
+                    send_time: res_send_mail.data.data.time_send,
+                    mail_form: res_send_mail.data.data.mail_from,
+                    mail_to:   res_send_mail.data.data.mail_to,
+                    mail_to_cc: res_send_mail.data.data.mail_to_cc,
+                    error_code: "",
+                    error_name: "",
+                    title: subject,
+                    content: body
+    
+                }
                 return response.send(
-                    Utils.response(true, `Send order to invoice was Faile! .`, "")
+                    Utils.response(true, `Send order to invoice was Faile! .`, data_r)
                 );
             }
             // console.log("res_send_mail  ", res_send_mail);
@@ -8237,6 +8254,37 @@ class EInvoiceController {
 
         }
         
+    }
+
+    async viewPDFEPortal({ request, response, auth }) {
+        try {
+            var p_language = request.header("accept-language", "ENG");
+            var p_crt_by = "";
+            const user = await auth.getUser();
+            if (user) {
+                p_crt_by = user.USER_ID;
+            }
+
+            const { proc, tei_wt_sale_bill_pk } = request.all();
+
+            // console.log("para ", para);
+
+
+            let EiExcels = new EiExcelHandlerAuto();
+            let url_pdf = await EiExcels.getEinvoice(tei_wt_sale_bill_pk, p_language, p_crt_by);
+            console.log("base64PDf  ", url_pdf);
+
+            return response.send(Utils.response(true, "general url pdf success", url_pdf));
+        } catch (e) {
+            Utils.Logger({
+                LVL: "error",
+                MODULE: "EInvoiceController",
+                FUNC: "checkInvoiceStatusFromTaxOffice",
+                CONTENT: e.message,
+            });
+            console.log(e)
+            return response.send(Utils.response(false, "error", e.message));
+        }
     }
     // end e - invoce
 }

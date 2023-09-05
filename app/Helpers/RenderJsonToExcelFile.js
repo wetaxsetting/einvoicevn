@@ -6,8 +6,8 @@ class RenderJsonToExcelFile {
 
     }
 
-  async createFille() {
-       const file_name = Helpers.tmpPath('test01.xlsx')
+  async createFille({filename }) {
+       const file_name = Helpers.tmpPath(filename)
         const workbook = new ExcelJS.Workbook();
         workbook.addWorksheet('Sheet1');
         return await workbook.xlsx.writeFile(file_name);

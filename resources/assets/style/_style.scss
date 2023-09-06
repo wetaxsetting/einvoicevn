@@ -168,9 +168,14 @@ html {
 					.v-input {
 						font-size: 12px !important;
 					}
-
 					input {
 						text-align: right !important;
+						&::-webkit-outer-spin-button {
+							-webkit-appearance: auto !important;	
+						}
+						&::-webkit-inner-spin-button {
+							-webkit-appearance: auto !important;	
+						}
 					}
 				}
 			}

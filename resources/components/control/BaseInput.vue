@@ -7,24 +7,10 @@
       dense
       :color="currentTheme"
       :hide-details="showDetails ? false : true"
-      :outlined="
-        themesuport === 2 ||
-        $attrs.hasOwnProperty('outlined') ||
-        $attrs.hasOwnProperty('acntoutlined')
-          ? true
-          : false
-      "
+      :outlined="themesuport === 2 || $attrs.hasOwnProperty('outlined') || $attrs.hasOwnProperty('acntoutlined') ? true : false"
       :class="themesuport === 2 ? 'rounded-0' : ''"
       :clearable="showClearable"
-      :background-color="
-        bgcolor
-          ? bgcolor
-          : isReadonly
-          ? 'grey lighten-2'
-          : isMandatory
-          ? 'yellow lighten-3'
-          : ''
-      "
+      :background-color="bgcolor ? bgcolor : isReadonly ? 'grey lighten-2' : isMandatory ? 'yellow lighten-3' : ''"
       :validate-on-blur="rules && rules.length ? true : false"
       :error="error"
       :rules="rules"
@@ -47,16 +33,7 @@
 <script>
 export default {
   name: "base-input",
-  props: [
-    "value",
-    "rules",
-    "key_name",
-    "bgcolor",
-    "precision",
-    "suffix",
-    "error",
-    "template",
-  ],
+  props: ["value", "rules", "key_name", "bgcolor", "precision", "suffix", "error", "template"],
 
   data() {
     return {
@@ -88,10 +65,7 @@ export default {
         return false;
       }
 
-      if (
-        this.$attrs.hasOwnProperty("clearable") &&
-        this.$attrs["clearable"] == false
-      ) {
+      if (this.$attrs.hasOwnProperty("clearable") && this.$attrs["clearable"] == false) {
         return false;
       }
 
@@ -116,7 +90,7 @@ export default {
       return false;
     },
     isMandatory() {
-      return this.$attrs.hasOwnProperty("mandatory") || (this.rules != null && this.rules )? true : false;
+      return this.$attrs.hasOwnProperty("mandatory") || (this.rules != null && this.rules) ? true : false;
     },
     isReadonly() {
       return this.$attrs.hasOwnProperty("readonly") ? true : false;
@@ -126,7 +100,7 @@ export default {
       return false;
     },
     formatValue: {
-      get: function() {
+      get: function () {
         if (this.$attrs.hasOwnProperty("number")) {
           try {
             if (this.isLeave) {
@@ -134,12 +108,10 @@ export default {
 
               if (this.$attrs.number > 0) precision = this.$attrs.number;
 
-              if (  this.my_value == null || this.my_value === "" || isNaN(this.my_value) ) {
+              if (this.my_value == null || this.my_value === "" || isNaN(this.my_value)) {
                 return "";
               }
-              var n1 = parseFloat(this.my_value)
-                .toFixed(precision)
-                .toString();
+              var n1 = parseFloat(this.my_value).toFixed(precision).toString();
               var x = n1.split(".");
               var x1 = x[0];
               var x2 = x.length > 1 ? "." + x[1] : "";
@@ -151,7 +123,7 @@ export default {
           return this.my_value;
         }
       },
-      set: function(newValue) {
+      set: function (newValue) {
         this.isLeave = false;
 
         if (this.$attrs.hasOwnProperty("number")) {

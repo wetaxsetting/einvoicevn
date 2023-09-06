@@ -3,13 +3,16 @@
     <v-row dense class="pt-1">
       <v-col cols="12">
         <v-row dense>
-          <v-col md="2">
-            <BaseInput outlined :label="$t('template_id')" v-model="template_id" />
+          <v-col md="3">
+            <BaseInput outlined :label="$t('template_id')" v-model="template_id" @keyPressEnter="onSearch"/>
+          </v-col>
+          <v-col md="1">
+            <BaseButton icon_type="search" btn_type="icon" :btn_text="$t('search')" @onclick="onClickButton('SEARCH')" />
           </v-col>
           <v-col md="2" class="d-flex justify-end">
             <b> {{ $t("template_table") }} </b>
           </v-col>
-          <v-col md="8" class="d-flex justify-end">
+          <v-col md="6" class="d-flex justify-end">
             <GwPutFile
               :label="$t('import_einvoice_excel')"
               :impMultipleTemp="imp_MultipleTemp"
@@ -20,7 +23,6 @@
               @onAfterImport="onAfterImport"
             />
             <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('template_file')" @onclick="getImpFile" />
-            <BaseButton icon_type="search" btn_type="icon" :btn_text="$t('search')" @onclick="onClickButton('SEARCH')" />
             <BaseButton btn_type="icon" icon_type="view" :btn_text="$t('view')" @onclick="onClickButton('VIEW')" />
             <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" @onclick="onClickButton('NEW_T')" />
             <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClickButton('DELETE_T')" />
@@ -192,7 +194,7 @@ export default {
   async created() {
     await this.getListCodes("status");
 
-    this.pdf_handler = require("./js/EiExcelHandlerERPTemplate.js");
+    this.pdf_handler = require("./js/EiExcelHandlerTemplates.js");
     if (!!this.pdf_handler) {
       Object.assign(this, this.pdf_handler.default);
     }
@@ -209,13 +211,6 @@ export default {
         return this.windowHeight * 0.8; //1366x768
       } else {
         return this.windowHeight * 0.16; //1920x1080
-      }
-    },
-    limitHeight() {
-      if (this.windowHeight <= 768) {
-        return this.windowHeight * 0.62; //1366x768
-      } else {
-        return this.windowHeight * 0.73; //1920x1080
       }
     },
     limitHeightmin() {
@@ -1223,41 +1218,22 @@ export default {
     },
 
     async onPreview() {
-      if (!this.itemTemplatePK) {
-        let res_url = await this.$axios.$post("/einvoice/url-view-template-pdf", {
-          responseType: "json",
-          template_pk: this.itemTemplatePK,
-        });
-        console.log("file: 6095057.vue:1238 [vng-304] onPreview [vng-304] res_url:", res_url);
-
-        if (res_url.success) {
-          this.pdfUrl = res_url.data;
-
+        if (!this.itemTemplatePK) {
+          return this.showNotification("warning", this.$t("error_occurs"), "pls_select_template");
+        }
+        try {
+          this.pdfUrl = await this.pdfUrlGetter(this.itemTemplatePK);
+          console.log("=====> pdfUrlv", this.pdfUrl);
           this.$nextTick(() => {
-            this.isProcessing = false;
             this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
           });
+        } catch (e) {
+          return this.showNotification("danger", e.message);
         }
-      } else {
-        this.showNotification("warning", this.$t("no_row_selected"), "");
-      }
-
-      //   if (!this.itemTemplatePK) {
-      //     return this.showNotification("warning", this.$t("error_occurs"), "pls_select_template");
-      //   }
-      //   try {
-      //     this.pdfUrl = await this.pdfUrlGetter(this.itemTemplatePK);
-      //     // console.log("=====> pdfUrlv", this.pdfUrl);
-      //     this.$nextTick(() => {
-      //       this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
-      //     });
-      //   } catch (e) {
-      //     return this.showNotification("danger", e.message);
-      //   }
     },
 
     async pdfUrlGetter(pk) {
-      const pdfUrlExcel = await this.getEinvoice(this, pk);
+      const pdfUrlExcel = await this.getEinvoiceERP_V2T(this, pk);
       return pdfUrlExcel;
     },
 

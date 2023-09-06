@@ -238,7 +238,7 @@ export default {
         },
         {
           dataField: "TEMPLATE_CD",
-          width: 100,
+          width: 250,
           caption: this.$t("template_id"),
           editable: true,
           lookup: {

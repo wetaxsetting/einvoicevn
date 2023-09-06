@@ -2,46 +2,31 @@
   <v-container fluid v-resize="onResize">
     <v-row dense class="pt-1">
       <v-col cols="12">
-        <!-- <v-row dense>
-      <v-col md="2" class="d-flex justify-start">
-        <div class="d-flex">
-          <BaseButton btn_type="icon" icon_type="hide_search_panel" :btn_text="$t('hide_search_panel')" v-if="showHilden" mdi-icon="mdi-backburger" @onclick="showHilden = !showHilden" />
-          <BaseButton btn_type="icon" icon_type="show_search_panel" :btn_text="$t('show_search_panel')" v-else mdi-icon="mdi-forwardburger" @onclick="showHilden = !showHilden" />
-        </div>
-      </v-col>
-      <v-col md="4">
-     <div class="d-flex justify-end">
-          <BaseButton icon_type="process" :btn_text="$t('send_data_template')" @onclick="onGeneralData" />
-        </div>
-      </v-col>
-      <v-col md="2"> </v-col>
-      <v-col md="2"> </v-col>
-      <v-col md="2"> </v-col>
-    </v-row> -->
         <v-row dense>
+          <v-col md="3">
+            <BaseInput outlined :label="$t('template_id')" v-model="template_id" @keyPressEnter="onSearch"/>
+          </v-col>
           <v-col md="1">
-            <!-- <div class="d-flex">
-              <BaseButton btn_type="icon" icon_type="hide_search_panel" :btn_text="$t('hide_search_panel')" v-if="showHilden" mdi-icon="mdi-backburger" @onclick="showHilden = !showHilden" />
-              <BaseButton btn_type="icon" icon_type="show_search_panel" :btn_text="$t('show_search_panel')" v-else mdi-icon="mdi-forwardburger" @onclick="showHilden = !showHilden" />
-            </div> -->
+            <BaseButton icon_type="search" btn_type="icon" :btn_text="$t('search')" @onclick="onClickButton('SEARCH')" />
           </v-col>
           <v-col md="2" class="d-flex justify-end">
             <b> {{ $t("template_table") }} </b>
           </v-col>
-          <v-col md="9" class="d-flex justify-end">
+          <v-col md="6" class="d-flex justify-end">
             <GwPutFile
-              :label="$t('import_ar_invoice')"
+              :label="$t('import_einvoice_excel')"
               :impMultipleTemp="imp_MultipleTemp"
               :impCboTemp="cboTemplate"
               @onrtnseltemp="selTemplate = $event"
-              :impAddParam="[this.selected_company, this.itemTemplatePK]"
+              sProd="EI_UPD_TEMPLATES_EINVOICE"
+              :impAddParam="['', this.itemTemplatePK]"
               @onAfterImport="onAfterImport"
             />
-            <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('template_file')"  @onclick="getImpFile" />
-            <BaseButton btn_type="icon" icon_type="view" :btn_text="$t('view')"  @onclick="onClickButton('VIEW')" />
-            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')"  @onclick="onClickButton('NEW_T')" />
-            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')"  @onclick="onClickButton('DELETE_T')" />
-            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')"  @onclick="onClickButton('SAVE_T')" />
+            <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('template_file')" @onclick="getImpFile" />
+            <BaseButton btn_type="icon" icon_type="view" :btn_text="$t('view')" @onclick="onClickButton('VIEW')" />
+            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" @onclick="onClickButton('NEW_T')" />
+            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClickButton('DELETE_T')" />
+            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClickButton('SAVE_T')" />
           </v-col>
           <v-row lg="12">
             <v-col>
@@ -51,9 +36,9 @@
                 :header="grdTemplate"
                 :height="limitHeightT"
                 :multiselect="true"
-                sel_procedure="EI_SEL_6095055_3"
-                :filter_paras="[this.item_pk]"
-                upd_procedure="EI_UPD_6095055_4"
+                sel_procedure="EI_SEL_6095057_01_NC"
+                :filter_paras="[this.template_id]"
+                upd_procedure="EI_UPD_6095057_02"
                 :editable="true"
                 :update_paras="[
                   'PK',
@@ -61,62 +46,16 @@
                   'TEMPLATE_NM',
                   'TEMPLATE_LNM',
                   'TEMPLATE_FNM',
-                  'FORM_NO',
                   'USE_YN',
-                  'TEI_COMPANY_PK',
-                  'VALID_DATE_FROM',
-                  'VALID_DATE_TO',
-                  'REPORT_ID',
-                  'ADDR1',
-                  'ADDR2',
-                  'BANK_ACCOUNT1',
-                  'BANK_ACCOUNT2',
-                  'BANK_NM1',
-                  'BANK_NM2',
-                  'TEL',
-                  'FAX',
-                  'TAX_CODE',
-                  'TEI_EINVOICE_ISSUSE_PK',
-                  'WEBSITE',
-                  'TAX_CODE_DISPLAY',
-                  'PBAN',
-                  'SERIAL_NO_2',
                   'URL_FILE_EXCEL',
-                  'URL_IMG_LOGO',
-                  'LOGO_START_ROW',
-                  'LOGO_START_COL',
-                  'URL_IMG_BG',
-                  'BG_START_ROW',
-                  'BG_END_ROW',
-                  'BG_WIDTH',
-                  'BG_HEIGHT',
-                  'SIGN_START_CELL',
-                  'SIGN_END_CELL',
+                  'DETAILS_START_ROW',
                   'SIGN_BY_START_CELL',
                   'SIGN_BY_END_CELL',
-                  'DETAILS_START_ROW',
+                  'SIGN_START_CELL',
+                  'SIGN_END_CELL',
                   'SIGN_CELL_BOX',
-                  'ATT01',
-                  'ATT02',
-                  'ATT03',
-                  'ATT04',
-                  'ATT05',
-                  'ATT06',
-                  'ATT07',
-                  'ATT08',
-                  'ATT09',
-                  'ATT10',
-                  'ATT01_NUM',
-                  'ATT02_NUM',
-                  'ATT03_NUM',
-                  'ATT04_NUM',
-                  'ATT05_NUM',
-                  'ATT06_NUM',
-                  'ATT07_NUM',
-                  'ATT08_NUM',
-                  'ATT09_NUM',
-                  'ATT10_NUM',
                   'RANGE_DETAILS_SIGN',
+                  'FORM_NO',
                 ]"
                 @cellClick="cellClickCellTemplate"
               />
@@ -133,9 +72,9 @@
             <BaseInput :outlined="true" :label="$t('param_code_master')" v-model="txtParamCodeMaster" @keyPressEnter="onLoadDataParamM" />
           </v-col>
           <v-col md="3" class="d-flex justify-end">
-            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')"  @onclick="onClickButton('NEW_PM')" />
-            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')"  @onclick="onClickButton('DELETE_PM')" />
-            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')"  @onclick="onClickButton('SAVE_PM')" />
+            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" @onclick="onClickButton('NEW_PM')" />
+            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClickButton('DELETE_PM')" />
+            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClickButton('SAVE_PM')" />
           </v-col>
           <v-row lg="12">
             <v-col>
@@ -163,9 +102,9 @@
             <BaseInput :outlined="true" :label="$t('param_code_details')" v-model="txtParamCodeDetails" @keyPressEnter="onLoadDataParamD" />
           </v-col>
           <v-col md="3" class="d-flex justify-end">
-            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')"  @onclick="onClickButton('NEW_PD')" />
-            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')"  @onclick="onClickButton('DELETE_PD')" />
-            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')"  @onclick="onClickButton('SAVE_PD')" />
+            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" @onclick="onClickButton('NEW_PD')" />
+            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClickButton('DELETE_PD')" />
+            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClickButton('SAVE_PD')" />
           </v-col>
           <v-row lg="12">
             <v-col>
@@ -185,6 +124,8 @@
         </v-row>
       </v-col>
     </v-row>
+
+    <view-einvoice-pdf-dialog ref="ViewEInvoicePDFDialog" :src_pdfUrl="pdfUrl"></view-einvoice-pdf-dialog>
   </v-container>
 </template>
 
@@ -209,16 +150,6 @@ export default {
     itemTemplatePK: "",
     file: null,
     selected_company: "",
-    company_list: [],
-    bizplaceList: [],
-    lstBizplace: "",
-    month: "",
-    year: "",
-    fromDate: "",
-    toDate: "",
-    lstStatus: "",
-    statusList: [],
-    txtSerialNo: "",
     pdfUrl: "",
     leftCols: 5,
     showHilden: true,
@@ -249,53 +180,27 @@ export default {
     copyResult: "",
     selectedCompanyTo: "",
     selectedCompanyFrom: "",
-    // lstBizplaceFrom: "",
-    // lstBizplaceTo: "",
-    // bizplaceListTo: [],
     accept: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel",
     url_template: "",
     txtParamCodeMaster: "",
     txtParamCodeDetails: "",
     dataIssued: [],
+
+    Form_noList: [],
+    TemplateList: [],
+    template_id: "",
   }),
   /*############### created #######################*/
   async created() {
-    await this.getListCodes("company");
-    await this.getListCodes("serial_no");
-    await this.getListCodes("form_no");
     await this.getListCodes("status");
 
-    this.pdf_handler = require("./js/EiExcelHandlerERPTemplate.js");
+    this.pdf_handler = require("./js/EiExcelHandlerTemplates.js");
     if (!!this.pdf_handler) {
       Object.assign(this, this.pdf_handler.default);
     }
   },
   /*############### watch ######################*/
-  watch: {
-    month(val) {
-      if (val) {
-        this.fromDate = val + "01";
-        this.toDate = val + this._maxDateOfMonth(val);
-      }
-    },
-    selectedCompanyFrom(val) {
-      this.getListCodes("form_no");
-    },
-    lstFrom_No_From(val) {
-      this.getListCodes("serial_no");
-    },
-    selectedCompanyFrom(val) {
-      if (val) {
-        this.selectedCompanyTo = val;
-      }
-    },
-    year(val) {
-      if (val) {
-        this.fromDate = this.year + "0101";
-        this.toDate = this.year + "1231";
-      }
-    },
-  },
+  watch: {},
   /*############### computed ######################*/
   computed: {
     user() {
@@ -306,13 +211,6 @@ export default {
         return this.windowHeight * 0.8; //1366x768
       } else {
         return this.windowHeight * 0.16; //1920x1080
-      }
-    },
-    limitHeight() {
-      if (this.windowHeight <= 768) {
-        return this.windowHeight * 0.62; //1366x768
-      } else {
-        return this.windowHeight * 0.73; //1920x1080
       }
     },
     limitHeightmin() {
@@ -328,72 +226,6 @@ export default {
     masterContainerHeight() {
       return this.formContainerHeight - 250;
     },
-
-    grdHeader() {
-      return [
-        { dataField: "PK", width: 100, caption: this.$t("pk"), alignment: "left", type: "text", visible: false },
-        { dataField: "TCO_COMPANY_PK", width: 100, caption: this.$t("tco_company_pk"), alignment: "left", type: "text", visible: false },
-        {
-          dataField: "INVOICE_KIND",
-          width: 180,
-          caption: this.$t("invoice_kind"),
-          editable: true,
-          lookup: {
-            dataSource: this.typeInvoiceList,
-            displayExpr: "NAME",
-            valueExpr: "CODE",
-          },
-          alignment: "left",
-          type: "text",
-        },
-        {
-          dataField: "SERIAL_NO_2",
-          width: 200,
-          caption: this.$t("invoice_symbol"),
-          editable: true,
-          lookup: {
-            dataSource: this.invoiceKind,
-            displayExpr: "NAME",
-            valueExpr: "CODE",
-          },
-          alignment: "left",
-          type: "text",
-        },
-        {
-          dataField: "FORM_NO",
-          width: 150,
-          caption: this.$t("form_no"),
-          editable: true,
-          alignment: "left",
-          type: "text",
-          lookup: {
-            dataSource: this.Form_noList,
-            displayExpr: "NAME",
-            valueExpr: "CODE",
-          },
-        },
-        { dataField: "SERIAL_NO", width: 100, caption: this.$t("serial_no"), editable: true, alignment: "left", type: "text" },
-        { dataField: "FROM_DT", width: 100, caption: this.$t("from_dt"), editable: true, alignment: "center", type: "date" },
-        { dataField: "TO_DT", width: 100, caption: this.$t("to_dt"), editable: true, alignment: "center", type: "date" },
-        {
-          dataField: "STATUS",
-          width: 100,
-          caption: this.$t("status"),
-          lookup: {
-            dataSource: this.statusList,
-            displayExpr: "NAME",
-            valueExpr: "CODE",
-          },
-          editable: true,
-          alignment: "left",
-          type: "text",
-        },
-        { dataField: "TCO_BUSPLACE_PK", width: 100, caption: this.$t("tco_busplace_pk"), alignment: "left", type: "text", visible: false },
-        { dataField: "REMARKS", width: 100, caption: this.$t("remarks"), editable: true, alignment: "left", type: "text" },
-        { dataField: "USE_YN", width: 100, caption: this.$t("use_yn"), editable: true, alignment: "center", type: "checkbox" },
-      ];
-    },
-
     grdTemplate() {
       return [
         {
@@ -408,9 +240,12 @@ export default {
           dataField: "TEMPLATE_CD",
           width: 100,
           caption: this.$t("template_id"),
-          alignment: "left",
-          type: "text",
           editable: true,
+          lookup: {
+            dataSource: this.TemplateList,
+            displayExpr: "NAME",
+            valueExpr: "CODE",
+          },
         },
         // {
         //   dataField: "TEMPLATE_NM",
@@ -438,7 +273,7 @@ export default {
         // },
         {
           dataField: "FORM_NO",
-          width: 100,
+          width: 250,
           caption: this.$t("form_no"),
           alignment: "left",
           type: "text",
@@ -451,7 +286,7 @@ export default {
         },
         {
           dataField: "USE_YN",
-          width: 100,
+          width: 80,
           caption: this.$t("use_yn"),
           alignment: "center",
           type: "checkbox",
@@ -578,87 +413,87 @@ export default {
         // },
         {
           dataField: "URL_FILE_EXCEL",
-          width: 200,
+          width: 230,
           caption: this.$t("url_file_excel"),
           alignment: "left",
           type: "text",
           editable: true,
         },
-        {
-          dataField: "URL_IMG_LOGO",
-          width: 200,
-          caption: this.$t("url_img_logo"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "LOGO_START_ROW",
-          width: 100,
-          caption: this.$t("logo_start_row"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 1,
-          editable: true,
-        },
-        {
-          dataField: "LOGO_START_COL",
-          width: 100,
-          caption: this.$t("logo_start_col"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 1,
-          editable: true,
-        },
-        {
-          dataField: "URL_IMG_BG",
-          width: 200,
-          caption: this.$t("url_img_bg"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "BG_START_ROW",
-          width: 100,
-          caption: this.$t("bg_start_row"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 1,
-          editable: true,
-        },
-        {
-          dataField: "BG_END_ROW",
-          width: 100,
-          caption: this.$t("bg_end_row"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 1,
-          editable: true,
-        },
+        // {
+        //   dataField: "URL_IMG_LOGO",
+        //   width: 200,
+        //   caption: this.$t("url_img_logo"),
+        //   alignment: "left",
+        //   type: "text",
+        //   editable: true,
+        // },
+        // {
+        //   dataField: "LOGO_START_ROW",
+        //   width: 100,
+        //   caption: this.$t("logo_start_row"),
+        //   alignment: "left",
+        //   type: "number",
+        //   formatFloat: 1,
+        //   editable: true,
+        // },
+        // {
+        //   dataField: "LOGO_START_COL",
+        //   width: 100,
+        //   caption: this.$t("logo_start_col"),
+        //   alignment: "left",
+        //   type: "number",
+        //   formatFloat: 1,
+        //   editable: true,
+        // },
+        // {
+        //   dataField: "URL_IMG_BG",
+        //   width: 200,
+        //   caption: this.$t("url_img_bg"),
+        //   alignment: "left",
+        //   type: "text",
+        //   editable: true,
+        // },
+        // {
+        //   dataField: "BG_START_ROW",
+        //   width: 100,
+        //   caption: this.$t("bg_start_row"),
+        //   alignment: "left",
+        //   type: "number",
+        //   formatFloat: 1,
+        //   editable: true,
+        // },
+        // {
+        //   dataField: "BG_END_ROW",
+        //   width: 100,
+        //   caption: this.$t("bg_end_row"),
+        //   alignment: "left",
+        //   type: "number",
+        //   formatFloat: 1,
+        //   editable: true,
+        // },
 
-        {
-          dataField: "BG_WIDTH",
-          width: 100,
-          caption: this.$t("bg_width"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 1,
-          editable: true,
-        },
-        {
-          dataField: "BG_HEIGHT",
-          width: 100,
-          caption: this.$t("bg_height"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 1,
-          editable: true,
-        },
+        // {
+        //   dataField: "BG_WIDTH",
+        //   width: 100,
+        //   caption: this.$t("bg_width"),
+        //   alignment: "left",
+        //   type: "number",
+        //   formatFloat: 1,
+        //   editable: true,
+        // },
+        // {
+        //   dataField: "BG_HEIGHT",
+        //   width: 100,
+        //   caption: this.$t("bg_height"),
+        //   alignment: "left",
+        //   type: "number",
+        //   formatFloat: 1,
+        //   editable: true,
+        // },
         {
           dataField: "SIGN_START_CELL",
-          width: 100,
-          caption: this.$t("SIGN_START_CELL"),
+          width: 150,
+          caption: this.$t("sign_start_cell"),
           alignment: "left",
           type: "number",
           formatFloat: 0,
@@ -666,8 +501,8 @@ export default {
         },
         {
           dataField: "SIGN_END_CELL",
-          width: 100,
-          caption: this.$t("SIGN_END_CELL"),
+          width: 150,
+          caption: this.$t("sign_end_cell"),
           alignment: "left",
           type: "number",
           formatFloat: 0,
@@ -675,8 +510,8 @@ export default {
         },
         {
           dataField: "SIGN_BY_START_CELL",
-          width: 100,
-          caption: this.$t("SIGN_BY_START_CELL"),
+          width: 160,
+          caption: this.$t("sign_by_start_cell"),
           alignment: "left",
           type: "number",
           formatFloat: 0,
@@ -684,8 +519,8 @@ export default {
         },
         {
           dataField: "SIGN_BY_END_CELL",
-          width: 100,
-          caption: this.$t("SIGN_BY_END_CELL"),
+          width: 150,
+          caption: this.$t("sign_by_end_cell"),
           alignment: "left",
           type: "number",
           formatFloat: 0,
@@ -693,8 +528,8 @@ export default {
         },
         {
           dataField: "SIGN_CELL_BOX",
-          width: 100,
-          caption: this.$t("SIGN_CELL_BOX"),
+          width: 150,
+          caption: this.$t("sign_cell_box"),
           alignment: "left",
           type: "text",
           // formatFloat: 0,
@@ -702,7 +537,7 @@ export default {
         },
         {
           dataField: "DETAILS_START_ROW",
-          width: 100,
+          width: 150,
           caption: this.$t("details_start_row"),
           alignment: "left",
           type: "number",
@@ -711,195 +546,195 @@ export default {
         },
         {
           dataField: "RANGE_DETAILS_SIGN",
-          width: 100,
+          width: 150,
           caption: this.$t("range_details_sign"),
           alignment: "left",
           type: "number",
           formatFloat: 0,
           editable: true,
         },
-        {
-          dataField: "ATT01",
-          width: 200,
-          caption: this.$t("att01"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "ATT02",
-          width: 200,
-          caption: this.$t("att02"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "ATT03",
-          width: 200,
-          caption: this.$t("att03"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "ATT04",
-          width: 200,
-          caption: this.$t("att04"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "ATT05",
-          width: 200,
-          caption: this.$t("att05"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "ATT06",
-          width: 200,
-          caption: this.$t("att06"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "ATT07",
-          width: 200,
-          caption: this.$t("att07"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "ATT08",
-          width: 200,
-          caption: this.$t("att08"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "ATT09",
-          width: 200,
-          caption: this.$t("att09"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-          visible: false,
-        },
-        {
-          dataField: "ATT10",
-          width: 200,
-          caption: this.$t("att10"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-          visible: false,
-        },
-        {
-          dataField: "ATT01_NUM",
-          width: 100,
-          caption: this.$t("att01_num"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 0,
-          editable: true,
-          visible: false,
-        },
-        {
-          dataField: "ATT02_NUM",
-          width: 100,
-          caption: this.$t("att02_num"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 0,
-          editable: true,
-          visible: false,
-        },
-        {
-          dataField: "ATT03_NUM",
-          width: 100,
-          caption: this.$t("att03_num"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 0,
-          editable: true,
-          visible: false,
-        },
-        {
-          dataField: "ATT04_NUM",
-          width: 100,
-          caption: this.$t("att04_num"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 0,
-          editable: true,
-          visible: false,
-        },
-        {
-          dataField: "ATT05_NUM",
-          width: 100,
-          caption: this.$t("att05_num"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 0,
-          editable: true,
-          visible: true,
-        },
-        {
-          dataField: "ATT06_NUM",
-          width: 100,
-          caption: this.$t("att06_num"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 0,
-          editable: true,
-          visible: true,
-        },
-        {
-          dataField: "ATT07_NUM",
-          width: 100,
-          caption: this.$t("att07_num"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 0,
-          editable: true,
-          visible: true,
-        },
-        {
-          dataField: "ATT08_NUM",
-          width: 100,
-          caption: this.$t("att08_num"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 0,
-          editable: true,
-          visible: true,
-        },
-        {
-          dataField: "ATT09_NUM",
-          width: 100,
-          caption: this.$t("att09_num"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 0,
-          editable: true,
-          visible: false,
-        },
-        {
-          dataField: "ATT10_NUM",
-          width: 100,
-          caption: this.$t("att10_num"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 0,
-          editable: true,
-          visible: false,
-        },
+        // {
+        //   dataField: "ATT01",
+        //   width: 200,
+        //   caption: this.$t("att01"),
+        //   alignment: "left",
+        //   type: "text",
+        //   editable: true,
+        // },
+        // {
+        //   dataField: "ATT02",
+        //   width: 200,
+        //   caption: this.$t("att02"),
+        //   alignment: "left",
+        //   type: "text",
+        //   editable: true,
+        // },
+        // {
+        //   dataField: "ATT03",
+        //   width: 200,
+        //   caption: this.$t("att03"),
+        //   alignment: "left",
+        //   type: "text",
+        //   editable: true,
+        // },
+        // {
+        //   dataField: "ATT04",
+        //   width: 200,
+        //   caption: this.$t("att04"),
+        //   alignment: "left",
+        //   type: "text",
+        //   editable: true,
+        // },
+        // {
+        //   dataField: "ATT05",
+        //   width: 200,
+        //   caption: this.$t("att05"),
+        //   alignment: "left",
+        //   type: "text",
+        //   editable: true,
+        // },
+        // {
+        //   dataField: "ATT06",
+        //   width: 200,
+        //   caption: this.$t("att06"),
+        //   alignment: "left",
+        //   type: "text",
+        //   editable: true,
+        // },
+        // {
+        //   dataField: "ATT07",
+        //   width: 200,
+        //   caption: this.$t("att07"),
+        //   alignment: "left",
+        //   type: "text",
+        //   editable: true,
+        // },
+        // {
+        //   dataField: "ATT08",
+        //   width: 200,
+        //   caption: this.$t("att08"),
+        //   alignment: "left",
+        //   type: "text",
+        //   editable: true,
+        // },
+        // {
+        //   dataField: "ATT09",
+        //   width: 200,
+        //   caption: this.$t("att09"),
+        //   alignment: "left",
+        //   type: "text",
+        //   editable: true,
+        //   visible: false,
+        // },
+        // {
+        //   dataField: "ATT10",
+        //   width: 200,
+        //   caption: this.$t("att10"),
+        //   alignment: "left",
+        //   type: "text",
+        //   editable: true,
+        //   visible: false,
+        // },
+        // {
+        //   dataField: "ATT01_NUM",
+        //   width: 100,
+        //   caption: this.$t("att01_num"),
+        //   alignment: "left",
+        //   type: "number",
+        //   formatFloat: 0,
+        //   editable: true,
+        //   visible: false,
+        // },
+        // {
+        //   dataField: "ATT02_NUM",
+        //   width: 100,
+        //   caption: this.$t("att02_num"),
+        //   alignment: "left",
+        //   type: "number",
+        //   formatFloat: 0,
+        //   editable: true,
+        //   visible: false,
+        // },
+        // {
+        //   dataField: "ATT03_NUM",
+        //   width: 100,
+        //   caption: this.$t("att03_num"),
+        //   alignment: "left",
+        //   type: "number",
+        //   formatFloat: 0,
+        //   editable: true,
+        //   visible: false,
+        // },
+        // {
+        //   dataField: "ATT04_NUM",
+        //   width: 100,
+        //   caption: this.$t("att04_num"),
+        //   alignment: "left",
+        //   type: "number",
+        //   formatFloat: 0,
+        //   editable: true,
+        //   visible: false,
+        // },
+        // {
+        //   dataField: "ATT05_NUM",
+        //   width: 100,
+        //   caption: this.$t("att05_num"),
+        //   alignment: "left",
+        //   type: "number",
+        //   formatFloat: 0,
+        //   editable: true,
+        //   visible: true,
+        // },
+        // {
+        //   dataField: "ATT06_NUM",
+        //   width: 100,
+        //   caption: this.$t("att06_num"),
+        //   alignment: "left",
+        //   type: "number",
+        //   formatFloat: 0,
+        //   editable: true,
+        //   visible: true,
+        // },
+        // {
+        //   dataField: "ATT07_NUM",
+        //   width: 100,
+        //   caption: this.$t("att07_num"),
+        //   alignment: "left",
+        //   type: "number",
+        //   formatFloat: 0,
+        //   editable: true,
+        //   visible: true,
+        // },
+        // {
+        //   dataField: "ATT08_NUM",
+        //   width: 100,
+        //   caption: this.$t("att08_num"),
+        //   alignment: "left",
+        //   type: "number",
+        //   formatFloat: 0,
+        //   editable: true,
+        //   visible: true,
+        // },
+        // {
+        //   dataField: "ATT09_NUM",
+        //   width: 100,
+        //   caption: this.$t("att09_num"),
+        //   alignment: "left",
+        //   type: "number",
+        //   formatFloat: 0,
+        //   editable: true,
+        //   visible: false,
+        // },
+        // {
+        //   dataField: "ATT10_NUM",
+        //   width: 100,
+        //   caption: this.$t("att10_num"),
+        //   alignment: "left",
+        //   type: "number",
+        //   formatFloat: 0,
+        //   editable: true,
+        //   visible: false,
+        // },
       ];
     },
 
@@ -1113,36 +948,17 @@ export default {
     },
   },
   /*############### mounted #######################*/
-  mounted() {
-    //this.$refs.grdEinvoiceIssue.loadData();
-  },
+  mounted() {},
 
   /*############### methods #######################*/
   methods: {
-    onDblClickCell(cell) {},
-
-    cellClickCell(cell) {
-      this.item_pk = cell.data.PK;
-      this.dataIssued = cell.data;
-      this.itemTemplatePK = cell.data.TEI_TEMPLATE_PK;
-      this.$refs.grdTemplate.loadData();
-      this.$refs.grdParamM.loadData();
-      this.$refs.grdParamD.loadData();
-    },
-
     cellClickCellTemplate(cell) {
+      console.log("file: 6095057.vue:962 [vng-304] cellClickCellTemplate [vng-304] cell:", cell);
       this.itemTemplatePK = cell.data.PK;
       this.url_template = cell.data.URL_FILE_EXCEL;
       this.$refs.grdParamM.loadData();
       this.$refs.grdParamD.loadData();
     },
-
-    toggleLeft() {
-      this.showLeft = this.showLeft ? false : true;
-      this.leftCols = !this.showLeft ? 0 : 5;
-      this.btnIconType = !this.showLeft ? "skip_next" : "skip_prev";
-    },
-
     onClickButton(pos) {
       switch (pos) {
         case "VIEW":
@@ -1158,7 +974,7 @@ export default {
         case "SAVE_M":
           this.onSave();
           break;
-        case "SEARCH_M":
+        case "SEARCH":
           this.onSearch();
           break;
         case "NEW_T":
@@ -1190,56 +1006,15 @@ export default {
           break;
       }
     },
-
-    async onCellClick({ column, data, rowIndex, rowType }) {
-      // console.log(data)
-    },
-
     async onSearch() {
-      this.$refs.grdEinvoiceIssue.loadData();
+      this.$refs.grdTemplate.loadData();
     },
-
-    onDelete() {
-      this.$refs.grdEinvoiceIssue.onSetMarkedDelete(true);
-    },
-
     onDelete_T() {
       this.$refs.grdTemplate.onSetMarkedDelete(true);
     },
-
     onDelete_P() {
       this.$refs.grdParamM.onSetMarkedDelete(true);
     },
-
-    async onSave() {
-      let data = this.$refs.grdEinvoiceIssue.getData();
-      for (let i = 0; i < data.length; i++) {
-        if (!data[i].INVOICE_KIND) {
-          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_invoice_kind_at_" + (i + 1)));
-          return;
-        } else if (!data[i].SERIAL_NO_2) {
-          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_invoice_symbol_at_" + (i + 1)));
-          return;
-        } else if (!data[i].FORM_NO) {
-          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_form_no_at_" + (i + 1)));
-          return;
-        } else if (!data[i].SERIAL_NO) {
-          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_serial_no_at_" + (i + 1)));
-          return;
-        } else if (!data[i].FROM_DT) {
-          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_form_date_at_" + (i + 1)));
-          return;
-        } else if (!data[i].TO_DT) {
-          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_to_date_at_" + (i + 1)));
-          return;
-        } else if (!data[i].STATUS) {
-          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_status_at_" + (i + 1)));
-          return;
-        }
-      }
-      this.$refs.grdEinvoiceIssue.saveData();
-    },
-
     async onSave_T() {
       let requireCol = [];
       let validate = this.$refs.grdTemplate.onCheckValid(requireCol);
@@ -1302,53 +1077,7 @@ export default {
     },
     async getListCodes(pos) {
       switch (pos) {
-        case "company":
-          const dso_company_list = {
-            type: "list",
-            selpro: "SYS_SEL_LIST_COMPANY",
-            para: [this.user.PK],
-          };
-          this.company_list = await this._dsoCall(dso_company_list, "select", false);
-          this.selected_company = this.company_list[0].PK;
-          this.selectedCompanyFrom = this.selected_company;
-          break;
-
-        case "form_no":
-          const dso_from_no = {
-            type: "list",
-            selpro: "EI_FORM_NO_EI_V2",
-            para: [this.selectedCompanyFrom],
-          };
-          this.fromNoList = await this._dsoCall(dso_from_no, "select", false);
-          this.lstFrom_No_From = this.fromNoList.length > 0 ? this.fromNoList[0].CODE : "";
-          break;
-        case "serial_no":
-          const dso_serial_no = {
-            type: "list",
-            selpro: "EI_SERIAL_NO_EI_V2",
-            para: [this.selectedCompanyFrom],
-          };
-          this.serialNoList = await this._dsoCall(dso_serial_no, "select", false);
-          this.lstSerial_No_From = this.serialNoList.length > 0 ? this.serialNoList[0].CODE : "";
-
-          break;
-
         case "status":
-          const dso_status_list = { type: "list", selpro: "EI_GET_STATUS_CREATE_EI_NC", para: [this.selected_company] };
-          this.statusList = await this._dsoCall(dso_status_list, "select", false);
-          this.lstStatus = "ALL";
-
-          const dso1 = {
-            type: "list",
-            updpro: "EI_SEL_EINVOICE_TYPE",
-            para: [
-              this.selected_company,
-              //   this.lstBizplace, //this.lstBizPlace,
-              "Y",
-              "Y",
-            ],
-          };
-
           const parentCodes = [
             "ACEIS020", //0
             "ACEIS030", //1
@@ -1360,9 +1089,10 @@ export default {
             "ACJS0470", //7
             "ACJS0480", //8
             "ACJS0490", //9
-            "ACEIS330"   //10
+            "ACEIS330", //10
+            "ACEIS340",
           ];
-          const results = await this._getCommonCode2(parentCodes, this.selected_company);
+          const results = await this._getCommonCode2(parentCodes, this.user.TEI_COMPANY_PK);
           if (results.length) {
             this.typeInvoiceList = results[0];
             this.invoiceKind = results[1];
@@ -1375,91 +1105,27 @@ export default {
             this.paramDList = results[8];
             this.cboTemplate = results[9];
             this.Form_noList = results[10];
+            this.TemplateList = results[11];
           }
           break;
       }
     },
-
-    async onChangeCompany() {
-      this.selectedCompanyFrom = this.selected_company;
-      // this.lstBizplaceFrom = this.lstBizplace;
-      this.fromNoList = [];
-      this.serialNoList = [];
-
-      const dso_from_no = {
-        type: "list",
-        selpro: "EI_FORM_NO_EI_V2",
-        para: [this.lstCompany],
-      };
-      this.fromNoList = await this._dsoCall(dso_from_no, "select", false);
-      this.lstFrom_No_From = this.fromNoList.length > 0 ? this.fromNoList[0].CODE : "";
-
-      const dso_serial_no = {
-        type: "list",
-        selpro: "EI_SERIAL_NO_EI_V2",
-        para: [this.selected_company],
-      };
-      this.serialNoList = await this._dsoCall(dso_serial_no, "select", false);
-      this.lstSerial_No_From = this.serialNoList.length > 0 ? this.serialNoList[0].CODE : "";
-    },
-
-    async onChangeCompanyFrom() {
-      //this.selectedCompanyFrom = this.selected_company;
-      this.fromNoList = [];
-      this.serialNoList = [];
-    },
-
-    async onChangeCompanyFromM() {
-      //this.selectedCompanyFrom = this.selected_company;
-      this.fromNoList = [];
-      this.serialNoList = [];
-    },
-    onNew() {
-      this.$refs.grdEinvoiceIssue.addRowStruct({
-        PK: "",
-        TCO_COMPANY_PK: this.selected_company,
-        INVOICE_KIND: "C",
-        SERIAL_NO_2: "T",
-        FORM_NO: "1",
-        SERIAL_NO: "",
-        FROM_DT: "",
-        TO_DT: "",
-        STATUS: "2",
-        TCO_BUSPLACE_PK: this.lstBizplace,
-        REMARKS: "",
-        USE_YN: "Y",
-      });
-    },
-
     onNew_T() {
-      let data = this.$refs.grdEinvoiceIssue.getData();
-      console.log("file: 6095055.vue:1514 [vng-304] onNew_T [vng-304] data:", data);
-
       this.$refs.grdTemplate.addRowStruct({
         PK: "",
-        TEMPLATE_CD: data[0].SERIAL_NO,
-        TEMPLATE_NM: data[0].SERIAL_NO,
+        TEMPLATE_CD: "111",
+        TEMPLATE_NM: "",
         TEMPLATE_LNM: "",
         TEMPLATE_FNM: "",
-        FORM_NO: data[0].FORM_NO,
+        FORM_NO: "1",
         USE_YN: "Y",
-        TEI_COMPANY_PK: this.selected_company,
-        VALID_DATE_FROM: data[0].FROM_DT,
-        VALID_DATE_TO: data[0].TO_DT,
-        REPORT_ID: "",
-        ADDR1: "",
-        ADDR2: "",
-        BANK_ACCOUNT1: "",
-        BANK_ACCOUNT2: "",
-        BANK_NM1: "",
-        BANK_NM2: "",
-        TEL: data[0].TEL,
-        FAX: "",
-        TAX_CODE: "",
-        TEI_EINVOICE_ISSUSE_PK: this.item_pk,
-        WEBSITE: "",
-        TAX_CODE_DISPLAY: "",
-        PBAN: "2.0.1",
+        DETAILS_START_ROW: "",
+        SIGN_BY_END_CELL: "",
+        SIGN_BY_START_CELL: "",
+        SIGN_END_CELL: "",
+        SIGN_START_CELL: "",
+        SIGN_CELL_BOX: "",
+        SIGN_RANGE_DETAILS: "",
       });
     },
 
@@ -1491,7 +1157,6 @@ export default {
     },
 
     onAfterImport() {
-      // console.log("onAfterImport  ");
       this.$refs.grdTemplate.loadData();
     },
 
@@ -1553,22 +1218,22 @@ export default {
     },
 
     async onPreview() {
-      if (!this.itemTemplatePK) {
-        return this.showNotification("warning", this.$t("error_occurs"), "pls_select_template");
-      }
-      try {
-        this.pdfUrl = await this.pdfUrlGetter(this.itemTemplatePK);
-        // console.log("=====> pdfUrlv", this.pdfUrl);
-        this.$nextTick(() => {
-          this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
-        });
-      } catch (e) {
-        return this.showNotification("danger", e.message);
-      }
+        if (!this.itemTemplatePK) {
+          return this.showNotification("warning", this.$t("error_occurs"), "pls_select_template");
+        }
+        try {
+          this.pdfUrl = await this.pdfUrlGetter(this.itemTemplatePK);
+          console.log("=====> pdfUrlv", this.pdfUrl);
+          this.$nextTick(() => {
+            this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+          });
+        } catch (e) {
+          return this.showNotification("danger", e.message);
+        }
     },
 
     async pdfUrlGetter(pk) {
-      const pdfUrlExcel = await this.getEinvoiceERP_V2(this, pk);
+      const pdfUrlExcel = await this.getEinvoiceERP_V2T(this, pk);
       return pdfUrlExcel;
     },
 
@@ -1646,4 +1311,3 @@ export default {
 };
 /*==================================================================== END export default  ========================================================================================*/
 </script>
-<!-- =======

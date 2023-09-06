@@ -33,6 +33,10 @@
                 type: Array,
                 default: []
             },
+            sProd: {
+                type: String,
+                default: "EI_UPD_TEMPLATE_EINVOICE"
+            },
             impStartRow: {
                 type: Number,
                 default: 0
@@ -194,12 +198,12 @@
                     this.showNotification("danger", this.impValidate, "", 3001);
                 } else {
                    //console.log("impCboTemp " , this.impCboTemp);
-                   let path = "", sProd = "EI_UPD_TEMPLATE_EINVOICE";
+                   let path = "";
                    this.impCboTemp.forEach(item => {
                         if(item.CODE == this.selTempType)
                         {
                             path = item.VAL1;
-                            // sProd = item.VAL1;
+                            // this.sProd = item.VAL1;
                         }
                     });
                     // let jsonParam = [];
@@ -207,7 +211,7 @@
                     // console.log("this.fileSave  ", this.impAddParam);
                     const fd = new FormData();
                     fd.append("file", this.fileSave);
-                    fd.append('proc', sProd);
+                    fd.append('proc', this.sProd);
                     fd.append("folder", path); //
                     fd.append('para', JSON.stringify(this.impAddParam ? this.impAddParam : [],));
                     fd.append('type_insert', this.selTempType);

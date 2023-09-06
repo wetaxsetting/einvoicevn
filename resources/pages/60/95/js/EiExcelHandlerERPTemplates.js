@@ -1,6 +1,6 @@
 import moment from "moment"
 let EiExcelHandler = {
-  getEinvoiceERP_V2T: async (that, einvoicePk) => {
+  getEinvoiceERP_V2: async (that, einvoicePk) => {
     let exceljs = null;
     let resultExcel = null;
     let masterDataArray = []
@@ -35,7 +35,7 @@ let EiExcelHandler = {
 
     try {
       if (einvoiceMasterData.length > 0)
-        exceljs = require("./EiExcelHandlerTemplates.js");
+        exceljs = require("./EiExcelConverterERPTemplates.js");
       if (!!exceljs) { exceljs = exceljs.default; }
               resultExcel = await exceljs.ExcelBuilder( that, einvoiceMasterData, einvoicePk, reportPath, reportSheet )
     } catch (error) {

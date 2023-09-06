@@ -1,18 +1,22 @@
 <template>
   <v-container fluid v-resize="onResize">
     <v-row dense class="pt-1">
-      <v-col cols="12">
+
+      <v-col v-show="showHilden" cols="12" :lg="showHilden ? 4 : 0">
         <v-row dense>
-          <v-col md="3">
+          <v-col md="11">
             <BaseInput outlined :label="$t('template_id')" v-model="template_id" @keyPressEnter="onSearch"/>
           </v-col>
           <v-col md="1">
             <BaseButton icon_type="search" btn_type="icon" :btn_text="$t('search')" @onclick="onClickButton('SEARCH')" />
           </v-col>
-          <v-col md="2" class="d-flex justify-end">
+        </v-row>
+        <v-row dense>
+          
+          <!-- <v-col md="2" class="d-flex justify-end">
             <b> {{ $t("template_table") }} </b>
-          </v-col>
-          <v-col md="6" class="d-flex justify-end">
+          </v-col> -->
+          <v-col md="12" class="d-flex justify-end">
             <GwPutFile
               :label="$t('import_einvoice_excel')"
               :impMultipleTemp="imp_MultipleTemp"
@@ -28,6 +32,9 @@
             <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClickButton('DELETE_T')" />
             <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClickButton('SAVE_T')" />
           </v-col>
+
+
+
           <v-row lg="12">
             <v-col>
               <BaseGridView
@@ -62,7 +69,8 @@
             </v-col>
           </v-row>
         </v-row>
-
+      </v-col>
+      <v-col cols="12" :lg="showHilden ? 8 : 12">
         <v-row dense>
           <v-col md="1"></v-col>
           <v-col md="2" class="d-flex justify-end">
@@ -194,7 +202,7 @@ export default {
   async created() {
     await this.getListCodes("status");
 
-    this.pdf_handler = require("./js/EiExcelHandlerTemplates.js");
+    this.pdf_handler = require("./js/EiExcelHandlerERPTemplates.js");
     if (!!this.pdf_handler) {
       Object.assign(this, this.pdf_handler.default);
     }
@@ -210,14 +218,14 @@ export default {
       if (this.windowHeight <= 768) {
         return this.windowHeight * 0.8; //1366x768
       } else {
-        return this.windowHeight * 0.16; //1920x1080
+        return this.windowHeight * 0.62; //1920x1080
       }
     },
     limitHeightmin() {
       if (this.windowHeight <= 768) {
         return this.windowHeight * 0.14; //1366x768
       } else {
-        return this.windowHeight * 0.24; //1920x1080
+        return this.windowHeight * 0.3; //1920x1080
       }
     },
     gridHeight() {
@@ -1233,7 +1241,7 @@ export default {
     },
 
     async pdfUrlGetter(pk) {
-      const pdfUrlExcel = await this.getEinvoiceERP_V2T(this, pk);
+      const pdfUrlExcel = await this.getEinvoiceERP_V2(this, pk);
       return pdfUrlExcel;
     },
 

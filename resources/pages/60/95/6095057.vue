@@ -754,7 +754,7 @@ export default {
         },
         {
           dataField: "CELL_CODE",
-          width: 150,
+          width: 80,
           caption: this.$t("cell_code"),
           alignment: "left",
           type: "text",
@@ -762,7 +762,7 @@ export default {
         },
         {
           dataField: "DATA_MAPPING",
-          width: 220,
+          width: 150,
           caption: this.$t("data_mapping"),
           alignment: "left",
           type: "text",
@@ -810,7 +810,7 @@ export default {
         },
         {
           dataField: "TYPE",
-          width: 280,
+          width: 200,
           caption: this.$t("type_m"),
           alignment: "left",
           lookup: {
@@ -823,7 +823,7 @@ export default {
         },
         {
           dataField: "REMARKS",
-          width: 400,
+          width: 350,
           caption: this.$t("remarks"),
           alignment: "left",
           type: "text",
@@ -844,7 +844,7 @@ export default {
         },
         {
           dataField: "ORD",
-          width: 80,
+          width: 50,
           caption: this.$t("ord"),
           alignment: "right",
           type: "text",
@@ -852,7 +852,7 @@ export default {
         },
         {
           dataField: "STARTCELL",
-          width: 100,
+          width: 60,
           caption: this.$t("startcell"),
           alignment: "right",
           type: "number",
@@ -860,7 +860,7 @@ export default {
         },
         {
           dataField: "ENDCELL",
-          width: 100,
+          width: 60,
           caption: this.$t("endcell"),
           alignment: "right",
           type: "number",
@@ -868,7 +868,7 @@ export default {
         },
         {
           dataField: "CELLBORDER",
-          width: 150,
+          width: 120,
           caption: this.$t("cellborder"),
           alignment: "center",
           lookup: {
@@ -881,7 +881,7 @@ export default {
         },
         {
           dataField: "FIELD",
-          width: 200,
+          width: 150,
           caption: this.$t("field"),
           alignment: "left",
           lookup: {
@@ -894,7 +894,7 @@ export default {
         },
         {
           dataField: "TYPE",
-          width: 200,
+          width: 180,
           caption: this.$t("type_d"),
           alignment: "left",
           lookup: {
@@ -1222,17 +1222,36 @@ export default {
     },
 
     async onPreview() {
-        if (!this.itemTemplatePK) {
-          return this.showNotification("warning", this.$t("error_occurs"), "pls_select_template");
-        }
-        try {
-          this.pdfUrl = await this.pdfUrlGetter(this.itemTemplatePK);
-          console.log("=====> pdfUrlv", this.pdfUrl);
-          this.$nextTick(() => {
-            this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
-          });
-        } catch (e) {
-          return this.showNotification("danger", e.message);
+        // if (!this.itemTemplatePK) {
+        //   return this.showNotification("warning", this.$t("error_occurs"), "pls_select_template");
+        // }
+        // try {
+        //   this.pdfUrl = await this.pdfUrlGetter(this.itemTemplatePK);
+        //   console.log("=====> pdfUrlv", this.pdfUrl);
+        //   this.$nextTick(() => {
+        //     this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+        //   });
+        // } catch (e) {
+        //   return this.showNotification("danger", e.message);
+        // }
+        if(this.itemTemplatePK != "")
+        {
+          let res_url = await this.$axios.$post("/einvoice/general-url-pdf-template", {
+                responseType: "json",
+                tei_wt_sale_bill_pk: this.itemTemplatePK,
+              });
+          if(res_url.success)
+          {
+            this.pdfUrl = res_url.data;
+
+            this.$nextTick(() => {
+              this.isProcessing = false
+              this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+            });
+          }
+        }else
+        {
+          this.showNotification("warning", this.$t("no_row_selected"), '');
         }
     },
 

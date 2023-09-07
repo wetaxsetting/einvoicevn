@@ -985,18 +985,40 @@ export default {
     },
 
     async onPreview() {
-      if (!this.itemTemplatePK) {
-        return this.showNotification("warning", this.$t("error_occurs"), "pls_select_template");
-      }
-      try {
-        this.pdfUrl = await this.pdfUrlGetter(this.itemTemplatePK);
-        console.log("=====> pdfUrlv", this.pdfUrl);
-        this.$nextTick(() => {
-          this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
-        });
-      } catch (e) {
-        return this.showNotification("danger", e.message);
-      }
+      // if (!this.itemTemplatePK) {
+      //   return this.showNotification("warning", this.$t("error_occurs"), "pls_select_template");
+      // }
+      // try {
+      //   this.pdfUrl = await this.pdfUrlGetter(this.itemTemplatePK);
+      //   console.log("=====> pdfUrlv", this.pdfUrl);
+      //   this.$nextTick(() => {
+      //     this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+      //   });
+      // } catch (e) {
+      //   return this.showNotification("danger", e.message);
+      // }
+
+      if(this.itemTemplatePK != "")
+        {
+          let res_url = await this.$axios.$post("/einvoice/general-url-pdf-template", {
+                responseType: "json",
+                tei_wt_sale_bill_pk: this.itemTemplatePK,
+              });
+          if(res_url.success)
+          {
+            this.pdfUrl = res_url.data;
+
+            this.$nextTick(() => {
+              this.isProcessing = false
+              this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+            });
+          }
+        }else
+        {
+          this.showNotification("warning", this.$t("no_row_selected"), '');
+        }
+
+
     },
 
     async pdfUrlGetter(pk) {

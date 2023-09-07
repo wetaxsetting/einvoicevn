@@ -120,7 +120,7 @@
                 sel_procedure="EI_SEL_6095057_7_NC"
                 upd_procedure="EI_UPD_6095057_8"
                 :editable="true"
-                :update_paras="['PK', 'REMARKS', 'TEI_TEMPLATE_PK', 'TYPE_TABLE', 'TYPE_TEMPLATE', 'STARTCELL', 'ENDCELL', 'CELLBORDER', 'dataField', 'TYPE', 'ORD']"
+                :update_paras="['PK', 'REMARKS', 'TEI_TEMPLATE_PK', 'TYPE_TABLE', 'TYPE_TEMPLATE', 'STARTCELL', 'ENDCELL', 'CELLBORDER', 'FIELD', 'TYPE', 'ORD']"
                 :filter_paras="[this.itemTemplatePK, this.txtParamCodeDetails]"
               />
             </v-col>

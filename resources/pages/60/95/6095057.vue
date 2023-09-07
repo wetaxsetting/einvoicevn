@@ -95,8 +95,7 @@
                 upd_procedure="EI_UPD_6095055_6"
                 :editable="true"
                 :update_paras="['PK', 'CELL_CODE', 'DATA_MAPPING', 'REMARKS', 'TEI_TEMPLATE_PK', 'TYPE_TABLE', 'TYPE_TEMPLATE', 'TYPE']"
-                :filter_paras="[this.itemTemplatePK, this.txtParamCodeMaster]"
-              />
+                :filter_paras="[this.itemTemplatePK, this.txtParamCodeMaster]"/>
             </v-col>
           </v-row>
         </v-row>

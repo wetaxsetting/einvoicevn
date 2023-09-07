@@ -351,6 +351,8 @@ class EiExcelConverterAuto {
 					lstNewMerge.push({ row1: _row1 + totalRows - 1, col1: _col1, row2: _row2 + totalRows - 1, col2: _col2, range: x });
 					worksheet.unMergeCells(startMergeCell);
 				}
+				console.log("_row1  ", _row1 ,  )
+				console.log("lstNewMerge ", lstNewMerge)
 			});
 			for (let i = 1; i < totalRows ; i++) {
 				console.log(" _sourceRow + i, _sourceRow  ++++===> ", _sourceRow + i, totalRows)
@@ -396,14 +398,15 @@ class EiExcelConverterAuto {
 		// 	worksheet.getCell( `C${_sourceRow + i}`).style.border = {};
 		// }
 		// //END-ADDING rows
+		lstNewMerge.sort((a,b) =>  parseFloat(a.row1) - parseFloat(b.row1));
 		lstNewMerge.forEach(x => {
 			try {
-				//console.log(x);
+				console.log(x);
 				worksheet.mergeCells(x.row1, x.col1, x.row2, x.col2);
 			} catch (ee) {
 				console.log("err", ee)
 			}
-
+			
 		})
 		//END-this part coppy merge information of the page before add more row.
 
@@ -733,15 +736,15 @@ class EiExcelConverterAuto {
 				const e = parseInt(page[j])
 				//"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
 				//"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
-				console.log("  e  " , e );
+				//console.log("  e  " , e );
 				if (e > 0) {
 					for (let i = 0; i < e; i++) {
 						const _e = einvoiceDetailData[i + count];
-						console.log("  _e  " , _e);
+						//console.log("  _e  " , _e);
 						try {
 							let item_name_lt = this.countlength_v2(_e["ITEM_NAME"])
 
-							console.log("  item_name_lt  " , item_name_lt);
+							//console.log("  item_name_lt  " , item_name_lt);
 							if(_e["ITEM_NAME"] !== null)
 							{
 								let longRow = _e["ITEM_NAME"].split('&#xA;')
@@ -878,7 +881,7 @@ class EiExcelConverterAuto {
 		//this part add more style to the rows that missing(optional) Other pages.
 		//"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
 		//"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
-		console.log("extendedArray ++==>", extendedArray);
+		//console.log("extendedArray ++==>", extendedArray);
 		for (let o = 0; o < extendedArray.length; o++) {
 			let rowItem = extendedArray[o]
 			worksheet.mergeCells(rowItem.loopStartRow, startMergeRedundantRow, rowItem.loopStartRow + rowItem.loop_row - 1, endMergeRedundantRow)
@@ -897,7 +900,7 @@ class EiExcelConverterAuto {
 		
 		//this part insert logo for all the self gen header
 		let promises = logos.map(async (e, i) => {
-			console.log(" e +++===> ", e);
+			// console.log(" e +++===> ", e);
 			let imgRow = e.logoStartCount
 			//  let logoImage =  await createFile(e.logoPath);
 			let logoIconByteArray = await exceljs.insertPathImage(e.logoPath)
@@ -911,7 +914,7 @@ class EiExcelConverterAuto {
 			}
 		});
 		await Promise.all(promises);
-		console.log(" logoArray +++===> ", logoArray);
+		//console.log(" logoArray +++===> ", logoArray);
 		for (let imgIdx = 0; imgIdx < logoArray.length; imgIdx++) {
 			const logosAray = logoArray[imgIdx].logos;
 			let imgPos = logoArray[imgIdx].logoPos

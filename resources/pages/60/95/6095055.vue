@@ -9,7 +9,6 @@
           </v-col>
           <v-col md="5" class="d-flex justify-end">
             <BaseButton icon_type="search" btn_type="icon" :btn_text="$t('search')" @onclick="onClickButton('SEARCH_M')" />
-
             <BaseButton btn_type="icon" icon_type="copy" @onclick="copyToDialog = true" />
             <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" @onclick="onClickButton('NEW_M')" />
             <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClickButton('DELETE_M')" />
@@ -179,66 +178,6 @@
             </v-col>
           </v-row>
         </v-row>
-
-        <v-row dense>
-          <v-col md="1"></v-col>
-          <v-col md="2" class="d-flex justify-end">
-            <b> {{ $t("master_table") }} </b>
-          </v-col>
-          <v-col md="6">
-            <BaseInput :outlined="true" :label="$t('param_code_master')" v-model="txtParamCodeMaster" @keyPressEnter="onLoadDataParamM" />
-          </v-col>
-          <v-col md="3" class="d-flex justify-end">
-            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="!item_pk" @onclick="onClickButton('NEW_PM')" />
-            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="!item_pk" @onclick="onClickButton('DELETE_PM')" />
-            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="!item_pk" @onclick="onClickButton('SAVE_PM')" />
-          </v-col>
-          <v-row lg="12">
-            <v-col>
-              <BaseGridView
-                :headertype="1"
-                ref="grdParamM"
-                :height="limitHeightmin"
-                :header="grdParamM"
-                sel_procedure="EI_SEL_6095055_5"
-                upd_procedure="EI_UPD_6095055_6"
-                :editable="true"
-                :update_paras="['PK', 'CELL_CODE', 'DATA_MAPPING', 'REMARKS', 'TEI_TEMPLATE_PK', 'TYPE_TABLE', 'TYPE_TEMPLATE', 'TYPE']"
-                :filter_paras="[this.itemTemplatePK, this.txtParamCodeMaster]"
-              />
-            </v-col>
-          </v-row>
-        </v-row>
-
-        <v-row dense>
-          <v-col md="1"></v-col>
-          <v-col md="2" class="d-flex justify-end">
-            <b> {{ $t("detail_table") }} </b>
-          </v-col>
-          <v-col md="6">
-            <BaseInput :outlined="true" :label="$t('param_code_details')" v-model="txtParamCodeDetails" @keyPressEnter="onLoadDataParamD" />
-          </v-col>
-          <v-col md="3" class="d-flex justify-end">
-            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="!item_pk" @onclick="onClickButton('NEW_PD')" />
-            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="!item_pk" @onclick="onClickButton('DELETE_PD')" />
-            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="!item_pk" @onclick="onClickButton('SAVE_PD')" />
-          </v-col>
-          <v-row lg="12">
-            <v-col>
-              <BaseGridView
-                :headertype="1"
-                ref="grdParamD"
-                :height="limitHeightmin"
-                :header="grdParamD"
-                sel_procedure="EI_SEL_6060230_7"
-                upd_procedure="EI_UPD_6060230_8"
-                :editable="true"
-                :update_paras="['PK', 'REMARKS', 'TEI_TEMPLATE_PK', 'TYPE_TABLE', 'TYPE_TEMPLATE', 'STARTCELL', 'ENDCELL', 'CELLBORDER', 'dataField', 'TYPE', 'ORD']"
-                :filter_paras="[this.itemTemplatePK, this.txtParamCodeDetails]"
-              />
-            </v-col>
-          </v-row>
-        </v-row>
       </v-col>
     </v-row>
     <view-einvoice-pdf-dialog ref="ViewEInvoicePDFDialog" :src_pdfUrl="pdfUrl"></view-einvoice-pdf-dialog>
@@ -391,6 +330,7 @@ export default {
     txtParamCodeMaster: "",
     txtParamCodeDetails: "",
     dataIssued: [],
+    templateIdList:[]
   }),
   /*############### created #######################*/
   async created() {
@@ -437,9 +377,9 @@ export default {
     },
     limitHeightT() {
       if (this.windowHeight <= 768) {
-        return this.windowHeight * 0.8; //1366x768
+        return this.windowHeight * 0.70; //1366x768
       } else {
-        return this.windowHeight * 0.16; //1920x1080
+        return this.windowHeight * 0.80; //1920x1080
       }
     },
     limitHeight() {
@@ -540,11 +480,16 @@ export default {
         },
         {
           dataField: "TEMPLATE_CD",
-          width: 100,
+          width: 200,
           caption: this.$t("template_id"),
-          alignment: "left",
+          alignment: "center",
           type: "text",
           editable: true,
+          lookup: {
+            dataSource: this.templateIdList,
+            displayExpr: "NAME",
+            valueExpr: "CODE",
+          },
         },
         {
           dataField: "TEMPLATE_NM",
@@ -601,118 +546,8 @@ export default {
           visible: false,
         },
         {
-          dataField: "VALID_DATE_FROM",
-          width: 150,
-          caption: this.$t("valid_date_from"),
-          alignment: "center",
-          type: "date",
-          editable: true,
-        },
-        {
-          dataField: "VALID_DATE_TO",
-          width: 150,
-          caption: this.$t("valid_date_to"),
-          alignment: "center",
-          type: "date",
-          editable: true,
-        },
-        {
-          dataField: "REPORT_ID",
-          width: 200,
-          caption: this.$t("report_id"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-          visible: false,
-        },
-        {
-          dataField: "TEL",
-          width: 150,
-          caption: this.$t("tel"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "FAX",
-          width: 150,
-          caption: this.$t("fax"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "BANK_ACCOUNT1",
-          width: 200,
-          caption: this.$t("bank_account1"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "BANK_ACCOUNT2",
-          width: 200,
-          caption: this.$t("bank_account2"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "BANK_NM1",
-          width: 200,
-          caption: this.$t("bank_nm1"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "BANK_NM2",
-          width: 200,
-          caption: this.$t("bank_nm2"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "TAX_CODE",
-          width: 150,
-          caption: this.$t("tax_code"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "WEBSITE",
-          width: 100,
-          caption: this.$t("website"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "TAX_CODE_DISPLAY",
-          width: 200,
-          caption: this.$t("tax_code_display"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "PBAN",
-          width: 100,
-          caption: this.$t("pban"),
-          type: "text",
-          editable: true,
-          alignment: "center",
-          lookup: {
-            dataSource: this.versionList,
-            displayExpr: "NAME",
-            valueExpr: "CODE",
-          },
-        },
-        {
           dataField: "URL_FILE_EXCEL",
-          width: 200,
+          width: 500,
           caption: this.$t("url_file_excel"),
           alignment: "left",
           type: "text",
@@ -720,7 +555,7 @@ export default {
         },
         {
           dataField: "URL_IMG_LOGO",
-          width: 200,
+          width: 500,
           caption: this.$t("url_img_logo"),
           alignment: "left",
           type: "text",
@@ -746,7 +581,7 @@ export default {
         },
         {
           dataField: "URL_IMG_BG",
-          width: 200,
+          width: 500,
           caption: this.$t("url_img_bg"),
           alignment: "left",
           type: "text",
@@ -788,461 +623,7 @@ export default {
           type: "number",
           formatFloat: 1,
           editable: true,
-        },
-        {
-          dataField: "SIGN_START_CELL",
-          width: 100,
-          caption: this.$t("SIGN_START_CELL"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 0,
-          editable: true,
-        },
-        {
-          dataField: "SIGN_END_CELL",
-          width: 100,
-          caption: this.$t("SIGN_END_CELL"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 0,
-          editable: true,
-        },
-        {
-          dataField: "SIGN_BY_START_CELL",
-          width: 100,
-          caption: this.$t("SIGN_BY_START_CELL"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 0,
-          editable: true,
-        },
-        {
-          dataField: "SIGN_BY_END_CELL",
-          width: 100,
-          caption: this.$t("SIGN_BY_END_CELL"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 0,
-          editable: true,
-        },
-        {
-          dataField: "SIGN_CELL_BOX",
-          width: 100,
-          caption: this.$t("SIGN_CELL_BOX"),
-          alignment: "left",
-          type: "text",
-          // formatFloat: 0,
-          editable: true,
-        },
-        {
-          dataField: "DETAILS_START_ROW",
-          width: 100,
-          caption: this.$t("details_start_row"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 0,
-          editable: true,
-        },
-        {
-          dataField: "RANGE_DETAILS_SIGN",
-          width: 100,
-          caption: this.$t("range_details_sign"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 0,
-          editable: true,
-        },
-        {
-          dataField: "ATT01",
-          width: 200,
-          caption: this.$t("att01"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "ATT02",
-          width: 200,
-          caption: this.$t("att02"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "ATT03",
-          width: 200,
-          caption: this.$t("att03"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "ATT04",
-          width: 200,
-          caption: this.$t("att04"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "ATT05",
-          width: 200,
-          caption: this.$t("att05"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "ATT06",
-          width: 200,
-          caption: this.$t("att06"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "ATT07",
-          width: 200,
-          caption: this.$t("att07"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "ATT08",
-          width: 200,
-          caption: this.$t("att08"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "ATT09",
-          width: 200,
-          caption: this.$t("att09"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-          visible: false,
-        },
-        {
-          dataField: "ATT10",
-          width: 200,
-          caption: this.$t("att10"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-          visible: false,
-        },
-        {
-          dataField: "ATT01_NUM",
-          width: 100,
-          caption: this.$t("att01_num"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 0,
-          editable: true,
-          visible: false,
-        },
-        {
-          dataField: "ATT02_NUM",
-          width: 100,
-          caption: this.$t("att02_num"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 0,
-          editable: true,
-          visible: false,
-        },
-        {
-          dataField: "ATT03_NUM",
-          width: 100,
-          caption: this.$t("att03_num"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 0,
-          editable: true,
-          visible: false,
-        },
-        {
-          dataField: "ATT04_NUM",
-          width: 100,
-          caption: this.$t("att04_num"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 0,
-          editable: true,
-          visible: false,
-        },
-        {
-          dataField: "ATT05_NUM",
-          width: 100,
-          caption: this.$t("att05_num"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 0,
-          editable: true,
-          visible: true,
-        },
-        {
-          dataField: "ATT06_NUM",
-          width: 100,
-          caption: this.$t("att06_num"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 0,
-          editable: true,
-          visible: true,
-        },
-        {
-          dataField: "ATT07_NUM",
-          width: 100,
-          caption: this.$t("att07_num"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 0,
-          editable: true,
-          visible: true,
-        },
-        {
-          dataField: "ATT08_NUM",
-          width: 100,
-          caption: this.$t("att08_num"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 0,
-          editable: true,
-          visible: true,
-        },
-        {
-          dataField: "ATT09_NUM",
-          width: 100,
-          caption: this.$t("att09_num"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 0,
-          editable: true,
-          visible: false,
-        },
-        {
-          dataField: "ATT10_NUM",
-          width: 100,
-          caption: this.$t("att10_num"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 0,
-          editable: true,
-          visible: false,
-        },
-      ];
-    },
-
-    grdParamM() {
-      return [
-        {
-          dataField: "PK",
-          width: 80,
-          caption: this.$t("PK"),
-          alignment: "left",
-          type: "text",
-          visible: false,
-        },
-        {
-          dataField: "CELL_CODE",
-          width: 150,
-          caption: this.$t("cell_code"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "DATA_MAPPING",
-          width: 220,
-          caption: this.$t("data_mapping"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-          lookup: {
-            dataSource: this.paramList,
-            displayExpr: "NAME",
-            valueExpr: "CODE",
-          },
-        },
-        {
-          dataField: "TEI_TEMPLATE_PK",
-          width: 200,
-          caption: this.$t("tei_template_pk"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-          visible: false,
-        },
-        {
-          dataField: "TYPE_TEMPLATE",
-          width: 180,
-          caption: this.$t("type_template"),
-          alignment: "center",
-          lookup: {
-            dataSource: this.typeTemplateList,
-            displayExpr: "NAME",
-            valueExpr: "CODE",
-          },
-          type: "text",
-          hidden: true,
-        },
-        {
-          dataField: "TYPE_TABLE",
-          width: 100,
-          caption: this.$t("type_table"),
-          alignment: "center",
-          lookup: {
-            dataSource: this.typeTableList,
-            displayExpr: "NAME",
-            valueExpr: "CODE",
-          },
-          type: "text",
-          hidden: true,
-        },
-        {
-          dataField: "TYPE",
-          width: 280,
-          caption: this.$t("type_m"),
-          alignment: "left",
-          lookup: {
-            dataSource: this.typeList,
-            displayExpr: "NAME",
-            valueExpr: "CODE",
-          },
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "REMARKS",
-          width: 400,
-          caption: this.$t("remarks"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-      ];
-    },
-
-    grdParamD() {
-      return [
-        {
-          dataField: "PK",
-          width: 80,
-          caption: this.$t("PK"),
-          alignment: "left",
-          type: "text",
-          hidden: true,
-        },
-        {
-          dataField: "ORD",
-          width: 80,
-          caption: this.$t("ord"),
-          alignment: "right",
-          type: "text",
-          allowEditing: true,
-        },
-        {
-          dataField: "STARTCELL",
-          width: 100,
-          caption: this.$t("startcell"),
-          alignment: "right",
-          type: "number",
-          allowEditing: true,
-        },
-        {
-          dataField: "ENDCELL",
-          width: 100,
-          caption: this.$t("endcell"),
-          alignment: "right",
-          type: "number",
-          allowEditing: true,
-        },
-        {
-          dataField: "CELLBORDER",
-          width: 150,
-          caption: this.$t("cellborder"),
-          alignment: "center",
-          lookup: {
-            dataSource: this.styleList,
-            displayExpr: "NAME",
-            valueExpr: "CODE",
-          },
-          type: "text",
-          allowEditing: true,
-        },
-        {
-          dataField: "FIELD",
-          width: 200,
-          caption: this.$t("field"),
-          alignment: "left",
-          lookup: {
-            dataSource: this.paramDList,
-            displayExpr: "NAME",
-            valueExpr: "CODE",
-          },
-          type: "text",
-          allowEditing: true,
-        },
-        {
-          dataField: "TYPE",
-          width: 200,
-          caption: this.$t("type_d"),
-          alignment: "left",
-          lookup: {
-            dataSource: this.typeList,
-            displayExpr: "NAME",
-            valueExpr: "CODE",
-          },
-          type: "text",
-          allowEditing: true,
-        },
-        {
-          dataField: "REMARKS",
-          width: 300,
-          caption: this.$t("remarks"),
-          alignment: "left",
-          type: "text",
-          allowEditing: true,
-        },
-        {
-          dataField: "TEI_TEMPLATE_PK",
-          width: 250,
-          caption: this.$t("tei_template_pk"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-          visible: false,
-        },
-        {
-          dataField: "TYPE_TEMPLATE",
-          width: 100,
-          caption: this.$t("type_template"),
-          alignment: "center",
-          lookup: {
-            dataSource: this.typeTemplateList,
-            displayExpr: "NAME",
-            valueExpr: "CODE",
-          },
-          type: "text",
-          hidden: true,
-        },
-        {
-          dataField: "TYPE_TABLE",
-          width: 100,
-          caption: this.$t("type_table"),
-          alignment: "center",
-          lookup: {
-            dataSource: this.typeTableList,
-            displayExpr: "NAME",
-            valueExpr: "CODE",
-          },
-          type: "text",
-          hidden: true,
-        },
+        }
       ];
     },
   },
@@ -1260,15 +641,11 @@ export default {
       this.dataIssued = cell.data;
       this.itemTemplatePK = cell.data.TEI_TEMPLATE_PK;
       this.$refs.grdTemplate.loadData();
-      this.$refs.grdParamM.loadData();
-      this.$refs.grdParamD.loadData();
     },
 
     cellClickCellTemplate(cell) {
       this.itemTemplatePK = cell.data.PK;
       this.url_template = cell.data.URL_FILE_EXCEL;
-      this.$refs.grdParamM.loadData();
-      this.$refs.grdParamD.loadData();
     },
 
     toggleLeft() {
@@ -1341,9 +718,7 @@ export default {
       this.$refs.grdTemplate.onSetMarkedDelete(true);
     },
 
-    onDelete_P() {
-      this.$refs.grdParamM.onSetMarkedDelete(true);
-    },
+  
 
     async onSave() {
       let data = this.$refs.grdEinvoiceIssue.getData();
@@ -1382,58 +757,6 @@ export default {
       }
     },
 
-    async onSave_PM() {
-      // let requireCol = ["CELL_CODE", "DATA_MAPPING","TYPE"];
-      this.onValudateMaster();
-      let requireCol = [];
-      let validate = this.$refs.grdParamM.onCheckValid(requireCol);
-      if (validate) {
-        this.$refs.grdParamM.saveData();
-      }
-    },
-
-    onValudateMaster() {
-      // console.log("this.$refs.grdParamM.getDataSource()  ", this.$refs.grdParamM.getDataSource());
-      for (let i = 0; i < this.$refs.grdParamM.getDataSource().length; i++) {
-        if (this.$refs.grdParamM.getDataSource()[i].CELL_CODE == null && this.$refs.grdParamM.getDataSource()[i].TYPE == null) {
-          return this.showNotification("warning", this.$t("notification"), this.$t(`you_can_combinatons_to_generate_accountcode`), 500);
-        }
-      }
-    },
-
-    onDelete_PM() {
-      this.$refs.grdParamM.onSetMarkedDelete(true);
-    },
-
-    onDelete_PD() {
-      this.$refs.grdParamD.onSetMarkedDelete(true);
-    },
-
-    async onSave_PD() {
-      let dataD = this.$refs.grdParamD.getData();
-      for (let i = 0; i < dataD.length; i++) {
-        if (!dataD[i].ORD) {
-          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_ord_at_" + (i + 1)));
-          return;
-        } else if (!dataD[i].STARTCELL) {
-          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_start_cell_at_" + (i + 1)));
-          return;
-        } else if (!dataD[i].ENDCELL) {
-          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_end_cell_at_" + (i + 1)));
-          return;
-        } else if (!dataD[i].CELLBORDER) {
-          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_cell_border_at_" + (i + 1)));
-          return;
-        } else if (!dataD[i].FIELD) {
-          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_feild_at_" + (i + 1)));
-          return;
-        } else if (!dataD[i].TYPE) {
-          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_to_type_at_" + (i + 1)));
-          return;
-        }
-        this.$refs.grdParamD.saveData();
-      }
-    },
     async getListCodes(pos) {
       switch (pos) {
         case "company":
@@ -1494,7 +817,8 @@ export default {
             "ACJS0470", //7
             "ACJS0480", //8
             "ACJS0490", //9
-            "ACEIS330"   //10
+            "ACEIS330", //10
+            "ACEIS340"
           ];
           const results = await this._getCommonCode2(parentCodes, this.selected_company);
           if (results.length) {
@@ -1509,6 +833,7 @@ export default {
             this.paramDList = results[8];
             this.cboTemplate = results[9];
             this.Form_noList = results[10];
+            this.templateIdList = results[11];
           }
           break;
       }
@@ -1597,33 +922,6 @@ export default {
       });
     },
 
-    onNew_PM() {
-      this.$refs.grdParamM.addRowStruct({
-        PK: "",
-        CELL_CODE: "",
-        DATA_MAPPING: "",
-        REMARKS: "",
-        TEI_TEMPLATE_PK: this.itemTemplatePK,
-        TYPE_TABLE: "M",
-        TYPE_TEMPLATE: "O",
-        TYPE: "1",
-      });
-    },
-    onNew_PD() {
-      this.$refs.grdParamD.addRowStruct({
-        PK: "",
-        REMARKS: "",
-        TEI_TEMPLATE_PK: this.itemTemplatePK,
-        TYPE_TABLE: "D",
-        TYPE_TEMPLATE: "O",
-        STARTCELL: "",
-        ENDCELL: "",
-        CELLBORDER: "",
-        dataField: "",
-        TYPE: "1",
-      });
-    },
-
     onAfterImport() {
       // console.log("onAfterImport  ");
       this.$refs.grdTemplate.loadData();
@@ -1692,7 +990,7 @@ export default {
       }
       try {
         this.pdfUrl = await this.pdfUrlGetter(this.itemTemplatePK);
-        // console.log("=====> pdfUrlv", this.pdfUrl);
+        console.log("=====> pdfUrlv", this.pdfUrl);
         this.$nextTick(() => {
           this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
         });
@@ -1745,26 +1043,10 @@ export default {
       }
     },
 
-    onLoadDataParamM() {
-      this.$refs.grdParamM.loadData();
-    },
-
-    onLoadDataParamD() {
-      this.$refs.grdParamD.loadData();
-    },
 
     async onGeneralData() {
       this.dataIssued.Template = [];
       this.dataIssued.Template.push(this.$refs.grdTemplate.getDataSource());
-
-      // console.log("this.$refs.grdParamM.getDataSource() 2 =>", this.$refs.grdParamM.getDataSource());
-      this.dataIssued.ParamMaster = [];
-      this.dataIssued.ParamMaster.push(this.$refs.grdParamM.getDataSource());
-
-      // console.log("this.$refs.grdParamD.getDataSource() 2 =>", this.$refs.grdParamD.getDataSource());
-      this.dataIssued.ParamDetail = [];
-      this.dataIssued.ParamDetail.push(this.$refs.grdParamD.getDataSource());
-      // console.log("dataIssued 2 =>", JSON.stringify(this.dataIssued));
 
       let res = await this.$axios.$post("/einvoice/updatetemplate", {
         responseType: "json",

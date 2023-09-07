@@ -32,9 +32,6 @@
             <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClickButton('DELETE_T')" />
             <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClickButton('SAVE_T')" />
           </v-col>
-
-
-
           <v-row lg="12">
             <v-col>
               <BaseGridView
@@ -91,7 +88,7 @@
                 ref="grdParamM"
                 :height="limitHeightmin"
                 :header="grdParamM"
-                sel_procedure="EI_SEL_6095055_5"
+                sel_procedure="EI_SEL_6095055_5_NC"
                 upd_procedure="EI_UPD_6095055_6"
                 :editable="true"
                 :update_paras="['PK', 'CELL_CODE', 'DATA_MAPPING', 'REMARKS', 'TEI_TEMPLATE_PK', 'TYPE_TABLE', 'TYPE_TEMPLATE', 'TYPE']"
@@ -121,10 +118,10 @@
                 ref="grdParamD"
                 :height="limitHeightmin"
                 :header="grdParamD"
-                sel_procedure="EI_SEL_6060230_7"
-                upd_procedure="EI_UPD_6060230_8"
+                sel_procedure="EI_SEL_6095057_7_NC"
+                upd_procedure="EI_UPD_6095057_8"
                 :editable="true"
-                :update_paras="['PK', 'REMARKS', 'TEI_TEMPLATE_PK', 'TYPE_TABLE', 'TYPE_TEMPLATE', 'STARTCELL', 'ENDCELL', 'CELLBORDER', 'dataField', 'TYPE', 'ORD']"
+                :update_paras="['PK', 'REMARKS', 'TEI_TEMPLATE_PK', 'TYPE_TABLE', 'TYPE_TEMPLATE', 'STARTCELL', 'ENDCELL', 'CELLBORDER', 'FIELD', 'TYPE', 'ORD']"
                 :filter_paras="[this.itemTemplatePK, this.txtParamCodeDetails]"
               />
             </v-col>
@@ -1059,29 +1056,29 @@ export default {
     },
 
     async onSave_PD() {
-      let dataD = this.$refs.grdParamD.getData();
-      for (let i = 0; i < dataD.length; i++) {
-        if (!dataD[i].ORD) {
-          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_ord_at_" + (i + 1)));
-          return;
-        } else if (!dataD[i].STARTCELL) {
-          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_start_cell_at_" + (i + 1)));
-          return;
-        } else if (!dataD[i].ENDCELL) {
-          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_end_cell_at_" + (i + 1)));
-          return;
-        } else if (!dataD[i].CELLBORDER) {
-          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_cell_border_at_" + (i + 1)));
-          return;
-        } else if (!dataD[i].FIELD) {
-          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_feild_at_" + (i + 1)));
-          return;
-        } else if (!dataD[i].TYPE) {
-          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_to_type_at_" + (i + 1)));
-          return;
-        }
-        this.$refs.grdParamD.saveData();
-      }
+      // let dataD = this.$refs.grdParamD.getData();
+      // for (let i = 0; i < dataD.length; i++) {
+        // if (!dataD[i].ORD) {
+        //   this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_ord_at_" + (i + 1)));
+        //   return;
+        // } else if (!dataD[i].STARTCELL) {
+        //   this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_start_cell_at_" + (i + 1)));
+        //   return;
+        // } else if (!dataD[i].ENDCELL) {
+        //   this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_end_cell_at_" + (i + 1)));
+        //   return;
+        // } else if (!dataD[i].CELLBORDER) {
+        //   this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_cell_border_at_" + (i + 1)));
+        //   return;
+        // } else if (!dataD[i].FIELD) {
+        //   this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_feild_at_" + (i + 1)));
+        //   return;
+        // } else if (!dataD[i].TYPE) {
+        //   this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_to_type_at_" + (i + 1)));
+        //   return;
+        // }
+      // }
+      this.$refs.grdParamD.saveData();
     },
     async getListCodes(pos) {
       switch (pos) {

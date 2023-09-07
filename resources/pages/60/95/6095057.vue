@@ -961,7 +961,7 @@ export default {
   /*############### methods #######################*/
   methods: {
     cellClickCellTemplate(cell) {
-      console.log("file: 6095057.vue:962 [vng-304] cellClickCellTemplate [vng-304] cell:", cell);
+      // console.log("file: 6095057.vue:962 [vng-304] cellClickCellTemplate [vng-304] cell:", cell);
       this.itemTemplatePK = cell.data.PK;
       this.url_template = cell.data.URL_FILE_EXCEL;
       this.$refs.grdParamM.loadData();

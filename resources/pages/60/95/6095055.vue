@@ -42,7 +42,7 @@
             <BaseGridView
               ref="grdEinvoiceIssue"
               :header="grdHeader"
-              sel_procedure="EI_SEL_6095055_1"
+              sel_procedure="EI_SEL_6095055_1_NC"
               :multiselect="true"
               :headertype="1"
               :filter_paras="[this.selected_company, this.fromDate, this.toDate, this.txtSerialNo, this.lstStatus]"
@@ -106,7 +106,7 @@
                 :header="grdTemplate"
                 :height="limitHeightT"
                 :multiselect="true"
-                sel_procedure="EI_SEL_6095055_3"
+                sel_procedure="EI_SEL_6095055_3_NC"
                 :filter_paras="[this.item_pk]"
                 upd_procedure="EI_UPD_6095055_4"
                 :editable="true"
@@ -280,6 +280,7 @@ export default {
   data: () => ({
     item_pk: null,
     itemTemplatePK: "",
+    itemTemplatesPK: "",
     file: null,
     selected_company: "",
     company_list: [],
@@ -545,14 +546,14 @@ export default {
           editable: true,
           visible: false,
         },
-        {
-          dataField: "URL_FILE_EXCEL",
-          width: 500,
-          caption: this.$t("url_file_excel"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
+        // {
+        //   dataField: "URL_FILE_EXCEL",
+        //   width: 500,
+        //   caption: this.$t("url_file_excel"),
+        //   alignment: "left",
+        //   type: "text",
+        //   editable: true,
+        // },
         {
           dataField: "URL_IMG_LOGO",
           width: 500,
@@ -644,7 +645,7 @@ export default {
     },
 
     cellClickCellTemplate(cell) {
-      this.itemTemplatePK = cell.data.PK;
+      this.itemTemplatesPK = cell.data.PK;
       this.url_template = cell.data.URL_FILE_EXCEL;
     },
 
@@ -998,11 +999,11 @@ export default {
       //   return this.showNotification("danger", e.message);
       // }
 
-      if(this.itemTemplatePK != "")
+      if(this.itemTemplatesPK != "")
         {
           let res_url = await this.$axios.$post("/einvoice/general-url-pdf-template", {
                 responseType: "json",
-                tei_wt_sale_bill_pk: this.itemTemplatePK,
+                tei_wt_sale_bill_pk: this.itemTemplatesPK,
               });
           if(res_url.success)
           {

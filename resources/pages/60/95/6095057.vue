@@ -2,7 +2,7 @@
   <v-container fluid v-resize="onResize">
     <v-row dense class="pt-1">
 
-      <v-col v-show="showHilden" cols="12" :lg="showHilden ? 4 : 0">
+      <v-col v-show="showHilden" cols="12" :lg="showHilden ? 7 : 0">
         <v-row dense>
           <v-col md="11">
             <BaseInput outlined :label="$t('template_id')" v-model="template_id" @keyPressEnter="onSearch"/>
@@ -67,7 +67,7 @@
           </v-row>
         </v-row>
       </v-col>
-      <v-col cols="12" :lg="showHilden ? 8 : 12">
+      <v-col cols="12" :lg="showHilden ? 5 : 12">
         <v-row dense>
           <v-col md="1"></v-col>
           <v-col md="2" class="d-flex justify-end">
@@ -92,8 +92,7 @@
                 upd_procedure="EI_UPD_6095055_6"
                 :editable="true"
                 :update_paras="['PK', 'CELL_CODE', 'DATA_MAPPING', 'REMARKS', 'TEI_TEMPLATE_PK', 'TYPE_TABLE', 'TYPE_TEMPLATE', 'TYPE']"
-                :filter_paras="[this.itemTemplatePK, this.txtParamCodeMaster]"
-              />
+                :filter_paras="[this.itemTemplatePK, this.txtParamCodeMaster]"/>
             </v-col>
           </v-row>
         </v-row>
@@ -121,7 +120,7 @@
                 sel_procedure="EI_SEL_6095057_7_NC"
                 upd_procedure="EI_UPD_6095057_8"
                 :editable="true"
-                :update_paras="['PK', 'REMARKS', 'TEI_TEMPLATE_PK', 'TYPE_TABLE', 'TYPE_TEMPLATE', 'STARTCELL', 'ENDCELL', 'CELLBORDER', 'FIELD', 'TYPE', 'ORD']"
+                :update_paras="['PK', 'REMARKS', 'TEI_TEMPLATE_PK', 'TYPE_TABLE', 'TYPE_TEMPLATE', 'STARTCELL', 'ENDCELL', 'CELLBORDER', 'dataField', 'TYPE', 'ORD']"
                 :filter_paras="[this.itemTemplatePK, this.txtParamCodeDetails]"
               />
             </v-col>
@@ -958,7 +957,7 @@ export default {
   /*############### methods #######################*/
   methods: {
     cellClickCellTemplate(cell) {
-      console.log("file: 6095057.vue:962 [vng-304] cellClickCellTemplate [vng-304] cell:", cell);
+      // console.log("file: 6095057.vue:962 [vng-304] cellClickCellTemplate [vng-304] cell:", cell);
       this.itemTemplatePK = cell.data.PK;
       this.url_template = cell.data.URL_FILE_EXCEL;
       this.$refs.grdParamM.loadData();

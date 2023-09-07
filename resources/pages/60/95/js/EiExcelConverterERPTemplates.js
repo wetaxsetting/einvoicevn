@@ -32,10 +32,10 @@ let excelTemplate = {
 		}
 	
 		//END-this part add more style to missing part of the footer(optional).
-		   console.log("reportInfo ", reportInfo);
-		   let convertResult = await exceljs.convertToPdfAndDownload(that, reportInfo.NAME)
-		   console.log("convertResult  ", convertResult);
-	       return convertResult.data
+		//    console.log("reportInfo ", reportInfo);
+		//    let convertResult = await exceljs.convertToPdfAndDownload(that, reportInfo.NAME)
+		//    console.log("convertResult  ", convertResult);
+	    //    return convertResult.data
 		   console.log("reportInfo.NAME " , reportInfo.NAME);
 		   await exceljs.dowloadWorkbook(that, reportInfo.NAME + ".xlsx");
 	},

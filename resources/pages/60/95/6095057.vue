@@ -2,7 +2,7 @@
   <v-container fluid v-resize="onResize">
     <v-row dense class="pt-1">
 
-      <v-col v-show="showHilden" cols="12" :lg="showHilden ? 4 : 0">
+      <v-col v-show="showHilden" cols="12" :lg="showHilden ? 7 : 0">
         <v-row dense>
           <v-col md="11">
             <BaseInput outlined :label="$t('template_id')" v-model="template_id" @keyPressEnter="onSearch"/>
@@ -70,7 +70,7 @@
           </v-row>
         </v-row>
       </v-col>
-      <v-col cols="12" :lg="showHilden ? 8 : 12">
+      <v-col cols="12" :lg="showHilden ? 5 : 12">
         <v-row dense>
           <v-col md="1"></v-col>
           <v-col md="2" class="d-flex justify-end">
@@ -124,7 +124,7 @@
                 sel_procedure="EI_SEL_6060230_7"
                 upd_procedure="EI_UPD_6060230_8"
                 :editable="true"
-                :update_paras="['PK', 'REMARKS', 'TEI_TEMPLATE_PK', 'TYPE_TABLE', 'TYPE_TEMPLATE', 'STARTCELL', 'ENDCELL', 'CELLBORDER', 'dataField', 'TYPE', 'ORD']"
+                :update_paras="['PK', 'REMARKS', 'TEI_TEMPLATE_PK', 'TYPE_TABLE', 'TYPE_TEMPLATE', 'STARTCELL', 'ENDCELL', 'CELLBORDER', 'DATAFIELD', 'TYPE', 'ORD']"
                 :filter_paras="[this.itemTemplatePK, this.txtParamCodeDetails]"
               />
             </v-col>

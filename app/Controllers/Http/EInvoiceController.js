@@ -2500,6 +2500,7 @@ class EInvoiceController {
             const authPassword = "genuwin123"; // "e_GX4v@";
             //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon";
             const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/dkyhddt/dkysdung";
+            const urlCheck = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
             const { xml_signed, tax_code, req_key } = request.all();
 
             const valid = this.validateDeclareXML(this.parseXmlToJson(xml_signed));

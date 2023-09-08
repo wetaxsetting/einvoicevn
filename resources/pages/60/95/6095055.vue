@@ -739,8 +739,6 @@ export default {
       this.$refs.grdTemplate.onSetMarkedDelete(true);
     },
 
-  
-
     async onSave() {
       let data = this.$refs.grdEinvoiceIssue.getData();
       for (let i = 0; i < data.length; i++) {

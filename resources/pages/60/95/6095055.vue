@@ -11,7 +11,7 @@
             <BaseButton icon_type="search" btn_type="icon" :btn_text="$t('search')" @onclick="onClickButton('SEARCH_M')" />
             <BaseButton btn_type="icon" icon_type="copy" @onclick="copyToDialog = true" />
             <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" @onclick="onClickButton('NEW_M')" />
-            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClickButton('DELETE_M')" />
+            <!-- <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClickButton('DELETE_M')" /> -->
             <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClickButton('SAVE_M')" />
           </v-col>
         </v-row>
@@ -95,7 +95,7 @@
             <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('template_file')" :disabled="!item_pk" @onclick="getImpFile" />
             <BaseButton btn_type="icon" icon_type="view" :btn_text="$t('view')" :disabled="!item_pk" @onclick="onClickButton('VIEW')" />
             <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="!item_pk" @onclick="onClickButton('NEW_T')" />
-            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="!item_pk" @onclick="onClickButton('DELETE_T')" />
+            <!-- <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="!item_pk" @onclick="onClickButton('DELETE_T')" /> -->
             <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="!item_pk" @onclick="onClickButton('SAVE_T')" />
           </v-col>
           <v-row lg="12">
@@ -902,10 +902,10 @@ export default {
         INVOICE_KIND: "C",
         SERIAL_NO_2: "T",
         FORM_NO: "1",
-        FROM_NO: "",
+        FROM_NO: "1",
         SERIAL_NO: "",
-        FROM_DT: "",
-        TO_DT: "",
+        FROM_DT: this.fromDate,
+        TO_DT: this.toDate,
         STATUS: "2",
         TCO_BUSPLACE_PK: this.lstBizplace,
         REMARKS: "",

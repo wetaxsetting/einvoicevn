@@ -8305,13 +8305,13 @@ class EInvoiceController {
                 p_crt_by = user.USER_ID;
             }
 
-            const { proc, tei_wt_sale_bill_pk } = request.all();
+            const { proc, data } = request.all();
 
-             console.log("tei_wt_sale_bill_pk ", tei_wt_sale_bill_pk);
+             console.log("data ", data);
 
 
             let EiExcels = new EiExcelTemplateHandler();
-            let url_pdf = await EiExcels.getEinvoice(tei_wt_sale_bill_pk, p_language, p_crt_by);
+            let url_pdf = await EiExcels.getEinvoice(data, p_language, p_crt_by);
             console.log("base64PDf  ", url_pdf);
 
             return response.send(Utils.response(true, "general url pdf success", url_pdf));

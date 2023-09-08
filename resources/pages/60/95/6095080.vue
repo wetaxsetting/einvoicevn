@@ -280,7 +280,7 @@
               <GwFlexBox justify="end">
                 <BaseButton icon_type="import" :btn_text="$t('import_token')" @onclick="onGetDetailDeclaration()" />
                 <!-- Add -->
-                <!-- <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')" @onclick="onClick('newDetail')" /> -->
+                <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')" @onclick="onClick('newDetail')" />
                 <!-- Save -->
                 <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClick('saveDetail')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
                 <!-- Delete -->
@@ -338,6 +338,19 @@
         <v-icon>mdi-window-restore</v-icon>
       </v-btn>
     </v-scale-transition>
+    <dynamic-dialog
+      ref="refDynamicDialog"
+      :companyPK="this.modelSearch.COMPANY_PK"
+      :header="dynamicHeader"
+      :codeLabel="codeLabel"
+      :nameLabel="nameLabel"
+      :dialogTitle="dialogTitle"
+      :procedure="procedure"
+      :moreParas="moreParas"
+      :autoSearch="autoSearch"
+      :multiSelectMode="multiSelectMode"
+      @returnData="callBackDynamicDialog"
+    ></dynamic-dialog>
   </v-container>
 </template>
 <script>
@@ -349,6 +362,7 @@ export default {
   components: {
     "view-einvoice-xml-dialog": ViewEInvoiceXMLDialog,
     "view-einvoice-pdf-dialog": ViewEInvoicePDFDialog,
+    DynamicDialog: () => import("@/components/dialog/DynamicDialog"),
   },
 
   data: () => ({
@@ -419,6 +433,14 @@ export default {
     manualIsMinimized: false,
     manualIsMinimizedPDF: false,
     token_type_list: [],
+    dynamicHeader: [],
+    codeLabel: "",
+    nameLabel: "",
+    dialogTitle: "",
+    procedure: "",
+    moreParas: null,
+    autoSearch: false,
+    multiSelectMode: false
   }),
 
   mounted() {
@@ -573,7 +595,22 @@ export default {
         case "checkingDeclaration":
           this.onCheckingDeckaration();
           break;
+        case "newDetail":
+          this.onAddRight();
+          break;
       }
+    },
+
+    onAddRight() {
+      this.dynamicHeader = this.BuildDynamicHeader();
+      this.dialogTitle = this.$t("control_item");
+      this.codeLabel = this.$t("serial_number");
+      this.nameLabel = this.$t("ca_name");
+      this.procedure = "AC_SEL_6095080_GET_CTRLITEM";
+      this.moreParas = null;
+      this.autoSearch = true;
+      this.multiSelectMode = false;
+      this.$refs.refDynamicDialog.dialogIsShow = true;
     },
 
     async onPreviewDEC() {
@@ -722,6 +759,62 @@ export default {
       });
     },
 
+    BuildDynamicHeader() {
+      let header = [];
+      header = [
+        {
+          dataField: "NO",
+          caption: this.$t("no"),
+        },
+        {
+          dataField: "TEI_COMPANY_PK",
+          caption: this.$t("tco_company_pk"),
+        },
+        {
+          dataField: "SERIAL_NUMBER",
+          caption: this.$t("serial_number"),
+        },
+        {
+          dataField: "ISSUER",
+          caption: this.$t("issuer"),
+        },
+        {
+          dataField: "ISSUEBY",
+          caption: this.$t("issue_by"),
+        },
+
+        {
+          dataField: "ISSUETO",
+          caption: this.$t("issue_to"),
+        },
+        {
+          dataField: "DN_NAME",
+          caption: this.$t("dn_name"),
+        },
+        {
+          dataField: "DN_MST",
+          caption: this.$t("dn_mst"),
+        },
+        {
+          dataField: "NOTAFTER",
+          caption: this.$t("not_after"),
+        },
+        {
+          dataField: "NOTBEFORE",
+          caption: this.$t("not_before"),
+        },
+        {
+          dataField: "PHONE_NO",
+          caption: this.$t("phone_no"),
+        },
+        {
+          dataField: "FAX_NO",
+          caption: this.$t("fax_no"),
+        },
+      ];
+      return header;
+    },
+
     async initHeaderList() {
       this.headerList.grdSearch = [
         {
@@ -814,6 +907,22 @@ export default {
           width: 230,
         },
       ];
+    },
+
+    callBackDynamicDialog(item) {
+      console.log(item);
+      this.$refs.grdDetail.addRowStruct({
+        _rowstatus: "i",
+        NO: this.$refs.grdDetail.getDataSource().length + 1,
+        PK: "",
+        TEI_DECLARATION_M_PK: this.modelMaster.PK,
+        TTCHUC: this.getPara("CN", item.ISSUEBY),
+        MST: item.DN_MST,
+        SERI: item.SERIAL_NUMBER,
+        DNGAY: item.NOTAFTER,
+        TNGAY: item.NOTAFTER,
+        HTHUC: "1",
+      });
     },
 
     onGeneralXML() {

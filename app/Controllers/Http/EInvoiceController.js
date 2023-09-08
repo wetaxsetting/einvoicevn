@@ -2371,11 +2371,14 @@ class EInvoiceController {
                     tei_declaration_m_pk: para.erp_declaration_m_pk,
                     xml_sign: para.xml_signed,
                     trade_code: trade_code.data.maGDich,
-                    cqt_code: "", //cqt_code
                 };
                 const res = await DBService.ExecuteSQLBlob(
-                    `BEGIN ei_upd_einvoice_ss_xml_ar(:tei_declaration_m_pk, :xml_sign, :trade_code, :cqt_code,
-                                :p_language, :p_crt_by, :p_rtn_cur); END;`,
+                    `BEGIN AC_SEL_DECLARATION_M_AR( :tei_declaration_m_pk, 
+                                                    :trade_code,
+                                                    :xml_sign,  
+                                                    :p_language, 
+                                                    :p_crt_by, 
+                                                    :p_rtn_cur); END;`,
                     para_value,
                     p_language,
                     p_crt_by
@@ -2501,6 +2504,7 @@ class EInvoiceController {
             const authPassword = "genuwin123"; // "e_GX4v@";
             //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon";
             const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/dkyhddt/dkysdung";
+            const urlCheck = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
             const { xml_signed, tax_code, req_key } = request.all();
 
             const valid = this.validateDeclareXML(this.parseXmlToJson(xml_signed));

@@ -844,7 +844,7 @@ export default {
         },
         {
           dataField: "ORD",
-          width: 50,
+          width: 40,
           caption: this.$t("ord"),
           alignment: "right",
           type: "text",
@@ -852,7 +852,7 @@ export default {
         },
         {
           dataField: "STARTCELL",
-          width: 60,
+          width: 50,
           caption: this.$t("startcell"),
           alignment: "right",
           type: "number",
@@ -860,7 +860,7 @@ export default {
         },
         {
           dataField: "ENDCELL",
-          width: 60,
+          width: 50,
           caption: this.$t("endcell"),
           alignment: "right",
           type: "number",
@@ -868,7 +868,7 @@ export default {
         },
         {
           dataField: "CELLBORDER",
-          width: 120,
+          width: 100,
           caption: this.$t("cellborder"),
           alignment: "center",
           lookup: {
@@ -907,7 +907,7 @@ export default {
         },
         {
           dataField: "REMARKS",
-          width: 300,
+          width: 260,
           caption: this.$t("remarks"),
           alignment: "left",
           type: "text",

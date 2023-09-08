@@ -111,7 +111,7 @@
                 upd_procedure="EI_UPD_6095055_4"
                 :editable="true"
                 :update_paras="[
-                  'PK',
+                  'TEI_TEMPLATE_PK',
                   'TEMPLATE_CD',
                   'TEMPLATE_NM',
                   'TEMPLATE_LNM',

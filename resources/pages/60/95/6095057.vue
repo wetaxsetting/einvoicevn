@@ -549,7 +549,7 @@ export default {
           editable: true,
         },
         {
-          dataField: "RANGE_DETAILS_SIGN",
+          dataField: "SIGN_RANGE_DETAILS",
           width: 150,
           caption: this.$t("range_details_sign"),
           alignment: "left",

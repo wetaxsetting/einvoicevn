@@ -2,7 +2,7 @@
 <template>
   <v-container fluid v-resize="onResize">
     <v-row dense class="pt-1">
-      <v-col v-show="showHilden" cols="12" :lg="showHilden ? 4 : 0">
+      <v-col v-show="showHilden" cols="12" :lg="showHilden ? 5 : 0">
         <v-row dense>
           <v-col md="7">
             <BaseSelect :label="$t('company')" v-model="selected_company" :lstData="company_list" item-text="TEXT" item-value="PK" @change="onChangeCompany" />
@@ -55,9 +55,136 @@
             />
           </v-col>
         </v-row>
+
+        <v-row dense class="pt-4">
+          <v-col md="7">
+            <BaseSelect outlined :label="$t('template_id')" v-model="MasterInfo.TEMPLATE_CD" :lstData="templateID_list" item-text="NAME" item-value="CODE" />
+          </v-col>
+          <v-col lg="2">
+            <v-badge offset-x="55" color="green" :content="$t('use_yn')" style="font-size: 0.35rem">
+              <v-checkbox v-model="MasterInfo.USE_YN" color="red darken-3" true-value="Y" false-value="N" hide-details class="my-0 py-0"></v-checkbox>
+            </v-badge>
+          </v-col>
+          <v-col md="3" class="d-flex justify-end">
+            <BaseButton btn_type="icon" icon_type="view" :btn_text="$t('view')" :disabled="!item_pk" @onclick="onClickButton('VIEW')" />
+            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="!item_pk" @onclick="onClickButton('NEW_S')" />
+            <!-- <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="!item_pk" @onclick="onClickButton('DELETE_S')" /> -->
+            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="!item_pk" @onclick="onClickButton('SAVE_S')" />
+          </v-col>
+        </v-row>
+        <v-row dense>
+          <v-col md="4">
+            <BaseInput outlined :label="$t('serial_no')" v-model="MasterInfo.SERIAL_NO" />
+          </v-col>
+          <v-col md="4">
+            <BaseInput outlined :label="$t('form_no')" v-model="MasterInfo.FORM_NO" />
+          </v-col>
+          <v-col md="4">
+            <BaseInput outlined :label="$t('from_no')" v-model="MasterInfo.FROM_NO" />
+          </v-col>
+        </v-row>
+
+        <BaseTabs>
+          <BaseTab :name="$t('logo')">
+            <span v-show="showPersonal">
+              <v-row dense>
+                <v-col md="6">
+                  <v-col lg="12">
+                    <BasePhoto ref="photoLogo" :width="150" :height="100" table_name="TEI_COMPANY_1" v-model="MasterInfo.PK" :procedure="procedure_upload"></BasePhoto>
+                  </v-col>
+                </v-col>
+                <v-col md="6">
+                  <v-row dense class="pr-3">
+                    <v-col lg="12">
+                      <BaseInput outlined :label="$t('url_img_logo')" v-model="MasterInfo.URL_IMG_LOGO" number />
+                    </v-col>
+                    <v-col lg="12">
+                      <BaseInput outlined :label="$t('logo_start_row')" v-model="MasterInfo.LOGO_START_ROW" number />
+                    </v-col>
+                    <v-col lg="12">
+                      <BaseInput outlined :label="$t('logo_start_col')" v-model="MasterInfo.LOGO_START_COL" number />
+                    </v-col>
+                    <v-col lg="12">
+                      <BaseInput outlined :label="$t('logo_width')" v-model="MasterInfo.LOGO_WIDTH" number />
+                    </v-col>
+                    <v-col lg="12">
+                      <BaseInput outlined :label="$t('logo_height')" v-model="MasterInfo.LOGO_HEIGHT" number />
+                    </v-col>
+                  </v-row>
+                </v-col>
+              </v-row>
+            </span>
+          </BaseTab>
+          <BaseTab :name="$t('background')">
+            <span v-show="showExp">
+              <v-row dense>
+                <v-col md="6">
+                  <v-col lg="12">
+                    <BasePhoto ref="photoBackground" :width="150" :height="100" table_name="TEI_COMPANY_2" v-model="MasterInfo.PK" :procedure="procedure_upload"></BasePhoto>
+                  </v-col>
+                </v-col>
+                <v-col md="6">
+                  <v-row dense class="pr-3">
+                    <v-col lg="12">
+                      <BaseInput outlined :label="$t('url_img_bg')" v-model="MasterInfo.URL_IMG_BG" number />
+                    </v-col>
+                    <v-col lg="12">
+                      <BaseInput outlined :label="$t('bg_start_row')" v-model="MasterInfo.BG_START_ROW" number />
+                    </v-col>
+                    <v-col lg="12">
+                      <BaseInput outlined :label="$t('bg_start_col')" v-model="MasterInfo.BG_START_COL" number />
+                    </v-col>
+                    <v-col lg="12">
+                      <BaseInput outlined :label="$t('bg_width')" v-model="MasterInfo.BG_WIDTH" number />
+                    </v-col>
+                    <v-col lg="12">
+                      <BaseInput outlined :label="$t('bg_height')" v-model="MasterInfo.BG_HEIGHT" number />
+                    </v-col>
+                  </v-row>
+                </v-col>
+              </v-row>
+            </span>
+          </BaseTab>
+
+          <BaseTab :name="$t('sign_position')">
+            <span v-show="showSign">
+              <v-row dense>
+                <v-col md="6">
+                  <v-row dense>
+                    <v-col lg="12">
+                      <BaseInput outlined :label="$t('sign_start_cell')" v-model="MasterInfo.SIGN_START_CELL" number />
+                    </v-col>
+                    <v-col lg="12">
+                      <BaseInput outlined :label="$t('sign_end_cell')" v-model="MasterInfo.SIGN_END_CELL" number />
+                    </v-col>
+                    <v-col lg="12">
+                      <BaseInput outlined :label="$t('sign_by_start_cell')" v-model="MasterInfo.SIGN_BY_START_CELL" number />
+                    </v-col>
+                    <v-col lg="12">
+                      <BaseInput outlined :label="$t('sign_by_end_cell')" v-model="MasterInfo.SIGN_BY_END_CELL" number />
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col md="6">
+                  <v-row dense class="pr-3">
+                    <v-col lg="12">
+                      <BaseInput outlined :label="$t('sign_cell_box')" v-model="MasterInfo.SIGN_CELL_BOX" number />
+                    </v-col>
+                    <v-col lg="12">
+                      <BaseInput outlined :label="$t('details_start_row')" v-model="MasterInfo.DETAILS_START_ROW" number />
+                    </v-col>
+                    <v-col lg="12">
+                      <BaseInput outlined :label="$t('sign_range_details')" v-model="MasterInfo.SIGN_RANGE_DETAILS" number />
+                    </v-col>
+                  </v-row>
+                </v-col>
+              </v-row>
+            </span>
+          </BaseTab>
+        </BaseTabs>
       </v-col>
-      <v-col cols="12" :lg="showHilden ? 8 : 12">
-        <!-- <v-row dense>
+      <!-- <v-col cols="12" :lg="showHilden ? 6 : 12">
+        <v-row dense>
           <v-col md="2" class="d-flex justify-start">
             <div class="d-flex">
               <BaseButton btn_type="icon" icon_type="hide_search_panel" :btn_text="$t('hide_search_panel')" v-if="showHilden" mdi-icon="mdi-backburger" @onclick="showHilden = !showHilden" />
@@ -72,7 +199,7 @@
           <v-col md="2"> </v-col>
           <v-col md="2"> </v-col>
           <v-col md="2"> </v-col>
-        </v-row> -->
+        </v-row> 
         <v-row dense>
           <v-col md="1">
             <div class="d-flex">
@@ -95,7 +222,7 @@
             <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('template_file')" :disabled="!item_pk" @onclick="getImpFile" />
             <BaseButton btn_type="icon" icon_type="view" :btn_text="$t('view')" :disabled="!item_pk" @onclick="onClickButton('VIEW')" />
             <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="!item_pk" @onclick="onClickButton('NEW_T')" />
-            <!-- <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="!item_pk" @onclick="onClickButton('DELETE_T')" /> -->
+             <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="!item_pk" @onclick="onClickButton('DELETE_T')" /> 
             <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="!item_pk" @onclick="onClickButton('SAVE_T')" />
           </v-col>
           <v-row lg="12">
@@ -178,7 +305,7 @@
             </v-col>
           </v-row>
         </v-row>
-      </v-col>
+      </v-col> -->
     </v-row>
     <view-einvoice-pdf-dialog ref="ViewEInvoicePDFDialog" :src_pdfUrl="pdfUrl"></view-einvoice-pdf-dialog>
     <!-- Copy To Dialog -->
@@ -331,7 +458,48 @@ export default {
     txtParamCodeDetails: "",
     dataIssued: [],
     templateIdList:[],
-    dataTemp:[]
+    dataTemp:[],
+
+    MasterInfo: {
+      TEMPLATE_CD: "",
+      URL_FILE_EXCEL: "",
+
+      URL_IMG_LOGO: "",
+      LOGO_START_ROW: "",
+      LOGO_START_COL: "",
+      LOGO_WIDTH: "",
+      LOGO_HEIGHT: "",
+      ////
+      URL_IMG_BG: "",
+      BG_START_ROW: "",
+      BG_START_COL: "",
+      BG_WIDTH: "",
+      BG_HEIGHT: "",
+      ////
+      SIGN_START_CELL: "",
+      SIGN_END_CELL: "",
+      SIGN_BY_START_CELL: "",
+      SIGN_BY_END_CELL: "",
+      SIGN_CELL_BOX: "",
+      DETAILS_START_ROW: "",
+      SIGN_RANGE_DETAILS: "",
+
+      SERIAL_NO:"",
+      FORM_NO: "",
+      FROM_NO: "",
+      USE_YN: ""
+    },
+    SERIAL_NO: "",
+    FORM_NO: "",
+    blUseYN: "",
+    procedure_upload: "AC_UPD_6095010_IMG_v2",
+    selected_form_no: "",
+    formNo_list: [],
+    templateID_list: [],
+    //
+    showPersonal: true,
+    showExp: true,
+    showSign: true,
   }),
   /*############### created #######################*/
   async created() {
@@ -385,9 +553,9 @@ export default {
     },
     limitHeight() {
       if (this.windowHeight <= 768) {
-        return this.windowHeight * 0.62; //1366x768
+        return this.windowHeight * 0.15; //1366x768
       } else {
-        return this.windowHeight * 0.73; //1920x1080
+        return this.windowHeight * 0.25; //1920x1080
       }
     },
     limitHeightmin() {
@@ -663,6 +831,12 @@ export default {
       this.dataIssued = cell.data;
       this.itemTemplatePK = cell.data.TEI_TEMPLATE_PK;
       this.$refs.grdTemplate.loadData();
+
+      this.MasterInfo.PK = cell.data.PK;
+      this.MasterInfo.SERIAL_NO = cell.data.SERIAL_NO;
+      this.MasterInfo.FORM_NO = cell.data.FORM_NO;
+      this.MasterInfo.FROM_NO = cell.data.FROM_NO;
+      this.MasterInfo.USE_YN = cell.data.USE_YN_1;
     },
 
     cellClickCellTemplate(cell) {
@@ -871,6 +1045,7 @@ export default {
             this.cboTemplate = results[9];
             this.Form_noList = results[10];
             this.templateIdList = results[11];
+            this.templateID_list = results[11];///
           }
           break;
       }

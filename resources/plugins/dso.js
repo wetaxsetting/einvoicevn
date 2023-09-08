@@ -644,7 +644,14 @@ Vue.mixin({
                                 this.showNotification("danger", this.$t(res.data[0].ERRCODE), "", this.POPUP_ERROR_DELAY);
                             }
                             return null;
-                        } else if (res.success == true) {
+                        } else if (res.data.length > 0 && res.data[0][0].ERRCODE) {
+                            if (res.data[0][0].ERRMSG) {
+                                this.showNotification("danger", this.$t(res.data[0][0].ERRCODE) + " [" + res.data[0][0].ERRMSG + "]", "", this.POPUP_ERROR_DELAY);
+                            } else {
+                                this.showNotification("danger", this.$t(res.data[0][0].ERRCODE), "", this.POPUP_ERROR_DELAY);
+                            }
+                            return null;
+                        }else if (res.success == true) {
                             if (dso.selpro) {
                                 res = await this.$axios.$post("dso/callproc", {
                                     proc: dso.selpro,

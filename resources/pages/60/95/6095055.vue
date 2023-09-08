@@ -331,7 +331,8 @@ export default {
     txtParamCodeMaster: "",
     txtParamCodeDetails: "",
     dataIssued: [],
-    templateIdList:[]
+    templateIdList:[],
+    dataTemp:[]
   }),
   /*############### created #######################*/
   async created() {
@@ -648,6 +649,20 @@ export default {
     },
 
     cellClickCellTemplate(cell) {
+      this.dataTemp = {
+        pk : cell.data.PK,
+        url : cell.data.URL_FILE_EXCEL,
+        logo_url :  cell.data.URL_IMG_LOGO,
+        logo_start_col: cell.data.LOGO_START_COL,
+        logo_start_row: cell.data.LOGO_START_ROW,
+        logo_width : cell.data.LOGO_WIDTH,
+        logo_height : cell.data.LOGO_HEIGHT,
+        bg_url : cell.data.URL_IMG_BG,
+        bg_start_row : cell.data.BG_START_ROW,
+        bg_start_col : cell.data.BG_START_COL,
+        bg_width : cell.data.BG_WIDTH,
+        bg_height : cell.data.BG_HEIGHT 
+      }
       this.itemTemplatesPK = cell.data.PK;
       this.url_template = cell.data.URL_FILE_EXCEL;
     },

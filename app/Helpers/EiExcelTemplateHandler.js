@@ -8,7 +8,7 @@ class EiExcelHandler {
   }
   masterDataArray = []
 
-  async getEinvoice(tradecode, p_language, p_crt_by, _db2 = "N") {
+  async getEinvoice( data, p_language, p_crt_by, _db2 = "N") {
 
     try {
 
@@ -35,7 +35,7 @@ class EiExcelHandler {
       let qrPath = "assets/images/einvoices_logo/qr.png"//đường dẫn của dấu tick xanh
       let signPath = "assets/images/einvoices_logo/greentick.png"//đường dẫn của dấu tick xanh
       let cancelPath = "assets/images/einvoices_logo/Einvoice_cancel.png"//đường dẫn của hình cancel
-      let bgPath = "" //đường dẫn của hình background
+      let bg =  [] //đường dẫn của hình background
 
       let _sourceRow = 0//chiều cao tính từ đầu trang tới dòng đầu tiên của detail
       let _sourceRow_2 = 0//chiều cao tính từ đầu trang tới dòng đầu tiên của detail
@@ -46,15 +46,36 @@ class EiExcelHandler {
       let lastPageRowsHeight = 0
       let companyName = ""
       let backgroundRow = 0
-
+      
       const einvoiceMasterData = await DBService.callProcCursor(
-        "EI_SEL_6095057_TEMPLATES", [tradecode],
+        "EI_SEL_6095057_TEMPLATES", [data.pk],
         p_language,
         p_crt_by,
         _db2
       );
      
-    
+      if(data.logo_url != "")
+      {
+        logos = 
+          { logo_start_col: data.logo_start_col,
+            logo_start_row: data.logo_start_row,
+            logo_width : data.logo_width,
+            logo_height : data.logo_height,
+            logoPath: `assets/images/einvoices_logo/${data.logo_url}` 
+          }  
+      }
+
+      if(data.bg_url != "")
+      {
+        bg = 
+          { 
+            bg_start_row: data.bg_start_row,
+            bg_start_col: data.bg_start_col,
+            bg_width : data.bg_width,
+            bg_height : data.bg_height,
+            bgPath: `assets/images/einvoices_logo/${data.bg_url}` 
+          }  
+      }
      
     console.log(einvoiceMasterData)
     if (einvoiceMasterData.length <= 0) {
@@ -69,16 +90,16 @@ class EiExcelHandler {
 
     this.masterDataArray = []
       reportPath = einvoiceMasterData[0].URL_FILE_EXCEL;//'report/60/95/einvoices_template/Bornga/Bornga.xlsx'
-      reportSheet = "Invoice"    
-   
+      reportSheet = "Invoice" 
+
         console.log("masterDataArray ", this.masterDataArray);
         resultExcel = await exceljs.ExcelBuilder(
           p_crt_by, 
           reportPath, 
-          reportSheet
+          reportSheet,
+          logos,
+          bg
           )
-      
-      
     return resultExcel
 
     } catch (error) {

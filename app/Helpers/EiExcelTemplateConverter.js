@@ -6,7 +6,7 @@ const ReportHelper = use("App/Helpers/ReportHelper");
 class EiExcelConverterAuto {
 	constructor() {
 	}
-	async ExcelBuilder(p_crt_by, reportPath, reportSheet){
+	async ExcelBuilder(p_crt_by, reportPath, reportSheet, logos, bg){
 		//(p_crt_by, einvoiceDetailData, einvoicePk, _sourceRow, _sourceRow_2, _sourceRow_3, headerRowCount, countFromEndDetailToSignBox, lastPageRowsHeight, reportPath, reportSheet, signPath, cancelPath, bgPath, masterDataArray, detailCellFormat, logos, signCell, signBoxCell, signByCell, cancelYn, backgroundCell,backgroundRow, backgroundWidth, backgroundHeight) {
 		// console.log('===> ', p_crt_by)
 		// console.log(einvoiceDetailData)
@@ -34,7 +34,35 @@ class EiExcelConverterAuto {
 			let file = new File([data], "test.png", metadata);
 			return file;
 		}
+
+
+
+		if (bg.bgPath != "") {
+			console.log("bg  " + bg  );
+			try {
+				worksheet.addImage(await exceljs.insertPathImage(bg.bgPath), {
+					tl: { col:  bg.bg_start_col, row:  bg.bg_start_row },
+					ext: { width: bg.bg_width, height: bg.bg_height }
+				});
+
+			} catch (error) {
+				console.log(error)
+			}
+		}
 		
+		if (logos.bgPath != "") {
+			console.log("logos  " + logos  );
+			try {
+				worksheet.addImage(await exceljs.insertPathImage(logos.bgPath), {
+					tl: { col:  logos.bg_start_col, row:  logos.bg_start_row },
+					ext: { width: logos.bg_width, height: logos.bg_height }
+				});
+
+			} catch (error) {
+				console.log(error)
+			}
+		}
+
 		//END-this part add more style to missing part of the footer(optional).
 
         // const reportFilePdf = await exceljs.writeFile();

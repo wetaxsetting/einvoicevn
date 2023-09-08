@@ -448,6 +448,9 @@ export default {
           },
         },
         { dataField: "SERIAL_NO", width: 100, caption: this.$t("serial_no"), editable: true, alignment: "left", type: "text" },
+
+        { dataField: "FROM_NO", width: 100, caption: this.$t("from_no"), editable: true, alignment: "center", type: "number" },
+
         { dataField: "FROM_DT", width: 100, caption: this.$t("from_dt"), editable: true, alignment: "center", type: "date" },
         { dataField: "TO_DT", width: 100, caption: this.$t("to_dt"), editable: true, alignment: "center", type: "date" },
         {

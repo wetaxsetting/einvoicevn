@@ -66,7 +66,6 @@ class EiExcelHandler {
       );
     }
 
-   
 
     this.masterDataArray = []
       reportPath = einvoiceMasterData[0].URL_FILE_EXCEL;//'report/60/95/einvoices_template/Bornga/Bornga.xlsx'

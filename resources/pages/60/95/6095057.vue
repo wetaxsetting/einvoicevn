@@ -29,7 +29,7 @@
             <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('template_file')" @onclick="getImpFile" />
             <BaseButton btn_type="icon" icon_type="view" :btn_text="$t('view')" @onclick="onClickButton('VIEW')" />
             <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" @onclick="onClickButton('NEW_T')" />
-            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClickButton('DELETE_T')" />
+            <!-- <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClickButton('DELETE_T')" /> -->
             <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClickButton('SAVE_T')" />
           </v-col>
           <v-row lg="12">
@@ -78,7 +78,7 @@
           </v-col>
           <v-col md="3" class="d-flex justify-end">
             <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" @onclick="onClickButton('NEW_PM')" />
-            <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClickButton('DELETE_PM')" />
+            <!-- <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClickButton('DELETE_PM')" /> -->
             <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClickButton('SAVE_PM')" />
           </v-col>
           <v-row lg="12">

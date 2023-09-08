@@ -1611,7 +1611,7 @@ class EInvoiceController {
                     const para_pdf = {
                         tei_einvoice_m_pk: masterInvoicePK.TEI_EINVOICE_M_PK,
                         // base64 : "data:application/pdf;base64," + base64PDf
-                        url_pdf: base64PDf,
+                        url_pdf: "",
                     };
                     await DBService.ExecuteSQLBlob(
                         `BEGIN ei_upd_file_pdf_ar(
@@ -2413,20 +2413,22 @@ class EInvoiceController {
             }
 
             const { 
-                seller_company_id = "",
-                seller_company_nm,
-                seller_company_fnm,
-                seller_taxcode,
-                representative = "",
-                seller_address,
-                seller_tel = "",
-                seller_fax = "",
-                seller_email = "",
-                seller_bank_no = "",
-                seller_bank_name = "",
-                tax_office_name = "",
-                tax_office_code = "",
-                seller_website = "" } = request.all() ;
+                    seller_company_id = "",
+                    seller_company_nm,
+                    seller_company_fnm,
+                    seller_taxcode,
+                    representative = "",
+                    seller_address,
+                    seller_tel = "",
+                    seller_fax = "",
+                    seller_email = "",
+                    seller_bank_no = "",
+                    seller_bank_name = "",
+                    tax_office_name = "",
+                    tax_office_code = "",
+                    seller_website = "",
+                    list_token = []
+                } = request.all() ;
 
                 if(!seller_company_nm){
                     return response.send(Utils.response(false, `Invalid: seller_company_nm` ));
@@ -2478,7 +2480,23 @@ class EInvoiceController {
                 p_language,
                 p_crt_by
             );
-
+            console.log(res);
+            if(list_token.length > 0)
+            {
+                for(let i = 0; i < list_token.length; i++ )
+                {
+                    const para_tax_list = {
+                        tax_serial_number : list_token[i].tax_serial_number,
+                        tax_institute : list_token[i].tax_institute, 
+                        tax_from_dt : list_token[i].tax_from_dt, 
+                        tax_to_dt : list_token[i].tax_to_dt, 
+                        tax_status : list_token[i].tax_status, 
+                        company_id : res[0].s , 
+                     
+                    }
+                }
+            }
+            
             return response.send(Utils.response(true, res.p_rtn_cur[0].STATUS_NM, {company_id: res.p_rtn_cur[0].COMPANY_ID} ));
         } catch (e) {
             Utils.Logger({
@@ -4604,7 +4622,7 @@ class EInvoiceController {
                 p_crt_by = user.USER_ID;
             }
 
-            const { para } = request.all();
+            const { para, otp } = request.all();
             console.log("para ", JSON.stringify(para));
 
             await Request.post(EINVOICE_ESIGN_XML, { xmlContent: JSON.stringify(para) })

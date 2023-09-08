@@ -48,7 +48,7 @@
               :filter_paras="[this.selected_company, this.fromDate, this.toDate, this.txtSerialNo, this.lstStatus]"
               upd_procedure="EI_UPD_6095055_2"
               :editable="true"
-              :update_paras="['PK', 'TCO_COMPANY_PK', 'INVOICE_KIND', 'SERIAL_NO_2', 'FORM_NO', 'SERIAL_NO', 'FROM_DT', 'TO_DT', 'STATUS', 'TCO_BUSPLACE_PK', 'REMARKS', 'USE_YN']"
+              :update_paras="['PK', 'TCO_COMPANY_PK', 'INVOICE_KIND', 'SERIAL_NO_2', 'FORM_NO', 'SERIAL_NO', 'FROM_DT', 'TO_DT', 'STATUS', 'TCO_BUSPLACE_PK', 'REMARKS', 'USE_YN', 'FROM_NO']"
               :height="limitHeight"
               @cellDblClick="onDblClickCell"
               @cellClick="cellClickCell"
@@ -142,7 +142,7 @@
                   'LOGO_START_COL',
                   'URL_IMG_BG',
                   'BG_START_ROW',
-                  'BG_END_ROW',
+                  'BG_START_COL',
                   'BG_WIDTH',
                   'BG_HEIGHT',
                   'SIGN_START_CELL',
@@ -299,7 +299,6 @@ export default {
     indexTab: 0,
     typeInvoiceList: [],
     invoiceKind: [],
-    // grdHeader: [],
     typeTableList: [],
     typeTemplateList: [],
     typeList: [],
@@ -559,7 +558,7 @@ export default {
         // },
         {
           dataField: "URL_IMG_LOGO",
-          width: 500,
+          width: 400,
           caption: this.$t("url_img_logo"),
           alignment: "left",
           type: "text",
@@ -584,8 +583,26 @@ export default {
           editable: true,
         },
         {
+          dataField: "LOGO_WIDTH",
+          width: 100,
+          caption: this.$t("logo_width"),
+          alignment: "left",
+          type: "number",
+          formatFloat: 1,
+          editable: true,
+        },
+        {
+          dataField: "LOGO_HEIGHT",
+          width: 100,
+          caption: this.$t("logo_height"),
+          alignment: "left",
+          type: "number",
+          formatFloat: 1,
+          editable: true,
+        },
+        {
           dataField: "URL_IMG_BG",
-          width: 500,
+          width: 400,
           caption: this.$t("url_img_bg"),
           alignment: "left",
           type: "text",
@@ -601,9 +618,9 @@ export default {
           editable: true,
         },
         {
-          dataField: "BG_END_ROW",
+          dataField: "BG_START_COL",
           width: 100,
-          caption: this.$t("bg_end_row"),
+          caption: this.$t("bg_start_col"),
           alignment: "left",
           type: "number",
           formatFloat: 1,
@@ -884,6 +901,7 @@ export default {
         INVOICE_KIND: "C",
         SERIAL_NO_2: "T",
         FORM_NO: "1",
+        FROM_NO: "",
         SERIAL_NO: "",
         FROM_DT: "",
         TO_DT: "",
@@ -923,6 +941,16 @@ export default {
         WEBSITE: "",
         TAX_CODE_DISPLAY: "",
         PBAN: "2.0.1",
+        URL_IMG_LOGO: "",
+        LOGO_START_ROW: "",
+        LOGO_START_COL: "",
+        LOGO_WIDTH: "",
+        LOGO_HEIGHT: "",
+        URL_IMG_BG: "",
+        BG_START_ROW: "",
+        BG_START_COL: "",
+        BG_WIDTH: "",
+        BG_HEIGHT: ""
       });
     },
 

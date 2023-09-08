@@ -66,6 +66,7 @@
             </v-badge>
           </v-col>
           <v-col md="3" class="d-flex justify-end">
+            <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('template_file')" :disabled="!item_pk" @onclick="getImpFile" />
             <BaseButton btn_type="icon" icon_type="view" :btn_text="$t('view')" :disabled="!item_pk" @onclick="onClickButton('VIEW')" />
             <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="!item_pk" @onclick="onClickButton('NEW_S')" />
             <!-- <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="!item_pk" @onclick="onClickButton('DELETE_S')" /> -->
@@ -884,13 +885,6 @@ export default {
       this.itemTemplatesPK = cell.data.PK;
       this.url_template = cell.data.URL_FILE_EXCEL;
     },
-
-    toggleLeft() {
-      this.showLeft = this.showLeft ? false : true;
-      this.leftCols = !this.showLeft ? 0 : 5;
-      this.btnIconType = !this.showLeft ? "skip_next" : "skip_prev";
-    },
-
     onClickButton(pos) {
       switch (pos) {
         case "VIEW":

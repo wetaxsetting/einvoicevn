@@ -755,7 +755,7 @@ export default {
           this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_serial_no_at_" + (i + 1)));
           return;
         }else if (!data[i].FROM_NO) {
-          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_from_no_at_" + (i + 1)));
+          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_start_invoice_no_at_" + (i + 1)));
           return;
         } else if (!data[i].FROM_DT) {
           this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_form_date_at_" + (i + 1)));

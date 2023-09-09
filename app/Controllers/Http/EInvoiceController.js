@@ -2489,7 +2489,7 @@ class EInvoiceController {
             issuer: tokens[i].issuer,
             issue_by: tokens[i].issue_by,
             issue_to: tokens[i].issue_to,
-            ca_name: caName[1] || '',
+            ca_name:tokens[i].ca_name ? tokens[i].ca_name : caName[1],
             dn_name: tokens[i].dn_name,
             dn_mst: tokens[i].dn_mst,
             raw_data: tokens[i].raw_data,

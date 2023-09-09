@@ -38,7 +38,7 @@ class UserController {
             // const verify = await Hash.verify(password, user.USER_PW)
             const md5_64 = this.b64_md5(password);
 
-            console.log(" user ",  user);
+            // console.log(" user ",  user);
 
             console.log(" user.USER_PW ",  user.USER_PW, "md5_64  ", md5_64);
             let verify = md5_64 == user.USER_PW;

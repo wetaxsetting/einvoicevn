@@ -90,7 +90,7 @@
               <v-row dense>
                 <v-col md="6">
                   <v-col lg="12">
-                    <BasePhoto ref="photoLogo" :width="150" :height="100" table_name="TEI_TEMPLATE_1" v-model="MasterInfo.PK" :procedure="procedure_upload"  @callback="abc"></BasePhoto>
+                    <!-- <BasePhoto ref="photoLogo" :width="150" :height="100" table_name="TEI_TEMPLATE_1" v-model="MasterInfo.PK" :procedure="procedure_upload"  @callback="abc"></BasePhoto> -->
                   </v-col>
                 </v-col>
 
@@ -129,7 +129,7 @@
               <v-row dense>
                 <v-col md="6">
                   <v-col lg="12">
-                    <BasePhoto ref="photoBackground" :width="150" :height="100" table_name="TEI_TEMPLATE_2" v-model="MasterInfo.PK" :procedure="procedure_upload" @callback="abc" ></BasePhoto>
+                    <!-- <BasePhoto ref="photoBackground" :width="150" :height="100" table_name="TEI_TEMPLATE_2" v-model="MasterInfo.PK" :procedure="procedure_upload" @callback="abc" ></BasePhoto> -->
                   </v-col>
                 </v-col>
                 <v-col md="6">
@@ -494,6 +494,8 @@ export default {
     dataTemp: [],
 
     MasterInfo: {
+      _rowstatus: null,
+      TEI_TEMPLATE_PK: null,
       TEMPLATE_CD: "",
       URL_FILE_EXCEL: "",
 
@@ -908,10 +910,10 @@ export default {
           break;
         case "SAVE_S":
           this.dsoMaster("update");
-          let savedPhoto = await this.$refs.photoLogo.Save();
-          let savedPhotoBG = await this.$refs.photoBackground.Save();
+          // let savedPhoto = await this.$refs.photoLogo.Save();
+          // let savedPhotoBG = await this.$refs.photoBackground.Save();
           break;
-        case "NEW_T":
+        case "NEW_S":
           this.onNew_T();
           break;
         // case "SAVE_T":
@@ -945,9 +947,9 @@ export default {
         type: "control",
         selpro: "EI_SEL_6095055_3_NC",
         updpro: "EI_UPD_6095055_4",
-        para: [this.item_pk],
+        para: [this.MasterInfo.PK],
         elname: [
-                "_rowstatus",
+                  '_rowstatus',
                   'TEI_TEMPLATE_PK',
                   'TEMPLATE_CD',
                   'TEMPLATE_NM',
@@ -1186,6 +1188,14 @@ export default {
 
     onNew_T() {
       this.MasterInfo._rowstatus = "i";
+      this.MasterInfo.PK = null;
+      this.MasterInfo.TEI_TEMPLATE_PK = this.item_pk;
+
+      this.MasterInfo.SERIAL_NO = "";
+      this.MasterInfo.FORM_NO = "";
+      this.MasterInfo.FROM_NO = "";
+
+
       this.MasterInfo.URL_IMG_LOGO = "";
       this.MasterInfo.LOGO_START_ROW = "";
       this.MasterInfo.LOGO_START_COL = "";

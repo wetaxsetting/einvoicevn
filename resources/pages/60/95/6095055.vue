@@ -5,7 +5,7 @@
       <v-col v-show="showHilden" cols="12" :lg="showHilden ? 6 : 0">
         <v-row dense>
           <v-col md="7">
-            <BaseSelect :label="$t('company')" v-model="selected_company" :lstData="company_list" item-text="TEXT" item-value="PK" @change="onChangeCompany" />
+            <BaseSelect :label="$t('company')" v-model="selected_company" :lstData="company_list" item-text="TEXT" item-value="PK" />
           </v-col>
           <v-col md="5" class="d-flex justify-end">
             <BaseButton icon_type="search" btn_type="icon" :btn_text="$t('search')" @onclick="onClickButton('SEARCH_M')" />
@@ -50,7 +50,6 @@
               :editable="true"
               :update_paras="['PK', 'TCO_COMPANY_PK', 'INVOICE_KIND', 'SERIAL_NO_2', 'FORM_NO', 'SERIAL_NO', 'FROM_DT', 'TO_DT', 'STATUS', 'TCO_BUSPLACE_PK', 'REMARKS', 'USE_YN', 'FROM_NO']"
               :height="limitHeight"
-              @cellDblClick="onDblClickCell"
               @cellClick="cellClickCell"
             />
           </v-col>
@@ -91,7 +90,7 @@
               <v-row dense>
                 <v-col md="6">
                   <v-col lg="12">
-                    <BasePhoto ref="photoLogo" :width="150" :height="100" table_name="TEI_COMPANY_1" v-model="MasterInfo.PK" :procedure="procedure_upload"></BasePhoto>
+                    <BasePhoto ref="photoLogo" :width="150" :height="100" table_name="TEI_TEMPLATE_1" v-model="MasterInfo.PK" :procedure="procedure_upload"  @callback="abc"></BasePhoto>
                   </v-col>
                 </v-col>
 
@@ -130,7 +129,7 @@
               <v-row dense>
                 <v-col md="6">
                   <v-col lg="12">
-                    <BasePhoto ref="photoBackground" :width="150" :height="100" table_name="TEI_COMPANY_2" v-model="MasterInfo.PK" :procedure="procedure_upload"></BasePhoto>
+                    <BasePhoto ref="photoBackground" :width="150" :height="100" table_name="TEI_TEMPLATE_2" v-model="MasterInfo.PK" :procedure="procedure_upload" @callback="abc" ></BasePhoto>
                   </v-col>
                 </v-col>
                 <v-col md="6">
@@ -427,6 +426,12 @@ export default {
   layout: "default",
   middleware: "user",
   /*############### components ####################*/
+  // props: {
+  //       type: {
+  //           type: String,
+  //           default: fd
+  //       },
+  //   },
   components: {
     "view-einvoice-pdf-dialog": ViewEInvoicePDFDialog,
     GwImportExcelFile: () => import("@/components/control/GwImportExcelFile.vue"),
@@ -520,7 +525,7 @@ export default {
     SERIAL_NO: "",
     FORM_NO: "",
     blUseYN: "",
-    procedure_upload: "AC_UPD_6095010_IMG_v2",
+    procedure_upload: "AC_UPD_6095055_IMP_V2",
     selected_form_no: "",
     formNo_list: [],
     templateID_list: [],
@@ -606,7 +611,7 @@ export default {
         { dataField: "TCO_COMPANY_PK", width: 100, caption: this.$t("tco_company_pk"), alignment: "left", type: "text", visible: false },
         {
           dataField: "INVOICE_KIND",
-          width: 180,
+          width: 160,
           caption: this.$t("invoice_kind"),
           editable: true,
           lookup: {
@@ -632,7 +637,7 @@ export default {
         },
         {
           dataField: "FORM_NO",
-          width: 150,
+          width: 110,
           caption: this.$t("form_no"),
           editable: true,
           alignment: "left",
@@ -643,7 +648,7 @@ export default {
             valueExpr: "CODE",
           },
         },
-        { dataField: "SERIAL_NO", width: 100, caption: this.$t("serial_no"), editable: true, alignment: "left", type: "text" },
+        { dataField: "SERIAL_NO", width: 80, caption: this.$t("serial_no"), editable: true, alignment: "left", type: "text" },
 
         { dataField: "FROM_NO", width: 100, caption: this.$t("from_no"), editable: true, alignment: "center", type: "number" },
 
@@ -852,8 +857,6 @@ export default {
 
   /*############### methods #######################*/
   methods: {
-    onDblClickCell(cell) {},
-
     cellClickCell(cell) {
       this.item_pk = cell.data.PK;
       this.dataIssued = cell.data;
@@ -862,7 +865,7 @@ export default {
 
       this.MasterInfo.PK = cell.data.PK;
       this.MasterInfo.SERIAL_NO = cell.data.SERIAL_NO;
-      this.MasterInfo.FORM_NO = cell.data.FORM_NO;
+      this.MasterInfo.FORM_NO = cell.data.FORM_NO_NM;
       this.MasterInfo.FROM_NO = cell.data.FROM_NO;
       this.MasterInfo.USE_YN = cell.data.USE_YN_1;
     },
@@ -885,7 +888,7 @@ export default {
       this.itemTemplatesPK = cell.data.PK;
       this.url_template = cell.data.URL_FILE_EXCEL;
     },
-    onClickButton(pos) {
+    async onClickButton(pos) {
       switch (pos) {
         case "VIEW":
           this.onPreview();
@@ -903,12 +906,17 @@ export default {
         case "SEARCH_M":
           this.onSearch();
           break;
+        case "SAVE_S":
+          this.dsoMaster("update");
+          let savedPhoto = await this.$refs.photoLogo.Save();
+          let savedPhotoBG = await this.$refs.photoBackground.Save();
+          break;
         case "NEW_T":
           this.onNew_T();
           break;
-        case "SAVE_T":
-          this.onSave_T();
-          break;
+        // case "SAVE_T":
+        //   this.onSave_T();
+        //   break;
         case "DELETE_T":
           this.onDelete_T();
           break;
@@ -932,7 +940,104 @@ export default {
           break;
       }
     },
+    async dsoMaster(action) {
+      await this._dsoCall({
+        type: "control",
+        selpro: "EI_SEL_6095055_3_NC",
+        updpro: "EI_UPD_6095055_4",
+        para: [this.item_pk],
+        elname: [
+                "_rowstatus",
+                  'TEI_TEMPLATE_PK',
+                  'TEMPLATE_CD',
+                  'TEMPLATE_NM',
+                  'TEMPLATE_LNM',
+                  'TEMPLATE_FNM',
+                  'FORM_NO',
+                  'USE_YN',
+                  'TEI_COMPANY_PK',
+                  'VALID_DATE_FROM',
+                  'VALID_DATE_TO',
+                  'REPORT_ID',
+                  'ADDR1',
+                  'ADDR2',
+                  'BANK_ACCOUNT1',
+                  'BANK_ACCOUNT2',
+                  'BANK_NM1',
+                  'BANK_NM2',
+                  'TEL',
+                  'FAX',
+                  'TAX_CODE',
+                  'TEI_EINVOICE_ISSUSE_PK',
+                  'WEBSITE',
+                  'TAX_CODE_DISPLAY',
+                  'PBAN',
+                  'SERIAL_NO_2',
+                  'URL_FILE_EXCEL',
+                  'URL_IMG_LOGO',
+                  'LOGO_START_ROW',
+                  'LOGO_START_COL',
+                  'URL_IMG_BG',
+                  'BG_START_ROW',
+                  'BG_START_COL',
+                  'BG_WIDTH',
+                  'BG_HEIGHT',
+                  'SIGN_START_CELL',
+                  'SIGN_END_CELL',
+                  'SIGN_BY_START_CELL',
+                  'SIGN_BY_END_CELL',
+                  'DETAILS_START_ROW',
+                  'SIGN_CELL_BOX',
+                  'ATT01',
+                  'ATT02',
+                  'ATT03',
+                  'ATT04',
+                  'ATT05',
+                  'ATT06',
+                  'ATT07',
+                  'ATT08',
+                  'ATT09',
+                  'ATT10',
+                  'ATT01_NUM',
+                  'ATT02_NUM',
+                  'ATT03_NUM',
+                  'ATT04_NUM',
+                  'ATT05_NUM',
+                  'ATT06_NUM',
+                  'ATT07_NUM',
+                  'ATT08_NUM',
+                  'ATT09_NUM',
+                  'ATT10_NUM',
+                  'RANGE_DETAILS_SIGN'
+        ],
+        data: this.MasterInfo,
+      }, action, true).then((res) => {
+        if (res) {
+          switch (action) {
+            case "select":
+              this.MasterInfo = { ...res };
+              this.MasterInfo._rowstatus = "u";
 
+              break;
+            case "update":
+              switch (this.MasterInfo._rowstatus) {
+                case "i":
+                  this.MasterInfo = { ...res };
+                  this.MasterInfo._rowstatus = "u";
+                  break
+                case "u":
+                  this.MasterInfo = { ...res };
+                  this.MasterInfo._rowstatus = "u";
+                  break;
+                case "d":
+                  this.onClick('NEW_T');
+                  break;
+              }
+              break;
+          }
+        }
+      });
+    },
     async onCellClick({ column, data, rowIndex, rowType }) {
       // console.log(data)
     },
@@ -943,10 +1048,6 @@ export default {
 
     onDelete() {
       this.$refs.grdEinvoiceIssue.onSetMarkedDelete(true);
-    },
-
-    onDelete_T() {
-      this.$refs.grdTemplate.onSetMarkedDelete(true);
     },
 
     async onSave() {
@@ -980,15 +1081,6 @@ export default {
       }
       this.$refs.grdEinvoiceIssue.saveData();
     },
-
-    async onSave_T() {
-      let requireCol = [];
-      let validate = this.$refs.grdTemplate.onCheckValid(requireCol);
-      if (validate) {
-        this.$refs.grdTemplate.saveData();
-      }
-    },
-
     async getListCodes(pos) {
       switch (pos) {
         case "company":
@@ -1025,7 +1117,7 @@ export default {
         case "status":
           const dso_status_list = { type: "list", selpro: "EI_GET_STATUS_CREATE_EI_NC", para: [this.selected_company] };
           this.statusList = await this._dsoCall(dso_status_list, "select", false);
-          this.lstStatus = "ALL";
+          this.lstStatus = "2";
 
           const dso1 = {
             type: "list",
@@ -1071,42 +1163,10 @@ export default {
           break;
       }
     },
-
-    async onChangeCompany() {
-      this.selectedCompanyFrom = this.selected_company;
-      // this.lstBizplaceFrom = this.lstBizplace;
-      this.fromNoList = [];
-      this.serialNoList = [];
-
-      const dso_from_no = {
-        type: "list",
-        selpro: "EI_FORM_NO_EI_V2",
-        para: [this.lstCompany],
-      };
-      this.fromNoList = await this._dsoCall(dso_from_no, "select", false);
-      this.lstFrom_No_From = this.fromNoList.length > 0 ? this.fromNoList[0].CODE : "";
-
-      const dso_serial_no = {
-        type: "list",
-        selpro: "EI_SERIAL_NO_EI_V2",
-        para: [this.selected_company],
-      };
-      this.serialNoList = await this._dsoCall(dso_serial_no, "select", false);
-      this.lstSerial_No_From = this.serialNoList.length > 0 ? this.serialNoList[0].CODE : "";
-    },
-
-    async onChangeCompanyFrom() {
-      //this.selectedCompanyFrom = this.selected_company;
-      this.fromNoList = [];
-      this.serialNoList = [];
-    },
-
-    async onChangeCompanyFromM() {
-      //this.selectedCompanyFrom = this.selected_company;
-      this.fromNoList = [];
-      this.serialNoList = [];
-    },
+    
     onNew() {
+      const date = new Date();
+      let year = date.getFullYear().toString().substring(2, 4);
       this.$refs.grdEinvoiceIssue.addRowStruct({
         PK: "",
         TCO_COMPANY_PK: this.selected_company,
@@ -1114,7 +1174,7 @@ export default {
         SERIAL_NO_2: "T",
         FORM_NO: "1",
         FROM_NO: "1",
-        SERIAL_NO: "",
+        SERIAL_NO: "C" + year + "T",
         FROM_DT: this.fromDate,
         TO_DT: this.toDate,
         STATUS: "2",
@@ -1125,44 +1185,65 @@ export default {
     },
 
     onNew_T() {
-      let data = this.$refs.grdEinvoiceIssue.getData();
-      this.$refs.grdTemplate.addRowStruct({
-        PK: "",
-        TEMPLATE_CD: data[0].SERIAL_NO,
-        TEMPLATE_NM: data[0].SERIAL_NO,
-        TEMPLATE_LNM: "",
-        TEMPLATE_FNM: "",
-        FORM_NO: data[0].FORM_NO,
-        USE_YN: "Y",
-        TEI_COMPANY_PK: this.selected_company,
-        VALID_DATE_FROM: data[0].FROM_DT,
-        VALID_DATE_TO: data[0].TO_DT,
-        REPORT_ID: "",
-        ADDR1: "",
-        ADDR2: "",
-        BANK_ACCOUNT1: "",
-        BANK_ACCOUNT2: "",
-        BANK_NM1: "",
-        BANK_NM2: "",
-        TEL: data[0].TEL,
-        FAX: "",
-        TAX_CODE: "",
-        TEI_EINVOICE_ISSUSE_PK: this.item_pk,
-        WEBSITE: "",
-        TAX_CODE_DISPLAY: "",
-        PBAN: "2.0.1",
-        URL_IMG_LOGO: "",
-        LOGO_START_ROW: "",
-        LOGO_START_COL: "",
-        LOGO_WIDTH: "",
-        LOGO_HEIGHT: "",
-        URL_IMG_BG: "",
-        BG_START_ROW: "",
-        BG_START_COL: "",
-        BG_WIDTH: "",
-        BG_HEIGHT: "",
-      });
-    },
+      this.MasterInfo._rowstatus = "i";
+      this.MasterInfo.URL_IMG_LOGO = "";
+      this.MasterInfo.LOGO_START_ROW = "";
+      this.MasterInfo.LOGO_START_COL = "";
+      this.MasterInfo.LOGO_WIDTH = "";
+      this.MasterInfo.LOGO_HEIGHT = "";
+      this.MasterInfo.URL_IMG_BG = "";
+      this.MasterInfo.USE_YN = "Y";
+      this.MasterInfo.BG_START_ROW = "";
+      this.MasterInfo.BG_START_COL = "";
+      this.MasterInfo.BG_WIDTH = "";
+      this.MasterInfo.BG_HEIGHT = "";
+      this.MasterInfo.SIGN_START_CELL = "";
+      this.MasterInfo.SIGN_END_CELL = "";
+      this.MasterInfo.SIGN_BY_START_CELL = "";
+      this.MasterInfo.SIGN_BY_END_CELL = "";
+      this.MasterInfo.SIGN_CELL_BOX = "";
+      this.MasterInfo.DETAILS_START_ROW = "";
+      this.MasterInfo.SIGN_RANGE_DETAILS = "";
+    },  
+    // onNew_T() {
+    //   let data = this.$refs.grdEinvoiceIssue.getData();
+    //   this.$refs.grdTemplate.addRowStruct({
+    //     PK: "",
+    //     TEMPLATE_CD: data[0].SERIAL_NO,
+    //     TEMPLATE_NM: data[0].SERIAL_NO,
+    //     TEMPLATE_LNM: "",
+    //     TEMPLATE_FNM: "",
+    //     FORM_NO: data[0].FORM_NO,
+    //     USE_YN: "Y",
+    //     TEI_COMPANY_PK: this.selected_company,
+    //     VALID_DATE_FROM: data[0].FROM_DT,
+    //     VALID_DATE_TO: data[0].TO_DT,
+    //     REPORT_ID: "",
+    //     ADDR1: "",
+    //     ADDR2: "",
+    //     BANK_ACCOUNT1: "",
+    //     BANK_ACCOUNT2: "",
+    //     BANK_NM1: "",
+    //     BANK_NM2: "",
+    //     TEL: data[0].TEL,
+    //     FAX: "",
+    //     TAX_CODE: "",
+    //     TEI_EINVOICE_ISSUSE_PK: this.item_pk,
+    //     WEBSITE: "",
+    //     TAX_CODE_DISPLAY: "",
+    //     PBAN: "2.0.1",
+    //     URL_IMG_LOGO: "",
+    //     LOGO_START_ROW: "",
+    //     LOGO_START_COL: "",
+    //     LOGO_WIDTH: "",
+    //     LOGO_HEIGHT: "",
+    //     URL_IMG_BG: "",
+    //     BG_START_ROW: "",
+    //     BG_START_COL: "",
+    //     BG_WIDTH: "",
+    //     BG_HEIGHT: "",
+    //   });
+    // },
 
     onAfterImport() {
       // console.log("onAfterImport  ");
@@ -1188,43 +1269,43 @@ export default {
       await promise;
     },
 
-    async onCopy() {
-      // if (this.selectedCompanyTo === this.selectedCompanyFrom) {
-      //     return this.showNotification("danger", this.$t("copy_failed"), this.$t("cannot_select_same_company"))
-      // }
-      if (!this.selectedCompanyTo) {
-        return this.showNotification("danger", this.$t("copy_failed"), this.$t("must_select_from_company"));
-      }
-      if (!this.txtForm_No_To) {
-        return this.showNotification("danger", this.$t("copy_failed"), this.$t("must_input_form_no_to"));
-      }
-      if (!this.txtSerial_No_To) {
-        return this.showNotification("danger", this.$t("copy_failed"), this.$t("must_input_serial_no_to"));
-      }
-      const dso = {
-        type: "process",
-        updpro: "EI_PRO_6060230_COPY",
-        para: [
-          this.selectedCompanyFrom,
-          this.selectedCompanyTo,
-          //   this.lstBizplaceFrom,
-          //   this.lstBizplaceTo,
-          this.lstFrom_No_From,
-          this.txtForm_No_To,
-          this.lstSerial_No_From,
-          this.txtSerial_No_To,
-          this.overWriteYN,
-        ],
-      };
+    // async onCopy() {
+    //   // if (this.selectedCompanyTo === this.selectedCompanyFrom) {
+    //   //     return this.showNotification("danger", this.$t("copy_failed"), this.$t("cannot_select_same_company"))
+    //   // }
+    //   if (!this.selectedCompanyTo) {
+    //     return this.showNotification("danger", this.$t("copy_failed"), this.$t("must_select_from_company"));
+    //   }
+    //   if (!this.txtForm_No_To) {
+    //     return this.showNotification("danger", this.$t("copy_failed"), this.$t("must_input_form_no_to"));
+    //   }
+    //   if (!this.txtSerial_No_To) {
+    //     return this.showNotification("danger", this.$t("copy_failed"), this.$t("must_input_serial_no_to"));
+    //   }
+    //   const dso = {
+    //     type: "process",
+    //     updpro: "EI_PRO_6060230_COPY",
+    //     para: [
+    //       this.selectedCompanyFrom,
+    //       this.selectedCompanyTo,
+    //       //   this.lstBizplaceFrom,
+    //       //   this.lstBizplaceTo,
+    //       this.lstFrom_No_From,
+    //       this.txtForm_No_To,
+    //       this.lstSerial_No_From,
+    //       this.txtSerial_No_To,
+    //       this.overWriteYN,
+    //     ],
+    //   };
 
-      const result = await this._dsoCall(dso, "process", true);
-      if (result) {
-        const rtn = result[0].RTN;
-        this.copyToDialog = false;
-        //this.copyResult =  this.$t( rtn);
-      }
-      this.onSearch();
-    },
+    //   const result = await this._dsoCall(dso, "process", true);
+    //   if (result) {
+    //     const rtn = result[0].RTN;
+    //     this.copyToDialog = false;
+    //     //this.copyResult =  this.$t( rtn);
+    //   }
+    //   this.onSearch();
+    // },
 
     async onPreview() {
       // if (!this.itemTemplatePK) {
@@ -1262,7 +1343,17 @@ export default {
       const pdfUrlExcel = await this.getEinvoiceERP_V2(this, pk);
       return pdfUrlExcel;
     },
+    async onChangeCompanyFrom() {
+      //this.selectedCompanyFrom = this.selected_company;
+      this.fromNoList = [];
+      this.serialNoList = [];
+    },
 
+    async onChangeCompanyFromM() {
+      //this.selectedCompanyFrom = this.selected_company;
+      this.fromNoList = [];
+      this.serialNoList = [];
+    },
     async getImpFile() {
       // console.log("this.url_template  ", this.url_template);
       if (!this.url_template.length) {
@@ -1302,20 +1393,24 @@ export default {
       }
     },
 
-    async onGeneralData() {
-      this.dataIssued.Template = [];
-      this.dataIssued.Template.push(this.$refs.grdTemplate.getDataSource());
+    // async onGeneralData() {
+    //   this.dataIssued.Template = [];
+    //   this.dataIssued.Template.push(this.$refs.grdTemplate.getDataSource());
 
-      let res = await this.$axios.$post("/einvoice/updatetemplate", {
-        responseType: "json",
-        para: this.dataIssued,
-      });
-      if (res.success) {
-        this.showNotification("success", this.$t("alert"), res.message);
-      } else {
-        this.showNotification("danger", this.$t("error_occurs"), res.message);
-      }
-    },
+    //   let res = await this.$axios.$post("/einvoice/updatetemplate", {
+    //     responseType: "json",
+    //     para: this.dataIssued,
+    //   });
+    //   if (res.success) {
+    //     this.showNotification("success", this.$t("alert"), res.message);
+    //   } else {
+    //     this.showNotification("danger", this.$t("error_occurs"), res.message);
+    //   }
+    // },
+    abc(res) {
+      console.log("file: 6095055.vue:1428 [vng-304] abc [vng-304] res:", res)
+      
+    }
   },
 };
 /*==================================================================== END export default  ========================================================================================*/

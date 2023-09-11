@@ -6,6 +6,7 @@ const Request = use("Request");
 const ROOT_DIR_FILES = Env.get("ROOT_DIR_FILES", Helpers.tmpPath());
 const ImportHelper = use('App/Helpers/ImportHelper');
 const fs = use("fs");
+const encoding = require('encoding-japanese');
 const { transform } = require('camaro');
 const DB_CONNECTION = Env.get("DB_CONNECTION");
 const DBService = use("DBService");
@@ -108,7 +109,7 @@ class ImportController {
             }
             const folder = `eiv-ap/${tei_company_pk}`
             let file_path = await Utils.putFileRootPath(file, folder);
-            file_path= ROOT_DIR_FILES + file_path
+            file_path = ROOT_DIR_FILES + file_path
             console.log("file_path", file_path)
             if (file_path && file_path.indexOf(".xml") > 0) {
                 tei_einvoice_cloud_pk = await this.extractXMLContent(file_path, p_language, p_crt_by, file_name);
@@ -144,314 +145,213 @@ class ImportController {
             return response.send(Utils.response(false, e.message, null));
         }
     }
-
-    async extractXMLContent(p_xml_path, p_language, p_crt_by, file_name) {
+    async extractXMLContentBillHaiPhongPort(p_xml_path, p_language, p_crt_by, file_name) {
         try {
+
+
+            var fileBuffer = fs.readFileSync(p_xml_path);
+            let xml_encoding = encoding.detect(fileBuffer)
+            if (xml_encoding == "UTF16") { xml_encoding = "UTF16LE" }
             let AESs = new AES();
-            let xmlIntegrity = await AESs.xmlDigitalSignatureVerifier(p_xml_path)
-            let einvoice_file_name = file_name
-
-            const xmlContent = fs.readFileSync(p_xml_path, { encoding: 'utf8', flag: 'r' });
-
-            let templateTTChungPath = 'HDon/DLHDon/TTChung';
-            let templateTTHDLQuanPath = 'HDon/DLHDon/TTChung/TTHDLQuan';
-            let templateNBanPath = 'HDon/DLHDon/NDHDon/NBan';
-            let templateNMuaPath = 'HDon/DLHDon/NDHDon/NMua';
-            let templateLTSuatPath = 'HDon/DLHDon/NDHDon/TToan/THTTLTSuat/LTSuat';
-            let templateTTKhacPath = 'HDon/DLHDon/TTChung/TTKhac/TTin';
-            let templateTToanPath = 'HDon/DLHDon/NDHDon/TToan';
-            let templateDSHHDVuPath = 'HDon/DLHDon/NDHDon/DSHHDVu/HHDVu';
-            let templateSigningTimeNBanPath = "HDon/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty";
-            let templateSigningTimeCQTPath = "HDon/DSCKS/CQT/Signature/Object/SignatureProperties/SignatureProperty";
-            let templateMCCQTPath = 'HDon';
-
-
-
-            //console.log(xmlContent)
-            let templateTTChung = [templateTTChungPath, {
-                PBan: 'PBan',
-                THDon: 'THDon',
-                KHMSHDon: 'KHMSHDon',
-                KHHDon: 'KHHDon',
-                SHDon: 'SHDon',
-                MHSo: 'MHSo',
-                NLap: 'NLap',
-                SBKe: 'SBKe',
-                NBKe: 'NBKe',
-                DVTTe: 'DVTTe',
-                TGia: 'TGia',
-                HTTToan: 'HTTToan',
-                MSTTCGP: 'MSTTCGP',
-                MSTDVNUNLHDon: 'MSTDVNUNLHDon',
-                TDVNUNLHDon: 'TDVNUNLHDon',
-                DCDVNUNLHDon: 'DCDVNUNLHDon'
-            }];
-            let jsonTTChung = await transform(xmlContent, templateTTChung);
-            //console.log("jsonTTChung", jsonTTChung)
-            if (jsonTTChung.length == 0) {
-                templateTTChungPath = 'TDiep/DLieu/HDon/DLHDon/TTChung';
-                templateTTHDLQuanPath = 'TDiep/DLieu/HDon/DLHDon/TTChung/TTHDLQuan';
-                templateNBanPath = 'TDiep/DLieu/HDon/DLHDon/NDHDon/NBan';
-                templateNMuaPath = 'TDiep/DLieu/HDon/DLHDon/NDHDon/NMua';
-                templateLTSuatPath = 'TDiep/DLieu/HDon/DLHDon/NDHDon/TToan/THTTLTSuat/LTSuat';
-                templateTTKhacPath = 'TDiep/DLieu/HDon/DLHDon/TTChung/TTKhac/TTin';
-                templateTToanPath = 'TDiep/DLieu/HDon/DLHDon/NDHDon/TToan';
-                templateDSHHDVuPath = 'TDiep/DLieu/HDon/DLHDon/NDHDon/DSHHDVu/HHDVu';
-                templateSigningTimeNBanPath = "TDiep/DLieu/HDon/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty";
-                templateSigningTimeCQTPath = "TDiep/DLieu/HDon/DSCKS/CQT/Signature/Object/SignatureProperties/SignatureProperty";
-                templateMCCQTPath = 'TDiep/DLieu/HDon';
-
-                templateTTChung = [templateTTChungPath, {
-                    PBan: 'PBan',
-                    THDon: 'THDon',
-                    KHMSHDon: 'KHMSHDon',
-                    KHHDon: 'KHHDon',
-                    SHDon: 'SHDon',
-                    MHSo: 'MHSo',
-                    NLap: 'NLap',
-                    SBKe: 'SBKe',
-                    NBKe: 'NBKe',
-                    DVTTe: 'DVTTe',
-                    TGia: 'TGia',
-                    HTTToan: 'HTTToan',
-                    MSTTCGP: 'MSTTCGP',
-                    MSTDVNUNLHDon: 'MSTDVNUNLHDon',
-                    TDVNUNLHDon: 'TDVNUNLHDon',
-                    DCDVNUNLHDon: 'DCDVNUNLHDon'
-                }];
-
-                jsonTTChung = await transform(xmlContent, templateTTChung);
-
-            }
-
-            const templateTTKhac = [templateTTKhacPath, {
-                TTruong: 'TTruong',
-                DLieu: 'DLieu'
-            }]
-            let jsonTTKhac = null
-            try {
-                jsonTTKhac = await transform(xmlContent, templateTTKhac);
-            } catch (e) {}
-            //console.log("jsonTTKhac", jsonTTKhac)
-            let customField1 = '',
-                customField2 = '',
-                customField3 = '',
-                customField4 = '',
-                customField5 = '',
-                customField6 = '',
-                customField7 = '',
-                customField8 = '',
-                customField9 = '',
-                customField10 = ''
-            if (jsonTTKhac && jsonTTKhac.length > 0) {
-                customField1 = jsonTTKhac[0].TTruong + ': ' + jsonTTKhac[0].DLieu
-                if (jsonTTKhac.length > 1) {
-                    customField2 = jsonTTKhac[1].TTruong + ': ' + jsonTTKhac[1].DLieu
-                }
-                if (jsonTTKhac.length > 2) {
-                    customField2 = jsonTTKhac[1].TTruong + ': ' + jsonTTKhac[1].DLieu
-                    customField3 = jsonTTKhac[2].TTruong + ': ' + jsonTTKhac[2].DLieu
-                }
-                if (jsonTTKhac.length > 3) {
-                    customField2 = jsonTTKhac[1].TTruong + ': ' + jsonTTKhac[1].DLieu
-                    customField3 = jsonTTKhac[2].TTruong + ': ' + jsonTTKhac[2].DLieu
-                    customField4 = jsonTTKhac[3].TTruong + ': ' + jsonTTKhac[3].DLieu
-                }
-                if (jsonTTKhac.length > 4) {
-                    customField2 = jsonTTKhac[1].TTruong + ': ' + jsonTTKhac[1].DLieu
-                    customField3 = jsonTTKhac[2].TTruong + ': ' + jsonTTKhac[2].DLieu
-                    customField4 = jsonTTKhac[3].TTruong + ': ' + jsonTTKhac[3].DLieu
-                    customField5 = jsonTTKhac[4].TTruong + ': ' + jsonTTKhac[4].DLieu
-                }
-                if (jsonTTKhac.length > 5) {
-                    customField2 = jsonTTKhac[1].TTruong + ': ' + jsonTTKhac[1].DLieu
-                    customField3 = jsonTTKhac[2].TTruong + ': ' + jsonTTKhac[2].DLieu
-                    customField4 = jsonTTKhac[3].TTruong + ': ' + jsonTTKhac[3].DLieu
-                    customField5 = jsonTTKhac[4].TTruong + ': ' + jsonTTKhac[4].DLieu
-                    customField6 = jsonTTKhac[5].TTruong + ': ' + jsonTTKhac[5].DLieu
-                }
-                if (jsonTTKhac.length > 6) {
-                    customField2 = jsonTTKhac[1].TTruong + ': ' + jsonTTKhac[1].DLieu
-                    customField3 = jsonTTKhac[2].TTruong + ': ' + jsonTTKhac[2].DLieu
-                    customField4 = jsonTTKhac[3].TTruong + ': ' + jsonTTKhac[3].DLieu
-                    customField5 = jsonTTKhac[4].TTruong + ': ' + jsonTTKhac[4].DLieu
-                    customField6 = jsonTTKhac[5].TTruong + ': ' + jsonTTKhac[5].DLieu
-                    customField7 = jsonTTKhac[6].TTruong + ': ' + jsonTTKhac[6].DLieu
-                }
-                if (jsonTTKhac.length > 7) {
-                    customField2 = jsonTTKhac[1].TTruong + ': ' + jsonTTKhac[1].DLieu
-                    customField3 = jsonTTKhac[2].TTruong + ': ' + jsonTTKhac[2].DLieu
-                    customField4 = jsonTTKhac[3].TTruong + ': ' + jsonTTKhac[3].DLieu
-                    customField5 = jsonTTKhac[4].TTruong + ': ' + jsonTTKhac[4].DLieu
-                    customField6 = jsonTTKhac[5].TTruong + ': ' + jsonTTKhac[5].DLieu
-                    customField7 = jsonTTKhac[6].TTruong + ': ' + jsonTTKhac[6].DLieu
-                    customField8 = jsonTTKhac[7].TTruong + ': ' + jsonTTKhac[7].DLieu
-                }
-                if (jsonTTKhac.length > 8) {
-                    customField2 = jsonTTKhac[1].TTruong + ': ' + jsonTTKhac[1].DLieu
-                    customField3 = jsonTTKhac[2].TTruong + ': ' + jsonTTKhac[2].DLieu
-                    customField4 = jsonTTKhac[3].TTruong + ': ' + jsonTTKhac[3].DLieu
-                    customField5 = jsonTTKhac[4].TTruong + ': ' + jsonTTKhac[4].DLieu
-                    customField6 = jsonTTKhac[5].TTruong + ': ' + jsonTTKhac[5].DLieu
-                    customField7 = jsonTTKhac[6].TTruong + ': ' + jsonTTKhac[6].DLieu
-                    customField8 = jsonTTKhac[7].TTruong + ': ' + jsonTTKhac[7].DLieu
-                    customField9 = jsonTTKhac[8].TTruong + ': ' + jsonTTKhac[8].DLieu
-                }
-                if (jsonTTKhac.length > 9) {
-                    customField2 = jsonTTKhac[1].TTruong + ': ' + jsonTTKhac[1].DLieu
-                    customField3 = jsonTTKhac[2].TTruong + ': ' + jsonTTKhac[2].DLieu
-                    customField4 = jsonTTKhac[3].TTruong + ': ' + jsonTTKhac[3].DLieu
-                    customField5 = jsonTTKhac[4].TTruong + ': ' + jsonTTKhac[4].DLieu
-                    customField6 = jsonTTKhac[5].TTruong + ': ' + jsonTTKhac[5].DLieu
-                    customField7 = jsonTTKhac[6].TTruong + ': ' + jsonTTKhac[6].DLieu
-                    customField8 = jsonTTKhac[7].TTruong + ': ' + jsonTTKhac[7].DLieu
-                    customField9 = jsonTTKhac[8].TTruong + ': ' + jsonTTKhac[8].DLieu
-                    customField10 = jsonTTKhac[9].TTruong + ': ' + jsonTTKhac[9].DLieu
-                }
-            }
-
-            const templateTTHDLQuan = [templateTTHDLQuanPath, {
-                TCHDon: 'TCHDon',
-                LHDCLQuan: 'LHDCLQuan',
-                KHMSHDCLQuan: 'KHMSHDCLQuan',
-                SHDCLQuan: 'SHDCLQuan',
-                NLHDCLQuan: 'NLHDCLQuan',
-                GChu: 'GChu'
-            }]
-            const jsonTTHDLQuan = await transform(xmlContent, templateTTHDLQuan);
-            //console.log("templateTTHDLQuan",jsonTTHDLQuan)
-
-            const arrTTChung = [jsonTTChung[0].PBan, jsonTTChung[0].THDon, jsonTTChung[0].KHMSHDon, jsonTTChung[0].KHHDon, jsonTTChung[0].SHDon, jsonTTChung[0].MHSo, jsonTTChung[0].NLap, jsonTTChung[0].SBKe, jsonTTChung[0].NBKe,
-                jsonTTChung[0].DVTTe, jsonTTChung[0].TGia, jsonTTChung[0].HTTToan, jsonTTChung[0].MSTTCGP, jsonTTChung[0].MSTDVNUNLHDon, jsonTTChung[0].TDVNUNLHDon, jsonTTChung[0].DCDVNUNLHDon
-            ]
-            const templateNBan = [templateNBanPath, {
-                Ten: 'Ten',
-                MST: 'MST',
-                DChi: 'DChi',
-                SDThoai: 'SDThoai',
-                DCTDTu: 'DCTDTu',
-                STKNHang: 'STKNHang',
-                NNBSTKNHang: 'NNBSTKNHang',
-                TNHang: 'TNHang',
-                Fax: 'Fax',
-                Website: 'Website',
-                TTKhac: 'TTKhac'
-
-            }]
-            const jsonNBan = await transform(xmlContent, templateNBan);
-            const arrNBan = [jsonNBan[0].Ten, jsonNBan[0].MST, jsonNBan[0].DChi, jsonNBan[0].SDThoai, jsonNBan[0].DCTDTu, jsonNBan[0].STKNHang, jsonNBan[0].NNBSTKNHang, jsonNBan[0].TNHang, jsonNBan[0].Fax, jsonNBan[0].Website, jsonNBan[0].TTKhac];
-            //console.log("jsonNBan",jsonNBan)
-            const templateNMua = [templateNMuaPath, {
-                Ten: 'Ten',
-                MST: 'MST',
-                DChi: 'DChi',
-                SDThoai: 'SDThoai',
-                DCTDTu: 'DCTDTu',
-                HVTNMHang: 'HVTNMHang',
-                STKNHang: 'STKNHang',
-                TNHang: 'TNHang',
-                TTKhac: 'TTKhac'
-            }]
-            const jsonNMua = await transform(xmlContent, templateNMua);
-            //console.log("jsonNMua",jsonNMua)
-            const arrNMua = [jsonNMua[0].Ten, jsonNMua[0].MST, jsonNMua[0].DChi, jsonNMua[0].SDThoai, jsonNMua[0].DCTDTu, jsonNMua[0].HVTNMHang, jsonNMua[0].STKNHang, jsonNMua[0].TNHang, jsonNMua[0].TTKhac];
-            const templateLTSuat = [templateLTSuatPath, {
-                TSuat: 'TSuat',
-                ThTien: 'ThTien',
-                TThue: 'TThue'
-            }]
-            const jsonLTSuat = await transform(xmlContent, templateLTSuat);
-            //console.log("jsonLTSuat",jsonLTSuat)
-            let arrLTSuat = [];
-            if (jsonLTSuat && jsonLTSuat.length > 0) {
-                arrLTSuat = [jsonLTSuat[0].TSuat, jsonLTSuat[0].ThTien, jsonLTSuat[0].TThue];
-            } else {
-                arrLTSuat = ['', 0, 0];
-            }
-
-            const templateTToan = [templateTToanPath, {
-                TgTCThue: 'TgTCThue',
-                TgTThue: 'TgTThue',
-                TTCKTMai: 'TTCKTMai',
-                TgTTTBSo: 'TgTTTBSo',
-                TgTTTBChu: 'TgTTTBChu'
-            }]
-            const jsonTToan = await transform(xmlContent, templateTToan);
-            //console.log("jsonTToan",jsonTToan)
-            let arrTToan = [];
-            arrTToan = [jsonTToan[0].TgTCThue, jsonTToan[0].TgTThue, jsonTToan[0].TTCKTMai, jsonTToan[0].TgTTTBSo, jsonTToan[0].TgTTTBChu];
-            const templateMCCQT = [templateMCCQTPath, {
-                MCCQT: 'MCCQT'
-            }]
-            const jsonMCCQT = await transform(xmlContent, templateMCCQT);
-            //console.log(jsonMCCQT)
-            const arrMCCQT = [jsonMCCQT[0].MCCQT];
-            const templateDSHHDVu = [templateDSHHDVuPath, {
-                TChat: 'TChat',
-                STT: 'STT',
-                MHHDVu: 'MHHDVu',
-                THHDVu: 'THHDVu',
-                DVTinh: 'DVTinh',
-                SLuong: 'SLuong',
-                DGia: 'DGia',
-                TLCKhau: 'TLCKhau',
-                STCKhau: 'STCKhau',
-                ThTien: 'ThTien',
-                TSuat: 'TSuat'
-            }]
-
-            const templateSigningTimeNBan = [
-                templateSigningTimeNBanPath,
-                {
-                    SigningTimeNBan: "SigningTime"
-                },
-            ];
-            const jsonSigningTimeNBan = await transform(xmlContent, templateSigningTimeNBan);
-
-            const arrSigningTimeNBan = [
-                jsonSigningTimeNBan[0].SigningTimeNBan
-            ];
-
-            const templateSigningTimeCQT = [
-                templateSigningTimeCQTPath,
-                {
-                    SigningTimeCQT: "SigningTime"
-                },
-            ];
-            const jsonSigningTimeCQT = await transform(xmlContent, templateSigningTimeCQT);
-            let arrSigningTimeCQT = [];
-            if (jsonSigningTimeCQT && jsonSigningTimeCQT.length > 0) {
-                arrSigningTimeCQT = [
-                    jsonSigningTimeCQT[0].SigningTimeCQT
-                ];
-            } else {
-                arrSigningTimeCQT = [''];
-            }
-            let masterPara = arrTTChung.concat(arrNBan).concat(arrNMua).concat(arrLTSuat).concat(arrTToan).concat(arrMCCQT);
+            let xmlIntegrity = await AESs.xmlDigitalSignatureVerifierBillHaiPhongPort(p_xml_path, xml_encoding);
+            //console.log(xmlIntegrity)
+            const xmlContent = fs.readFileSync(p_xml_path, { encoding: xml_encoding, flag: "r" });
             const xmlRelativePath = p_xml_path.replace(ROOT_DIR_FILES, "");
-            masterPara = masterPara.concat(["", xmlRelativePath, "", ""]);
-            if (jsonTTHDLQuan && jsonTTHDLQuan.length > 0) {
-                masterPara = masterPara.concat([jsonTTHDLQuan[0].TCHDon, jsonTTHDLQuan[0].LHDCLQuan, jsonTTHDLQuan[0].KHMSHDCLQuan, jsonTTHDLQuan[0].SHDCLQuan, jsonTTHDLQuan[0].NLHDCLQuan, jsonTTHDLQuan[0].GChu, '']);
-            } else {
-                masterPara = masterPara.concat(['', '', '', '', '', '', '']);
+            const templateInvoiceDataPath = "inv:invoice/inv:invoiceData";
+            const templatePaymentMethodPath = "inv:invoice/inv:invoiceData/inv:payments/inv:payment";
+            const templateDeliveryPath = "inv:invoice/inv:invoiceData/inv:delivery";
+            const templateUserDefinesPath = "inv:invoice/inv:invoiceData/inv:userDefines";
+            const templateItemsPath = "inv:invoice/inv:invoiceData/inv:items/inv:item";
+
+            //console.log(xmlContent)  
+
+            let templateInvoiceData = [
+                templateInvoiceDataPath,
+                {
+                    invoiceAppRecordId: 'inv:invoiceAppRecordId',
+                    invoiceType: 'inv:invoiceType',
+                    templateCode: 'inv:templateCode',
+                    invoiceSeries: 'inv:invoiceSeries',
+                    invoiceNumber: 'inv:invoiceNumber',
+                    invoiceName: 'inv:invoiceName',
+                    invoiceIssuedDate: 'inv:invoiceIssuedDate',
+                    signedDate: 'inv:signedDate',
+                    submittedDate: 'inv:submittedDate',
+                    exchangeRate: 'inv:exchangeRate',
+                    currencyCode: 'inv:currencyCode',
+                    invoiceNote: 'inv:invoiceNote',
+                    sellerLegalName: 'inv:sellerLegalName',
+                    sellerTaxCode: 'inv:sellerTaxCode',
+                    sellerAddressLine: 'inv:sellerAddressLine',
+                    sellerEmail: 'inv:sellerEmail',
+                    sellerPhoneNumber: 'inv:sellerPhoneNumber',
+                    sellerFaxNumber: 'inv:sellerFaxNumber',
+                    sellerBankAccName: 'inv:sellerBankAccName',
+                    sellerBankName: 'inv:sellerBankName',
+                    sellerBankAccount: 'inv:sellerBankAccount',
+                    sellerContactPersonName: 'inv:sellerContactPersonName',
+                    sellerSignedPersonName: 'inv:sellerSignedPersonName',
+                    sellerSubmittedPersonName: 'inv:sellerSubmittedPersonName',
+                    buyerDisplayName: 'inv:buyerDisplayName',
+                    buyerLegalName: 'inv:buyerLegalName',
+                    buyerTaxCode: 'inv:buyerTaxCode',
+                    buyerAddressLine: 'inv:buyerAddressLine',
+                    buyerPhoneNumber: 'inv:buyerPhoneNumber',
+                    buyerEmail: 'inv:buyerEmail',
+                    buyerBankName: 'inv:buyerBankName',
+                    buyerBankAccount: 'inv:buyerBankAccount',
+                    totalVATAmount: 'inv:totalVATAmount',
+                    totalVATAmountFrn: 'inv:totalVATAmountFrn',
+                    totalAmountWithVAT: 'inv:totalAmountWithVAT',
+                    totalAmountWithVATFrn: 'inv:totalAmountWithVATFrn',
+                    totalAmountWithVATInWords: 'inv:totalAmountWithVATInWords',
+                    totalAmountWithVATInWordsFrn: 'inv:totalAmountWithVATInWordsFrn',
+                    CHIET_KHAU: 'inv:CHIET_KHAU',
+                    discountAmount: 'inv:discountAmount',
+                    isDiscountAmtPos: 'inv:isDiscountAmtPos',
+                    discountAmountFrn: 'inv:discountAmountFrn',
+                    isDiscountAmtPosFrn: 'inv:isDiscountAmtPosFrn',
+                    totalAmountWithoutVATNoneDiscount: 'inv:totalAmountWithoutVATNoneDiscount',
+                    totalAmountWithoutVAT: 'inv:totalAmountWithoutVAT',
+                    totalAmountWithoutVATFrn: 'inv:totalAmountWithoutVATFrn',
+                },
+            ];
+            let jsonInvoiceData = await transform(xmlContent, templateInvoiceData);
+            //console.log("jsonInvoiceData", jsonInvoiceData)
+            if (jsonInvoiceData.length == 0) {
+                console.log("dont know this xml format " + p_xml_path)
             }
-            masterPara = masterPara.concat([customField1, customField2, customField3, customField4, customField5, customField6, customField7, customField8, customField9, customField10]);
-            //console.log("masterPara",masterPara)    
-            masterPara = masterPara.concat(arrSigningTimeNBan).concat(arrSigningTimeCQT);
-            masterPara = masterPara.concat([xmlIntegrity])
-            masterPara = masterPara.concat([einvoice_file_name])
-            const master = await DBService.callProcCursor('ei_upd_tei_einvoice_cloud', masterPara, p_language, p_crt_by);
+
+            let templatePaymentMethod = [
+                templatePaymentMethodPath,
+                {
+                    paymentMethodName: 'inv:paymentMethodName',
+                },
+            ];
+            let jsonPaymentMethod = await transform(xmlContent, templatePaymentMethod);
+            //console.log("jsonPaymentMethod", jsonPaymentMethod)
+
+            let templateDelivery = [
+                templateDeliveryPath,
+                {
+                    containerNumber: 'inv:containerNumber',
+                    deliveryOrderNumber: 'inv:deliveryOrderNumber'
+                },
+            ];
+            let jsonDelivery = await transform(xmlContent, templateDelivery);
+            //console.log("jsonDelivery", jsonDelivery)
+
+
+            let templateUserDefines = [
+                templateUserDefinesPath,
+                {
+                    EXT_VARCHAR1: 'EXT_VARCHAR1',
+                    EXT_VARCHAR2: 'EXT_VARCHAR2',
+                    EXT_VARCHAR3: 'EXT_VARCHAR3',
+                    EXT_VARCHAR4: 'EXT_VARCHAR4',
+                    EXT_VARCHAR5: 'EXT_VARCHAR5',
+                    EXT_VARCHAR6: 'EXT_VARCHAR6',
+                    EXT_VARCHAR7: 'EXT_VARCHAR7',
+                    EXT_VARCHAR8: 'EXT_VARCHAR8',
+                    EXT_VARCHAR9: 'EXT_VARCHAR9',
+                    EXT_DATE1: 'EXT_DATE1'
+                },
+            ];
+            let jsonUserDefines = await transform(xmlContent, templateUserDefines);
+            //console.log("jsonUserDefines", jsonUserDefines)
+
+            let templateItems = [
+                templateItemsPath,
+                {
+                    lineNumber: 'inv:lineNumber',
+                    itemCode: 'inv:itemCode',
+                    itemName: 'inv:itemName',
+                    unitCode: 'inv:unitCode',
+                    unitName: 'inv:unitName',
+                    quantity: 'inv:quantity',
+                    unitPrice: 'inv:unitPrice',
+                    itemTotalAmountWithoutVat: 'inv:itemTotalAmountWithoutVat',
+                    ItemTotalAmountWithVat: 'inv:ItemTotalAmountWithVat',
+                    vatAmount: 'inv:vatAmount'
+                },
+            ];
+            let jsonItems = await transform(xmlContent, templateItems);
+            //console.log("jsonItems", jsonItems)
+            let masterPara = ['', '', jsonInvoiceData[0].templateCode, jsonInvoiceData[0].invoiceSeries, jsonInvoiceData[0].invoiceNumber, jsonInvoiceData[0].invoiceAppRecordId, jsonInvoiceData[0].invoiceIssuedDate
+                , ''
+                , ''
+                , jsonInvoiceData[0].currencyCode
+                , jsonInvoiceData[0].exchangeRate
+                , jsonPaymentMethod[0].paymentMethodName
+                , ''
+                , ''
+                , ''
+                , ''
+                , jsonInvoiceData[0].sellerLegalName
+                , jsonInvoiceData[0].sellerTaxCode
+                , jsonInvoiceData[0].sellerAddressLine
+                , jsonInvoiceData[0].sellerPhoneNumber
+                , jsonInvoiceData[0].sellerEmail
+                , ''
+                , jsonInvoiceData[0].sellerBankAccount
+                , jsonInvoiceData[0].sellerBankAccName
+                , jsonInvoiceData[0].sellerFaxNumber
+                , ''
+                , ''
+                , jsonInvoiceData[0].buyerLegalName
+                , jsonInvoiceData[0].buyerTaxCode
+                , jsonInvoiceData[0].buyerAddressLine
+                , jsonInvoiceData[0].buyerPhoneNumber
+                , jsonInvoiceData[0].buyerEmail
+                , ''
+                , jsonInvoiceData[0].buyerBankAccount
+                , jsonInvoiceData[0].buyerBankName
+                , ''
+                , 0
+                , jsonInvoiceData[0].totalAmountWithoutVAT
+                , jsonInvoiceData[0].totalVATAmount
+                , jsonInvoiceData[0].totalAmountWithoutVAT
+                , jsonInvoiceData[0].totalVATAmount
+                , jsonInvoiceData[0].discountAmount
+                , jsonInvoiceData[0].totalAmountWithVAT
+                , jsonInvoiceData[0].totalAmountWithVATInWords
+                , ''
+                , ''
+                , xmlRelativePath
+                , ''
+                , ''
+                , ''
+                , ''
+                , ''
+                , ''
+                , ''
+                , jsonInvoiceData[0].invoiceNote
+                , ''
+                , jsonUserDefines[0].EXT_VARCHAR1
+                , jsonUserDefines[0].EXT_VARCHAR2
+                , jsonUserDefines[0].EXT_VARCHAR3
+                , jsonUserDefines[0].EXT_VARCHAR4
+                , jsonUserDefines[0].EXT_VARCHAR5
+                , jsonUserDefines[0].EXT_VARCHAR6
+                , jsonUserDefines[0].EXT_VARCHAR7
+                , jsonUserDefines[0].EXT_VARCHAR8
+                , jsonUserDefines[0].EXT_VARCHAR9
+                , jsonUserDefines[0].EXT_DATE1
+                , jsonInvoiceData[0].signedDate
+                , ''
+                , xmlIntegrity
+                , file_name
+            ]
+            //console.log("masterPara", masterPara)
+            const master = await DBService.callProcCursor("ei_upd_tei_einvoice_cloud", masterPara, p_language, p_crt_by);
             console.log("master", master);
             if (master && master[0].PK > 0) {
-                let jsonDSHHDVu = await transform(xmlContent, templateDSHHDVu);
-                //console.log(jsonDSHHDVu)
-                for (let i = 0; i < jsonDSHHDVu.length; i++) {
-                    if (!jsonDSHHDVu[i].hasOwnProperty("TSuat")) {
-                        jsonDSHHDVu[i].TSuat = "";
-                    }
-                    const detailPara = [master[0].PK, jsonDSHHDVu[i].TChat, jsonDSHHDVu[i].STT, jsonDSHHDVu[i].MHHDVu, jsonDSHHDVu[i].THHDVu, jsonDSHHDVu[i].DVTinh, jsonDSHHDVu[i].SLuong, jsonDSHHDVu[i].DGia, jsonDSHHDVu[i].ThTien, jsonDSHHDVu[i].TLCKhau, jsonDSHHDVu[i].STCKhau, jsonDSHHDVu[i].TSuat];
-                    const detail = await DBService.callProcCursor('ei_upd_tei_einvoiced_cloud', detailPara, p_language, p_crt_by);
-                    console.log("detail", detail);
+                //console.log(jsonItems)
+                for (let i = 0; i < jsonItems.length; i++) {
+                    const detailPara = [master[0].PK, '1', jsonItems[i].lineNumber, jsonItems[i].itemCode, jsonItems[i].itemName, jsonItems[i].unitName, jsonItems[i].quantity, jsonItems[i].unitPrice, jsonItems[i].itemTotalAmountWithoutVat, '0', '0', '0'];
+                    //console.log("detailPara", detailPara)
+                    const detail = await DBService.callProcCursor("ei_upd_tei_einvoiced_cloud", detailPara, p_language, p_crt_by);
+                    //console.log("detail", detail);
                 }
                 return master[0].PK;
             } else {
@@ -461,8 +361,391 @@ class ImportController {
                 return master.message;
             }
         } catch (e) {
-            console.log("extractXMLContent", e.message)
-            Utils.Logger({ LVL: "error", MODULE: "ImportController", FUNC: "extractXMLContent", CONTENT: e.message })
+            console.log(e)
+        }
+    }
+    async extractXMLContent(p_xml_path, p_language, p_crt_by, file_name) {
+        try {
+            var fileBuffer = fs.readFileSync(p_xml_path);
+            let xml_encoding = encoding.detect(fileBuffer)
+            if (xml_encoding == "UTF16") { xml_encoding = "UTF16LE" }
+
+            let einvoice_file_name = file_name;
+            //console.log(xmlIntegrity)
+            const xmlContent = fs.readFileSync(p_xml_path, { encoding: xml_encoding, flag: "r" });
+
+            let templateTTChungPath = "HDon/DLHDon/TTChung";
+            let templateTTHDLQuanPath = "HDon/DLHDon/TTChung/TTHDLQuan";
+            let templateNBanPath = "HDon/DLHDon/NDHDon/NBan";
+            let templateNMuaPath = "HDon/DLHDon/NDHDon/NMua";
+            let templateLTSuatPath = "HDon/DLHDon/NDHDon/TToan/THTTLTSuat/LTSuat";
+            let templateTTKhacPath = "HDon/DLHDon/TTChung/TTKhac/TTin";
+            let templateTToanPath = "HDon/DLHDon/NDHDon/TToan";
+            let templateLPhiPath = "HDon/DLHDon/NDHDon/TToan/DSLPhi/LPhi";
+            let templateDSHHDVuPath = "HDon/DLHDon/NDHDon/DSHHDVu/HHDVu";
+            let templateSigningTimeNBanPath = "HDon/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty";
+            let templateSigningTimeCQTPath = "HDon/DSCKS/CQT/Signature/Object/SignatureProperties/SignatureProperty";
+            let templateMCCQTPath = "HDon";
+
+            //console.log(xmlContent)
+            let templateTTChung = [
+                templateTTChungPath,
+                {
+                    PBan: "PBan",
+                    THDon: "THDon",
+                    KHMSHDon: "KHMSHDon",
+                    KHHDon: "KHHDon",
+                    SHDon: "SHDon",
+                    MHSo: "MHSo",
+                    NLap: "NLap",
+                    SBKe: "SBKe",
+                    NBKe: "NBKe",
+                    DVTTe: "DVTTe",
+                    TGia: "TGia",
+                    HTTToan: "HTTToan",
+                    MSTTCGP: "MSTTCGP",
+                    MSTDVNUNLHDon: "MSTDVNUNLHDon",
+                    TDVNUNLHDon: "TDVNUNLHDon",
+                    DCDVNUNLHDon: "DCDVNUNLHDon",
+                },
+            ];
+            let jsonTTChung = await transform(xmlContent, templateTTChung);
+            //console.log("jsonTTChung", jsonTTChung)
+            if (jsonTTChung.length == 0) {
+                templateTTChungPath = "TDiep/DLieu/HDon/DLHDon/TTChung";
+                templateTTHDLQuanPath = "TDiep/DLieu/HDon/DLHDon/TTChung/TTHDLQuan";
+                templateNBanPath = "TDiep/DLieu/HDon/DLHDon/NDHDon/NBan";
+                templateNMuaPath = "TDiep/DLieu/HDon/DLHDon/NDHDon/NMua";
+                templateLTSuatPath = "TDiep/DLieu/HDon/DLHDon/NDHDon/TToan/THTTLTSuat/LTSuat";
+                templateTTKhacPath = "TDiep/DLieu/HDon/DLHDon/TTChung/TTKhac/TTin";
+                templateTToanPath = "TDiep/DLieu/HDon/DLHDon/NDHDon/TToan";
+                templateDSHHDVuPath = "TDiep/DLieu/HDon/DLHDon/NDHDon/DSHHDVu/HHDVu";
+                templateSigningTimeNBanPath = "TDiep/DLieu/HDon/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty";
+                templateSigningTimeCQTPath = "TDiep/DLieu/HDon/DSCKS/CQT/Signature/Object/SignatureProperties/SignatureProperty";
+                templateMCCQTPath = "TDiep/DLieu/HDon";
+
+                templateTTChung = [
+                    templateTTChungPath,
+                    {
+                        PBan: "PBan",
+                        THDon: "THDon",
+                        KHMSHDon: "KHMSHDon",
+                        KHHDon: "KHHDon",
+                        SHDon: "SHDon",
+                        MHSo: "MHSo",
+                        NLap: "NLap",
+                        SBKe: "SBKe",
+                        NBKe: "NBKe",
+                        DVTTe: "DVTTe",
+                        TGia: "TGia",
+                        HTTToan: "HTTToan",
+                        MSTTCGP: "MSTTCGP",
+                        MSTDVNUNLHDon: "MSTDVNUNLHDon",
+                        TDVNUNLHDon: "TDVNUNLHDon",
+                        DCDVNUNLHDon: "DCDVNUNLHDon",
+                    },
+                ];
+
+                jsonTTChung = await transform(xmlContent, templateTTChung);
+                if (jsonTTChung.length == 0) {
+                    //Bien lai thu tien phi cang bien Hai Phong
+                    return await this.extractXMLContentBillHaiPhongPort(p_xml_path, p_language, p_crt_by, file_name);
+                }
+            }
+
+            let AESs = new AES();
+            let xmlIntegrity = await AESs.xmlDigitalSignatureVerifier(p_xml_path, xml_encoding);
+
+            const templateLPhi = [
+                templateLPhiPath,
+                {
+                    TLPhi: "TLPhi",
+                    TPhi: "TPhi",
+                },
+            ];
+
+            let jsonLPhi = [{
+                TLPhi: "",
+                TPhi: "0",
+            }];
+            try {
+                jsonLPhi = await transform(xmlContent, templateLPhi);
+                if (jsonLPhi == null || jsonLPhi == undefined || jsonLPhi.length == 0) {
+                    jsonLPhi = [{
+                        TLPhi: "",
+                        TPhi: "0",
+                    }];
+                }
+            } catch (e) {
+                jsonLPhi = [{
+                    TLPhi: "",
+                    TPhi: "0",
+                }];
+            }
+
+
+            const templateTTKhac = [
+                templateTTKhacPath,
+                {
+                    TTruong: "TTruong",
+                    DLieu: "DLieu",
+                },
+            ];
+            let jsonTTKhac = null;
+            try {
+                jsonTTKhac = await transform(xmlContent, templateTTKhac);
+            } catch (e) { }
+            //console.log("jsonTTKhac", jsonTTKhac)
+            let customField1 = "",
+                customField2 = "",
+                customField3 = "",
+                customField4 = "",
+                customField5 = "",
+                customField6 = "",
+                customField7 = "",
+                customField8 = "",
+                customField9 = "",
+                customField10 = "";
+            if (jsonTTKhac && jsonTTKhac.length > 0) {
+                customField1 = jsonTTKhac[0].TTruong + ": " + jsonTTKhac[0].DLieu;
+                if (jsonTTKhac.length > 1) {
+                    customField2 = jsonTTKhac[1].TTruong + ": " + jsonTTKhac[1].DLieu;
+                }
+                if (jsonTTKhac.length > 2) {
+                    customField2 = jsonTTKhac[1].TTruong + ": " + jsonTTKhac[1].DLieu;
+                    customField3 = jsonTTKhac[2].TTruong + ": " + jsonTTKhac[2].DLieu;
+                }
+                if (jsonTTKhac.length > 3) {
+                    customField2 = jsonTTKhac[1].TTruong + ": " + jsonTTKhac[1].DLieu;
+                    customField3 = jsonTTKhac[2].TTruong + ": " + jsonTTKhac[2].DLieu;
+                    customField4 = jsonTTKhac[3].TTruong + ": " + jsonTTKhac[3].DLieu;
+                }
+                if (jsonTTKhac.length > 4) {
+                    customField2 = jsonTTKhac[1].TTruong + ": " + jsonTTKhac[1].DLieu;
+                    customField3 = jsonTTKhac[2].TTruong + ": " + jsonTTKhac[2].DLieu;
+                    customField4 = jsonTTKhac[3].TTruong + ": " + jsonTTKhac[3].DLieu;
+                    customField5 = jsonTTKhac[4].TTruong + ": " + jsonTTKhac[4].DLieu;
+                }
+                if (jsonTTKhac.length > 5) {
+                    customField2 = jsonTTKhac[1].TTruong + ": " + jsonTTKhac[1].DLieu;
+                    customField3 = jsonTTKhac[2].TTruong + ": " + jsonTTKhac[2].DLieu;
+                    customField4 = jsonTTKhac[3].TTruong + ": " + jsonTTKhac[3].DLieu;
+                    customField5 = jsonTTKhac[4].TTruong + ": " + jsonTTKhac[4].DLieu;
+                    customField6 = jsonTTKhac[5].TTruong + ": " + jsonTTKhac[5].DLieu;
+                }
+                if (jsonTTKhac.length > 6) {
+                    customField2 = jsonTTKhac[1].TTruong + ": " + jsonTTKhac[1].DLieu;
+                    customField3 = jsonTTKhac[2].TTruong + ": " + jsonTTKhac[2].DLieu;
+                    customField4 = jsonTTKhac[3].TTruong + ": " + jsonTTKhac[3].DLieu;
+                    customField5 = jsonTTKhac[4].TTruong + ": " + jsonTTKhac[4].DLieu;
+                    customField6 = jsonTTKhac[5].TTruong + ": " + jsonTTKhac[5].DLieu;
+                    customField7 = jsonTTKhac[6].TTruong + ": " + jsonTTKhac[6].DLieu;
+                }
+                if (jsonTTKhac.length > 7) {
+                    customField2 = jsonTTKhac[1].TTruong + ": " + jsonTTKhac[1].DLieu;
+                    customField3 = jsonTTKhac[2].TTruong + ": " + jsonTTKhac[2].DLieu;
+                    customField4 = jsonTTKhac[3].TTruong + ": " + jsonTTKhac[3].DLieu;
+                    customField5 = jsonTTKhac[4].TTruong + ": " + jsonTTKhac[4].DLieu;
+                    customField6 = jsonTTKhac[5].TTruong + ": " + jsonTTKhac[5].DLieu;
+                    customField7 = jsonTTKhac[6].TTruong + ": " + jsonTTKhac[6].DLieu;
+                    customField8 = jsonTTKhac[7].TTruong + ": " + jsonTTKhac[7].DLieu;
+                }
+                if (jsonTTKhac.length > 8) {
+                    customField2 = jsonTTKhac[1].TTruong + ": " + jsonTTKhac[1].DLieu;
+                    customField3 = jsonTTKhac[2].TTruong + ": " + jsonTTKhac[2].DLieu;
+                    customField4 = jsonTTKhac[3].TTruong + ": " + jsonTTKhac[3].DLieu;
+                    customField5 = jsonTTKhac[4].TTruong + ": " + jsonTTKhac[4].DLieu;
+                    customField6 = jsonTTKhac[5].TTruong + ": " + jsonTTKhac[5].DLieu;
+                    customField7 = jsonTTKhac[6].TTruong + ": " + jsonTTKhac[6].DLieu;
+                    customField8 = jsonTTKhac[7].TTruong + ": " + jsonTTKhac[7].DLieu;
+                    customField9 = jsonTTKhac[8].TTruong + ": " + jsonTTKhac[8].DLieu;
+                }
+                if (jsonTTKhac.length > 9) {
+                    customField2 = jsonTTKhac[1].TTruong + ": " + jsonTTKhac[1].DLieu;
+                    customField3 = jsonTTKhac[2].TTruong + ": " + jsonTTKhac[2].DLieu;
+                    customField4 = jsonTTKhac[3].TTruong + ": " + jsonTTKhac[3].DLieu;
+                    customField5 = jsonTTKhac[4].TTruong + ": " + jsonTTKhac[4].DLieu;
+                    customField6 = jsonTTKhac[5].TTruong + ": " + jsonTTKhac[5].DLieu;
+                    customField7 = jsonTTKhac[6].TTruong + ": " + jsonTTKhac[6].DLieu;
+                    customField8 = jsonTTKhac[7].TTruong + ": " + jsonTTKhac[7].DLieu;
+                    customField9 = jsonTTKhac[8].TTruong + ": " + jsonTTKhac[8].DLieu;
+                    customField10 = jsonTTKhac[9].TTruong + ": " + jsonTTKhac[9].DLieu;
+                }
+            }
+
+            const templateTTHDLQuan = [
+                templateTTHDLQuanPath,
+                {
+                    TCHDon: "TCHDon",
+                    LHDCLQuan: "LHDCLQuan",
+                    KHMSHDCLQuan: "KHMSHDCLQuan",
+                    SHDCLQuan: "SHDCLQuan",
+                    NLHDCLQuan: "NLHDCLQuan",
+                    GChu: "GChu",
+                },
+            ];
+            const jsonTTHDLQuan = await transform(xmlContent, templateTTHDLQuan);
+            //console.log("templateTTHDLQuan",jsonTTHDLQuan)
+
+            const arrTTChung = [jsonTTChung[0].PBan, jsonTTChung[0].THDon, jsonTTChung[0].KHMSHDon, jsonTTChung[0].KHHDon, jsonTTChung[0].SHDon, jsonTTChung[0].MHSo, jsonTTChung[0].NLap, jsonTTChung[0].SBKe, jsonTTChung[0].NBKe, jsonTTChung[0].DVTTe, jsonTTChung[0].TGia, jsonTTChung[0].HTTToan, jsonTTChung[0].MSTTCGP, jsonTTChung[0].MSTDVNUNLHDon, jsonTTChung[0].TDVNUNLHDon, jsonTTChung[0].DCDVNUNLHDon];
+            const templateNBan = [
+                templateNBanPath,
+                {
+                    Ten: "Ten",
+                    MST: "MST",
+                    DChi: "DChi",
+                    SDThoai: "SDThoai",
+                    DCTDTu: "DCTDTu",
+                    STKNHang: "STKNHang",
+                    NNBSTKNHang: "NNBSTKNHang",
+                    TNHang: "TNHang",
+                    Fax: "Fax",
+                    Website: "Website",
+                    TTKhac: "TTKhac",
+                },
+            ];
+            const jsonNBan = await transform(xmlContent, templateNBan);
+            const arrNBan = [jsonNBan[0].Ten, jsonNBan[0].MST, jsonNBan[0].DChi, jsonNBan[0].SDThoai, jsonNBan[0].DCTDTu, jsonNBan[0].STKNHang, jsonNBan[0].NNBSTKNHang, jsonNBan[0].TNHang, jsonNBan[0].Fax, jsonNBan[0].Website, jsonNBan[0].TTKhac];
+            //console.log("jsonNBan",jsonNBan)
+            const templateNMua = [
+                templateNMuaPath,
+                {
+                    Ten: "Ten",
+                    MST: "MST",
+                    DChi: "DChi",
+                    SDThoai: "SDThoai",
+                    DCTDTu: "DCTDTu",
+                    HVTNMHang: "HVTNMHang",
+                    STKNHang: "STKNHang",
+                    TNHang: "TNHang",
+                    TTKhac: "TTKhac",
+                    MKHang: "MKHang"
+                },
+            ];
+            const jsonNMua = await transform(xmlContent, templateNMua);
+            //console.log("jsonNMua",jsonNMua)
+            const arrNMua = [jsonNMua[0].Ten, jsonNMua[0].MST ? jsonNMua[0].MST : jsonNMua[0].MKHang, jsonNMua[0].DChi, jsonNMua[0].SDThoai, jsonNMua[0].DCTDTu, jsonNMua[0].HVTNMHang, jsonNMua[0].STKNHang, jsonNMua[0].TNHang, jsonNMua[0].TTKhac];
+            const templateLTSuat = [
+                templateLTSuatPath,
+                {
+                    TSuat: "TSuat",
+                    ThTien: "ThTien",
+                    TThue: "TThue",
+                },
+            ];
+            const jsonLTSuat = await transform(xmlContent, templateLTSuat);
+            //console.log("jsonLTSuat",jsonLTSuat)
+            let arrLTSuat = [];
+            if (jsonLTSuat && jsonLTSuat.length > 0) {
+                arrLTSuat = [jsonLTSuat[0].TSuat, jsonLTSuat[0].ThTien, jsonLTSuat[0].TThue];
+            } else {
+                arrLTSuat = ["", 0, 0];
+            }
+
+            const templateTToan = [
+                templateTToanPath,
+                {
+                    TgTCThue: "TgTCThue",
+                    TgTThue: "TgTThue",
+                    TTCKTMai: "TTCKTMai",
+                    TgTTTBSo: "TgTTTBSo",
+                    TgTTTBChu: "TgTTTBChu",
+                },
+            ];
+            const jsonTToan = await transform(xmlContent, templateTToan);
+            //console.log("jsonTToan",jsonTToan)
+            let arrTToan = [];
+            arrTToan = [jsonTToan[0].TgTCThue, jsonTToan[0].TgTThue, jsonTToan[0].TTCKTMai, jsonTToan[0].TgTTTBSo, jsonTToan[0].TgTTTBChu];
+            const templateMCCQT = [
+                templateMCCQTPath,
+                {
+                    MCCQT: "MCCQT",
+                },
+            ];
+            const jsonMCCQT = await transform(xmlContent, templateMCCQT);
+            //console.log(jsonMCCQT)
+            const arrMCCQT = [jsonMCCQT[0].MCCQT];
+            const templateDSHHDVu = [
+                templateDSHHDVuPath,
+                {
+                    TChat: "TChat",
+                    STT: "STT",
+                    MHHDVu: "MHHDVu",
+                    THHDVu: "THHDVu",
+                    DVTinh: "DVTinh",
+                    SLuong: "SLuong",
+                    DGia: "DGia",
+                    TLCKhau: "TLCKhau",
+                    STCKhau: "STCKhau",
+                    ThTien: "ThTien",
+                    TSuat: "TSuat",
+                },
+            ];
+            let arrSigningTimeNBan = ""
+            let arrSigningTimeCQT = [""]
+            //in case POS machine einvoice that há no signature
+            if (jsonTTChung[0].KHHDon.substr(3, 1) != "M") {
+                const templateSigningTimeNBan = [
+                    templateSigningTimeNBanPath,
+                    {
+                        SigningTimeNBan: "SigningTime",
+                    },
+                ];
+                const jsonSigningTimeNBan = await transform(xmlContent, templateSigningTimeNBan);
+
+                arrSigningTimeNBan = [jsonSigningTimeNBan[0].SigningTimeNBan];
+
+                const templateSigningTimeCQT = [
+                    templateSigningTimeCQTPath,
+                    {
+                        SigningTimeCQT: "SigningTime",
+                    },
+                ];
+                const jsonSigningTimeCQT = await transform(xmlContent, templateSigningTimeCQT);
+
+                if (jsonSigningTimeCQT && jsonSigningTimeCQT.length > 0) {
+                    arrSigningTimeCQT = [jsonSigningTimeCQT[0].SigningTimeCQT];
+                } else {
+                    arrSigningTimeCQT = [""];
+                }
+            }
+
+            let masterPara = arrTTChung.concat(arrNBan).concat(arrNMua).concat(arrLTSuat).concat(arrTToan).concat(arrMCCQT);
+            const xmlRelativePath = p_xml_path.replace(ROOT_DIR_FILES, "");
+            masterPara = masterPara.concat(["", xmlRelativePath, jsonLPhi[0].TLPhi, jsonLPhi[0].TPhi]);
+            if (jsonTTHDLQuan && jsonTTHDLQuan.length > 0) {
+                masterPara = masterPara.concat([jsonTTHDLQuan[0].TCHDon, jsonTTHDLQuan[0].LHDCLQuan, jsonTTHDLQuan[0].KHMSHDCLQuan, jsonTTHDLQuan[0].SHDCLQuan, jsonTTHDLQuan[0].NLHDCLQuan, jsonTTHDLQuan[0].GChu, ""]);
+            } else {
+                masterPara = masterPara.concat(["", "", "", "", "", "", ""]);
+            }
+            masterPara = masterPara.concat([customField1, customField2, customField3, customField4, customField5, customField6, customField7, customField8, customField9, customField10]);
+            //console.log("masterPara",masterPara)
+            masterPara = masterPara.concat(arrSigningTimeNBan).concat(arrSigningTimeCQT);
+            masterPara = masterPara.concat([xmlIntegrity]);
+            masterPara = masterPara.concat([einvoice_file_name]);
+            const master = await DBService.callProcCursor("ei_upd_tei_einvoice_cloud", masterPara, p_language, p_crt_by);
+            console.log("master", master);
+            if (master && master[0].PK > 0) {
+                let jsonDSHHDVu = await transform(xmlContent, templateDSHHDVu);
+                //console.log(jsonDSHHDVu)
+                for (let i = 0; i < jsonDSHHDVu.length; i++) {
+                    if (!jsonDSHHDVu[i].hasOwnProperty("TSuat")) {
+                        jsonDSHHDVu[i].TSuat = "";
+                    }
+                    const detailPara = [master[0].PK, jsonDSHHDVu[i].TChat, jsonDSHHDVu[i].STT, jsonDSHHDVu[i].MHHDVu, jsonDSHHDVu[i].THHDVu, jsonDSHHDVu[i].DVTinh, jsonDSHHDVu[i].SLuong, jsonDSHHDVu[i].DGia, jsonDSHHDVu[i].ThTien, jsonDSHHDVu[i].TLCKhau, jsonDSHHDVu[i].STCKhau, jsonDSHHDVu[i].TSuat];
+                    const detail = await DBService.callProcCursor("ei_upd_tei_einvoiced_cloud", detailPara, p_language, p_crt_by);
+                    //console.log("detail", detail);
+                }
+                return master[0].PK;
+            } else {
+                if (master && master.length > 0) {
+                    return master[0].STATUS;
+                }
+                return master.message;
+            }
+        } catch (e) {
+            console.log("extractXMLContent", e.message);
+            Utils.Logger({ LVL: "error", MODULE: "ImportController", FUNC: "extractXMLContent", CONTENT: e.message });
             return e.message;
         }
     }
@@ -490,7 +773,7 @@ class ImportController {
             }
             const folder = `tkhq/${user_pk}`
             let file_path = await Utils.putFileRootPath(file, folder);
-            file_path=ROOT_DIR_FILES + file_path
+            file_path = ROOT_DIR_FILES + file_path
             // console.log("root_directory", root_directory)
             //  console.log("file_path", file_path)
             if (file_path && file_path.indexOf(".xml") > 0) {
@@ -1415,12 +1698,12 @@ class ImportController {
                 let rtnFileExcel = await fs.writeFileSync(tmp_file, buffer);
                 // console.log('[vng-154/dvg] > file: ImportController.js:1408 > ImportController > ImportExcelFile > rtnFileExcel:', rtnFileExcel);
                 /*==[vng-154/dvg] check import file .xls=================*/
-                if(filename.split('.')[1].toString().trim().toUpperCase() == 'XLS'){   
+                if (filename.split('.')[1].toString().trim().toUpperCase() == 'XLS') {
                     // console.log('[vng-154/dvg] > file: ImportController.js:1412 > ImportController > ImportExcelFile > tmp_file:', tmp_file);
-                    let rtnParseFile = await this.parseXlsToXlsx(tmp_file);  
+                    let rtnParseFile = await this.parseXlsToXlsx(tmp_file);
                     // console.log('[vng-154/dvg] > file: ImportController.js:1413 > ImportController > ImportExcelFile > rtnParseFile:', rtnParseFile); 
-                    tmp_file = Helpers.tmpPath(file_name+`.xlsx`);
-                }   
+                    tmp_file = Helpers.tmpPath(file_name + `.xlsx`);
+                }
                 /*========================================================*/
 
                 await imp.loadFile(tmp_file);
@@ -1449,22 +1732,22 @@ class ImportController {
         }
     }
 
-    async parseXlsToXlsx(file_url){ 
-        try {  
+    async parseXlsToXlsx(file_url) {
+        try {
             const ext = '.xlsx'
-            const inputPath = file_url; 
+            const inputPath = file_url;
             // console.log('[vng-154/dvg] > file: ImportController.js:1450 > ImportController > parseXlsToXlsx > inputPath:', inputPath);
-            const outputPath =file_url+ `${ext}`; 
+            const outputPath = file_url + `${ext}`;
             // console.log('[vng-154/dvg] > file: ImportController.js:1453 > ImportController > parseXlsToXlsx > outputPath:', outputPath);
-            const fileBuf =  await fsPart.readFile(inputPath);  
+            const fileBuf = await fsPart.readFile(inputPath);
             // console.log('[vng-154/dvg] > file: ImportController.js:1454 > ImportController > parseXlsToXlsx > fileBuf:', fileBuf);
-            let rtnBuf =  await libre.convertAsync(fileBuf, ext, undefined); 
+            let rtnBuf = await libre.convertAsync(fileBuf, ext, undefined);
             // console.log('[vng-154/dvg] > file: ImportController.js:1456 > ImportController > parseXlsToXlsx > rtnBuf:', rtnBuf);
             // Here in done you have pdf file which you can save or transfer in another stream
-            const rtnFile =  await fsPart.writeFile(outputPath, rtnBuf);  
+            const rtnFile = await fsPart.writeFile(outputPath, rtnBuf);
             // console.log('[vng-154/dvg] > file: ImportController.js:1459 > ImportController > parseXlsToXlsx > rtnFile:', rtnFile);
             return rtnBuf;
-        } catch (e) { 
+        } catch (e) {
             return false;
         }
     }
@@ -1501,19 +1784,17 @@ class ImportController {
             let import_info = {};
             let file_name_check = "";
 
-            if(params.file_name.toLowerCase().indexOf(".xlsx") > 0 )
-            {
+            if (params.file_name.toLowerCase().indexOf(".xlsx") > 0) {
                 file_name_check = params.file_name.substring(0, params.file_name.length - 12);
             }
-            else
-            {
+            else {
                 file_name_check = params.file_name.substring(0, params.file_name.length - 11);
             }
-            
+
             //  console.log("file_name_check  ", file_name_check);
 
             common_result.forEach(e => {
-                if(e.VAL1 == file_name_check) //"Sales_eInvoice"
+                if (e.VAL1 == file_name_check) //"Sales_eInvoice"
                 {
                     import_info = {
                         proc: e.VAL3,
@@ -1527,7 +1808,7 @@ class ImportController {
                 }
             });
 
-            console.log(" import_info " , import_info);
+            console.log(" import_info ", import_info);
 
             const result = await DBService.callProcCursor(sprod, para, p_language, p_crt_by);
             // const result = await DBService.callProcCursor('SYS_SEL_IMP_FILE', para, p_language, p_crt_by);
@@ -1544,26 +1825,25 @@ class ImportController {
                 let rtnFileExcel = await fs.writeFileSync(tmp_file, buffer);
                 // console.log('[vng-154/dvg] > file: ImportController.js:1408 > ImportController > ImportExcelFile > rtnFileExcel:', filename.split('.')[1].toString().trim().toUpperCase());
                 /*==[vng-154/dvg] check import file .xls=================*/
-                if(filename.split('.')[1].toString().trim().toUpperCase() == 'XLS'){    
+                if (filename.split('.')[1].toString().trim().toUpperCase() == 'XLS') {
                     //console.log('[vng-154/dvg] > file: ImportController.js:1412 > ImportController > ImportExcelFile > tmp_file:', tmp_file);
-                    let rtnParseFile = await this.parseXlsToXlsx(tmp_file);  
+                    let rtnParseFile = await this.parseXlsToXlsx(tmp_file);
                     //console.log('[vng-154/dvg] > file: ImportController.js:1413 > ImportController > ImportExcelFile > rtnParseFile:', rtnParseFile); 
-                    tmp_file = Helpers.tmpPath(file_name+`.xlsx`);
-                }   
+                    tmp_file = Helpers.tmpPath(file_name + `.xlsx`);
+                }
                 /*========================================================*/
 
                 await imp.loadFile(tmp_file);
-                
+
                 // console.log('[vng-154/dvg] > file: ImportController.js:1418 > ImportController > ImportExcelFile > tmp_file:', tmp_file);
 
                 await imp.importDBData(JSON.stringify(import_info), p_language, p_crt_by, tmp_file, file_name, params.table_pk, params.table_nm);
                 // await imp.importDBData(import_info, p_language, p_crt_by, tmp_file, file_name);
                 // let resultData = await imp.writeFile(); 
-                if(file_name_check == "Credit_Confirm_VND" || file_name_check == "Credit_Confirm_USD" || file_name_check == "Debit_Confirm_VND" || file_name_check == "Debit_Confirm_USD")
-                {
+                if (file_name_check == "Credit_Confirm_VND" || file_name_check == "Credit_Confirm_USD" || file_name_check == "Debit_Confirm_VND" || file_name_check == "Debit_Confirm_USD") {
                     const para_file = {
-                        p_tac_files_pk:params.table_pk,
-                        p_tac_files_nm:params.table_nm
+                        p_tac_files_pk: params.table_pk,
+                        p_tac_files_nm: params.table_nm
                     };
 
                     const rtnValue_re = await DBService.ExecuteSQLBlob(
@@ -1578,20 +1858,19 @@ class ImportController {
                         p_language,
                         p_crt_by
                     );
-                }else
-                {
+                } else {
                     // check taxcode 
-                    await this.getTaxcodeInf('',p_crt_by, p_language);
+                    await this.getTaxcodeInf('', p_crt_by, p_language);
                 }
-                
+
 
                 return response.send(
-                    Utils.response(true, "upload_excel_file_sucessfull", { TAC_FILES_PK : params.table_pk, STATUS : 'OK', MESS : 'upload_excel_file_sucessfull'   })
+                    Utils.response(true, "upload_excel_file_sucessfull", { TAC_FILES_PK: params.table_pk, STATUS: 'OK', MESS: 'upload_excel_file_sucessfull' })
                 );
 
             }
 
-            return response.send(Utils.response(false, "error", { TAC_FILES_PK : params.table_pk, STATUS : 'FAILE', MESS : 'upload_excel_file_error'   }));
+            return response.send(Utils.response(false, "error", { TAC_FILES_PK: params.table_pk, STATUS: 'FAILE', MESS: 'upload_excel_file_error' }));
         } catch (e) {
             Utils.Logger({ LVL: "error", MODULE: "ImportExcelFileRPA", FUNC: "ImportExcelRPA", CONTENT: e.message })
             return response.send(e.message)
@@ -1608,34 +1887,31 @@ class ImportController {
             let url = "https://thongtindoanhnghiep.co/api/company/";
 
             let sprod = "SYS_SEL_TAXCODE";
-           
-            const result = await DBService.callProcCursor(sprod, para, p_language, p_crt_by);  
-            
-            
+
+            const result = await DBService.callProcCursor(sprod, para, p_language, p_crt_by);
+
+
             // console.log(" result ", result);
             if (result) {
-                for(let i = 0; i < result.length ; i++)
-                {
+                for (let i = 0; i < result.length; i++) {
                     // console.log("result.length     ", url + result[i].BUYER_TAXCODE);
                     const result_taxcode = await Request.get(url + result[i].BUYER_TAXCODE);
 
                     // console.log("result_taxcode ", result_taxcode.data);
 
-                    let partner_name  =  result_taxcode.data.Title;
+                    let partner_name = result_taxcode.data.Title;
                     let DSMaNganhNgheKinhDoanh = [];
                     DSMaNganhNgheKinhDoanh = result_taxcode.data.DSMaNganhNgheKinhDoanh;
-                    for (let k = 0; k < DSMaNganhNgheKinhDoanh.length; k++)
-                    {
+                    for (let k = 0; k < DSMaNganhNgheKinhDoanh.length; k++) {
                         // console.log("DSMaNganhNgheKinhDoanh ", DSMaNganhNgheKinhDoanh[k]);
-                        if(DSMaNganhNgheKinhDoanh[k].toString().length >= 3)
-                        {
+                        if (DSMaNganhNgheKinhDoanh[k].toString().length >= 3) {
                             const para_value_taxcode = {
-                                seller_taxcode:result[i].BUYER_TAXCODE,
-                                kind_code: DSMaNganhNgheKinhDoanh[k].toString().substring(0,3),
-                                partner_name : partner_name
-                               
+                                seller_taxcode: result[i].BUYER_TAXCODE,
+                                kind_code: DSMaNganhNgheKinhDoanh[k].toString().substring(0, 3),
+                                partner_name: partner_name
+
                             };
-                            
+
                             // console.log("BUYER_TAXCODE ", result[i].BUYER_TAXCODE);
 
                             const rtnValue_re = await DBService.ExecuteSQLBlob(
@@ -1655,7 +1931,7 @@ class ImportController {
                         }
                     }
                 }
-               
+
             }
         } catch (e) {
             Utils.Logger({ LVL: "error", MODULE: "getTaxcodeInf", FUNC: "getTaxcodeInf", CONTENT: e.message })
@@ -1663,7 +1939,7 @@ class ImportController {
         }
     }
 
-    
+
 }
 
 module.exports = ImportController

@@ -361,7 +361,9 @@ class ImportController {
                 return master.message;
             }
         } catch (e) {
-            console.log(e)
+            console.log("extractXMLContentBillHaiPhongPort", e.message);
+            Utils.Logger({ LVL: "error", MODULE: "ImportController", FUNC: "extractXMLContentBillHaiPhongPort", CONTENT: e.message });
+            return e.message;
         }
     }
     async extractXMLContent(p_xml_path, p_language, p_crt_by, file_name) {

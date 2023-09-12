@@ -2397,7 +2397,7 @@ class EInvoiceController {
         FUNC: "sendDeclarationToTaxOffice",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, "error", e.message));
+      return response.send(Utils.response(false, "error",{err_msg: e.message}));
     }
   }
 

@@ -17,15 +17,12 @@
         </v-row>
         <v-row dense>
           <v-col md="2">
-            <!-- <datePicker :label="$t('month')" :type="'month'" @returnValue="month = $event"></datePicker> -->
             <BaseDatePicker :label="$t('year')" v-model="year" year today />
           </v-col>
           <v-col md="5">
-            <!-- <datePicker :label="$t('fromdate')" :inputValue="fromDate" :defaultType="'startOfMonth'" @returnValue="fromDate = $event"></datePicker> -->
             <BaseDatePicker :label="$t('fromdate')" v-model="fromDate" />
           </v-col>
           <v-col md="5">
-            <!-- <datePicker :inputValue="toDate" :defaultType="'endOfMonth'" :label="$t('to_date')" @returnValue="toDate = $event"></datePicker> -->
             <BaseDatePicker :label="$t('to_date')" v-model="toDate" />
           </v-col>
         </v-row>
@@ -111,6 +108,21 @@
                         <img ref="photoLogo" :src="imageLOGO" :width="200" :height="200" @click="selectImageLOGO" />
                         <input type="file" accept="image/png, image/jpeg, image/bmp" v-show="false" ref="fileLOGO" @change="selectedFileLOGO" />
                       </v-row>
+                      <v-row>
+                        <v-spacer></v-spacer>
+                        <BaseButton btn_type="icon" icon_type="view_origin" :btn_text="$t('view_origin')" mdi-icon="mdi-file-find-outline" onlyIcon @onclick="viewImage" v-show="view_origin" />
+                        <v-spacer></v-spacer>
+                      </v-row>
+                      <!-- //////VIEW Hinh -->
+                      <v-dialog v-model="img_dialog">
+                        <v-card>
+                          <v-container fluid>
+                            <v-row no-gutters align="center" justify="center">
+                              <img :src="imageLOGO" :height="originHeight" :width="originWidth" />
+                            </v-row>
+                          </v-container>
+                        </v-card>
+                      </v-dialog>
                     </v-container>
                   </v-col>
                 </v-col>
@@ -155,6 +167,21 @@
                         <img ref="photoBG" :src="imageBG" :width="200" :height="200" @click="selectImageBG" />
                         <input type="file" accept="image/png, image/jpeg, image/bmp" v-show="false" ref="fileBG" @change="selectedFileBG" />
                       </v-row>
+                      <v-row>
+                        <v-spacer></v-spacer>
+                        <BaseButton btn_type="icon" icon_type="view_origin" :btn_text="$t('view_origin')" mdi-icon="mdi-file-find-outline" onlyIcon @onclick="viewImageBG" v-show="view_origin" />
+                        <v-spacer></v-spacer>
+                      </v-row>
+                      <!-- //////VIEW Hinh -->
+                      <v-dialog v-model="img_dialog">
+                        <v-card>
+                          <v-container fluid>
+                            <v-row no-gutters align="center" justify="center">
+                              <img :src="imageBG" :height="originHeight" :width="originWidth" />
+                            </v-row>
+                          </v-container>
+                        </v-card>
+                      </v-dialog>
                     </v-container>
                   </v-col>
                 </v-col>
@@ -336,6 +363,9 @@ export default {
   /*############### DEFAULT #######################*/
   layout: "default",
   middleware: "user",
+  props: {
+    view_origin: { type: Boolean, default: true },
+  },
   components: {
     "view-einvoice-pdf-dialog": ViewEInvoicePDFDialog,
     GwImportExcelFile: () => import("@/components/control/GwImportExcelFile.vue"),
@@ -431,6 +461,10 @@ export default {
       FROM_NO: "",
       USE_YN: "",
     },
+    img_dialog: false,
+    originHeight: 400,
+    originWidth: 400,
+    
     formNoList: [],
     templateID_list: [],
     //
@@ -494,9 +528,9 @@ export default {
     },
     limitHeight() {
       if (this.windowHeight <= 768) {
-        return this.windowHeight * 0.20; //1366x768
+        return this.windowHeight * 0.2; //1366x768
       } else {
-        return this.windowHeight * 0.30; //1920x1080
+        return this.windowHeight * 0.3; //1920x1080
       }
     },
     gridHeight() {
@@ -824,10 +858,8 @@ export default {
         this.MasterInfo.PK = cell.data.TEI_TEMPLATE_PK;
         await this.dsoMaster("select");
 
-
-
-         /////VIew PDF
-      this.showLoading = true;
+        /////VIew PDF
+        this.showLoading = true;
         try {
           const rec = await this.$axios.$get("/dso/makereport", {
             responseType: "blob",
@@ -904,20 +936,20 @@ export default {
 
     async dsoMaster(action) {
       /// Luu duong dan hinh anh
-        let pathLOGOImg = "";
-        if (this.fileSaveLOGO) {
-          let urlImg = await this.onUploadImgFolder(this.fileSaveLOGO, this.folder, "LOGO");
-          pathLOGOImg = urlImg;
-          this.fileSaveLOGO = null;
-        }
-        this.MasterInfo.URL_IMG_LOGO = pathLOGOImg == "" ? this.MasterInfo.URL_IMG_LOGO : pathLOGOImg;
-        ////////////////////////////
-        let pathBGImg = "";
-        if (this.fileSaveBG) {
-          pathBGImg = await this.onUploadImgFolder(this.fileSaveBG, this.folder, "BG");
-          this.fileSaveBG = null;
-        }
-        this.MasterInfo.URL_IMG_BG = pathBGImg == "" ? this.MasterInfo.URL_IMG_BG : pathBGImg;
+      let pathLOGOImg = "";
+      if (this.fileSaveLOGO) {
+        let urlImg = await this.onUploadImgFolder(this.fileSaveLOGO, this.folder, "LOGO");
+        pathLOGOImg = urlImg;
+        this.fileSaveLOGO = null;
+      }
+      this.MasterInfo.URL_IMG_LOGO = pathLOGOImg == "" ? this.MasterInfo.URL_IMG_LOGO : pathLOGOImg;
+      ////////////////////////////
+      let pathBGImg = "";
+      if (this.fileSaveBG) {
+        pathBGImg = await this.onUploadImgFolder(this.fileSaveBG, this.folder, "BG");
+        this.fileSaveBG = null;
+      }
+      this.MasterInfo.URL_IMG_BG = pathBGImg == "" ? this.MasterInfo.URL_IMG_BG : pathBGImg;
       this.MasterInfo._rowstatus = this.MasterInfo._rowstatus == "i" ? "i" : action == "update" ? "u" : "d";
       /////////////////////////
       let dsoControl = {
@@ -1005,14 +1037,14 @@ export default {
               try {
                 if (this.MasterInfo.URL_IMG_LOGO == "" || this.MasterInfo.URL_IMG_LOGO == null) {
                   this.imageLOGO = require("@/assets/images/no_image.png");
-                }else{
+                } else {
                   let imgLOGO = require(`@/${this.MasterInfo?.URL_IMG_LOGO}.png`);
-                 this.imageLOGO = imgLOGO;
+                  this.imageLOGO = imgLOGO;
                 }
                 ///////
                 if (this.MasterInfo.URL_IMG_BG == "" || this.MasterInfo.URL_IMG_BG == null) {
-                  this.imageBG =  require("@/assets/images/no_image.png");
-                }else{
+                  this.imageBG = require("@/assets/images/no_image.png");
+                } else {
                   let imgBG = require(`@/${this.MasterInfo?.URL_IMG_BG}.png`);
                   this.imageBG = imgBG;
                 }
@@ -1206,7 +1238,7 @@ export default {
       this.MasterInfo.TEI_TEMPLATE_PK = "";
       this.MasterInfo.TEMPLATE_CD = "111";
       this.MasterInfo.SERIAL_NO = "";
-       this.MasterInfo.FORM_NO = "";
+      this.MasterInfo.FORM_NO = "";
       this.MasterInfo.FROM_NO = "";
       this.MasterInfo.URL_IMG_LOGO = "";
       this.MasterInfo.LOGO_START_ROW = "";
@@ -1240,7 +1272,6 @@ export default {
       // } catch (e) {
       //   return this.showNotification("danger", e.message);
       // }
-
       // if (this.itemTemplatesPK != "") {
       //   let res_url = await this.$axios.$post("/einvoice/general-url-pdf-template", {
       //     responseType: "json",
@@ -1248,7 +1279,6 @@ export default {
       //   });
       //   if (res_url.success) {
       //     this.pdfUrl = res_url.data;
-
       //     this.$nextTick(() => {
       //       this.isProcessing = false;
       //       this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
@@ -1275,12 +1305,6 @@ export default {
       this.serialNoList = [];
     },
     async getImpFile() {
-     
-
-
-
-
-
       // console.log("this.url_template  ", this.url_template);
       // if (!this.url_template.length) {
       //   return this.showNotification("warning", this.$t("error_occurs"), "pls_select_template");
@@ -1313,7 +1337,65 @@ export default {
       //   this.showNotification("danger", this.$t("cannot_find_template"), "", 3001);
       // }
     },
+    async viewImage() {
+      let dimensions = await this.getImageDimensions(this.imageLOGO);
+      let maxWidth = window.screen.width * 0.8;
+      let maxHeight = window.screen.height * 0.8;
 
+      this.orientation = dimensions.w > dimensions.h ? "landscape" : "portrait";
+      this.originWidth = dimensions.w;
+      this.originHeight = dimensions.h;
+
+      if (this.orientation == "landscape") {
+        if (dimensions.w > maxWidth) {
+          let ratio = (maxWidth / dimensions.w).toFixed(2);
+          this.originWidth = maxWidth;
+          this.originHeight = Math.round(dimensions.h * ratio);
+        }
+      } else {
+        if (dimensions.h > maxHeight) {
+          let ratio = (maxHeight / dimensions.h).toFixed(2);
+          this.originHeight = maxHeight;
+          this.originWidth = Math.round(dimensions.w * ratio);
+        }
+      }
+      await this.wait(50);
+      this.img_dialog = true;
+    },
+    async viewImageBG() {
+      let dimensions = await this.getImageDimensions(this.imageBG);
+      let maxWidth = window.screen.width * 0.8;
+      let maxHeight = window.screen.height * 0.8;
+
+      this.orientation = dimensions.w > dimensions.h ? "landscape" : "portrait";
+      this.originWidth = dimensions.w;
+      this.originHeight = dimensions.h;
+
+      if (this.orientation == "landscape") {
+        if (dimensions.w > maxWidth) {
+          let ratio = (maxWidth / dimensions.w).toFixed(2);
+          this.originWidth = maxWidth;
+          this.originHeight = Math.round(dimensions.h * ratio);
+        }
+      } else {
+        if (dimensions.h > maxHeight) {
+          let ratio = (maxHeight / dimensions.h).toFixed(2);
+          this.originHeight = maxHeight;
+          this.originWidth = Math.round(dimensions.w * ratio);
+        }
+      }
+      await this.wait(50);
+      this.img_dialog = true;
+    },
+    getImageDimensions(file) {
+      return new Promise(function (resolved, rejected) {
+        var i = new Image();
+        i.onload = function () {
+          resolved({ w: i.width, h: i.height });
+        };
+        i.src = file;
+      });
+    },
     // async onGeneralData() {
     //   this.dataIssued.Template = [];
     //   this.dataIssued.Template.push(this.$refs.grdTemplate.getDataSource());

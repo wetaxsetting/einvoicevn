@@ -5016,7 +5016,7 @@ class EInvoiceController {
       };
       // console.log(" data.list_invoice  ", data.list_invoice);
       let req_key = [];
-      const invoices = data.list_invoice;
+      const invoices = data.data_invoice;
       const valid = this.weTaxValidateJsonInvalidPosInvoiceToXML(invoices);
       if (!valid.status) {
         return response.send(Utils.response(valid.status, valid.message, null));
@@ -8025,14 +8025,7 @@ class EInvoiceController {
     let url_pdf = await EiExcels.getEinvoice(tei_wt_sale_bill_pk, p_language, p_crt_by);
     console.log("base64PDf  ", url_pdf);
 
-    let re_url_xml = await Request.get(
-      APP_URL_LOCAL +
-        "/api/dso/getfiledbtoken?pk=" +
-        tei_wt_sale_bill_pk +
-        "&proc=" +
-        "EI_SEL_XML_POS_EINVOICE" +
-        "&token="
-    ); //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
+    let re_url_xml = await Request.get( APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + tei_wt_sale_bill_pk +  "&proc=" + "EI_SEL_XML_POS_EINVOICE" + "&token="); //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
     let url_xml = re_url_xml.data;
     console.log("base64XXML  ", url_xml);
 
@@ -8285,6 +8278,77 @@ class EInvoiceController {
     }
   }
   // end e - invoce
+
+  // public get data search ma tra cuu
+  async getDataEinvoiceFormLookupCode({ request, response, auth }) {
+    try {
+      var p_language = request.header("accept-language", "ENG");
+      var p_crt_by = "";
+     
+
+      const { capchacode, lookupcode } = request.all();
+
+
+      // const para_inv = {
+      //   lookupcode : lookupcode,
+      // };
+      console.log("lookupcode  ", lookupcode);
+
+      // const rtnValue_VAT = await DBService.ExecuteSQLBlob(
+      //   `BEGIN ei_sel_get_data_lookup_code (          
+      //                                       :lookupcode,
+      //                                       :p_language, 
+      //                                       :p_crt_by, 
+      //                                       :p_rtn_cur); END;`,
+      //                                                   para_inv,
+      //   p_language,
+      //   p_crt_by
+      // );
+      
+      const para_inv_st = {
+        trade_code: lookupcode,
+      };
+      const rtnValue_VAT = await DBService.ExecuteSQLBlob(
+        `BEGIN ei_sel_get_data_lookup_code (          
+                                                        :trade_code,
+                                                        :p_language, 
+                                                        :p_crt_by, 
+                                                        :p_rtn_cur); END;`,
+        para_inv_st,
+        p_language,
+        p_crt_by
+      );
+      console.log("rtnValue_VAT  ", rtnValue_VAT);
+
+
+      // let EiExcels = new EiExcelHandlerAuto(); //CQT_MAGD
+      // let url_pdf = await EiExcels.getEinvoice(trade_code, p_language, p_crt_by);
+      // console.log("base64PDf  ", url_pdf);
+
+      // let re_url_xml = await Request.get(
+      //   APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + trade_code + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token="
+      // ); //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
+      // let url_xml = re_url_xml.data;
+      // console.log("base64XXML  ", url_xml);
+
+
+      // // let EiExcels = new EiExcelTemplateHandler();
+      // // let url_pdf = await EiExcels.getEinvoice(data, p_language, p_crt_by);
+      // console.log("base64PDf  ", url_pdf);
+
+      return response.send(Utils.response(true, "general url pdf success", url_pdf));
+    } catch (e) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "getDataEinvoiceFormLookupCode",
+        CONTENT: e.message,
+      });
+      console.log(e);
+      return response.send(Utils.response(false, "error", e.message));
+    }
+  }
+
 }
 
 module.exports = EInvoiceController;

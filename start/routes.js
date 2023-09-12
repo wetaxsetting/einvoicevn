@@ -164,8 +164,11 @@ Route.group(() => {
     Route.post("general-url-pdf-template", "EInvoiceController.viewPDFTemplateEPortal")
 
 
-
 }).prefix("api/einvoice").middleware("user");
+
+Route.group(() => {
+    Route.post("lookup-code", "EInvoiceController.getDataEinvoiceFormLookupCode")
+}).prefix("api/einvoice");
 
 // Frontend
 Route.any("*", "NuxtController.render");

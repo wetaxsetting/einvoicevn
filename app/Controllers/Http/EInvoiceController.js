@@ -5446,9 +5446,10 @@ class EInvoiceController {
         p_language,
         p_crt_by
       );
-      // console.log("rtnValue  ", rtnValue);
+      console.log("rtnValue  ", rtnValue);
       tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
-      if (rtnValue.p_rtn_cur[0].STATUS == "OK") {
+      if (rtnValue.p_rtn_cur[0].STATUS == "OK") 
+      {
         for (let j = 0; j < data.data_invoice.total_vat_list.length; j++) {
           const para_amt_vat = {
             tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
@@ -5508,9 +5509,10 @@ class EInvoiceController {
             p_crt_by
           );
         }
-      }else{
-        return response.send(Utils.response(true, `error!`, {err_msg: 'exec error: ei_upd_order_info'}));
       }
+      // else{
+      //   return response.send(Utils.response(true, `error!`, {err_msg: 'exec error: ei_upd_order_info'}));
+      // }
 
       const { res_send_mail, subject, body } = await this.sendMaiToCustomer(
         tei_wt_sale_bill_pk,

@@ -2,7 +2,7 @@
 <template>
   <v-container fluid v-resize="onResize">
     <v-row dense class="pt-1">
-      <v-col v-show="showHilden" cols="12" :lg="showHilden ? 6 : 0">
+      <v-col cols="6" :class="isShowLeft ? null : 'd-none'">
         <v-row dense>
           <v-col md="7">
             <BaseSelect :label="$t('company')" v-model="selected_company" :lstData="company_list" item-text="TEXT" item-value="PK" />
@@ -17,15 +17,12 @@
         </v-row>
         <v-row dense>
           <v-col md="2">
-            <!-- <datePicker :label="$t('month')" :type="'month'" @returnValue="month = $event"></datePicker> -->
             <BaseDatePicker :label="$t('year')" v-model="year" year today />
           </v-col>
           <v-col md="5">
-            <!-- <datePicker :label="$t('fromdate')" :inputValue="fromDate" :defaultType="'startOfMonth'" @returnValue="fromDate = $event"></datePicker> -->
             <BaseDatePicker :label="$t('fromdate')" v-model="fromDate" />
           </v-col>
           <v-col md="5">
-            <!-- <datePicker :inputValue="toDate" :defaultType="'endOfMonth'" :label="$t('to_date')" @returnValue="toDate = $event"></datePicker> -->
             <BaseDatePicker :label="$t('to_date')" v-model="toDate" />
           </v-col>
         </v-row>
@@ -44,11 +41,27 @@
               :header="grdHeader"
               sel_procedure="EI_SEL_6095055_1_NC"
               :multiselect="true"
+              selectionmode="singlecell"
               :headertype="1"
               :filter_paras="[this.selected_company, this.fromDate, this.toDate, this.txtSerialNo, this.lstStatus]"
               upd_procedure="EI_UPD_6095055_2"
               :editable="true"
-              :update_paras="['PK', 'TCO_COMPANY_PK', 'INVOICE_KIND', 'SERIAL_NO_2', 'FORM_NO', 'SERIAL_NO', 'FROM_DT', 'TO_DT', 'STATUS', 'TCO_BUSPLACE_PK', 'REMARKS', 'USE_YN', 'FROM_NO']"
+              :update_paras="[
+                'PK',
+                'TCO_COMPANY_PK',
+                'INVOICE_KIND',
+                'SERIAL_NO_2',
+                'FORM_NO',
+                'SERIAL_NO',
+                'FROM_DT',
+                'TO_DT',
+                'STATUS',
+                'TCO_BUSPLACE_PK',
+                'REMARKS',
+                'USE_YN',
+                'FROM_NO',
+                'TEMPLATE_CD',
+              ]"
               :height="limitHeight"
               @cellClick="cellClickCell"
             />
@@ -73,15 +86,15 @@
           </v-col>
         </v-row>
         <v-row dense>
-          <v-col md="4">
-            <BaseInput outlined :label="$t('serial_no')" v-model="MasterInfo.SERIAL_NO" />
+          <!-- <v-col md="4">
+            <BaseInput outlined :label="$t('serial_no')" v-model="MasterInfo.TEMPLATE_NM" readonly />
           </v-col>
           <v-col md="4">
-            <BaseInput outlined :label="$t('form_no')" v-model="MasterInfo.FORM_NO" />
+            <BaseSelect outlined :label="$t('form_no')" v-model="MasterInfo.FORM_NO" :lstData="formNoList" item-text="NAME" item-value="CODE" readonly />
           </v-col>
           <v-col md="4">
-            <BaseInput outlined :label="$t('from_no')" v-model="MasterInfo.FROM_NO" />
-          </v-col>
+            <BaseInput outlined :label="$t('from_no')" v-model="MasterInfo.FROM_NO" readonly />
+          </v-col> -->
         </v-row>
 
         <BaseTabs>
@@ -90,34 +103,54 @@
               <v-row dense>
                 <v-col md="6">
                   <v-col lg="12">
-                    <!-- <BasePhoto ref="photoLogo" :width="150" :height="100" table_name="TEI_TEMPLATE_1" v-model="MasterInfo.PK" :procedure="procedure_upload"  @callback="abc"></BasePhoto> -->
+                    <v-container fluid>
+                      <v-row no-gutters align="center" justify="center">
+                        <img ref="photoLogo" :src="imageLOGO" :width="200" :height="200" @click="selectImageLOGO" />
+                        <input type="file" accept="image/png, image/jpeg, image/bmp" v-show="false" ref="fileLOGO" @change="selectedFileLOGO" />
+                      </v-row>
+                      <v-row>
+                        <v-spacer></v-spacer>
+                        <BaseButton btn_type="icon" icon_type="view_origin" :btn_text="$t('view_origin')" mdi-icon="mdi-file-find-outline" onlyIcon @onclick="viewImage" v-show="view_origin" />
+                        <v-spacer></v-spacer>
+                      </v-row>
+                      <!-- //////VIEW Hinh -->
+                      <v-dialog v-model="img_dialog">
+                        <v-card>
+                          <v-container fluid>
+                            <v-row no-gutters align="center" justify="center">
+                              <img :src="imageLOGO" :height="originHeight" :width="originWidth" />
+                            </v-row>
+                          </v-container>
+                        </v-card>
+                      </v-dialog>
+                    </v-container>
                   </v-col>
                 </v-col>
 
                 <v-col md="6">
                   <v-row dense class="pr-3">
                     <v-col lg="12">
-                      <BaseInput outlined :label="$t('url_img_logo')" v-model="MasterInfo.URL_IMG_LOGO" number />
+                      <BaseInput outlined :label="$t('url_img_logo')" v-model="MasterInfo.URL_IMG_LOGO" />
                     </v-col>
                   </v-row>
-                  <v-row dense class="pr-3">
+                  <v-row dense class="pr-3 numberLeft">
                     <v-col lg="12">
-                      <BaseInput outlined :label="$t('logo_start_row')" v-model="MasterInfo.LOGO_START_ROW" number />
+                      <BaseInput outlined :label="$t('logo_start_row')" v-model="MasterInfo.LOGO_START_ROW" type="number" />
                     </v-col>
                   </v-row>
-                  <v-row dense class="pr-3">
+                  <v-row dense class="pr-3 numberLeft">
                     <v-col lg="12">
-                      <BaseInput outlined :label="$t('logo_start_col')" v-model="MasterInfo.LOGO_START_COL" number />
+                      <BaseInput outlined :label="$t('logo_start_col')" v-model="MasterInfo.LOGO_START_COL" type="number" />
                     </v-col>
                   </v-row>
-                  <v-row dense class="pr-3">
+                  <v-row dense class="pr-3 numberLeft">
                     <v-col lg="12">
-                      <BaseInput outlined :label="$t('logo_width')" v-model="MasterInfo.LOGO_WIDTH" number />
+                      <BaseInput outlined :label="$t('logo_width')" v-model="MasterInfo.LOGO_WIDTH" type="number" />
                     </v-col>
                   </v-row>
-                  <v-row dense class="pr-3">
+                  <v-row dense class="pr-3 numberLeft">
                     <v-col lg="12">
-                      <BaseInput outlined :label="$t('logo_height')" v-model="MasterInfo.LOGO_HEIGHT" number />
+                      <BaseInput outlined :label="$t('logo_height')" v-model="MasterInfo.LOGO_HEIGHT" type="number" />
                     </v-col>
                   </v-row>
                 </v-col>
@@ -129,33 +162,53 @@
               <v-row dense>
                 <v-col md="6">
                   <v-col lg="12">
-                    <!-- <BasePhoto ref="photoBackground" :width="150" :height="100" table_name="TEI_TEMPLATE_2" v-model="MasterInfo.PK" :procedure="procedure_upload" @callback="abc" ></BasePhoto> -->
+                    <v-container fluid>
+                      <v-row no-gutters align="center" justify="center">
+                        <img ref="photoBG" :src="imageBG" :width="200" :height="200" @click="selectImageBG" />
+                        <input type="file" accept="image/png, image/jpeg, image/bmp" v-show="false" ref="fileBG" @change="selectedFileBG" />
+                      </v-row>
+                      <v-row>
+                        <v-spacer></v-spacer>
+                        <BaseButton btn_type="icon" icon_type="view_origin" :btn_text="$t('view_origin')" mdi-icon="mdi-file-find-outline" onlyIcon @onclick="viewImageBG" v-show="view_origin" />
+                        <v-spacer></v-spacer>
+                      </v-row>
+                      <!-- //////VIEW Hinh -->
+                      <v-dialog v-model="img_dialog">
+                        <v-card>
+                          <v-container fluid>
+                            <v-row no-gutters align="center" justify="center">
+                              <img :src="imageBG" :height="originHeight" :width="originWidth" />
+                            </v-row>
+                          </v-container>
+                        </v-card>
+                      </v-dialog>
+                    </v-container>
                   </v-col>
                 </v-col>
                 <v-col md="6">
                   <v-row dense class="pr-3">
                     <v-col lg="12">
-                      <BaseInput outlined :label="$t('url_img_bg')" v-model="MasterInfo.URL_IMG_BG" number />
+                      <BaseInput outlined :label="$t('url_img_bg')" v-model="MasterInfo.URL_IMG_BG" />
                     </v-col>
                   </v-row>
-                  <v-row dense class="pr-3">
+                  <v-row dense class="pr-3 numberLeft">
                     <v-col lg="12">
-                      <BaseInput outlined :label="$t('bg_start_row')" v-model="MasterInfo.BG_START_ROW" number />
+                      <BaseInput outlined :label="$t('bg_start_row')" v-model="MasterInfo.BG_START_ROW" type="number" />
                     </v-col>
                   </v-row>
-                  <v-row dense class="pr-3">
+                  <v-row dense class="pr-3 numberLeft">
                     <v-col lg="12">
-                      <BaseInput outlined :label="$t('bg_start_col')" v-model="MasterInfo.BG_START_COL" number />
+                      <BaseInput outlined :label="$t('bg_start_col')" v-model="MasterInfo.BG_START_COL" type="number" />
                     </v-col>
                   </v-row>
-                  <v-row dense class="pr-3">
+                  <v-row dense class="pr-3 numberLeft">
                     <v-col lg="12">
-                      <BaseInput outlined :label="$t('bg_width')" v-model="MasterInfo.BG_WIDTH" number />
+                      <BaseInput outlined :label="$t('bg_width')" v-model="MasterInfo.BG_WIDTH" type="number" />
                     </v-col>
                   </v-row>
-                  <v-row dense class="pr-3">
+                  <v-row dense class="pr-3 numberLeft">
                     <v-col lg="12">
-                      <BaseInput outlined :label="$t('bg_height')" v-model="MasterInfo.BG_HEIGHT" number />
+                      <BaseInput outlined :label="$t('bg_height')" v-model="MasterInfo.BG_HEIGHT" type="number" />
                     </v-col>
                   </v-row>
                 </v-col>
@@ -191,7 +244,7 @@
                 <v-col md="6">
                   <v-row dense class="pr-3">
                     <v-col lg="12">
-                      <BaseInput outlined :label="$t('sign_cell_box')" v-model="MasterInfo.SIGN_CELL_BOX" number />
+                      <BaseInput outlined :label="$t('sign_cell_box')" v-model="MasterInfo.SIGN_CELL_BOX" />
                     </v-col>
                   </v-row>
                   <v-row dense class="pr-3">
@@ -210,130 +263,13 @@
           </BaseTab>
         </BaseTabs>
       </v-col>
-      <!-- <v-col cols="12" :lg="showHilden ? 6 : 12">
-        <v-row dense>
-          <v-col md="2" class="d-flex justify-start">
-            <div class="d-flex">
-              <BaseButton btn_type="icon" icon_type="hide_search_panel" :btn_text="$t('hide_search_panel')" v-if="showHilden" mdi-icon="mdi-backburger" @onclick="showHilden = !showHilden" />
-              <BaseButton btn_type="icon" icon_type="show_search_panel" :btn_text="$t('show_search_panel')" v-else mdi-icon="mdi-forwardburger" @onclick="showHilden = !showHilden" />
-            </div>
-          </v-col>
-          <v-col md="4">
-         <div class="d-flex justify-end">
-              <BaseButton icon_type="process" :btn_text="$t('send_data_template')" @onclick="onGeneralData" />
-            </div>
-          </v-col>
-          <v-col md="2"> </v-col>
-          <v-col md="2"> </v-col>
-          <v-col md="2"> </v-col>
-        </v-row> 
-        <v-row dense>
-          <v-col md="1">
-            <div class="d-flex">
-              <BaseButton btn_type="icon" icon_type="hide_search_panel" :btn_text="$t('hide_search_panel')" v-if="showHilden" mdi-icon="mdi-backburger" @onclick="showHilden = !showHilden" />
-              <BaseButton btn_type="icon" icon_type="show_search_panel" :btn_text="$t('show_search_panel')" v-else mdi-icon="mdi-forwardburger" @onclick="showHilden = !showHilden" />
-            </div>
-          </v-col>
-          <v-col md="2" class="d-flex justify-end">
-            <b> {{ $t("template_table") }} </b>
-          </v-col>
-          <v-col md="9" class="d-flex justify-end">
-            <GwPutFile
-              :label="$t('import_ar_invoice')"
-              :impMultipleTemp="imp_MultipleTemp"
-              :impCboTemp="cboTemplate"
-              @onrtnseltemp="selTemplate = $event"
-              :impAddParam="[this.selected_company, this.itemTemplatePK]"
-              @onAfterImport="onAfterImport"
-            />
-            <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('template_file')" :disabled="!item_pk" @onclick="getImpFile" />
-            <BaseButton btn_type="icon" icon_type="view" :btn_text="$t('view')" :disabled="!item_pk" @onclick="onClickButton('VIEW')" />
-            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="!item_pk" @onclick="onClickButton('NEW_T')" />
-             <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="!item_pk" @onclick="onClickButton('DELETE_T')" /> 
-            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="!item_pk" @onclick="onClickButton('SAVE_T')" />
-          </v-col>
-          <v-row lg="12">
-            <v-col>
-              <BaseGridView
-                :headertype="1"
-                ref="grdTemplate"
-                :header="grdTemplate"
-                :height="limitHeightT"
-                :multiselect="true"
-                sel_procedure="EI_SEL_6095055_3_NC"
-                :filter_paras="[this.item_pk]"
-                upd_procedure="EI_UPD_6095055_4"
-                :editable="true"
-                :update_paras="[
-                  'TEI_TEMPLATE_PK',
-                  'TEMPLATE_CD',
-                  'TEMPLATE_NM',
-                  'TEMPLATE_LNM',
-                  'TEMPLATE_FNM',
-                  'FORM_NO',
-                  'USE_YN',
-                  'TEI_COMPANY_PK',
-                  'VALID_DATE_FROM',
-                  'VALID_DATE_TO',
-                  'REPORT_ID',
-                  'ADDR1',
-                  'ADDR2',
-                  'BANK_ACCOUNT1',
-                  'BANK_ACCOUNT2',
-                  'BANK_NM1',
-                  'BANK_NM2',
-                  'TEL',
-                  'FAX',
-                  'TAX_CODE',
-                  'TEI_EINVOICE_ISSUSE_PK',
-                  'WEBSITE',
-                  'TAX_CODE_DISPLAY',
-                  'PBAN',
-                  'SERIAL_NO_2',
-                  'URL_FILE_EXCEL',
-                  'URL_IMG_LOGO',
-                  'LOGO_START_ROW',
-                  'LOGO_START_COL',
-                  'URL_IMG_BG',
-                  'BG_START_ROW',
-                  'BG_START_COL',
-                  'BG_WIDTH',
-                  'BG_HEIGHT',
-                  'SIGN_START_CELL',
-                  'SIGN_END_CELL',
-                  'SIGN_BY_START_CELL',
-                  'SIGN_BY_END_CELL',
-                  'DETAILS_START_ROW',
-                  'SIGN_CELL_BOX',
-                  'ATT01',
-                  'ATT02',
-                  'ATT03',
-                  'ATT04',
-                  'ATT05',
-                  'ATT06',
-                  'ATT07',
-                  'ATT08',
-                  'ATT09',
-                  'ATT10',
-                  'ATT01_NUM',
-                  'ATT02_NUM',
-                  'ATT03_NUM',
-                  'ATT04_NUM',
-                  'ATT05_NUM',
-                  'ATT06_NUM',
-                  'ATT07_NUM',
-                  'ATT08_NUM',
-                  'ATT09_NUM',
-                  'ATT10_NUM',
-                  'RANGE_DETAILS_SIGN',
-                ]"
-                @cellClick="cellClickCellTemplate"
-              />
-            </v-col>
-          </v-row>
-        </v-row>
-      </v-col> -->
+      <v-row dense :lg="isShowLeft ? 6 : 12">
+        <v-col md="12" class="d-flex">
+          <iframe :src="urlPDF" height="800" width="100%"></iframe>
+        </v-col>
+      </v-row>
     </v-row>
+    <GwLoading :visible="showLoading" />
     <view-einvoice-pdf-dialog ref="ViewEInvoicePDFDialog" :src_pdfUrl="pdfUrl"></view-einvoice-pdf-dialog>
     <!-- Copy To Dialog -->
     <v-dialog persistent id="copy-to-dialog" max-width="500" v-model="copyToDialog">
@@ -420,32 +356,34 @@
 <script>
 import moment from "moment";
 import Swal from "sweetalert2/dist/sweetalert2.js";
+import "vue-pdf-app/dist/icons/main.css";
+import VuePdfApp from "vue-pdf-app";
 import ViewEInvoicePDFDialog from "@/components/dialog/ViewEInvoicePDFDialog.vue";
 export default {
   /*############### DEFAULT #######################*/
   layout: "default",
   middleware: "user",
-  /*############### components ####################*/
-  // props: {
-  //       type: {
-  //           type: String,
-  //           default: fd
-  //       },
-  //   },
+  props: {
+    view_origin: { type: Boolean, default: true },
+  },
   components: {
     "view-einvoice-pdf-dialog": ViewEInvoicePDFDialog,
     GwImportExcelFile: () => import("@/components/control/GwImportExcelFile.vue"),
+    VuePdfApp,
   },
   /*############### data ##########################*/
   data: () => ({
+    urlPDF: "",
+    imageLOGO: require("@/assets/images/no_image.png"),
+    imageBG: require("@/assets/images/no_image.png"),
+    isShowLeft: true,
+    showLoading: false,
     item_pk: null,
     itemTemplatePK: "",
     itemTemplatesPK: "",
     file: null,
     selected_company: "",
     company_list: [],
-    bizplaceList: [],
-    lstBizplace: "",
     month: "",
     year: "",
     fromDate: "",
@@ -482,9 +420,6 @@ export default {
     copyResult: "",
     selectedCompanyTo: "",
     selectedCompanyFrom: "",
-    // lstBizplaceFrom: "",
-    // lstBizplaceTo: "",
-    // bizplaceListTo: [],
     accept: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel",
     url_template: "",
     txtParamCodeMaster: "",
@@ -519,25 +454,30 @@ export default {
       DETAILS_START_ROW: "",
       SIGN_RANGE_DETAILS: "",
 
+      TEMPLATE_NM: "",
       SERIAL_NO: "",
+      FORM_NO: "",
       FORM_NO: "",
       FROM_NO: "",
       USE_YN: "",
     },
-    SERIAL_NO: "",
-    FORM_NO: "",
-    blUseYN: "",
-    procedure_upload: "AC_UPD_6095055_IMP_V2",
-    selected_form_no: "",
-    formNo_list: [],
+    img_dialog: false,
+    originHeight: 400,
+    originWidth: 400,
+    
+    formNoList: [],
     templateID_list: [],
     //
     showPersonal: true,
     showExp: true,
     showSign: true,
+    fileSaveLOGO: null,
+    folder: "abc",
+    fileSaveBG: null,
   }),
   /*############### created #######################*/
   async created() {
+    console.clear();
     await this.getListCodes("company");
     await this.getListCodes("serial_no");
     await this.getListCodes("form_no");
@@ -588,16 +528,9 @@ export default {
     },
     limitHeight() {
       if (this.windowHeight <= 768) {
-        return this.windowHeight * 0.15; //1366x768
+        return this.windowHeight * 0.2; //1366x768
       } else {
-        return this.windowHeight * 0.25; //1920x1080
-      }
-    },
-    limitHeightmin() {
-      if (this.windowHeight <= 768) {
-        return this.windowHeight * 0.14; //1366x768
-      } else {
-        return this.windowHeight * 0.24; //1920x1080
+        return this.windowHeight * 0.3; //1920x1080
       }
     },
     gridHeight() {
@@ -853,48 +786,109 @@ export default {
     },
   },
   /*############### mounted #######################*/
-  mounted() {
-    //this.$refs.grdEinvoiceIssue.loadData();
-  },
-
+  mounted() {},
   /*############### methods #######################*/
   methods: {
-    cellClickCell(cell) {
+    async onUploadImgFolder(file, folder, _type) {
+      let _path = "";
+      try {
+        if (file == "" || file == "undefined") {
+          return (_path = "");
+        }
+        let _folderPath = this.cboTemplate.filter((x) => x.CODE == _type);
+        if (!_folderPath[0].VAL1) {
+          return (_path = "");
+        }
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("folder", _folderPath[0].VAL1 + "/" + folder);
+        await this.$axios({ method: "post", url: "/dso/putfiletofolder", data: formData }).then(async (res) => {
+          if (res.data.data) {
+            _path = res.data.data;
+          }
+        });
+      } catch (e) {
+        console.log(e);
+        _path = "";
+      }
+      return _path;
+    },
+    selectedFileLOGO(event) {
+      this.fileSaveLOGO = null;
+      const files = event.target.files;
+      if (files[0] !== undefined) {
+        const fr = new FileReader();
+        fr.readAsDataURL(files[0]);
+        fr.addEventListener("load", () => {
+          this.imageLOGO = fr.result;
+          this.fileSaveLOGO = files[0];
+        });
+      }
+    },
+    selectedFileBG(event) {
+      this.fileSaveBG = null;
+      const files = event.target.files;
+      if (files[0] !== undefined) {
+        const fr = new FileReader();
+        fr.readAsDataURL(files[0]);
+        fr.addEventListener("load", () => {
+          this.imageBG = fr.result;
+          this.fileSaveBG = files[0];
+        });
+      }
+    },
+    selectImageBG() {
+      this.$refs.fileBG.click();
+    },
+    selectImageLOGO() {
+      this.$refs.fileLOGO.click();
+    },
+    async cellClickCell(cell) {
+      console.log("file: 6095055.vue:916 [vng-304] cellClickCell [vng-304] cell:", cell);
       this.item_pk = cell.data.PK;
       this.dataIssued = cell.data;
-      this.itemTemplatePK = cell.data.TEI_TEMPLATE_PK;
-      // this.$refs.grdTemplate.loadData();
 
-      this.MasterInfo.PK = cell.data.PK;
-      this.MasterInfo.SERIAL_NO = cell.data.SERIAL_NO;
-      this.MasterInfo.FORM_NO = cell.data.FORM_NO_NM;
-      this.MasterInfo.FROM_NO = cell.data.FROM_NO;
-      this.MasterInfo.USE_YN = cell.data.USE_YN_1;
-    },
+      if (cell.data._rowstatus == "i") {
+        // this.MasterInfo.TEMPLATE_CD = "1";
+        // this.MasterInfo.SERIAL_NO = cell.data.SERIAL_NO;
+        // this.MasterInfo.FORM_NO = cell.data.FORM_NO;
+        // this.MasterInfo.FROM_NO = cell.data.FROM_NO;
+        this.MasterInfo.USE_YN = cell.data.USE_YN;
+      } else {
+        this.MasterInfo.PK = cell.data.TEI_TEMPLATE_PK;
+        await this.dsoMaster("select");
 
-    cellClickCellTemplate(cell) {
-      this.dataTemp = {
-        pk: cell.data.PK,
-        url: cell.data.URL_FILE_EXCEL,
-        logo_url: cell.data.URL_IMG_LOGO,
-        logo_start_col: cell.data.LOGO_START_COL,
-        logo_start_row: cell.data.LOGO_START_ROW,
-        logo_width: cell.data.LOGO_WIDTH,
-        logo_height: cell.data.LOGO_HEIGHT,
-        bg_url: cell.data.URL_IMG_BG,
-        bg_start_row: cell.data.BG_START_ROW,
-        bg_start_col: cell.data.BG_START_COL,
-        bg_width: cell.data.BG_WIDTH,
-        bg_height: cell.data.BG_HEIGHT,
-      };
-      this.itemTemplatesPK = cell.data.PK;
-      this.url_template = cell.data.URL_FILE_EXCEL;
+        /////VIew PDF
+        this.showLoading = true;
+        try {
+          const rec = await this.$axios.$get("/dso/makereport", {
+            responseType: "blob",
+            params: {
+              template: this.url_template,
+              excel: JSON.stringify([
+                {
+                  sheet: 1,
+                  // insertRange: [{
+                  //   range: "A1:E22", proc: "SP_RPT_SH10070_TAB2_M_NOCACHE", params: [this.modelMaster.PK, this.user.USER_NAME]
+                  // }],
+                },
+              ]),
+              convert: "pdf",
+            },
+          });
+          this.showLoading = true;
+          this.urlPDF = window.URL.createObjectURL(rec);
+          this.showLoading = false;
+          let rtnBase64pdf = await this._blobFileToBase64(rec);
+        } catch (e) {
+          this.showNotification("danger", this.$t("fail_to_view_pdf"), "", 4000);
+        }
+      }
     },
     async onClickButton(pos) {
       switch (pos) {
         case "VIEW":
           this.onPreview();
-          // this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
           break;
         case "NEW_M":
           this.onNew();
@@ -904,21 +898,18 @@ export default {
           break;
         case "SAVE_M":
           this.onSave();
+          this.dsoMaster("update");
           break;
         case "SEARCH_M":
           this.onSearch();
           break;
         case "SAVE_S":
           this.dsoMaster("update");
-          // let savedPhoto = await this.$refs.photoLogo.Save();
-          // let savedPhotoBG = await this.$refs.photoBackground.Save();
+
           break;
         case "NEW_S":
           this.onNew_T();
           break;
-        // case "SAVE_T":
-        //   this.onSave_T();
-        //   break;
         case "DELETE_T":
           this.onDelete_T();
           break;
@@ -942,97 +933,154 @@ export default {
           break;
       }
     },
+
     async dsoMaster(action) {
-      await this._dsoCall({
+      /// Luu duong dan hinh anh
+      let pathLOGOImg = "";
+      if (this.fileSaveLOGO) {
+        let urlImg = await this.onUploadImgFolder(this.fileSaveLOGO, this.folder, "LOGO");
+        pathLOGOImg = urlImg;
+        this.fileSaveLOGO = null;
+      }
+      this.MasterInfo.URL_IMG_LOGO = pathLOGOImg == "" ? this.MasterInfo.URL_IMG_LOGO : pathLOGOImg;
+      ////////////////////////////
+      let pathBGImg = "";
+      if (this.fileSaveBG) {
+        pathBGImg = await this.onUploadImgFolder(this.fileSaveBG, this.folder, "BG");
+        this.fileSaveBG = null;
+      }
+      this.MasterInfo.URL_IMG_BG = pathBGImg == "" ? this.MasterInfo.URL_IMG_BG : pathBGImg;
+      this.MasterInfo._rowstatus = this.MasterInfo._rowstatus == "i" ? "i" : action == "update" ? "u" : "d";
+      /////////////////////////
+      let dsoControl = {
         type: "control",
         selpro: "EI_SEL_6095055_3_NC",
         updpro: "EI_UPD_6095055_4",
         para: [this.MasterInfo.PK],
         elname: [
-                  '_rowstatus',
-                  'TEI_TEMPLATE_PK',
-                  'TEMPLATE_CD',
-                  'TEMPLATE_NM',
-                  'TEMPLATE_LNM',
-                  'TEMPLATE_FNM',
-                  'FORM_NO',
-                  'USE_YN',
-                  'TEI_COMPANY_PK',
-                  'VALID_DATE_FROM',
-                  'VALID_DATE_TO',
-                  'REPORT_ID',
-                  'ADDR1',
-                  'ADDR2',
-                  'BANK_ACCOUNT1',
-                  'BANK_ACCOUNT2',
-                  'BANK_NM1',
-                  'BANK_NM2',
-                  'TEL',
-                  'FAX',
-                  'TAX_CODE',
-                  'TEI_EINVOICE_ISSUSE_PK',
-                  'WEBSITE',
-                  'TAX_CODE_DISPLAY',
-                  'PBAN',
-                  'SERIAL_NO_2',
-                  'URL_FILE_EXCEL',
-                  'URL_IMG_LOGO',
-                  'LOGO_START_ROW',
-                  'LOGO_START_COL',
-                  'URL_IMG_BG',
-                  'BG_START_ROW',
-                  'BG_START_COL',
-                  'BG_WIDTH',
-                  'BG_HEIGHT',
-                  'SIGN_START_CELL',
-                  'SIGN_END_CELL',
-                  'SIGN_BY_START_CELL',
-                  'SIGN_BY_END_CELL',
-                  'DETAILS_START_ROW',
-                  'SIGN_CELL_BOX',
-                  'ATT01',
-                  'ATT02',
-                  'ATT03',
-                  'ATT04',
-                  'ATT05',
-                  'ATT06',
-                  'ATT07',
-                  'ATT08',
-                  'ATT09',
-                  'ATT10',
-                  'ATT01_NUM',
-                  'ATT02_NUM',
-                  'ATT03_NUM',
-                  'ATT04_NUM',
-                  'ATT05_NUM',
-                  'ATT06_NUM',
-                  'ATT07_NUM',
-                  'ATT08_NUM',
-                  'ATT09_NUM',
-                  'ATT10_NUM',
-                  'RANGE_DETAILS_SIGN'
+          "_rowstatus",
+          "PK",
+          "TEMPLATE_CD",
+          "TEMPLATE_NM",
+          "TEMPLATE_LNM",
+          "TEMPLATE_FNM",
+          "FORM_NO",
+          "USE_YN",
+          "TEI_COMPANY_PK",
+          "VALID_DATE_FROM",
+          "VALID_DATE_TO",
+          "REPORT_ID",
+          "ADDR1",
+          "ADDR2",
+          "BANK_ACCOUNT1",
+          "BANK_ACCOUNT2",
+          "BANK_NM1",
+          "BANK_NM2",
+          "TEL",
+          "FAX",
+          "TAX_CODE",
+          "TEI_EINVOICE_ISSUSE_PK",
+          "WEBSITE",
+          "TAX_CODE_DISPLAY",
+          "PBAN",
+          "SERIAL_NO_2",
+          "URL_FILE_EXCEL",
+          "URL_IMG_LOGO",
+          "LOGO_START_ROW",
+          "LOGO_START_COL",
+          "LOGO_WIDTH",
+          "LOGO_HEIGHT",
+          "URL_IMG_BG",
+          "BG_START_ROW",
+          "BG_START_COL",
+          "BG_WIDTH",
+          "BG_HEIGHT",
+          "SIGN_START_CELL",
+          "SIGN_END_CELL",
+          "SIGN_BY_START_CELL",
+          "SIGN_BY_END_CELL",
+          "DETAILS_START_ROW",
+          "SIGN_CELL_BOX",
+          "FROM_NO",
+          "ATT01",
+          "ATT02",
+          "ATT03",
+          "ATT04",
+          "ATT05",
+          "ATT06",
+          "ATT07",
+          "ATT08",
+          "ATT09",
+          "ATT10",
+          "ATT01_NUM",
+          "ATT02_NUM",
+          "ATT03_NUM",
+          "ATT04_NUM",
+          "ATT05_NUM",
+          "ATT06_NUM",
+          "ATT07_NUM",
+          "ATT08_NUM",
+          "ATT09_NUM",
+          "ATT10_NUM",
+          "RANGE_DETAILS_SIGN",
         ],
         data: this.MasterInfo,
-      }, action, true).then((res) => {
+      };
+      await this._dsoCall(dsoControl, action, true).then((res) => {
         if (res) {
           switch (action) {
             case "select":
               this.MasterInfo = { ...res };
+              console.log("file: 6095055.vue:1100 [vng-304] awaitthis._dsoCall [vng-304] res:", res);
               this.MasterInfo._rowstatus = "u";
-
+              ///  Load ra được hình ảnh////
+              try {
+                if (this.MasterInfo.URL_IMG_LOGO == "" || this.MasterInfo.URL_IMG_LOGO == null) {
+                  this.imageLOGO = require("@/assets/images/no_image.png");
+                } else {
+                  let imgLOGO = require(`@/${this.MasterInfo?.URL_IMG_LOGO}.png`);
+                  this.imageLOGO = imgLOGO;
+                }
+                ///////
+                if (this.MasterInfo.URL_IMG_BG == "" || this.MasterInfo.URL_IMG_BG == null) {
+                  this.imageBG = require("@/assets/images/no_image.png");
+                } else {
+                  let imgBG = require(`@/${this.MasterInfo?.URL_IMG_BG}.png`);
+                  this.imageBG = imgBG;
+                }
+              } catch (e) {
+                this.showNotification("danger", this.$t("fail_to_url", "Error"), e.message);
+              }
+              ////   Bộ data để view pdf
+              this.dataTemp = {
+                pk: res.PK,
+                url: res.URL_FILE_EXCEL,
+                logo_url: res.URL_IMG_LOGO,
+                logo_start_col: res.LOGO_START_COL,
+                logo_start_row: res.LOGO_START_ROW,
+                logo_width: res.LOGO_WIDTH,
+                logo_height: res.LOGO_HEIGHT,
+                bg_url: res.URL_IMG_BG,
+                bg_start_row: res.BG_START_ROW,
+                bg_start_col: res.BG_START_COL,
+                bg_width: res.BG_WIDTH,
+                bg_height: res.BG_HEIGHT,
+              };
+              this.itemTemplatesPK = res.PK;
+              this.url_template = res.URL_FILE_EXCEL;
               break;
             case "update":
               switch (this.MasterInfo._rowstatus) {
                 case "i":
                   this.MasterInfo = { ...res };
                   this.MasterInfo._rowstatus = "u";
-                  break
+                  break;
                 case "u":
                   this.MasterInfo = { ...res };
                   this.MasterInfo._rowstatus = "u";
                   break;
                 case "d":
-                  this.onClick('NEW_T');
+                  this.onClick("NEW_T");
                   break;
               }
               break;
@@ -1040,14 +1088,9 @@ export default {
         }
       });
     },
-    async onCellClick({ column, data, rowIndex, rowType }) {
-      // console.log(data)
-    },
-
     async onSearch() {
       this.$refs.grdEinvoiceIssue.loadData();
     },
-
     onDelete() {
       this.$refs.grdEinvoiceIssue.onSetMarkedDelete(true);
     },
@@ -1161,11 +1204,12 @@ export default {
             this.Form_noList = results[10];
             this.templateIdList = results[11];
             this.templateID_list = results[11]; ///
+            this.formNoList = results[10];
           }
           break;
       }
     },
-    
+
     onNew() {
       const date = new Date();
       let year = date.getFullYear().toString().substring(2, 4);
@@ -1183,19 +1227,19 @@ export default {
         TCO_BUSPLACE_PK: this.lstBizplace,
         REMARKS: "",
         USE_YN: "Y",
+        TEI_TEMPLATE_PK: this.MasterInfo.PK,
+        TEMPLATE_CD: this.MasterInfo.TEMPLATE_CD,
       });
     },
 
     onNew_T() {
       this.MasterInfo._rowstatus = "i";
-      this.MasterInfo.PK = null;
-      this.MasterInfo.TEI_TEMPLATE_PK = this.item_pk;
-
+      this.MasterInfo.PK = "";
+      this.MasterInfo.TEI_TEMPLATE_PK = "";
+      this.MasterInfo.TEMPLATE_CD = "111";
       this.MasterInfo.SERIAL_NO = "";
       this.MasterInfo.FORM_NO = "";
       this.MasterInfo.FROM_NO = "";
-
-
       this.MasterInfo.URL_IMG_LOGO = "";
       this.MasterInfo.LOGO_START_ROW = "";
       this.MasterInfo.LOGO_START_COL = "";
@@ -1214,109 +1258,7 @@ export default {
       this.MasterInfo.SIGN_CELL_BOX = "";
       this.MasterInfo.DETAILS_START_ROW = "";
       this.MasterInfo.SIGN_RANGE_DETAILS = "";
-    },  
-    // onNew_T() {
-    //   let data = this.$refs.grdEinvoiceIssue.getData();
-    //   this.$refs.grdTemplate.addRowStruct({
-    //     PK: "",
-    //     TEMPLATE_CD: data[0].SERIAL_NO,
-    //     TEMPLATE_NM: data[0].SERIAL_NO,
-    //     TEMPLATE_LNM: "",
-    //     TEMPLATE_FNM: "",
-    //     FORM_NO: data[0].FORM_NO,
-    //     USE_YN: "Y",
-    //     TEI_COMPANY_PK: this.selected_company,
-    //     VALID_DATE_FROM: data[0].FROM_DT,
-    //     VALID_DATE_TO: data[0].TO_DT,
-    //     REPORT_ID: "",
-    //     ADDR1: "",
-    //     ADDR2: "",
-    //     BANK_ACCOUNT1: "",
-    //     BANK_ACCOUNT2: "",
-    //     BANK_NM1: "",
-    //     BANK_NM2: "",
-    //     TEL: data[0].TEL,
-    //     FAX: "",
-    //     TAX_CODE: "",
-    //     TEI_EINVOICE_ISSUSE_PK: this.item_pk,
-    //     WEBSITE: "",
-    //     TAX_CODE_DISPLAY: "",
-    //     PBAN: "2.0.1",
-    //     URL_IMG_LOGO: "",
-    //     LOGO_START_ROW: "",
-    //     LOGO_START_COL: "",
-    //     LOGO_WIDTH: "",
-    //     LOGO_HEIGHT: "",
-    //     URL_IMG_BG: "",
-    //     BG_START_ROW: "",
-    //     BG_START_COL: "",
-    //     BG_WIDTH: "",
-    //     BG_HEIGHT: "",
-    //   });
-    // },
-
-    onAfterImport() {
-      // console.log("onAfterImport  ");
-      this.$refs.grdTemplate.loadData();
     },
-
-    async onProcessConfirm(action) {
-      this.actionProcess = action;
-      //this.actionDialog = true;
-
-      let promise = Swal.fire({
-        icon: "question",
-        caption: this.$t(`do_you_want_to_${action.toLowerCase()}`),
-        showCancelButton: true,
-        confirmButtonText: this.$t("yes"),
-        cancelButtonText: this.$t("no"),
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.onCopy();
-        }
-      });
-
-      await promise;
-    },
-
-    // async onCopy() {
-    //   // if (this.selectedCompanyTo === this.selectedCompanyFrom) {
-    //   //     return this.showNotification("danger", this.$t("copy_failed"), this.$t("cannot_select_same_company"))
-    //   // }
-    //   if (!this.selectedCompanyTo) {
-    //     return this.showNotification("danger", this.$t("copy_failed"), this.$t("must_select_from_company"));
-    //   }
-    //   if (!this.txtForm_No_To) {
-    //     return this.showNotification("danger", this.$t("copy_failed"), this.$t("must_input_form_no_to"));
-    //   }
-    //   if (!this.txtSerial_No_To) {
-    //     return this.showNotification("danger", this.$t("copy_failed"), this.$t("must_input_serial_no_to"));
-    //   }
-    //   const dso = {
-    //     type: "process",
-    //     updpro: "EI_PRO_6060230_COPY",
-    //     para: [
-    //       this.selectedCompanyFrom,
-    //       this.selectedCompanyTo,
-    //       //   this.lstBizplaceFrom,
-    //       //   this.lstBizplaceTo,
-    //       this.lstFrom_No_From,
-    //       this.txtForm_No_To,
-    //       this.lstSerial_No_From,
-    //       this.txtSerial_No_To,
-    //       this.overWriteYN,
-    //     ],
-    //   };
-
-    //   const result = await this._dsoCall(dso, "process", true);
-    //   if (result) {
-    //     const rtn = result[0].RTN;
-    //     this.copyToDialog = false;
-    //     //this.copyResult =  this.$t( rtn);
-    //   }
-    //   this.onSearch();
-    // },
-
     async onPreview() {
       // if (!this.itemTemplatePK) {
       //   return this.showNotification("warning", this.$t("error_occurs"), "pls_select_template");
@@ -1330,23 +1272,21 @@ export default {
       // } catch (e) {
       //   return this.showNotification("danger", e.message);
       // }
-
-      if (this.itemTemplatesPK != "") {
-        let res_url = await this.$axios.$post("/einvoice/general-url-pdf-template", {
-          responseType: "json",
-          tei_wt_sale_bill_pk: this.itemTemplatesPK,
-        });
-        if (res_url.success) {
-          this.pdfUrl = res_url.data;
-
-          this.$nextTick(() => {
-            this.isProcessing = false;
-            this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
-          });
-        }
-      } else {
-        this.showNotification("warning", this.$t("no_row_selected"), "");
-      }
+      // if (this.itemTemplatesPK != "") {
+      //   let res_url = await this.$axios.$post("/einvoice/general-url-pdf-template", {
+      //     responseType: "json",
+      //     tei_wt_sale_bill_pk: this.itemTemplatesPK,
+      //   });
+      //   if (res_url.success) {
+      //     this.pdfUrl = res_url.data;
+      //     this.$nextTick(() => {
+      //       this.isProcessing = false;
+      //       this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+      //     });
+      //   }
+      // } else {
+      //   this.showNotification("warning", this.$t("no_row_selected"), "");
+      // }
     },
 
     async pdfUrlGetter(pk) {
@@ -1366,43 +1306,96 @@ export default {
     },
     async getImpFile() {
       // console.log("this.url_template  ", this.url_template);
-      if (!this.url_template.length) {
-        return this.showNotification("warning", this.$t("error_occurs"), "pls_select_template");
-      }
-      const res = await this.$axios.$get("/dso/downloadtemp", {
-        responseType: "blob",
-        params: {
-          template: this.url_template,
-        },
-      });
-      //console.log("res   ", res);
-      //console.log("res   ", res.size);
-      if (res && res.size > 0) {
-        try {
-          let blob = new Blob([res], {
-            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-          });
-          // let _gettime = new Date().getTime();
-          const filenameSplit = this.url_template.split("/");
-          let filename = this.filterItems(filenameSplit, ".xlsx")[0].split(".")[0] + ".xlsx";
-          // filename =     this.filterItems(filenameSplit, '.xlsx')[0].split(".")[0] + '.xlsx';
-          this._ExcelSaveAs(blob, filename);
-        } catch (e) {
-          let blob = new Blob([res], {
-            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-          });
-          const filenameSplit = this.url_template.split("/");
-          let filename = this.filterItems(filenameSplit, ".xls")[0].split(".")[0] + ".xls";
-          // filename =     this.filterItems(filenameSplit, '.xlsx')[0].split(".")[0] + '.xlsx';
-          this._ExcelSaveAs(blob, filename);
+      // if (!this.url_template.length) {
+      //   return this.showNotification("warning", this.$t("error_occurs"), "pls_select_template");
+      // }
+      // const res = await this.$axios.$get("/dso/downloadtemp", {
+      //   responseType: "blob",
+      //   params: {
+      //     template: this.url_template,
+      //   },
+      // });
+      // if (res && res.size > 0) {
+      //   try {
+      //     let blob = new Blob([res], {
+      //       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      //     });
+      //     // let _gettime = new Date().getTime();
+      //     const filenameSplit = this.url_template.split("/");
+      //     let filename = this.filterItems(filenameSplit, ".xlsx")[0].split(".")[0] + ".xlsx";
+      //     // filename =     this.filterItems(filenameSplit, '.xlsx')[0].split(".")[0] + '.xlsx';
+      //     this._ExcelSaveAs(blob, filename);
+      //   } catch (e) {
+      //     let blob = new Blob([res], {
+      //       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      //     });
+      //     const filenameSplit = this.url_template.split("/");
+      //     let filename = this.filterItems(filenameSplit, ".xls")[0].split(".")[0] + ".xls";
+      //     this._ExcelSaveAs(blob, filename);
+      //   }
+      // } else {
+      //   this.showNotification("danger", this.$t("cannot_find_template"), "", 3001);
+      // }
+    },
+    async viewImage() {
+      let dimensions = await this.getImageDimensions(this.imageLOGO);
+      let maxWidth = window.screen.width * 0.8;
+      let maxHeight = window.screen.height * 0.8;
 
-          // this.showNotification("danger", this.$t("cannot_find_template"), e, 3001);
+      this.orientation = dimensions.w > dimensions.h ? "landscape" : "portrait";
+      this.originWidth = dimensions.w;
+      this.originHeight = dimensions.h;
+
+      if (this.orientation == "landscape") {
+        if (dimensions.w > maxWidth) {
+          let ratio = (maxWidth / dimensions.w).toFixed(2);
+          this.originWidth = maxWidth;
+          this.originHeight = Math.round(dimensions.h * ratio);
         }
       } else {
-        this.showNotification("danger", this.$t("cannot_find_template"), "", 3001);
+        if (dimensions.h > maxHeight) {
+          let ratio = (maxHeight / dimensions.h).toFixed(2);
+          this.originHeight = maxHeight;
+          this.originWidth = Math.round(dimensions.w * ratio);
+        }
       }
+      await this.wait(50);
+      this.img_dialog = true;
     },
+    async viewImageBG() {
+      let dimensions = await this.getImageDimensions(this.imageBG);
+      let maxWidth = window.screen.width * 0.8;
+      let maxHeight = window.screen.height * 0.8;
 
+      this.orientation = dimensions.w > dimensions.h ? "landscape" : "portrait";
+      this.originWidth = dimensions.w;
+      this.originHeight = dimensions.h;
+
+      if (this.orientation == "landscape") {
+        if (dimensions.w > maxWidth) {
+          let ratio = (maxWidth / dimensions.w).toFixed(2);
+          this.originWidth = maxWidth;
+          this.originHeight = Math.round(dimensions.h * ratio);
+        }
+      } else {
+        if (dimensions.h > maxHeight) {
+          let ratio = (maxHeight / dimensions.h).toFixed(2);
+          this.originHeight = maxHeight;
+          this.originWidth = Math.round(dimensions.w * ratio);
+        }
+      }
+      await this.wait(50);
+      this.img_dialog = true;
+    },
+    getImageDimensions(file) {
+      return new Promise(function (resolved, rejected) {
+        var i = new Image();
+        i.onload = function () {
+          resolved({ w: i.width, h: i.height });
+        };
+        i.src = file;
+      });
+    },
     // async onGeneralData() {
     //   this.dataIssued.Template = [];
     //   this.dataIssued.Template.push(this.$refs.grdTemplate.getDataSource());
@@ -1417,10 +1410,6 @@ export default {
     //     this.showNotification("danger", this.$t("error_occurs"), res.message);
     //   }
     // },
-    abc(res) {
-      console.log("file: 6095055.vue:1428 [vng-304] abc [vng-304] res:", res)
-      
-    }
   },
 };
 /*==================================================================== END export default  ========================================================================================*/

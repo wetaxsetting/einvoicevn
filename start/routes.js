@@ -96,7 +96,8 @@ Route.group(() => {
     Route.post("updateparamtemplate", "EInvoiceController.updateViewTemplate")
     Route.post("viewpdftest", "EInvoiceController.viewPDFTEST")
     Route.post("bulkinsertpro", "DsoController.CallBulkInsertProcedure")
-    Route.post("uploadfileexcel", "DsoController.UploadExcelToFolder");
+    Route.post("uploadfileexcel", "DsoController.UploadExcelToFolder"); 
+    Route.post("putfiletofolder", "DsoController.putfiletofolder");
 
 }).prefix("api/dso").middleware("user");
 

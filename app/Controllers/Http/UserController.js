@@ -33,7 +33,7 @@ class UserController {
             console.log("user_id ", user_id, "password  ", password);
             let user = await UserRepo.findBy({ USER_ID: user_id, DEL_IF: 0 });
             if (!user) {
-                return response.send(Utils.response(false, "user_not_found", null));
+                return response.send(Utils.response(false, 'error' , {err_msg:"user_not_found"}));
             }
             // const verify = await Hash.verify(password, user.USER_PW)
             const md5_64 = this.b64_md5(password);
@@ -51,9 +51,9 @@ class UserController {
                 result = await DBService.callProcCursor("sys_login_auth", [user_id, "invalid_userid_or_password", ip], "ENG", user_id);
                 user = result[0];
                 if (user) {
-                    return response.send(Utils.response(false, user.STATUS, null));
+                    return response.send(Utils.response(false, 'error', {err_msg: user.STATUS}));
                 }
-                return response.send(Utils.response(false, "user_not_found", null));
+                return response.send(Utils.response(false, 'error',{err_msg: "user_not_found"}));
             }
 
             result = await DBService.callProcCursor("sys_login_auth", [user_id, user.USER_PW, ip], "ENG", user_id);
@@ -64,15 +64,15 @@ class UserController {
                 if (user.STATUS === "OK") {
                     const token = await auth.generate(user);
                     //Utils.Logger({ LVL: "info", MODULE: "UserController", FUNC: "logIn", CONTENT: `Login OK. IP:${ip}`, CRT_BY: user_id });
-                    return response.send(Utils.response(true, "Log In Successfully!", { user: user, token: token.token }));
+                    return response.send(Utils.response(true, "Log In Successfully!", { user: user, token: token.token, token_type: 'Bearer', expires_in: 86400 }));
                 }
                 Utils.Logger({ LVL: "info", MODULE: "UserController", FUNC: "logIn", CONTENT: `Login ERROR. IP:${ip}`, CRT_BY: user_id });
-                return response.send(Utils.response(false, user.STATUS, null));
+                return response.send(Utils.response(false, 'error', {err_msg: user.STATUS}));
             }
-            return response.send(Utils.response(false, "User not found!", null));
+            return response.send(Utils.response(false, 'error', "User not found!"));
         } catch (e) {
             Utils.Logger({ LVL: "error", MODULE: "UserController", FUNC: "logIn", CONTENT: `${e.message}. IP:${ip}` });
-            return response.send(Utils.response(false, e.message, null));
+            return response.send(Utils.response(false, 'error', {err_msg: e.message}));
         }
     }
 

@@ -64,6 +64,8 @@ const TAX_PASSWORD = "e_GX4v@";
 // test site
 // const TAX_CHECK_TRADE_CODE = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
 
+const errorCallTax = 'No data found!';
+
 class EInvoiceController {
   async renderJsonToExcelFile() {
     const exjs = new RenderJsonToExcelFile();
@@ -411,7 +413,7 @@ class EInvoiceController {
 
       const valid = this.validateDeclareJson(declare);
       if (!valid.status) {
-        return response.send(Utils.response(valid.status, valid.message, null));
+        return response.send(Utils.response(valid.status, 'error', {err_msg : valid.message}));
       }
 
       let jsonDeclare = {
@@ -422,7 +424,6 @@ class EInvoiceController {
               MSo: "01/ĐKTĐ-HĐĐT",
               Ten: "Tờ khai đăng ký/thay đổi thông tin sử dụng hóa đơn điện tử",
               HThuc: 1,
-              Mso: "",
               TNNT: "Vinmart",
               MST: 104918404,
               CQTQLy: "Chi cục thuế Quận Hoàng Mai",
@@ -469,7 +470,7 @@ class EInvoiceController {
         },
       };
       jsonDeclare.TKhai.DLTKhai.TTChung.PBan = declare.version;
-      jsonDeclare.TKhai.DLTKhai.TTChung.Mso = declare.form_no;
+      jsonDeclare.TKhai.DLTKhai.TTChung.MSo = declare.declare_form_no;
       jsonDeclare.TKhai.DLTKhai.TTChung.Ten = declare.declare_name;
       jsonDeclare.TKhai.DLTKhai.TTChung.HThuc = declare.declare_type;
       jsonDeclare.TKhai.DLTKhai.TTChung.TNNT = declare.seller_company_name;
@@ -527,7 +528,8 @@ class EInvoiceController {
         FUNC: "weTaxConvertDeclareUsingInvoiceToXML",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, "error", e.message));
+      return response.send(Utils.response(false, "error", {
+        err_msg: e.message}));
     }
   }
 
@@ -540,7 +542,7 @@ class EInvoiceController {
       version: 6,
       declare_name: 100,
       declare_type: 1,
-      form_no: 15,
+      declare_form_no: 15,
       seller_company_name: 400,
       seller_taxcode: 14,
       tax_office_name: 100,
@@ -860,7 +862,7 @@ class EInvoiceController {
 
       const valid = this.validateJsonInvalidInvoiceToXML(invalid_invoices);
       if (!valid.status) {
-        return response.send(Utils.response(valid.status, valid.message, null));
+        return response.send(Utils.response(valid.status, "Validate error!", {err_msg: valid.message}));
       }
 
       let jsonInvalidInvoices = {
@@ -937,10 +939,10 @@ class EInvoiceController {
       Utils.Logger({
         LVL: "error",
         MODULE: "EInvoiceController",
-        FUNC: "weTaxConvertInvaliInvoiceToXML",
+        FUNC: "weTaxConvertInvalidInvoiceToXML",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, "error", e.message));
+      return response.send(Utils.response(false, "error", {err_msg: e.message}));
     }
   }
 
@@ -2395,7 +2397,7 @@ class EInvoiceController {
         FUNC: "sendDeclarationToTaxOffice",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, "error", e.message));
+      return response.send(Utils.response(false, "error",{err_msg: e.message}));
     }
   }
 
@@ -2427,16 +2429,16 @@ class EInvoiceController {
       } = request.all();
 
       if (!seller_company_nm) {
-        return response.send(Utils.response(false, `Invalid: seller_company_nm`));
+        return response.send(Utils.response(false,'error',{err_msg: `Invalid: seller_company_nm`}));
       }
       if (!seller_company_fnm) {
-        return response.send(Utils.response(false, `Invalid: seller_company_fnm`));
+        return response.send(Utils.response(false,'error',{err_msg: `Invalid: seller_company_fnm`}));
       }
       if (!seller_taxcode) {
-        return response.send(Utils.response(false, `Invalid: seller_taxcode`));
+        return response.send(Utils.response(false, 'error',{err_msg:`Invalid: seller_taxcode`}));
       }
       if (!seller_address) {
-        return response.send(Utils.response(false, `Invalid: seller_address`));
+        return response.send(Utils.response(false,'error',{err_msg: `Invalid: seller_address`}));
       }
 
       const para_value = {
@@ -2529,7 +2531,7 @@ class EInvoiceController {
         FUNC: "weTaxSendCompanyInfor",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, "error", e.message));
+      return response.send(Utils.response(false, "error", {err_msg: e.message}));
     }
   }
 
@@ -2551,7 +2553,7 @@ class EInvoiceController {
 
       const valid = this.validateDeclareXML(this.parseXmlToJson(xml_signed));
       if (!valid.status) {
-        return response.send(Utils.response(valid.status, valid.message, null));
+        return response.send(Utils.response(valid.status, 'error', {err_msg: valid.message}));
       }
 
       const agent = {
@@ -2589,7 +2591,7 @@ class EInvoiceController {
           p_crt_by
         );
       } else {
-        return response.send(Utils.response(false, `Failed to call tax office api.`, tradeCode));
+        return response.send(Utils.response(false, `Failed to call tax office api.`,  tradeCode));
       }
 
       return response.send(
@@ -2607,7 +2609,7 @@ class EInvoiceController {
         FUNC: "weTaxSendDeclarationToTaxOffice",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, "error", e.message));
+      return response.send(Utils.response(false, "error", {err_msg: e.message}));
     }
   }
 
@@ -2965,7 +2967,7 @@ class EInvoiceController {
       let tenTBao;
       let loaiTBao;
       if (!res.data.length) {
-        return response.send(Utils.response(false, `no data found.`));
+        return response.send(Utils.response(false,'Checking Tax Status Failure', {err_msg:  `No data found.`}));
       }
 
       const lastNotice = res.data[res.data.length - 1];
@@ -3026,7 +3028,7 @@ class EInvoiceController {
         FUNC: "weTaxCheckingDeclarations",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, "error", e.message));
+      return response.send(Utils.response(false, "error", {err_msg: e.message}));
     }
   }
 
@@ -3230,7 +3232,7 @@ class EInvoiceController {
         //     );
         // }
       } else {
-        return response.send(Utils.response(false, `Failed to call taxoffice api.`, null));
+        return response.send(Utils.response(false, 'error', {err_msg: errorCallTax}));
       }
     } catch (e) {
       Utils.Logger({
@@ -3239,7 +3241,7 @@ class EInvoiceController {
         FUNC: "sendInvoiceToTaxOffice",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, "error", e.message));
+      return response.send(Utils.response(false, "error", {err_msg: e.message}));
     }
   }
 
@@ -3314,7 +3316,7 @@ class EInvoiceController {
       // console.log("result", JSON.stringify(result.data));
 
       if (!result.data.length) {
-        return response.send(Utils.response(false, `no data found.`));
+        return response.send(Utils.response(false, 'error', {err_msg: errorCallTax}));
       }
       let tenTBao = "",
         maTBao = "";
@@ -3356,7 +3358,7 @@ class EInvoiceController {
         FUNC: "weTaxCheckInformAdjustToTaxOffice",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, "error", e.message));
+      return response.send(Utils.response(false, "error",{err_msg: e.message}));
     }
   }
 
@@ -5019,7 +5021,7 @@ class EInvoiceController {
       const invoices = data.data_invoice;
       const valid = this.weTaxValidateJsonInvalidPosInvoiceToXML(invoices);
       if (!valid.status) {
-        return response.send(Utils.response(valid.status, valid.message, null));
+        return response.send(Utils.response(valid.status, 'error!', {err_msg: valid.message}));
       }
       /*let invoices_sample=[
                             {master:{},detail:[{}]},
@@ -5028,7 +5030,7 @@ class EInvoiceController {
                         ];*/
       //console.log("invoices1:", invoices)
       if (invoices.length == undefined || invoices.length == 0) {
-        return response.send(Utils.response(false, `Invalid json format.`, invoices));
+        return response.send(Utils.response(false, 'error',{err_msg: `Invalid json format.`}));
       }
 
       for (let i = 0; i < invoices.length; i++) {
@@ -5188,7 +5190,7 @@ class EInvoiceController {
         req_key,
       };
 
-      return response.send(Utils.response(true, `Convert json to xml was successful. ${id}  `, rtnXML));
+      return response.send(Utils.response(true, `Convert json to xml was successful.`, rtnXML));
     } catch (e) {
       Utils.Logger({
         LVL: "error",
@@ -5197,7 +5199,7 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       console.log("error ", e);
-      return response.send(Utils.response(false, "error", e.message));
+      return response.send(Utils.response(false, "error", {err_msg: e.message}));
     }
   }
 
@@ -5506,6 +5508,8 @@ class EInvoiceController {
             p_crt_by
           );
         }
+      }else{
+        return response.send(Utils.response(true, `error!`, {err_msg: 'exec error: ei_upd_order_info'}));
       }
 
       const { res_send_mail, subject, body } = await this.sendMaiToCustomer(
@@ -5582,11 +5586,18 @@ class EInvoiceController {
           title: subject,
           content: body,
         };
-        return response.send(Utils.response(true, `Send order to invoice was Faile! .`, data_r));
+        return response.send(Utils.response(true, `Send order to invoice was failure!`, data_r));
       }
       // console.log("res_send_mail  ", res_send_mail);
     } catch (error) {
-      console.log("error  ", error);
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "weTaxSendOrderInfo",
+        CONTENT: e.message,
+      });
+      console.log(e);
+      return response.send(Utils.response(false, "error",{err_msg: e.message}));
     }
   }
 
@@ -5637,7 +5648,7 @@ class EInvoiceController {
         p_crt_by
       );
 
-      return response.send(Utils.response(true, rtnValue.p_rtn_cur[0].STATUS_NM, ""));
+      return response.send(Utils.response(true, rtnValue.p_rtn_cur[0].STATUS_NM, {data: rtnValue.p_rtn_cur[0]}));
     } catch (error) {
       Utils.Logger({
         LVL: "error",
@@ -5646,7 +5657,7 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       console.log(e);
-      return response.send(Utils.response(false, "error", e.message));
+      return response.send(Utils.response(false, "error", {err_msg: e.message}));
     }
   }
 
@@ -5679,9 +5690,16 @@ class EInvoiceController {
 
       //console.log("data  ", rtnValue_status);
 
-      return response.send(Utils.response(true, `Get sendmail invoice list was Successfully!`, data_resutl));
+      return response.send(Utils.response(true, `Successfully!`, data_resutl));
     } catch (error) {
-      console.log("error  ", error);
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "weTaxUpdateSendOrderInfo",
+        CONTENT: e.message,
+      });
+      console.log(e);
+      return response.send(Utils.response(false, "error", {err_msg: e.message}));
     }
   }
 
@@ -5892,7 +5910,7 @@ class EInvoiceController {
             // console.log("res  ++===> ", res.data);
 
             if (!res.data.length) {
-              return response.send(Utils.response(false, `no data found.`));
+              return response.send(Utils.response(false, 'error', {err_msg: `No data found.`}));
             }
             for (let j = 0; j < res.data.length; j++) {
               const items = res.data[j];
@@ -5938,7 +5956,7 @@ class EInvoiceController {
           })
           .catch((error) => {
             console.log(error);
-            return response.send(Utils.response(false, `e-Signing XML is faile !!`, error));
+            return response.send(Utils.response(false, `e-Signing XML is faile !!`, {err_msg: error.message}));
           });
 
         rtnValue.push({
@@ -5974,11 +5992,11 @@ class EInvoiceController {
       Utils.Logger({
         LVL: "error",
         MODULE: "EInvoiceController",
-        FUNC: "checkInvoiceStatusFromTaxOffice",
+        FUNC: "weTaxCheckInvoiceStatusFromTaxOffice",
         CONTENT: e.message,
       });
       console.log(e);
-      return response.send(Utils.response(false, "error", e.message));
+      return response.send(Utils.response(false, "error", {err_msg: e.message}));
     }
   }
 
@@ -6268,7 +6286,7 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       console.log("e ", e);
-      return response.send(Utils.response(false, "error", e.message));
+      return response.send(Utils.response(false, "error", {err_msg: e.message}));
     }
   }
 
@@ -6970,7 +6988,7 @@ class EInvoiceController {
         FUNC: "sendInvoiceToTaxOffice",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, "error", e.message));
+      return response.send(Utils.response(false, "error", {err_msg: e.message}));
     }
   }
 
@@ -7050,7 +7068,7 @@ class EInvoiceController {
         },
       };
       if (invoices.length == undefined || invoices.length == 0) {
-        return response.send(Utils.response(false, `Invalid json format.`, invoices));
+        return response.send(Utils.response(false, 'error', {err_msg: `Invalid json format!`}));
       }
 
       for (let i = 0; i < invoices.length; i++) {
@@ -7173,11 +7191,11 @@ class EInvoiceController {
       Utils.Logger({
         LVL: "error",
         MODULE: "EInvoiceController",
-        FUNC: "convertInvoiceToXML",
+        FUNC: "weTaxConvertInvoiceToXML",
         CONTENT: e.message,
       });
       console.log(e);
-      return response.send(Utils.response(false, "error", e.message));
+      return response.send(Utils.response(false, "error", {err_msg: e.message}));
     }
   }
 

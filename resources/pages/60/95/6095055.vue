@@ -44,6 +44,7 @@
               :header="grdHeader"
               sel_procedure="EI_SEL_6095055_1_NC"
               :multiselect="true"
+              selectionmode="singlecell"
               :headertype="1"
               :filter_paras="[this.selected_company, this.fromDate, this.toDate, this.txtSerialNo, this.lstStatus]"
               upd_procedure="EI_UPD_6095055_2"
@@ -88,7 +89,7 @@
           </v-col>
         </v-row>
         <v-row dense>
-          <v-col md="4">
+          <!-- <v-col md="4">
             <BaseInput outlined :label="$t('serial_no')" v-model="MasterInfo.TEMPLATE_NM" readonly />
           </v-col>
           <v-col md="4">
@@ -96,7 +97,7 @@
           </v-col>
           <v-col md="4">
             <BaseInput outlined :label="$t('from_no')" v-model="MasterInfo.FROM_NO" readonly />
-          </v-col>
+          </v-col> -->
         </v-row>
 
         <BaseTabs>
@@ -353,8 +354,6 @@ export default {
     file: null,
     selected_company: "",
     company_list: [],
-    bizplaceList: [],
-    lstBizplace: "",
     month: "",
     year: "",
     fromDate: "",
@@ -495,16 +494,9 @@ export default {
     },
     limitHeight() {
       if (this.windowHeight <= 768) {
-        return this.windowHeight * 0.15; //1366x768
+        return this.windowHeight * 0.20; //1366x768
       } else {
-        return this.windowHeight * 0.25; //1920x1080
-      }
-    },
-    limitHeightmin() {
-      if (this.windowHeight <= 768) {
-        return this.windowHeight * 0.14; //1366x768
-      } else {
-        return this.windowHeight * 0.24; //1920x1080
+        return this.windowHeight * 0.30; //1920x1080
       }
     },
     gridHeight() {
@@ -824,15 +816,41 @@ export default {
 
       if (cell.data._rowstatus == "i") {
         // this.MasterInfo.TEMPLATE_CD = "1";
-        this.MasterInfo.SERIAL_NO = cell.data.SERIAL_NO;
-        this.MasterInfo.FORM_NO = cell.data.FORM_NO;
-        this.MasterInfo.FROM_NO = cell.data.FROM_NO;
-        this.MasterInfo.USE_YN = cell.data.USE_YN_1;
+        // this.MasterInfo.SERIAL_NO = cell.data.SERIAL_NO;
+        // this.MasterInfo.FORM_NO = cell.data.FORM_NO;
+        // this.MasterInfo.FROM_NO = cell.data.FROM_NO;
+        this.MasterInfo.USE_YN = cell.data.USE_YN;
       } else {
         this.MasterInfo.PK = cell.data.TEI_TEMPLATE_PK;
         await this.dsoMaster("select");
 
-        
+
+
+         /////VIew PDF
+      this.showLoading = true;
+        try {
+          const rec = await this.$axios.$get("/dso/makereport", {
+            responseType: "blob",
+            params: {
+              template: this.url_template,
+              excel: JSON.stringify([
+                {
+                  sheet: 1,
+                  // insertRange: [{
+                  //   range: "A1:E22", proc: "SP_RPT_SH10070_TAB2_M_NOCACHE", params: [this.modelMaster.PK, this.user.USER_NAME]
+                  // }],
+                },
+              ]),
+              convert: "pdf",
+            },
+          });
+          this.showLoading = true;
+          this.urlPDF = window.URL.createObjectURL(rec);
+          this.showLoading = false;
+          let rtnBase64pdf = await this._blobFileToBase64(rec);
+        } catch (e) {
+          this.showNotification("danger", this.$t("fail_to_view_pdf"), "", 4000);
+        }
       }
     },
     async onClickButton(pos) {
@@ -885,7 +903,7 @@ export default {
     },
 
     async dsoMaster(action) {
-      if (this.MasterInfo.URL_IMG_LOGO == "") {
+      /// Luu duong dan hinh anh
         let pathLOGOImg = "";
         if (this.fileSaveLOGO) {
           let urlImg = await this.onUploadImgFolder(this.fileSaveLOGO, this.folder, "LOGO");
@@ -893,16 +911,13 @@ export default {
           this.fileSaveLOGO = null;
         }
         this.MasterInfo.URL_IMG_LOGO = pathLOGOImg == "" ? this.MasterInfo.URL_IMG_LOGO : pathLOGOImg;
-      }
         ////////////////////////////
-      if (this.MasterInfo.URL_IMG_BG == "") {
         let pathBGImg = "";
         if (this.fileSaveBG) {
           pathBGImg = await this.onUploadImgFolder(this.fileSaveBG, this.folder, "BG");
           this.fileSaveBG = null;
         }
         this.MasterInfo.URL_IMG_BG = pathBGImg == "" ? this.MasterInfo.URL_IMG_BG : pathBGImg;
-      }
       this.MasterInfo._rowstatus = this.MasterInfo._rowstatus == "i" ? "i" : action == "update" ? "u" : "d";
       /////////////////////////
       let dsoControl = {
@@ -986,17 +1001,25 @@ export default {
               this.MasterInfo = { ...res };
               console.log("file: 6095055.vue:1100 [vng-304] awaitthis._dsoCall [vng-304] res:", res);
               this.MasterInfo._rowstatus = "u";
-              ///
+              ///  Load ra được hình ảnh////
               try {
-                let imgLOGO = require(`@/${this.MasterInfo?.URL_IMG_LOGO}.png`);
-                this.imageLOGO = imgLOGO;
+                if (this.MasterInfo.URL_IMG_LOGO == "" || this.MasterInfo.URL_IMG_LOGO == null) {
+                  this.imageLOGO = require("@/assets/images/no_image.png");
+                }else{
+                  let imgLOGO = require(`@/${this.MasterInfo?.URL_IMG_LOGO}.png`);
+                 this.imageLOGO = imgLOGO;
+                }
                 ///////
-                let imgBG = require(`@/${this.MasterInfo?.URL_IMG_BG}.png`);
-                this.imageBG = imgBG;
+                if (this.MasterInfo.URL_IMG_BG == "" || this.MasterInfo.URL_IMG_BG == null) {
+                  this.imageBG =  require("@/assets/images/no_image.png");
+                }else{
+                  let imgBG = require(`@/${this.MasterInfo?.URL_IMG_BG}.png`);
+                  this.imageBG = imgBG;
+                }
               } catch (e) {
-                this.showNotification("danger", this.$t("", "Error"), e.message);
+                this.showNotification("danger", this.$t("fail_to_url", "Error"), e.message);
               }
-              ////
+              ////   Bộ data để view pdf
               this.dataTemp = {
                 pk: res.PK,
                 url: res.URL_FILE_EXCEL,
@@ -1181,7 +1204,7 @@ export default {
       this.MasterInfo._rowstatus = "i";
       this.MasterInfo.PK = "";
       this.MasterInfo.TEI_TEMPLATE_PK = "";
-      this.MasterInfo.TEMPLATE_CD = "111"; 
+      this.MasterInfo.TEMPLATE_CD = "111";
       this.MasterInfo.SERIAL_NO = "";
        this.MasterInfo.FORM_NO = "";
       this.MasterInfo.FROM_NO = "";
@@ -1252,31 +1275,7 @@ export default {
       this.serialNoList = [];
     },
     async getImpFile() {
-      /////VIew PDF
-      this.showLoading = true;
-        try {
-          const rec = await this.$axios.$get("/dso/makereport", {
-            responseType: "blob",
-            params: {
-              template: this.url_template,
-              excel: JSON.stringify([
-                {
-                  sheet: 1,
-                  // insertRange: [{
-                  //   range: "A1:E22", proc: "SP_RPT_SH10070_TAB2_M_NOCACHE", params: [this.modelMaster.PK, this.user.USER_NAME]
-                  // }],
-                },
-              ]),
-              convert: "pdf",
-            },
-          });
-          this.showLoading = true;
-          this.urlPDF = window.URL.createObjectURL(rec);
-          this.showLoading = false;
-          let rtnBase64pdf = await this._blobFileToBase64(rec);
-        } catch (e) {
-          this.showNotification("danger", this.$t("fail_to_view_pdf"), "", 4000);
-        }
+     
 
 
 

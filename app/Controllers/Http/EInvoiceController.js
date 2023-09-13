@@ -510,7 +510,8 @@ class EInvoiceController {
           HThuc: declare.digital_certificates[i].type,
         });
       }
-      const id = uuid.v4();
+      // const id = uuid.v4();
+      const id = 'ID1';
       const xml = this.OBJtoXML(jsonDeclare);
       const xmlId = xml.toString().replace("<DLTKhai>", `<DLTKhai Id=\'${id}\'>`);
       const xmlRemoveLine = xmlId.toString().replace(/\n/g, "");

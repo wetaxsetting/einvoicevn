@@ -173,7 +173,7 @@
                         <v-spacer></v-spacer>
                       </v-row>
                       <!-- //////VIEW Hinh -->
-                      <v-dialog v-model="img_dialog">
+                      <v-dialog v-model="img_dialogbg">
                         <v-card>
                           <v-container fluid>
                             <v-row no-gutters align="center" justify="center">
@@ -462,6 +462,7 @@ export default {
       USE_YN: "",
     },
     img_dialog: false,
+    img_dialogbg: false,
     originHeight: 400,
     originWidth: 400,
 
@@ -478,8 +479,8 @@ export default {
   /*############### created #######################*/
   async created() {
     console.clear();
-    this.imageBG = this.renderImg("assets/images/no_image.png")
-    this.imageLOGO = this.renderImg("assets/images/no_image.png")
+    this.imageBG = this.renderImg("assets/images/no_image.png");
+    this.imageLOGO = this.renderImg("assets/images/no_image.png");
     await this.getListCodes("company");
     await this.getListCodes("serial_no");
     await this.getListCodes("form_no");
@@ -792,7 +793,7 @@ export default {
   /*############### methods #######################*/
   methods: {
     renderImg(imgUrl, isBase64 = false) {
-      if(isBase64) {
+      if (isBase64) {
         return imgUrl;
       } else {
         return require("@/" + imgUrl);
@@ -870,31 +871,47 @@ export default {
       } else {
         this.MasterInfo.PK = cell.data.TEI_TEMPLATE_PK;
         await this.dsoMaster("select");
-
-        /////VIew PDF
-        this.showLoading = true;
-        try {
-          const rec = await this.$axios.$get("/dso/makereport", {
-            responseType: "blob",
-            params: {
-              template: this.url_template,
-              excel: JSON.stringify([
-                {
-                  sheet: 1,
-                  // insertRange: [{
-                  //   range: "A1:E22", proc: "SP_RPT_SH10070_TAB2_M_NOCACHE", params: [this.modelMaster.PK, this.user.USER_NAME]
-                  // }],
-                },
-              ]),
-              convert: "pdf",
-            },
-          });
+        if (this.MasterInfo.URL_IMG_LOGO == "" || this.MasterInfo.URL_IMG_BG == "") {
+          /////VIew PDF
           this.showLoading = true;
-          this.urlPDF = window.URL.createObjectURL(rec);
-          this.showLoading = false;
-          let rtnBase64pdf = await this._blobFileToBase64(rec);
-        } catch (e) {
-          this.showNotification("danger", this.$t("fail_to_view_pdf"), "", 4000);
+          try {
+            const rec = await this.$axios.$get("/dso/makereport", {
+              responseType: "blob",
+              params: {
+                template: this.url_template,
+                excel: JSON.stringify([
+                  {
+                    sheet: 1,
+                    // insertRange: [{
+                    //   range: "A1:E22", proc: "SP_RPT_SH10070_TAB2_M_NOCACHE", params: [this.modelMaster.PK, this.user.USER_NAME]
+                    // }],
+                  },
+                ]),
+                convert: "pdf",
+              },
+            });
+            this.showLoading = true;
+            this.urlPDF = window.URL.createObjectURL(rec);
+            this.showLoading = false;
+            let rtnBase64pdf = await this._blobFileToBase64(rec);
+          } catch (e) {
+            this.showNotification("danger", this.$t("fail_to_view_pdf"), "", 4000);
+          }
+        } else {
+          ///////////////////////////////////////////////
+          this.showLoading = true;
+          if (this.itemTemplatesPK != "") {
+            let res_url = await this.$axios.$post("/einvoice/general-url-pdf-template", {
+              responseType: "json",
+              data: this.itemTemplatesPK,
+            });
+            if (res_url.success) {
+              this.urlPDF = res_url.data;
+              this.showLoading = false;
+            }
+          } else {
+            this.showNotification("warning", this.$t("no_row_selected"), "");
+          }
         }
       }
     },
@@ -918,7 +935,17 @@ export default {
           break;
         case "SAVE_S":
           this.dsoMaster("update");
-
+          setTimeout(async () => {
+            this.showLoading = true;
+            let res_url = await this.$axios.$post("/einvoice/general-url-pdf-template", {
+              responseType: "json",
+              data: this.itemTemplatesPK,
+            });
+            if (res_url.success) {
+              this.urlPDF = res_url.data;
+              this.showLoading = false;
+            }
+          }, 2000);          
           break;
         case "NEW_S":
           this.onNew_T();
@@ -1286,24 +1313,23 @@ export default {
       // } catch (e) {
       //   return this.showNotification("danger", e.message);
       // }
-      this.showLoading = true;
-      if (this.itemTemplatesPK != "") {
-        let res_url = await this.$axios.$post("/einvoice/general-url-pdf-template", {
-          responseType: "json",
-          data: this.itemTemplatesPK,
-        });
-        if (res_url.success) {
-          this.urlPDF = res_url.data;
-
-          this.showLoading = false;
-          // this.$nextTick(() => {
-          //   this.isProcessing = false;
-          //  // this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
-          // });
-        }
-      } else {
-        this.showNotification("warning", this.$t("no_row_selected"), "");
-      }
+      // this.showLoading = true;
+      // if (this.itemTemplatesPK != "") {
+      //   let res_url = await this.$axios.$post("/einvoice/general-url-pdf-template", {
+      //     responseType: "json",
+      //     data: this.itemTemplatesPK,
+      //   });
+      //   if (res_url.success) {
+      //     this.urlPDF = res_url.data;
+      //     this.showLoading = false;
+      //     // this.$nextTick(() => {
+      //     //   this.isProcessing = false;
+      //     //  // this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+      //     // });
+      //   }
+      // } else {
+      //   this.showNotification("warning", this.$t("no_row_selected"), "");
+      // }
     },
 
     async pdfUrlGetter(pk) {
@@ -1402,7 +1428,7 @@ export default {
         }
       }
       await this.wait(50);
-      this.img_dialog = true;
+      this.img_dialogbg = true;
     },
     getImageDimensions(file) {
       return new Promise(function (resolved, rejected) {
@@ -1469,20 +1495,6 @@ export default {
       }
       this.onSearch();
     },
-    // async onGeneralData() {
-    //   this.dataIssued.Template = [];
-    //   this.dataIssued.Template.push(this.$refs.grdTemplate.getDataSource());
-
-    //   let res = await this.$axios.$post("/einvoice/updatetemplate", {
-    //     responseType: "json",
-    //     para: this.dataIssued,
-    //   });
-    //   if (res.success) {
-    //     this.showNotification("success", this.$t("alert"), res.message);
-    //   } else {
-    //     this.showNotification("danger", this.$t("error_occurs"), res.message);
-    //   }
-    // },
   },
 };
 /*==================================================================== END export default  ========================================================================================*/

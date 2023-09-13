@@ -15,13 +15,15 @@ class EiExcelConverterAuto {
 		console.log("reportInfo  ", reportInfo);
 		try {
 
+			// console.log("reportSheet  ", reportSheet)
 
 			let exceljs = new ReportHelper();
 			//exceljs.reportType = "exc"
 			await exceljs.createWorkbook(p_crt_by, reportInfo.PATH, 'excel', 'pdf');
 			await exceljs.setActiveSheet(reportSheet);
 			let worksheet = exceljs.worksheet;
-
+			 
+			// console.log("reportSheet  ", exceljs.workbook)
 			//"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
 			//"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
 
@@ -389,6 +391,7 @@ class EiExcelConverterAuto {
 
 			
 		}
+		
 		//console.log(lstMerge)
 		// //ADDING rows
 		// for (let i = 1; i < totalRows; i++) {
@@ -753,7 +756,7 @@ class EiExcelConverterAuto {
 							}
 							else
 							{
-								const _item_name = longRow[itl];
+								const _item_name = _e["ITEM_NAME"];//longRow[itl];
 									this.addValueToCellsWithItemName(worksheet, _sourceRow + totalRowCount, _e, _item_name, detailCellFormat, excCols)
 							}
 							
@@ -830,7 +833,7 @@ class EiExcelConverterAuto {
 			}
 		}
 
-
+		
 
 		//END-this part insert range header for each page
 
@@ -891,6 +894,8 @@ class EiExcelConverterAuto {
 				}
 			}
 		}
+
+		
 		//END-this part add more style to the rows that missing(optional) Other pages.
 
 		//this part insert logo for all the self gen header
@@ -982,6 +987,9 @@ class EiExcelConverterAuto {
 			console.log(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox))
 		}
 
+
+		let excelUrl = await exceljs.dowloadWorkbook();
+		return excelUrl
 		//END-this part add more style to missing part of the footer(optional).
 
         //const reportFilePdf = await exceljs.writeFile();
@@ -993,8 +1001,7 @@ class EiExcelConverterAuto {
 		// console.log(" base64PDF  " , base64PDF);
 		//return base64PDF
 		////await exceljs.dowloadWorkbook(reportInfo.NAME + ".xlsx");
-		let excelUrl = await exceljs.dowloadWorkbook();
-		return excelUrl
+		
 	} catch (error) {
 		console.log(error)
 		//Utils.Logger({ LVL: "error", MODULE: "ReportHelper", FUNC: "TestReport", CONTENT: error.message, });

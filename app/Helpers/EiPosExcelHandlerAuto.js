@@ -181,7 +181,7 @@ class EiExcelHandler {
     
    
       if (this.masterDataArray.length > 0){
-        console.log("masterDataArray ", this.masterDataArray);
+        // console.log("masterDataArray ", this.masterDataArray);
         resultExcel = await exceljs.ExcelBuilder(
           p_crt_by, einvoiceMasterData, einvoiceDetailData, '',
           _sourceRow, _sourceRow_2, _sourceRow_3, headerRowCount, countFromEndDetailToSignBox,

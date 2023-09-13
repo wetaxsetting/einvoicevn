@@ -610,182 +610,182 @@ export default {
       ];
     },
 
-    grdTemplate() {
-      return [
-        {
-          dataField: "PK",
-          width: 0,
-          caption: this.$t("pk"),
-          alignment: "left",
-          type: "text",
-          visible: false,
-        },
-        {
-          dataField: "TEMPLATE_CD",
-          width: 200,
-          caption: this.$t("template_id"),
-          alignment: "center",
-          type: "text",
-          editable: true,
-          lookup: {
-            dataSource: this.templateIdList,
-            displayExpr: "NAME",
-            valueExpr: "CODE",
-          },
-        },
-        {
-          dataField: "TEMPLATE_NM",
-          width: 100,
-          caption: this.$t("template_nm"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "TEMPLATE_LNM",
-          width: 100,
-          caption: this.$t("template_lnm"),
-          alignment: "left",
-          type: "text",
-          hidden: true,
-        },
-        {
-          dataField: "TEMPLATE_FNM",
-          width: 100,
-          caption: this.$t("template_fnm"),
-          alignment: "left",
-          type: "text",
-          hidden: true,
-        },
-        {
-          dataField: "FORM_NO",
-          width: 100,
-          caption: this.$t("form_no"),
-          alignment: "left",
-          type: "text",
-          lookup: {
-            dataSource: this.Form_noList,
-            displayExpr: "NAME",
-            valueExpr: "CODE",
-          },
-          editable: true,
-        },
-        {
-          dataField: "USE_YN",
-          width: 100,
-          caption: this.$t("use_yn"),
-          alignment: "center",
-          type: "checkbox",
-          editable: true,
-        },
-        {
-          dataField: "TCO_COMPANY_PK",
-          width: 0,
-          caption: this.$t("tco_company_pk"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-          visible: false,
-        },
-        // {
-        //   dataField: "URL_FILE_EXCEL",
-        //   width: 500,
-        //   caption: this.$t("url_file_excel"),
-        //   alignment: "left",
-        //   type: "text",
-        //   editable: true,
-        // },
-        {
-          dataField: "URL_IMG_LOGO",
-          width: 400,
-          caption: this.$t("url_img_logo"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "LOGO_START_ROW",
-          width: 100,
-          caption: this.$t("logo_start_row"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 1,
-          editable: true,
-        },
-        {
-          dataField: "LOGO_START_COL",
-          width: 100,
-          caption: this.$t("logo_start_col"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 1,
-          editable: true,
-        },
-        {
-          dataField: "LOGO_WIDTH",
-          width: 100,
-          caption: this.$t("logo_width"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 1,
-          editable: true,
-        },
-        {
-          dataField: "LOGO_HEIGHT",
-          width: 100,
-          caption: this.$t("logo_height"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 1,
-          editable: true,
-        },
-        {
-          dataField: "URL_IMG_BG",
-          width: 400,
-          caption: this.$t("url_img_bg"),
-          alignment: "left",
-          type: "text",
-          editable: true,
-        },
-        {
-          dataField: "BG_START_ROW",
-          width: 100,
-          caption: this.$t("bg_start_row"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 1,
-          editable: true,
-        },
-        {
-          dataField: "BG_START_COL",
-          width: 100,
-          caption: this.$t("bg_start_col"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 1,
-          editable: true,
-        },
+    // grdTemplate() {
+    //   return [
+    //     {
+    //       dataField: "PK",
+    //       width: 0,
+    //       caption: this.$t("pk"),
+    //       alignment: "left",
+    //       type: "text",
+    //       visible: false,
+    //     },
+    //     {
+    //       dataField: "TEMPLATE_CD",
+    //       width: 200,
+    //       caption: this.$t("template_id"),
+    //       alignment: "center",
+    //       type: "text",
+    //       editable: true,
+    //       lookup: {
+    //         dataSource: this.templateIdList,
+    //         displayExpr: "NAME",
+    //         valueExpr: "CODE",
+    //       },
+    //     },
+    //     {
+    //       dataField: "TEMPLATE_NM",
+    //       width: 100,
+    //       caption: this.$t("template_nm"),
+    //       alignment: "left",
+    //       type: "text",
+    //       editable: true,
+    //     },
+    //     {
+    //       dataField: "TEMPLATE_LNM",
+    //       width: 100,
+    //       caption: this.$t("template_lnm"),
+    //       alignment: "left",
+    //       type: "text",
+    //       hidden: true,
+    //     },
+    //     {
+    //       dataField: "TEMPLATE_FNM",
+    //       width: 100,
+    //       caption: this.$t("template_fnm"),
+    //       alignment: "left",
+    //       type: "text",
+    //       hidden: true,
+    //     },
+    //     {
+    //       dataField: "FORM_NO",
+    //       width: 100,
+    //       caption: this.$t("form_no"),
+    //       alignment: "left",
+    //       type: "text",
+    //       lookup: {
+    //         dataSource: this.Form_noList,
+    //         displayExpr: "NAME",
+    //         valueExpr: "CODE",
+    //       },
+    //       editable: true,
+    //     },
+    //     {
+    //       dataField: "USE_YN",
+    //       width: 100,
+    //       caption: this.$t("use_yn"),
+    //       alignment: "center",
+    //       type: "checkbox",
+    //       editable: true,
+    //     },
+    //     {
+    //       dataField: "TCO_COMPANY_PK",
+    //       width: 0,
+    //       caption: this.$t("tco_company_pk"),
+    //       alignment: "left",
+    //       type: "text",
+    //       editable: true,
+    //       visible: false,
+    //     },
+    //     // {
+    //     //   dataField: "URL_FILE_EXCEL",
+    //     //   width: 500,
+    //     //   caption: this.$t("url_file_excel"),
+    //     //   alignment: "left",
+    //     //   type: "text",
+    //     //   editable: true,
+    //     // },
+    //     {
+    //       dataField: "URL_IMG_LOGO",
+    //       width: 400,
+    //       caption: this.$t("url_img_logo"),
+    //       alignment: "left",
+    //       type: "text",
+    //       editable: true,
+    //     },
+    //     {
+    //       dataField: "LOGO_START_ROW",
+    //       width: 100,
+    //       caption: this.$t("logo_start_row"),
+    //       alignment: "left",
+    //       type: "number",
+    //       formatFloat: 1,
+    //       editable: true,
+    //     },
+    //     {
+    //       dataField: "LOGO_START_COL",
+    //       width: 100,
+    //       caption: this.$t("logo_start_col"),
+    //       alignment: "left",
+    //       type: "number",
+    //       formatFloat: 1,
+    //       editable: true,
+    //     },
+    //     {
+    //       dataField: "LOGO_WIDTH",
+    //       width: 100,
+    //       caption: this.$t("logo_width"),
+    //       alignment: "left",
+    //       type: "number",
+    //       formatFloat: 1,
+    //       editable: true,
+    //     },
+    //     {
+    //       dataField: "LOGO_HEIGHT",
+    //       width: 100,
+    //       caption: this.$t("logo_height"),
+    //       alignment: "left",
+    //       type: "number",
+    //       formatFloat: 1,
+    //       editable: true,
+    //     },
+    //     {
+    //       dataField: "URL_IMG_BG",
+    //       width: 400,
+    //       caption: this.$t("url_img_bg"),
+    //       alignment: "left",
+    //       type: "text",
+    //       editable: true,
+    //     },
+    //     {
+    //       dataField: "BG_START_ROW",
+    //       width: 100,
+    //       caption: this.$t("bg_start_row"),
+    //       alignment: "left",
+    //       type: "number",
+    //       formatFloat: 1,
+    //       editable: true,
+    //     },
+    //     {
+    //       dataField: "BG_START_COL",
+    //       width: 100,
+    //       caption: this.$t("bg_start_col"),
+    //       alignment: "left",
+    //       type: "number",
+    //       formatFloat: 1,
+    //       editable: true,
+    //     },
 
-        {
-          dataField: "BG_WIDTH",
-          width: 100,
-          caption: this.$t("bg_width"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 1,
-          editable: true,
-        },
-        {
-          dataField: "BG_HEIGHT",
-          width: 100,
-          caption: this.$t("bg_height"),
-          alignment: "left",
-          type: "number",
-          formatFloat: 1,
-          editable: true,
-        },
-      ];
-    },
+    //     {
+    //       dataField: "BG_WIDTH",
+    //       width: 100,
+    //       caption: this.$t("bg_width"),
+    //       alignment: "left",
+    //       type: "number",
+    //       formatFloat: 1,
+    //       editable: true,
+    //     },
+    //     {
+    //       dataField: "BG_HEIGHT",
+    //       width: 100,
+    //       caption: this.$t("bg_height"),
+    //       alignment: "left",
+    //       type: "number",
+    //       formatFloat: 1,
+    //       editable: true,
+    //     },
+    //   ];
+    // },
   },
   /*############### mounted #######################*/
   mounted() {},
@@ -823,7 +823,7 @@ export default {
       return _path;
     },
     async selectedFileLOGO(event) {
-      console.log("selectedFileLOGO", event);
+      // console.log("selectedFileLOGO", event);
       await this.$nextTick();
       this.fileSaveLOGO = null;
       const files = event.target.files;
@@ -837,7 +837,8 @@ export default {
         });
       }
     },
-    selectedFileBG(event) {
+    async selectedFileBG(event) {
+      await this.$nextTick();
       this.fileSaveBG = null;
       const files = event.target.files;
       if (files[0] !== undefined) {
@@ -857,7 +858,6 @@ export default {
     },
     async cellClickCell(cell) {
       // console.log("file: 6095055.vue:916 [vng-304] cellClickCell [vng-304] cell:", cell);
-
       this.item_pk = cell.data.PK;
       this.dataIssued = cell.data;
 
@@ -946,7 +946,6 @@ export default {
           break;
       }
     },
-
     async dsoMaster(action) {
       /// Luu duong dan hinh anh
       let pathLOGOImg = "";
@@ -959,7 +958,8 @@ export default {
       ////////////////////////////
       let pathBGImg = "";
       if (this.fileSaveBG) {
-        let pathBGImg = await this.onUploadImgFolder(this.fileSaveBG, this.folder, "BG");
+        let urlBG = await this.onUploadImgFolder(this.fileSaveBG, this.folder, "BG");
+        pathBGImg = urlBG;
         this.fileSaveBG = null;
       }
       this.MasterInfo.URL_IMG_BG = pathBGImg == "" ? this.MasterInfo.URL_IMG_BG : pathBGImg;
@@ -1049,16 +1049,14 @@ export default {
               ///  Load ra được hình ảnh////
               try {
                 if (this.MasterInfo.URL_IMG_LOGO == "" || this.MasterInfo.URL_IMG_LOGO == null) {
-                  this.imageLOGO = this.renderImg("assets/images/no_image.png") //  require("@/assets/images/no_image.png");
+                  this.imageLOGO = this.renderImg("assets/images/no_image.png");
                 } else {
-                  // let imgLOGO = require(`@/${this.MasterInfo?.URL_IMG_LOGO}.png`);
                   let imgLOGO = this.renderImg(this.MasterInfo.URL_IMG_LOGO);
                   this.imageLOGO = imgLOGO;
-                  // console.log("imageLOGO:", this.imageLOGO);
                 }
                 ///////
                 if (this.MasterInfo.URL_IMG_BG == "" || this.MasterInfo.URL_IMG_BG == null) {
-                  this.imageBG = this.renderImg("assets/images/no_image.png") // require("@/assets/images/no_image.png");
+                  this.imageBG = this.renderImg("assets/images/no_image.png");
                 } else {
                   // let imgBG = require(`@/${this.MasterInfo?.URL_IMG_BG}.png`);
                   let imgBG = this.renderImg(this.MasterInfo.URL_IMG_BG);

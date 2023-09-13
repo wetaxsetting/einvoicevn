@@ -8,7 +8,7 @@ class EiExcelHandler {
   }
   masterDataArray = []
 
-  async getEinvoice( data, p_language, p_crt_by, _db2 = "N") {
+  async getEinvoice( pk, p_language, p_crt_by, _db2 = "N") {
 
     try {
 
@@ -48,36 +48,45 @@ class EiExcelHandler {
       let backgroundRow = 0
       
       const einvoiceMasterData = await DBService.callProcCursor(
-        "EI_SEL_6095057_TEMPLATES", [data.pk],
+        "EI_SEL_6095057_TEMPLATES", [pk],
         p_language,
         p_crt_by,
         _db2
       );
+      // console.log("file: EiExcelTemplateHandler.js:56 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceMasterData:", einvoiceMasterData)
      
-      if(data.logo_url != "")
+      if(einvoiceMasterData[0].URL_IMG_LOGO)
       {
-        logos = 
-          { logo_start_col: data.logo_start_col,
-            logo_start_row: data.logo_start_row,
-            logo_width : data.logo_width,
-            logo_height : data.logo_height,
-            logoPath: `assets/images/einvoices_logo/${data.logo_url}` 
+        logos = [
+           { 
+            logo_start_col: einvoiceMasterData[0].LOGO_START_COL,
+            logo_start_row: einvoiceMasterData[0].LOGO_START_ROW,
+            logo_width : einvoiceMasterData[0].LOGO_WIDTH,
+            logo_height : einvoiceMasterData[0].LOGO_HEIGHT,
+            logoPath: `${einvoiceMasterData[0].URL_IMG_LOGO}`   ///assets/images/einvoices_logo/abc/
           }  
+        ]
+      }else{
+        logos = [];
       }
 
-      if(data.bg_url != "")
+      if(einvoiceMasterData[0].URL_IMG_BG)
       {
-        bg = 
+        bg = [
           { 
-            bg_start_row: data.bg_start_row,
-            bg_start_col: data.bg_start_col,
-            bg_width : data.bg_width,
-            bg_height : data.bg_height,
-            bgPath: `assets/images/einvoices_logo/${data.bg_url}` 
+            bg_start_row: einvoiceMasterData[0].BG_START_ROW,
+            bg_start_col: einvoiceMasterData[0].LOGO_START_COL,
+            bg_width : einvoiceMasterData[0].BG_WIDTH,
+            bg_height : einvoiceMasterData[0].BG_HEIGHT,
+            bgPath: `${einvoiceMasterData[0].URL_IMG_BG}` 
           }  
+        ]
+      }else{
+        bg = [];
       }
+
      
-    console.log(einvoiceMasterData)
+    // console.log("aaaaaaaaaaaaaaaaaaaa",einvoiceMasterData)
     if (einvoiceMasterData.length <= 0) {
       return that.showNotification(
         "warning",
@@ -91,10 +100,9 @@ class EiExcelHandler {
     this.masterDataArray = []
       reportPath = einvoiceMasterData[0].URL_FILE_EXCEL;//'report/60/95/einvoices_template/Bornga/Bornga.xlsx'
       reportSheet = "Invoice" 
-
-        console.log("masterDataArray ", this.masterDataArray);
         resultExcel = await exceljs.ExcelBuilder(
           p_crt_by, 
+          einvoiceMasterData,
           reportPath, 
           reportSheet,
           logos,

@@ -6,12 +6,11 @@ const ReportHelper = use("App/Helpers/ReportHelper");
 class EiExcelConverterAuto {
 	constructor() {
 	}
-	async ExcelBuilder(p_crt_by, reportPath, reportSheet, logos, bg){
+	async ExcelBuilder(p_crt_by, einvoiceMasterData, reportPath, reportSheet, logos, bg){
 		//(p_crt_by, einvoiceDetailData, einvoicePk, _sourceRow, _sourceRow_2, _sourceRow_3, headerRowCount, countFromEndDetailToSignBox, lastPageRowsHeight, reportPath, reportSheet, signPath, cancelPath, bgPath, masterDataArray, detailCellFormat, logos, signCell, signBoxCell, signByCell, cancelYn, backgroundCell,backgroundRow, backgroundWidth, backgroundHeight) {
 		// console.log('===> ', p_crt_by)
 		// console.log(einvoiceDetailData)
-		let reportInfo = { CODE: '01',  PATH: reportPath };//that is the report template path.
-		console.log("reportInfo  ", reportInfo);
+		let reportInfo = { CODE: '01', NAME: einvoiceMasterData[0]["PK"] ,  PATH: reportPath };//that is the report template path.
 		try {
 
 
@@ -35,27 +34,24 @@ class EiExcelConverterAuto {
 			return file;
 		}
 
-
-
-		if (bg.bgPath != "") {
-			console.log("bg  " + bg  );
+		// console.log("bg  " , bg  );
+		if (bg.length) {
 			try {
-				worksheet.addImage(await exceljs.insertPathImage(bg.bgPath), {
-					tl: { col:  bg.bg_start_col, row:  bg.bg_start_row },
-					ext: { width: bg.bg_width, height: bg.bg_height }
+				worksheet.addImage(await exceljs.insertPathImage(bg[0].bgPath + '.png'), {
+					tl: { col:  bg[0].bg_start_col, row:  bg[0].bg_start_row },
+					ext: { width: bg[0].bg_width, height: bg[0].bg_height }
 				});
 
 			} catch (error) {
 				console.log(error)
 			}
 		}
-		
-		if (logos.bgPath != "") {
-			console.log("logos  " + logos  );
+		// console.log("logos  " , logos  );
+		if ( logos.length ) {
 			try {
-				worksheet.addImage(await exceljs.insertPathImage(logos.bgPath), {
-					tl: { col:  logos.bg_start_col, row:  logos.bg_start_row },
-					ext: { width: logos.bg_width, height: logos.bg_height }
+				worksheet.addImage(await exceljs.insertPathImage(logos[0].logoPath + '.png'), {
+					tl: { col:  logos[0].logo_start_col, row:  logos[0].logo_start_row },
+					ext: { width: logos[0].logo_width, height: logos[0].logo_height }
 				});
 
 			} catch (error) {

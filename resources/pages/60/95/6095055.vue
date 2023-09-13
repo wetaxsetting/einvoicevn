@@ -265,12 +265,12 @@
       </v-col>
       <v-row dense :lg="isShowLeft ? 6 : 12">
         <v-col md="12" class="d-flex">
-          <iframe :src="urlPDF" height="800" width="100%"></iframe>
+          <iframe :src="urlPDF" height="825" width="100%"></iframe>
         </v-col>
       </v-row>
     </v-row>
     <GwLoading :visible="showLoading" />
-    <view-einvoice-pdf-dialog ref="ViewEInvoicePDFDialog" :src_pdfUrl="pdfUrl"></view-einvoice-pdf-dialog>
+    <!-- <view-einvoice-pdf-dialog ref="ViewEInvoicePDFDialog" :src_pdfUrl="pdfUrl"></view-einvoice-pdf-dialog> -->
     <!-- Copy To Dialog -->
     <v-dialog persistent id="copy-to-dialog" max-width="500" v-model="copyToDialog">
       <v-card>
@@ -358,7 +358,7 @@ import moment from "moment";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import "vue-pdf-app/dist/icons/main.css";
 import VuePdfApp from "vue-pdf-app";
-import ViewEInvoicePDFDialog from "@/components/dialog/ViewEInvoicePDFDialog.vue";
+// import ViewEInvoicePDFDialog from "@/components/dialog/ViewEInvoicePDFDialog.vue";
 export default {
   /*############### DEFAULT #######################*/
   layout: "default",
@@ -367,7 +367,7 @@ export default {
     view_origin: { type: Boolean, default: true },
   },
   components: {
-    "view-einvoice-pdf-dialog": ViewEInvoicePDFDialog,
+    // "view-einvoice-pdf-dialog": ViewEInvoicePDFDialog,
     GwImportExcelFile: () => import("@/components/control/GwImportExcelFile.vue"),
     VuePdfApp,
   },
@@ -464,7 +464,7 @@ export default {
     img_dialog: false,
     originHeight: 400,
     originWidth: 400,
-    
+
     formNoList: [],
     templateID_list: [],
     //
@@ -472,7 +472,7 @@ export default {
     showExp: true,
     showSign: true,
     fileSaveLOGO: null,
-    folder: "abc",
+    folder: "",
     fileSaveBG: null,
   }),
   /*############### created #######################*/
@@ -483,7 +483,7 @@ export default {
     await this.getListCodes("form_no");
     await this.getListCodes("status");
 
-    this.pdf_handler = require("./js/EiExcelHandlerERPTemplate.js");
+    this.pdf_handler = require("./js/EiExcelHandlerERPTemplates.js");
     if (!!this.pdf_handler) {
       Object.assign(this, this.pdf_handler.default);
     }
@@ -801,7 +801,7 @@ export default {
         }
         const formData = new FormData();
         formData.append("file", file);
-        formData.append("folder", _folderPath[0].VAL1 + "/" + folder);
+        formData.append("folder", _folderPath[0].VAL1 + folder);
         await this.$axios({ method: "post", url: "/dso/putfiletofolder", data: formData }).then(async (res) => {
           if (res.data.data) {
             _path = res.data.data;
@@ -844,7 +844,8 @@ export default {
       this.$refs.fileLOGO.click();
     },
     async cellClickCell(cell) {
-      console.log("file: 6095055.vue:916 [vng-304] cellClickCell [vng-304] cell:", cell);
+      // console.log("file: 6095055.vue:916 [vng-304] cellClickCell [vng-304] cell:", cell);
+
       this.item_pk = cell.data.PK;
       this.dataIssued = cell.data;
 
@@ -1272,21 +1273,24 @@ export default {
       // } catch (e) {
       //   return this.showNotification("danger", e.message);
       // }
-      // if (this.itemTemplatesPK != "") {
-      //   let res_url = await this.$axios.$post("/einvoice/general-url-pdf-template", {
-      //     responseType: "json",
-      //     tei_wt_sale_bill_pk: this.itemTemplatesPK,
-      //   });
-      //   if (res_url.success) {
-      //     this.pdfUrl = res_url.data;
-      //     this.$nextTick(() => {
-      //       this.isProcessing = false;
-      //       this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
-      //     });
-      //   }
-      // } else {
-      //   this.showNotification("warning", this.$t("no_row_selected"), "");
-      // }
+      this.showLoading = true;
+      if (this.itemTemplatesPK != "") {
+        let res_url = await this.$axios.$post("/einvoice/general-url-pdf-template", {
+          responseType: "json",
+          data: this.itemTemplatesPK,
+        });
+        if (res_url.success) {
+          this.urlPDF = res_url.data;
+
+          this.showLoading = false;
+          // this.$nextTick(() => {
+          //   this.isProcessing = false;
+          //  // this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+          // });
+        }
+      } else {
+        this.showNotification("warning", this.$t("no_row_selected"), "");
+      }
     },
 
     async pdfUrlGetter(pk) {
@@ -1395,6 +1399,62 @@ export default {
         };
         i.src = file;
       });
+    },
+
+    async onProcessConfirm(action) {
+      this.actionProcess = action;
+      //this.actionDialog = true;
+
+      let promise = Swal.fire({
+        icon: "question",
+        caption: this.$t(`do_you_want_to_${action.toLowerCase()}`),
+        showCancelButton: true,
+        confirmButtonText: this.$t("yes"),
+        cancelButtonText: this.$t("no"),
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.onCopy();
+        }
+      });
+
+      await promise;
+    },
+    async onCopy() {
+      // if (this.selectedCompanyTo === this.selectedCompanyFrom) {
+      //     return this.showNotification("danger", this.$t("copy_failed"), this.$t("cannot_select_same_company"))
+      // }
+      if (!this.selectedCompanyTo) {
+        return this.showNotification("danger", this.$t("copy_failed"), this.$t("must_select_from_company"));
+      }
+      if (!this.txtForm_No_To) {
+        return this.showNotification("danger", this.$t("copy_failed"), this.$t("must_input_form_no_to"));
+      }
+      if (!this.txtSerial_No_To) {
+        return this.showNotification("danger", this.$t("copy_failed"), this.$t("must_input_serial_no_to"));
+      }
+      const dso = {
+        type: "process",
+        updpro: "EI_PRO_6060230_COPY",
+        para: [
+          this.selectedCompanyFrom,
+          this.selectedCompanyTo,
+          //   this.lstBizplaceFrom,
+          //   this.lstBizplaceTo,
+          this.lstFrom_No_From,
+          this.txtForm_No_To,
+          this.lstSerial_No_From,
+          this.txtSerial_No_To,
+          this.overWriteYN,
+        ],
+      };
+
+      const result = await this._dsoCall(dso, "process", true);
+      if (result) {
+        const rtn = result[0].RTN;
+        this.copyToDialog = false;
+        //this.copyResult =  this.$t( rtn);
+      }
+      this.onSearch();
     },
     // async onGeneralData() {
     //   this.dataIssued.Template = [];

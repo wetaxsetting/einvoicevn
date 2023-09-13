@@ -37,7 +37,7 @@ class EiExcelConverterAuto {
 		// console.log("bg  " , bg  );
 		if (bg.length) {
 			try {
-				worksheet.addImage(await exceljs.insertPathImage(bg[0].bgPath + '.png'), {
+				worksheet.addImage(await exceljs.insertPathImage(bg[0].bgPath), {
 					tl: { col:  bg[0].bg_start_col, row:  bg[0].bg_start_row },
 					ext: { width: bg[0].bg_width, height: bg[0].bg_height }
 				});
@@ -46,10 +46,11 @@ class EiExcelConverterAuto {
 				console.log(error)
 			}
 		}
-		// console.log("logos  " , logos  );
+		console.log("logos  " , logos  );
+		console.log("logos[0].logoPath  " , logos[0].logoPath  );
 		if ( logos.length ) {
 			try {
-				worksheet.addImage(await exceljs.insertPathImage(logos[0].logoPath + '.png'), {
+				worksheet.addImage(await exceljs.insertPathImage(logos[0].logoPath), {
 					tl: { col:  logos[0].logo_start_col, row:  logos[0].logo_start_row },
 					ext: { width: logos[0].logo_width, height: logos[0].logo_height }
 				});

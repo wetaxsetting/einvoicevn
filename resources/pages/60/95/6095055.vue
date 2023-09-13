@@ -374,8 +374,8 @@ export default {
   /*############### data ##########################*/
   data: () => ({
     urlPDF: "",
-    imageLOGO: require("@/assets/images/no_image.png"),
-    imageBG: require("@/assets/images/no_image.png"),
+    imageLOGO: "",
+    imageBG: "",
     isShowLeft: true,
     showLoading: false,
     item_pk: null,
@@ -478,6 +478,8 @@ export default {
   /*############### created #######################*/
   async created() {
     console.clear();
+    this.imageBG = this.renderImg("assets/images/no_image.png")
+    this.imageLOGO = this.renderImg("assets/images/no_image.png")
     await this.getListCodes("company");
     await this.getListCodes("serial_no");
     await this.getListCodes("form_no");
@@ -789,6 +791,13 @@ export default {
   mounted() {},
   /*############### methods #######################*/
   methods: {
+    renderImg(imgUrl, isBase64 = false) {
+      if(isBase64) {
+        return imgUrl;
+      } else {
+        return require("@/" + imgUrl);
+      }
+    },
     async onUploadImgFolder(file, folder, _type) {
       let _path = "";
       try {
@@ -813,14 +822,17 @@ export default {
       }
       return _path;
     },
-    selectedFileLOGO(event) {
+    async selectedFileLOGO(event) {
+      console.log("selectedFileLOGO", event);
+      await this.$nextTick();
       this.fileSaveLOGO = null;
       const files = event.target.files;
       if (files[0] !== undefined) {
         const fr = new FileReader();
         fr.readAsDataURL(files[0]);
         fr.addEventListener("load", () => {
-          this.imageLOGO = fr.result;
+          console.log("fr.result", fr.result);
+          this.imageLOGO = this.renderImg(fr.result, true);
           this.fileSaveLOGO = files[0];
         });
       }
@@ -832,7 +844,7 @@ export default {
         const fr = new FileReader();
         fr.readAsDataURL(files[0]);
         fr.addEventListener("load", () => {
-          this.imageBG = fr.result;
+          this.imageBG = this.renderImg(fr.result, true);
           this.fileSaveBG = files[0];
         });
       }
@@ -947,7 +959,7 @@ export default {
       ////////////////////////////
       let pathBGImg = "";
       if (this.fileSaveBG) {
-        pathBGImg = await this.onUploadImgFolder(this.fileSaveBG, this.folder, "BG");
+        let pathBGImg = await this.onUploadImgFolder(this.fileSaveBG, this.folder, "BG");
         this.fileSaveBG = null;
       }
       this.MasterInfo.URL_IMG_BG = pathBGImg == "" ? this.MasterInfo.URL_IMG_BG : pathBGImg;
@@ -1037,16 +1049,19 @@ export default {
               ///  Load ra được hình ảnh////
               try {
                 if (this.MasterInfo.URL_IMG_LOGO == "" || this.MasterInfo.URL_IMG_LOGO == null) {
-                  this.imageLOGO = require("@/assets/images/no_image.png");
+                  this.imageLOGO = this.renderImg("assets/images/no_image.png") //  require("@/assets/images/no_image.png");
                 } else {
-                  let imgLOGO = require(`@/${this.MasterInfo?.URL_IMG_LOGO}.png`);
+                  // let imgLOGO = require(`@/${this.MasterInfo?.URL_IMG_LOGO}.png`);
+                  let imgLOGO = this.renderImg(this.MasterInfo.URL_IMG_LOGO);
                   this.imageLOGO = imgLOGO;
+                  // console.log("imageLOGO:", this.imageLOGO);
                 }
                 ///////
                 if (this.MasterInfo.URL_IMG_BG == "" || this.MasterInfo.URL_IMG_BG == null) {
-                  this.imageBG = require("@/assets/images/no_image.png");
+                  this.imageBG = this.renderImg("assets/images/no_image.png") // require("@/assets/images/no_image.png");
                 } else {
-                  let imgBG = require(`@/${this.MasterInfo?.URL_IMG_BG}.png`);
+                  // let imgBG = require(`@/${this.MasterInfo?.URL_IMG_BG}.png`);
+                  let imgBG = this.renderImg(this.MasterInfo.URL_IMG_BG);
                   this.imageBG = imgBG;
                 }
               } catch (e) {

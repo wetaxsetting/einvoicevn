@@ -32,6 +32,7 @@ Route.group(() => {
     Route.post("ssologin", "UserController.ssoLogin");
     Route.get("getuser", "UserController.getUser");
     Route.post("test", "UserController.test");
+    Route.post("captchar", "UserController.captchar");
 }).prefix("api/user");
 
 Route.group(() => {

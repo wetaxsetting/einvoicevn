@@ -18,6 +18,15 @@
 	background: linear-gradient(90deg, rgba(var(--primary-color-start)) 0%, rgba(var(--primary-color-stop)) 100%);
 }
 
+.primary-radial-gradient {
+  background: radial-gradient(rgba(var(--primary-color-start)), rgba(var(--primary-color-stop)));
+}
+
+.primary-gradient-reverse {
+	background: rgb(var(--primary-color-stop));
+	background: linear-gradient(45deg, rgba(var(--primary-color-stop)) 0%, rgba(var(--primary-color-start)) 50%);
+}
+
 .jqx-widget-header {
   background: rgb(var(--primary-color-start)) !important;
   background: linear-gradient(90deg, rgba(var(--primary-color-start)) 0%, rgba(var(--primary-color-stop)) 100%) !important;

@@ -66,6 +66,14 @@ const TAX_PASSWORD = "e_GX4v@";
 
 const errorCallTax = 'No data found!';
 
+const REDIS_CONNECTION = Env.get("REDIS_CONNECTION", "NO_REDIS")
+let Redis = false
+if (REDIS_CONNECTION != "NO_REDIS") {
+  Redis = use('Redis')
+} else {
+  Redis = false
+}
+
 class EInvoiceController {
   async renderJsonToExcelFile() {
     const exjs = new RenderJsonToExcelFile();
@@ -8304,52 +8312,49 @@ class EInvoiceController {
   async getDataEinvoiceFormLookupCode({ request, response, auth }) {
     try {
       var p_language = request.header("accept-language", "ENG");
-      var p_crt_by = "";
-     
-
-      const { capchacode, lookupcode } = request.all();
-
-
-      // const para_inv = {
-      //   lookupcode : lookupcode,
-      // };
-      console.log("lookupcode  ", lookupcode);
-
-      // const rtnValue_VAT = await DBService.ExecuteSQLBlob(
-      //   `BEGIN ei_sel_get_data_lookup_code (          
-      //                                       :lookupcode,
-      //                                       :p_language, 
-      //                                       :p_crt_by, 
-      //                                       :p_rtn_cur); END;`,
-      //                                                   para_inv,
-      //   p_language,
-      //   p_crt_by
-      // );
+      var p_crt_by = "";     
+  
+      const { captcha, sessionid, lookupcode } = request.all();
+      console.log("captcha:", captcha);
+      console.log("sessionid:", sessionid);
+      if (Redis) {
+        const valueCache = await Redis.get(sessionid)
+        if (!valueCache || valueCache != captcha) {
+          return response.send(Utils.response(false, "invalid_captchar", null));
+        }
+      }
+  
+      /* const para_inv = {
+        lookupcode : lookupcode,
+      }; */
+      console.log("lookupcode:", lookupcode);
+      /* const rtnValue_VAT = await DBService.ExecuteSQLBlob(
+        `BEGIN ei_sel_get_data_lookup_code (:lookupcode,:p_language,:p_crt_by,:p_rtn_cur); END;`,
+        para_inv,
+        p_language,
+        p_crt_by
+      ); */
       
       const para_inv_st = {
         trade_code: lookupcode,
       };
       const rtnValue = await DBService.ExecuteSQLBlob(
-        `BEGIN ei_sel_get_data_lookup_code (          
-                                                        :trade_code,
-                                                        :p_language, 
-                                                        :p_crt_by, 
-                                                        :p_rtn_cur); END;`,
+        `BEGIN ei_sel_get_data_lookup_code (:trade_code,:p_language, :p_crt_by, :p_rtn_cur); END;`,
         para_inv_st,
         p_language,
         p_crt_by
       );
-      console.log("rtnValue_VAT  ", rtnValue);
-
-
+      // console.log("rtnValue_VAT  ", rtnValue.p_rtn_cur);
+  
       let EiExcels = new EiExcelHandlerAuto(); //CQT_MAGD
       let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].CQT_MAGD, p_language, p_crt_by);
-      console.log("base64PDf  ", url_pdf);
-
-      let re_url_xml = await Request.get( APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + rtnValue.p_rtn_cur[0].CQT_MAGD + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token="); //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
+      // console.log("base64PDf: ", url_pdf);
+  
+      let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + rtnValue.p_rtn_cur[0].CQT_MAGD + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token="); 
+      //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE");
       let url_xml = re_url_xml.data;
-      console.log("base64XXML  ", url_xml);
-
+      // console.log("base64XML:", url_xml);
+  
       const rep_data = {
         form_no : rtnValue.p_rtn_cur[0].TEMPLATECODE,
         serial_no : rtnValue.p_rtn_cur[0].INVOICESERIALNO,
@@ -8375,9 +8380,8 @@ class EInvoiceController {
         total_payment : rtnValue.p_rtn_cur[0].TOT_AMT_TR_94,
         total_payment_word_vie : rtnValue.p_rtn_cur[0].AMOUNT_WORD_VIE_107,
         mccqt : rtnValue.p_rtn_cur[0].CQT_MCCQT_ID_85
-        
       }
-
+  
       return response.send(Utils.response(true, "Research data invocie was success", rep_data));
     } catch (e) {
       Utils.Logger({

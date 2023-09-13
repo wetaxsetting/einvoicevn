@@ -13,8 +13,6 @@
 <script>
 export default {
   name: 'monitoring',
-  data:()=>({
-
-  })
+  data:()=>({})
 }
 </script>

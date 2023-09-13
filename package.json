@@ -6,7 +6,7 @@
     "main": "index.js",
     "scripts": {
         "ok": "nodemon --watch app --watch config --watch start --watch .env -x node --max-old-space-size=16384 server.js",
-        "dev": "nodemon --watch app --watch config --watch start --watch .env -x node --max-old-space-size=16384 server.js",
+        "dev": "nodemon --watch app --watch config --watch start --watch .env -x node --openssl-legacy-provider --max-old-space-size=16384 server.js",
         "start": "set NODE_ENV=production node server.js",
         "build": "adonis nuxt:build",
         "test": "node ace test"
@@ -85,6 +85,7 @@
         "sass": "^1.32.13",
         "speakeasy": "^2.0.0",
         "sqlite3": "^5.1.6",
+        "svg-captcha": "^1.4.0",
         "sweetalert2": "^10.1.0",
         "systeminformation": "^5.6.21",
         "tree-xml": "^0.1.4",
@@ -111,7 +112,7 @@
         "xmldom": "^0.6.0"
     },
     "devDependencies": {
-        "@nuxtjs/vuetify": "^1.11.3",
+        "@nuxtjs/vuetify": "^1.12.3",
         "jquery": "^3.6.0"
     },
     "autoload": {

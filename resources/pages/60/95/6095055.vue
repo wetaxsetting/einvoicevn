@@ -1210,8 +1210,6 @@ export default {
 
     async onProcessConfirm(action) {
       this.actionProcess = action;
-      //this.actionDialog = true;
-
       let promise = Swal.fire({
         icon: "question",
         caption: this.$t(`do_you_want_to_${action.toLowerCase()}`),

@@ -50,6 +50,7 @@
                 <v-col md="7">
                   <GwFlexBox justify="end">
                     <BaseButton icon_type="xml" :btn_text="$t('view_xml')" @onclick="onClick('viewXML')" />
+                    
                     <BaseButton icon_type="xml" :btn_text="$t('view_dec')" @onclick="onClick('viewDEC')" />
 
                     <BaseButton btn_type="text" :btn_text="$t('checking_declaration')" @onclick="onClick('checkingDeclaration')" />
@@ -1027,18 +1028,8 @@ export default {
         },
       });
       if (resAPI.success) {
-        let resDB = await this.$axios.$post("/dso/apiproclob", {
-          responseType: "json",
-          proc: "AC_SEL_6095080_u_7",
-          para: [resAPI.data[0].erp_declaration_m_pk, resAPI.data[0].trade_code, resAPI.data[0].xml_sign],
-        });
-        // console.log("onSuccessissueXmlList result " + JSON.stringify(result));
-        if (resDB.success) {
-          this.$refs.grdLeft.loadData();
+        this.$refs.grdLeft.loadData();
           this.showNotification("success", this.$t(resDB.message), "");
-        } else {
-          this.showNotification("danger", this.$t(resDB.message), "");
-        }
       } else {
         this.showNotification("danger", this.$t(resAPI.message), "");
       }

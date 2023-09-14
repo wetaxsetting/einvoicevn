@@ -1,4 +1,4 @@
-<!-- ================================================================= BEGIN DESIGN LAYOUT======================================================================================= -->
+<!-- ================================================================= BEGIN DESIGNSAVE_ISSUE LAYOUT======================================================================================= -->
 <template>
   <v-container fluid v-resize="onResize">
     <v-row dense class="pt-1">
@@ -8,11 +8,11 @@
             <BaseSelect :label="$t('company')" v-model="selected_company" :lstData="company_list" item-text="TEXT" item-value="PK" />
           </v-col>
           <v-col md="5" class="d-flex justify-end">
-            <BaseButton icon_type="search" btn_type="icon" :btn_text="$t('search')" @onclick="onClickButton('SEARCH_M')" />
+            <BaseButton icon_type="search" btn_type="icon" :btn_text="$t('search')" @onclick="onClickButton('SEARCH_ISSUE')" />
             <BaseButton btn_type="icon" icon_type="copy" @onclick="copyToDialog = true" />
-            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" @onclick="onClickButton('NEW_M')" />
+            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" @onclick="onClickButton('NEW_ISSUE')" />
             <!-- <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClickButton('DELETE_M')" /> -->
-            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClickButton('SAVE_M')" />
+            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClickButton('SAVE_ISSUE')" />
           </v-col>
         </v-row>
         <v-row dense>
@@ -78,11 +78,11 @@
             </v-badge>
           </v-col>
           <v-col md="3" class="d-flex justify-end">
-            <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('template_file')" :disabled="!item_pk" @onclick="getImpFile" />
-            <BaseButton btn_type="icon" icon_type="view" :btn_text="$t('view')" :disabled="!item_pk" @onclick="onClickButton('VIEW')" />
-            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="!item_pk" @onclick="onClickButton('NEW_S')" />
+            <!-- <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('template_file')" :disabled="!item_pk" @onclick="getImpFile" /> -->
+            <!-- <BaseButton btn_type="icon" icon_type="view" :btn_text="$t('view')" :disabled="!item_pk" @onclick="onClickButton('VIEW')" /> -->
+            <!-- <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="!item_pk" @onclick="onClickButton('NEW_S')" /> -->
             <!-- <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="!item_pk" @onclick="onClickButton('DELETE_S')" /> -->
-            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="!item_pk" @onclick="onClickButton('SAVE_S')" />
+            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="!item_pk" @onclick="onClickButton('SAVE_TEMPLATE')" />
           </v-col>
         </v-row>
         <v-row dense>
@@ -590,8 +590,8 @@ export default {
 
         { dataField: "FROM_NO", width: 100, caption: this.$t("from_no"), editable: true, alignment: "center", type: "number" },
 
-        { dataField: "FROM_DT", width: 100, caption: this.$t("from_dt"), editable: true, alignment: "center", type: "date" },
-        { dataField: "TO_DT", width: 100, caption: this.$t("to_dt"), editable: true, alignment: "center", type: "date" },
+        { dataField: "FROM_DT", width: 100, caption: this.$t("from_dt"), editable: true, alignment: "center", type: "date", format: this.curLang.DATE_FORMAT },
+        { dataField: "TO_DT", width: 100, caption: this.$t("to_dt"), editable: true, alignment: "center", type: "date", format: this.curLang.DATE_FORMAT },
         {
           dataField: "STATUS",
           width: 100,
@@ -607,191 +607,16 @@ export default {
         },
         { dataField: "TCO_BUSPLACE_PK", width: 100, caption: this.$t("tco_busplace_pk"), alignment: "left", type: "text", visible: false },
         { dataField: "REMARKS", width: 100, caption: this.$t("remarks"), editable: true, alignment: "left", type: "text" },
-        { dataField: "USE_YN", width: 100, caption: this.$t("use_yn"), editable: true, alignment: "center", type: "checkbox" },
+        { dataField: "USE_YN", width: 100, caption: this.$t("use_yn"), editable: true, alignment: "center", columntype: "checkbox" },
       ];
     },
-
-    // grdTemplate() {
-    //   return [
-    //     {
-    //       dataField: "PK",
-    //       width: 0,
-    //       caption: this.$t("pk"),
-    //       alignment: "left",
-    //       type: "text",
-    //       visible: false,
-    //     },
-    //     {
-    //       dataField: "TEMPLATE_CD",
-    //       width: 200,
-    //       caption: this.$t("template_id"),
-    //       alignment: "center",
-    //       type: "text",
-    //       editable: true,
-    //       lookup: {
-    //         dataSource: this.templateIdList,
-    //         displayExpr: "NAME",
-    //         valueExpr: "CODE",
-    //       },
-    //     },
-    //     {
-    //       dataField: "TEMPLATE_NM",
-    //       width: 100,
-    //       caption: this.$t("template_nm"),
-    //       alignment: "left",
-    //       type: "text",
-    //       editable: true,
-    //     },
-    //     {
-    //       dataField: "TEMPLATE_LNM",
-    //       width: 100,
-    //       caption: this.$t("template_lnm"),
-    //       alignment: "left",
-    //       type: "text",
-    //       hidden: true,
-    //     },
-    //     {
-    //       dataField: "TEMPLATE_FNM",
-    //       width: 100,
-    //       caption: this.$t("template_fnm"),
-    //       alignment: "left",
-    //       type: "text",
-    //       hidden: true,
-    //     },
-    //     {
-    //       dataField: "FORM_NO",
-    //       width: 100,
-    //       caption: this.$t("form_no"),
-    //       alignment: "left",
-    //       type: "text",
-    //       lookup: {
-    //         dataSource: this.Form_noList,
-    //         displayExpr: "NAME",
-    //         valueExpr: "CODE",
-    //       },
-    //       editable: true,
-    //     },
-    //     {
-    //       dataField: "USE_YN",
-    //       width: 100,
-    //       caption: this.$t("use_yn"),
-    //       alignment: "center",
-    //       type: "checkbox",
-    //       editable: true,
-    //     },
-    //     {
-    //       dataField: "TCO_COMPANY_PK",
-    //       width: 0,
-    //       caption: this.$t("tco_company_pk"),
-    //       alignment: "left",
-    //       type: "text",
-    //       editable: true,
-    //       visible: false,
-    //     },
-    //     // {
-    //     //   dataField: "URL_FILE_EXCEL",
-    //     //   width: 500,
-    //     //   caption: this.$t("url_file_excel"),
-    //     //   alignment: "left",
-    //     //   type: "text",
-    //     //   editable: true,
-    //     // },
-    //     {
-    //       dataField: "URL_IMG_LOGO",
-    //       width: 400,
-    //       caption: this.$t("url_img_logo"),
-    //       alignment: "left",
-    //       type: "text",
-    //       editable: true,
-    //     },
-    //     {
-    //       dataField: "LOGO_START_ROW",
-    //       width: 100,
-    //       caption: this.$t("logo_start_row"),
-    //       alignment: "left",
-    //       type: "number",
-    //       formatFloat: 1,
-    //       editable: true,
-    //     },
-    //     {
-    //       dataField: "LOGO_START_COL",
-    //       width: 100,
-    //       caption: this.$t("logo_start_col"),
-    //       alignment: "left",
-    //       type: "number",
-    //       formatFloat: 1,
-    //       editable: true,
-    //     },
-    //     {
-    //       dataField: "LOGO_WIDTH",
-    //       width: 100,
-    //       caption: this.$t("logo_width"),
-    //       alignment: "left",
-    //       type: "number",
-    //       formatFloat: 1,
-    //       editable: true,
-    //     },
-    //     {
-    //       dataField: "LOGO_HEIGHT",
-    //       width: 100,
-    //       caption: this.$t("logo_height"),
-    //       alignment: "left",
-    //       type: "number",
-    //       formatFloat: 1,
-    //       editable: true,
-    //     },
-    //     {
-    //       dataField: "URL_IMG_BG",
-    //       width: 400,
-    //       caption: this.$t("url_img_bg"),
-    //       alignment: "left",
-    //       type: "text",
-    //       editable: true,
-    //     },
-    //     {
-    //       dataField: "BG_START_ROW",
-    //       width: 100,
-    //       caption: this.$t("bg_start_row"),
-    //       alignment: "left",
-    //       type: "number",
-    //       formatFloat: 1,
-    //       editable: true,
-    //     },
-    //     {
-    //       dataField: "BG_START_COL",
-    //       width: 100,
-    //       caption: this.$t("bg_start_col"),
-    //       alignment: "left",
-    //       type: "number",
-    //       formatFloat: 1,
-    //       editable: true,
-    //     },
-
-    //     {
-    //       dataField: "BG_WIDTH",
-    //       width: 100,
-    //       caption: this.$t("bg_width"),
-    //       alignment: "left",
-    //       type: "number",
-    //       formatFloat: 1,
-    //       editable: true,
-    //     },
-    //     {
-    //       dataField: "BG_HEIGHT",
-    //       width: 100,
-    //       caption: this.$t("bg_height"),
-    //       alignment: "left",
-    //       type: "number",
-    //       formatFloat: 1,
-    //       editable: true,
-    //     },
-    //   ];
-    // },
   },
   /*############### mounted #######################*/
   mounted() {},
   /*############### methods #######################*/
   methods: {
+    // async onAfterLoad(){ await this.dsoMaster('select')},
+
     renderImg(imgUrl, isBase64 = false) {
       if (isBase64) {
         return imgUrl;
@@ -858,7 +683,7 @@ export default {
       this.$refs.fileLOGO.click();
     },
     async cellClickCell(cell) {
-      // console.log("file: 6095055.vue:916 [vng-304] cellClickCell [vng-304] cell:", cell);
+      console.log("file: 6095055.vue:916 [vng-304] cellClickCell [vng-304] cell:", cell);
       this.item_pk = cell.data.PK;
       this.dataIssued = cell.data;
 
@@ -871,105 +696,46 @@ export default {
       } else {
         this.MasterInfo.PK = cell.data.TEI_TEMPLATE_PK;
         await this.dsoMaster("select");
-        if (this.MasterInfo.URL_IMG_LOGO == "" || this.MasterInfo.URL_IMG_BG == "") {
-          /////VIew PDF
-          this.showLoading = true;
-          try {
-            const rec = await this.$axios.$get("/dso/makereport", {
-              responseType: "blob",
-              params: {
-                template: this.url_template,
-                excel: JSON.stringify([
-                  {
-                    sheet: 1,
-                    // insertRange: [{
-                    //   range: "A1:E22", proc: "SP_RPT_SH10070_TAB2_M_NOCACHE", params: [this.modelMaster.PK, this.user.USER_NAME]
-                    // }],
-                  },
-                ]),
-                convert: "pdf",
-              },
-            });
-            this.showLoading = true;
-            this.urlPDF = window.URL.createObjectURL(rec);
-            this.showLoading = false;
-            let rtnBase64pdf = await this._blobFileToBase64(rec);
-          } catch (e) {
-            this.showNotification("danger", this.$t("fail_to_view_pdf"), "", 4000);
-          }
-        } else {
-          ///////////////////////////////////////////////
-          this.showLoading = true;
-          if (this.itemTemplatesPK != "") {
-            let res_url = await this.$axios.$post("/einvoice/general-url-pdf-template", {
-              responseType: "json",
-              data: this.itemTemplatesPK,
-            });
-            if (res_url.success) {
-              this.urlPDF = res_url.data;
-              this.showLoading = false;
-            }
-          } else {
-            this.showNotification("warning", this.$t("no_row_selected"), "");
-          }
-        }
       }
     },
     async onClickButton(pos) {
       switch (pos) {
-        case "VIEW":
-          this.onPreview();
-          break;
-        case "NEW_M":
+        // case "VIEW":
+        //   this.onPreview();
+        //   break;
+        case "NEW_ISSUE":
           this.onNew();
           break;
-        case "DELETE_M":
-          this.onDelete();
-          break;
-        case "SAVE_M":
+        // case "DELETE_M":
+        //   this.onDelete();
+        //   break;
+        case "SAVE_ISSUE":
           this.onSave();
-          this.dsoMaster("update");
           break;
-        case "SEARCH_M":
+        case "SEARCH_ISSUE":
           this.onSearch();
           break;
-        case "SAVE_S":
+        case "SAVE_TEMPLATE":
           this.dsoMaster("update");
           setTimeout(async () => {
-            this.showLoading = true;
-            let res_url = await this.$axios.$post("/einvoice/general-url-pdf-template", {
-              responseType: "json",
-              data: this.itemTemplatesPK,
-            });
-            if (res_url.success) {
-              this.urlPDF = res_url.data;
-              this.showLoading = false;
-            }
-          }, 2000);          
+            try {
+                this.showLoading = true;
+                let res_url = await this.$axios.$post("/einvoice/general-url-pdf-template", {
+                  responseType: "json",
+                  data: this.item_pk,
+                });
+                this.urlPDF = null;
+                if (res_url.success) {
+                  this.urlPDF = res_url.data;
+                  this.showLoading = false;
+                }
+              } catch (e) {
+                this.showNotification("danger", this.$t("fail_to_url", "Error"), e.message);
+              }
+          }, 2000);
           break;
         case "NEW_S":
           this.onNew_T();
-          break;
-        case "DELETE_T":
-          this.onDelete_T();
-          break;
-        case "NEW_PM":
-          this.onNew_PM();
-          break;
-        case "SAVE_PM":
-          this.onSave_PM();
-          break;
-        case "DELETE_PM":
-          this.onDelete_PM();
-          break;
-        case "NEW_PD":
-          this.onNew_PD();
-          break;
-        case "SAVE_PD":
-          this.onSave_PD();
-          break;
-        case "DELETE_PD":
-          this.onDelete_PD();
           break;
       }
     },
@@ -1066,32 +832,13 @@ export default {
         ],
         data: this.MasterInfo,
       };
-      await this._dsoCall(dsoControl, action, true).then((res) => {
+      await this._dsoCall(dsoControl, action, true).then(async (res) => {
         if (res) {
           switch (action) {
             case "select":
               this.MasterInfo = { ...res };
               console.log("file: 6095055.vue:1100 [vng-304] awaitthis._dsoCall [vng-304] res:", res);
               this.MasterInfo._rowstatus = "u";
-              ///  Load ra được hình ảnh////
-              try {
-                if (this.MasterInfo.URL_IMG_LOGO == "" || this.MasterInfo.URL_IMG_LOGO == null) {
-                  this.imageLOGO = this.renderImg("assets/images/no_image.png");
-                } else {
-                  let imgLOGO = this.renderImg(this.MasterInfo.URL_IMG_LOGO);
-                  this.imageLOGO = imgLOGO;
-                }
-                ///////
-                if (this.MasterInfo.URL_IMG_BG == "" || this.MasterInfo.URL_IMG_BG == null) {
-                  this.imageBG = this.renderImg("assets/images/no_image.png");
-                } else {
-                  // let imgBG = require(`@/${this.MasterInfo?.URL_IMG_BG}.png`);
-                  let imgBG = this.renderImg(this.MasterInfo.URL_IMG_BG);
-                  this.imageBG = imgBG;
-                }
-              } catch (e) {
-                this.showNotification("danger", this.$t("fail_to_url", "Error"), e.message);
-              }
               ////   Bộ data để view pdf
               this.dataTemp = {
                 pk: res.PK,
@@ -1109,6 +856,27 @@ export default {
               };
               this.itemTemplatesPK = res.PK;
               this.url_template = res.URL_FILE_EXCEL;
+              ///  Load ra được hình ảnh////
+              // this.imgLOGO = this.renderImg("assets/images/no_image.png");
+              let imgLOGO = this.renderImg(this.MasterInfo.URL_IMG_LOGO);
+              this.imageLOGO = imgLOGO;
+              // this.imgBG = this.renderImg("assets/images/no_image.png");
+              let imgBG = this.renderImg(this.MasterInfo.URL_IMG_BG);
+              this.imageBG = imgBG;
+              try {
+                this.showLoading = true;
+                let res_url = await this.$axios.$post("/einvoice/general-url-pdf-template", {
+                  responseType: "json",
+                  data: this.item_pk,
+                });
+                this.urlPDF = null;
+                if (res_url.success) {
+                  this.urlPDF = res_url.data;
+                  this.showLoading = false;
+                }
+              } catch (e) {
+                this.showNotification("danger", this.$t("fail_to_url", "Error"), e.message);
+              }
               break;
             case "update":
               switch (this.MasterInfo._rowstatus) {
@@ -1442,8 +1210,6 @@ export default {
 
     async onProcessConfirm(action) {
       this.actionProcess = action;
-      //this.actionDialog = true;
-
       let promise = Swal.fire({
         icon: "question",
         caption: this.$t(`do_you_want_to_${action.toLowerCase()}`),

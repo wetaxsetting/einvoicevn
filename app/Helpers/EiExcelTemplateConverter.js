@@ -6,7 +6,7 @@ const ReportHelper = use("App/Helpers/ReportHelper");
 class EiExcelConverterAuto {
 	constructor() {
 	}
-	async ExcelBuilder(p_crt_by, einvoiceMasterData, reportPath, reportSheet, logos, bg){
+	async ExcelBuilder(p_crt_by, einvoiceMasterData, reportPath, reportSheet, logos, bg, masterDataArray){
 		//(p_crt_by, einvoiceDetailData, einvoicePk, _sourceRow, _sourceRow_2, _sourceRow_3, headerRowCount, countFromEndDetailToSignBox, lastPageRowsHeight, reportPath, reportSheet, signPath, cancelPath, bgPath, masterDataArray, detailCellFormat, logos, signCell, signBoxCell, signByCell, cancelYn, backgroundCell,backgroundRow, backgroundWidth, backgroundHeight) {
 		// console.log('===> ', p_crt_by)
 		// console.log(einvoiceDetailData)
@@ -34,6 +34,10 @@ class EiExcelConverterAuto {
 			return file;
 		}
 
+		
+
+
+
 		// console.log("bg  " , bg  );
 		if (bg.length) {
 			try {
@@ -60,6 +64,23 @@ class EiExcelConverterAuto {
 			}
 		}
 
+
+			masterDataArray.forEach(e => {
+				if (e.Type == 1) {
+					let infoData = ""
+					console.log("  e +++ >>>", e)
+					e.Info.forEach(_e => {
+						if (einvoiceMasterData[0][`${_e}`] != null || einvoiceMasterData[0][`${_e}`] != undefined) {
+							infoData = infoData + einvoiceMasterData[0][`${_e}`];
+						} else {
+							infoData = infoData + " "
+						}
+
+					});
+					worksheet.getCell( `${e.Cell}`).value = infoData;
+				} 
+			});
+		
 		//END-this part add more style to missing part of the footer(optional).
 
         // const reportFilePdf = await exceljs.writeFile();

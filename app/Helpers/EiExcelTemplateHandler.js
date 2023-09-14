@@ -53,7 +53,14 @@ class EiExcelHandler {
         p_crt_by,
         _db2
       );
-      // console.log("file: EiExcelTemplateHandler.js:56 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceMasterData:", einvoiceMasterData)
+
+      const einvoiceMasterParam = await DBService.callProcCursor(
+        "AC_SEL_6095057_PARAM", [pk],
+        p_language,
+        p_crt_by,
+        _db2
+      );
+      // console.log("file: EiExcelTemplateHandler.js:56 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceMasterParam:", einvoiceMasterParam)
      
       if(einvoiceMasterData[0].URL_IMG_LOGO)
       {
@@ -85,7 +92,13 @@ class EiExcelHandler {
         bg = [];
       }
 
-     
+      this.masterDataArray = [];
+      for(let i = 0; i < einvoiceMasterParam.length; i++)
+      {
+        //console.log(" Cell: einvoiceMasterParam[i].CELL_CODE ", einvoiceMasterParam[i].CELL_CODE + " - " + einvoiceMasterParam[i].DATA_MAPPING + "  - " + einvoiceMasterParam[i].TYPE );
+        this.masterDataArray.push({ Cell: einvoiceMasterParam[i].CELL_CODE , Info: [ einvoiceMasterParam[i].DATA_MAPPING ], Type: einvoiceMasterParam[i].TYPE }, )
+      }
+
     // console.log("aaaaaaaaaaaaaaaaaaaa",einvoiceMasterData)
     if (einvoiceMasterData.length <= 0) {
       return that.showNotification(
@@ -97,7 +110,7 @@ class EiExcelHandler {
     }
 
 
-    this.masterDataArray = []
+   
       reportPath = einvoiceMasterData[0].URL_FILE_EXCEL;//'report/60/95/einvoices_template/Bornga/Bornga.xlsx'
       reportSheet = "Invoice" 
         resultExcel = await exceljs.ExcelBuilder(
@@ -106,7 +119,8 @@ class EiExcelHandler {
           reportPath, 
           reportSheet,
           logos,
-          bg
+          bg,
+          this.masterDataArray
           )
     return resultExcel
 

@@ -7187,7 +7187,8 @@ class EInvoiceController {
           });
         }
         count_inv++;
-        const id = uuid.v4();
+        //const id = uuid.v4();
+        const id = "ID1";
         const xml = this.OBJtoXML(objInvoice_M);
         const xmlStr = xml.toString().replace("<DLHDon>", `<DLHDon Id=\'${id}\'>`);
 

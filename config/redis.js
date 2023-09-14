@@ -32,11 +32,10 @@ module.exports = {
   |
   */
   local: {
-    host: '125.212.250.172',
-    port: 6379,
-    password: 'hsdvusdvv732rvuyfuf23cf2f2vfiv2yufv',
+    host: Env.get('REDIS_IP', '127.0.0.1'),
+    port: Env.get('REDIS_PORT', 6379),
+    password: Env.get('REDIS_PW'),
     db: 0,
-    keyPrefix: 'telesale_pro_'
   },
 
   /*

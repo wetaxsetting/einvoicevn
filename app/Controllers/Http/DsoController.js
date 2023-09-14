@@ -1524,6 +1524,21 @@ class DsoController {
       return response.send(Utils.response(false, e.message, null));
     }
   }
+
+  async CallAPIProcedureNoAuthen({ request, response, auth }) {
+    const p_crt_by = "anonymous"
+    try {
+        const { proc, para } = request.all()
+        var p_language = request.header("accept-language", "ENG")
+        const result = await DBService.callProcCursor(proc, para, p_language, p_crt_by)
+
+        return response.send(Utils.response(true, "api anonymous completed successfull", result))
+    } catch (e) {
+        console.error(e)
+        Utils.Logger({ LVL: "error", MODULE: "DsoController", FUNC: "CallAPIProcedureNoAuthen", CONTENT: e.message, CRT_BY: p_crt_by })
+        return response.send(Utils.response(false, e.message, null))
+    }
+  }
 }
 
 module.exports = DsoController;

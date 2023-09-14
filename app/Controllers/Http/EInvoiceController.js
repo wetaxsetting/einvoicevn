@@ -7196,7 +7196,7 @@ class EInvoiceController {
       }
 
       return response.send(
-        Utils.response(true, `Convert json to xml was successful. ${count_inv}/${list_invoice.length} `, rtnXML)
+        Utils.response(true, `Convert json to xml was successful. ${count_inv}/${invoices.length} `, rtnXML)
       );
     } catch (e) {
       Utils.Logger({

@@ -1,4 +1,4 @@
-<!-- ================================================================= BEGIN DESIGN LAYOUT======================================================================================= -->
+<!-- ================================================================= BEGIN DESIGNSAVE_ISSUE LAYOUT======================================================================================= -->
 <template>
   <v-container fluid v-resize="onResize">
     <v-row dense class="pt-1">
@@ -8,11 +8,11 @@
             <BaseSelect :label="$t('company')" v-model="selected_company" :lstData="company_list" item-text="TEXT" item-value="PK" />
           </v-col>
           <v-col md="5" class="d-flex justify-end">
-            <BaseButton icon_type="search" btn_type="icon" :btn_text="$t('search')" @onclick="onClickButton('SEARCH_M')" />
+            <BaseButton icon_type="search" btn_type="icon" :btn_text="$t('search')" @onclick="onClickButton('SEARCH_ISSUE')" />
             <BaseButton btn_type="icon" icon_type="copy" @onclick="copyToDialog = true" />
-            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" @onclick="onClickButton('NEW_M')" />
+            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" @onclick="onClickButton('NEW_ISSUE')" />
             <!-- <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClickButton('DELETE_M')" /> -->
-            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClickButton('SAVE_M')" />
+            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClickButton('SAVE_ISSUE')" />
           </v-col>
         </v-row>
         <v-row dense>
@@ -82,7 +82,7 @@
             <!-- <BaseButton btn_type="icon" icon_type="view" :btn_text="$t('view')" :disabled="!item_pk" @onclick="onClickButton('VIEW')" /> -->
             <!-- <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="!item_pk" @onclick="onClickButton('NEW_S')" /> -->
             <!-- <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="!item_pk" @onclick="onClickButton('DELETE_S')" /> -->
-            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="!item_pk" @onclick="onClickButton('SAVE_S')" />
+            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="!item_pk" @onclick="onClickButton('SAVE_TEMPLATE')" />
           </v-col>
         </v-row>
         <v-row dense>
@@ -700,22 +700,22 @@ export default {
     },
     async onClickButton(pos) {
       switch (pos) {
-        case "VIEW":
-          this.onPreview();
-          break;
-        case "NEW_M":
+        // case "VIEW":
+        //   this.onPreview();
+        //   break;
+        case "NEW_ISSUE":
           this.onNew();
           break;
-        case "DELETE_M":
-          this.onDelete();
-          break;
-        case "SAVE_M":
+        // case "DELETE_M":
+        //   this.onDelete();
+        //   break;
+        case "SAVE_ISSUE":
           this.onSave();
           break;
-        case "SEARCH_M":
+        case "SEARCH_ISSUE":
           this.onSearch();
           break;
-        case "SAVE_S":
+        case "SAVE_TEMPLATE":
           this.dsoMaster("update");
           setTimeout(async () => {
             try {
@@ -736,27 +736,6 @@ export default {
           break;
         case "NEW_S":
           this.onNew_T();
-          break;
-        case "DELETE_T":
-          this.onDelete_T();
-          break;
-        case "NEW_PM":
-          this.onNew_PM();
-          break;
-        case "SAVE_PM":
-          this.onSave_PM();
-          break;
-        case "DELETE_PM":
-          this.onDelete_PM();
-          break;
-        case "NEW_PD":
-          this.onNew_PD();
-          break;
-        case "SAVE_PD":
-          this.onSave_PD();
-          break;
-        case "DELETE_PD":
-          this.onDelete_PD();
           break;
       }
     },

@@ -4,20 +4,22 @@
       <v-container fluid class="fill-height">
         <v-row align="center" justify="center">
           <v-col cols="12">
-            <v-card outlined class="pa-4 mx-auto" :width="_calculateHeight(windowWidth, 60)">
+            <v-card shaped class="pa-4 mx-auto" :width="_calculateHeight(windowWidth, (breakpoint.isDesktop ? 60 : 90))">
               <v-container>
-                <v-row align="center" justify="center">
+                <v-row dense align="center" justify="center">
                   <v-col cols="12" class="text-center">
                     <div class="text-h4 font-weight-bold text-uppercase">Tra cứu hóa đơn điện tử</div>
                   </v-col>
                   <v-col cols="12">
                     <v-text-field 
-                      ref="invoiceNo"                  
+                      ref="invoiceNo"
                       outlined
                       single-line
                       validate-on-blur                    
                       label="Nhập mã tra cứu hóa đơn"
                       :color="currentTheme"
+                      :dense="!breakpoint.isDesktop"
+                      :disabled="isProcessing"
                       :rules="inputRule"
                       v-model="invoiceNo"
                       @keypress.enter="search"
@@ -30,8 +32,10 @@
                       single-line
                       hide-details
                       label="Captcha"
-                      append-icon="mdi-refresh"
-                      :color="currentTheme"                        
+                      :append-icon="!isProcessing ? 'mdi-refresh' : ''"
+                      :color="currentTheme"
+                      :dense="!breakpoint.isDesktop"
+                      :disabled="isProcessing"             
                       v-model="captcha"
                       @click:append="_handleGenerateCaptcha"
                       @keypress.enter="search"
@@ -54,19 +58,52 @@
     <v-dialog :max-width="Math.floor(windowWidth*0.75)" v-model="dialogIsShow">
       <v-card>
         <v-card-title class="headline primary-gradient white--text py-2">
-          <span>{{ $t("einvoice_information") }}</span>
+          <span>Thông tin hóa đơn</span>
           <v-spacer></v-spacer>
           <v-icon dark @click="dialogIsShow = false">mdi-close-thick</v-icon>
         </v-card-title>
         <v-container fluid>
           <v-row no-gutters>
-            <v-col cols="6">
-              <v-card flat tile class="overflow-y-overlay" :height="_calculateHeight(windowHeight, 70)" v-if="invoiceInfo && invoiceInfo.url_pdf">
+            <v-col lg="8" cols="12">
+              <v-card flat tile :height="dialogHeight" v-if="invoiceInfo && invoiceInfo.url_pdf">
                 <iframe :src="invoiceInfo.url_pdf" height="100%" width="100%" ></iframe>
               </v-card>
             </v-col>
-            <v-col cols="6">
-              <v-card flat tile color="grey darken-1" class="overflow-y-overlay" :height="_calculateHeight(windowHeight, 70)"></v-card>
+            <v-col lg="4" cols="12">
+              <v-card flat tile>
+                <v-container fluid>
+                  <v-row dense>
+                    <v-col cols="12">
+                      <div class="text-h5 font-weight-bold pb-2">Thông tin hóa đơn</div>
+                      <v-divider></v-divider>
+                    </v-col>
+                    <v-col cols="12 pt-2">
+                      <v-sheet tile color="transparent" class="d-flex align-center justify-space-between" width="100%">
+                        <span class="mr-auto">Số hóa đơn:</span>
+                        <span class="font-weight-bold">{{ invoiceInfo.serial_no }}</span>
+                      </v-sheet>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-sheet tile color="transparent" class="d-flex align-center justify-space-between" width="100%">
+                        <span class="mr-auto">Tổng tiền thanh toán:</span>
+                        <span class="font-weight-bold">{{ invoiceInfo.total_payment }}</span>
+                      </v-sheet>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-btn dark depressed small color="#AD0B00" @click="onDownloadPDF">
+                        <v-icon left>mdi-file-pdf-box</v-icon>
+                        <span class="ml-2">Tải về định dạng PDF</span>
+                      </v-btn>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-btn dark depressed small color="#EA7700" target="_blank" :href="invoiceInfo.url_xml">
+                        <v-icon left>mdi-file-xml-box</v-icon>
+                        <span class="ml-2">Tải về định dạng XML</span>
+                      </v-btn>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card>
             </v-col>
           </v-row>
         </v-container>
@@ -80,7 +117,7 @@ export default {
   layout: "monitoring",
 
   data: () => ({
-    invoiceNo: "LO+SYhpwjt8=",
+    invoiceNo: "",
     captcha: "",
     captchaSvg: "",
     sessionID: "",
@@ -94,16 +131,35 @@ export default {
     await this._handleGenerateCaptcha();
   },
 
+  computed: {
+    dialogHeight() {
+      return Math.floor(this._calculateHeight(this.windowHeight, (this.breakpoint.isDesktop ? 90 : 50)) - 48 - 24);
+    }
+  },
+
+  watch: {
+    async dialogIsShow(val) {
+      if(!val) {
+        await this._handleGenerateCaptcha();
+      }
+    }
+  },
+
   methods: {
     async _handleGenerateCaptcha() {
-      console.log("_handleGenerateCaptcha")
-      const { sessionid, captcha } = await this.$axios.$post("user/captchar", { req_sessionid: this.sessionID });
+      try {
+        if(this.isProcessing) return;      
+        // console.log("_handleGenerateCaptcha")
+        const { sessionid, captcha } = await this.$axios.$post("user/captchar", { req_sessionid: this.sessionID });
 
-      this.$nextTick(() => {
-        this.sessionID = sessionid;
-        this.captchaSvg = captcha;
-        this.captcha = "";
-      });
+        this.$nextTick(() => {
+          this.sessionID = sessionid;
+          this.captchaSvg = captcha;
+          this.captcha = "";
+        });
+      } catch (error) {
+        console.log("_handleGenerateCaptcha-catch exception:", error.message)       
+      }      
     },
 
     async search() {
@@ -125,17 +181,26 @@ export default {
         } else {
           this.isProcessing = false;
           this.showNotification("danger", message, "", 3000);
+          await this._handleGenerateCaptcha();
         }
       } catch (error) {
         this.isProcessing = false;
         console.log("search-catch exception:", error.message);
         this.showNotification("danger", "Error Occurs!", error.message, "", 3000);
+        await this._handleGenerateCaptcha();
+      }
+    },
+
+    onDownloadPDF() {
+      try {
+        var link = document.createElement('a');
+        link.href = this.invoiceInfo.url_pdf;
+        link.download = `${this.invoiceInfo.serial_no}.pdf`;
+        link.dispatchEvent(new MouseEvent('click'));
+      } catch (error) {
+        console.log("onDownload-catch exception:", error.message)
       }
     }
   }
 }
 </script>
-
-<style>
-
-</style>

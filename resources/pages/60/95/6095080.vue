@@ -279,7 +279,7 @@
           <v-row dense>
             <v-col md="12">
               <GwFlexBox justify="end">
-                <BaseButton icon_type="import" :btn_text="$t('import_token')" @onclick="onGetDetailDeclaration()" />
+                <BaseButton icon_type="import" :btn_text="$t('import_token')" @onclick="onGetDetailDeclaration()" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
                 <!-- Add -->
                 <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')" @onclick="onClick('newDetail')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
                 <!-- Save -->

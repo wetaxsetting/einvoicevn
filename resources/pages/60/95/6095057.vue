@@ -1238,7 +1238,7 @@ export default {
         {
           let res_url = await this.$axios.$post("/einvoice/general-url-pdf-template", {
                 responseType: "json",
-                tei_wt_sale_bill_pk: this.itemTemplatePK,
+                data: this.itemTemplatePK,
               });
           if(res_url.success)
           {

@@ -9,7 +9,7 @@
           </v-col>
           <v-col md="5" class="d-flex justify-end">
             <BaseButton icon_type="search" btn_type="icon" :btn_text="$t('search')" @onclick="onClickButton('SEARCH_ISSUE')" />
-            <BaseButton btn_type="icon" icon_type="copy" @onclick="copyToDialog = true" />
+            <!-- <BaseButton btn_type="icon" icon_type="copy" @onclick="copyToDialog = true" /> -->
             <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" @onclick="onClickButton('NEW_ISSUE')" />
             <!-- <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClickButton('DELETE_M')" /> -->
             <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClickButton('SAVE_ISSUE')" />
@@ -61,6 +61,12 @@
                 'USE_YN',
                 'FROM_NO',
                 'TEMPLATE_CD',
+                'COMPANY_NM' ,
+                'TAX_CODE' ,
+                'ADDR1' ,
+                'TEL' ,
+                'BANK_ACCOUNT1' ,
+                'BANK_NM1'
               ]"
               :height="limitHeight"
               @cellClick="cellClickCell"
@@ -130,7 +136,7 @@
                 <v-col md="6">
                   <v-row dense class="pr-3">
                     <v-col lg="12">
-                      <BaseInput outlined :label="$t('url_img_logo')" v-model="MasterInfo.URL_IMG_LOGO" />
+                      <BaseInput outlined :label="$t('url_img_logo')" v-model="MasterInfo.URL_IMG_LOGO" readonly/>
                     </v-col>
                   </v-row>
                   <v-row dense class="pr-3 numberLeft">
@@ -188,7 +194,7 @@
                 <v-col md="6">
                   <v-row dense class="pr-3">
                     <v-col lg="12">
-                      <BaseInput outlined :label="$t('url_img_bg')" v-model="MasterInfo.URL_IMG_BG" />
+                      <BaseInput outlined :label="$t('url_img_bg')" v-model="MasterInfo.URL_IMG_BG" readonly />
                     </v-col>
                   </v-row>
                   <v-row dense class="pr-3 numberLeft">
@@ -592,6 +598,12 @@ export default {
 
         { dataField: "FROM_DT", width: 100, caption: this.$t("from_dt"), editable: true, alignment: "center", type: "date", format: this.curLang.DATE_FORMAT },
         { dataField: "TO_DT", width: 100, caption: this.$t("to_dt"), editable: true, alignment: "center", type: "date", format: this.curLang.DATE_FORMAT },
+        // { dataField: "COMPANY_NM", width: 180, caption: this.$t("company_nm"), editable: true },
+        // { dataField: "TAX_CODE", width: 100, caption: this.$t("tax_code"), editable: true },
+        // { dataField: "ADDR1", width: 100, caption: this.$t("addr"), editable: true },
+        // { dataField: "TEL", width: 100, caption: this.$t("tel"), editable: true },
+        // { dataField: "BANK_ACCOUNT1", width: 150, caption: this.$t("bank_account1"), editable: true },
+        // { dataField: "BANK_NM1", width: 150, caption: this.$t("bank_name"), editable: true },
         {
           dataField: "STATUS",
           width: 100,
@@ -694,6 +706,7 @@ export default {
         // this.MasterInfo.FROM_NO = cell.data.FROM_NO;
         this.MasterInfo.USE_YN = cell.data.USE_YN;
       } else {
+        this.item_pk = cell.data.PK;
         this.MasterInfo.PK = cell.data.TEI_TEMPLATE_PK;
         await this.dsoMaster("select");
       }
@@ -711,6 +724,7 @@ export default {
         //   break;
         case "SAVE_ISSUE":
           this.onSave();
+          
           break;
         case "SEARCH_ISSUE":
           this.onSearch();
@@ -730,7 +744,7 @@ export default {
                   this.showLoading = false;
                 }
               } catch (e) {
-                this.showNotification("danger", this.$t("fail_to_url", "Error"), e.message);
+                this.showNotification("danger", this.$t("fail_view_to_url", "Error"), e.message);
               }
           }, 2000);
           break;
@@ -1032,10 +1046,23 @@ export default {
         SERIAL_NO: "C" + year + "T",
         FROM_DT: this.fromDate,
         TO_DT: this.toDate,
+        COMPANY_NM: "",
+        TAX_CODE: "",
+        ADDR1: "",
+        TEL: "",
+        BANK_ACCOUNT1: "",
         STATUS: "2",
         TCO_BUSPLACE_PK: this.lstBizplace,
         REMARKS: "",
         USE_YN: "Y",
+
+        COMPANY_NM: "",
+        TAX_CODE: "",
+        ADDR1: "",
+        TEL: "",
+        BANK_ACCOUNT1: "",
+        BANK_NM1: "",
+
         TEI_TEMPLATE_PK: this.MasterInfo.PK,
         TEMPLATE_CD: this.MasterInfo.TEMPLATE_CD,
       });

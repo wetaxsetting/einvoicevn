@@ -1,18 +1,16 @@
 <template>
   <v-container fluid v-resize="onResize">
     <v-row dense class="pt-1">
-
       <v-col v-show="showHilden" cols="12" :lg="showHilden ? 7 : 0">
         <v-row dense>
           <v-col md="11">
-            <BaseInput outlined :label="$t('template_id')" v-model="template_id" @keyPressEnter="onSearch"/>
+            <BaseInput outlined :label="$t('template_id')" v-model="template_id" @keyPressEnter="onSearch" />
           </v-col>
           <v-col md="1">
             <BaseButton icon_type="search" btn_type="icon" :btn_text="$t('search')" @onclick="onClickButton('SEARCH')" />
           </v-col>
         </v-row>
         <v-row dense>
-          
           <!-- <v-col md="2" class="d-flex justify-end">
             <b> {{ $t("template_table") }} </b>
           </v-col> -->
@@ -92,7 +90,8 @@
                 upd_procedure="EI_UPD_6095055_6"
                 :editable="true"
                 :update_paras="['PK', 'CELL_CODE', 'DATA_MAPPING', 'REMARKS', 'TEI_TEMPLATE_PK', 'TYPE_TABLE', 'TYPE_TEMPLATE', 'TYPE']"
-                :filter_paras="[this.itemTemplatePK, this.txtParamCodeMaster]"/>
+                :filter_paras="[this.itemTemplatePK, this.txtParamCodeMaster]"
+              />
             </v-col>
           </v-row>
         </v-row>
@@ -128,8 +127,20 @@
         </v-row>
       </v-col>
     </v-row>
-
-    <view-einvoice-pdf-dialog ref="ViewEInvoicePDFDialog" :src_pdfUrl="pdfUrl"></view-einvoice-pdf-dialog>
+    <GwLoading :visible="showLoading" />
+    <!-- <view-einvoice-pdf-dialog ref="ViewEInvoicePDFDialog" :src_pdfUrl="pdfUrl"></view-einvoice-pdf-dialog> -->
+    <v-dialog v-model="showPDF" max-width="800">
+      <v-container fluid>
+        <v-row no-gutters>
+          <v-col cols="12">
+            <v-card outlined :height="limitHeight1" :max-height="limitHeight1" style="overflow-y: scroll" v-resize="onResize">
+              <iframe :src="pdfUrl" height="100%" width="100%"></iframe>
+            </v-card>
+            <!-- <v-sheet color="red" height="100%" width="100%">AA</v-sheet> -->
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -150,6 +161,10 @@ export default {
   },
   /*############### data ##########################*/
   data: () => ({
+    origin: "center center",
+    isMaximized: false,
+    showPDF: false,
+    showLoading: false,
     item_pk: null,
     itemTemplatePK: "",
     file: null,
@@ -209,6 +224,13 @@ export default {
   computed: {
     user() {
       return this.$store.getters["auth/user"];
+    },
+    limitHeight1() {
+      if (this.isMaximized) {
+        console.log("isMaximized  ++==>", this.isMaximized);
+        return Math.floor(this._calculateHeight(this.windowHeight, 90));
+      }
+      return Math.floor(this._calculateHeight(this.windowHeight, 80));
     },
     limitHeightT() {
       if (this.windowHeight <= 768) {
@@ -1057,25 +1079,25 @@ export default {
     async onSave_PD() {
       // let dataD = this.$refs.grdParamD.getData();
       // for (let i = 0; i < dataD.length; i++) {
-        // if (!dataD[i].ORD) {
-        //   this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_ord_at_" + (i + 1)));
-        //   return;
-        // } else if (!dataD[i].STARTCELL) {
-        //   this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_start_cell_at_" + (i + 1)));
-        //   return;
-        // } else if (!dataD[i].ENDCELL) {
-        //   this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_end_cell_at_" + (i + 1)));
-        //   return;
-        // } else if (!dataD[i].CELLBORDER) {
-        //   this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_cell_border_at_" + (i + 1)));
-        //   return;
-        // } else if (!dataD[i].FIELD) {
-        //   this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_feild_at_" + (i + 1)));
-        //   return;
-        // } else if (!dataD[i].TYPE) {
-        //   this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_to_type_at_" + (i + 1)));
-        //   return;
-        // }
+      // if (!dataD[i].ORD) {
+      //   this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_ord_at_" + (i + 1)));
+      //   return;
+      // } else if (!dataD[i].STARTCELL) {
+      //   this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_start_cell_at_" + (i + 1)));
+      //   return;
+      // } else if (!dataD[i].ENDCELL) {
+      //   this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_end_cell_at_" + (i + 1)));
+      //   return;
+      // } else if (!dataD[i].CELLBORDER) {
+      //   this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_cell_border_at_" + (i + 1)));
+      //   return;
+      // } else if (!dataD[i].FIELD) {
+      //   this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_feild_at_" + (i + 1)));
+      //   return;
+      // } else if (!dataD[i].TYPE) {
+      //   this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_to_type_at_" + (i + 1)));
+      //   return;
+      // }
       // }
       this.$refs.grdParamD.saveData();
     },
@@ -1222,37 +1244,62 @@ export default {
     },
 
     async onPreview() {
-        // if (!this.itemTemplatePK) {
-        //   return this.showNotification("warning", this.$t("error_occurs"), "pls_select_template");
-        // }
-        // try {
-        //   this.pdfUrl = await this.pdfUrlGetter(this.itemTemplatePK);
-        //   console.log("=====> pdfUrlv", this.pdfUrl);
-        //   this.$nextTick(() => {
-        //     this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
-        //   });
-        // } catch (e) {
-        //   return this.showNotification("danger", e.message);
-        // }
-        if(this.itemTemplatePK != "")
-        {
-          let res_url = await this.$axios.$post("/einvoice/general-url-pdf-template", {
-                responseType: "json",
-                data: this.itemTemplatePK,
-              });
-          if(res_url.success)
-          {
-            this.pdfUrl = res_url.data;
+      // if (!this.itemTemplatePK) {
+      //   return this.showNotification("warning", this.$t("error_occurs"), "pls_select_template");
+      // }
+      // try {
+      //   this.pdfUrl = await this.pdfUrlGetter(this.itemTemplatePK);
+      //   console.log("=====> pdfUrlv", this.pdfUrl);
+      //   this.$nextTick(() => {
+      //     this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+      //   });
+      // } catch (e) {
+      //   return this.showNotification("danger", e.message);
+      // }
+      // if(this.itemTemplatePK != "")
+      // {
+      //   let res_url = await this.$axios.$post("/einvoice/general-url-pdf-template", {
+      //         responseType: "json",
+      //         data: this.itemTemplatePK,
+      //       });
+      //   if(res_url.success)
+      //   {
+      //     this.pdfUrl = res_url.data;
 
-            this.$nextTick(() => {
-              this.isProcessing = false
-              this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
-            });
-          }
-        }else
-        {
-          this.showNotification("warning", this.$t("no_row_selected"), '');
-        }
+      //     this.$nextTick(() => {
+      //       this.isProcessing = false
+      //       this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+      //     });
+      //   }
+      // }else
+      // {
+      //   this.showNotification("warning", this.$t("no_row_selected"), '');
+      // }
+
+      this.showLoading = true;
+      try {
+        const rec = await this.$axios.$get("/dso/makereport", {
+          responseType: "blob",
+          params: {
+            template: this.url_template,
+            excel: JSON.stringify([
+              {
+                sheet: 1,
+                // insertRange: [{
+                //   range: "A1:E22", proc: "SP_RPT_SH10070_TAB2_M_NOCACHE", params: [this.modelMaster.PK, this.user.USER_NAME]
+                // }],
+              },
+            ]),
+            convert: "pdf",
+          },
+        });
+        this.pdfUrl = window.URL.createObjectURL(rec);
+        this.showLoading = false;
+        this.showPDF = true;
+        let rtnBase64pdf = await this._blobFileToBase64(rec);
+      } catch (e) {
+        this.showNotification("danger", this.$t("fail_to_view_pdf"), "", 4000);
+      }
     },
 
     async pdfUrlGetter(pk) {

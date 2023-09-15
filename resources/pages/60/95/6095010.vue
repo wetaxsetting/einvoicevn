@@ -29,7 +29,7 @@
                 @cellClick="grdSearchClick"
                 sel_procedure="AC_SEL_6095010_LIST_COMPANY_NC"
                 upd_procedure=""
-                :filter_paras="[this.txtCompanyName, this.blUseYN]"
+                :filter_paras="[this.txtCompanyName, this.blUseYN, this.user.PK]"
                 :update_paras="[]"
               />
             </v-col>

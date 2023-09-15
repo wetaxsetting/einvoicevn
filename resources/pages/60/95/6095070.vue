@@ -17,7 +17,7 @@
           <BaseButton icon_type="search" :btn_text="$t('search')" @onclick="onClickButton('SEARCH')" />
           <BaseButton icon_type="add" :btn_text="$t('add')" @onclick="onClickButton('NEW')" />
           <BaseButton icon_type="save" :btn_text="$t('save')" @onclick="onClickButton('SAVE')" />
-          <!-- <BaseButton icon_type="excel" :btn_text="$t('print')" @onclick="onReport('PRINT')"/> -->
+          <!-- <BaseButton icon_type="excel" :btn_text="$t('print')" @onclick="onReport('PRINT')"/>  -->
         </v-col>
     </v-row>
 

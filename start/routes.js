@@ -139,6 +139,9 @@ Route.group(() => {
     Route.get("downloadxml", "EInvoiceController.DownloadXML")
     Route.get("downloadpdf", "EInvoiceController.DownloadPDF")
     Route.post("updatetemplate", "EInvoiceController.updateViewTemplateFromClient")   //VNG_304 
+
+
+
     // WeTax
     Route.post("json-to-excel", "EInvoiceController.renderJsonToExcelFile")
     Route.post("generate-declare-xml", "EInvoiceController.weTaxConvertDeclareUsingInvoiceToXML")
@@ -164,12 +167,15 @@ Route.group(() => {
     Route.post("check-status-invoice-at", "EInvoiceController.checkInvoiceStatus")
     Route.post("general-url-pdf", "EInvoiceController.viewPDFEPortal")
     Route.post("general-url-pdf-template", "EInvoiceController.viewPDFTemplateEPortal")
+    Route.post("general-url-pdf-template", "EInvoiceController.viewPDFTemplateEPortal")
+
 
 
 }).prefix("api/einvoice").middleware("user");
 
 Route.group(() => {
     Route.post("lookup-code", "EInvoiceController.getDataEinvoiceFormLookupCode")
+    Route.post("general-convert-einvoice", "EInvoiceController.generalConvertEinvoice")
 }).prefix("api/einvoice");
 
 // Frontend

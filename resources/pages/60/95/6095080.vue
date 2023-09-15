@@ -56,7 +56,7 @@
                     <BaseButton btn_type="text" :btn_text="$t('checking_declaration')" @onclick="onClick('checkingDeclaration')" />
                     <BaseButton btn_type="text" :btn_text="$t('general_declaration')" @onclick="onClick('generalDeclaration')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
                     <!-- Add -->
-                    <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')" @onclick="onClick('newMaster')" />
+                    <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')" @onclick="onClick('newMaster')"  />
                     <!-- Save -->
                     <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClick('saveMaster')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
                     <!-- Delete -->
@@ -281,7 +281,7 @@
               <GwFlexBox justify="end">
                 <BaseButton icon_type="import" :btn_text="$t('import_token')" @onclick="onGetDetailDeclaration()" />
                 <!-- Add -->
-                <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')" @onclick="onClick('newDetail')" />
+                <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')" @onclick="onClick('newDetail')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
                 <!-- Save -->
                 <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClick('saveDetail')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
                 <!-- Delete -->
@@ -618,7 +618,7 @@ export default {
       this.isProcessing = true;
       if (this.modelMaster.PK != null) {
         this.pdfUrl = await this.pdfUrlGetter(this.modelMaster.PK);
-        console.log("pdfUrlv", this.pdfUrl);
+        //console.log("pdfUrlv", this.pdfUrl);
         this.$nextTick(() => {
           this.isProcessing = false;
           this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
@@ -768,33 +768,12 @@ export default {
           caption: this.$t("no"),
         },
         {
-          dataField: "TEI_COMPANY_PK",
-          caption: this.$t("tco_company_pk"),
-        },
-        {
           dataField: "SERIAL_NUMBER",
           caption: this.$t("serial_number"),
         },
         {
-          dataField: "ISSUER",
-          caption: this.$t("issuer"),
-        },
-        {
-          dataField: "ISSUEBY",
-          caption: this.$t("issue_by"),
-        },
-
-        {
-          dataField: "ISSUETO",
-          caption: this.$t("issue_to"),
-        },
-        {
-          dataField: "DN_NAME",
-          caption: this.$t("dn_name"),
-        },
-        {
-          dataField: "DN_MST",
-          caption: this.$t("dn_mst"),
+          dataField: "CA_NAME",
+          caption: this.$t("ca_name"),
         },
         {
           dataField: "NOTAFTER",
@@ -805,13 +784,23 @@ export default {
           caption: this.$t("not_before"),
         },
         {
-          dataField: "PHONE_NO",
-          caption: this.$t("phone_no"),
-        },
+          dataField: "NOTBEFORE",
+          caption: this.$t("not_before"),
+        }
+        ,
         {
-          dataField: "FAX_NO",
-          caption: this.$t("fax_no"),
+          dataField: "TOKEN_TYPE",
+          caption: this.$t("hthuc"),
+          allowEditing: true,
+          lookup: {
+            displayExpr: "NAME",
+            valueExpr: "CODE",
+            dataSource: this.token_type_list,
+          },
+          width: 230,
         },
+
+        
       ];
       return header;
     },
@@ -917,12 +906,12 @@ export default {
         NO: this.$refs.grdDetail.getDataSource().length + 1,
         PK: "",
         TEI_DECLARATION_M_PK: this.modelMaster.PK,
-        TTCHUC: this.getPara("CN", item.ISSUEBY),
+        TTCHUC: item.CA_NAME,
         MST: item.DN_MST,
         SERI: item.SERIAL_NUMBER,
         DNGAY: item.NOTAFTER,
         TNGAY: item.NOTAFTER,
-        HTHUC: "1",
+        HTHUC: item.TOKEN_TYPE,
       });
     },
 

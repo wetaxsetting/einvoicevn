@@ -8396,6 +8396,94 @@ class EInvoiceController {
     }
   }
 
+  async generalConvertEinvoice({ request, response, auth }) {
+    try {
+      var p_language = request.header("accept-language", "ENG");
+      var p_crt_by = "";     
+  
+      const { converter, captcha, sessionid, lookupcode } = request.all();
+      console.log("captcha:", captcha);
+      console.log("sessionid:", sessionid);
+      if (Redis) {
+        const valueCache = await Redis.get(sessionid)
+        if (!valueCache || valueCache != captcha) {
+          return response.send(Utils.response(false, "invalid_captchar", null));
+        }
+      }
+  
+      /* const para_inv = {
+        lookupcode : lookupcode,
+      }; */
+      console.log("lookupcode:", lookupcode);
+      /* const rtnValue_VAT = await DBService.ExecuteSQLBlob(
+        `BEGIN ei_sel_get_data_lookup_code (:lookupcode,:p_language,:p_crt_by,:p_rtn_cur); END;`,
+        para_inv,
+        p_language,
+        p_crt_by
+      ); */
+      
+      const para_inv_st = {
+        trade_code: lookupcode,
+        converter : converter,
+      };
+      const rtnValue = await DBService.ExecuteSQLBlob(
+        `BEGIN ei_sel_get_data_lookup_code_c (:trade_code,:converter,:p_language, :p_crt_by, :p_rtn_cur); END;`,
+        para_inv_st,
+        p_language,
+        p_crt_by
+      );
+      // console.log("rtnValue_VAT  ", rtnValue.p_rtn_cur);
+  
+      let EiExcels = new EiExcelHandlerAuto(); //CQT_MAGD
+      let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].CQT_MAGD, p_language, p_crt_by);
+      // console.log("base64PDf: ", url_pdf);
+  
+      let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + rtnValue.p_rtn_cur[0].CQT_MAGD + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token="); 
+      //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE");
+      let url_xml = re_url_xml.data;
+      // console.log("base64XML:", url_xml);
+  
+      const rep_data = {
+        form_no : rtnValue.p_rtn_cur[0].TEMPLATECODE,
+        serial_no : rtnValue.p_rtn_cur[0].INVOICESERIALNO,
+        invoice_date : rtnValue.p_rtn_cur[0].INVOICE_DATE_34,
+        invoice_no : rtnValue.p_rtn_cur[0].INVOICENUMBER,
+        currency : rtnValue.p_rtn_cur[0].CURRENCYCODEUSD,
+        ex_rate : rtnValue.p_rtn_cur[0].TR_RATE_31,
+        payment_method : rtnValue.p_rtn_cur[0].PAYMENTMETHODCK,
+        seller_comp_name : rtnValue.p_rtn_cur[0].SELLER_NAME,
+        seller_taxcode : rtnValue.p_rtn_cur[0].SELLER_TAXCODE,
+        seller_address : rtnValue.p_rtn_cur[0].SELLER_ADDRESS,
+        seller_phone : rtnValue.p_rtn_cur[0].SELLER_TEL,
+        buyer_name: rtnValue.p_rtn_cur[0].BUYER_NAME_35,
+        buyer_comp_name : rtnValue.p_rtn_cur[0].BUYERLEGALNAME,
+        buyer_taxcode : rtnValue.p_rtn_cur[0].BUYERTAXCODE,
+        buyer_phone :  rtnValue.p_rtn_cur[0].TEL_53,
+        buyer_address : rtnValue.p_rtn_cur[0].SELLER_ADDRESS_1,
+        url_pdf: url_pdf,
+        url_xml : url_xml,
+        total_amt_no_vat : rtnValue.p_rtn_cur[0].NET_TR_AMT_DIS_TR_89,
+        total_amt_dc : 0,
+        total_amt_vat : rtnValue.p_rtn_cur[0].VAT_TR_AMT_DIS_TR_91,
+        total_payment : rtnValue.p_rtn_cur[0].TOT_AMT_TR_94,
+        total_payment_word_vie : rtnValue.p_rtn_cur[0].AMOUNT_WORD_VIE_107,
+        mccqt : rtnValue.p_rtn_cur[0].CQT_MCCQT_ID_85
+      }
+  
+      return response.send(Utils.response(true, "Research data invocie was success", rep_data));
+    } catch (e) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "getDataEinvoiceFormLookupCode",
+        CONTENT: e.message,
+      });
+      console.log(e);
+      return response.send(Utils.response(false, "error", e.message));
+    }
+  }
+
+
 }
 
 module.exports = EInvoiceController;

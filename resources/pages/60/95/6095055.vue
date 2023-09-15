@@ -61,15 +61,16 @@
                 'USE_YN',
                 'FROM_NO',
                 'TEMPLATE_CD',
-                'COMPANY_NM' ,
-                'TAX_CODE' ,
-                'ADDR1' ,
-                'TEL' ,
-                'BANK_ACCOUNT1' ,
-                'BANK_NM1'
+                'COMPANY_NM',
+                'TAX_CODE',
+                'ADDR1',
+                'TEL',
+                'BANK_ACCOUNT1',
+                'BANK_NM1',
               ]"
               :height="limitHeight"
               @cellClick="cellClickCell"
+              @row-updated="rowupdated"
             />
           </v-col>
         </v-row>
@@ -136,7 +137,7 @@
                 <v-col md="6">
                   <v-row dense class="pr-3">
                     <v-col lg="12">
-                      <BaseInput outlined :label="$t('url_img_logo')" v-model="MasterInfo.URL_IMG_LOGO" readonly/>
+                      <BaseInput outlined :label="$t('url_img_logo')" v-model="MasterInfo.URL_IMG_LOGO" readonly />
                     </v-col>
                   </v-row>
                   <v-row dense class="pr-3 numberLeft">
@@ -628,7 +629,13 @@ export default {
   /*############### methods #######################*/
   methods: {
     // async onAfterLoad(){ await this.dsoMaster('select')},
-
+    rowupdated(args, data, isUpdated) {
+      if ((data._rowstatus == "i" && args.datafield == "INVOICE_KIND") || args.datafield == "SERIAL_NO_2") {
+        const date = new Date();
+        let year = date.getFullYear().toString().substring(2, 4);
+        this.$refs.grdEinvoiceIssue.onSet("SERIAL_NO", args.row.INVOICE_KIND + year + args.row.SERIAL_NO_2, true, args.rowindex);
+      }
+    },
     renderImg(imgUrl, isBase64 = false) {
       if (isBase64) {
         return imgUrl;
@@ -724,7 +731,7 @@ export default {
         //   break;
         case "SAVE_ISSUE":
           this.onSave();
-          
+
           break;
         case "SEARCH_ISSUE":
           this.onSearch();
@@ -733,19 +740,19 @@ export default {
           this.dsoMaster("update");
           setTimeout(async () => {
             try {
-                this.showLoading = true;
-                let res_url = await this.$axios.$post("/einvoice/general-url-pdf-template", {
-                  responseType: "json",
-                  data: this.item_pk,
-                });
-                this.urlPDF = null;
-                if (res_url.success) {
-                  this.urlPDF = res_url.data;
-                  this.showLoading = false;
-                }
-              } catch (e) {
-                this.showNotification("danger", this.$t("fail_view_to_url", "Error"), e.message);
+              this.showLoading = true;
+              let res_url = await this.$axios.$post("/einvoice/general-url-pdf-template", {
+                responseType: "json",
+                data: this.item_pk,
+              });
+              this.urlPDF = null;
+              if (res_url.success) {
+                this.urlPDF = res_url.data;
+                this.showLoading = false;
               }
+            } catch (e) {
+              this.showNotification("danger", this.$t("fail_view_to_url", "Error"), e.message);
+            }
           }, 2000);
           break;
         case "NEW_S":

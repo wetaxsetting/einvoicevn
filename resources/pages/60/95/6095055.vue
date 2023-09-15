@@ -71,6 +71,7 @@
               :height="limitHeight"
               @cellClick="cellClickCell"
               @row-updated="rowupdated"
+              :editmode="'click'"
             />
           </v-col>
         </v-row>
@@ -269,14 +270,17 @@
             </span>
           </BaseTab>
         </BaseTabs>
-      </v-col>
-      <v-row dense :lg="isShowLeft ? 6 : 12">
-        <v-col md="12" class="d-flex">
+      </v-col> 
+        <v-col :colspan="isShowLeft ? 6 : 12">
+          <v-card>
+          <v-overlay :value="showLoading" :absolute="true" opacity=0.3>
+            <v-progress-circular indeterminate size="50"></v-progress-circular>
+          </v-overlay> 
           <iframe :src="urlPDF" height="825" width="100%"></iframe>
-        </v-col>
-      </v-row>
+        </v-card>
+        </v-col> 
     </v-row>
-    <GwLoading :visible="showLoading" />
+    <!-- <GwLoading :visible="showLoading" /> -->
     <!-- <view-einvoice-pdf-dialog ref="ViewEInvoicePDFDialog" :src_pdfUrl="pdfUrl"></view-einvoice-pdf-dialog> -->
     <!-- Copy To Dialog -->
     <v-dialog persistent id="copy-to-dialog" max-width="500" v-model="copyToDialog">
@@ -432,7 +436,6 @@ export default {
     txtParamCodeMaster: "",
     txtParamCodeDetails: "",
     dataIssued: [],
-    templateIdList: [],
     dataTemp: [],
 
     MasterInfo: {
@@ -482,6 +485,7 @@ export default {
     fileSaveLOGO: null,
     folder: "",
     fileSaveBG: null,
+    pathImgTep: require("@/assets/images/no_image.png")
   }),
   /*############### created #######################*/
   async created() {
@@ -630,17 +634,20 @@ export default {
   methods: {
     // async onAfterLoad(){ await this.dsoMaster('select')},
     rowupdated(args, data, isUpdated) {
-      if ((data._rowstatus == "i" && args.datafield == "INVOICE_KIND") || args.datafield == "SERIAL_NO_2") {
+      if (data._rowstatus == "i" && (args.datafield == "INVOICE_KIND" || args.datafield == "SERIAL_NO_2")) {
         const date = new Date();
         let year = date.getFullYear().toString().substring(2, 4);
-        this.$refs.grdEinvoiceIssue.onSet("SERIAL_NO", args.row.INVOICE_KIND + year + args.row.SERIAL_NO_2, true, args.rowindex);
+        let lArray = "";
+        this.$refs.grdEinvoiceIssue.onSet("SERIAL_NO", args.row.INVOICE_KIND + year + args.row.SERIAL_NO_2 + lArray, true, args.rowindex);
       }
-    },
+    }, 
     renderImg(imgUrl, isBase64 = false) {
       if (isBase64) {
         return imgUrl;
       } else {
-        return require("@/" + imgUrl);
+        return imgUrl?require("@/" + imgUrl):require("@/assets/images/no_image.png");
+        // this.pathImgTep.replace('assets/images/no_image.png',imgUrl?imgUrl:'assets/images/no_image.png'); //
+        
       }
     },
     async onUploadImgFolder(file, folder, _type) {
@@ -702,7 +709,7 @@ export default {
       this.$refs.fileLOGO.click();
     },
     async cellClickCell(cell) {
-      console.log("file: 6095055.vue:916 [vng-304] cellClickCell [vng-304] cell:", cell);
+      // console.log("file: 6095055.vue:916 [vng-304] cellClickCell [vng-304] cell:", cell);
       this.item_pk = cell.data.PK;
       this.dataIssued = cell.data;
 
@@ -1017,14 +1024,14 @@ export default {
             "ACJS0480", //8
             "ACJS0490", //9
             "ACEIS330", //10
-            "ACEIS340",
+            "ACEIS340", //11
           ];
           const results = await this._getCommonCode2(parentCodes, this.selected_company);
           if (results.length) {
             this.typeInvoiceList = results[0];
             this.invoiceKind = results[1];
             this.typeTableList = results[2];
-            this.typeTemplateList = results[3];
+            // this.typeTemplateList = results[3];
             this.typeList = results[4];
             this.versionList = results[5];
             this.paramList = results[6];
@@ -1032,10 +1039,17 @@ export default {
             this.paramDList = results[8];
             this.cboTemplate = results[9];
             this.Form_noList = results[10];
-            this.templateIdList = results[11];
-            this.templateID_list = results[11]; ///
+            // this.templateID_list = results[11]; ///
+            
             this.formNoList = results[10];
           }
+
+          const dsoTemplates = { type: "list", selpro: "EI_SEL_GET_TEMPLATES", para: [this.selected_company] }; 
+          const rtnTemplates = await this._dsoCall(dsoTemplates, "select", false);
+
+          this.templateID_list = [...rtnTemplates]
+
+          console.log("file: 6095055.vue:1038 [vng-304] getListCodes [vng-304] this.templateID_list:", this.templateID_list)
           break;
       }
     },

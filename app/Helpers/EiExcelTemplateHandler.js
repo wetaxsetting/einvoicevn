@@ -61,36 +61,52 @@ class EiExcelHandler {
         _db2
       );
       // console.log("file: EiExcelTemplateHandler.js:56 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceMasterParam:", einvoiceMasterParam)
-     
-      if(einvoiceMasterData[0].URL_IMG_LOGO)
-      {
-        logos = [
-           { 
-            logo_start_col: einvoiceMasterData[0].LOGO_START_COL,
-            logo_start_row: einvoiceMasterData[0].LOGO_START_ROW,
-            logo_width : einvoiceMasterData[0].LOGO_WIDTH,
-            logo_height : einvoiceMasterData[0].LOGO_HEIGHT,
-            logoPath: `${einvoiceMasterData[0].URL_IMG_LOGO}`   ///assets/images/einvoices_logo/abc/
-          }  
-        ]
-      }else{
-        logos = [];
-      }
-
-      if(einvoiceMasterData[0].URL_IMG_BG)
-      {
-        bg = [
-          { 
-            bg_start_row: einvoiceMasterData[0].BG_START_ROW,
-            bg_start_col: einvoiceMasterData[0].LOGO_START_COL,
-            bg_width : einvoiceMasterData[0].BG_WIDTH,
-            bg_height : einvoiceMasterData[0].BG_HEIGHT,
-            bgPath: `${einvoiceMasterData[0].URL_IMG_BG}` 
-          }  
-        ]
-      }else{
-        bg = [];
-      }
+      logos = [
+        { 
+         logo_start_col : einvoiceMasterData[0]&&einvoiceMasterData[0].LOGO_START_COL?einvoiceMasterData[0].LOGO_START_COL:1,
+         logo_start_row : einvoiceMasterData[0]&&einvoiceMasterData[0].LOGO_START_ROW?einvoiceMasterData[0].LOGO_START_ROW:1,
+         logo_width     : einvoiceMasterData[0]&&einvoiceMasterData[0].LOGO_WIDTH?einvoiceMasterData[0].LOGO_WIDTH:1,
+         logo_height    : einvoiceMasterData[0]&&einvoiceMasterData[0].LOGO_HEIGHT?einvoiceMasterData[0].LOGO_HEIGHT:1,
+         logoPath       : `${einvoiceMasterData[0]&&einvoiceMasterData[0].URL_IMG_LOGO?einvoiceMasterData[0].URL_IMG_LOGO:"assets/images/no_image.png"}`   ///assets/images/einvoices_logo/abc/
+       }  
+     ]
+      // if(einvoiceMasterData[0].URL_IMG_LOGO)
+      // {
+      //   logos = [
+      //      { 
+      //       logo_start_col: einvoiceMasterData[0].LOGO_START_COL,
+      //       logo_start_row: einvoiceMasterData[0].LOGO_START_ROW,
+      //       logo_width : einvoiceMasterData[0].LOGO_WIDTH,
+      //       logo_height : einvoiceMasterData[0].LOGO_HEIGHT,
+      //       logoPath: `${einvoiceMasterData[0].URL_IMG_LOGO}`   ///assets/images/einvoices_logo/abc/
+      //     }  
+      //   ]
+      // }else{
+      //   logos = [];
+      // }
+      bg = [
+        { 
+          bg_start_row: einvoiceMasterData[0]&&einvoiceMasterData[0].BG_START_ROW?einvoiceMasterData[0].BG_START_ROW:1,  
+          bg_start_col: einvoiceMasterData[0]&&einvoiceMasterData[0].BG_START_COL?einvoiceMasterData[0].BG_START_COL:1,  
+          bg_width    : einvoiceMasterData[0]&&einvoiceMasterData[0].BG_WIDTH?einvoiceMasterData[0].BG_WIDTH:1,  
+          bg_height   : einvoiceMasterData[0]&&einvoiceMasterData[0].BG_HEIGHT?einvoiceMasterData[0].BG_HEIGHT:1, 
+          bgPath      : `${einvoiceMasterData[0]&&einvoiceMasterData[0].URL_IMG_BG?einvoiceMasterData[0].URL_IMG_BG:"assets/images/no_image.png"}`  
+        }  
+      ]
+      // if(einvoiceMasterData[0].URL_IMG_BG)
+      // {
+      //   bg = [
+      //     { 
+      //       bg_start_row: einvoiceMasterData[0].BG_START_ROW,
+      //       bg_start_col: einvoiceMasterData[0].LOGO_START_COL,
+      //       bg_width : einvoiceMasterData[0].BG_WIDTH,
+      //       bg_height : einvoiceMasterData[0].BG_HEIGHT,
+      //       bgPath: `${einvoiceMasterData[0].URL_IMG_BG}` 
+      //     }  
+      //   ]
+      // }else{
+      //   bg = [];
+      // }
 
       this.masterDataArray = [];
       for(let i = 0; i < einvoiceMasterParam.length; i++)

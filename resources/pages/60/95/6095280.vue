@@ -224,7 +224,7 @@
             </v-col>
             <v-col md="3">
               <BaseSelect :label="$t('serial_no')" item-value="VAL" item-text="NAME" :lstData="serial_no_list"
-                v-model="selected_serial_no" />
+                v-model="selected_serial_no" :text_all="$t('all')"/>
             </v-col>
             <v-col md="3">
               <BaseInput :label="$t('invoice_no')" v-model="invoice_no_pop" />

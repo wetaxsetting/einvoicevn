@@ -103,11 +103,11 @@
                 </v-col>
                 <v-col md="4">
                   <BaseSelect outlined :label="$t('tax_office')" v-model="modelMaster.MCQT"
-                    :lstData="dataMasterList.taxOfficeList" item-text="NAME" item-value="CODE"  />
+                    :lstData="dataMasterList.taxOfficeList" item-text="NAME" item-value="CODE" />
                 </v-col>
                 <v-col md="4">
                   <BaseSelect outlined :label="$t('form_no')" v-model="modelMaster.MSO"
-                    :lstData="dataMasterList.fromNoList" item-text="NAME" item-value="CODE"  />
+                    :lstData="dataMasterList.fromNoList" item-text="NAME" item-value="CODE" />
                 </v-col>
               </v-row>
               <v-row dense class="pl-3 pr-3">
@@ -128,7 +128,7 @@
               <v-row dense class="pl-3 pr-3">
                 <v-col md="4">
                   <BaseSelect outlined :label="$t('categories')" v-model="modelMaster.LOAI"
-                    :lstData="dataMasterList.categoriesList" item-text="NAME" item-value="CODE"  />
+                    :lstData="dataMasterList.categoriesList" item-text="NAME" item-value="CODE" />
                 </v-col>
                 <v-col md="4">
                   <BaseInput outlined :label="$t('minutes_no')" v-model="modelMaster.VOUCHER_NO" readonly></BaseInput>
@@ -224,7 +224,7 @@
             </v-col>
             <v-col md="3">
               <BaseSelect :label="$t('serial_no')" item-value="VAL" item-text="NAME" :lstData="serial_no_list"
-                v-model="selected_serial_no" :text_all="$t('all')"/>
+                v-model="selected_serial_no" :text_all="$t('all')" />
             </v-col>
             <v-col md="3">
               <BaseInput :label="$t('invoice_no')" v-model="invoice_no_pop" />
@@ -341,7 +341,8 @@ export default {
         NAME: 'Enter Direct',
         CODE: 'E',
       },
-    ]
+    ],
+    objInvoiceM:{}
   }),
 
   mounted() {
@@ -415,6 +416,7 @@ export default {
     },
   },
   methods: {
+
     async onClick(pos) {
       switch (pos) {
         case "search":
@@ -463,7 +465,6 @@ export default {
           this.onReport();
           break;
         case "newDetail":
-
           if (this.selectedTable == "G") {
             if (!this.modelMaster.PK) {
               // this.onClick("saveMaster");
@@ -541,7 +542,6 @@ export default {
         case "deleteDetail":
           this.$refs.grdDetail.onSetMarkedDelete();
           break;
-
         case "CHECKCQT":
           await this.OnCheckingDec();
           break;
@@ -549,14 +549,14 @@ export default {
           this.OnPreviewXMLSS();
           break;
         case "viewXML":
-          this.OnPreviewXML();
+          this.onPreviewXML();
           break;
-      case "preview" :
+        case "preview":
           this.OnPreview();
-      break;
-        
+          break;
       }
     },
+
     async dsoMaster(action) {
       let abc = this.dataMasterList.taxOfficeList.find(item => item.CODE == this.modelMaster.MCQT)
       this.modelMaster.TCQT = abc.NAME;
@@ -613,9 +613,11 @@ export default {
         }
       });
     },
+
     onClickPopup() {
       this.$refs.popupGrid.loadData();
     },
+
     onSelect() {
       let selectedData = this.$refs.popupGrid.getSelectedRows();
       for (let i = 0; i < selectedData.length; i++) {
@@ -638,6 +640,7 @@ export default {
       }
       this.dlg_View = false;
     },
+
     async initHeaderList() {
       this.headerList.grdSearch = [{
         dataField: "NO",
@@ -854,6 +857,7 @@ export default {
         },
       ]
     },
+
     async initDataList() {
       const company = await this._callProcedure("AC_SEL_6095280_COMPANY", [this.user.PK]);
       if (company.length > 0) {
@@ -874,10 +878,10 @@ export default {
       this.dataMasterList.taxOfficeList = results[1];
       this.dataMasterList.fromNoList = results[2].filter(x => x.VAL1 == '6095280');
       this.dataMasterList.fromNoList.forEach((e) => {
-                            if (e.DEF_YN == "Y") {
-                                this.modelMaster.MSO = e.CODE;
-                            }
-                        });
+        if (e.DEF_YN == "Y") {
+          this.modelMaster.MSO = e.CODE;
+        }
+      });
 
       this.dataMasterList.categoriesList = results[3];
       this.dataMasterList.declarationNameList = results[4];
@@ -891,6 +895,7 @@ export default {
 
 
     },
+
     async getListCodes(pos) {
       switch (pos) {
         case "form_no":
@@ -923,6 +928,7 @@ export default {
           break;
       }
     },
+
     async initModel() {
       this.modelMaster._rowstatus = "i";
       this.modelMaster.PK = null;
@@ -953,7 +959,65 @@ export default {
       this.$refs.grdDetail.Clear();
     },
 
-    
+    checkData() {
+      if (this.modelMaster.MCQT == "00") {
+        alert("Vui lòng nhập Cơ Quan Thuế.");
+        return false;
+      }
+      if (this.modelMaster.MSO == "00") {
+        alert("Vui lòng nhập Mẫu số.");
+        return false;
+      }
+      if (this.modelMaster.MST == "") {
+        alert("Vui lòng nhập Mã số thuế.");
+        return false;
+      }
+      if (this.modelMaster.DDANH == "") {
+        alert("Vui lòng nhập Địa danh.");
+        return false;
+      }
+      if (this.modelMaster.LOAI_TEN == "00") {
+        alert("Vui lòng nhập Tên tờ khai.");
+        return false;
+      }
+      return true;
+    },
+
+    onGeneralXML() {
+      // if (!this.modelMaster() || !this.modelMaster.PK) {
+      //   return false;
+      // }
+      //this.initobjInvoice_M();
+
+      this.objInvoiceM.invalid_invoices = {
+        tax_office_name: this.modelMaster.TCQT,
+        tax_office_code: this.modelMaster.MCQT,
+        saler_taxcode: this.modelMaster.MST,
+        saler_company_name: this.modelMaster.TNNT,
+        location_name: this.modelMaster.DDANH,
+        inform_date: this.modelMaster.NTBAO,
+      };
+
+      this.objInvoiceM.invalid_invoices.invoices = [];
+
+      for (let j = 0; j < this.$refs.grdDetail.getDataSource().length; j++) {
+        const objDataDetails = {
+          tax_confirmation_code:
+            this.$refs.grdDetail.getDataSource()[j].MCQTCAP,
+          form_no: this.$refs.grdDetail.getDataSource()[j].KHMSHDON,
+          serial_no: this.$refs.grdDetail.getDataSource()[j].KHHDON,
+          invoice_no: this.$refs.grdDetail.getDataSource()[j].SHDON,
+          invoice_date: this.$refs.grdDetail.getDataSource()[j].NGAY,
+          invoice_type: this.$refs.grdDetail.getDataSource()[j].LADHDDT,
+          inform_type: this.$refs.grdDetail.getDataSource()[j].TCTBAO,
+          reason: this.$refs.grdDetail.getDataSource()[j].LDO,
+        };
+
+        this.objInvoiceM.invalid_invoices.invoices.push(objDataDetails);
+      }
+
+      return this.objInvoiceM.invalid_invoices;
+    },
 
     // async OnCheckingDec() {
     //   var count = 1;
@@ -989,23 +1053,6 @@ export default {
     //   }
     // },
 
-    async OnPreviewXMLSS() {
-      var v_user_id = System.getSessionUserId();
-      if (txtPK.value != "") {
-        var url = "/system/index.gw?openType=F&objId=stacpustac710001";
-        url += "&p_tac_e_invoice_crca_pk=" + txtPK.value;
-        url += "&p_option=XML";
-        url += "&p_TradingType=04SS";
-        url += "&p_user_id=" + v_user_id;
-        url += "&p_tei_company_pk=XML";
-        url += "&p_status=" + v_sign_stamp;
-
-        System.OpenModal(url, 1024, 1000, 'HDGTGT', document, "");
-      } else {
-        alert("please select row search grid");
-        return;
-      }
-    },
     async onPreviewXML() {
       if (!this.modelMaster.PK == null) {
         return this.showNotification("warning", this.$t("error_occurs"), "pls_select_declaration");
@@ -1015,19 +1062,20 @@ export default {
       if (!this.modelMaster.CQT_MAGD) {
         let data_xml = this.onGeneralXML();
 
-        // let resConvertXML = await this.$axios.$post("/einvoice/declare2xml", {
-        //   responseType: "json",
-        //   declare: data_xml,
-        // });
+        console.log("data_xml  ", data_xml);
+        let resConvertXML = await this.$axios.$post("/einvoice/invalidinvoice2xml", {
+          responseType: "json",
+          invalid_invoices: data_xml,
+        });
 
-        // if (resConvertXML.success && resConvertXML.data.length) {
-        //   this.xmlUrl = resConvertXML.data; //new Blob([byteArray], { type: _typeFile });;
-        //   await this.$nextTick();
-        //   this.isProcessing = false;
-        //   this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
-        // } else {
-        //   this.showNotification("danger", res.message);
-        // }
+        if (resConvertXML.success && resConvertXML.data.length) {
+          this.xmlUrl = resConvertXML.data; //new Blob([byteArray], { type: _typeFile });;
+          await this.$nextTick();
+          this.isProcessing = false;
+          this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
+        } else {
+          this.showNotification("danger", resConvertXML.message);
+        }
       }
       else {
         // try {
@@ -1045,6 +1093,24 @@ export default {
       }
     },
 
+    async OnPreviewXMLSS() {
+      var v_user_id = System.getSessionUserId();
+      if (txtPK.value != "") {
+        var url = "/system/index.gw?openType=F&objId=stacpustac710001";
+        url += "&p_tac_e_invoice_crca_pk=" + txtPK.value;
+        url += "&p_option=XML";
+        url += "&p_TradingType=04SS";
+        url += "&p_user_id=" + v_user_id;
+        url += "&p_tei_company_pk=XML";
+        url += "&p_status=" + v_sign_stamp;
+
+        System.OpenModal(url, 1024, 1000, 'HDGTGT', document, "");
+      } else {
+        alert("please select row search grid");
+        return;
+      }
+    },
+
     async onReport() {
       let report_path = "report/60/95/rpt_6095280.xlsx";
       let hiddenCols = [];
@@ -1058,14 +1124,14 @@ export default {
               range: "A1:I17",
               proc: "AC_RPT_6095280_M",
               params: [
-                  this.modelMaster.PK,
-                  this.modelSearch.COMPANY_PK,
-                  this.modelSearch.FROM_DATE,
-                  this.modelSearch.TO_DATE,
-                  this.modelSearch.STATUS,
-                  this.modelSearch.VOUCHER_NO,
-                  this.modelSearch.SYMBOLS,
-                  this.modelSearch.INVOICE
+                this.modelMaster.PK,
+                this.modelSearch.COMPANY_PK,
+                this.modelSearch.FROM_DATE,
+                this.modelSearch.TO_DATE,
+                this.modelSearch.STATUS,
+                this.modelSearch.VOUCHER_NO,
+                this.modelSearch.SYMBOLS,
+                this.modelSearch.INVOICE
               ],
             }, //header
           ],
@@ -1077,7 +1143,7 @@ export default {
               params: [
                 this.modelMaster.PK
               ],
-              dateColumns: ["NGAY", ],
+              dateColumns: ["NGAY",],
             },
           ],
           hideColumns: hiddenCols,

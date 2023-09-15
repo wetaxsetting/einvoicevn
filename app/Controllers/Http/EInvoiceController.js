@@ -8401,15 +8401,7 @@ class EInvoiceController {
       var p_language = request.header("accept-language", "ENG");
       var p_crt_by = "";     
   
-      const { converter, captcha, sessionid, lookupcode } = request.all();
-      console.log("captcha:", captcha);
-      console.log("sessionid:", sessionid);
-      if (Redis) {
-        const valueCache = await Redis.get(sessionid)
-        if (!valueCache || valueCache != captcha) {
-          return response.send(Utils.response(false, "invalid_captchar", null));
-        }
-      }
+      const { converter, lookupcode } = request.all();
   
       /* const para_inv = {
         lookupcode : lookupcode,
@@ -8470,7 +8462,7 @@ class EInvoiceController {
         mccqt : rtnValue.p_rtn_cur[0].CQT_MCCQT_ID_85
       }
   
-      return response.send(Utils.response(true, "Research data invocie was success", rep_data));
+      return response.send(Utils.response(true, "Convert einvoice successful!", rep_data));
     } catch (e) {
       Utils.Logger({
         LVL: "error",
@@ -8482,8 +8474,6 @@ class EInvoiceController {
       return response.send(Utils.response(false, "error", e.message));
     }
   }
-
-
 }
 
 module.exports = EInvoiceController;

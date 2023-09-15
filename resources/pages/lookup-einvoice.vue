@@ -1,6 +1,12 @@
 <template>
   <div>
-    <v-card flat tile class="primary-radial-gradient" :height="windowHeight">
+    <v-card flat tile :color="!breakpoint.isDesktop ? 'primary-radial-gradient' : 'transparent'" :height="windowHeight">
+      <v-img 
+        contain 
+        :aspect-ratio="16/9" :height="windowHeight" :width="windowWidth" :src="imgBg" 
+        style="position: absolute; top: 0; left: 0;"
+        v-if="breakpoint.isDesktop"
+      ></v-img>
       <v-container fluid class="fill-height">
         <v-row align="center" justify="center">
           <v-col cols="12">
@@ -8,7 +14,7 @@
               <v-container>
                 <v-row dense align="center" justify="center">
                   <v-col cols="12" class="text-center">
-                    <div class="text-h4 font-weight-bold text-uppercase">Tra cứu hóa đơn điện tử</div>
+                    <div class="font-weight-bold text-uppercase" :class="!breakpoint.isMobile ? 'text-h4' : 'text-h6'">Tra cứu hóa đơn điện tử</div>
                   </v-col>
                   <v-col cols="12">
                     <v-text-field 
@@ -117,6 +123,7 @@ export default {
   layout: "monitoring",
 
   data: () => ({
+    imgBg: require("@/assets/images/lookup_einvoice.jpg"),
     invoiceNo: "",
     captcha: "",
     captchaSvg: "",

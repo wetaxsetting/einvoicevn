@@ -51,7 +51,7 @@
                     <div v-html="captchaSvg" v-if="captchaSvg"></div>
                   </v-col>
                   <v-col cols="auto">
-                    <v-btn block depressed class="white--text" :color="currentTheme" :disabled="isProcessing" :loading="isProcessing" @click="search">Search</v-btn>
+                    <v-btn block depressed :color="currentTheme" :class="currentTextColor"  :disabled="isProcessing" :loading="isProcessing" @click="search">Search</v-btn>
                   </v-col>
                 </v-row>
               </v-container>
@@ -61,7 +61,7 @@
       </v-container>
     </v-card>
 
-    <v-dialog :max-width="Math.floor(windowWidth*0.75)" v-model="dialogIsShow">
+    <v-dialog eager :persistent="isProcessing" :max-width="Math.floor(windowWidth*0.75)" v-model="dialogIsShow">
       <v-card>
         <v-card-title class="headline primary-gradient white--text py-2">
           <span>Thông tin hóa đơn</span>
@@ -122,16 +122,21 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog :width="Math.floor(windowWidth*0.25)" v-model="dialog2IsShow">
+    <v-dialog eager :persistent="isProcessing" :width="Math.floor(windowWidth*0.25)" v-model="dialog2IsShow">
       <v-card>
         <v-card-title class="text-h5 d-flex align-center justify-center">CHUYỂN THÀNH HÓA ĐƠN GIẤY</v-card-title>
-        <v-card-text>
-          <v-text-field dense outlined validate-on-blur label="Họ tên người chuyển đổi" :color="currentTheme" :disabled="isProcessing" :rules="inputRule" v-model="inputName"></v-text-field>
+        <v-card-text class="pb-0">
+          <v-form
+            lazy-validation
+            ref="form"
+          >
+            <v-text-field dense outlined validate-on-blur ref="converterInputRefs" label="Họ tên người chuyển đổi" :color="currentTheme" :disabled="isProcessing" :rules="inputRule" v-model="inputName"></v-text-field>
+          </v-form>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn dark depressed :color="currentTheme">Tiếp tục</v-btn>
-          <v-btn outlined color="grey darken-2" @click="dialog2IsShow = false">Hủy bỏ</v-btn>
+          <v-btn depressed :color="currentTheme" :class="currentTextColor"  :disabled="isProcessing" :loading="isProcessing" @click="convert">Tiếp tục</v-btn>
+          <v-btn outlined color="grey darken-2" :disabled="isProcessing" @click="dialog2IsShow = false">Hủy bỏ</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -170,6 +175,11 @@ export default {
     async dialogIsShow(val) {
       if(!val) {
         await this._handleGenerateCaptcha();
+      }
+    },
+    dialog2IsShow(val) {
+      if(val) {
+        this.$refs.form.resetValidation()
       }
     }
   },
@@ -228,6 +238,32 @@ export default {
         link.dispatchEvent(new MouseEvent('click'));
       } catch (error) {
         console.log("onDownload-catch exception:", error.message)
+      }
+    },
+
+    async convert() {
+      if (this.inputName === "" || this.inputName === undefined) {
+        this.$refs.converterInputRefs.focus();
+        return;
+      }
+      try {
+        this.isProcessing = true;
+        const { success, data, message } = await this.$axios.$post("/einvoice/general-convert-einvoice", {
+          converter: this.inputName,
+          lookupcode: this.invoiceNo
+        })
+        if(success) {
+          console.log("data:", data);          
+          this.isProcessing = false;
+          this.dialog2IsShow = false;
+          this.$refs.converterInputRefs.reset();
+        } else {
+          this.isProcessing = false;
+          this.showNotification("danger", message, "", 3000);
+        }
+      } catch (error) {
+        console.log("convert-catch exception:", error.message);
+        this.isProcessing = false;
       }
     }
   }

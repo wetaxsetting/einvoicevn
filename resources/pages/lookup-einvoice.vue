@@ -107,12 +107,32 @@
                         <span class="ml-2">Tải về định dạng XML</span>
                       </v-btn>
                     </v-col>
+                    <v-col cols="12">
+                      <v-btn dark depressed small :color="currentTheme" @click="dialog2IsShow = true">
+                        <v-icon left>mdi-file-document-arrow-right</v-icon>
+                        <span class="ml-2">Chuyển thành hóa đơn giấy</span>
+                      </v-btn>
+                    </v-col>
                   </v-row>
                 </v-container>
               </v-card>
             </v-col>
           </v-row>
         </v-container>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog :width="Math.floor(windowWidth*0.25)" v-model="dialog2IsShow">
+      <v-card>
+        <v-card-title class="text-h5 d-flex align-center justify-center">CHUYỂN THÀNH HÓA ĐƠN GIẤY</v-card-title>
+        <v-card-text>
+          <v-text-field dense outlined validate-on-blur label="Họ tên người chuyển đổi" :color="currentTheme" :disabled="isProcessing" :rules="inputRule" v-model="inputName"></v-text-field>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn dark depressed :color="currentTheme">Tiếp tục</v-btn>
+          <v-btn outlined color="grey darken-2" @click="dialog2IsShow = false">Hủy bỏ</v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
   </div>
@@ -124,14 +144,16 @@ export default {
 
   data: () => ({
     imgBg: require("@/assets/images/lookup_einvoice.jpg"),
-    invoiceNo: "",
+    invoiceNo: "aRxAnqUTeX0=",
     captcha: "",
     captchaSvg: "",
     sessionID: "",
     isProcessing: false,
     inputRule: [(v) => !!v || "Please fill in this field!"],
     dialogIsShow: false,
-    invoiceInfo: ""
+    invoiceInfo: "",
+    dialog2IsShow: false,
+    inputName: ""
   }),
 
   async mounted() {

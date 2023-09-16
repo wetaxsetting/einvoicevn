@@ -684,6 +684,32 @@ export default {
         console.log("tab list is empty but route is not clear, then redirect!");
         this.redirect("/")
       } */
+    },
+    clickedMenu(val) {
+      if(val) {
+        // console.log("clickedMenu-2:", val)
+        const idx = this.tabList.findIndex((x) => x.tabID === (val.PK ? val.PK : val.pk));
+        /* console.log("index:", idx);
+        console.log("pinForm:", this.pinForm) */
+        if(idx > -1 && this.pinForm) {
+          let menu = {...val};
+          // console.log("menu:", menu);
+          if(menu.PK) {
+            menu.PK = menu.PK.toString().concat("_", this._uniqueID());
+          } else {
+            menu.pk = menu.pk.toString().concat("_", this._uniqueID());
+          }          
+          // console.log("menu-new:", menu)
+          this.openNewTab(menu);
+        } else {
+          // console.log("vô đây!")
+        }
+      }
+    },
+    pinForm(val) {
+      if(val) {
+        this.clickedMenu = null;
+      }
     }
   }, 
 
@@ -796,7 +822,7 @@ export default {
         this.db2=item.SECOND_DB_YN ? item.SECOND_DB_YN : item.second_db_yn;
         await this.$store.dispatch("auth/setFormDictionary_i18n", { app: this.$store.app, lang: this.$store.getters["lang/language"], formID: item.MENU_CD?item.MENU_CD:item.menu_cd,_db2:"N" });
         const idx = this.tabList.findIndex(x => x.tabID === (item.PK ? item.PK : item.pk));
-        if (idx > -1) {
+        if (idx > -1 && this.pinForm === false) {
           this.tab = idx;        
         } else {
           this.tabList.push({
@@ -875,17 +901,13 @@ export default {
       try {
         // console.log("*** closeCurrentTab ***", item.tabUrl);
         // Remove current tab from tabList array
-        this.tabList = this.tabList.filter(x => x.MENU_CD !== (item.MENU_CD ? item.MENU_CD : item.menu_cd));
-        this.tempFormArray = this.tempFormArray.filter(x => x !== (item.MENU_CD ? item.MENU_CD : item.menu_cd));
+        this.tabList = this.tabList.filter(x => x.tabID !== (item.tabID ? item.tabID : item.tab_id));
+        this.tempFormArray = this.tempFormArray.filter(x => x !== (item.tabID ? item.tabID : item.tab_id));
         // Check tabList array and router push
         this.$nextTick(async () => {
           if (this.tabList.length) {
-            /* this.tab = 0;
-            this.curTab = this.tabList[0];
-            this.$store.dispatch("auth/setDictionaryFormID", this.curTab.MENU_CD);
-            this.$router.push({ path: this.tabList[0].tabUrl }); */
-            if((item.MENU_CD ? item.MENU_CD : item.menu_cd) !== this.curTab.MENU_CD) {
-              const currentIndex = this.tabList.indexOf(this.tabList.find(x=> x.MENU_CD === this.curTab.MENU_CD));            
+            if((item.tabID ? item.tabID : item.tab_id) !== this.curTab.tabID) {
+              const currentIndex = this.tabList.indexOf(this.tabList.find(x=> x.tabID === this.curTab.tabID));            
               await this.$nextTick();
               this.tab = currentIndex;
             } else {

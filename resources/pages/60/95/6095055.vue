@@ -633,6 +633,9 @@ export default {
         let lArray = "";
         this.$refs.grdEinvoiceIssue.onSet("SERIAL_NO", args.row.INVOICE_KIND + year + args.row.SERIAL_NO_2 + lArray, true, args.rowindex);
       }
+      if(args.datafield == "SERIAL_NO"){
+        this.$refs.grdEinvoiceIssue.onSet("SERIAL_NO", args.row.SERIAL_NO.toUpperCase(), true, args.rowindex);
+      }
     },
     renderImg(imgUrl, isBase64 = false) {
       if (isBase64) {

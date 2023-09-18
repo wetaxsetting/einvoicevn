@@ -5676,6 +5676,9 @@ class EInvoiceController {
             invoice_no : rtnValue.p_rtn_cur[0].INVOICE_NO,
             total_payment : rtnValue.p_rtn_cur[0].TOTAL_PAYMENT,
             mccqt  : rtnValue.p_rtn_cur[0].MCCQT,
+            buyer_email: infor_send_mail.buyer_email,
+            buyer_email_cc : infor_send_mail.buyer_email_cc,
+
           }
         }
         const { res_send_mail, subject, body } = await this.sendMaiToCustomer(
@@ -8298,11 +8301,7 @@ class EInvoiceController {
     return { res_send_mail, subject, body };
     } catch (error) {
       console.log("res_send_mail error  ", error);
-
     }
-
-
-    
   }
 
   async sendMaiToCustomerEPort(trade_code, p_language, p_crt_by) {

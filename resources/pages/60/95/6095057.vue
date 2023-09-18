@@ -134,9 +134,11 @@
         <v-row no-gutters>
           <v-col cols="12">
             <v-card outlined :height="limitHeight1" :max-height="limitHeight1" style="overflow-y: scroll" v-resize="onResize">
+              <v-overlay :value="showLoading" :absolute="true" opacity="0.3">
+                <v-progress-circular indeterminate size="50"></v-progress-circular>
+              </v-overlay>
               <iframe :src="pdfUrl" height="100%" width="100%"></iframe>
             </v-card>
-            <!-- <v-sheet color="red" height="100%" width="100%">AA</v-sheet> -->
           </v-col>
         </v-row>
       </v-container>
@@ -157,7 +159,6 @@ export default {
   /*############### components ####################*/
   components: {
     "view-einvoice-pdf-dialog": ViewEInvoicePDFDialog,
-    GwImportExcelFile: () => import("@/components/control/GwImportExcelFile.vue"),
   },
   /*############### data ##########################*/
   data: () => ({

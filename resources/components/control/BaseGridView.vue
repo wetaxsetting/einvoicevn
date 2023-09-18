@@ -232,7 +232,7 @@
                     :handlekeyboardnavigation="handlekeyboardnavigation"
                     :width="'100%'" :height="limitHeight-28"
                     :columns="columns" :columngroups="columngroups"
-                    :editable="editable" :editmode="'dblclick'"
+                    :editable="editable" :editmode="editmode"
                     :showstatusbar="showstatusbar" :statusbarheight="statusbarheight"
                     :showaggregates="showaggregates" :altrows="altrows"
                     :columnsresize="true" :virtualmode="false"
@@ -547,7 +547,8 @@
             checkMenu: { type: Boolean, default: true },
             filterRow: {type: Boolean, default: false },
             autoselectallrows: {type: Boolean, default: false },
-            columnsreorder: {type: Boolean, default: false }            
+            columnsreorder: {type: Boolean, default: false }     ,
+            editmode:{type: String, default: 'dblclick'}     // 'click'  'dblclick'   'selectedcell'  
         },
         data() {
             return {

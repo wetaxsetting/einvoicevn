@@ -70,6 +70,16 @@ class EiExcelHandler {
          logoPath       : `${einvoiceMasterData[0]&&einvoiceMasterData[0].URL_IMG_LOGO?einvoiceMasterData[0].URL_IMG_LOGO:"assets/images/no_image.png"}`   ///assets/images/einvoices_logo/abc/
        }  
      ]
+      
+      bg = [
+        { 
+          bg_start_row: einvoiceMasterData[0]&&einvoiceMasterData[0].BG_START_ROW?einvoiceMasterData[0].BG_START_ROW:1,  
+          bg_start_col: einvoiceMasterData[0]&&einvoiceMasterData[0].BG_START_COL?einvoiceMasterData[0].BG_START_COL:1,  
+          bg_width    : einvoiceMasterData[0]&&einvoiceMasterData[0].BG_WIDTH?einvoiceMasterData[0].BG_WIDTH:1,  
+          bg_height   : einvoiceMasterData[0]&&einvoiceMasterData[0].BG_HEIGHT?einvoiceMasterData[0].BG_HEIGHT:1, 
+          bgPath      : `${einvoiceMasterData[0]&&einvoiceMasterData[0].URL_IMG_BG?einvoiceMasterData[0].URL_IMG_BG:"assets/images/no_image.png"}`  
+        }  
+      ]
       // if(einvoiceMasterData[0].URL_IMG_LOGO)
       // {
       //   logos = [
@@ -84,15 +94,6 @@ class EiExcelHandler {
       // }else{
       //   logos = [];
       // }
-      bg = [
-        { 
-          bg_start_row: einvoiceMasterData[0]&&einvoiceMasterData[0].BG_START_ROW?einvoiceMasterData[0].BG_START_ROW:1,  
-          bg_start_col: einvoiceMasterData[0]&&einvoiceMasterData[0].BG_START_COL?einvoiceMasterData[0].BG_START_COL:1,  
-          bg_width    : einvoiceMasterData[0]&&einvoiceMasterData[0].BG_WIDTH?einvoiceMasterData[0].BG_WIDTH:1,  
-          bg_height   : einvoiceMasterData[0]&&einvoiceMasterData[0].BG_HEIGHT?einvoiceMasterData[0].BG_HEIGHT:1, 
-          bgPath      : `${einvoiceMasterData[0]&&einvoiceMasterData[0].URL_IMG_BG?einvoiceMasterData[0].URL_IMG_BG:"assets/images/no_image.png"}`  
-        }  
-      ]
       // if(einvoiceMasterData[0].URL_IMG_BG)
       // {
       //   bg = [
@@ -111,11 +112,9 @@ class EiExcelHandler {
       this.masterDataArray = [];
       for(let i = 0; i < einvoiceMasterParam.length; i++)
       {
-        //console.log(" Cell: einvoiceMasterParam[i].CELL_CODE ", einvoiceMasterParam[i].CELL_CODE + " - " + einvoiceMasterParam[i].DATA_MAPPING + "  - " + einvoiceMasterParam[i].TYPE );
         this.masterDataArray.push({ Cell: einvoiceMasterParam[i].CELL_CODE , Info: [ einvoiceMasterParam[i].DATA_MAPPING ], Type: einvoiceMasterParam[i].TYPE }, )
       }
 
-    // console.log("aaaaaaaaaaaaaaaaaaaa",einvoiceMasterData)
     if (einvoiceMasterData.length <= 0) {
       return that.showNotification(
         "warning",

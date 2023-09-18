@@ -93,18 +93,6 @@
             <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="!item_pk" @onclick="onClickButton('SAVE_TEMPLATE')" />
           </v-col>
         </v-row>
-        <v-row dense>
-          <!-- <v-col md="4">
-            <BaseInput outlined :label="$t('serial_no')" v-model="MasterInfo.TEMPLATE_NM" readonly />
-          </v-col>
-          <v-col md="4">
-            <BaseSelect outlined :label="$t('form_no')" v-model="MasterInfo.FORM_NO" :lstData="formNoList" item-text="NAME" item-value="CODE" readonly />
-          </v-col>
-          <v-col md="4">
-            <BaseInput outlined :label="$t('from_no')" v-model="MasterInfo.FROM_NO" readonly />
-          </v-col> -->
-        </v-row>
-
         <BaseTabs>
           <BaseTab :name="$t('logo')">
             <span v-show="showPersonal">
@@ -270,15 +258,15 @@
             </span>
           </BaseTab>
         </BaseTabs>
-      </v-col> 
-        <v-col :colspan="isShowLeft ? 6 : 12">
-          <v-card>
-          <v-overlay :value="showLoading" :absolute="true" opacity=0.3>
+      </v-col>
+      <v-col :colspan="isShowLeft ? 6 : 12">
+        <v-card outlined :height="limitHeight1" :max-height="limitHeight1" style="overflow-y: scroll" v-resize="onResize">
+          <v-overlay :value="showLoading" :absolute="true" opacity="0.3">
             <v-progress-circular indeterminate size="50"></v-progress-circular>
-          </v-overlay> 
-          <iframe :src="urlPDF" height="825" width="100%"></iframe>
+          </v-overlay>
+          <iframe :src="urlPDF" height="100%" width="100%"></iframe>
         </v-card>
-        </v-col> 
+      </v-col>
     </v-row>
     <!-- <GwLoading :visible="showLoading" /> -->
     <!-- <view-einvoice-pdf-dialog ref="ViewEInvoicePDFDialog" :src_pdfUrl="pdfUrl"></view-einvoice-pdf-dialog> -->
@@ -384,6 +372,7 @@ export default {
   },
   /*############### data ##########################*/
   data: () => ({
+    isMaximized: false,
     urlPDF: "",
     imageLOGO: "",
     imageBG: "",
@@ -485,7 +474,7 @@ export default {
     fileSaveLOGO: null,
     folder: "",
     fileSaveBG: null,
-    pathImgTep: require("@/assets/images/no_image.png")
+    pathImgTep: require("@/assets/images/no_image.png"),
   }),
   /*############### created #######################*/
   async created() {
@@ -532,6 +521,12 @@ export default {
   computed: {
     user() {
       return this.$store.getters["auth/user"];
+    },
+    limitHeight1() {
+      if (this.isMaximized) {
+        return Math.floor(this._calculateHeight(this.windowHeight, 96));
+      }
+      return Math.floor(this._calculateHeight(this.windowHeight, 86));
     },
     limitHeightT() {
       if (this.windowHeight <= 768) {
@@ -640,14 +635,13 @@ export default {
         let lArray = "";
         this.$refs.grdEinvoiceIssue.onSet("SERIAL_NO", args.row.INVOICE_KIND + year + args.row.SERIAL_NO_2 + lArray, true, args.rowindex);
       }
-    }, 
+    },
     renderImg(imgUrl, isBase64 = false) {
       if (isBase64) {
         return imgUrl;
       } else {
-        return imgUrl?require("@/" + imgUrl):require("@/assets/images/no_image.png");
+        return imgUrl ? require("@/" + imgUrl) : require("@/assets/images/no_image.png");
         // this.pathImgTep.replace('assets/images/no_image.png',imgUrl?imgUrl:'assets/images/no_image.png'); //
-        
       }
     },
     async onUploadImgFolder(file, folder, _type) {
@@ -710,19 +704,22 @@ export default {
     },
     async cellClickCell(cell) {
       // console.log("file: 6095055.vue:916 [vng-304] cellClickCell [vng-304] cell:", cell);
-      this.item_pk = cell.data.PK;
-      this.dataIssued = cell.data;
-
-      if (cell.data._rowstatus == "i") {
-        // this.MasterInfo.TEMPLATE_CD = "1";
-        // this.MasterInfo.SERIAL_NO = cell.data.SERIAL_NO;
-        // this.MasterInfo.FORM_NO = cell.data.FORM_NO;
-        // this.MasterInfo.FROM_NO = cell.data.FROM_NO;
-        this.MasterInfo.USE_YN = cell.data.USE_YN;
-      } else {
+      if(cell.data.PK != this.item_pk)
+      {
         this.item_pk = cell.data.PK;
-        this.MasterInfo.PK = cell.data.TEI_TEMPLATE_PK;
-        await this.dsoMaster("select");
+        this.dataIssued = cell.data;
+
+        if (cell.data._rowstatus == "i") {
+          // this.MasterInfo.TEMPLATE_CD = "1";
+          // this.MasterInfo.SERIAL_NO = cell.data.SERIAL_NO;
+          // this.MasterInfo.FORM_NO = cell.data.FORM_NO;
+          // this.MasterInfo.FROM_NO = cell.data.FROM_NO;
+          this.MasterInfo.USE_YN = cell.data.USE_YN;
+        } else {
+          this.item_pk = cell.data.PK;
+          this.MasterInfo.PK = cell.data.TEI_TEMPLATE_PK;
+          await this.dsoMaster("select");
+        }
       }
     },
     async onClickButton(pos) {
@@ -1040,16 +1037,16 @@ export default {
             this.cboTemplate = results[9];
             this.Form_noList = results[10];
             // this.templateID_list = results[11]; ///
-            
+
             this.formNoList = results[10];
           }
 
-          const dsoTemplates = { type: "list", selpro: "EI_SEL_GET_TEMPLATES", para: [this.selected_company] }; 
+          const dsoTemplates = { type: "list", selpro: "EI_SEL_GET_TEMPLATES", para: [this.selected_company] };
           const rtnTemplates = await this._dsoCall(dsoTemplates, "select", false);
 
-          this.templateID_list = [...rtnTemplates]
+          this.templateID_list = [...rtnTemplates];
 
-          console.log("file: 6095055.vue:1038 [vng-304] getListCodes [vng-304] this.templateID_list:", this.templateID_list)
+          console.log("file: 6095055.vue:1038 [vng-304] getListCodes [vng-304] this.templateID_list:", this.templateID_list);
           break;
       }
     },

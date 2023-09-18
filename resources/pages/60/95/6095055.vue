@@ -670,12 +670,22 @@ export default {
       return _path;
     },
     async selectedFileLOGO(event) {
-      // console.log("selectedFileLOGO", event);
+      console.log("file: 6095055.vue:673 [vng-304] selectedFileLOGO [vng-304] event:", event)
       await this.$nextTick();
       this.fileSaveLOGO = null;
       const self = this;
       const files = event.target.files;
       if (files[0] !== undefined) {
+        
+        /////////////////
+        const fr = new FileReader();
+        fr.readAsDataURL(files[0]);
+        fr.addEventListener("load", () => {
+          // console.log("fr.result", fr.result);
+          this.imageLOGO = this.renderImg(fr.result, true);
+          this.fileSaveLOGO = files[0];
+        });
+
         //Lấy được thông tin Width, Height;
         var img = new Image();
         img.src = window.URL.createObjectURL(files[0]);
@@ -685,14 +695,6 @@ export default {
           self.MasterInfo.LOGO_START_ROW = "1.7";
           self.MasterInfo.LOGO_START_COL = "0.5";
         };
-        /////////////////
-        const fr = new FileReader();
-        fr.readAsDataURL(files[0]);
-        fr.addEventListener("load", () => {
-          // console.log("fr.result", fr.result);
-          this.imageLOGO = this.renderImg(fr.result, true);
-          this.fileSaveLOGO = files[0];
-        });
       }
     },
     async selectedFileBG(event) {
@@ -701,6 +703,13 @@ export default {
       const self = this;
       const files = event.target.files;
       if (files[0] !== undefined) {
+        ///////////////
+        const fr = new FileReader();
+        fr.readAsDataURL(files[0]);
+        fr.addEventListener("load", () => {
+          this.imageBG = this.renderImg(fr.result, true);
+          this.fileSaveBG = files[0];
+        });
         //Lấy được thông tin Width, Height;
         var img = new Image();
         img.src = window.URL.createObjectURL(files[0]);
@@ -710,13 +719,6 @@ export default {
           self.MasterInfo.BG_START_ROW = "15";
           self.MasterInfo.BG_START_COL = "1.5";
         };
-        ///////////////
-        const fr = new FileReader();
-        fr.readAsDataURL(files[0]);
-        fr.addEventListener("load", () => {
-          this.imageBG = this.renderImg(fr.result, true);
-          this.fileSaveBG = files[0];
-        });
       }
     },
     selectImageBG() {

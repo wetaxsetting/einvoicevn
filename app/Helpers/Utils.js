@@ -932,7 +932,7 @@ class Utils {
             let path = ``;
 
             console.log("type_insert =>>  " + type_insert  +  "folder  ===> " + folder + " clientName ==>  " + clientName)
-            if (type_insert == "EXCEL") {
+            if (type_insert == "EXCEL" || type_insert == "TEMPLATE" || type_insert == "TEMPLATE_C" || type_insert == "EXCEL_C") {
                 path_result = `/resources/report/${folder}/${clientName}`;
                 path = `/resources/report/${folder}`;
             } else {

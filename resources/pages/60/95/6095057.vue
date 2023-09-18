@@ -228,7 +228,6 @@ export default {
     },
     limitHeight1() {
       if (this.isMaximized) {
-        console.log("isMaximized  ++==>", this.isMaximized);
         return Math.floor(this._calculateHeight(this.windowHeight, 90));
       }
       return Math.floor(this._calculateHeight(this.windowHeight, 80));
@@ -1295,6 +1294,7 @@ export default {
           },
         });
         this.pdfUrl = window.URL.createObjectURL(rec);
+        console.log("file: 6095057.vue:1297 [vng-304] onPreview [vng-304] this.pdfUrl:", this.pdfUrl)
         this.showLoading = false;
         this.showPDF = true;
         let rtnBase64pdf = await this._blobFileToBase64(rec);

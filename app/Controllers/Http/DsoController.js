@@ -75,6 +75,7 @@ class DsoController {
 
       // console.log("folder " + folder + " file_ext  " + file_ext);
       let file_path = await Utils.putExcelRootPath(file, folder, type_insert);
+      console.log("file: DsoController.js:78 [vng-304] UploadExcelToFolder [vng-304] file_path:", file_path)
       let result;
 
       // console.log("para  ", para);
@@ -83,10 +84,10 @@ class DsoController {
 
       if (file_path != "") {
         const params = JSON.parse(para);
-        if (type_insert !== "EXCEL") {
-          file_path = file_path.replace(folder + "/", "");
-        } else {
+        if (type_insert === "EXCEL" || type_insert === "TEMPLATE" || type_insert === "TEMPLATE_C" || type_insert === "EXCEL_C" ) {
           file_path = file_path.replace("/resources/", "");
+        } else {
+          file_path = file_path.replace(folder + "/", "");
         }
         // console.log("params  ", params);
         result = await DBService.ExecuteSQLBlob(

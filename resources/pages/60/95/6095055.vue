@@ -680,16 +680,16 @@ export default {
         });
 
         //Lấy được thông tin Width, Height;
-        var img = new Image();
-        img.src = window.URL.createObjectURL(files[0]);
-        img.onload = function () {
-          // self.MasterInfo.LOGO_WIDTH = this.naturalWidth; /////Cách 2
-          // self.MasterInfo.LOGO_HEIGHT = this.naturalHeight;/////Cách 2
-          self.MasterInfo.LOGO_WIDTH = "100"; 
-          self.MasterInfo.LOGO_HEIGHT = "80";
-          self.MasterInfo.LOGO_START_ROW = "1.7";
-          self.MasterInfo.LOGO_START_COL = "0.5";
-        };
+        // var img = new Image();
+        // img.src = window.URL.createObjectURL(files[0]);
+        // img.onload = function () {
+        //   // self.MasterInfo.LOGO_WIDTH = this.naturalWidth; /////Cách 2
+        //   // self.MasterInfo.LOGO_HEIGHT = this.naturalHeight;/////Cách 2
+        //   self.MasterInfo.LOGO_WIDTH = "100"; 
+        //   self.MasterInfo.LOGO_HEIGHT = "80";
+        //   self.MasterInfo.LOGO_START_ROW = "1.7";
+        //   self.MasterInfo.LOGO_START_COL = "0.5";
+        // };
       }
     },
     async selectedFileBG(event) {
@@ -706,14 +706,14 @@ export default {
           this.fileSaveBG = files[0];
         });
         //Lấy được thông tin Width, Height;
-        var img = new Image();
-        img.src = window.URL.createObjectURL(files[0]);
-        img.onload = function () {
-          self.MasterInfo.BG_WIDTH = "750";
-          self.MasterInfo.BG_HEIGHT = "600";
-          self.MasterInfo.BG_START_ROW = "15";
-          self.MasterInfo.BG_START_COL = "1.5";
-        };
+        // var img = new Image();
+        // img.src = window.URL.createObjectURL(files[0]);
+        // img.onload = function () {
+        //   self.MasterInfo.BG_WIDTH = "750";
+        //   self.MasterInfo.BG_HEIGHT = "600";
+        //   self.MasterInfo.BG_START_ROW = "15";
+        //   self.MasterInfo.BG_START_COL = "1.5";
+        // };
       }
     },
     selectImageBG() {
@@ -896,6 +896,9 @@ export default {
                 bg_width: res.BG_WIDTH,
                 bg_height: res.BG_HEIGHT,
               };
+              this.MasterInfo.LOGO_START_ROW = Number(this.MasterInfo.LOGO_START_ROW).toFixed(2);
+
+
               this.itemTemplatesPK = res.PK;
               this.url_template = res.URL_FILE_EXCEL;
               ///  Load ra được hình ảnh////

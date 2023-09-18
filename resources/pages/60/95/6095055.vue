@@ -683,8 +683,10 @@ export default {
         var img = new Image();
         img.src = window.URL.createObjectURL(files[0]);
         img.onload = function () {
-          self.MasterInfo.LOGO_WIDTH = this.naturalWidth;
-          self.MasterInfo.LOGO_HEIGHT = this.naturalHeight;
+          // self.MasterInfo.LOGO_WIDTH = this.naturalWidth; /////Cách 2
+          // self.MasterInfo.LOGO_HEIGHT = this.naturalHeight;/////Cách 2
+          self.MasterInfo.LOGO_WIDTH = "100"; 
+          self.MasterInfo.LOGO_HEIGHT = "80";
           self.MasterInfo.LOGO_START_ROW = "1.7";
           self.MasterInfo.LOGO_START_COL = "0.5";
         };
@@ -707,14 +709,15 @@ export default {
         var img = new Image();
         img.src = window.URL.createObjectURL(files[0]);
         img.onload = function () {
-          self.MasterInfo.BG_WIDTH = this.naturalWidth;
-          self.MasterInfo.BG_HEIGHT = this.naturalHeight;
+          self.MasterInfo.BG_WIDTH = "800";
+          self.MasterInfo.BG_HEIGHT = "60";
           self.MasterInfo.BG_START_ROW = "15";
           self.MasterInfo.BG_START_COL = "1.5";
         };
       }
     },
     selectImageBG() {
+      this.$refs.fileBG.value = null;
       this.$refs.fileBG.click();
     },
     selectImageLOGO() {

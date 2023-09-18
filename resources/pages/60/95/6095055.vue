@@ -392,9 +392,6 @@ export default {
     statusList: [],
     txtSerialNo: "",
     pdfUrl: "",
-    leftCols: 5,
-    showHilden: true,
-    indexTab: 0,
     typeInvoiceList: [],
     invoiceKind: [],
     typeTableList: [],
@@ -407,8 +404,6 @@ export default {
     imp_MultipleTemp: true,
     selTemplate: [],
     cboTemplate: [],
-    selInvoiceType: "",
-    cboInvoiceType: [],
     copyToDialog: false,
     fromNoList: [],
     lstFrom_No_From: "",
@@ -422,8 +417,6 @@ export default {
     selectedCompanyFrom: "",
     accept: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel",
     url_template: "",
-    txtParamCodeMaster: "",
-    txtParamCodeDetails: "",
     dataIssued: [],
     dataTemp: [],
 
@@ -725,6 +718,7 @@ export default {
       this.$refs.fileBG.click();
     },
     selectImageLOGO() {
+      this.$refs.fileLOGO.value = null;
       this.$refs.fileLOGO.click();
     },
     async cellClickCell(cell) {

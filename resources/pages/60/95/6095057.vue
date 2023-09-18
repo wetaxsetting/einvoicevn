@@ -56,7 +56,7 @@
                   'SIGN_START_CELL',
                   'SIGN_END_CELL',
                   'SIGN_CELL_BOX',
-                  'RANGE_DETAILS_SIGN',
+                  'SIGN_RANGE_DETAILS',
                   'FORM_NO',
                 ]"
                 @cellClick="cellClickCellTemplate"

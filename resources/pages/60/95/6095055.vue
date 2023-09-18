@@ -663,7 +663,6 @@ export default {
       return _path;
     },
     async selectedFileLOGO(event) {
-      console.log("file: 6095055.vue:673 [vng-304] selectedFileLOGO [vng-304] event:", event)
       await this.$nextTick();
       this.fileSaveLOGO = null;
       const self = this;
@@ -725,7 +724,6 @@ export default {
       this.$refs.fileLOGO.click();
     },
     async cellClickCell(cell) {
-      // console.log("file: 6095055.vue:916 [vng-304] cellClickCell [vng-304] cell:", cell);
       if (cell.data.PK != this.issue_pk) {
         this.issue_pk = cell.data.PK;
         this.dataIssued = cell.data;
@@ -879,7 +877,6 @@ export default {
           switch (action) {
             case "select":
               this.MasterInfo = { ...res };
-              console.log("file: 6095055.vue:1100 [vng-304] awaitthis._dsoCall [vng-304] res:", res);
               this.MasterInfo._rowstatus = "u";
               ////   Bộ data để view pdf
               this.dataTemp = {
@@ -897,7 +894,7 @@ export default {
                 bg_height: res.BG_HEIGHT,
               };
               this.MasterInfo.LOGO_START_ROW = Number(this.MasterInfo.LOGO_START_ROW).toFixed(2);
-
+              
 
               this.itemTemplatesPK = res.PK;
               this.url_template = res.URL_FILE_EXCEL;

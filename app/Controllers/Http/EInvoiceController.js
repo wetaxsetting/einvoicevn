@@ -421,7 +421,7 @@ class EInvoiceController {
 
       const valid = this.validateDeclareJson(declare);
       if (!valid.status) {
-        return response.send(Utils.response(valid.status, 'error', {err_msg : valid.message}));
+        return response.send(Utils.response(valid.status, 'error', { err_msg: valid.message }));
       }
 
       let jsonDeclare = {
@@ -538,7 +538,8 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       return response.send(Utils.response(false, "error", {
-        err_msg: e.message}));
+        err_msg: e.message
+      }));
     }
   }
 
@@ -871,7 +872,7 @@ class EInvoiceController {
 
       const valid = this.validateJsonInvalidInvoiceToXML(invalid_invoices);
       if (!valid.status) {
-        return response.send(Utils.response(valid.status, "Validate error!", {err_msg: valid.message}));
+        return response.send(Utils.response(valid.status, "Validate error!", { err_msg: valid.message }));
       }
 
       let jsonInvalidInvoices = {
@@ -951,7 +952,7 @@ class EInvoiceController {
         FUNC: "weTaxConvertInvalidInvoiceToXML",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, "error", {err_msg: e.message}));
+      return response.send(Utils.response(false, "error", { err_msg: e.message }));
     }
   }
 
@@ -1701,7 +1702,7 @@ class EInvoiceController {
       let jsonTTKhac = null;
       try {
         jsonTTKhac = await transform(p_xml_content, templateTTKhac);
-      } catch (e) {}
+      } catch (e) { }
       // console.log("jsonTTKhac", jsonTTKhac)
       let customField1 = "",
         customField2 = "",
@@ -2406,7 +2407,7 @@ class EInvoiceController {
         FUNC: "sendDeclarationToTaxOffice",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, "error",{err_msg: e.message}));
+      return response.send(Utils.response(false, "error", { err_msg: e.message }));
     }
   }
 
@@ -2438,16 +2439,16 @@ class EInvoiceController {
       } = request.all();
 
       if (!seller_company_nm) {
-        return response.send(Utils.response(false,'error',{err_msg: `Invalid: seller_company_nm`}));
+        return response.send(Utils.response(false, 'error', { err_msg: `Invalid: seller_company_nm` }));
       }
       if (!seller_company_fnm) {
-        return response.send(Utils.response(false,'error',{err_msg: `Invalid: seller_company_fnm`}));
+        return response.send(Utils.response(false, 'error', { err_msg: `Invalid: seller_company_fnm` }));
       }
       if (!seller_taxcode) {
-        return response.send(Utils.response(false, 'error',{err_msg:`Invalid: seller_taxcode`}));
+        return response.send(Utils.response(false, 'error', { err_msg: `Invalid: seller_taxcode` }));
       }
       if (!seller_address) {
-        return response.send(Utils.response(false,'error',{err_msg: `Invalid: seller_address`}));
+        return response.send(Utils.response(false, 'error', { err_msg: `Invalid: seller_address` }));
       }
 
       const para_value = {
@@ -2490,7 +2491,7 @@ class EInvoiceController {
       // console.log(res);
       if (res.p_rtn_cur[0].STATUS_CD == "000") {
         for (let i = 0; i < tokens.length; i++) {
-            const caName = tokens[i].issuer.split('CN=');
+          const caName = tokens[i].issuer.split('CN=');
 
           const para_token_list = {
             serial_number: tokens[i].serial_number,
@@ -2500,7 +2501,7 @@ class EInvoiceController {
             issuer: tokens[i].issuer,
             issue_by: tokens[i].issue_by,
             issue_to: tokens[i].issue_to,
-            ca_name:tokens[i].ca_name ? tokens[i].ca_name : caName[1],
+            ca_name: tokens[i].ca_name ? tokens[i].ca_name : caName[1],
             dn_name: tokens[i].dn_name,
             dn_mst: tokens[i].dn_mst,
             raw_data: tokens[i].raw_data,
@@ -2540,7 +2541,7 @@ class EInvoiceController {
         FUNC: "weTaxSendCompanyInfor",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, "error", {err_msg: e.message}));
+      return response.send(Utils.response(false, "error", { err_msg: e.message }));
     }
   }
 
@@ -2562,7 +2563,7 @@ class EInvoiceController {
 
       const valid = this.validateDeclareXML(this.parseXmlToJson(xml_signed));
       if (!valid.status) {
-        return response.send(Utils.response(valid.status, 'error', {err_msg: valid.message}));
+        return response.send(Utils.response(valid.status, 'error', { err_msg: valid.message }));
       }
 
       const agent = {
@@ -2600,7 +2601,7 @@ class EInvoiceController {
           p_crt_by
         );
       } else {
-        return response.send(Utils.response(false, `Failed to call tax office api.`,  tradeCode));
+        return response.send(Utils.response(false, `Failed to call tax office api.`, tradeCode));
       }
 
       return response.send(
@@ -2618,7 +2619,7 @@ class EInvoiceController {
         FUNC: "weTaxSendDeclarationToTaxOffice",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, "error", {err_msg: e.message}));
+      return response.send(Utils.response(false, "error", { err_msg: e.message }));
     }
   }
 
@@ -2976,7 +2977,7 @@ class EInvoiceController {
       let tenTBao;
       let loaiTBao;
       if (!res.data.length) {
-        return response.send(Utils.response(false,'Checking Tax Status Failure', {err_msg:  `No data found.`}));
+        return response.send(Utils.response(false, 'Checking Tax Status Failure', { err_msg: `No data found.` }));
       }
 
       const lastNotice = res.data[res.data.length - 1];
@@ -3037,7 +3038,7 @@ class EInvoiceController {
         FUNC: "weTaxCheckingDeclarations",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, "error", {err_msg: e.message}));
+      return response.send(Utils.response(false, "error", { err_msg: e.message }));
     }
   }
 
@@ -3241,7 +3242,7 @@ class EInvoiceController {
         //     );
         // }
       } else {
-        return response.send(Utils.response(false, 'error', {err_msg: errorCallTax}));
+        return response.send(Utils.response(false, 'error', { err_msg: errorCallTax }));
       }
     } catch (e) {
       Utils.Logger({
@@ -3250,7 +3251,7 @@ class EInvoiceController {
         FUNC: "sendInvoiceToTaxOffice",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, "error", {err_msg: e.message}));
+      return response.send(Utils.response(false, "error", { err_msg: e.message }));
     }
   }
 
@@ -3325,7 +3326,7 @@ class EInvoiceController {
       // console.log("result", JSON.stringify(result.data));
 
       if (!result.data.length) {
-        return response.send(Utils.response(false, 'error', {err_msg: errorCallTax}));
+        return response.send(Utils.response(false, 'error', { err_msg: errorCallTax }));
       }
       let tenTBao = "",
         maTBao = "";
@@ -3367,7 +3368,7 @@ class EInvoiceController {
         FUNC: "weTaxCheckInformAdjustToTaxOffice",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, "error",{err_msg: e.message}));
+      return response.send(Utils.response(false, "error", { err_msg: e.message }));
     }
   }
 
@@ -5030,7 +5031,7 @@ class EInvoiceController {
       const invoices = data.data_invoice;
       const valid = this.weTaxValidateJsonInvalidPosInvoiceToXML(invoices);
       if (!valid.status) {
-        return response.send(Utils.response(valid.status, 'error!', {err_msg: valid.message}));
+        return response.send(Utils.response(valid.status, 'error!', { err_msg: valid.message }));
       }
       /*let invoices_sample=[
                             {master:{},detail:[{}]},
@@ -5039,7 +5040,7 @@ class EInvoiceController {
                         ];*/
       //console.log("invoices1:", invoices)
       if (invoices.length == undefined || invoices.length == 0) {
-        return response.send(Utils.response(false, 'error',{err_msg: `Invalid json format.`}));
+        return response.send(Utils.response(false, 'error', { err_msg: `Invalid json format.` }));
       }
 
       for (let i = 0; i < invoices.length; i++) {
@@ -5208,7 +5209,7 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       console.log("error ", e);
-      return response.send(Utils.response(false, "error", {err_msg: e.message}));
+      return response.send(Utils.response(false, "error", { err_msg: e.message }));
     }
   }
 
@@ -5457,8 +5458,7 @@ class EInvoiceController {
       );
       console.log("rtnValue  ", rtnValue);
       tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
-      if (rtnValue.p_rtn_cur[0].STATUS == "OK") 
-      {
+      if (rtnValue.p_rtn_cur[0].STATUS == "OK") {
         for (let j = 0; j < data.data_invoice.total_vat_list.length; j++) {
           const para_amt_vat = {
             tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
@@ -5608,7 +5608,166 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       console.log(e);
-      return response.send(Utils.response(false, "error",{err_msg: e.message}));
+      return response.send(Utils.response(false, "error", { err_msg: e.message }));
+    }
+  }
+
+  async weTaxReSendOrderInfo({ request, response, auth }) {
+    try {
+      var p_language = request.header("accept-language", "ENG");
+      var p_crt_by = "";
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const { tax_code,
+        sale_date,
+        store_code,
+        store_name,
+        pos_no,
+        bill_no,
+        key,
+        tr_code_cqt,
+        infor_send_mail
+      } = request.all();
+
+       console.log("data  ", infor_send_mail);
+      let tei_wt_sale_bill_pk = 0;
+      //const data_xml = await this.createXMLByOne(data.data_invoice);
+      const para_value = {
+        tax_code: tax_code,
+        sale_date: sale_date,
+        store_code: store_code,
+        store_name: store_name,
+        pos_no: pos_no,
+        bill_no: bill_no,
+        key: key,
+        tr_code_cqt: tr_code_cqt
+      };
+
+       console.log("para_value  ", para_value)
+
+      const rtnValue = await DBService.ExecuteSQLBlob(
+        `BEGIN ei_sel_re_order_info (                   :tax_code,
+                                                        :sale_date,
+                                                        :store_code,
+                                                        :store_name,
+                                                        :pos_no,
+                                                        :bill_no,
+                                                        :key,
+                                                        :tr_code_cqt,
+                                                        :p_language, 
+                                                        :p_crt_by, 
+                                                        :p_rtn_cur); END;`,
+        para_value,
+        p_language,
+        p_crt_by
+      );
+      console.log("rtnValue  ", rtnValue);
+      tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
+      if (rtnValue.p_rtn_cur[0].STATUS == "OK") {
+        let invoice_data = 
+        {
+          data_invoice : {
+            buyer_comp_name : rtnValue.p_rtn_cur[0].BUYER_COMP_NAME,
+            seller_comp_name : rtnValue.p_rtn_cur[0].SELLER_COMP_NAME,
+            form_no : rtnValue.p_rtn_cur[0].FORM_NO,
+            serial_no : rtnValue.p_rtn_cur[0].SERIAL_NO,
+            invoice_no : rtnValue.p_rtn_cur[0].INVOICE_NO,
+            total_payment : rtnValue.p_rtn_cur[0].TOTAL_PAYMENT,
+            mccqt  : rtnValue.p_rtn_cur[0].MCCQT,
+          }
+        }
+        const { res_send_mail, subject, body } = await this.sendMaiToCustomer(
+          tei_wt_sale_bill_pk,
+          invoice_data,
+          p_language,
+          p_crt_by
+        );
+
+        console.log("res_send_mail  ", res_send_mail);
+        if (res_send_mail.data.success) {
+          const para_inv_st = {
+            tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
+            status: "Sent Success",
+          };
+          const rtnValueSendMail = await DBService.ExecuteSQLBlob(
+            `BEGIN ei_upd_sale_bill_status (          
+                                                              :tei_wt_sale_bill_pk,
+                                                              :status,
+                                                              :p_language, 
+                                                              :p_crt_by, 
+                                                              :p_rtn_cur); END;`,
+            para_inv_st,
+            p_language,
+            p_crt_by
+          );
+
+          let data_r = {
+            link_invoice_preview: "https://einvoicevn.com/lookup",
+            security_code: "1234567bac",
+            status_code: "1",
+            status_name: "Sent Success",
+            user_name: data.data_invoice.buyer_comp_name,
+            send_date: res_send_mail.data.data.date_send,
+            send_time: res_send_mail.data.data.time_send,
+            mail_form: res_send_mail.data.data.mail_from,
+            mail_to: res_send_mail.data.data.mail_to,
+            mail_to_cc: res_send_mail.data.data.mail_to_cc,
+            error_code: "",
+            error_name: "",
+            title: subject,
+            content: body,
+          };
+          return response.send(Utils.response(true, `Send order to invoice was Successfully!`, data_r));
+        } else {
+          const para_inv_st = {
+            tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
+            status: "Sent Faile",
+          };
+          const rtnValueSendMail = await DBService.ExecuteSQLBlob(
+            `BEGIN ei_upd_sale_bill_status (          
+                                                              :tei_wt_sale_bill_pk,
+                                                              :status,
+                                                              :p_language, 
+                                                              :p_crt_by, 
+                                                              :p_rtn_cur); END;`,
+            para_inv_st,
+            p_language,
+            p_crt_by
+          );
+          let data_r = {
+            link_invoice_preview: "https://einvoicevn.com/lookup",
+            security_code: "1234567bac",
+            status_code: "0",
+            status_name: "Sent Faile",
+            user_name: data.data_invoice.buyer_comp_name,
+            send_date: res_send_mail.data.data.date_send,
+            send_time: res_send_mail.data.data.time_send,
+            mail_form: res_send_mail.data.data.mail_from,
+            mail_to: res_send_mail.data.data.mail_to,
+            mail_to_cc: res_send_mail.data.data.mail_to_cc,
+            error_code: "",
+            error_name: "",
+            title: subject,
+            content: body,
+          };
+          return response.send(Utils.response(true, `Send order to invoice was failure!`, data_r));
+        }
+      }
+      else {
+        return response.send(Utils.response(true, `error!`, { err_msg: 'Order einvoice not exit' }));
+      }
+      // console.log("res_send_mail  ", res_send_mail);
+    } catch (error) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "weTaxReSendOrderInfo",
+        CONTENT: e.message,
+      });
+      console.log(e);
+      return response.send(Utils.response(false, "error", { err_msg: e.message }));
     }
   }
 
@@ -5659,7 +5818,7 @@ class EInvoiceController {
         p_crt_by
       );
 
-      return response.send(Utils.response(true, rtnValue.p_rtn_cur[0].STATUS_NM, {data: rtnValue.p_rtn_cur[0]}));
+      return response.send(Utils.response(true, rtnValue.p_rtn_cur[0].STATUS_NM, { data: rtnValue.p_rtn_cur[0] }));
     } catch (error) {
       Utils.Logger({
         LVL: "error",
@@ -5668,7 +5827,7 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       console.log(e);
-      return response.send(Utils.response(false, "error", {err_msg: e.message}));
+      return response.send(Utils.response(false, "error", { err_msg: e.message }));
     }
   }
 
@@ -5710,7 +5869,7 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       console.log(e);
-      return response.send(Utils.response(false, "error", {err_msg: e.message}));
+      return response.send(Utils.response(false, "error", { err_msg: e.message }));
     }
   }
 
@@ -5921,7 +6080,7 @@ class EInvoiceController {
             // console.log("res  ++===> ", res.data);
 
             if (!res.data.length) {
-              return response.send(Utils.response(false, 'error', {err_msg: `No data found.`}));
+              return response.send(Utils.response(false, 'error', { err_msg: `No data found.` }));
             }
             for (let j = 0; j < res.data.length; j++) {
               const items = res.data[j];
@@ -5967,7 +6126,7 @@ class EInvoiceController {
           })
           .catch((error) => {
             console.log(error);
-            return response.send(Utils.response(false, `e-Signing XML is faile !!`, {err_msg: error.message}));
+            return response.send(Utils.response(false, `e-Signing XML is faile !!`, { err_msg: error.message }));
           });
 
         rtnValue.push({
@@ -6007,7 +6166,7 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       console.log(e);
-      return response.send(Utils.response(false, "error", {err_msg: e.message}));
+      return response.send(Utils.response(false, "error", { err_msg: e.message }));
     }
   }
 
@@ -6297,7 +6456,7 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       console.log("e ", e);
-      return response.send(Utils.response(false, "error", {err_msg: e.message}));
+      return response.send(Utils.response(false, "error", { err_msg: e.message }));
     }
   }
 
@@ -6999,7 +7158,7 @@ class EInvoiceController {
         FUNC: "sendInvoiceToTaxOffice",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, "error", {err_msg: e.message}));
+      return response.send(Utils.response(false, "error", { err_msg: e.message }));
     }
   }
 
@@ -7079,7 +7238,7 @@ class EInvoiceController {
         },
       };
       if (invoices.length == undefined || invoices.length == 0) {
-        return response.send(Utils.response(false, 'error', {err_msg: `Invalid json format!`}));
+        return response.send(Utils.response(false, 'error', { err_msg: `Invalid json format!` }));
       }
 
       for (let i = 0; i < invoices.length; i++) {
@@ -7207,7 +7366,7 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       console.log(e);
-      return response.send(Utils.response(false, "error", {err_msg: e.message}));
+      return response.send(Utils.response(false, "error", { err_msg: e.message }));
     }
   }
 
@@ -8046,16 +8205,18 @@ class EInvoiceController {
   }
 
   async sendMaiToCustomer(tei_wt_sale_bill_pk, data, p_language, p_crt_by) {
-    // let EiExcel = new EiPosExcelHandlerAuto();
+    try {
+      // let EiExcel = new EiPosExcelHandlerAuto();
     // let EiExcel = new EiPosExcelHandler();
     // let url_pdf = await EiExcel.getEinvoice(tei_wt_sale_bill_pk , p_language, p_crt_by);
     //  console.log("base64PDf  ", url_pdf);
+
 
     let EiExcels = new EiPosExcelHandlerAuto();
     let url_pdf = await EiExcels.getEinvoice(tei_wt_sale_bill_pk, p_language, p_crt_by);
     console.log("base64PDf  ", url_pdf);
 
-    let re_url_xml = await Request.get( APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + tei_wt_sale_bill_pk +  "&proc=" + "EI_SEL_XML_POS_EINVOICE" + "&token="); //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
+    let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + tei_wt_sale_bill_pk + "&proc=" + "EI_SEL_XML_POS_EINVOICE" + "&token="); //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
     let url_xml = re_url_xml.data;
     console.log("base64XXML  ", url_xml);
 
@@ -8135,6 +8296,13 @@ class EInvoiceController {
     });
     console.log("res_send_mail  ", res_send_mail);
     return { res_send_mail, subject, body };
+    } catch (error) {
+      console.log("res_send_mail error  ", error);
+
+    }
+
+
+    
   }
 
   async sendMaiToCustomerEPort(trade_code, p_language, p_crt_by) {
@@ -8313,8 +8481,8 @@ class EInvoiceController {
   async getDataEinvoiceFormLookupCode({ request, response, auth }) {
     try {
       var p_language = request.header("accept-language", "ENG");
-      var p_crt_by = "";     
-  
+      var p_crt_by = "";
+
       const { captcha, sessionid, lookupcode } = request.all();
       console.log("captcha:", captcha);
       console.log("sessionid:", sessionid);
@@ -8324,7 +8492,7 @@ class EInvoiceController {
           return response.send(Utils.response(false, "invalid_captchar", null));
         }
       }
-  
+
       /* const para_inv = {
         lookupcode : lookupcode,
       }; */
@@ -8335,7 +8503,7 @@ class EInvoiceController {
         p_language,
         p_crt_by
       ); */
-      
+
       const para_inv_st = {
         trade_code: lookupcode,
       };
@@ -8346,43 +8514,43 @@ class EInvoiceController {
         p_crt_by
       );
       // console.log("rtnValue_VAT  ", rtnValue.p_rtn_cur);
-  
+
       let EiExcels = new EiExcelHandlerAuto(); //CQT_MAGD
       let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].CQT_MAGD, p_language, p_crt_by);
       // console.log("base64PDf: ", url_pdf);
-  
-      let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + rtnValue.p_rtn_cur[0].CQT_MAGD + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token="); 
+
+      let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + rtnValue.p_rtn_cur[0].CQT_MAGD + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token=");
       //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE");
       let url_xml = re_url_xml.data;
       // console.log("base64XML:", url_xml);
-  
+
       const rep_data = {
-        form_no : rtnValue.p_rtn_cur[0].TEMPLATECODE,
-        serial_no : rtnValue.p_rtn_cur[0].INVOICESERIALNO,
-        invoice_date : rtnValue.p_rtn_cur[0].INVOICE_DATE_34,
-        invoice_no : rtnValue.p_rtn_cur[0].INVOICENUMBER,
-        currency : rtnValue.p_rtn_cur[0].CURRENCYCODEUSD,
-        ex_rate : rtnValue.p_rtn_cur[0].TR_RATE_31,
-        payment_method : rtnValue.p_rtn_cur[0].PAYMENTMETHODCK,
-        seller_comp_name : rtnValue.p_rtn_cur[0].SELLER_NAME,
-        seller_taxcode : rtnValue.p_rtn_cur[0].SELLER_TAXCODE,
-        seller_address : rtnValue.p_rtn_cur[0].SELLER_ADDRESS,
-        seller_phone : rtnValue.p_rtn_cur[0].SELLER_TEL,
+        form_no: rtnValue.p_rtn_cur[0].TEMPLATECODE,
+        serial_no: rtnValue.p_rtn_cur[0].INVOICESERIALNO,
+        invoice_date: rtnValue.p_rtn_cur[0].INVOICE_DATE_34,
+        invoice_no: rtnValue.p_rtn_cur[0].INVOICENUMBER,
+        currency: rtnValue.p_rtn_cur[0].CURRENCYCODEUSD,
+        ex_rate: rtnValue.p_rtn_cur[0].TR_RATE_31,
+        payment_method: rtnValue.p_rtn_cur[0].PAYMENTMETHODCK,
+        seller_comp_name: rtnValue.p_rtn_cur[0].SELLER_NAME,
+        seller_taxcode: rtnValue.p_rtn_cur[0].SELLER_TAXCODE,
+        seller_address: rtnValue.p_rtn_cur[0].SELLER_ADDRESS,
+        seller_phone: rtnValue.p_rtn_cur[0].SELLER_TEL,
         buyer_name: rtnValue.p_rtn_cur[0].BUYER_NAME_35,
-        buyer_comp_name : rtnValue.p_rtn_cur[0].BUYERLEGALNAME,
-        buyer_taxcode : rtnValue.p_rtn_cur[0].BUYERTAXCODE,
-        buyer_phone :  rtnValue.p_rtn_cur[0].TEL_53,
-        buyer_address : rtnValue.p_rtn_cur[0].SELLER_ADDRESS_1,
+        buyer_comp_name: rtnValue.p_rtn_cur[0].BUYERLEGALNAME,
+        buyer_taxcode: rtnValue.p_rtn_cur[0].BUYERTAXCODE,
+        buyer_phone: rtnValue.p_rtn_cur[0].TEL_53,
+        buyer_address: rtnValue.p_rtn_cur[0].SELLER_ADDRESS_1,
         url_pdf: url_pdf,
-        url_xml : url_xml,
-        total_amt_no_vat : rtnValue.p_rtn_cur[0].NET_TR_AMT_DIS_TR_89,
-        total_amt_dc : 0,
-        total_amt_vat : rtnValue.p_rtn_cur[0].VAT_TR_AMT_DIS_TR_91,
-        total_payment : rtnValue.p_rtn_cur[0].TOT_AMT_TR_94,
-        total_payment_word_vie : rtnValue.p_rtn_cur[0].AMOUNT_WORD_VIE_107,
-        mccqt : rtnValue.p_rtn_cur[0].CQT_MCCQT_ID_85
+        url_xml: url_xml,
+        total_amt_no_vat: rtnValue.p_rtn_cur[0].NET_TR_AMT_DIS_TR_89,
+        total_amt_dc: 0,
+        total_amt_vat: rtnValue.p_rtn_cur[0].VAT_TR_AMT_DIS_TR_91,
+        total_payment: rtnValue.p_rtn_cur[0].TOT_AMT_TR_94,
+        total_payment_word_vie: rtnValue.p_rtn_cur[0].AMOUNT_WORD_VIE_107,
+        mccqt: rtnValue.p_rtn_cur[0].CQT_MCCQT_ID_85
       }
-  
+
       return response.send(Utils.response(true, "Research data invocie was success", rep_data));
     } catch (e) {
       Utils.Logger({
@@ -8399,10 +8567,10 @@ class EInvoiceController {
   async generalConvertEinvoice({ request, response, auth }) {
     try {
       var p_language = request.header("accept-language", "ENG");
-      var p_crt_by = "";     
-  
+      var p_crt_by = "";
+
       const { converter, lookupcode } = request.all();
-  
+
       /* const para_inv = {
         lookupcode : lookupcode,
       }; */
@@ -8413,10 +8581,10 @@ class EInvoiceController {
         p_language,
         p_crt_by
       ); */
-      
+
       const para_inv_st = {
         trade_code: lookupcode,
-        converter : converter,
+        converter: converter,
       };
       const rtnValue = await DBService.ExecuteSQLBlob(
         `BEGIN ei_sel_get_data_lookup_code_c (:trade_code,:converter,:p_language, :p_crt_by, :p_rtn_cur); END;`,
@@ -8425,43 +8593,43 @@ class EInvoiceController {
         p_crt_by
       );
       // console.log("rtnValue_VAT  ", rtnValue.p_rtn_cur);
-  
+
       let EiExcels = new EiExcelHandlerAuto(); //CQT_MAGD
       let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].CQT_MAGD, p_language, p_crt_by);
       // console.log("base64PDf: ", url_pdf);
-  
-      let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + rtnValue.p_rtn_cur[0].CQT_MAGD + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token="); 
+
+      let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + rtnValue.p_rtn_cur[0].CQT_MAGD + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token=");
       //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE");
       let url_xml = re_url_xml.data;
       // console.log("base64XML:", url_xml);
-  
+
       const rep_data = {
-        form_no : rtnValue.p_rtn_cur[0].TEMPLATECODE,
-        serial_no : rtnValue.p_rtn_cur[0].INVOICESERIALNO,
-        invoice_date : rtnValue.p_rtn_cur[0].INVOICE_DATE_34,
-        invoice_no : rtnValue.p_rtn_cur[0].INVOICENUMBER,
-        currency : rtnValue.p_rtn_cur[0].CURRENCYCODEUSD,
-        ex_rate : rtnValue.p_rtn_cur[0].TR_RATE_31,
-        payment_method : rtnValue.p_rtn_cur[0].PAYMENTMETHODCK,
-        seller_comp_name : rtnValue.p_rtn_cur[0].SELLER_NAME,
-        seller_taxcode : rtnValue.p_rtn_cur[0].SELLER_TAXCODE,
-        seller_address : rtnValue.p_rtn_cur[0].SELLER_ADDRESS,
-        seller_phone : rtnValue.p_rtn_cur[0].SELLER_TEL,
+        form_no: rtnValue.p_rtn_cur[0].TEMPLATECODE,
+        serial_no: rtnValue.p_rtn_cur[0].INVOICESERIALNO,
+        invoice_date: rtnValue.p_rtn_cur[0].INVOICE_DATE_34,
+        invoice_no: rtnValue.p_rtn_cur[0].INVOICENUMBER,
+        currency: rtnValue.p_rtn_cur[0].CURRENCYCODEUSD,
+        ex_rate: rtnValue.p_rtn_cur[0].TR_RATE_31,
+        payment_method: rtnValue.p_rtn_cur[0].PAYMENTMETHODCK,
+        seller_comp_name: rtnValue.p_rtn_cur[0].SELLER_NAME,
+        seller_taxcode: rtnValue.p_rtn_cur[0].SELLER_TAXCODE,
+        seller_address: rtnValue.p_rtn_cur[0].SELLER_ADDRESS,
+        seller_phone: rtnValue.p_rtn_cur[0].SELLER_TEL,
         buyer_name: rtnValue.p_rtn_cur[0].BUYER_NAME_35,
-        buyer_comp_name : rtnValue.p_rtn_cur[0].BUYERLEGALNAME,
-        buyer_taxcode : rtnValue.p_rtn_cur[0].BUYERTAXCODE,
-        buyer_phone :  rtnValue.p_rtn_cur[0].TEL_53,
-        buyer_address : rtnValue.p_rtn_cur[0].SELLER_ADDRESS_1,
+        buyer_comp_name: rtnValue.p_rtn_cur[0].BUYERLEGALNAME,
+        buyer_taxcode: rtnValue.p_rtn_cur[0].BUYERTAXCODE,
+        buyer_phone: rtnValue.p_rtn_cur[0].TEL_53,
+        buyer_address: rtnValue.p_rtn_cur[0].SELLER_ADDRESS_1,
         url_pdf: url_pdf,
-        url_xml : url_xml,
-        total_amt_no_vat : rtnValue.p_rtn_cur[0].NET_TR_AMT_DIS_TR_89,
-        total_amt_dc : 0,
-        total_amt_vat : rtnValue.p_rtn_cur[0].VAT_TR_AMT_DIS_TR_91,
-        total_payment : rtnValue.p_rtn_cur[0].TOT_AMT_TR_94,
-        total_payment_word_vie : rtnValue.p_rtn_cur[0].AMOUNT_WORD_VIE_107,
-        mccqt : rtnValue.p_rtn_cur[0].CQT_MCCQT_ID_85
+        url_xml: url_xml,
+        total_amt_no_vat: rtnValue.p_rtn_cur[0].NET_TR_AMT_DIS_TR_89,
+        total_amt_dc: 0,
+        total_amt_vat: rtnValue.p_rtn_cur[0].VAT_TR_AMT_DIS_TR_91,
+        total_payment: rtnValue.p_rtn_cur[0].TOT_AMT_TR_94,
+        total_payment_word_vie: rtnValue.p_rtn_cur[0].AMOUNT_WORD_VIE_107,
+        mccqt: rtnValue.p_rtn_cur[0].CQT_MCCQT_ID_85
       }
-  
+
       return response.send(Utils.response(true, "Convert einvoice successful!", rep_data));
     } catch (e) {
       Utils.Logger({

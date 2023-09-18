@@ -81,11 +81,7 @@
 </template>
 
 <script>
-import GetDataODialog from "@/components/dialog/GetDataODialog";
-import GetDataTODialog from "@/components/dialog/GetDataTODialog";
 import DeleteDialog from "@/components/dialog/DeleteDialog";
-import FreeItemEIDialog from "@/components/dialog/FreeItemEiDialog";
-import WarehouseDialog from "@/components/dialog/WarehouseDialog";
 import DataGridView from "@/components/control/DataGridView";
 import moment from "moment";
 export default {
@@ -93,10 +89,6 @@ export default {
   middleware: "user",
 
   components: {
-    "get-data-o-dialog": GetDataODialog,
-    "get-data-so-dialog": GetDataTODialog,
-    "warehouse-dialog": WarehouseDialog,
-    "free-item-ei-dialog": FreeItemEIDialog,
     "delete-dialog": DeleteDialog,
     DataGridView,
     accountDialog: () => import("@/components/dialog/AccountEiDialog"),

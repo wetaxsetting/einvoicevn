@@ -12,7 +12,7 @@ class EiExcelConverterAuto {
 		// console.log('===> ', p_crt_by)
 		// console.log(einvoiceDetailData)
 		let reportInfo = { CODE: '01', NAME: einvoiceMasterData[0]["PK"], PATH: reportPath };//that is the report template path.
-		console.log("reportInfo  ", reportInfo);
+		// console.log("reportInfo  ", reportInfo);
 		try {
 
 			// console.log("reportSheet  ", reportSheet)
@@ -75,7 +75,7 @@ class EiExcelConverterAuto {
 		let excCols = exceljs.excelCols
 		let sttCell = ""
 		let nmCell = ""
-		let lastCell = excCols[detailCellFormat[detailCellFormat.length - 1].endCell + 1]
+		let lastCell = excCols[detailCellFormat[detailCellFormat.length - 1].endCell]
 		let startMergeRedundantRow = detailCellFormat[0].startCell
 		let endMergeRedundantRow = detailCellFormat[detailCellFormat.length - 1].endCell
 		let convertStr = "(HÓA ĐƠN CHUYỂN ĐỔI TỪ HÓA ĐƠN ĐIỆN TỬ)"
@@ -197,6 +197,7 @@ class EiExcelConverterAuto {
 		let footerStr = '(In tại phần mềm Genuwin E-INVOICE của CÔNG TY CỔ PHẦN WEBCASH GENUWIN - MST: 1201496252)'
 		if (einvoiceDetailData && einvoiceDetailData.length > 0) {
 			masterDataArray.forEach(e => {
+				console.log("e    ", e);
 				if (e.Type == 1) {
 					let infoData = ""
 					e.Info.forEach(_e => {
@@ -240,6 +241,7 @@ class EiExcelConverterAuto {
 								//console.log(e.Cell+"+"+e.Info)
 								break;
 							case "read_price":
+								console.log("e    ", e ,  read_price)
 								worksheet.getCell( `${e.Cell}`).value = read_price != null ? read_price : '';
 								// console.log(e.Cell+"+"+e.Info)
 								break;
@@ -292,10 +294,7 @@ class EiExcelConverterAuto {
 					totalRows += item_length
 					pageRowCount += item_length
 					countPerPage++
-
 				}
-
-
 
 				if (page[j] > 0 && page[j + 1] == 0) {
 					totalRows = totalRows + (pos_lv - lastPagelength)
@@ -355,7 +354,7 @@ class EiExcelConverterAuto {
 				}
 			});
 			for (let i = 1; i < totalRows ; i++) {
-				console.log(" _sourceRow + i, _sourceRow  ++++===> ", _sourceRow + i, totalRows)
+				//console.log(" _sourceRow + i, _sourceRow  ++++===> ", _sourceRow + i, totalRows)
 				exceljs.copyRow(_sourceRow + i, _sourceRow, 'c');
 				worksheet.getCell( `C${_sourceRow + i}`).style.border = {};
 			}
@@ -384,12 +383,11 @@ class EiExcelConverterAuto {
 			});
 			
 			for (let i = 1; i < totalRows - 1; i++) {
-				console.log(" _sourceRow + i, _sourceRow  ++++===> ", _sourceRow + i, totalRows)
+				//console.log(" _sourceRow + i, _sourceRow  ++++===> ", _sourceRow + i, totalRows)
 				exceljs.copyRow(_sourceRow + i, _sourceRow, 'c');
 				worksheet.getCell( `C${_sourceRow + i}`).style.border = {};
 			}
 
-			
 		}
 		
 		//console.log(lstMerge)
@@ -599,6 +597,7 @@ class EiExcelConverterAuto {
 									worksheet.mergeCells(_sourceRow_2 + totalRowCount_2, e.startCell, _sourceRow_2 + totalRowCount_2, e.endCell)
 									worksheet.getCell(`${excCols[e.startCell] + (_sourceRow_2 + totalRowCount_2)}`).style.border = { bottom: { style: detailCellFormat[i].cellBorder }, left: { style: 'thin' }, };
 								});
+								
 								worksheet.getCell( `${lastCell +  (_sourceRow_2 + totalRowCount_2)}`).style.border = { right: { style: 'thin' },bottom: { style: detailCellFormat[0].cellBorder } };
 								//worksheet.getCell( `${nmCell + (_sourceRow_2 + totalRowCount_2 + item_name_lt)}`).style.border = { bottom: { style: detailCellFormat[0].cellBorder }, };
 								//	worksheet.getCell( `${sttCell + (_sourceRow_2 + totalRowCount_2 + item_name_lt)}`).style.border = { left: { style: 'thin' }, right: { style: 'thin' }, bottom: { style: detailCellFormat[0].cellBorder }, top: { style: 'thin' } };
@@ -697,7 +696,7 @@ class EiExcelConverterAuto {
 
 						if (bgPath != "") {
 							if (j == v_countNumberOfPages - 1) { 
-								console.log("backgroundCell  " + backgroundRow  + "  j  " + j + " totalRowCount_2 " + totalRowCount_2 + " pos_lv  " + pos_lv );
+								//console.log("backgroundCell  " + backgroundRow  + "  j  " + j + " totalRowCount_2 " + totalRowCount_2 + " pos_lv  " + pos_lv );
 								try {
 									worksheet.addImage(await exceljs.insertPathImage(bgPath), {
 										// tl: { col: backgroundCell, row: backgroundRow + totalRowCount_2 - pos_lv - 1 },
@@ -736,15 +735,15 @@ class EiExcelConverterAuto {
 				const e = parseInt(page[j])
 				//"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
 				//"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
-				console.log("  e  " , e );
+				//console.log("  e  735 " , e );
 				if (e > 0) {
 					for (let i = 0; i < e; i++) {
 						const _e = einvoiceDetailData[i + count];
-						console.log("  _e  " , _e);
+						//console.log("  _e  " , _e);
 						try {
 							let item_name_lt = this.countlength_v2(_e["ITEM_NAME"])
 
-							console.log("  item_name_lt  " , item_name_lt);
+							//console.log("  item_name_lt  " , item_name_lt);
 							if(_e["ITEM_NAME"] !== null)
 							{
 								let longRow = _e["ITEM_NAME"].split('&#xA;')
@@ -762,12 +761,14 @@ class EiExcelConverterAuto {
 							
 							if (item_name_lt == 1) {
 								detailCellFormat.forEach((e, i) => {
+									//console.log("e   ==> ",e)
 									worksheet.mergeCells(_sourceRow + totalRowCount, e.startCell, _sourceRow + totalRowCount, e.endCell)
 									worksheet.getCell(`${excCols[e.startCell] + (_sourceRow + totalRowCount)}`).style.border = { bottom: { style: detailCellFormat[i].cellBorder }, left: { style: 'thin' }, };
 								});
-								worksheet.getCell( `${lastCell +  (_sourceRow + totalRowCount)}`).style.border = { right: { style: 'thin' },bottom: { style: detailCellFormat[0].cellBorder }  };
-								worksheet.getCell(`${nmCell + (_sourceRow + totalRowCount + item_name_lt)}`).style.border = { bottom: { style: detailCellFormat[0].cellBorder }, };
-								worksheet.getCell(`${sttCell + (_sourceRow + totalRowCount + item_name_lt)}`).style.border = { left: { style: 'thin' }, right: { style: 'thin' }, bottom: { style: detailCellFormat[0].cellBorder } };
+								//console.log("lastCell   ", lastCell);
+								worksheet.getCell( `${lastCell +  (_sourceRow + totalRowCount)}`).style.border = { right: { style: 'thin' },bottom: { style: detailCellFormat[0].cellBorder }, left :{ style: 'thin' }  };
+								//worksheet.getCell(`${nmCell + (_sourceRow + totalRowCount + item_name_lt)}`).style.border = { bottom: { style: detailCellFormat[0].cellBorder }, };
+								//worksheet.getCell(`${sttCell + (_sourceRow + totalRowCount + item_name_lt)}`).style.border = { left: { style: 'thin' }, right: { style: 'thin' }, bottom: { style: detailCellFormat[0].cellBorder } };
 							} else {
 								detailCellFormat.forEach((e, i) => {
 									if (e.cellType == 1 || e.cellType == 2) {
@@ -779,7 +780,7 @@ class EiExcelConverterAuto {
 										worksheet.mergeCells(_sourceRow + totalRowCount, e.startCell, _sourceRow + totalRowCount, e.endCell)
 										worksheet.getCell(`${excCols[e.startCell] + (_sourceRow + totalRowCount)}`).style.border = { bottom: { style: detailCellFormat[i].cellBorder }, left: { style: 'thin' }, };
 									}
-										worksheet.getCell( `${lastCell +  (_sourceRow + totalRowCount)}`).style.border = { right: { style: 'thin' },bottom: { style: detailCellFormat[0].cellBorder }  };
+										worksheet.getCell( `${lastCell +  (_sourceRow + totalRowCount)}`).style.border = { right: { style: 'thin' },bottom: { style: detailCellFormat[0].cellBorder }, left :{ style: 'thin' }  };
 								});
 
 								for (let u = 0; u < item_name_lt; u++) {
@@ -807,6 +808,7 @@ class EiExcelConverterAuto {
 	
 								}
 								if (bgPath != "") {
+									console.log("bgPath   ", bgPath, " backgroundCell  ", backgroundCell, "backgroundRow  ", backgroundRow, " backgroundWidth  ", backgroundWidth, " backgroundHeight  ", backgroundHeight);
 									try {
 										worksheet.addImage(await exceljs.insertPathImage(bgPath), {
 											tl: { col: backgroundCell, row: backgroundRow - 1 },
@@ -819,6 +821,7 @@ class EiExcelConverterAuto {
 							}
 							
 						} catch (error) {
+							
 							console.log("err", error)
 							console.log(_sourceRow)
 							console.log(totalRowCount)
@@ -833,10 +836,7 @@ class EiExcelConverterAuto {
 			}
 		}
 
-		
-
 		//END-this part insert range header for each page
-
 
 		//this part add more style to the rows that missing(optional) Last Page.
 		//"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
@@ -851,7 +851,7 @@ class EiExcelConverterAuto {
 						worksheet.getCell(`${excCols[e.startCell] + (totalRows + _sourceRow_3 - o)}`).style.border = { left: { style: 'thin' }, bottom: { style: detailCellFormat[i].cellBorder }, };
 					});
 					worksheet.getRow(totalRows + _sourceRow_3 - o).height = lastPageRowsHeight
-					worksheet.getCell( `${lastCell +  (totalRows + _sourceRow_3 - o)}`).style.border = { right: { style: 'thin' },bottom: { style: detailCellFormat[0].cellBorder }  };
+					worksheet.getCell( `${lastCell +  (totalRows + _sourceRow_3 - o)}`).style.border = { right: { style: 'thin' },bottom: { style: detailCellFormat[0].cellBorder }, left :{ style: 'thin' }  };
 					worksheet.getCell(`${sttCell + (totalRows + _sourceRow_3 - o)}`).style.border = { left: { style: 'thin' }, right: { style: 'thin' }, bottom: { style: detailCellFormat[0].cellBorder }, };
 					worksheet.getCell(`${nmCell + (totalRows + _sourceRow_3 - o)}`).style.border = { left: { style: 'thin' }, right: { style: 'thin' }, bottom: { style: detailCellFormat[0].cellBorder }, };
 				} catch (error) {
@@ -866,7 +866,7 @@ class EiExcelConverterAuto {
 						worksheet.mergeCells(totalRows + _sourceRow_3 - o, e.startCell, totalRows + _sourceRow_3 - o, e.endCell)
 						worksheet.getCell(`${excCols[e.startCell] + (totalRows + _sourceRow_3 - o)}`).style.border = { left: { style: 'thin' }, bottom: { style: detailCellFormat[i].cellBorder }, };
 					});
-					worksheet.getCell( `${lastCell +  (totalRows + _sourceRow_3 - o)}`).style.border = { right: { style: 'thin' },bottom: { style: detailCellFormat[0].cellBorder }  };
+					worksheet.getCell( `${lastCell +  (totalRows + _sourceRow_3 - o)}`).style.border = { right: { style: 'thin' },bottom: { style: detailCellFormat[0].cellBorder }, left :{ style: 'thin' }  };
 					worksheet.getRow(totalRows + _sourceRow_3 - o).height = lastPageRowsHeight
 					worksheet.getCell(`${sttCell + (totalRows + _sourceRow_3 - o)}`).style.border = { left: { style: 'thin' }, right: { style: 'thin' }, bottom: { style: detailCellFormat[0].cellBorder }, };
 					worksheet.getCell(`${nmCell + (totalRows + _sourceRow_3 - o)}`).style.border = { left: { style: 'thin' }, right: { style: 'thin' }, bottom: { style: detailCellFormat[0].cellBorder }, };
@@ -881,14 +881,14 @@ class EiExcelConverterAuto {
 		//this part add more style to the rows that missing(optional) Other pages.
 		//"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
 		//"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
-		console.log("extendedArray ++==>", extendedArray);
+	    // console.log("extendedArray ++==>", extendedArray);
 		for (let o = 0; o < extendedArray.length; o++) {
 			let rowItem = extendedArray[o]
 			worksheet.mergeCells(rowItem.loopStartRow, startMergeRedundantRow, rowItem.loopStartRow + rowItem.loop_row - 1, endMergeRedundantRow)
 			worksheet.getCell(`${sttCell + (rowItem.loopStartRow)}`).style.border = { left: { style: 'thin' }, bottom: { style: 'thin' } };
 			for (let _omg = 0; _omg < rowItem.loop_row; _omg++) {
 				try {
-					worksheet.getCell(`${lastCell + (rowItem.loopStartRow + _omg)}`).style.border = { right: { style: 'thin' } };
+					worksheet.getCell(`${lastCell + (rowItem.loopStartRow + _omg)}`).style.border = { right: { style: 'thin' }, left :{ style: 'thin' } };
 				} catch (error) {
 					console.log("error", rowItem.loopStartRow + _omg)
 				}
@@ -916,7 +916,7 @@ class EiExcelConverterAuto {
 			}
 		});
 		await Promise.all(promises);
-		console.log(" logoArray +++===> ", logoArray);
+		// console.log(" logoArray +++===> ", logoArray);
 		for (let imgIdx = 0; imgIdx < logoArray.length; imgIdx++) {
 			const logosAray = logoArray[imgIdx].logos;
 			let imgPos = logoArray[imgIdx].logoPos
@@ -947,18 +947,22 @@ class EiExcelConverterAuto {
 		//"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
 		if (einvoiceMasterData[0]["SIGN_YN"] == "Y") {
 			try {
-				console.log("SIGN_YN  ++===>  ", signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
+				//console.log("SIGN_YN  ++===>  ", signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
 				worksheet.unMergeCells(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox))
 				worksheet.unMergeCells(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 1))
 				worksheet.unMergeCells(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 2))
 				try {
 					worksheet.addImage(await exceljs.insertPathImage(signPath), {
-						tl: { col: signCell.start, row: totalRows + _sourceRow_3 + countFromEndDetailToSignBox - 1 },
+						tl: { col: signCell.start, row: totalRows + _sourceRow_3 + countFromEndDetailToSignBox -1 },
 						ext: { width: 100, height: 65 }
 					});
 				} catch (error) {
 					console.log(error)
 				}
+				console.log("totalRows + _sourceRow_3 + countFromEndDetailToSignBox  ", totalRows + _sourceRow_3 + countFromEndDetailToSignBox,
+							"signByCell.start  ", signByCell.start,
+							"totalRows + _sourceRow_3 + countFromEndDetailToSignBox  ", totalRows + _sourceRow_3 + countFromEndDetailToSignBox,
+							"signByCell.end  ", signByCell.end)
 				worksheet.mergeCells(totalRows + _sourceRow_3 + countFromEndDetailToSignBox, signByCell.start, totalRows + _sourceRow_3 + countFromEndDetailToSignBox, signByCell.end)//re-merge the cell to fill signed by, signed date
 				worksheet.mergeCells(totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 1, signByCell.start, totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 1, signByCell.end)//re-merge the cell to fill signed by, signed date
 				worksheet.mergeCells(totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 2, signByCell.start, totalRows + _sourceRow_3 + + countFromEndDetailToSignBox + 2, signByCell.end)//re-merge the cell to fill signed by, signed date

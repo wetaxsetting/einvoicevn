@@ -403,6 +403,11 @@ export default {
 
       }
     },
+    "modelMaster.NTBAO"(val) {
+      if (val) {
+        
+      }
+    },
     form_no_pop(val) {
       this.getListCodes("serial_no");
     },
@@ -951,7 +956,7 @@ export default {
       this.modelMaster.LOAI = "1";
       this.modelMaster.TEN = "";
       this.modelMaster.LTEN = "4";
-      this.modelMaster.NTBAO = new Date().toISOString().substr(0, 10).replaceAll("-", "");
+      this.modelMaster.NTBAO = new Date().toISOString().substr(0, 10);
       this.modelMaster.VOUCHER_NO = null;
       this.modelMaster.PBAN = "2.0.1";
       this.modelMaster.SELLER_REPRESENT = "";
@@ -992,8 +997,8 @@ export default {
       this.objInvoiceM.invalid_invoices = {
         tax_office_name: this.modelMaster.TCQT,
         tax_office_code: this.modelMaster.MCQT,
-        saler_taxcode: this.modelMaster.MST,
-        saler_company_name: this.modelMaster.TNNT,
+        seller_taxcode: this.modelMaster.MST,
+        seller_company_name: this.modelMaster.TNNT,
         location_name: this.modelMaster.DDANH,
         inform_date: this.modelMaster.NTBAO,
       };

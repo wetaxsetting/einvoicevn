@@ -62,136 +62,143 @@ class EiExcelHandler {
       );
 
       const einvoiceMasterParam = await DBService.callProcCursor(
-        "AC_SEL_POS_EINVOICE_M_PARAM", [pk, einvoiceMasterData[0].FORM_NO , einvoiceMasterData[0].SERIAL_NO,''],
+        "AC_SEL_POS_EINVOICE_M_PARAM", [pk, einvoiceMasterData[0].FORM_NO, einvoiceMasterData[0].SERIAL_NO, ''],
         p_language,
         p_crt_by,
         _db2
       );
 
       const einvoiceDetailsParam = await DBService.callProcCursor(
-        "AC_SEL_POS_EINVOICE_D_PARAM", [pk, einvoiceMasterData[0].FORM_NO , einvoiceMasterData[0].SERIAL_NO,''],
+        "AC_SEL_POS_EINVOICE_D_PARAM", [pk, einvoiceMasterData[0].FORM_NO, einvoiceMasterData[0].SERIAL_NO, ''],
         p_language,
         p_crt_by,
         _db2
       );
 
 
-     
-    //console.log(einvoiceDetailData)
-    if (einvoiceMasterData.length <= 0) {
-      return that.showNotification(
-        "warning",
-        that.$t("This Einvoice Doesn't Exist"),
-        "",
-        5000
-      );
-    } else {
-      companyTaxcode = einvoiceMasterData[0].SELLER_TAXCODE.replace(/\s+/g, '')
-      convertYn = einvoiceMasterData[0].CONVERT_YN == "Y" ? "Y" : "N"
-      cancelYn = einvoiceMasterData[0].CANCEL_YN == "Y" ? "Y" : "N"
-    }
+      // console.log("einvoiceMasterData  ", einvoiceMasterData)
 
-    let msThueCutter = async (msothueArray, taxCode, taxRow) => {
-      for (let i = 0; i < taxCode.length; i++) {
-        const e = taxCode[i];
-        this.masterDataArray.push({ Cell: `${msothueArray[i] + taxRow}`, Info: [e], Type: 2 }) //so thue
+      // console.log("einvoiceDetailData  ", einvoiceDetailData)
+
+      // console.log("einvoiceMasterParam  ", einvoiceMasterParam)
+
+      // console.log("einvoiceDetailsParam ", einvoiceDetailsParam)
+      if (einvoiceMasterData.length <= 0) {
+        return that.showNotification(
+          "warning",
+          that.$t("This Einvoice Doesn't Exist"),
+          "",
+          5000
+        );
+      } else {
+        companyTaxcode = einvoiceMasterData[0].SELLER_TAXCODE.replace(/\s+/g, '')
+        convertYn = einvoiceMasterData[0].CONVERT_YN == "Y" ? "Y" : "N"
+        cancelYn = einvoiceMasterData[0].CANCEL_YN == "Y" ? "Y" : "N"
       }
-    }
-    console.log("companyTaxcode ", companyTaxcode);
-    console.log("einvoiceMasterData ", einvoiceMasterData);
-    //let url_file_excel = "report/60/95/einvoices_template/Bornga/Bornga.xlsx";
 
-    this.masterDataArray = []
-        
-        reportPath = einvoiceMasterData[0].URL_FILE_EXCEL;//'report/60/95/einvoices_template/Bornga/Bornga.xlsx'
-        reportSheet = "Invoice"
-       
-        for(let i = 0; i < einvoiceMasterParam.length; i++)
-        {
-          //console.log(" Cell: einvoiceMasterParam[i].CELL_CODE ", einvoiceMasterParam[i].CELL_CODE + " - " + einvoiceMasterParam[i].DATA_MAPPING + "  - " + einvoiceMasterParam[i].TYPE );
-          this.masterDataArray.push({ Cell: einvoiceMasterParam[i].CELL_CODE , Info: [ einvoiceMasterParam[i].DATA_MAPPING ], Type: einvoiceMasterParam[i].TYPE }, )
+      let msThueCutter = async (msothueArray, taxCode, taxRow) => {
+        for (let i = 0; i < taxCode.length; i++) {
+          const e = taxCode[i];
+          this.masterDataArray.push({ Cell: `${msothueArray[i] + taxRow}`, Info: [e], Type: 2 }) //so thue
         }
-        if(einvoiceMasterData[0].URL_IMG_BG != "")
-        {
-          bgPath = `assets/images/einvoices_logo/${einvoiceMasterData[0].URL_IMG_BG}`;
-        }else
-        {
-          bgPath = "";
-        }
+      }
+      // console.log("companyTaxcode ", companyTaxcode);
+      // console.log("einvoiceMasterData ", einvoiceMasterData);
+      //let url_file_excel = "report/60/95/einvoices_template/Bornga/Bornga.xlsx";
 
-        if(einvoiceMasterData[0].URL_IMG_LOGO != "")
-        {
-          logos = [
-            { start: einvoiceMasterData[0].LOGO_START_ROW, width: 0.99 * dpi, height: 0.99 * dpi, logoStartCount: einvoiceMasterData[0].LOGO_START_COL, logoPath: `assets/images/einvoices_logo/${einvoiceMasterData[0].URL_IMG_LOGO}` },
-          ];
-        }
-        else{
-          logos = [];
-        }
-         
+      this.masterDataArray = []
 
-         for(let i = 0; i < einvoiceDetailsParam.length; i++)
-        {
-          detailCellFormat.push({  
-              startCell: einvoiceDetailsParam[i].STARTCELL, 
-              endCell: einvoiceDetailsParam[i].ENDCELL, 
-              cellType: einvoiceDetailsParam[i].TYPE, 
-              cellBorder: einvoiceDetailsParam[i].CELLBORDER, 
-              field: einvoiceDetailsParam[i].FIELD 
-            })
+      reportPath = einvoiceMasterData[0].URL_FILE_EXCEL_IMP;//'report/60/95/einvoices_template/Bornga/Bornga.xlsx'
+      reportSheet = "Invoice"
 
-        }
-        // // //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
-        // // //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
+      for (let i = 0; i < einvoiceMasterParam.length; i++) {
+        //console.log(" Cell: einvoiceMasterParam[i].CELL_CODE ", einvoiceMasterParam[i].CELL_CODE + " - " + einvoiceMasterParam[i].DATA_MAPPING + "  - " + einvoiceMasterParam[i].TYPE );
+        this.masterDataArray.push({ Cell: einvoiceMasterParam[i].CELL_CODE, Info: [einvoiceMasterParam[i].DATA_MAPPING], Type: einvoiceMasterParam[i].TYPE },)
+      }
+      if (einvoiceMasterData.length && einvoiceMasterData[0].URL_IMG_BG) {
+        bgPath = `${einvoiceMasterData[0].URL_IMG_BG}`;
+      } else {
+        bgPath = "";
+      }
 
-        //cấu trúc dòng detail
-        // thin//dotted//dashDot//hair//dashDotDot//slantDashDot//mediumDashed//mediumDashDotDot//mediumDashDot//medium//double//thick
-        // detailCellFormat = [
-        //   { startCell: 1, endCell: 2, cellType: 2, cellBorder: "dotted", field: "STT" },//từ cell bắt đầu tới cell kết thúc, type 2: cell đầu tiên
-        //   { startCell: 3, endCell: 9, cellType: 3, cellBorder: "dotted", field: "ITEM_NAME" },//từ cell bắt đầu tới cell kết thúc, type 3: cell kế tiếp cell đầu tiên,
-          
-        //   { startCell: 10, endCell: 10, cellType: 1, cellBorder: "dotted", field: "ITEM_UOM" },//type 1: còn lại
-        //   { startCell: 11, endCell: 13, cellType: 1, cellBorder: "dotted", field: "QTY" },//type 1: còn lại
-        //   //{ startCell: 13, endCell: 14, cellType: 1, cellBorder: "dotted", field: "BLANK" },//type 1: còn lại
-        //   { startCell: 14, endCell: 16, cellType: 1, cellBorder: "dotted", field: "U_PRICE" },//type 1: còn lại
-        //   //{ startCell: 17, endCell: 1, cellType: 1, cellBorder: "dotted", field: "BLANK" },//type 1: còn lại
-        //   { startCell: 17, endCell: 18, cellType: 1, cellBorder: "dotted", field: "NET_TR_AMT" },//type 1: còn lại
-        //   // { startCell: 21, endCell: 22, cellType: 1, cellBorder: "dotted", field: "BLANK" },//type 1: còn lại
-        // ]
-        
+      if (einvoiceMasterData.length && einvoiceMasterData[0].URL_IMG_LOGO) {
+        logos = [
+          {
+            start: einvoiceMasterData[0].LOGO_START_ROW,
+            width: 0.99 * dpi,
+            height: 0.99 * dpi,
+            logoStartCount: einvoiceMasterData[0].LOGO_START_COL,
+            logoPath: `${einvoiceMasterData[0].URL_IMG_LOGO}`
+          },
+        ];
+      }
+      else {
+        logos = [];
+      }
 
-        backgroundCell = einvoiceMasterData[0].BG_START_ROW
-        backgroundRow = einvoiceMasterData[0].BG_END_ROW
-        backgroundWidth = einvoiceMasterData[0].BG_WIDTH
-        backgroundHeight = einvoiceMasterData[0].BG_HEIGHT
+      console.log(" bgPath  ", bgPath, "logos  ", logos);
 
-        signCell = { start: einvoiceMasterData[0].SIGN_START_CELL, end: einvoiceMasterData[0].SIGN_END_CELL }
-        signBoxCell = einvoiceMasterData[0].SIGN_CELL_BOX
-        signByCell = { start: einvoiceMasterData[0].SIGN_BY_START_CELL, end: einvoiceMasterData[0].SIGN_BY_END_CELL }
-        countFromEndDetailToSignBox = einvoiceMasterData[0].RANGE_DETAILS_SIGN
+      for (let i = 0; i < einvoiceDetailsParam.length; i++) {
+        detailCellFormat.push({
+          startCell: einvoiceDetailsParam[i].STARTCELL,
+          endCell: einvoiceDetailsParam[i].ENDCELL,
+          cellType: einvoiceDetailsParam[i].TYPE,
+          cellBorder: einvoiceDetailsParam[i].CELLBORDER,
+          field: einvoiceDetailsParam[i].FIELD
+        })
 
-        _sourceRow = einvoiceMasterData[0].DETAILS_START_ROW//26
-        _sourceRow_2 = einvoiceMasterData[0].DETAILS_START_ROW//26
-        _sourceRow_3 = einvoiceMasterData[0].DETAILS_START_ROW//26
-        
-        headerRowCount = einvoiceMasterData[0].DETAILS_START_ROW == null ? 0 : einvoiceMasterData[0].DETAILS_START_ROW
-        lastPageRowsHeight = 18
+      }
+      // // //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
+      // // //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
+
+      //cấu trúc dòng detail
+      // thin//dotted//dashDot//hair//dashDotDot//slantDashDot//mediumDashed//mediumDashDotDot//mediumDashDot//medium//double//thick
+      // detailCellFormat = [
+      //   { startCell: 1, endCell: 2, cellType: 2, cellBorder: "dotted", field: "STT" },//từ cell bắt đầu tới cell kết thúc, type 2: cell đầu tiên
+      //   { startCell: 3, endCell: 9, cellType: 3, cellBorder: "dotted", field: "ITEM_NAME" },//từ cell bắt đầu tới cell kết thúc, type 3: cell kế tiếp cell đầu tiên,
+
+      //   { startCell: 10, endCell: 10, cellType: 1, cellBorder: "dotted", field: "ITEM_UOM" },//type 1: còn lại
+      //   { startCell: 11, endCell: 13, cellType: 1, cellBorder: "dotted", field: "QTY" },//type 1: còn lại
+      //   //{ startCell: 13, endCell: 14, cellType: 1, cellBorder: "dotted", field: "BLANK" },//type 1: còn lại
+      //   { startCell: 14, endCell: 16, cellType: 1, cellBorder: "dotted", field: "U_PRICE" },//type 1: còn lại
+      //   //{ startCell: 17, endCell: 1, cellType: 1, cellBorder: "dotted", field: "BLANK" },//type 1: còn lại
+      //   { startCell: 17, endCell: 18, cellType: 1, cellBorder: "dotted", field: "NET_TR_AMT" },//type 1: còn lại
+      //   // { startCell: 21, endCell: 22, cellType: 1, cellBorder: "dotted", field: "BLANK" },//type 1: còn lại
+      // ]
+
+
+      backgroundCell = einvoiceMasterData[0].BG_END_ROW
+      backgroundRow = einvoiceMasterData[0].BG_START_ROW
+      backgroundWidth = einvoiceMasterData[0].BG_WIDTH
+      backgroundHeight = einvoiceMasterData[0].BG_HEIGHT
+
+      signCell = { start: einvoiceMasterData[0].SIGN_START_CELL, end: einvoiceMasterData[0].SIGN_END_CELL }
+      signBoxCell = einvoiceMasterData[0].SIGN_CELL_BOX
+      signByCell = { start: einvoiceMasterData[0].SIGN_BY_START_CELL, end: einvoiceMasterData[0].SIGN_BY_END_CELL }
+      countFromEndDetailToSignBox = einvoiceMasterData[0].RANGE_DETAILS_SIGN
+
+      _sourceRow = einvoiceMasterData[0].DETAILS_START_ROW//26
+      _sourceRow_2 = einvoiceMasterData[0].DETAILS_START_ROW//26
+      _sourceRow_3 = einvoiceMasterData[0].DETAILS_START_ROW//26
+
+      headerRowCount = einvoiceMasterData[0].DETAILS_START_ROW == null ? 0 : einvoiceMasterData[0].DETAILS_START_ROW
+      lastPageRowsHeight = 18
 
       // console.log("this.masterDataArray ", this.masterDataArray);
-    
-   
-      if (this.masterDataArray.length > 0){
+
+
+      if (this.masterDataArray.length > 0) {
         // console.log("masterDataArray ", this.masterDataArray);
         resultExcel = await exceljs.ExcelBuilder(
           p_crt_by, einvoiceMasterData, einvoiceDetailData, '',
           _sourceRow, _sourceRow_2, _sourceRow_3, headerRowCount, countFromEndDetailToSignBox,
           lastPageRowsHeight, reportPath, reportSheet, signPath, cancelPath, bgPath,
           this.masterDataArray, detailCellFormat, logos, signCell, signBoxCell, signByCell, cancelYn,
-          backgroundCell,backgroundRow, backgroundWidth, backgroundHeight)
+          backgroundCell, backgroundRow, backgroundWidth, backgroundHeight)
       }
-      
-  
-    return resultExcel
+
+
+      return resultExcel
 
     } catch (error) {
       console.log(error)

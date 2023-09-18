@@ -392,9 +392,6 @@ export default {
     statusList: [],
     txtSerialNo: "",
     pdfUrl: "",
-    leftCols: 5,
-    showHilden: true,
-    indexTab: 0,
     typeInvoiceList: [],
     invoiceKind: [],
     typeTableList: [],
@@ -407,8 +404,6 @@ export default {
     imp_MultipleTemp: true,
     selTemplate: [],
     cboTemplate: [],
-    selInvoiceType: "",
-    cboInvoiceType: [],
     copyToDialog: false,
     fromNoList: [],
     lstFrom_No_From: "",
@@ -422,8 +417,6 @@ export default {
     selectedCompanyFrom: "",
     accept: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel",
     url_template: "",
-    txtParamCodeMaster: "",
-    txtParamCodeDetails: "",
     dataIssued: [],
     dataTemp: [],
 
@@ -633,6 +626,9 @@ export default {
         let lArray = "";
         this.$refs.grdEinvoiceIssue.onSet("SERIAL_NO", args.row.INVOICE_KIND + year + args.row.SERIAL_NO_2 + lArray, true, args.rowindex);
       }
+      if(args.datafield == "SERIAL_NO"){
+        this.$refs.grdEinvoiceIssue.onSet("SERIAL_NO", args.row.SERIAL_NO.toUpperCase(), true, args.rowindex);
+      }
     },
     renderImg(imgUrl, isBase64 = false) {
       if (isBase64) {
@@ -667,19 +663,12 @@ export default {
       return _path;
     },
     async selectedFileLOGO(event) {
-      // console.log("selectedFileLOGO", event);
       await this.$nextTick();
       this.fileSaveLOGO = null;
       const self = this;
       const files = event.target.files;
       if (files[0] !== undefined) {
-        //Lấy được thông tin Width, Height;
-        var img = new Image();
-        img.src = window.URL.createObjectURL(files[0]);
-        img.onload = function () {
-          self.MasterInfo.LOGO_WIDTH = this.naturalWidth;
-          self.MasterInfo.LOGO_HEIGHT = this.naturalHeight;
-        };
+        
         /////////////////
         const fr = new FileReader();
         fr.readAsDataURL(files[0]);
@@ -688,6 +677,18 @@ export default {
           this.imageLOGO = this.renderImg(fr.result, true);
           this.fileSaveLOGO = files[0];
         });
+
+        //Lấy được thông tin Width, Height;
+        // var img = new Image();
+        // img.src = window.URL.createObjectURL(files[0]);
+        // img.onload = function () {
+        //   // self.MasterInfo.LOGO_WIDTH = this.naturalWidth; /////Cách 2
+        //   // self.MasterInfo.LOGO_HEIGHT = this.naturalHeight;/////Cách 2
+        //   self.MasterInfo.LOGO_WIDTH = "100"; 
+        //   self.MasterInfo.LOGO_HEIGHT = "80";
+        //   self.MasterInfo.LOGO_START_ROW = "1.7";
+        //   self.MasterInfo.LOGO_START_COL = "0.5";
+        // };
       }
     },
     async selectedFileBG(event) {
@@ -696,13 +697,6 @@ export default {
       const self = this;
       const files = event.target.files;
       if (files[0] !== undefined) {
-        //Lấy được thông tin Width, Height;
-        var img = new Image();
-        img.src = window.URL.createObjectURL(files[0]);
-        img.onload = function () {
-          self.MasterInfo.BG_WIDTH = this.naturalWidth;
-          self.MasterInfo.BG_HEIGHT = this.naturalHeight;
-        };
         ///////////////
         const fr = new FileReader();
         fr.readAsDataURL(files[0]);
@@ -710,16 +704,26 @@ export default {
           this.imageBG = this.renderImg(fr.result, true);
           this.fileSaveBG = files[0];
         });
+        //Lấy được thông tin Width, Height;
+        // var img = new Image();
+        // img.src = window.URL.createObjectURL(files[0]);
+        // img.onload = function () {
+        //   self.MasterInfo.BG_WIDTH = "750";
+        //   self.MasterInfo.BG_HEIGHT = "600";
+        //   self.MasterInfo.BG_START_ROW = "15";
+        //   self.MasterInfo.BG_START_COL = "1.5";
+        // };
       }
     },
     selectImageBG() {
+      this.$refs.fileBG.value = null;
       this.$refs.fileBG.click();
     },
     selectImageLOGO() {
+      this.$refs.fileLOGO.value = null;
       this.$refs.fileLOGO.click();
     },
     async cellClickCell(cell) {
-      // console.log("file: 6095055.vue:916 [vng-304] cellClickCell [vng-304] cell:", cell);
       if (cell.data.PK != this.issue_pk) {
         this.issue_pk = cell.data.PK;
         this.dataIssued = cell.data;
@@ -873,7 +877,6 @@ export default {
           switch (action) {
             case "select":
               this.MasterInfo = { ...res };
-              console.log("file: 6095055.vue:1100 [vng-304] awaitthis._dsoCall [vng-304] res:", res);
               this.MasterInfo._rowstatus = "u";
               ////   Bộ data để view pdf
               this.dataTemp = {
@@ -890,6 +893,9 @@ export default {
                 bg_width: res.BG_WIDTH,
                 bg_height: res.BG_HEIGHT,
               };
+              this.MasterInfo.LOGO_START_ROW = Number(this.MasterInfo.LOGO_START_ROW).toFixed(2);
+              
+
               this.itemTemplatesPK = res.PK;
               this.url_template = res.URL_FILE_EXCEL;
               ///  Load ra được hình ảnh////

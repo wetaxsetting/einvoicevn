@@ -679,6 +679,8 @@ export default {
         img.onload = function () {
           self.MasterInfo.LOGO_WIDTH = this.naturalWidth;
           self.MasterInfo.LOGO_HEIGHT = this.naturalHeight;
+          self.MasterInfo.LOGO_START_ROW = "1.7";
+          self.MasterInfo.LOGO_START_COL = "0.5";
         };
         /////////////////
         const fr = new FileReader();
@@ -702,6 +704,8 @@ export default {
         img.onload = function () {
           self.MasterInfo.BG_WIDTH = this.naturalWidth;
           self.MasterInfo.BG_HEIGHT = this.naturalHeight;
+          self.MasterInfo.BG_START_ROW = "15";
+          self.MasterInfo.BG_START_COL = "1.5";
         };
         ///////////////
         const fr = new FileReader();

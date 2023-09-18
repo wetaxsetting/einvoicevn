@@ -5645,7 +5645,7 @@ class EInvoiceController {
         tr_code_cqt: tr_code_cqt
       };
 
-       console.log("para_value  ", para_value)
+      //  console.log("para_value  ", para_value)
 
       const rtnValue = await DBService.ExecuteSQLBlob(
         `BEGIN ei_sel_re_order_info (                   :tax_code,
@@ -5663,7 +5663,7 @@ class EInvoiceController {
         p_language,
         p_crt_by
       );
-      console.log("rtnValue  ", rtnValue);
+      // console.log("rtnValue  ", rtnValue);
       tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
       if (rtnValue.p_rtn_cur[0].STATUS == "OK") {
         let invoice_data = 
@@ -5688,8 +5688,8 @@ class EInvoiceController {
           p_crt_by
         );
 
-        console.log("res_send_mail  ", res_send_mail.data);
-        console.log("res_send_mail  ", res_send_mail.data.success);
+        // console.log("res_send_mail  ", res_send_mail.data);
+        // console.log("res_send_mail  ", res_send_mail.data.success);
 
         if (res_send_mail.data.success) {
           const para_inv_st = {
@@ -5726,7 +5726,7 @@ class EInvoiceController {
             content: body,
           };
 
-          console.log("data_r  ", data_r);
+          // console.log("data_r  ", data_r);
 
           return response.send(Utils.response(true, `Send order to invoice was Successfully!`, data_r));
 
@@ -5751,7 +5751,7 @@ class EInvoiceController {
             security_code: "1234567bac",
             status_code: "0",
             status_name: "Sent Faile",
-            user_name: data.data_invoice.buyer_comp_name,
+            user_name: rtnValue.p_rtn_cur[0].BUYER_COMP_NAME,
             send_date: res_send_mail.data.data.date_send,
             send_time: res_send_mail.data.data.time_send,
             mail_form: res_send_mail.data.data.mail_from,
@@ -8222,14 +8222,14 @@ class EInvoiceController {
     //  console.log("base64PDf  ", url_pdf);
 
 
-    // let EiExcels = new EiPosExcelHandlerAuto();
-    // let url_pdf = await EiExcels.getEinvoice(tei_wt_sale_bill_pk, p_language, p_crt_by);
-    // console.log("base64PDf  ", url_pdf);
+    let EiExcels = new EiPosExcelHandlerAuto();
+    let url_pdf = await EiExcels.getEinvoice(tei_wt_sale_bill_pk, p_language, p_crt_by);
+    console.log("base64PDf  ", url_pdf);
 
-    // let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + tei_wt_sale_bill_pk + "&proc=" + "EI_SEL_XML_POS_EINVOICE" + "&token="); //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
-    // let url_xml = re_url_xml.data;
-    // console.log("base64XXML  ", url_xml);
-    let url_xml = "",url_pdf = "";
+    let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + tei_wt_sale_bill_pk + "&proc=" + "EI_SEL_XML_POS_EINVOICE" + "&token="); //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
+    let url_xml = re_url_xml.data;
+    console.log("base64XXML  ", url_xml);
+    //let url_xml = "",url_pdf = "";
     let subject = `${data.data_invoice.seller_comp_name}[Thông báo phát hành HĐĐT][${data.data_invoice.form_no}][${data.data_invoice.serial_no}][${data.data_invoice.invoice_no}]`;
     let body = `<html>
                             <body>

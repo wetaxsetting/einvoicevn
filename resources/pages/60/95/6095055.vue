@@ -709,8 +709,8 @@ export default {
         var img = new Image();
         img.src = window.URL.createObjectURL(files[0]);
         img.onload = function () {
-          self.MasterInfo.BG_WIDTH = "800";
-          self.MasterInfo.BG_HEIGHT = "60";
+          self.MasterInfo.BG_WIDTH = "750";
+          self.MasterInfo.BG_HEIGHT = "600";
           self.MasterInfo.BG_START_ROW = "15";
           self.MasterInfo.BG_START_COL = "1.5";
         };

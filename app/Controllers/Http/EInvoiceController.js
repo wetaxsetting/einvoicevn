@@ -5707,7 +5707,7 @@ class EInvoiceController {
             p_language,
             p_crt_by
           );
-          console.log("rtnValueSendMail  ", rtnValueSendMail);
+          //console.log("rtnValueSendMail  ", rtnValueSendMail);
 
           let data_r = {
             link_invoice_preview: "https://einvoicevn.com/lookup",
@@ -5728,7 +5728,7 @@ class EInvoiceController {
 
           // console.log("data_r  ", data_r);
 
-          return response.send(Utils.response(true, `Send order to invoice was Successfully!`, data_r));
+          return response.send(Utils.response(true, `ReSend order to invoice was Successfully!`, data_r));
 
         } else {
           const para_inv_st = {

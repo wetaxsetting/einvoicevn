@@ -86,11 +86,11 @@
             </v-badge>
           </v-col>
           <v-col md="3" class="d-flex justify-end">
-            <!-- <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('template_file')" :disabled="!item_pk" @onclick="getImpFile" /> -->
-            <!-- <BaseButton btn_type="icon" icon_type="view" :btn_text="$t('view')" :disabled="!item_pk" @onclick="onClickButton('VIEW')" /> -->
-            <!-- <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="!item_pk" @onclick="onClickButton('NEW_S')" /> -->
-            <!-- <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="!item_pk" @onclick="onClickButton('DELETE_S')" /> -->
-            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="!item_pk" @onclick="onClickButton('SAVE_TEMPLATE')" />
+            <!-- <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('template_file')" :disabled="!issue_pk" @onclick="getImpFile" /> -->
+            <!-- <BaseButton btn_type="icon" icon_type="view" :btn_text="$t('view')" :disabled="!issue_pk" @onclick="onClickButton('VIEW')" /> -->
+            <!-- <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="!issue_pk" @onclick="onClickButton('NEW_S')" /> -->
+            <!-- <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" :disabled="!issue_pk" @onclick="onClickButton('DELETE_S')" /> -->
+            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" :disabled="!issue_pk" @onclick="onClickButton('SAVE_TEMPLATE')" />
           </v-col>
         </v-row>
         <BaseTabs>
@@ -378,7 +378,7 @@ export default {
     imageBG: "",
     isShowLeft: true,
     showLoading: false,
-    item_pk: null,
+    issue_pk: null,
     itemTemplatePK: "",
     itemTemplatesPK: "",
     file: null,
@@ -474,13 +474,12 @@ export default {
     fileSaveLOGO: null,
     folder: "",
     fileSaveBG: null,
-    pathImgTep: require("@/assets/images/no_image.png"),
   }),
   /*############### created #######################*/
   async created() {
     console.clear();
-    this.imageBG = this.renderImg("assets/images/no_image.png");
     this.imageLOGO = this.renderImg("assets/images/no_image.png");
+    this.imageBG = this.renderImg("assets/images/no_background.png");
     await this.getListCodes("company");
     await this.getListCodes("serial_no");
     await this.getListCodes("form_no");
@@ -627,7 +626,6 @@ export default {
   mounted() {},
   /*############### methods #######################*/
   methods: {
-    // async onAfterLoad(){ await this.dsoMaster('select')},
     rowupdated(args, data, isUpdated) {
       if (data._rowstatus == "i" && (args.datafield == "INVOICE_KIND" || args.datafield == "SERIAL_NO_2")) {
         const date = new Date();
@@ -672,12 +670,21 @@ export default {
       // console.log("selectedFileLOGO", event);
       await this.$nextTick();
       this.fileSaveLOGO = null;
+      const self = this;
       const files = event.target.files;
       if (files[0] !== undefined) {
+        //Lấy được thông tin Width, Height;
+        var img = new Image();
+        img.src = window.URL.createObjectURL(files[0]);
+        img.onload = function () {
+          self.MasterInfo.LOGO_WIDTH = this.naturalWidth;
+          self.MasterInfo.LOGO_HEIGHT = this.naturalHeight;
+        };
+        /////////////////
         const fr = new FileReader();
         fr.readAsDataURL(files[0]);
         fr.addEventListener("load", () => {
-          console.log("fr.result", fr.result);
+          // console.log("fr.result", fr.result);
           this.imageLOGO = this.renderImg(fr.result, true);
           this.fileSaveLOGO = files[0];
         });
@@ -686,8 +693,17 @@ export default {
     async selectedFileBG(event) {
       await this.$nextTick();
       this.fileSaveBG = null;
+      const self = this;
       const files = event.target.files;
       if (files[0] !== undefined) {
+        //Lấy được thông tin Width, Height;
+        var img = new Image();
+        img.src = window.URL.createObjectURL(files[0]);
+        img.onload = function () {
+          self.MasterInfo.BG_WIDTH = this.naturalWidth;
+          self.MasterInfo.BG_HEIGHT = this.naturalHeight;
+        };
+        ///////////////
         const fr = new FileReader();
         fr.readAsDataURL(files[0]);
         fr.addEventListener("load", () => {
@@ -704,19 +720,14 @@ export default {
     },
     async cellClickCell(cell) {
       // console.log("file: 6095055.vue:916 [vng-304] cellClickCell [vng-304] cell:", cell);
-      if(cell.data.PK != this.item_pk)
-      {
-        this.item_pk = cell.data.PK;
+      if (cell.data.PK != this.issue_pk) {
+        this.issue_pk = cell.data.PK;
         this.dataIssued = cell.data;
 
         if (cell.data._rowstatus == "i") {
-          // this.MasterInfo.TEMPLATE_CD = "1";
-          // this.MasterInfo.SERIAL_NO = cell.data.SERIAL_NO;
-          // this.MasterInfo.FORM_NO = cell.data.FORM_NO;
-          // this.MasterInfo.FROM_NO = cell.data.FROM_NO;
           this.MasterInfo.USE_YN = cell.data.USE_YN;
         } else {
-          this.item_pk = cell.data.PK;
+          this.issue_pk = cell.data.PK;
           this.MasterInfo.PK = cell.data.TEI_TEMPLATE_PK;
           await this.dsoMaster("select");
         }
@@ -747,7 +758,7 @@ export default {
               this.showLoading = true;
               let res_url = await this.$axios.$post("/einvoice/general-url-pdf-template", {
                 responseType: "json",
-                data: this.item_pk,
+                data: this.issue_pk,
               });
               this.urlPDF = null;
               if (res_url.success) {
@@ -892,7 +903,7 @@ export default {
                 this.showLoading = true;
                 let res_url = await this.$axios.$post("/einvoice/general-url-pdf-template", {
                   responseType: "json",
-                  data: this.item_pk,
+                  data: this.issue_pk,
                 });
                 this.urlPDF = null;
                 if (res_url.success) {

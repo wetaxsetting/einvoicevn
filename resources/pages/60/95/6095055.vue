@@ -85,7 +85,10 @@
               <v-checkbox v-model="MasterInfo.USE_YN" color="red darken-3" true-value="Y" false-value="N" hide-details class="my-0 py-0"></v-checkbox>
             </v-badge>
           </v-col>
-          <v-col md="3" class="d-flex justify-end">
+          <v-col lg="2">
+            <b style="color: red">{{ MasterInfo.SERIAL_NO }}</b>
+          </v-col>
+          <v-col md="1" class="d-flex justify-end">
             <!-- <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('template_file')" :disabled="!issue_pk" @onclick="getImpFile" /> -->
             <!-- <BaseButton btn_type="icon" icon_type="view" :btn_text="$t('view')" :disabled="!issue_pk" @onclick="onClickButton('VIEW')" /> -->
             <!-- <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" :disabled="!issue_pk" @onclick="onClickButton('NEW_S')" /> -->
@@ -101,7 +104,7 @@
                   <v-col lg="12">
                     <v-container fluid>
                       <v-row no-gutters align="center" justify="center">
-                        <img ref="photoLogo" :src="imageLOGO" :width="200" :height="200" @click="selectImageLOGO" />
+                        <v-img contain ref="photoLogo" :src="imageLOGO" :max-height="200" :width="width" :height="height" @click="selectImageLOGO" />
                         <input type="file" accept="image/png, image/jpeg, image/bmp" v-show="false" ref="fileLOGO" @change="selectedFileLOGO" />
                       </v-row>
                       <v-row>
@@ -160,7 +163,7 @@
                   <v-col lg="12">
                     <v-container fluid>
                       <v-row no-gutters align="center" justify="center">
-                        <img ref="photoBG" :src="imageBG" :width="200" :height="200" @click="selectImageBG" />
+                        <v-img contain ref="photoBG" :src="imageBG" :max-height="200" :width="width" :height="height" @click="selectImageBG" />
                         <input type="file" accept="image/png, image/jpeg, image/bmp" v-show="false" ref="fileBG" @change="selectedFileBG" />
                       </v-row>
                       <v-row>
@@ -447,8 +450,8 @@ export default {
       SIGN_RANGE_DETAILS: "",
 
       TEMPLATE_NM: "",
+      MasterInfo: "",
       SERIAL_NO: "",
-      FORM_NO: "",
       FORM_NO: "",
       FROM_NO: "",
       USE_YN: "",
@@ -467,6 +470,8 @@ export default {
     fileSaveLOGO: null,
     folder: "",
     fileSaveBG: null,
+    width: null,
+    height: null
   }),
   /*############### created #######################*/
   async created() {
@@ -626,7 +631,7 @@ export default {
         let lArray = "";
         this.$refs.grdEinvoiceIssue.onSet("SERIAL_NO", args.row.INVOICE_KIND + year + args.row.SERIAL_NO_2 + lArray, true, args.rowindex);
       }
-      if(args.datafield == "SERIAL_NO"){
+      if (args.datafield == "SERIAL_NO") {
         this.$refs.grdEinvoiceIssue.onSet("SERIAL_NO", args.row.SERIAL_NO.toUpperCase(), true, args.rowindex);
       }
     },
@@ -668,7 +673,6 @@ export default {
       const self = this;
       const files = event.target.files;
       if (files[0] !== undefined) {
-        
         /////////////////
         const fr = new FileReader();
         fr.readAsDataURL(files[0]);
@@ -678,17 +682,27 @@ export default {
           this.fileSaveLOGO = files[0];
         });
 
-        //Lấy được thông tin Width, Height;
-        // var img = new Image();
-        // img.src = window.URL.createObjectURL(files[0]);
-        // img.onload = function () {
-        //   // self.MasterInfo.LOGO_WIDTH = this.naturalWidth; /////Cách 2
-        //   // self.MasterInfo.LOGO_HEIGHT = this.naturalHeight;/////Cách 2
-        //   self.MasterInfo.LOGO_WIDTH = "100"; 
-        //   self.MasterInfo.LOGO_HEIGHT = "80";
-        //   self.MasterInfo.LOGO_START_ROW = "1.7";
-        //   self.MasterInfo.LOGO_START_COL = "0.5";
-        // };
+        ////Lấy được thông tin Width, Height;
+        var img = new Image();
+        img.src = window.URL.createObjectURL(files[0]);
+        img.onload = function () {
+          let width = 0, height = 0;
+          width = this.naturalWidth;
+          height = this.naturalHeight;
+          //resize logo
+          if (width > height && width > 100) {
+            width = 100;
+            height = 100 * width / height;
+          }
+          if (height > width && height > 100) {
+            height = 100;
+            width = 100 * height/ width ;
+          }
+          self.MasterInfo.LOGO_WIDTH = width; /////Cách 2
+          self.MasterInfo.LOGO_HEIGHT = height;/////Cách 2
+          self.MasterInfo.LOGO_START_ROW = "1.7";
+          self.MasterInfo.LOGO_START_COL = "0.5";
+        };
       }
     },
     async selectedFileBG(event) {
@@ -705,14 +719,27 @@ export default {
           this.fileSaveBG = files[0];
         });
         //Lấy được thông tin Width, Height;
-        // var img = new Image();
-        // img.src = window.URL.createObjectURL(files[0]);
-        // img.onload = function () {
-        //   self.MasterInfo.BG_WIDTH = "750";
-        //   self.MasterInfo.BG_HEIGHT = "600";
-        //   self.MasterInfo.BG_START_ROW = "15";
-        //   self.MasterInfo.BG_START_COL = "1.5";
-        // };
+        var img = new Image();
+        img.src = window.URL.createObjectURL(files[0]);
+        img.onload = function () {
+
+          let width = 0, height = 0;
+          width = this.naturalWidth;
+          height = this.naturalHeight;
+          //resize logo
+          if (width > height && width > 1000) {
+            width = 756;
+            height = 1000 * width / height;
+          }
+          if (height > width && height > 1000) {
+            height = 756;
+            width = 1000 * height/ width ;
+          }
+          self.MasterInfo.BG_WIDTH = width;
+          self.MasterInfo.BG_HEIGHT = height;
+          self.MasterInfo.BG_START_ROW = "15";
+          self.MasterInfo.BG_START_COL = "1.5";
+        };
       }
     },
     selectImageBG() {
@@ -724,9 +751,13 @@ export default {
       this.$refs.fileLOGO.click();
     },
     async cellClickCell(cell) {
+      // console.log("file: 6095055.vue:727 [vng-304] cellClickCell [vng-304] cell:", cell);
+      // this.MasterInfo.SERIAL_NO = cell.data.SERIAL_NO;
+      // console.log("file: 6095055.vue:756 [vng-304] cellClickCell [vng-304] this.MasterInfo.SERIAL_NO:", this.MasterInfo.SERIAL_NO)
       if (cell.data.PK != this.issue_pk) {
         this.issue_pk = cell.data.PK;
         this.dataIssued = cell.data;
+        
 
         if (cell.data._rowstatus == "i") {
           this.MasterInfo.USE_YN = cell.data.USE_YN;
@@ -734,6 +765,7 @@ export default {
           this.issue_pk = cell.data.PK;
           this.MasterInfo.PK = cell.data.TEI_TEMPLATE_PK;
           await this.dsoMaster("select");
+          // this.MasterInfo.SERIAL_NO = cell.data.SERIAL_NO;
         }
       }
     },
@@ -894,7 +926,6 @@ export default {
                 bg_height: res.BG_HEIGHT,
               };
               this.MasterInfo.LOGO_START_ROW = Number(this.MasterInfo.LOGO_START_ROW).toFixed(2);
-              
 
               this.itemTemplatesPK = res.PK;
               this.url_template = res.URL_FILE_EXCEL;
@@ -1062,8 +1093,6 @@ export default {
           const rtnTemplates = await this._dsoCall(dsoTemplates, "select", false);
 
           this.templateID_list = [...rtnTemplates];
-
-          console.log("file: 6095055.vue:1038 [vng-304] getListCodes [vng-304] this.templateID_list:", this.templateID_list);
           break;
       }
     },

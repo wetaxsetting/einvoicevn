@@ -5817,20 +5817,20 @@ class EInvoiceController {
         const file_url_img = `/resources/assets/images/einvoices_logo/${seller_comp_taxcode}`;
         const file_url_excel = `/resources/report/60/95/einvoices_template/${seller_comp_taxcode}`;
 
-        console.log("file_url_img  ", file_url_img);
+        // console.log("file_url_img  ", file_url_img);
 
-        let savePath = Helpers.appRoot(file_url_img);
+        // let savePath = Helpers.appRoot(file_url_img);
        
-            await logo_image.move(savePath, {
-                name: "aa.png",
-                overwrite: true
-            });
+        //     await logo_image.move(savePath, {
+        //         name: "aa.png",
+        //         overwrite: true
+        //     });
         
         
-        console.log("savePath  ", file_url_img);
+        // console.log("savePath  ", file_url_img);
 
-        //let file_path_logo = await Utils.putExcelRootPath(logo_image, file_url_img, "WETAXT");
-        //let file_path_bg = await Utils.putExcelRootPath(background_image, file_url_img, "WETAXT");
+        let file_path_logo = await Utils.putExcelRootPath(logo_image, file_url_img, "WETAXT");
+        let file_path_bg = await Utils.putExcelRootPath(background_image, file_url_img, "WETAXT");
 
 
           // const type = typeof file;

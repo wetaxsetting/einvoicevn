@@ -955,7 +955,6 @@ export default {
                 bg_width: res.BG_WIDTH,
                 bg_height: res.BG_HEIGHT,
               };
-              this.MasterInfo.LOGO_START_ROW = Number(this.MasterInfo.LOGO_START_ROW).toFixed(2);
 
               this.itemTemplatesPK = res.PK;
               this.url_template = res.URL_FILE_EXCEL;

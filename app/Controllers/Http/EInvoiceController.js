@@ -5781,6 +5781,363 @@ class EInvoiceController {
     }
   }
 
+  async weTaxSendCompanyTemplate({ request, response, auth }) {
+    try {
+      var p_language = request.header("accept-language", "ENG");
+      var p_crt_by = "";
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const { seller_comp_taxcode,
+              symbol_type,
+              form_no,
+              serial_no,
+              template_id,
+              start_date,
+              start_number,
+              preview,
+            } = request.all();
+      const template_excel = request.file("template_excel");
+      const logo_image = request.file("logo_image");
+      const background_image = request.file("background_image");
+      // const seller_comp_taxcode = request.tex   .file("seller_comp_taxcode");
+      // const symbol_type = request.file("symbol_type");
+      // const form_no = request.file("form_no");
+      // const serial_no = request.file("serial_no");
+      // const template_id = request.file("template_id");
+      // const start_date = request.file("start_date");
+      // const start_number = request.file("start_number");
+
+      //const outputPath = `F:/NODE/einvoicevn.com/tmp/Bornga.xlsx`
+      //const fileContent = await Utils.readFile(template_excel.tmpPath);
+
+      // console.log("template_excel  ", template_excel);
+      // console.log("logo_image  ", logo_image);
+      // console.log("template_excel  ", background_image);
+
+      if(preview == "N")
+      {
+        const file_url_img = `/resources/assets/images/einvoices_logo/${seller_comp_taxcode}`;
+        const file_url_excel = `/resources/report/60/95/einvoices_template/${seller_comp_taxcode}`;
+
+        console.log("file_url_img  ", file_url_img);
+
+        let savePath = Helpers.appRoot(file_url_img);
+       
+            await logo_image.move(savePath, {
+                name: "aa.png",
+                overwrite: true
+            });
+        
+        
+        console.log("savePath  ", file_url_img);
+
+        //let file_path_logo = await Utils.putExcelRootPath(logo_image, file_url_img, "WETAXT");
+        //let file_path_bg = await Utils.putExcelRootPath(background_image, file_url_img, "WETAXT");
+
+
+          // const type = typeof file;
+          // const clientName =
+          //     type === "string" ?
+          //         file
+          //             .split("?")[0]
+          //             .split(".")
+          //             .pop() :
+          //         file.clientName;
+          // let path_result = ``;
+          // let path = ``;
+
+          // console.log("type_insert =>>  " + type_insert  +  "folder  ===> " + folder + " clientName ==>  " + clientName)
+          // if (type_insert == "EXCEL" || type_insert == "TEMPLATE" || type_insert == "TEMPLATE_C" || type_insert == "EXCEL_C") {
+          //     path_result = `/resources/report/${folder}/${clientName}`;
+          //     path = `/resources/report/${folder}`;
+          // } else {
+          //     path_result = `${folder}/${clientName}`;
+          //     path = `/resources/${folder}`;
+          // }
+
+
+          // let savePath = Helpers.appRoot(path);
+          // if (type !== "string") {
+          //     await file.move(savePath, {
+          //         name: clientName,
+          //         overwrite: true
+          //     });
+          // }
+
+    
+
+
+
+
+
+      console.log("file_path_logo  ", file_path_logo);
+      console.log("file_path_bg  ", file_path_bg);
+
+        const para_value = {
+          p_seller_comp_seller : seller_comp_taxcode,
+          p_serial_no2         : symbol_type,
+          p_form_no            : form_no,
+          p_serial_no          : serial_no,
+          p_from_dt            : start_date,
+          p_start_num          : start_number  ,
+          p_template_cd        : template_id, 
+          p_url_img_logo       : file_path_logo,
+          p_url_img_bg         : "",//file_path_bg,
+      };
+
+
+      const rtnValue = await DBService.ExecuteSQLBlob(
+        `BEGIN ei_upd_template_comp (                   :p_seller_comp_seller,
+                                                        :p_serial_no2,
+                                                        :p_form_no,
+                                                        :p_serial_no,
+                                                        :p_from_dt,
+                                                        :p_start_num,
+                                                        :p_template_cd,
+                                                        :p_url_img_logo,
+                                                        :p_url_img_bg,
+                                                        :p_language, 
+                                                        :p_crt_by, 
+                                                        :p_rtn_cur); END;`,
+        para_value,
+        p_language,
+        p_crt_by
+      );
+        console.log("para_value  ", rtnValue)
+
+      return response.send(Utils.response(false, "missing_folder_parameter", null));
+      }else
+      {
+
+      }
+
+
+      // let { folder, proc, para, type_insert } = request.all();
+      // if (!folder) {
+      //   return response.send(Utils.response(false, "missing_folder_parameter", null));
+      // }
+
+      // // console.log("folder " + folder + " file_ext  " + file_ext);
+      // let file_path = await Utils.putExcelRootPath(file, folder, type_insert);
+      // let result;
+
+      // // console.log("para  ", para);
+
+      // const dbInfo = Utils.handleDBInfo(user);
+
+      // if (file_path != "") {
+      //   const params = JSON.parse(para);
+      //   if (type_insert === "EXCEL" || type_insert === "TEMPLATE" || type_insert === "TEMPLATE_C" || type_insert === "EXCEL_C" ) {
+      //     file_path = file_path.replace("/resources/", "");
+      //   } else {
+      //     file_path = file_path.replace(folder + "/", "");
+      //   }
+      //   // console.log("params  ", params);
+      //   result = await DBService.ExecuteSQLBlob(
+      //     `BEGIN ${proc}(:p_tei_company_pk,
+      //                               :p_tei_template_pk,
+      //                               :p_type_update, 
+      //                               :p_url,
+      //                               :p_language,
+      //                               :p_crt_by,
+      //                               :p_rtn_cur); END;`,
+      //     {
+      //       p_tei_company_pk: params[0],
+      //       p_tei_template_pk: params[1],
+      //       p_type_update: type_insert,
+      //       p_url: file_path,
+      //     },
+      //     p_language,
+      //     p_crt_by,
+      //     dbInfo
+      //   );
+      // }
+
+      //const base64String = template_excel; // Replace with your actual Base64 string
+      //console.log("template_excel  ", template_excel);
+      //console.log("logo_image  ", logo_image);
+      //console.log("background_image  ", background_image);
+
+      //console.log("seller_comp_taxcode  ", seller_comp_taxcode);
+      // console.log("symbol_type  ", symbol_type);
+      // console.log("form_no  ", form_no);
+      // console.log("serial_no  ", serial_no);
+      // console.log("template_id  ", template_id);
+      // console.log("base64String  ", base64String);
+      // console.log("start_date  ", start_date);
+      // console.log("start_number  ", start_number);
+
+      //return await fs.readFileSync(file_path);
+
+      //const outputPath = `F:/NODE/einvoicevn.com/tmp/Bornga.xlsx`; // Specify the desired output file name and extension
+      
+      // Decode the Base64 string to binary data
+      //const binaryData = Buffer.from(base64String, 'base64');
+          
+      //console.log("binaryData  ", binaryData);
+      // fs.writeFile(outputPath, binaryData, (err) => {
+      //   if (err) {
+      //     console.error('Error writing file:', err);
+      //   } else {
+      //     console.log(`File ${outputPath} has been successfully created.`);
+      //   }
+      // });
+    
+      
+      
+      
+      
+      // console.log("data  ", infor_send_mail);
+      // let tei_wt_sale_bill_pk = 0;
+      // const para_value = {
+      //   tax_code: tax_code,
+      //   sale_date: sale_date,
+      //   store_code: store_code,
+      //   store_name: store_name,
+      //   pos_no: pos_no,
+      //   bill_no: bill_no,
+      //   key: key,
+      //   tr_code_cqt: tr_code_cqt
+      // };
+
+      // //  console.log("para_value  ", para_value)
+
+      // const rtnValue = await DBService.ExecuteSQLBlob(
+      //   `BEGIN ei_sel_re_order_info (                   :tax_code,
+      //                                                   :sale_date,
+      //                                                   :store_code,
+      //                                                   :store_name,
+      //                                                   :pos_no,
+      //                                                   :bill_no,
+      //                                                   :key,
+      //                                                   :tr_code_cqt,
+      //                                                   :p_language, 
+      //                                                   :p_crt_by, 
+      //                                                   :p_rtn_cur); END;`,
+      //   para_value,
+      //   p_language,
+      //   p_crt_by
+      // );
+      // // console.log("rtnValue  ", rtnValue);
+      // tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
+      // if (rtnValue.p_rtn_cur[0].STATUS == "OK") {
+      //   let invoice_data = 
+      //   {
+      //     data_invoice : {
+      //       buyer_comp_name : rtnValue.p_rtn_cur[0].BUYER_COMP_NAME,
+      //       seller_comp_name : rtnValue.p_rtn_cur[0].SELLER_COMP_NAME,
+      //       form_no : rtnValue.p_rtn_cur[0].FORM_NO,
+      //       serial_no : rtnValue.p_rtn_cur[0].SERIAL_NO,
+      //       invoice_no : rtnValue.p_rtn_cur[0].INVOICE_NO,
+      //       total_payment : rtnValue.p_rtn_cur[0].TOTAL_PAYMENT,
+      //       mccqt  : rtnValue.p_rtn_cur[0].MCCQT,
+      //       buyer_email: infor_send_mail.buyer_email,
+      //       buyer_email_cc : infor_send_mail.buyer_email_cc,
+
+      //     }
+      //   }
+      //   const { res_send_mail, subject, body } = await this.sendMaiToCustomer(
+      //     tei_wt_sale_bill_pk,
+      //     invoice_data,
+      //     p_language,
+      //     p_crt_by
+      //   );
+
+      //   // console.log("res_send_mail  ", res_send_mail.data);
+      //   // console.log("res_send_mail  ", res_send_mail.data.success);
+
+      //   if (res_send_mail.data.success) {
+      //     const para_inv_st = {
+      //       tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
+      //       status: "Sent Success",
+      //     };
+      //     const rtnValueSendMail = await DBService.ExecuteSQLBlob(
+      //       `BEGIN ei_upd_sale_bill_status (          
+      //                                                         :tei_wt_sale_bill_pk,
+      //                                                         :status,
+      //                                                         :p_language, 
+      //                                                         :p_crt_by, 
+      //                                                         :p_rtn_cur); END;`,
+      //       para_inv_st,
+      //       p_language,
+      //       p_crt_by
+      //     );
+      //     //console.log("rtnValueSendMail  ", rtnValueSendMail);
+
+      //     let data_r = {
+      //       link_invoice_preview: "https://einvoicevn.com/lookup",
+      //       lookup_code: "1234567bac",
+      //       status_code: "1",
+      //       status_name: "Sent Success",
+      //       user_name: rtnValue.p_rtn_cur[0].BUYER_COMP_NAME,
+      //       send_date: res_send_mail.data.data.date_send,
+      //       send_time: res_send_mail.data.data.time_send,
+      //       mail_form: res_send_mail.data.data.mail_from,
+      //       mail_to: res_send_mail.data.data.mail_to,
+      //       mail_to_cc: res_send_mail.data.data.mail_to_cc,
+      //       error_code: "",
+      //       error_name: "",
+      //       title: subject,
+      //       content: body,
+      //     };
+
+      //     // console.log("data_r  ", data_r);
+
+      //     return response.send(Utils.response(true, `ReSend order to invoice was Successfully!`, data_r));
+
+      //   } else {
+      //     const para_inv_st = {
+      //       tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
+      //       status: "Sent Faile",
+      //     };
+      //     const rtnValueSendMail = await DBService.ExecuteSQLBlob(
+      //       `BEGIN ei_upd_sale_bill_status (          
+      //                                                         :tei_wt_sale_bill_pk,
+      //                                                         :status,
+      //                                                         :p_language, 
+      //                                                         :p_crt_by, 
+      //                                                         :p_rtn_cur); END;`,
+      //       para_inv_st,
+      //       p_language,
+      //       p_crt_by
+      //     );
+      //     let data_r = {
+      //       link_invoice_preview: "https://einvoicevn.com/lookup",
+      //       security_code: "1234567bac",
+      //       status_code: "0",
+      //       status_name: "Sent Faile",
+      //       user_name: rtnValue.p_rtn_cur[0].BUYER_COMP_NAME,
+      //       send_date: res_send_mail.data.data.date_send,
+      //       send_time: res_send_mail.data.data.time_send,
+      //       mail_form: res_send_mail.data.data.mail_from,
+      //       mail_to: res_send_mail.data.data.mail_to,
+      //       mail_to_cc: res_send_mail.data.data.mail_to_cc,
+      //       error_code: "",
+      //       error_name: "",
+      //       title: subject,
+      //       content: body,
+      //     };
+      //     return response.send(Utils.response(true, `Send order to invoice was failure!`, data_r));
+      //   }
+      // }
+      // else {
+      //   return response.send(Utils.response(true, `error!`, { err_msg: 'Order einvoice not exit' }));
+      // }
+      // console.log("res_send_mail  ", res_send_mail);
+    } catch (error) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "weTaxSendCompanyTemplate",
+        CONTENT: e.message,
+      });
+      console.log(e);
+      return response.send(Utils.response(false, "error", { err_msg: e.message }));
+    }
+  }
+
   async weTaxUpdateSendOrderInfo({ request, response, auth }) {
     try {
       var p_language = request.header("accept-language", "ENG");

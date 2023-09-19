@@ -160,6 +160,8 @@ Route.group(() => {
     Route.post("generate-invoice-xml", "EInvoiceController.weTaxConvertInvoiceToXML")
     Route.post("send-company-info", "EInvoiceController.weTaxSendCompanyInfor")
     Route.post("re-send-order-info", "EInvoiceController.weTaxReSendOrderInfo")
+    Route.post("send-company-template", "EInvoiceController.weTaxSendCompanyTemplate")
+
 
     // e-invoice
     Route.post("general-pos-invoice-xml", "EInvoiceController.generalXmlPosInvoice")

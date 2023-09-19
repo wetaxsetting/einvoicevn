@@ -839,10 +839,9 @@ export default {
       }
     },
     async dsoMaster(action) {
+      ///// Luu duong dan file excel
       let TEMPLATE = this.templateID_list.find(item => item.CODE == this.MasterInfo.TEMPLATE_CD)
-          console.log("file: 6095055.vue:811 [vng-304] onClickButton [vng-304] TEMPLATE:", TEMPLATE)
           this.MasterInfo.URL_FILE_EXCEL =  TEMPLATE.URL_FILE_EXCEL;
-          console.log("file: 6095055.vue:826 [vng-304] onClickButton [vng-304] this.MasterInfo.URL_FILE_EXCEL:", this.MasterInfo.URL_FILE_EXCEL)
       /// Luu duong dan hinh anh
       let pathLOGOImg = "";
       if (this.fileSaveLOGO) {

@@ -17,7 +17,7 @@
         </v-row>
         <v-row dense>
           <v-col md="2">
-            <BaseDatePicker :label="$t('year')" v-model="year" year today />
+            <BaseDatePicker :label="$t('year')" v-model="year" year default />
           </v-col>
           <v-col md="5">
             <BaseDatePicker :label="$t('fromdate')" v-model="fromDate" />
@@ -626,10 +626,12 @@ export default {
   methods: {
     rowupdated(args, data, isUpdated) {
       if (data._rowstatus == "i" && (args.datafield == "INVOICE_KIND" || args.datafield == "SERIAL_NO_2")) {
-        const date = new Date();
-        let year = date.getFullYear().toString().substring(2, 4);
+        let yyyy = this.year;
+        let yearNM = yyyy.toString().substring(2, 4);
+        // const date = new Date();
+        // let year = date.getFullYear().toString().substring(2, 4);
         let lArray = "";
-        this.$refs.grdEinvoiceIssue.onSet("SERIAL_NO", args.row.INVOICE_KIND + year + args.row.SERIAL_NO_2 + lArray, true, args.rowindex);
+        this.$refs.grdEinvoiceIssue.onSet("SERIAL_NO", args.row.INVOICE_KIND + yearNM + args.row.SERIAL_NO_2 + lArray, true, args.rowindex);
       }
       if (args.datafield == "SERIAL_NO") {
         this.$refs.grdEinvoiceIssue.onSet("SERIAL_NO", args.row.SERIAL_NO.toUpperCase(), true, args.rowindex);
@@ -753,6 +755,7 @@ export default {
       this.$refs.fileLOGO.click();
     },
     async cellClickCell(cell) {
+      console.log("file: 6095055.vue:757 [vng-304] cellClickCell [vng-304] cell:", cell)
       if (cell.data.PK != this.issue_pk) {
         this.issue_pk = cell.data.PK;
         this.dataIssued = cell.data;
@@ -806,7 +809,6 @@ export default {
               return;
             }
           }
-          this.$refs.grdEinvoiceIssue.setCellSelected("TEMPLATE_CD", this.MasterInfo.TEMPLATE_CD);
           this.$refs.grdEinvoiceIssue.saveData();
           break;
         case "SEARCH_ISSUE":
@@ -837,6 +839,10 @@ export default {
       }
     },
     async dsoMaster(action) {
+      let TEMPLATE = this.templateID_list.find(item => item.CODE == this.MasterInfo.TEMPLATE_CD)
+          console.log("file: 6095055.vue:811 [vng-304] onClickButton [vng-304] TEMPLATE:", TEMPLATE)
+          this.MasterInfo.URL_FILE_EXCEL =  TEMPLATE.URL_FILE_EXCEL;
+          console.log("file: 6095055.vue:826 [vng-304] onClickButton [vng-304] this.MasterInfo.URL_FILE_EXCEL:", this.MasterInfo.URL_FILE_EXCEL)
       /// Luu duong dan hinh anh
       let pathLOGOImg = "";
       if (this.fileSaveLOGO) {

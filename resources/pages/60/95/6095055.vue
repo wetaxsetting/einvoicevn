@@ -698,10 +698,12 @@ export default {
             height = 100;
             width = 100 * height/ width ;
           }
-          self.MasterInfo.LOGO_WIDTH = width; /////Cách 2
-          self.MasterInfo.LOGO_HEIGHT = height;/////Cách 2
+          self.MasterInfo.LOGO_WIDTH = Number(width).toFixed(2); /////Cách 2
+          self.MasterInfo.LOGO_HEIGHT = Number(height).toFixed(2);/////Cách 2
           self.MasterInfo.LOGO_START_ROW = "1.7";
           self.MasterInfo.LOGO_START_COL = "0.5";
+           
+          //this.MasterInfo.LOGO_START_ROW = Number(this.MasterInfo.LOGO_START_ROW).toFixed(2);
         };
       }
     },
@@ -735,8 +737,8 @@ export default {
             height = 756;
             width = 1000 * height/ width ;
           }
-          self.MasterInfo.BG_WIDTH = width;
-          self.MasterInfo.BG_HEIGHT = height;
+          self.MasterInfo.BG_WIDTH =  Number(width).toFixed(2);
+          self.MasterInfo.BG_HEIGHT =  Number(height).toFixed(2);
           self.MasterInfo.BG_START_ROW = "15";
           self.MasterInfo.BG_START_COL = "1.5";
         };
@@ -751,21 +753,16 @@ export default {
       this.$refs.fileLOGO.click();
     },
     async cellClickCell(cell) {
-      // console.log("file: 6095055.vue:727 [vng-304] cellClickCell [vng-304] cell:", cell);
-      // this.MasterInfo.SERIAL_NO = cell.data.SERIAL_NO;
-      // console.log("file: 6095055.vue:756 [vng-304] cellClickCell [vng-304] this.MasterInfo.SERIAL_NO:", this.MasterInfo.SERIAL_NO)
       if (cell.data.PK != this.issue_pk) {
         this.issue_pk = cell.data.PK;
         this.dataIssued = cell.data;
-        
-
         if (cell.data._rowstatus == "i") {
           this.MasterInfo.USE_YN = cell.data.USE_YN;
         } else {
           this.issue_pk = cell.data.PK;
           this.MasterInfo.PK = cell.data.TEI_TEMPLATE_PK;
           await this.dsoMaster("select");
-          // this.MasterInfo.SERIAL_NO = cell.data.SERIAL_NO;
+         
         }
       }
     },
@@ -781,8 +778,36 @@ export default {
         //   this.onDelete();
         //   break;
         case "SAVE_ISSUE":
-          this.onSave();
-
+        let data = this.$refs.grdEinvoiceIssue.getData();
+          for (let i = 0; i < data.length; i++) {
+            if (!data[i].INVOICE_KIND) {
+              this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_invoice_kind_at_" + (i + 1)));
+              return;
+            } else if (!data[i].SERIAL_NO_2) {
+              this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_invoice_symbol_at_" + (i + 1)));
+              return;
+            } else if (!data[i].FORM_NO) {
+              this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_form_no_at_" + (i + 1)));
+              return;
+            } else if (!data[i].SERIAL_NO) {
+              this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_serial_no_at_" + (i + 1)));
+              return;
+            } else if (!data[i].FROM_NO) {
+              this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_start_invoice_no_at_" + (i + 1)));
+              return;
+            } else if (!data[i].FROM_DT) {
+              this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_form_date_at_" + (i + 1)));
+              return;
+            } else if (!data[i].TO_DT) {
+              this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_to_date_at_" + (i + 1)));
+              return;
+            } else if (!data[i].STATUS) {
+              this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_status_at_" + (i + 1)));
+              return;
+            }
+          }
+          this.$refs.grdEinvoiceIssue.setCellSelected("TEMPLATE_CD", this.MasterInfo.TEMPLATE_CD);
+          this.$refs.grdEinvoiceIssue.saveData();
           break;
         case "SEARCH_ISSUE":
           this.onSearch();
@@ -929,6 +954,7 @@ export default {
 
               this.itemTemplatesPK = res.PK;
               this.url_template = res.URL_FILE_EXCEL;
+              this.MasterInfo.SERIAL_NO = res.TEMPLATE_NM;
               ///  Load ra được hình ảnh////
               // this.imgLOGO = this.renderImg("assets/images/no_image.png");
               let imgLOGO = this.renderImg(this.MasterInfo.URL_IMG_LOGO);
@@ -975,38 +1001,6 @@ export default {
     },
     onDelete() {
       this.$refs.grdEinvoiceIssue.onSetMarkedDelete(true);
-    },
-
-    async onSave() {
-      let data = this.$refs.grdEinvoiceIssue.getData();
-      for (let i = 0; i < data.length; i++) {
-        if (!data[i].INVOICE_KIND) {
-          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_invoice_kind_at_" + (i + 1)));
-          return;
-        } else if (!data[i].SERIAL_NO_2) {
-          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_invoice_symbol_at_" + (i + 1)));
-          return;
-        } else if (!data[i].FORM_NO) {
-          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_form_no_at_" + (i + 1)));
-          return;
-        } else if (!data[i].SERIAL_NO) {
-          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_serial_no_at_" + (i + 1)));
-          return;
-        } else if (!data[i].FROM_NO) {
-          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_start_invoice_no_at_" + (i + 1)));
-          return;
-        } else if (!data[i].FROM_DT) {
-          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_form_date_at_" + (i + 1)));
-          return;
-        } else if (!data[i].TO_DT) {
-          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_to_date_at_" + (i + 1)));
-          return;
-        } else if (!data[i].STATUS) {
-          this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_status_at_" + (i + 1)));
-          return;
-        }
-      }
-      this.$refs.grdEinvoiceIssue.saveData();
     },
     async getListCodes(pos) {
       switch (pos) {

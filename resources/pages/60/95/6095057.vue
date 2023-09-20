@@ -215,6 +215,7 @@ export default {
   }),
   /*############### created #######################*/
   async created() {
+    console.clear();
     await this.getListCodes("status");
 
     this.pdf_handler = require("./js/EiExcelHandlerERPTemplates.js");

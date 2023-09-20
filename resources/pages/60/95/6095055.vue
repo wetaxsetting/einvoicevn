@@ -104,7 +104,7 @@
                   <v-col lg="12">
                     <v-container fluid>
                       <v-row no-gutters align="center" justify="center">
-                        <v-img contain ref="photoLogo" :src="imageLOGO" :max-height="200" :width="width" :height="height" @click="selectImageLOGO" />
+                        <v-img contain ref="photoLogo" :src="renderImg(imageLOGO)" :max-height="200" :width="width" :height="height" @click="selectImageLOGO" />
                         <input type="file" accept="image/png, image/jpeg, image/bmp" v-show="false" ref="fileLOGO" @change="selectedFileLOGO" />
                       </v-row>
                       <v-row>
@@ -117,7 +117,7 @@
                         <v-card>
                           <v-container fluid>
                             <v-row no-gutters align="center" justify="center">
-                              <img :src="imageLOGO" :height="originHeight" :width="originWidth" />
+                              <img :src="renderImg(imageLOGO)" :height="originHeight" :width="originWidth" />
                             </v-row>
                           </v-container>
                         </v-card>
@@ -163,7 +163,7 @@
                   <v-col lg="12">
                     <v-container fluid>
                       <v-row no-gutters align="center" justify="center">
-                        <v-img contain ref="photoBG" :src="imageBG" :max-height="200" :width="width" :height="height" @click="selectImageBG" />
+                        <v-img contain ref="photoBG" :src="renderImg(imageBG)" :max-height="200" :width="width" :height="height" @click="selectImageBG" />
                         <input type="file" accept="image/png, image/jpeg, image/bmp" v-show="false" ref="fileBG" @change="selectedFileBG" />
                       </v-row>
                       <v-row>
@@ -176,7 +176,7 @@
                         <v-card>
                           <v-container fluid>
                             <v-row no-gutters align="center" justify="center">
-                              <img :src="imageBG" :height="originHeight" :width="originWidth" />
+                              <img :src="renderImg(imageBG)" :height="originHeight" :width="originWidth" />
                             </v-row>
                           </v-container>
                         </v-card>
@@ -476,8 +476,8 @@ export default {
   /*############### created #######################*/
   async created() {
     console.clear();
-    this.imageLOGO = this.renderImg("assets/images/no_image.png");
-    this.imageBG = this.renderImg("assets/images/no_image.png");
+    // this.imageLOGO = this.renderImg("assets/images/no_image.png");
+    // this.imageBG = this.renderImg("assets/images/no_image.png");
     await this.getListCodes("company");
     await this.getListCodes("serial_no");
     await this.getListCodes("form_no");
@@ -637,12 +637,14 @@ export default {
         this.$refs.grdEinvoiceIssue.onSet("SERIAL_NO", args.row.SERIAL_NO.toUpperCase(), true, args.rowindex);
       }
     },
-    renderImg(imgUrl, isBase64 = false) {
-      if (isBase64) {
-        return imgUrl;
+    renderImg(imgUrl) {
+      if(!imgUrl) {
+        return require("@/assets/images/no_image.png");
       } else {
-        return imgUrl ? require("@/" + imgUrl) : require("@/assets/images/no_image.png");
-        // this.pathImgTep.replace('assets/images/no_image.png',imgUrl?imgUrl:'assets/images/no_image.png'); //
+        if(imgUrl.includes("base64")) {
+          return imgUrl;
+        }
+        return require("@/assets/images/" + imgUrl.replace('assets/images/', ''));
       }
     },
     async onUploadImgFolder(file, folder, _type) {
@@ -679,11 +681,9 @@ export default {
         const fr = new FileReader();
         fr.readAsDataURL(files[0]);
         fr.addEventListener("load", () => {
-          // console.log("fr.result", fr.result);
-          this.imageLOGO = this.renderImg(fr.result, true);
+          this.imageLOGO = fr.result // this.renderImg(fr.result, true);
           this.fileSaveLOGO = files[0];
         });
-
         ////Lấy được thông tin Width, Height;
         var img = new Image();
         img.src = window.URL.createObjectURL(files[0]);
@@ -704,7 +704,6 @@ export default {
           self.MasterInfo.LOGO_HEIGHT = Number(height).toFixed(2);/////Cách 2
           self.MasterInfo.LOGO_START_ROW = "1.7";
           self.MasterInfo.LOGO_START_COL = "0.5";
-           
           //this.MasterInfo.LOGO_START_ROW = Number(this.MasterInfo.LOGO_START_ROW).toFixed(2);
         };
       }
@@ -719,14 +718,13 @@ export default {
         const fr = new FileReader();
         fr.readAsDataURL(files[0]);
         fr.addEventListener("load", () => {
-          this.imageBG = this.renderImg(fr.result, true);
+          this.imageBG = fr.result; // this.renderImg(fr.result, true);
           this.fileSaveBG = files[0];
         });
         //Lấy được thông tin Width, Height;
         var img = new Image();
         img.src = window.URL.createObjectURL(files[0]);
         img.onload = function () {
-
           let width = 0, height = 0;
           width = this.naturalWidth;
           height = this.naturalHeight;
@@ -960,11 +958,9 @@ export default {
               this.url_template = res.URL_FILE_EXCEL;
               this.MasterInfo.SERIAL_NO = res.TEMPLATE_NM;
               ///  Load ra được hình ảnh////
-              // this.imgLOGO = this.renderImg("assets/images/no_image.png");
-              let imgLOGO = this.renderImg(this.MasterInfo.URL_IMG_LOGO);
+              let imgLOGO = this.MasterInfo.URL_IMG_LOGO;
               this.imageLOGO = imgLOGO;
-              // this.imgBG = this.renderImg("assets/images/no_image.png");
-              let imgBG = this.renderImg(this.MasterInfo.URL_IMG_BG);
+              let imgBG = this.MasterInfo.URL_IMG_BG;
               this.imageBG = imgBG;
               try {
                 this.showLoading = true;

@@ -131,10 +131,10 @@ class EiExcelHandler {
         if(einvoiceMasterData[0].URL_IMG_LOGO != "" && einvoiceMasterData[0].URL_IMG_LOGO != null)
         {
           logos = [
-            { start: einvoiceMasterData[0].LOGO_START_ROW, 
+            { start: einvoiceMasterData[0].LOGO_START_COL, 
               width: 0.99 * dpi, 
               height: 0.99 * dpi, 
-              logoStartCount: einvoiceMasterData[0].LOGO_START_COL, 
+              logoStartCount: einvoiceMasterData[0].LOGO_START_ROW, 
               logoPath: `${einvoiceMasterData[0].URL_IMG_LOGO}` },
           ];
         }

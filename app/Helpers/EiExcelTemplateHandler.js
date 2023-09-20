@@ -53,7 +53,7 @@ class EiExcelHandler {
         p_crt_by,
         _db2
       );
-      console.log("file: EiExcelTemplateHandler.js:56 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceMasterData:", einvoiceMasterData)
+      // console.log("file: EiExcelTemplateHandler.js:56 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceMasterData:", einvoiceMasterData)
 
       const einvoiceMasterParam = await DBService.callProcCursor(
         "AC_SEL_6095057_PARAM", [pk],
@@ -81,35 +81,7 @@ class EiExcelHandler {
           bgPath      : `${einvoiceMasterData[0]&&einvoiceMasterData[0].URL_IMG_BG ? einvoiceMasterData[0].URL_IMG_BG: "assets/images/no_background.png"}`  
         }  
       ]
-      // if(einvoiceMasterData[0].URL_IMG_LOGO)
-      // {
-      //   logos = [
-      //      { 
-      //       logo_start_col: einvoiceMasterData[0].LOGO_START_COL,
-      //       logo_start_row: einvoiceMasterData[0].LOGO_START_ROW,
-      //       logo_width : einvoiceMasterData[0].LOGO_WIDTH,
-      //       logo_height : einvoiceMasterData[0].LOGO_HEIGHT,
-      //       logoPath: `${einvoiceMasterData[0].URL_IMG_LOGO}`   ///assets/images/einvoices_logo/abc/
-      //     }  
-      //   ]
-      // }else{
-      //   logos = [];
-      // }
-      // if(einvoiceMasterData[0].URL_IMG_BG)
-      // {
-      //   bg = [
-      //     { 
-      //       bg_start_row: einvoiceMasterData[0].BG_START_ROW,
-      //       bg_start_col: einvoiceMasterData[0].LOGO_START_COL,
-      //       bg_width : einvoiceMasterData[0].BG_WIDTH,
-      //       bg_height : einvoiceMasterData[0].BG_HEIGHT,
-      //       bgPath: `${einvoiceMasterData[0].URL_IMG_BG}` 
-      //     }  
-      //   ]
-      // }else{
-      //   bg = [];
-      // }
-
+      
       this.masterDataArray = [];
       for(let i = 0; i < einvoiceMasterParam.length; i++)
       {
@@ -128,6 +100,15 @@ class EiExcelHandler {
 
    
       reportPath = einvoiceMasterData[0].URL_FILE_EXCEL;//'report/60/95/einvoices_template/Bornga/Bornga.xlsx'
+      //Cách 2
+      // switch (einvoiceMasterData[0].TEMPLATE_CD) {
+      //   case "111":
+      //     reportSheet = "Invoice" 
+      //     break;
+      //   case "121":
+      //     reportSheet = "Invoice" 
+      //     break;
+      // }
       reportSheet = "Invoice" 
         resultExcel = await exceljs.ExcelBuilder(
           p_crt_by, 
@@ -138,6 +119,7 @@ class EiExcelHandler {
           bg,
           this.masterDataArray
           )
+
     return resultExcel
 
     } catch (error) {

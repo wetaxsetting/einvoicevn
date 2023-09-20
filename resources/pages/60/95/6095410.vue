@@ -676,29 +676,6 @@ export default {
 
 
     async onPreview() {
-      // jQuery.support.cors = true;
-      // $.ajax({
-      //   type: "POST",
-      //   url: "http://genuclouding.com/wseinvoice/BSService.asmx/SendPDF_R",
-      //   data: {
-      //     tei_einvoice_m_pk: this.tei_einvoice_m_pk_row + "|",
-      //     tei_company_pk: this.selected_company,
-      //   },
-      //   dataType: "text",
-      //   crossDomain: true,
-      //   success: this.OnSuccessCallReUploadPDF,this.tei_einvoice_m_pk_row
-      //   error: this.OnErrorCallReUploadPDF,
-      // });
-
-      //351913 265263 304524  313069
-      // this.isProcessing = true
-      //this.pdfUrl = await this.pdfUrlGetter(385207);
-      // this.pdfUrl = await this.pdfUrlGetter(tei_wt_sale_bill_pk);
-      //   this.pdfUrl = await this.$axios.$post("/einvoice/einvoicepdfconvert", { tradecode:this.tei_einvoice_m_pk_row });
-      // this.$nextTick(() => {
-      //   this.isProcessing = false
-      //   this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
-      // });
       if(this.tei_einvoice_m_pk_row != "")
       {
         let res_url = await this.$axios.$post("/einvoice/general-url-pdf", {

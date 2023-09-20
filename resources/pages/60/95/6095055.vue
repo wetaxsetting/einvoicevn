@@ -477,7 +477,7 @@ export default {
   async created() {
     console.clear();
     this.imageLOGO = this.renderImg("assets/images/no_image.png");
-    this.imageBG = this.renderImg("assets/images/no_background.png");
+    this.imageBG = this.renderImg("assets/images/no_image.png");
     await this.getListCodes("company");
     await this.getListCodes("serial_no");
     await this.getListCodes("form_no");

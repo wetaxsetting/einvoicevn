@@ -619,8 +619,8 @@ export default {
           data_invoice.push({
               req_key: jsonXML[i].req_key,
               token_serial_number: data.serial_number,
-              buyer_tax_code: data.dn_mst,
-              buyer_name: data.dn_name,
+              sign_tax_code: data.dn_mst,
+              sign_by: data.dn_name,
               xml_signed: jsonXML[i].xml,
           });
         }
@@ -667,11 +667,6 @@ export default {
         this.showNotification("warning", this.$t("no_row_selected"), '');
       }
     },
-    async pdfUrlGetter(pk) {
-      const pdfUrlExcel = await this.getEinvoice(this, pk)
-      console.log("pdfUrlExcel ", pdfUrlExcel);
-      return pdfUrlExcel
-    },
 
     onAfterLoad() {
       let gridArray = [];
@@ -692,15 +687,19 @@ export default {
         this.total_bk = this.tot_net_bk_amt + this.tot_net_bk_vat_amt;
       });
     },
+
     funcSearch() {
       this.$refs.gridview.loadData();
     },
+
     async onCellClick({ column, data, rowIndex, rowType }) {
       this.tei_einvoice_m_pk_row = data.PK;
     },
+
     onClickExport(obj) {
       this.$refs.gridview.exportExcel();
     },
+
     async getListCodes(pos) {
       const dso_company_list = {
         type: "list",

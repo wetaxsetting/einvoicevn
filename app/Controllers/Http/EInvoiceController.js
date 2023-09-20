@@ -8184,6 +8184,7 @@ class EInvoiceController {
           req_key: invoices[i].req_key,
           trade_code: trade_code.data.maGDich,
           xml_signed: invoices[i].xml_signed,
+          sign_by: invoices[i].sign_by,
         };
 
         await DBService.ExecuteSQLBlob(
@@ -8191,6 +8192,7 @@ class EInvoiceController {
                                     :req_key,
                                     :trade_code,
                                     :xml_signed,
+                                    :sign_by,
                                     :p_language, 
                                     :p_crt_by, 
                                     :p_rtn_cur); 

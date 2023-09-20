@@ -299,7 +299,7 @@ export default {
         // },
         {
           dataField: "FORM_NO",
-          width: 250,
+          width: 130,
           caption: this.$t("form_no"),
           alignment: "left",
           type: "text",
@@ -312,7 +312,7 @@ export default {
         },
         {
           dataField: "USE_YN",
-          width: 80,
+          width: 60,
           caption: this.$t("use_yn"),
           alignment: "center",
           type: "checkbox",
@@ -439,7 +439,7 @@ export default {
         // },
         {
           dataField: "URL_FILE_EXCEL",
-          width: 230,
+          width: 470,
           caption: this.$t("url_file_excel"),
           alignment: "left",
           type: "text",

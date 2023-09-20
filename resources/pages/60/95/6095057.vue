@@ -58,6 +58,9 @@
                   'SIGN_CELL_BOX',
                   'SIGN_RANGE_DETAILS',
                   'FORM_NO',
+                  'URL_FILE_EXCEL_IMP', 
+                  'URL_FILE_EXCEL_C', 
+                  'URL_FILE_EXCEL_C_IMP'
                 ]"
                 @cellClick="cellClickCellTemplate"
               />
@@ -439,8 +442,29 @@ export default {
         // },
         {
           dataField: "URL_FILE_EXCEL",
-          width: 470,
+          width: 450,
           caption: this.$t("url_file_excel"),
+          alignment: "left",
+          type: "text",
+          editable: true,
+        },{
+          dataField: "URL_FILE_EXCEL_IMP",
+          width: 400,
+          caption: this.$t("url_file_excel_imp"),
+          alignment: "left",
+          type: "text",
+          editable: true,
+        },{
+          dataField: "URL_FILE_EXCEL_C",
+          width: 400,
+          caption: this.$t("url_file_excel_c"),
+          alignment: "left",
+          type: "text",
+          editable: true,
+        },{
+          dataField: "URL_FILE_EXCEL_C_IMP",
+          width: 400,
+          caption: this.$t("url_file_excel_c_imp"),
           alignment: "left",
           type: "text",
           editable: true,
@@ -978,10 +1002,11 @@ export default {
 
   /*############### methods #######################*/
   methods: {
-    cellClickCellTemplate(cell) {
-      // console.log("file: 6095057.vue:962 [vng-304] cellClickCellTemplate [vng-304] cell:", cell);
-      this.itemTemplatePK = cell.data.PK;
-      this.url_template = cell.data.URL_FILE_EXCEL;
+    cellClickCellTemplate({data  , value }) {
+      // console.log("file: 6095057.vue:962 [vng-304] cellClickCellTemplate [vng-304] cell:", data);
+      // console.log("file: 6095057.vue:962 [vng-304] cellClickCellTemplate [vng-304] value:", value);
+      this.itemTemplatePK = data.PK;
+      this.url_template = value;   //column.datafield
       this.$refs.grdParamM.loadData();
       this.$refs.grdParamD.loadData();
     },
@@ -1116,7 +1141,7 @@ export default {
             "ACJS0480", //8
             "ACJS0500", //"ACJS0490", //9
             "ACEIS330", //10
-            "ACEIS340",
+            "ACEIS340", //11
           ];
           const results = await this._getCommonCode2(parentCodes, this.user.TEI_COMPANY_PK);
           if (results.length) {
@@ -1294,7 +1319,6 @@ export default {
           },
         });
         this.pdfUrl = window.URL.createObjectURL(rec);
-        console.log("file: 6095057.vue:1297 [vng-304] onPreview [vng-304] this.pdfUrl:", this.pdfUrl)
         this.showLoading = false;
         this.showPDF = true;
         let rtnBase64pdf = await this._blobFileToBase64(rec);

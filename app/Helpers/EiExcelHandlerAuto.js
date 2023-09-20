@@ -97,7 +97,7 @@ class EiExcelHandler {
         this.masterDataArray.push({ Cell: `${msothueArray[i] + taxRow}`, Info: [e], Type: 2 }) //so thue
       }
     }
-    console.log("companyTaxcode ", companyTaxcode);
+    // console.log("companyTaxcode ", companyTaxcode);
    
     //let url_file_excel = "report/60/95/einvoices_template/Bornga/Bornga.xlsx";
 
@@ -142,8 +142,8 @@ class EiExcelHandler {
           logos = [];
         }
          
-        console.log("bgPath  ", bgPath);
-        console.log("logos   ", logos);
+        // console.log("bgPath  ", bgPath);
+        // console.log("logos   ", logos);
 
 
         for(let i = 0; i < einvoiceDetailsParam.length; i++)

@@ -86,9 +86,9 @@
         <v-col lg="7" class="pl-1 d-flex justify-end">
           <BaseButton icon_type="search" :btn_text="$t('search')" :disabled="isProcessing" @onclick="funcSearch()" />
           <BaseButton icon_type="view" :btn_text="$t('preview')" :disabled="isProcessing" @onclick="onPreview" />
-          <BaseButton icon_type="xml" :btn_text="$t('view_xml')" @onclick="onClick('viewXML')" />
-          <BaseButton icon_type="attach" :btn_text="$t('invoice_sign')" :disabled="isProcessing"  @onclick="InvoiceSign()" />
-          <BaseButton icon_type="add_new" :btn_text="$t('check_code_cqt')" :disabled="isProcessing" @onclick="checkingCQT()" />
+          <BaseButton icon_type="xml" :btn_text="$t('view_xml')" @onclick="onPreviewXml" />
+          <BaseButton icon_type="attach" :btn_text="$t('invoice_sign')" :disabled="selected_status == 1"  @onclick="InvoiceSign()" />
+          <BaseButton icon_type="add_new" :btn_text="$t('check_code_cqt')" :disabled="selected_status == 0" @onclick="checkingCQT()" />
         </v-col>
       </v-row>
 
@@ -118,18 +118,54 @@
         </v-col>
       </v-row>
     </v-card>
-    <view-einvoice-pdf-dialog ref="ViewEInvoicePDFDialog" :src_pdfUrl="pdfUrl"></view-einvoice-pdf-dialog>
+    <view-einvoice-pdf-dialog
+      ref="ViewEInvoicePDFDialog"
+      :src_pdfUrl="pdfUrl"
+      @minimizeDialogPDF="manualIsMinimizedPDF = true"
+      @closeManualDialog="manualIsMinimizedPDF = false"
+    ></view-einvoice-pdf-dialog>
+    <view-einvoice-xml-dialog
+      ref="ViewEInvoiceXMLDialog"
+      :src_xmlUrl="xmlUrl"
+      :xmlFileNm="xmlFileNm"
+      dwnFile
+      @minimizeDialog="manualIsMinimized = true"
+      @closeManualDialog="manualIsMinimized = false"
+    ></view-einvoice-xml-dialog>
+    <div class="squareBox" v-if="false">
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on }">
+          <v-btn icon small v-on="on" @click="openManualDialog">
+            <v-icon :color="currentTheme">mdi-help-box</v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $t("show_manual") }}</span>
+      </v-tooltip>
+    </div>
+    <v-scale-transition origin="bottom center">
+      <v-btn dark depressed fab fixed bottom right small :color="currentTheme" v-if="manualIsMinimized" @click="restoreManualDialog">
+        <v-icon>mdi-window-restore</v-icon>
+      </v-btn>
+    </v-scale-transition>
+
+    <v-scale-transition origin="bottom center">
+      <v-btn dark depressed fab fixed bottom right small :color="currentTheme" v-if="manualIsMinimizedPDF" @click="restoreManualDialogPDF">
+        <v-icon>mdi-window-restore</v-icon>
+      </v-btn>
+    </v-scale-transition>
   </v-container>
 </template>
 
 <script>
 import ViewEInvoicePDFDialog from "@/components/dialog/ViewEInvoicePDFDialog.vue";
+import ViewEInvoiceXMLDialog from "@/components/dialog/ViewEInvoiceXMLDialog.vue";
 export default {
   layout: "default",
   middleware: "user",
 
   components: {
     DatePicker: () => import("@/components/control/DatePicker"),
+    "view-einvoice-xml-dialog": ViewEInvoiceXMLDialog,
     "view-einvoice-pdf-dialog": ViewEInvoicePDFDialog,
   },
   data: () => ({
@@ -151,7 +187,6 @@ export default {
     invoice_no: "",
     invoice_no_ip: "",
     check_all: "Y",
-
     selected_status: "",
     txtPartner: "",
     trading_type_list: [],
@@ -167,12 +202,9 @@ export default {
     blYN: "Y",
     offInvoiceSign: true,
     headerGrid: [],
-
     pdfUrl: "",
     tei_einvoice_m_pk_row: "",
-
     selected_rows: [],
-
     PKs: "",
     PK_Send: "",
     FormNo: "",
@@ -191,7 +223,13 @@ export default {
     txtISSUETO: "",
     txtDN_NAME: "",
     txtDN_MST: "",
-    invoice : []
+    invoice : [],
+    manualIsMinimized: false,
+    manualIsMinimizedPDF: false,
+    maGD:"",
+    xml_signed : "",
+    xmlFileNm:"",
+    xmlUrl:""
   }),
 
   async created() {
@@ -201,11 +239,12 @@ export default {
     // }
     // this.dt_from = "" + new Date().getFullYear() + month + "01";
     // this.dt_to = "" + new Date().getFullYear() + month + "31";
+    // this.pdf_handler = require("./js/EiExcelHandler.js");
+    // if (!!this.pdf_handler) {
+    //   Object.assign(this, this.pdf_handler.default);
+    // }
     await this.getListCodes();
-    this.pdf_handler = require("./js/EiExcelHandler.js");
-    if (!!this.pdf_handler) {
-      Object.assign(this, this.pdf_handler.default);
-    }
+
   },
   mounted() {
     
@@ -461,9 +500,6 @@ export default {
           width: 100,
           alignment: "left",
         },
-
-
-
         {
           dataField: "ETAX_STATUS",
           caption: this.$t("etax_status"),
@@ -518,6 +554,7 @@ export default {
     
     getObjectJsonInvoice(){
     },
+
     async checkingCQT(){
       this.invoice = [];
       const grdSelectedRow = this.$refs.gridview.getSelectedRows();
@@ -540,9 +577,8 @@ export default {
           this.funcSearch();
           this.showNotification("success", "Checking invoice to Tax Office was Successfully!", "");
         }
-
-      console.log("sss",this.invoice );
     },
+
     async InvoiceSign() {
       const grdSelectedRow = this.$refs.gridview.getSelectedRows();
        this.invoice = []
@@ -558,7 +594,6 @@ export default {
           })
         
       }
-      
       //console.log("invoice  ",this.invoice);
 
       let res = await this.$axios.$post("/einvoice/general-invoice-xml", {
@@ -643,11 +678,6 @@ export default {
           if(res_send.success)
           {
             let list_invoice_pk;
-            // this.invoice.forEach((e => {
-            //   console.log(e);
-            //   list_invoice_pk =  e.PK + "-"  + list_invoice_pk;
-            // });
-
 
             this.invoice.forEach(e => {
               //console.log(e);
@@ -673,7 +703,6 @@ export default {
       
       //************call something */ dso_process_check_serialno.Call();
     },
-
 
     async onPreview() {
       if(this.tei_einvoice_m_pk_row != "")
@@ -726,6 +755,8 @@ export default {
     
     async onCellClick({ column, data, rowIndex, rowType }) {
       this.tei_einvoice_m_pk_row = data.PK;
+      this.maGD = data.CQT_MAGD;
+      this.xml_signed = data.SIGN_XML;
     },
 
     onClickExport(obj) {
@@ -794,7 +825,6 @@ export default {
       const TrandingTypeList = await this._getCommonCode2(["ACEI0040"], this.user.PK);
       this.trading_type_list = TrandingTypeList[0];
       
-
       const dso_directly_list = {
         type: "list",
         selpro: "EI_SEL_6095090_YN",
@@ -818,7 +848,7 @@ export default {
         case "form_no":
           const dso_form_list = {
             type: "list",
-            selpro: "AC_SEL_6095090_FORM_NO",
+            selpro: "AC_SEL_609541_FORM_NO_NC",
             para: [this.selected_company, this.dt_from, this.dt_to],
           };
           const checkFormNo = await this._dsoCall(dso_form_list, "select", false);
@@ -832,7 +862,7 @@ export default {
         case "serial_no":
           const dso_serial_no_list = {
             type: "list",
-            selpro: "AC_SEL_6095090_SERIAL_NO",
+            selpro: "AC_SEL_6095410_SERIAL_NO_NC",
             para: [this.selected_company, this.selected_form_no, this.dt_from, this.dt_to],
           };
           const checkSerialNo = await this._dsoCall(dso_serial_no_list, "select", false);
@@ -846,6 +876,82 @@ export default {
       }
     },
 
+    async onPreviewXml(){
+      if(this.tei_einvoice_m_pk_row != "")
+      {
+        if (!this.maGD) {
+            this.invoice = [];
+            this.invoice.push({
+              PK : this.tei_einvoice_m_pk_row,
+              USER_ID : this.user.USER_ID,
+            });
+
+            let res = await this.$axios.$post("/einvoice/general-invoice-xml", {
+                responseType: "json",
+                list_invoice: this.invoice,
+              });
+            console.log("res  ", res);
+            if (res.success && res.data.length) {
+              this.xmlUrl = res.data[0].xml;
+              await this.$nextTick();
+              this.isProcessing = false;
+              this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
+            }else {
+            this.showNotification("danger", res.message);
+          }
+        }
+        else
+        {
+          try {
+            this.xmlUrl = this.xml_signed; //new Blob([byteArray], { type: _typeFile });;
+            this.$nextTick(() => {
+              this.isProcessing = false;
+              this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
+            });
+
+            this.isProcessing = false;
+          } catch (e) {
+            this.isProcessing = false;
+            return this.showNotification("danger", e.message);
+          }
+        }
+      }else
+      {
+        this.showNotification("warning", this.$t("no_row_selected"), '');
+      }
+    },
+
+    penManualDialogPDF() {
+      if (this.hasForm) {
+        if (this.manualIsMinimizedPDF) {
+          this.manualIsMinimizedPDF = false;
+          this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+        } else {
+          this.dialogIsShow = true;
+        }
+      }
+    },
+
+    restoreManualDialogPDF() {
+      this.manualIsMinimizedPDF = false;
+      this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+    },
+
+    openManualDialog() {
+      if (this.hasForm) {
+        if (this.manualIsMinimized) {
+          this.manualIsMinimized = false;
+          this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
+        } else {
+          this.dialogIsShow = true;
+        }
+      }
+    },
+
+    restoreManualDialog() {
+      this.manualIsMinimized = false;
+      this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
+    },
   },
 };
 </script>

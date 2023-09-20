@@ -238,7 +238,7 @@ class EiExcelConverterAuto {
 								//console.log(e.Cell+"+"+e.Info)
 								break;
 							case "read_price":
-								worksheet.getCell( `${e.Cell}`).value = read_price != null ? read_price : '';
+								worksheet.getCell(`${e.Cell}`).value = read_price != null ? read_price.replace(',','') : '';
 								worksheet.getCell(`${e.Cell}`).style.border = { right: { style: 'thin' } };
 
 								// console.log(e.Cell+"+"+e.Info)
@@ -357,7 +357,7 @@ class EiExcelConverterAuto {
 				//console.log("lstNewMerge ", lstNewMerge)
 			});
 			for (let i = 1; i < totalRows ; i++) {
-				console.log(" _sourceRow + i, _sourceRow  ++++===> ", _sourceRow + i, totalRows)
+				//console.log(" _sourceRow + i, _sourceRow  ++++===> ", _sourceRow + i, totalRows)
 				exceljs.copyRow(_sourceRow + i, _sourceRow, 'c');
 				worksheet.getCell( `C${_sourceRow + i}`).style.border = {};
 			}
@@ -386,7 +386,7 @@ class EiExcelConverterAuto {
 			});
 			
 			for (let i = 1; i < totalRows - 1; i++) {
-				console.log(" _sourceRow + i, _sourceRow  ++++===> ", _sourceRow + i, totalRows)
+				//console.log(" _sourceRow + i, _sourceRow  ++++===> ", _sourceRow + i, totalRows)
 				exceljs.copyRow(_sourceRow + i, _sourceRow, 'c');
 				worksheet.getCell( `C${_sourceRow + i}`).style.border = {};
 			}
@@ -403,7 +403,7 @@ class EiExcelConverterAuto {
 		lstNewMerge.sort((a,b) =>  parseFloat(a.row1) - parseFloat(b.row1));
 		lstNewMerge.forEach(x => {
 			try {
-				console.log(x);
+				//console.log(x);
 				worksheet.mergeCells(x.row1, x.col1, x.row2, x.col2);
 			} catch (ee) {
 				console.log("err", ee)
@@ -946,7 +946,7 @@ class EiExcelConverterAuto {
 		//"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
 		if (einvoiceMasterData[0]["SIGN_YN"] == "Y") {
 			try {
-				console.log("SIGN_YN  ++===>  ", signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
+				//console.log("SIGN_YN  ++===>  ", signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
 				worksheet.unMergeCells(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox))
 				worksheet.unMergeCells(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 1))
 				worksheet.unMergeCells(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 2))
@@ -990,7 +990,7 @@ class EiExcelConverterAuto {
 			}
 			else
 			{
-				console.log("XXXX  ++===>  ", signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
+				//console.log("XXXX  ++===>  ", signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
 				worksheet.getCell(`${signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox)}`).style.border = { top: { style: 'thin' }, right: { style: 'thin' } };
 				worksheet.getCell(`${signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 1)}`).style.border = { right: { style: 'thin' } };
 				worksheet.getCell(`${signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 2)}`).style.border = { bottom: { style: 'thin' }, right: { style: 'thin' } };

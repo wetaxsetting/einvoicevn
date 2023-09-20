@@ -230,7 +230,9 @@ export default {
     txtDN_NAME: "",
     txtDN_MST: "",
     maGD:"",
-    xml_signed : ""
+    xml_signed : "",
+  
+
   }),
 
   async created() {
@@ -240,11 +242,11 @@ export default {
     // }
     // this.dt_from = "" + new Date().getFullYear() + month + "01";
     // this.dt_to = "" + new Date().getFullYear() + month + "31";
+    // this.pdf_handler = require("./js/EiExcelHandler.js");
+    // if (!!this.pdf_handler) {
+    //   Object.assign(this, this.pdf_handler.default);
+    // }
     await this.getListCodes();
-    this.pdf_handler = require("./js/EiExcelHandler.js");
-    if (!!this.pdf_handler) {
-      Object.assign(this, this.pdf_handler.default);
-    }
   },
   mounted() {
     

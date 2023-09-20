@@ -5025,7 +5025,7 @@ class EInvoiceController {
       };
       // console.log(" data.list_invoice  ", data.list_invoice);
       let req_key = [];
-      const invoices = data.data_invoice;
+      const invoices = data.list_invoice;
       const valid = this.weTaxValidateJsonInvalidPosInvoiceToXML(invoices);
       if (!valid.status) {
         return response.send(Utils.response(valid.status, valid.message));
@@ -5295,7 +5295,7 @@ class EInvoiceController {
       // }
 
       for (let i = 0; i < invalid_pos_invoices.length; i++) {
-        console.log(" i ", i, "  sss", invalid_pos_invoices[i]);
+        // console.log(" i ", i, "  sss", invalid_pos_invoices[i]);
 
         for (let j = 0; j < invalid_pos_invoices[i].detail.length; j++) {
           for (const key in errorList[0].detail[0]) {

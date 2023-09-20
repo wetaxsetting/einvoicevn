@@ -103,7 +103,7 @@ class EiExcelHandler {
 
     this.masterDataArray = []
         if (convertYn == "Y") {
-          reportPath = einvoiceMasterData[0].URL_FILE_EXCEL;//  url_file_excel;//'report/60/95/einvoices_template/Bornga/Bornga.xlsx'
+          reportPath = einvoiceMasterData[0].URL_FILE_EXCEL_C_IMP;//  url_file_excel;//'report/60/95/einvoices_template/Bornga/Bornga.xlsx'
           reportSheet = "Invoice"
           this.masterDataArray.push(
             { Cell: `G13`, Info: [`convert`], Type: 2 },
@@ -111,7 +111,7 @@ class EiExcelHandler {
             { Cell: `B38`, Info: [`CONVERT_DATE`], Type: 1 },
           )
         } else {
-          reportPath = einvoiceMasterData[0].URL_FILE_EXCEL;//'report/60/95/einvoices_template/Bornga/Bornga.xlsx'
+          reportPath = einvoiceMasterData[0].URL_FILE_EXCEL_IMP;//'report/60/95/einvoices_template/Bornga/Bornga.xlsx'
           reportSheet = "Invoice"
         }
 
@@ -120,26 +120,33 @@ class EiExcelHandler {
           //console.log(" Cell: einvoiceMasterParam[i].CELL_CODE ", einvoiceMasterParam[i].CELL_CODE + " - " + einvoiceMasterParam[i].DATA_MAPPING + "  - " + einvoiceMasterParam[i].TYPE );
           this.masterDataArray.push({ Cell: einvoiceMasterParam[i].CELL_CODE , Info: [ einvoiceMasterParam[i].DATA_MAPPING ], Type: einvoiceMasterParam[i].TYPE }, )
         }
-        if(einvoiceMasterData[0].URL_IMG_BG != "")
+        if(einvoiceMasterData[0].URL_IMG_BG != "" && einvoiceMasterData[0].URL_IMG_BG != null )
         {
-          bgPath = `assets/images/einvoices_logo/${einvoiceMasterData[0].URL_IMG_BG}`;
+          bgPath = `${einvoiceMasterData[0].URL_IMG_BG}`;
         }else
         {
           bgPath = "";
         }
 
-        if(einvoiceMasterData[0].URL_IMG_LOGO != "")
+        if(einvoiceMasterData[0].URL_IMG_LOGO != "" && einvoiceMasterData[0].URL_IMG_LOGO != null)
         {
           logos = [
-            { start: einvoiceMasterData[0].LOGO_START_ROW, width: 0.99 * dpi, height: 0.99 * dpi, logoStartCount: einvoiceMasterData[0].LOGO_START_COL, logoPath: `assets/images/einvoices_logo/${einvoiceMasterData[0].URL_IMG_LOGO}` },
+            { start: einvoiceMasterData[0].LOGO_START_ROW, 
+              width: 0.99 * dpi, 
+              height: 0.99 * dpi, 
+              logoStartCount: einvoiceMasterData[0].LOGO_START_COL, 
+              logoPath: `${einvoiceMasterData[0].URL_IMG_LOGO}` },
           ];
         }
         else{
           logos = [];
         }
          
+        console.log("bgPath  ", bgPath);
+        console.log("logos   ", logos);
 
-         for(let i = 0; i < einvoiceDetailsParam.length; i++)
+
+        for(let i = 0; i < einvoiceDetailsParam.length; i++)
         {
           detailCellFormat.push({  
               startCell: einvoiceDetailsParam[i].STARTCELL, 

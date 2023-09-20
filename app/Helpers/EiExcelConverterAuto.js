@@ -73,7 +73,7 @@ class EiExcelConverterAuto {
 		let excCols = exceljs.excelCols
 		let sttCell = ""
 		let nmCell = ""
-		let lastCell = excCols[detailCellFormat[detailCellFormat.length - 1].endCell + 1]
+		let lastCell = excCols[detailCellFormat[detailCellFormat.length - 1].endCell ] // cái này update 
 		let startMergeRedundantRow = detailCellFormat[0].startCell
 		let endMergeRedundantRow = detailCellFormat[detailCellFormat.length - 1].endCell
 		let convertStr = "(HÓA ĐƠN CHUYỂN ĐỔI TỪ HÓA ĐƠN ĐIỆN TỬ)"
@@ -351,8 +351,8 @@ class EiExcelConverterAuto {
 					lstNewMerge.push({ row1: _row1 + totalRows - 1, col1: _col1, row2: _row2 + totalRows - 1, col2: _col2, range: x });
 					worksheet.unMergeCells(startMergeCell);
 				}
-				console.log("_row1  ", _row1 ,  )
-				console.log("lstNewMerge ", lstNewMerge)
+				//console.log("_row1  ", _row1 ,  )
+				//console.log("lstNewMerge ", lstNewMerge)
 			});
 			for (let i = 1; i < totalRows ; i++) {
 				console.log(" _sourceRow + i, _sourceRow  ++++===> ", _sourceRow + i, totalRows)
@@ -599,7 +599,7 @@ class EiExcelConverterAuto {
 									worksheet.mergeCells(_sourceRow_2 + totalRowCount_2, e.startCell, _sourceRow_2 + totalRowCount_2, e.endCell)
 									worksheet.getCell(`${excCols[e.startCell] + (_sourceRow_2 + totalRowCount_2)}`).style.border = { bottom: { style: detailCellFormat[i].cellBorder }, left: { style: 'thin' }, };
 								});
-								worksheet.getCell( `${lastCell +  (_sourceRow_2 + totalRowCount_2)}`).style.border = { right: { style: 'thin' },bottom: { style: detailCellFormat[0].cellBorder } };
+								worksheet.getCell( `${lastCell +  (_sourceRow_2 + totalRowCount_2)}`).style.border = { right: { style: 'thin' },bottom: { style: detailCellFormat[0].cellBorder }, left : { style: 'thin' } };
 								//worksheet.getCell( `${nmCell + (_sourceRow_2 + totalRowCount_2 + item_name_lt)}`).style.border = { bottom: { style: detailCellFormat[0].cellBorder }, };
 								//	worksheet.getCell( `${sttCell + (_sourceRow_2 + totalRowCount_2 + item_name_lt)}`).style.border = { left: { style: 'thin' }, right: { style: 'thin' }, bottom: { style: detailCellFormat[0].cellBorder }, top: { style: 'thin' } };
 							} else {
@@ -611,7 +611,7 @@ class EiExcelConverterAuto {
 											worksheet.getCell(`${excCols[e.startCell] + (_sourceRow_2 + totalRowCount_2 + itl)}`).style.border = { bottom: { style: detailCellFormat[i].cellBorder }, left: { style: 'thin' }, };
 										}
 									});
-									worksheet.getCell(`${lastCell + (_sourceRow_2 + totalRowCount_2 + itl)}`).style.border = { right: { style: 'thin' } };
+									worksheet.getCell(`${lastCell + (_sourceRow_2 + totalRowCount_2 + itl)}`).style.border = { right: { style: 'thin' },  left: { style: 'thin' } };
 									worksheet.getCell(`${nmCell + (_sourceRow_2 + totalRowCount_2 + itl)}`).style.border = { left: { style: 'thin' } };
 								}
 								detailCellFormat.forEach(e => {
@@ -765,9 +765,10 @@ class EiExcelConverterAuto {
 									worksheet.mergeCells(_sourceRow + totalRowCount, e.startCell, _sourceRow + totalRowCount, e.endCell)
 									worksheet.getCell(`${excCols[e.startCell] + (_sourceRow + totalRowCount)}`).style.border = { bottom: { style: detailCellFormat[i].cellBorder }, left: { style: 'thin' }, };
 								});
+								console.log("lastCell  ", lastCell)
 								worksheet.getCell( `${lastCell +  (_sourceRow + totalRowCount)}`).style.border = { right: { style: 'thin' },bottom: { style: detailCellFormat[0].cellBorder }  };
-								worksheet.getCell(`${nmCell + (_sourceRow + totalRowCount + item_name_lt)}`).style.border = { bottom: { style: detailCellFormat[0].cellBorder }, };
-								worksheet.getCell(`${sttCell + (_sourceRow + totalRowCount + item_name_lt)}`).style.border = { left: { style: 'thin' }, right: { style: 'thin' }, bottom: { style: detailCellFormat[0].cellBorder } };
+								//worksheet.getCell(`${nmCell + (_sourceRow + totalRowCount + item_name_lt)}`).style.border = { bottom: { style: detailCellFormat[0].cellBorder }, };
+								//worksheet.getCell(`${sttCell + (_sourceRow + totalRowCount + item_name_lt)}`).style.border = { left: { style: 'thin' }, right: { style: 'thin' }, bottom: { style: detailCellFormat[0].cellBorder } };
 							} else {
 								detailCellFormat.forEach((e, i) => {
 									if (e.cellType == 1 || e.cellType == 2) {
@@ -779,7 +780,8 @@ class EiExcelConverterAuto {
 										worksheet.mergeCells(_sourceRow + totalRowCount, e.startCell, _sourceRow + totalRowCount, e.endCell)
 										worksheet.getCell(`${excCols[e.startCell] + (_sourceRow + totalRowCount)}`).style.border = { bottom: { style: detailCellFormat[i].cellBorder }, left: { style: 'thin' }, };
 									}
-										worksheet.getCell( `${lastCell +  (_sourceRow + totalRowCount)}`).style.border = { right: { style: 'thin' },bottom: { style: detailCellFormat[0].cellBorder }  };
+									console.log("lastCell  ", lastCell)
+									worksheet.getCell( `${lastCell +  (_sourceRow + totalRowCount)}`).style.border = { right: { style: 'thin' },bottom: { style: detailCellFormat[0].cellBorder }, left: { style: 'thin' }  };
 								});
 
 								for (let u = 0; u < item_name_lt; u++) {
@@ -793,30 +795,30 @@ class EiExcelConverterAuto {
 							}
 							totalRowCount += item_name_lt
 
-							if(i == 0)
-							{
-								if (cancelYn == "Y") {
-									try {
-										worksheet.addImage(await exceljs.insertPathImage(cancelPath), {
-											tl: { col: startMergeRedundantRow, row: _sourceRow_2 - 10 },
-											ext: { width: 705, height: 500 }
-										});
-									} catch (error) {
-										console.log(error)
-									}
+							// if(i == 0)
+							// {
+							// 	if (cancelYn == "Y") {
+							// 		try {
+							// 			worksheet.addImage(await exceljs.insertPathImage(cancelPath), {
+							// 				tl: { col: startMergeRedundantRow, row: _sourceRow_2 - 10 },
+							// 				ext: { width: 705, height: 500 }
+							// 			});
+							// 		} catch (error) {
+							// 			console.log(error)
+							// 		}
 	
-								}
-								if (bgPath != "") {
-									try {
-										worksheet.addImage(await exceljs.insertPathImage(bgPath), {
-											tl: { col: backgroundCell, row: backgroundRow - 1 },
-											ext: { width: backgroundWidth, height: backgroundHeight }
-										});
-									} catch (error) {
-										console.log(error)
-									}
-								}
-							}
+							// 	}
+							// 	if (bgPath != "") {
+							// 		try {
+							// 			worksheet.addImage(await exceljs.insertPathImage(bgPath), {
+							// 				tl: { col: backgroundCell, row: backgroundRow - 1 },
+							// 				ext: { width: backgroundWidth, height: backgroundHeight }
+							// 			});
+							// 		} catch (error) {
+							// 			console.log(error)
+							// 		}
+							// 	}
+							// }
 							
 						} catch (error) {
 							console.log("err", error)
@@ -832,8 +834,6 @@ class EiExcelConverterAuto {
 
 			}
 		}
-
-
 
 		//END-this part insert range header for each page
 

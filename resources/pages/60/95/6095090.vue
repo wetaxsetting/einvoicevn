@@ -582,7 +582,6 @@ export default {
     },
 
     async onSuccessissueXmlList(data) {
-
       console.log(data);
       let jsonXML = data.result;
       // this.txtXMl_T = data.result[0].xml;
@@ -612,66 +611,42 @@ export default {
         false
       );
 
-        if (check_serial_no_result[0].STATUS == "1") {
+      if (check_serial_no_result[0].STATUS == "1") {
 
-          let data_invoice = [];
-          for(let i = 0; i < jsonXML.length; i++)
-          {
-            data_invoice.push({
-                req_key: jsonXML[i].req_key,
-                token_serial_number: data.serial_number,
-                buyer_tax_code: data.dn_mst,
-                buyer_name: data.dn_name,
-                xml_signed: jsonXML[i].xml,
-            });
-          }
-
-          let res_send = await this.$axios.$post("/einvoice/send-invoice-at", {
-            responseType: "json",
-            invoices: data_invoice,
+        let data_invoice = [];
+        for(let i = 0; i < jsonXML.length; i++)
+        {
+          data_invoice.push({
+              req_key: jsonXML[i].req_key,
+              token_serial_number: data.serial_number,
+              buyer_tax_code: data.dn_mst,
+              buyer_name: data.dn_name,
+              xml_signed: jsonXML[i].xml,
           });
-
-          if(res_send.success)
-          {
-            this.funcSearch();
-              this.showNotification("success", "Send invoice to Tax Office was Successfully!", "");
-
-          } else {
-              this.funcSearch();
-              this.showNotification("danger", "Send invoice to Tax Office was Faile!");
-          }
-         
-        } else {
-          alert("Token not suitable !!!");
         }
+
+        let res_send = await this.$axios.$post("/einvoice/send-invoice-at", {
+          responseType: "json",
+          invoices: data_invoice,
+        });
+
+        if(res_send.success)
+        {
+          this.funcSearch();
+            this.showNotification("success", "Send invoice to Tax Office was Successfully!", "");
+
+        } else {
+            this.funcSearch();
+            this.showNotification("danger", "Send invoice to Tax Office was Faile!");
+        }
+        
+      } else {
+        alert("Token not suitable !!!");
+      }
       
     },
 
     async onPreview() {
-      // jQuery.support.cors = true;
-      // $.ajax({
-      //   type: "POST",
-      //   url: "http://genuclouding.com/wseinvoice/BSService.asmx/SendPDF_R",
-      //   data: {
-      //     tei_einvoice_m_pk: this.tei_einvoice_m_pk_row + "|",
-      //     tei_company_pk: this.selected_company,
-      //   },
-      //   dataType: "text",
-      //   crossDomain: true,
-      //   success: this.OnSuccessCallReUploadPDF,this.tei_einvoice_m_pk_row
-      //   error: this.OnErrorCallReUploadPDF,
-      // });
-
-      //351913 265263 304524  313069
-      // this.isProcessing = true
-      //this.pdfUrl = await this.pdfUrlGetter(385207);
-      // this.pdfUrl = await this.pdfUrlGetter(this.tei_einvoice_m_pk_row);
-      //   this.pdfUrl = await this.$axios.$post("/einvoice/einvoicepdfconvert", { tradecode:this.tei_einvoice_m_pk_row });
-      // this.$nextTick(() => {
-      //   this.isProcessing = false
-      //   this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
-      // });
-
       if(this.tei_einvoice_m_pk_row != "")
       {
         let res_url = await this.$axios.$post("/einvoice/general-url-pdf", {

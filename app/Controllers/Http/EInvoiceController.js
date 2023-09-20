@@ -5816,22 +5816,9 @@ class EInvoiceController {
 
         if(preview == "N")
         {
-          const file_url_img = `/resources/assets/images/einvoices_logo/${seller_comp_taxcode}`;
+          const file_url_img = `/assets/images/einvoices_logo/${seller_comp_taxcode}`;
           const file_url_excel = `/resources/report/60/95/einvoices_template/${seller_comp_taxcode}`;
           let logo_width = 0, logo_height = 0;
-
-          //const file_url_img = `/tmp/${seller_comp_taxcode}`;
-          //const file_url_excel = `/tmp/${seller_comp_taxcode}`;
-          // console.log("file_url_img  ", file_url_img);
-
-          // let savePath = Helpers.appRoot(file_url_img);
-        
-          //     await logo_image.move(savePath, {
-          //         name: "aa.png",
-          //         overwrite: true
-          //     });
-          
-          
 
           let file_path_logo = await Utils.putExcelRootPath(logo_image, file_url_img, "WETAXT") ;
          
@@ -5847,19 +5834,14 @@ class EInvoiceController {
             .metadata()
             .then((metadata) => {
               const { width, height } = metadata;
-            
-              console.log(`Image width: ${width}px`);
-              console.log(`Image height: ${height}px`);
-
+              // console.log(`Image width: ${width}px`);
+              // console.log(`Image height: ${height}px`);
                logo_width = width;
               logo_height = height;
             })
             .catch((error) => {
               console.error('Error:', error);
             });
-
-        console.log("logo_width  ", logo_width);
-        console.log("logo_height  ", logo_height);
 
         if (logo_width > logo_height && logo_width > 100) {
           logo_width = 100;
@@ -5887,8 +5869,6 @@ class EInvoiceController {
         };
 
         //console.log("para_value  ", para_value);
-
-
         const rtnValue = await DBService.ExecuteSQLBlob(
           `BEGIN ei_upd_template_comp (                   :p_seller_comp_seller,
                                                           :p_serial_no2,
@@ -5924,7 +5904,7 @@ class EInvoiceController {
           template : url_pdf
         }
 
-        return response.send(Utils.response(false, "Send Company template was Successfully", req_value));
+        return response.send(Utils.response(true, "Send Company template was Successfully", req_value));
       }
       else
       {

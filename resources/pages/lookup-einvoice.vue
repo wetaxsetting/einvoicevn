@@ -149,7 +149,7 @@ export default {
 
   data: () => ({
     imgBg: require("@/assets/images/lookup_einvoice.jpg"),
-    invoiceNo: "aRxAnqUTeX0=",
+    invoiceNo: "",
     captcha: "",
     captchaSvg: "",
     sessionID: "",
@@ -253,7 +253,9 @@ export default {
           lookupcode: this.invoiceNo
         })
         if(success) {
-          console.log("data:", data);          
+          console.log("data:", data);
+          this.showNotification("success", message, "", 3000);
+
           this.isProcessing = false;
           this.dialog2IsShow = false;
           this.$refs.converterInputRefs.reset();

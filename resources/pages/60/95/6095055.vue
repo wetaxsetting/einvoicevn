@@ -477,7 +477,7 @@ export default {
   async created() {
     console.clear();
     this.imageLOGO = this.renderImg("assets/images/no_image.png");
-    this.imageBG = this.renderImg("assets/images/no_background.png");
+    this.imageBG = this.renderImg("assets/images/no_image.png");
     await this.getListCodes("company");
     await this.getListCodes("serial_no");
     await this.getListCodes("form_no");
@@ -731,13 +731,13 @@ export default {
           width = this.naturalWidth;
           height = this.naturalHeight;
           //resize logo
-          if (width > height && width > 1000) {
+          if (width > height && width > 756) {
             width = 756;
-            height = 1000 * width / height;
+            height = 100 * width / height;
           }
-          if (height > width && height > 1000) {
+          if (height > width && height > 756) {
             height = 756;
-            width = 1000 * height/ width ;
+            width = 100 * height/ width ;
           }
           self.MasterInfo.BG_WIDTH =  Number(width).toFixed(2);
           self.MasterInfo.BG_HEIGHT =  Number(height).toFixed(2);
@@ -831,7 +831,7 @@ export default {
             } catch (e) {
               this.showNotification("danger", this.$t("fail_view_to_url", "Error"), e.message);
             }
-          }, 2000);
+          }, 3000);
           break;
         case "NEW_S":
           this.onNew_T();

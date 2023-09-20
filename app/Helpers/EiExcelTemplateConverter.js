@@ -38,7 +38,6 @@ class EiExcelConverterAuto {
 
 
 
-		// console.log("bg  " , bg  );
 		if (bg.length) {
 			try {
 				worksheet.addImage(await exceljs.insertPathImage(bg[0].bgPath), {
@@ -68,7 +67,7 @@ class EiExcelConverterAuto {
 			masterDataArray.forEach(e => {
 				if (e.Type == 1) {
 					let infoData = ""
-					console.log("  e +++ >>>", e)
+					// console.log("  e +++ >>>", e)
 					e.Info.forEach(_e => {
 						if (einvoiceMasterData[0][`${_e}`] != null || einvoiceMasterData[0][`${_e}`] != undefined) {
 							infoData = infoData + einvoiceMasterData[0][`${_e}`];

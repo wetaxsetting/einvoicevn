@@ -239,6 +239,8 @@ class EiExcelConverterAuto {
 								break;
 							case "read_price":
 								worksheet.getCell( `${e.Cell}`).value = read_price != null ? read_price : '';
+								worksheet.getCell(`${e.Cell}`).style.border = { right: { style: 'thin' } };
+
 								// console.log(e.Cell+"+"+e.Info)
 								break;
 							// case "read_priceV":
@@ -766,7 +768,7 @@ class EiExcelConverterAuto {
 									worksheet.getCell(`${excCols[e.startCell] + (_sourceRow + totalRowCount)}`).style.border = { bottom: { style: detailCellFormat[i].cellBorder }, left: { style: 'thin' }, };
 								});
 								console.log("lastCell  ", lastCell)
-								worksheet.getCell( `${lastCell +  (_sourceRow + totalRowCount)}`).style.border = { right: { style: 'thin' },bottom: { style: detailCellFormat[0].cellBorder }  };
+								worksheet.getCell( `${lastCell +  (_sourceRow + totalRowCount)}`).style.border = { right: { style: 'thin' },bottom: { style: detailCellFormat[0].cellBorder }, left: { style: 'thin' }  };
 								//worksheet.getCell(`${nmCell + (_sourceRow + totalRowCount + item_name_lt)}`).style.border = { bottom: { style: detailCellFormat[0].cellBorder }, };
 								//worksheet.getCell(`${sttCell + (_sourceRow + totalRowCount + item_name_lt)}`).style.border = { left: { style: 'thin' }, right: { style: 'thin' }, bottom: { style: detailCellFormat[0].cellBorder } };
 							} else {
@@ -795,30 +797,29 @@ class EiExcelConverterAuto {
 							}
 							totalRowCount += item_name_lt
 
-							// if(i == 0)
-							// {
-							// 	if (cancelYn == "Y") {
-							// 		try {
-							// 			worksheet.addImage(await exceljs.insertPathImage(cancelPath), {
-							// 				tl: { col: startMergeRedundantRow, row: _sourceRow_2 - 10 },
-							// 				ext: { width: 705, height: 500 }
-							// 			});
-							// 		} catch (error) {
-							// 			console.log(error)
-							// 		}
-	
-							// 	}
-							// 	if (bgPath != "") {
-							// 		try {
-							// 			worksheet.addImage(await exceljs.insertPathImage(bgPath), {
-							// 				tl: { col: backgroundCell, row: backgroundRow - 1 },
-							// 				ext: { width: backgroundWidth, height: backgroundHeight }
-							// 			});
-							// 		} catch (error) {
-							// 			console.log(error)
-							// 		}
-							// 	}
-							// }
+							if(i == 0)
+							{
+								if (cancelYn == "Y") {
+									try {
+										worksheet.addImage(await exceljs.insertPathImage(cancelPath), {
+											tl: { col: startMergeRedundantRow, row: _sourceRow_2 - 10 },
+											ext: { width: 705, height: 500 }
+										});
+									} catch (error) {
+										console.log(error)
+									}
+								}
+								if (bgPath != "") {
+									try {
+										worksheet.addImage(await exceljs.insertPathImage(bgPath), {
+											tl: { col: backgroundCell, row: backgroundRow - 1 },
+											ext: { width: backgroundWidth, height: backgroundHeight }
+										});
+									} catch (error) {
+										console.log(error)
+									}
+								}
+							}
 							
 						} catch (error) {
 							console.log("err", error)
@@ -964,6 +965,20 @@ class EiExcelConverterAuto {
 				console.log(error)
 			}
 		}
+		// else
+		// {
+		// 	try {
+		// 		console.log("SIGN_YN  ++===>  ", signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
+		// 		//worksheet.getCell(`${sttCell + (rowItem.loopStartRow)}`).style.border = { left: { style: 'thin' }, bottom: { style: 'thin' } };
+
+		// 		worksheet.getCell(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox)).style.border = { right: { style: 'thin' }};
+		// 		worksheet.getCell(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 1)).style.border = { right: { style: 'thin' }};
+		// 		worksheet.getCell(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 2)).style.border = { right: { style: 'thin' } };
+				
+		// 	} catch (error) {
+		// 		console.log(error)
+		// 	}
+		// }
 		//END-this part insert Signed image if the einvoice is signed.
 
 		//this part add more style to missing part of the footer(optional).
@@ -975,6 +990,7 @@ class EiExcelConverterAuto {
 			}
 			else
 			{
+				console.log("XXXX  ++===>  ", signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
 				worksheet.getCell(`${signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox)}`).style.border = { top: { style: 'thin' }, right: { style: 'thin' } };
 				worksheet.getCell(`${signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 1)}`).style.border = { right: { style: 'thin' } };
 				worksheet.getCell(`${signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 2)}`).style.border = { bottom: { style: 'thin' }, right: { style: 'thin' } };

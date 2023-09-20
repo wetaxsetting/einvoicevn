@@ -184,7 +184,7 @@ class EiExcelHandler {
         signCell = { start: einvoiceMasterData[0].SIGN_START_CELL, end: einvoiceMasterData[0].SIGN_END_CELL }
         signBoxCell = einvoiceMasterData[0].SIGN_CELL_BOX
         signByCell = { start: einvoiceMasterData[0].SIGN_BY_START_CELL, end: einvoiceMasterData[0].SIGN_BY_END_CELL }
-        countFromEndDetailToSignBox = einvoiceMasterData[0].RANGE_DETAILS_SIGN
+        countFromEndDetailToSignBox = einvoiceMasterData[0].SIGN_RANGE_DETAILS
 
         _sourceRow = einvoiceMasterData[0].DETAILS_START_ROW//26
         _sourceRow_2 = einvoiceMasterData[0].DETAILS_START_ROW//26

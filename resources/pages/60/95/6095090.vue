@@ -80,7 +80,7 @@
             item-value="VAL" filter_off />
         </v-col>
         <v-col lg="1">
-          <BaseCheckbox :label="$t('check_all')" true-value="Y" false-value="N" v-model="check_all" />
+          <!-- <BaseCheckbox :label="$t('check_all')" true-value="Y" false-value="N" v-model="check_all" /> -->
         </v-col>
         <v-col lg="7" class="pl-1 d-flex justify-end">
           <BaseButton icon_type="search" :btn_text="$t('search')" :disabled="isProcessing" @onclick="funcSearch()" />

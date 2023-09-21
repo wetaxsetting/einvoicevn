@@ -81,7 +81,7 @@
             item-value="VAL" filter_off />
         </v-col>
         <v-col lg="1">
-          <BaseCheckbox :label="$t('check_all')" true-value="Y" false-value="N" v-model="check_all" />
+          <!-- <BaseCheckbox :label="$t('check_all')" true-value="Y" false-value="N" v-model="check_all" /> -->
         </v-col>
         <v-col lg="7" class="pl-1 d-flex justify-end">
           <BaseButton icon_type="search" :btn_text="$t('search')" :disabled="isProcessing" @onclick="funcSearch()" />
@@ -659,17 +659,21 @@ export default {
       //console.log("check_serial_no_result  ", check_serial_no_result);
 
         if (check_serial_no_result[0].STATUS == "1") {
+          
+
           let data_invoice = {
             tax_serial_number : this.txtSerial_Number,
-            seller_tax_code : "",
+            seller_tax_code : this.txtDN_MST,
             sale_date : "",
             store_code: "",
             store_name: "",
             pos_no: "",
+            sign_by: this.txtDN_MST,
             invoice_xml_signed:this.txtXMl_T,
+            list_invoice: this.invoice,
           }
 
-          let res_send = await this.$axios.$post("/einvoice/send-pos-invoice", {
+          let res_send = await this.$axios.$post("/einvoice/send-pos-invoice-at", {
             responseType: "json",
             data: data_invoice,
           });
@@ -677,25 +681,17 @@ export default {
           //console.log("res  ", res_send);
           if(res_send.success)
           {
-            let list_invoice_pk;
-
-            this.invoice.forEach(e => {
-              //console.log(e);
-              list_invoice_pk =  e.PK + "-"  + list_invoice_pk
-            });
-            list_invoice_pk = list_invoice_pk.replace("undefined", "");
-            const response = await this._callProcedure("EI_SEL_6095410_TRADECODE", [list_invoice_pk, res_send.data.trade_code]);
-
-            if (response[0].STATUS == "OK") {
-              this.funcSearch();
+            this.funcSearch();
               this.showNotification("success", "Send invoice to Tax Office was Successfully!", "");
+            
 
-            } else {
+            
+
+          }
+          else {
               this.funcSearch();
               this.showNotification("danger", "Send invoice to Tax Office was Faile!");
             }
-
-          }
          
         } else {
           alert("Token not suitable !!!");
@@ -725,12 +721,6 @@ export default {
         this.showNotification("warning", this.$t("no_row_selected"), '');
       }
       
-    },
-
-    async pdfUrlGetter(pk) {
-      const pdfUrlExcel = await this.getEinvoice(this, pk)
-      console.log("pdfUrlExcel ", pdfUrlExcel);
-      return pdfUrlExcel
     },
 
     onAfterLoad() {
@@ -886,13 +876,13 @@ export default {
               USER_ID : this.user.USER_ID,
             });
 
-            let res = await this.$axios.$post("/einvoice/general-invoice-xml", {
+            let res = await this.$axios.$post("/einvoice/general-pos-invoice-xml-view", {
                 responseType: "json",
                 list_invoice: this.invoice,
               });
             console.log("res  ", res);
-            if (res.success && res.data.length) {
-              this.xmlUrl = res.data[0].xml;
+            if (res.success) {
+              this.xmlUrl = res.data.xml_converted;
               await this.$nextTick();
               this.isProcessing = false;
               this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;

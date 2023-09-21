@@ -164,14 +164,16 @@ Route.group(() => {
 
 
     // e-invoice
+    Route.post("general-pos-invoice-xml-view", "EInvoiceController.generalXmlPosInvoiceView")
     Route.post("general-pos-invoice-xml", "EInvoiceController.generalXmlPosInvoice")
     Route.post("general-invoice-xml", "EInvoiceController.generalXmlInvoice")
     Route.post("send-invoice-at", "EInvoiceController.sendInvoice")
+    Route.post("send-pos-invoice-at", "EInvoiceController.sendPosInvoice")
     Route.post("check-status-invoice-at", "EInvoiceController.checkInvoiceStatus")
     Route.post("general-url-pdf", "EInvoiceController.viewPDFEPortal")
     Route.post("general-url-pdf-template", "EInvoiceController.viewPDFTemplateEPortal")
 
-
+    
 
 }).prefix("api/einvoice").middleware("user");
 

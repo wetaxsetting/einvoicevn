@@ -943,7 +943,7 @@ class EInvoiceController {
           LDo: invoices[i].reason,
         });
       }
-      const id = uuid.v4();
+      const id = "ID1";// uuid.v4();
       const xml = this.OBJtoXML(jsonInvalidInvoices);
       const xmlId = xml.toString().replace("<DLTBao>", `<DLTBao Id=\'${id}\'>`);
       const xmlRemoveLine = xmlId.toString().replace(/\n/g, "");
@@ -4969,7 +4969,13 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
 
-      const { data } = request.all();
+      const { data,
+        tax_code,
+        store_code,
+        store_name,
+        count_invoice,
+        list_invoice
+       } = request.all();
 
       // console.log(" data  ", data);
 
@@ -5037,7 +5043,7 @@ class EInvoiceController {
       };
       // console.log(" data.list_invoice  ", data.list_invoice);
       let req_key = [];
-      const invoices = data.list_invoice;
+      const invoices = list_invoice;
       const valid = this.weTaxValidateJsonInvalidPosInvoiceToXML(invoices);
       if (!valid.status) {
         return response.send(Utils.response(valid.status, valid.message));
@@ -5195,14 +5201,14 @@ class EInvoiceController {
         };
       }
 
-      const id = uuid.v4();
+      const id = "ID1";//uuid.v4();
       const xml = this.OBJtoXML(objData);
       const xmlId = xml.toString().replace("<DLieu>", `<DLieu Id=\'${id}\'>`);
       const xmlRemoveLine = xmlId.toString().replace(/\n/g, "");
       rtnXML = {
-        tax_code: data.tax_code,
-        store_code: data.store_code,
-        store_name: data.store_name,
+        tax_code: tax_code,
+        store_code: store_code,
+        store_name: store_name,
         count_invoice_convert: invoices.length,
         sign_id: id,
         xml_data: xmlRemoveLine,

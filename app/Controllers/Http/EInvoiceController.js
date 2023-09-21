@@ -5460,8 +5460,11 @@ class EInvoiceController {
         p_crt_by
       );
        console.log("rtnValue  ", rtnValue);
+
       tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
+      console.log("tei_wt_sale_bill_pk  ", tei_wt_sale_bill_pk);
       if (rtnValue.p_rtn_cur[0].STATUS == "OK") {
+        console.log("tei_wt_sale_bill_pk OK ", tei_wt_sale_bill_pk);
         for (let j = 0; j < data_invoice.total_vat_list.length; j++) {
           const para_amt_vat = {
             tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
@@ -5525,10 +5528,11 @@ class EInvoiceController {
       // else{
       //   return response.send(Utils.response(true, `error!`, {err_msg: 'exec error: ei_upd_order_info'}));
       // }
+      console.log("sendMaiToCustomer  ", tei_wt_sale_bill_pk);
 
       const { res_send_mail, subject, body } = await this.sendMaiToCustomer(
         tei_wt_sale_bill_pk,
-        data,
+        data_invoice,
         p_language,
         p_crt_by
       );
@@ -8840,19 +8844,20 @@ class EInvoiceController {
 
   async sendMaiToCustomer(tei_wt_sale_bill_pk, data_invoice, p_language, p_crt_by) {
     try {
-      // let EiExcel = new EiPosExcelHandlerAuto();
-    // let EiExcel = new EiPosExcelHandler();
-    // let url_pdf = await EiExcel.getEinvoice(tei_wt_sale_bill_pk , p_language, p_crt_by);
-    //  console.log("base64PDf  ", url_pdf);
 
-
+      //console.log("sSSSS ", tei_wt_sale_bill_pk);
     let EiExcels = new EiPosExcelHandlerAuto();
     let url_pdf = await EiExcels.getEinvoice(tei_wt_sale_bill_pk, p_language, p_crt_by);
-    console.log("base64PDf  ", url_pdf);
+   // console.log("base64PDf  ", url_pdf);
+
+    //console.log("sSSSS2 ", tei_wt_sale_bill_pk);
 
     let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + tei_wt_sale_bill_pk + "&proc=" + "EI_SEL_XML_POS_EINVOICE" + "&token="); //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
     let url_xml = re_url_xml.data;
     console.log("base64XXML  ", url_xml);
+
+    //console.log("sSSSS3 ", tei_wt_sale_bill_pk);
+
     //let url_xml = "",url_pdf = "";
     let subject = `${data_invoice.seller_comp_name}[Thông báo phát hành HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
     let body = `<html>
@@ -8918,6 +8923,9 @@ class EInvoiceController {
                                 </body>
                             </html>
                             `;
+
+                            console.log("sSSSS4 ", tei_wt_sale_bill_pk);
+
     const res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {
       mail_to: data_invoice.buyer_email,
       cc_to: data_invoice.buyer_email_cc,

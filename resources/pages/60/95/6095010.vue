@@ -87,14 +87,25 @@
                       <v-col md="6">
                         <BaseInput outlined :label="$t('tel')" v-model="MasterInfo.TEL" />
                       </v-col>
-                      <v-col md="12">
+                      <v-col md="6">
                         <BaseInput outlined :label="$t('bank_name')" v-model="MasterInfo.BANK_NAME" />
                       </v-col>
                       <v-col md="6">
-                        <BaseInput outlined :label="$t('account_holder')" v-model="MasterInfo.ACC_HOLDER" />
+                        <BaseInput outlined :label="$t('account_no')" v-model="MasterInfo.ACC_NO" />
+                      </v-col>
+                      <!-- ///// -->
+                      <v-col md="6">
+                        <BaseInput outlined :label="$t('bank_name_2')" v-model="MasterInfo.BANK_NAME2" />
                       </v-col>
                       <v-col md="6">
-                        <BaseInput outlined :label="$t('account_no')" v-model="MasterInfo.ACC_NO" />
+                        <BaseInput outlined :label="$t('account_no_2')" v-model="MasterInfo.ACC_NO2" />
+                      </v-col>
+                      <!-- // -->
+                      <v-col md="6">
+                        <BaseSelect outlined :label="$t('tax_agency_name')" v-model="MasterInfo.MCQTQLY" :lstData="taxOfficeList" item-text="NAME" item-value="CODE" />
+                      </v-col>
+                      <v-col md="6">
+                        <BaseInput outlined :label="$t('account_holder')" v-model="MasterInfo.ACC_HOLDER" />
                       </v-col>
                       <v-col md="6">
                         <BaseInput outlined :label="$t('email')" v-model="MasterInfo.CONTACT_EMAIL" />
@@ -102,9 +113,7 @@
                       <v-col md="6">
                         <BaseInput outlined :label="$t('contact_person')" v-model="MasterInfo.CONTACT_PERSON" />
                       </v-col>
-                      <v-col md="12">
-                        <BaseSelect outlined :label="$t('tax_agency_name')" v-model="MasterInfo.MCQTQLY" :lstData="taxOfficeList" item-text="NAME" item-value="CODE" />
-                      </v-col>
+                      
                       <v-col md="6">
                         <v-chip label>{{ $t("image_logo") }}</v-chip>
                         <BasePhoto ref="photoLogo" :width="150" :height="100" table_name="TEI_COMPANY_1" v-model="MasterInfo.PK" :procedure="procedure_upload"></BasePhoto>
@@ -191,6 +200,8 @@ export default {
       ADDR: "",
       REPRESENT: "",
       BANK_NAME: "",
+      BANK_NAME2: "",
+      ACC_NO2: "",
       ACC_NO: "",
       TEL: "",
       FAX: "",
@@ -531,6 +542,8 @@ export default {
             "REPRESENT",
             "CQTQLY",
             "MCQTQLY",
+            "BANK_NAME2",
+            "ACC_NO2"
           ],
           data: this.MasterInfo,
         },
@@ -633,6 +646,8 @@ export default {
       this.MasterInfo.TEL = "";
       this.MasterInfo.USE_YN = "Y";
       this.MasterInfo.BANK_NAME = "";
+      this.MasterInfo.BANK_NAME2 = "";
+      this.MasterInfo.ACC_NO2 = "";
       this.MasterInfo.ACC_HOLDER = "";
       this.MasterInfo.ACC_NO = "";
       this.MasterInfo.CONTACT_EMAIL = "";

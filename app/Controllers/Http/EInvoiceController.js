@@ -6469,7 +6469,7 @@ class EInvoiceController {
         inform_code: maTBao,
         inform_name: tenTBao,
         mccqt: maCQT,
-        xml_tax_signed,
+        xml_tax_signed: xml_tax_signed,
       };
 
       return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));

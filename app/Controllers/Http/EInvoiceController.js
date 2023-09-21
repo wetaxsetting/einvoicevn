@@ -4969,7 +4969,7 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
 
-      const { data,
+      const { 
         tax_code,
         store_code,
         store_name,
@@ -5212,7 +5212,7 @@ class EInvoiceController {
         count_invoice_convert: invoices.length,
         sign_id: id,
         xml_data: xmlRemoveLine,
-        req_key,
+        req_key: req_key,
       };
 
       return response.send(Utils.response(true, `Convert json to xml was successful.`, rtnXML));

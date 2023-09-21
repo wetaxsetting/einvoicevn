@@ -192,7 +192,7 @@ class EiExcelConverterAuto {
 
 		//this part set the master data to each cell. that 100% base on template.
 
-		let dateString = `Ngày (Date) ${einvoiceMasterData[0]["INVOICE_DATE_DD"]}   tháng (month)  ${einvoiceMasterData[0]["INVOICE_DATE_MM"]}  năm (year) ${einvoiceMasterData[0]["INVOICE_DATE_YYYY"]}`
+		let dateString = einvoiceMasterData[0]["INVOICE_DATE_DD_MM_YYYY"];//`Ngày (Date) ${einvoiceMasterData[0]["INVOICE_DATE_DD"]}   tháng (month)  ${einvoiceMasterData[0]["INVOICE_DATE_MM"]}  năm (year) ${einvoiceMasterData[0]["INVOICE_DATE_YYYY"]}`
 		let footerStr = '(In tại phần mềm Genuwin E-INVOICE của CÔNG TY CỔ PHẦN WEBCASH GENUWIN - MST: 1201496252)'
 		if (einvoiceDetailData && einvoiceDetailData.length > 0) {
 			masterDataArray.forEach(e => {

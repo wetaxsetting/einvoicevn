@@ -5724,7 +5724,6 @@ class EInvoiceController {
       if (rtnValue.p_rtn_cur[0].STATUS == "OK") {
         let invoice_data = 
         {
-          data_invoice : {
             buyer_comp_name : rtnValue.p_rtn_cur[0].BUYER_COMP_NAME,
             seller_comp_name : rtnValue.p_rtn_cur[0].SELLER_COMP_NAME,
             form_no : rtnValue.p_rtn_cur[0].FORM_NO,
@@ -5734,8 +5733,6 @@ class EInvoiceController {
             mccqt  : rtnValue.p_rtn_cur[0].MCCQT,
             buyer_email: infor_send_mail.buyer_email,
             buyer_email_cc : infor_send_mail.buyer_email_cc,
-
-          }
         }
         const { res_send_mail, subject, body } = await this.sendMaiToCustomer(
           tei_wt_sale_bill_pk,
@@ -8999,7 +8996,7 @@ class EInvoiceController {
       filename1: data_invoice.mccqt + ".xml",
       filename2: data_invoice.mccqt + ".pdf",
     });
-    //console.log("res_send_mail  ", res_send_mail);
+    console.log("res_send_mail  ", res_send_mail);
     return { res_send_mail, subject, body };
     } catch (error) {
       console.log("res_send_mail error  ", error);

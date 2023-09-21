@@ -5553,7 +5553,7 @@ class EInvoiceController {
 
         let data_r = {
           link_invoice_preview: "https://einvoicevn.com/lookup",
-          security_code: "1234567bac",
+          lookup_code: "1234567bac",
           status_code: "1",
           status_name: "Sent Success",
           user_name: data.data_invoice.buyer_comp_name,

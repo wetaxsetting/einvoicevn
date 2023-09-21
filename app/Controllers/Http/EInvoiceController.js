@@ -416,7 +416,38 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      const { declare } = request.all();
+      const { declare,
+        version,
+        declare_name,
+        declare_type,
+        declare_form_no,
+        seller_company_name,
+        seller_taxcode,
+        tax_office_name,
+        tax_office_code,
+        contact_person,
+        contact_address,
+        contact_email,
+        contact_phone,
+        location_name,
+        created_date,
+        has_code,
+        no_code,
+        pos_code,
+        taxpayer_from_difficult_location,
+        taxpayer_from_people_committee_suggestions,
+        transfer_data_directly_to_tax_office,
+        cdlqtvan,
+        full_transfer,
+        summary_transfer,
+        vat_invoice,
+        sales_invoice,
+        sales_invoice_passet,
+        sales_invoice_national,
+        other_invoice,
+        voucher,
+        digital_certificates
+       } = request.all();
 
       const valid = this.validateDeclareJson(declare);
       if (!valid.status) {
@@ -476,45 +507,45 @@ class EInvoiceController {
           },
         },
       };
-      jsonDeclare.TKhai.DLTKhai.TTChung.PBan = declare.version;
-      jsonDeclare.TKhai.DLTKhai.TTChung.MSo = declare.declare_form_no;
-      jsonDeclare.TKhai.DLTKhai.TTChung.Ten = declare.declare_name;
-      jsonDeclare.TKhai.DLTKhai.TTChung.HThuc = declare.declare_type;
-      jsonDeclare.TKhai.DLTKhai.TTChung.TNNT = declare.seller_company_name;
-      jsonDeclare.TKhai.DLTKhai.TTChung.MST = declare.seller_taxcode;
-      jsonDeclare.TKhai.DLTKhai.TTChung.CQTQLy = declare.tax_office_name;
-      jsonDeclare.TKhai.DLTKhai.TTChung.MCQTQLy = declare.tax_office_code;
-      jsonDeclare.TKhai.DLTKhai.TTChung.NLHe = declare.contact_person;
-      jsonDeclare.TKhai.DLTKhai.TTChung.DCLHe = declare.contact_address;
-      jsonDeclare.TKhai.DLTKhai.TTChung.DCTDTu = declare.contact_email;
-      jsonDeclare.TKhai.DLTKhai.TTChung.DTLHe = declare.contact_phone;
-      jsonDeclare.TKhai.DLTKhai.TTChung.DDanh = declare.location_name;
-      jsonDeclare.TKhai.DLTKhai.TTChung.NLap = declare.created_date;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.CMa = declare.has_code;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.KCMa = declare.no_code;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.CMTMTTien = declare.pos_code;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NNTDBKKhan = declare.taxpayer_from_difficult_location;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NNTKTDNUBND = declare.taxpayer_from_people_committee_suggestions;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLTTDCQT = declare.transfer_data_directly_to_tax_office;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLQTVAN = declare.cdlqtvan;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CDDu = declare.full_transfer;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CBTHop = declare.summary_transfer;
+      jsonDeclare.TKhai.DLTKhai.TTChung.PBan = version;
+      jsonDeclare.TKhai.DLTKhai.TTChung.MSo = declare_form_no;
+      jsonDeclare.TKhai.DLTKhai.TTChung.Ten = declare_name;
+      jsonDeclare.TKhai.DLTKhai.TTChung.HThuc = declare_type;
+      jsonDeclare.TKhai.DLTKhai.TTChung.TNNT = seller_company_name;
+      jsonDeclare.TKhai.DLTKhai.TTChung.MST = seller_taxcode;
+      jsonDeclare.TKhai.DLTKhai.TTChung.CQTQLy = tax_office_name;
+      jsonDeclare.TKhai.DLTKhai.TTChung.MCQTQLy = tax_office_code;
+      jsonDeclare.TKhai.DLTKhai.TTChung.NLHe = contact_person;
+      jsonDeclare.TKhai.DLTKhai.TTChung.DCLHe = contact_address;
+      jsonDeclare.TKhai.DLTKhai.TTChung.DCTDTu = contact_email;
+      jsonDeclare.TKhai.DLTKhai.TTChung.DTLHe = contact_phone;
+      jsonDeclare.TKhai.DLTKhai.TTChung.DDanh = location_name;
+      jsonDeclare.TKhai.DLTKhai.TTChung.NLap = created_date;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.CMa = has_code;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.KCMa = no_code;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.CMTMTTien = pos_code;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NNTDBKKhan = taxpayer_from_difficult_location;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NNTKTDNUBND = taxpayer_from_people_committee_suggestions;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLTTDCQT = transfer_data_directly_to_tax_office;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLQTVAN = cdlqtvan;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CDDu = full_transfer;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CBTHop = summary_transfer;
 
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDGTGT = declare.vat_invoice;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBHang = declare.sales_invoice;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBTSCong = declare.sales_invoice_passet;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBHDTQGia = declare.sales_invoice_national;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDKhac = declare.other_invoice;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.CTu = declare.voucher;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDGTGT = vat_invoice;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBHang = sales_invoice;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBTSCong = sales_invoice_passet;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBHDTQGia = sales_invoice_national;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDKhac = other_invoice;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.CTu = voucher;
 
-      for (let i = 0; i < declare.digital_certificates.length; i++) {
+      for (let i = 0; i < digital_certificates.length; i++) {
         jsonDeclare.TKhai.DLTKhai.NDTKhai.DSCTSSDung.CTS.push({
-          STT: declare.digital_certificates[i].sequence,
-          TTChuc: declare.digital_certificates[i].organization_name,
-          Seri: declare.digital_certificates[i].serial_no,
-          TNgay: declare.digital_certificates[i].from_date,
-          DNgay: declare.digital_certificates[i].to_date,
-          HThuc: declare.digital_certificates[i].type,
+          STT: digital_certificates[i].sequence,
+          TTChuc: digital_certificates[i].organization_name,
+          Seri: digital_certificates[i].serial_no,
+          TNgay: digital_certificates[i].from_date,
+          DNgay: digital_certificates[i].to_date,
+          HThuc: digital_certificates[i].type,
         });
       }
       // const id = uuid.v4();
@@ -7216,7 +7247,11 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
 
-      const { invoices } = request.all();
+      const { invoices,
+        count_invoice,
+        tax_code,
+        order_date
+       } = request.all();
       //  console.log(" invoices  ", list_invoice);
       //invoices = JSON.parse(invoices);
       let rtnXML = [];

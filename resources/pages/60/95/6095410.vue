@@ -596,7 +596,7 @@ export default {
       }
       //console.log("invoice  ",this.invoice);
 
-      let res = await this.$axios.$post("/einvoice/general-invoice-xml", {
+      let res = await this.$axios.$post("/einvoice/general-pos-invoice-xml", {
           responseType: "json",
           list_invoice: this.invoice,
         });

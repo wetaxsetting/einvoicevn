@@ -132,8 +132,8 @@ class EiExcelHandler {
         {
           logos = [
             { start: einvoiceMasterData[0].LOGO_START_COL, 
-              width: 0.99 * dpi, 
-              height: 0.99 * dpi, 
+              width: einvoiceMasterData[0].LOGO_WIDTH,//   0.99 * dpi, 
+              height:einvoiceMasterData[0].LOGO_HEIGHT,// 0.99 * dpi, 
               logoStartCount: einvoiceMasterData[0].LOGO_START_ROW, 
               logoPath: `${einvoiceMasterData[0].URL_IMG_LOGO}` },
           ];

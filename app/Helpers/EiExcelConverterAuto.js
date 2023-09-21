@@ -954,7 +954,7 @@ class EiExcelConverterAuto {
 				try {
 					worksheet.addImage(await exceljs.insertPathImage(signPath), {
 						tl: { col: signCell.start, row: totalRows + _sourceRow_3 + countFromEndDetailToSignBox - 1 },
-						ext: { width: 100, height: 65 }
+						ext: { width: 80, height: 50 }
 					});
 				} catch (error) {
 					console.log(error)

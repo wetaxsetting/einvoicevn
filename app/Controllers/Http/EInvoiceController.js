@@ -8838,7 +8838,7 @@ class EInvoiceController {
     }
   }
 
-  async sendMaiToCustomer(tei_wt_sale_bill_pk, data, p_language, p_crt_by) {
+  async sendMaiToCustomer(tei_wt_sale_bill_pk, data_invoice, p_language, p_crt_by) {
     try {
       // let EiExcel = new EiPosExcelHandlerAuto();
     // let EiExcel = new EiPosExcelHandler();
@@ -8854,24 +8854,24 @@ class EInvoiceController {
     let url_xml = re_url_xml.data;
     console.log("base64XXML  ", url_xml);
     //let url_xml = "",url_pdf = "";
-    let subject = `${data.data_invoice.seller_comp_name}[Thông báo phát hành HĐĐT][${data.data_invoice.form_no}][${data.data_invoice.serial_no}][${data.data_invoice.invoice_no}]`;
+    let subject = `${data_invoice.seller_comp_name}[Thông báo phát hành HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
     let body = `<html>
                             <body>
                                 <div id="page">
                                     <div id="d2">
-                                        <p>Dear: ${data.data_invoice.buyer_comp_name}
+                                        <p>Dear: ${data_invoice.buyer_comp_name}
                                             <br />
-                                            <br />${data.data_invoice.seller_comp_name}.
+                                            <br />${data_invoice.seller_comp_name}.
                                             <br />            Trân trọng cảm ơn Quý khách hàng đã sử dụng sản phẩm của chúng tôi.
                                             <br/> Chúng tôi đã 
                                             <b>PHÁT HÀNH </b> hóa đơn điện tử với các thông tin như sau:
-                                            <br/>- Mẫu số: ${data.data_invoice.form_no}
+                                            <br/>- Mẫu số: ${data_invoice.form_no}
                                             <br/>- Ký hiệu: 
-                                            <b>${data.data_invoice.serial_no}</b>
+                                            <b>${data_invoice.serial_no}</b>
                                             <br/>- Số hóa đơn: 
-                                            <b>${data.data_invoice.invoice_no}</b>
+                                            <b>${data_invoice.invoice_no}</b>
                                             <br/>- Tổng thanh toán: 
-                                            <b>       ${data.data_invoice.total_payment}</b>
+                                            <b>       ${data_invoice.total_payment}</b>
                                             <br />- Link download file PDF: 
                                             <a href=${url_pdf}>Tải file PDF</a>
                                             <br />- Link download file XML: 
@@ -8893,13 +8893,13 @@ class EInvoiceController {
                                             <br/> We 
                                             <b>issued </b> your e-invoice with the information as below: 
                                             <br/>- Form No: 
-                                            <b>${data.data_invoice.form_no}</b>
+                                            <b>${data_invoice.form_no}</b>
                                             <br/>- Serial: 
-                                            <b>${data.data_invoice.serial_no}</b>
+                                            <b>${data_invoice.serial_no}</b>
                                             <br/>- Invoice No:  
-                                            <b>${data.data_invoice.invoice_no}</b>
+                                            <b>${data_invoice.invoice_no}</b>
                                             <br/>- Total amount :  
-                                            <b>       ${data.data_invoice.total_payment}</b>
+                                            <b>       ${data_invoice.total_payment}</b>
                                             <br />- Download file PDF link:  
                                             <a href=${url_pdf}>Download file PDF</a>
                                             <br />- Download file XML link:  
@@ -8919,14 +8919,14 @@ class EInvoiceController {
                             </html>
                             `;
     const res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {
-      mail_to: data.data_invoice.buyer_email,
-      cc_to: data.data_invoice.buyer_email_cc,
+      mail_to: data_invoice.buyer_email,
+      cc_to: data_invoice.buyer_email_cc,
       subject: subject,
       body: body,
       attachfile1: url_xml,
       attachfile2: url_pdf,
-      filename1: data.data_invoice.mccqt + ".xml",
-      filename2: data.data_invoice.mccqt + ".pdf",
+      filename1: data_invoice.mccqt + ".xml",
+      filename2: data_invoice.mccqt + ".pdf",
     });
     //console.log("res_send_mail  ", res_send_mail);
     return { res_send_mail, subject, body };

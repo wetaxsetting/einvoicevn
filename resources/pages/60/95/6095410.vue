@@ -87,7 +87,7 @@
           <BaseButton icon_type="search" :btn_text="$t('search')" :disabled="isProcessing" @onclick="funcSearch()" />
           <BaseButton icon_type="view" :btn_text="$t('preview')" :disabled="isProcessing" @onclick="onPreview" />
           <BaseButton icon_type="xml" :btn_text="$t('view_xml')" @onclick="onPreviewXml" />
-          <BaseButton icon_type="attach" :btn_text="$t('invoice_sign')" :disabled="selected_status == 1"  @onclick="InvoiceSign()" />
+          <BaseButton icon_type="attach" :btn_text="$t('invoice_sign')" :disabled="selected_status == 1 || selected_status == 5"  @onclick="InvoiceSign()" />
           <BaseButton icon_type="add_new" :btn_text="$t('check_code_cqt')" :disabled="selected_status == 0" @onclick="checkingCQT()" />
         </v-col>
       </v-row>

@@ -800,6 +800,7 @@ class EiExcelConverterAuto {
 
 							if(i == 0)
 							{
+								console.log("cancelYn   ", cancelYn)
 								if (cancelYn == "Y") {
 									try {
 										worksheet.addImage(await exceljs.insertPathImage(cancelPath), {

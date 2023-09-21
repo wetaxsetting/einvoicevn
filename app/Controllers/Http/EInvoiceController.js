@@ -6393,7 +6393,16 @@ class EInvoiceController {
       const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien";
       const urlCheck = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
 
-      const { data } = request.all();
+      const {
+        tax_serial_number,
+        seller_tax_code,
+        sale_date,
+        store_code,
+        store_name,
+        pos_no,
+        invoice_xml_signed,
+
+      } = request.all();
       //console.log("data  ", data);
       const agent = {
         Agent: {
@@ -6411,7 +6420,7 @@ class EInvoiceController {
 
       const res = await Request.post(
         url,
-        { base64XML: Buffer.from(data.invoice_xml_signed).toString("base64") },
+        { base64XML: Buffer.from(invoice_xml_signed).toString("base64") },
         {
           agent,
           headers: {
@@ -6451,12 +6460,12 @@ class EInvoiceController {
       });
       rtnValue = {
         trade_code: trade_code,
-        seller_tax_code: data.seller_tax_code,
-        sale_date: data.sale_date,
-        store_code: data.store_code,
-        store_name: data.store_name,
-        tax_serial_number: data.tax_serial_number,
-        pos_no: data.pos_no,
+        seller_tax_code: seller_tax_code,
+        sale_date: sale_date,
+        store_code: store_code,
+        store_name: store_name,
+        tax_serial_number: tax_serial_number,
+        pos_no: pos_no,
         inform_code: maTBao,
         inform_name: tenTBao,
         mccqt: maCQT,

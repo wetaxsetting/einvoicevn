@@ -5362,46 +5362,52 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      const { data } = request.all();
+      const { sale_date,
+				store_code,
+				store_name,
+				pos_no,
+				bill_no,
+				data_invoice
+				} = request.all();
 
       // console.log("data  ", data);
       let tei_wt_sale_bill_pk = 0;
-      const data_xml = await this.createXMLByOne(data.data_invoice);
+      const data_xml = await this.createXMLByOne(data_invoice);
       const count_length = data_xml.length;
       const xml_type = "application/xml";
       const para_value = {
-        sale_date: data.sale_date,
-        store_code: data.store_code,
-        store_name: data.store_name,
-        pos_no: data.pos_no,
-        bill_no: data.bill_no,
-        version: data.data_invoice.version,
-        invoice_name: data.data_invoice.invoice_name,
-        symbol_type: data.data_invoice.form_no, //data.data_invoice.symbol_type,
-        form_no: data.data_invoice.form_no,
-        serial_no: data.data_invoice.serial_no,
-        invoice_date: data.data_invoice.invoice_date,
-        invoice_no: data.data_invoice.invoice_no,
-        currency: data.data_invoice.currency,
-        ex_rate: data.data_invoice.ex_rate,
-        payment_method: data.data_invoice.payment_method,
-        seller_comp_name: data.data_invoice.seller_comp_name,
-        seller_taxcode: data.data_invoice.seller_taxcode,
-        seller_address: data.data_invoice.seller_address,
-        seller_phone: data.data_invoice.seller_phone,
-        buyer_comp_name: data.data_invoice.buyer_comp_name,
-        buyer_taxcode: data.data_invoice.buyer_taxcode,
-        buyer_phone: data.data_invoice.buyer_phone,
-        buyer_address: data.data_invoice.buyer_address,
-        buyer_cccd: data.data_invoice.buyer_cccd,
-        buyer_email: data.data_invoice.buyer_email,
-        buyer_email_cc: data.data_invoice.buyer_email_cc,
-        total_amt_no_vat: data.data_invoice.total_amt_no_vat,
-        total_amt_dc: data.data_invoice.total_amt_dc,
-        total_amt_vat: data.data_invoice.total_amt_vat,
-        total_payment: data.data_invoice.total_payment,
-        total_payment_word_vie: data.data_invoice.total_payment_word_vie,
-        mccqt: data.data_invoice.mccqt,
+        sale_date: sale_date,
+        store_code: store_code,
+        store_name: store_name,
+        pos_no: pos_no,
+        bill_no: bill_no,
+        version: data_invoice.version,
+        invoice_name: data_invoice.invoice_name,
+        symbol_type: data_invoice.form_no, //data_invoice.symbol_type,
+        form_no: data_invoice.form_no,
+        serial_no: data_invoice.serial_no,
+        invoice_date: data_invoice.invoice_date,
+        invoice_no: data_invoice.invoice_no,
+        currency: data_invoice.currency,
+        ex_rate: data_invoice.ex_rate,
+        payment_method: data_invoice.payment_method,
+        seller_comp_name: data_invoice.seller_comp_name,
+        seller_taxcode: data_invoice.seller_taxcode,
+        seller_address: data_invoice.seller_address,
+        seller_phone: data_invoice.seller_phone,
+        buyer_comp_name: data_invoice.buyer_comp_name,
+        buyer_taxcode: data_invoice.buyer_taxcode,
+        buyer_phone: data_invoice.buyer_phone,
+        buyer_address: data_invoice.buyer_address,
+        buyer_cccd: data_invoice.buyer_cccd,
+        buyer_email: data_invoice.buyer_email,
+        buyer_email_cc: data_invoice.buyer_email_cc,
+        total_amt_no_vat: data_invoice.total_amt_no_vat,
+        total_amt_dc: data_invoice.total_amt_dc,
+        total_amt_vat: data_invoice.total_amt_vat,
+        total_payment: data_invoice.total_payment,
+        total_payment_word_vie: data_invoice.total_payment_word_vie,
+        mccqt: data_invoice.mccqt,
         data_xml: data_xml,
         count_length: count_length,
         xml_type: xml_type,
@@ -5456,12 +5462,12 @@ class EInvoiceController {
       // console.log("rtnValue  ", rtnValue);
       tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
       if (rtnValue.p_rtn_cur[0].STATUS == "OK") {
-        for (let j = 0; j < data.data_invoice.total_vat_list.length; j++) {
+        for (let j = 0; j < data_invoice.total_vat_list.length; j++) {
           const para_amt_vat = {
             tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
-            sub_amt: data.data_invoice.total_vat_list[j].sub_amt,
-            sub_vat_rate: data.data_invoice.total_vat_list[j].sub_vat_rate,
-            sub_vat_amt: data.data_invoice.total_vat_list[j].sub_vat_amt,
+            sub_amt: data_invoice.total_vat_list[j].sub_amt,
+            sub_vat_rate: data_invoice.total_vat_list[j].sub_vat_rate,
+            sub_vat_amt: data_invoice.total_vat_list[j].sub_vat_amt,
           };
           const rtnValue_VAT = await DBService.ExecuteSQLBlob(
             `BEGIN ei_upd_sale_bill_vat (          
@@ -5478,20 +5484,20 @@ class EInvoiceController {
           );
         }
 
-        for (let j = 0; j < data.data_invoice.detail.length; j++) {
+        for (let j = 0; j < data_invoice.detail.length; j++) {
           const para_prod_details = {
             tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
-            nature: data.data_invoice.detail[j].nature,
-            seq: data.data_invoice.detail[j].seq,
-            item_code: data.data_invoice.detail[j].item_code,
-            item_name: data.data_invoice.detail[j].item_name,
-            unit: data.data_invoice.detail[j].unit,
-            quantity: data.data_invoice.detail[j].quantity,
-            unit_price: data.data_invoice.detail[j].unit_price,
-            dc_rate: data.data_invoice.detail[j].dc_rate,
-            dc_amt: data.data_invoice.detail[j].dc_amt,
-            amount: data.data_invoice.detail[j].amount,
-            vat_rate: data.data_invoice.detail[j].vat_rate,
+            nature: data_invoice.detail[j].nature,
+            seq: data_invoice.detail[j].seq,
+            item_code: data_invoice.detail[j].item_code,
+            item_name: data_invoice.detail[j].item_name,
+            unit: data_invoice.detail[j].unit,
+            quantity: data_invoice.detail[j].quantity,
+            unit_price: data_invoice.detail[j].unit_price,
+            dc_rate: data_invoice.detail[j].dc_rate,
+            dc_amt: data_invoice.detail[j].dc_amt,
+            amount: data_invoice.detail[j].amount,
+            vat_rate: data_invoice.detail[j].vat_rate,
           };
           const rtnValue_VAT = await DBService.ExecuteSQLBlob(
             `BEGIN ei_upd_sale_prod (          

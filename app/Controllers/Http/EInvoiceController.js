@@ -6000,11 +6000,12 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      const { data } = request.all();
+      const { invoice_date,
+        seller_taxcode } = request.all();
 
       const para_amt_vat = {
-        invoice_date: data.invoice_date,
-        seller_taxcode: data.seller_taxcode,
+        invoice_date: invoice_date,
+        seller_taxcode: seller_taxcode,
       };
       const rtnValue_status = await DBService.ExecuteSQLBlob(
         `BEGIN ei_sel_sendmail_inv_status (          

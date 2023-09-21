@@ -5560,7 +5560,7 @@ class EInvoiceController {
           lookup_code: "1234567bac",
           status_code: "1",
           status_name: "Sent Success",
-          user_name: data.data_invoice.buyer_comp_name,
+          user_name: data_invoice.buyer_comp_name,
           send_date: res_send_mail.data.data.date_send,
           send_time: res_send_mail.data.data.time_send,
           mail_form: res_send_mail.data.data.mail_from,

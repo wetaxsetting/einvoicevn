@@ -449,10 +449,10 @@ class EInvoiceController {
         digital_certificates
        } = request.all();
 
-      const valid = this.validateDeclareJson(declare);
-      if (!valid.status) {
-        return response.send(Utils.response(valid.status, valid.message, null));
-      }
+      // const valid = this.validateDeclareJson(declare);
+      // if (!valid.status) {
+      //   return response.send(Utils.response(valid.status, valid.message, null));
+      // }
 
       let jsonDeclare = {
         TKhai: {

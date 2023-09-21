@@ -5363,14 +5363,14 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
       const { sale_date,
-				store_code,
-				store_name,
-				pos_no,
-				bill_no,
-				data_invoice
-				} = request.all();
+            store_code,
+            store_name,
+            pos_no,
+            bill_no,
+            data_invoice
+            } = request.all();
 
-      // console.log("data  ", data);
+       console.log("sale_date  ", data_invoice);
       let tei_wt_sale_bill_pk = 0;
       const data_xml = await this.createXMLByOne(data_invoice);
       const count_length = data_xml.length;
@@ -5413,7 +5413,7 @@ class EInvoiceController {
         xml_type: xml_type,
       };
 
-      // console.log("para_value  ", para_value)
+       console.log("para_value  ", para_value)
 
       const rtnValue = await DBService.ExecuteSQLBlob(
         `BEGIN ei_upd_order_info (          
@@ -5459,7 +5459,7 @@ class EInvoiceController {
         p_language,
         p_crt_by
       );
-      // console.log("rtnValue  ", rtnValue);
+       console.log("rtnValue  ", rtnValue);
       tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
       if (rtnValue.p_rtn_cur[0].STATUS == "OK") {
         for (let j = 0; j < data_invoice.total_vat_list.length; j++) {
@@ -5533,7 +5533,7 @@ class EInvoiceController {
         p_crt_by
       );
 
-      // console.log("res_send_mail  ", res_send_mail);
+       console.log("res_send_mail  ", res_send_mail);
       if (res_send_mail.data.success) {
         const para_inv_st = {
           tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
@@ -5610,7 +5610,7 @@ class EInvoiceController {
         FUNC: "weTaxSendOrderInfo",
         CONTENT: e.message,
       });
-      console.log(e);
+      console.log(error);
       return response.send(Utils.response(false, e.message));
     }
   }

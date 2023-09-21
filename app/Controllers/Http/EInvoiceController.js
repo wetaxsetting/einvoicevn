@@ -865,12 +865,24 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      const { invalid_invoices } = request.all();
+      const { version,
+        declare_name,
+        declare_type,
+        form_no,
+        tax_office_code,
+        tax_office_name,
+        seller_taxcode,
+        seller_company_name,
+        location_name,
+        inform_date,
+        invoices
+      
+      } = request.all();
 
-      const valid = this.validateJsonInvalidInvoiceToXML(invalid_invoices);
-      if (!valid.status) {
-        return response.send(Utils.response(valid.status, valid.message));
-      }
+      // const valid = this.validateJsonInvalidInvoiceToXML(invalid_invoices);
+      // if (!valid.status) {
+      //   return response.send(Utils.response(valid.status, valid.message));
+      // }
 
       let jsonInvalidInvoices = {
         TBao: {
@@ -908,27 +920,27 @@ class EInvoiceController {
         },
       };
 
-      jsonInvalidInvoices.TBao.DLTBao.PBan = invalid_invoices.version;
-      jsonInvalidInvoices.TBao.DLTBao.MSo = invalid_invoices.declare_name;
-      jsonInvalidInvoices.TBao.DLTBao.Ten = invalid_invoices.declare_type;
-      jsonInvalidInvoices.TBao.DLTBao.Loai = invalid_invoices.form_no;
-      jsonInvalidInvoices.TBao.DLTBao.TCQT = invalid_invoices.tax_office_name;
-      jsonInvalidInvoices.TBao.DLTBao.MCQT = invalid_invoices.tax_office_code;
-      jsonInvalidInvoices.TBao.DLTBao.MST = invalid_invoices.seller_taxcode;
-      jsonInvalidInvoices.TBao.DLTBao.TNNT = invalid_invoices.seller_company_name;
-      jsonInvalidInvoices.TBao.DLTBao.DDanh = invalid_invoices.location_name;
-      jsonInvalidInvoices.TBao.DLTBao.NTBao = invalid_invoices.inform_date;
+      jsonInvalidInvoices.TBao.DLTBao.PBan = version;
+      jsonInvalidInvoices.TBao.DLTBao.MSo = declare_name;
+      jsonInvalidInvoices.TBao.DLTBao.Ten = declare_type;
+      jsonInvalidInvoices.TBao.DLTBao.Loai = form_no;
+      jsonInvalidInvoices.TBao.DLTBao.TCQT = tax_office_name;
+      jsonInvalidInvoices.TBao.DLTBao.MCQT = tax_office_code;
+      jsonInvalidInvoices.TBao.DLTBao.MST = seller_taxcode;
+      jsonInvalidInvoices.TBao.DLTBao.TNNT = seller_company_name;
+      jsonInvalidInvoices.TBao.DLTBao.DDanh = location_name;
+      jsonInvalidInvoices.TBao.DLTBao.NTBao = inform_date;
 
-      for (let i = 0; i < invalid_invoices.invoices.length; i++) {
+      for (let i = 0; i < invoices.length; i++) {
         jsonInvalidInvoices.TBao.DLTBao.DSHDon.HDon.push({
-          MCQTCap: invalid_invoices.invoices[i].tax_confirmation_code,
-          KHMSHDon: invalid_invoices.invoices[i].form_no,
-          KHHDon: invalid_invoices.invoices[i].serial_no,
-          SHDon: invalid_invoices.invoices[i].invoice_no,
-          Ngay: invalid_invoices.invoices[i].invoice_date,
-          LADHDDT: invalid_invoices.invoices[i].invoice_type,
-          TCTBao: invalid_invoices.invoices[i].inform_type,
-          LDo: invalid_invoices.invoices[i].reason,
+          MCQTCap: invoices[i].tax_confirmation_code,
+          KHMSHDon: invoices[i].form_no,
+          KHHDon: invoices[i].serial_no,
+          SHDon: invoices[i].invoice_no,
+          Ngay: invoices[i].invoice_date,
+          LADHDDT: invoices[i].invoice_type,
+          TCTBao: invoices[i].inform_type,
+          LDo: invoices[i].reason,
         });
       }
       const id = uuid.v4();

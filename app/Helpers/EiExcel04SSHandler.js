@@ -48,8 +48,6 @@ class EiExcelHandler {
       let companyName = ""
       let backgroundRow = 0
 
-      pk = "";
-
       const einvoiceMasterData = await DBService.callProcCursor(
         "AC_SEL_EINVOICE_M_04SS", [pk],
         p_language,
@@ -85,7 +83,7 @@ class EiExcelHandler {
     if (einvoiceMasterData.length <= 0) {
       return that.showNotification(
         "warning",
-        that.$t("This Einvoice Doesn't Exist"),
+        "This Einvoice Doesn't Exist",
         "",
         5000
       );

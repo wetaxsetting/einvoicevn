@@ -610,6 +610,7 @@ export default {
     async OnPreview()
     {
       if (this.modelMaster.PK) {
+        console.log(this.modelMaster.PK)
             let res_url = await this.$axios.$post("/einvoice/general-pdf-template-04SS", {
               responseType: "json",
                 data: this.modelMaster.PK,

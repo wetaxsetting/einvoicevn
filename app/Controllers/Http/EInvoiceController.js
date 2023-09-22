@@ -4445,17 +4445,25 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
       const { sale_date,
-            store_code,
-            store_name,
-            pos_no,
-            bill_no,
-            data_invoice
+              store_code,
+              store_name,
+              pos_no,
+              bill_no,
+              data_invoice
             } = request.all();
+
 
       let tei_wt_sale_bill_pk = 0;
       const data_xml = await this.createXMLByOne(data_invoice);
       const count_length = data_xml.length;
       const xml_type = "application/xml";
+
+      if (!data_invoice.buyer_comp_name && !data_invoice.buyer_email) {
+        return response.send(Utils.response(false, `Can't send e-invoice to customer if buyer_comp_name and buyer_email are null`),
+        {
+          error_code: "3018",
+          error_name: "buyer_comp_name and  buyer_email are null"});
+      }            
       const para_value = {
         sale_date: sale_date,
         store_code: store_code,
@@ -7775,7 +7783,6 @@ class EInvoiceController {
       return response.send(Utils.response(false, "error", e.message));
     }
   }
-
 
   // pivate function 
   convertKeysToLowerCase(obj) {

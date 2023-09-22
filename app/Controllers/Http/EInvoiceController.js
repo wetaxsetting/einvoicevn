@@ -4463,7 +4463,29 @@ class EInvoiceController {
         {
           error_code: "3018",
           error_name: "buyer_comp_name and  buyer_email are null"});
-      }            
+      }  
+      
+      if (!data_invoice) {
+        return response.send(Utils.response(false, `Invalid data_invoice `),
+        {
+          error_code: "3018",
+          error_name: "Invalid data_invoice"});
+      } 
+      
+      if (!data_invoice.form_no || !data_invoice.serial_no || !data_invoice.invoice_no) {
+        return response.send(Utils.response(false, `Invalid infor for e-invoice `),
+        {
+          error_code: "3018",
+          error_name: "Invalid infor for e-invoice"});
+      } 
+      
+      if (!data_invoice.seller_comp_name || !data_invoice.seller_taxcode) {
+        return response.send(Utils.response(false, `Invalid infor for company `),
+        {
+          error_code: "3018",
+          error_name: "Invalid infor for company"});
+      }
+
       const para_value = {
         sale_date: sale_date,
         store_code: store_code,
@@ -4644,7 +4666,7 @@ class EInvoiceController {
           lookup_code: "1234567bac",
           status_code: "1",
           status_name: "Sent Success",
-          user_name: data_invoice.buyer_comp_name,
+          customer_name: data_invoice.buyer_comp_name,
           send_date: res_send_mail.data.data.date_send,
           send_time: res_send_mail.data.data.time_send,
           mail_form: res_send_mail.data.data.mail_from,

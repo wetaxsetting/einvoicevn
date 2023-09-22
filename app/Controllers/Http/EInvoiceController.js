@@ -4444,12 +4444,12 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      const { sale_date,
-              store_code,
-              store_name,
-              pos_no,
-              bill_no,
-              data_invoice
+      const { sale_date = "",
+              store_code = "",
+              store_name = "",
+              pos_no = "",
+              bill_no = "",
+              data_invoice = []
             } = request.all();
 
 
@@ -4457,33 +4457,41 @@ class EInvoiceController {
       const data_xml = await this.createXMLByOne(data_invoice);
       const count_length = data_xml.length;
       const xml_type = "application/xml";
+      console.log("data_invoice.buyer_comp_name  ", data_invoice.buyer_comp_name)
+      console.log("data_invoice.buyer_email  ", data_invoice.buyer_email)
 
-      if (!data_invoice.buyer_comp_name && !data_invoice.buyer_email) {
-        return response.send(Utils.response(false, `Can't send e-invoice to customer if buyer_comp_name and buyer_email are null`),
-        {
+      if (!data_invoice.buyer_comp_namel) {
+        return response.send(Utils.response(false, `Can't send e-invoice to customer if buyer_comp_name is null`,{
           error_code: "3018",
-          error_name: "buyer_comp_name and  buyer_email are null"});
+          error_name: "buyer_comp_name and  is null"}));
+      }  
+
+      if (!data_invoice.buyer_email) {
+        return response.send(Utils.response(false, `Can't send e-invoice to customer if buyer_email are null`,{
+          error_code: "3018",
+          error_name: " buyer_email are null"})
+        );
       }  
       
       if (!data_invoice) {
-        return response.send(Utils.response(false, `Invalid data_invoice `),
-        {
+        return response.send(Utils.response(false, `Invalid data_invoice `,{
           error_code: "3018",
-          error_name: "Invalid data_invoice"});
+          error_name: "Invalid data_invoice"})
+        );
       } 
       
       if (!data_invoice.form_no || !data_invoice.serial_no || !data_invoice.invoice_no) {
-        return response.send(Utils.response(false, `Invalid infor for e-invoice `),
-        {
+        return response.send(Utils.response(false, `Invalid infor for e-invoice `,{
           error_code: "3018",
-          error_name: "Invalid infor for e-invoice"});
+          error_name: "Invalid infor for e-invoice"})
+        );
       } 
       
       if (!data_invoice.seller_comp_name || !data_invoice.seller_taxcode) {
-        return response.send(Utils.response(false, `Invalid infor for company `),
-        {
+        return response.send(Utils.response(false, `Invalid infor for company `,{
           error_code: "3018",
-          error_name: "Invalid infor for company"});
+          error_name: "Invalid infor for company"})
+        );
       }
 
       const para_value = {

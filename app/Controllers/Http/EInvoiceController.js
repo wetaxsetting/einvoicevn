@@ -2451,7 +2451,7 @@ class EInvoiceController {
     }
   }
 
-  async weTaxSendCompanyInfor({ request, response, auth }) {
+  async weTaxSendCompanyInfo({ request, response, auth }) {
     try {
       var p_language = request.header("accept-language", "ENG");
       var p_crt_by = "";
@@ -5419,7 +5419,6 @@ class EInvoiceController {
             data_invoice
             } = request.all();
 
-       console.log("sale_date  ", data_invoice);
       let tei_wt_sale_bill_pk = 0;
       const data_xml = await this.createXMLByOne(data_invoice);
       const count_length = data_xml.length;
@@ -5461,8 +5460,6 @@ class EInvoiceController {
         count_length: count_length,
         xml_type: xml_type,
       };
-
-       console.log("para_value  ", para_value)
 
       const rtnValue = await DBService.ExecuteSQLBlob(
         `BEGIN ei_upd_order_info (          
@@ -5508,7 +5505,6 @@ class EInvoiceController {
         p_language,
         p_crt_by
       );
-       console.log("rtnValue  ", rtnValue);
 
       tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
       console.log("tei_wt_sale_bill_pk  ", tei_wt_sale_bill_pk);
@@ -5577,7 +5573,6 @@ class EInvoiceController {
       // else{
       //   return response.send(Utils.response(true, `error!`, {err_msg: 'exec error: ei_upd_order_info'}));
       // }
-      console.log("sendMaiToCustomer  ", tei_wt_sale_bill_pk);
 
       const { res_send_mail, subject, body } = await this.sendMaiToCustomer(
         tei_wt_sale_bill_pk,
@@ -5586,7 +5581,6 @@ class EInvoiceController {
         p_crt_by
       );
 
-       console.log("res_send_mail  ", res_send_mail);
       if (res_send_mail.data.success) {
         const para_inv_st = {
           tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
@@ -5620,7 +5614,7 @@ class EInvoiceController {
           title: subject,
           content: body,
         };
-        return response.send(Utils.response(true, `Send order to invoice was Successfully!`, data_r));
+        return response.send(Utils.response(true, `Send order to invoice was successfully!`, data_r));
       } else {
         const para_inv_st = {
           tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
@@ -6025,7 +6019,7 @@ class EInvoiceController {
         p_crt_by
       );
 
-      return response.send(Utils.response(true, rtnValue.p_rtn_cur[0].STATUS_NM, { data: rtnValue.p_rtn_cur[0] }));
+      return response.send(Utils.response(true, rtnValue.p_rtn_cur[0].STATUS_NM));
     } catch (error) {
       Utils.Logger({
         LVL: "error",

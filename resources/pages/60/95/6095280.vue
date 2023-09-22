@@ -138,8 +138,8 @@
               <v-row class="pt-3" dense>
                 <v-col md="7" class="d-flex pl-2">
                   <BaseButton icon_type="eye_on" :btn_text="$t('preview_E-invoice')" @onclick="onClick('previewEinvoice')" />
-                  <BaseButton icon_type="eye_on" :btn_text="$t('preview_bb')" @onclick="onClick('previewBB')" />
-                  <BaseButton icon_type="eye_on" :btn_text="$t('preview_bb_replace')" @onclick="onClick('previewBB_Replace')" />
+                  <BaseButton icon_type="eye_on" :btn_text="$t('preview_bb')" @onclick="onClick('previewBB')" :disabled="modelSearch.STATUS == 7" />
+                  <BaseButton icon_type="eye_on" :btn_text="$t('preview_bb_replace')" @onclick="onClick('previewBB_Replace')"  :disabled="modelSearch.STATUS == 7"/>
                   <BaseButton icon_type="email" :btn_text="$t('send_mail')" @onclick="onClick('sendMail')" />
                 </v-col>
                 <v-col md="3" class="pr-2">
@@ -378,7 +378,10 @@ export default {
       },
     ],
     objInvoiceM:{},
-    tei_einvoice_d_pk_row:""
+    tei_einvoice_d_pk_row:"",
+    pdfUrl:"",
+    manualIsMinimized: false,
+    manualIsMinimizedPDF: false,
   }),
 
   mounted() {
@@ -631,7 +634,7 @@ export default {
       {
         let res_url = await this.$axios.$post("/einvoice/general-url-pdf-einvoice-bb", {
               responseType: "json",
-              tei_wt_sale_bill_pk: this.tei_einvoice_d_pk_row,
+              tei_einvoice_d_pk_row: this.tei_einvoice_d_pk_row,
             });
         if(res_url.success)
         {
@@ -1262,11 +1265,44 @@ export default {
         this.salaryStatus = this.$t("fail_to_export_report");
       }
     },
+
     async onCellClickDetail({ column, data, rowIndex, rowType }) {
       console.log("tei_einvoice_d_pk_row  ", data)
-      this.tei_einvoice_d_pk_row = data.PK;
+      this.tei_einvoice_d_pk_row = data.TEI_EINVOICE_M_PK;
       // this.maGD = data.CQT_MAGD;
       // this.xml_signed = data.SIGN_XML;
+    },
+
+    penManualDialogPDF() {
+      if (this.hasForm) {
+        if (this.manualIsMinimizedPDF) {
+          this.manualIsMinimizedPDF = false;
+          this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+        } else {
+          this.dialogIsShow = true;
+        }
+      }
+    },
+
+    restoreManualDialogPDF() {
+      this.manualIsMinimizedPDF = false;
+      this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+    },
+
+    openManualDialog() {
+      if (this.hasForm) {
+        if (this.manualIsMinimized) {
+          this.manualIsMinimized = false;
+          this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
+        } else {
+          this.dialogIsShow = true;
+        }
+      }
+    },
+
+    restoreManualDialog() {
+      this.manualIsMinimized = false;
+      this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
     },
   }
 }

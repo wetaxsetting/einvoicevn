@@ -640,7 +640,7 @@ export default {
         if(res_url.success)
         {
           this.pdfUrl = res_url.data;
-
+          console.log("this.pdfUrl  ", this.pdfUrl)
           this.$nextTick(() => {
             this.isProcessing = false
             this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;

@@ -4460,7 +4460,7 @@ class EInvoiceController {
       console.log("data_invoice.buyer_comp_name  ", data_invoice.buyer_comp_name)
       console.log("data_invoice.buyer_email  ", data_invoice.buyer_email)
 
-      if (!data_invoice.buyer_comp_namel) {
+      if (!data_invoice.buyer_comp_name) {
         return response.send(Utils.response(false, `Can't send e-invoice to customer if buyer_comp_name is null`,{
           error_code: "3018",
           error_name: "buyer_comp_name and  is null"}));

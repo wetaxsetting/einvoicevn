@@ -282,7 +282,7 @@
         <v-icon>mdi-window-restore</v-icon>
       </v-btn>
     </v-scale-transition>
-    <view-einvoice-pdf-dialog ref="ViewEInvoicePDFDialog" :src_pdfUrl="urlPDF"></view-einvoice-pdf-dialog>
+    <!-- <view-einvoice-pdf-dialog ref="ViewEInvoicePDFDialog" :src_pdfUrl="urlPDF"></view-einvoice-pdf-dialog> -->
   </v-container>
 </template>
 
@@ -639,8 +639,8 @@ export default {
             });
         if(res_url.success)
         {
-          this.pdfUrl = res_url.data;
-          console.log("this.pdfUrl  ", this.pdfUrl)
+          this.xmlUrl = res_url.data;
+          console.log("this.pdfUrl  ", this.xmlUrl)
           this.$nextTick(() => {
             this.isProcessing = false
             this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;

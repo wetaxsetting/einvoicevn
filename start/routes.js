@@ -174,7 +174,7 @@ Route.group(() => {
     Route.post("general-url-pdf-template", "EInvoiceController.viewPDFTemplateEPortal")
     Route.post("general-url-pdf-einvoice-bb", "EInvoiceController.viewPDFEinvoiceBBEPortal")
 
-    
+    Route.post("general-pdf-template-04SS", "EInvoiceController.viewPDFTemplate_04SS")   ////VNG-304
 
 }).prefix("api/einvoice").middleware("user");
 

@@ -3,18 +3,19 @@
     <v-row dense class="pt-1">
       <v-col v-show="showHilden" cols="12" :lg="showHilden ? 7 : 0">
         <v-row dense>
-          <v-col md="11">
+          <v-col md="5">
             <BaseInput outlined :label="$t('template_id')" v-model="template_id" @keyPressEnter="onSearch" />
           </v-col>
+          <v-col md="3">
+            <BaseSelect outlined :label="$t('form_no')" v-model="selected_formNo" :lstData="formNo_list" item-text="NAME" item-value="CODE" />
+          </v-col>
+          <v-col md="3"></v-col>
           <v-col md="1">
             <BaseButton icon_type="search" btn_type="icon" :btn_text="$t('search')" @onclick="onClickButton('SEARCH')" />
           </v-col>
         </v-row>
         <v-row dense>
-          <!-- <v-col md="2" class="d-flex justify-end">
-            <b> {{ $t("template_table") }} </b>
-          </v-col> -->
-          <v-col md="12" class="d-flex justify-end">
+          <v-col md="10" class="d-flex justify-end">
             <GwPutFile
               :label="$t('import_einvoice_excel')"
               :impMultipleTemp="imp_MultipleTemp"
@@ -24,48 +25,52 @@
               :impAddParam="['', this.itemTemplatePK]"
               @onAfterImport="onAfterImport"
             />
-            <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('template_file')" @onclick="getImpFile" />
-            <BaseButton btn_type="icon" icon_type="view" :btn_text="$t('view')" @onclick="onClickButton('VIEW')" />
-            <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" @onclick="onClickButton('NEW_T')" />
-            <!-- <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClickButton('DELETE_T')" /> -->
-            <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClickButton('SAVE_T')" />
           </v-col>
-          <v-row lg="12">
-            <v-col>
-              <BaseGridView
-                :headertype="1"
-                ref="grdTemplate"
-                :header="grdTemplate"
-                :height="limitHeightT"
-                :multiselect="true"
-                sel_procedure="EI_SEL_6095057_01_NC"
-                :filter_paras="[this.template_id]"
-                upd_procedure="EI_UPD_6095057_02"
-                :editable="true"
-                :update_paras="[
-                  'PK',
-                  'TEMPLATE_CD',
-                  'TEMPLATE_NM',
-                  'TEMPLATE_LNM',
-                  'TEMPLATE_FNM',
-                  'USE_YN',
-                  'URL_FILE_EXCEL',
-                  'DETAILS_START_ROW',
-                  'SIGN_BY_START_CELL',
-                  'SIGN_BY_END_CELL',
-                  'SIGN_START_CELL',
-                  'SIGN_END_CELL',
-                  'SIGN_CELL_BOX',
-                  'SIGN_RANGE_DETAILS',
-                  'FORM_NO',
-                  'URL_FILE_EXCEL_IMP', 
-                  'URL_FILE_EXCEL_C', 
-                  'URL_FILE_EXCEL_C_IMP'
-                ]"
-                @cellClick="cellClickCellTemplate"
-              />
-            </v-col>
-          </v-row>
+          <v-col md="2">
+            <GwFlexBox justify="end">
+              <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('template_file')" @onclick="getImpFile" />
+              <BaseButton btn_type="icon" icon_type="view" :btn_text="$t('view')" @onclick="onClickButton('VIEW')" />
+              <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" @onclick="onClickButton('NEW_T')" />
+              <!-- <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClickButton('DELETE_T')" /> -->
+              <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClickButton('SAVE_T')" />
+            </GwFlexBox>
+          </v-col>
+        </v-row>
+        <v-row dense>
+          <v-col>
+            <BaseGridView
+              :headertype="1"
+              ref="grdTemplate"
+              :header="grdTemplate"
+              :height="limitHeightT"
+              :multiselect="true"
+              sel_procedure="EI_SEL_6095057_01_NC"
+              :filter_paras="[this.template_id, this.selected_formNo]"
+              upd_procedure="EI_UPD_6095057_02"
+              :editable="true"
+              :update_paras="[
+                'PK',
+                'TEMPLATE_CD',
+                'TEMPLATE_NM',
+                'TEMPLATE_LNM',
+                'TEMPLATE_FNM',
+                'USE_YN',
+                'URL_FILE_EXCEL',
+                'DETAILS_START_ROW',
+                'SIGN_BY_START_CELL',
+                'SIGN_BY_END_CELL',
+                'SIGN_START_CELL',
+                'SIGN_END_CELL',
+                'SIGN_CELL_BOX',
+                'SIGN_RANGE_DETAILS',
+                'FORM_NO',
+                'URL_FILE_EXCEL_IMP',
+                'URL_FILE_EXCEL_C',
+                'URL_FILE_EXCEL_C_IMP',
+              ]"
+              @cellClick="cellClickCellTemplate"
+            />
+          </v-col>
         </v-row>
       </v-col>
       <v-col cols="12" :lg="showHilden ? 5 : 12">
@@ -212,6 +217,9 @@ export default {
     Form_noList: [],
     TemplateList: [],
     template_id: "",
+
+    formNo_list: [],
+    selected_formNo: "",
   }),
   /*############### created #######################*/
   async created() {
@@ -448,21 +456,24 @@ export default {
           alignment: "left",
           type: "text",
           editable: true,
-        },{
+        },
+        {
           dataField: "URL_FILE_EXCEL_IMP",
           width: 400,
           caption: this.$t("url_file_excel_imp"),
           alignment: "left",
           type: "text",
           editable: true,
-        },{
+        },
+        {
           dataField: "URL_FILE_EXCEL_C",
           width: 400,
           caption: this.$t("url_file_excel_c"),
           alignment: "left",
           type: "text",
           editable: true,
-        },{
+        },
+        {
           dataField: "URL_FILE_EXCEL_C_IMP",
           width: 400,
           caption: this.$t("url_file_excel_c_imp"),
@@ -1003,11 +1014,11 @@ export default {
 
   /*############### methods #######################*/
   methods: {
-    cellClickCellTemplate({data  , value }) {
+    cellClickCellTemplate({ data, value }) {
       // console.log("file: 6095057.vue:962 [vng-304] cellClickCellTemplate [vng-304] cell:", data);
       // console.log("file: 6095057.vue:962 [vng-304] cellClickCellTemplate [vng-304] value:", value);
       this.itemTemplatePK = data.PK;
-      this.url_template = value;   //column.datafield
+      this.url_template = value; //column.datafield
       this.$refs.grdParamM.loadData();
       this.$refs.grdParamD.loadData();
     },
@@ -1158,6 +1169,7 @@ export default {
             this.cboTemplate = results[9];
             this.Form_noList = results[10];
             this.TemplateList = results[11];
+            this.formNo_list = results[10];
           }
           break;
       }

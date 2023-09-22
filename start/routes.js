@@ -172,6 +172,7 @@ Route.group(() => {
     Route.post("check-status-invoice-at", "EInvoiceController.checkInvoiceStatus")
     Route.post("general-url-pdf", "EInvoiceController.viewPDFEPortal")
     Route.post("general-url-pdf-template", "EInvoiceController.viewPDFTemplateEPortal")
+    Route.post("general-url-pdf-einvoice-bb", "EInvoiceController.viewPDFEinvoiceBBEPortal")
 
     
 

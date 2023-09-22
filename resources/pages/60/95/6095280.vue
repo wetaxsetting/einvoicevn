@@ -185,7 +185,8 @@
                       'CUSTOMER_NM',
                       'BUYER_POSITION',
                       'BUYER_REPRESENT',
-                    ]" />
+                    ]" 
+                    @cellClick="onCellClickDetail"/>
                 </v-col>
               </v-row>
             </v-card>
@@ -241,27 +242,62 @@
                   this.invoice_no_pop,
                   this.form_date,
                   this.form_to,
-                ]" />
+                ]" 
+                />
             </v-col>
           </v-row>
         </v-container>
       </v-card>
     </v-dialog>
 
-    <view-einvoice-xml-dialog ref="ViewEInvoiceXMLDialog" :src_xmlUrl="xmlUrl" :xmlFileNm="xmlFileNm" dwnFile
+    <view-einvoice-pdf-dialog
+      ref="ViewEInvoicePDFDialog"
+      :src_pdfUrl="pdfUrl"
+      @minimizeDialogPDF="manualIsMinimizedPDF = true"
+      @closeManualDialog="manualIsMinimizedPDF = false"
+    ></view-einvoice-pdf-dialog>
+    <view-einvoice-xml-dialog
+      ref="ViewEInvoiceXMLDialog"
+      :src_xmlUrl="xmlUrl"
+      :xmlFileNm="xmlFileNm"
+      dwnFile
       @minimizeDialog="manualIsMinimized = true"
-      @closeManualDialog="manualIsMinimized = false"></view-einvoice-xml-dialog>
+      @closeManualDialog="manualIsMinimized = false"
+    ></view-einvoice-xml-dialog>
+    <div class="squareBox" v-if="false">
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on }">
+          <v-btn icon small v-on="on" @click="openManualDialog">
+            <v-icon :color="currentTheme">mdi-help-box</v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $t("show_manual") }}</span>
+      </v-tooltip>
+    </div>
+    <v-scale-transition origin="bottom center">
+      <v-btn dark depressed fab fixed bottom right small :color="currentTheme" v-if="manualIsMinimized" @click="restoreManualDialog">
+        <v-icon>mdi-window-restore</v-icon>
+      </v-btn>
+    </v-scale-transition>
+
+    <v-scale-transition origin="bottom center">
+      <v-btn dark depressed fab fixed bottom right small :color="currentTheme" v-if="manualIsMinimizedPDF" @click="restoreManualDialogPDF">
+        <v-icon>mdi-window-restore</v-icon>
+      </v-btn>
+    </v-scale-transition>
   </v-container>
 </template>
 
 
 <script>
+import ViewEInvoicePDFDialog from "@/components/dialog/ViewEInvoicePDFDialog.vue";
 import ViewEInvoiceXMLDialog from "@/components/dialog/ViewEInvoiceXMLDialog.vue";
 export default {
   layout: "default",
   middleware: "user",
   components: {
-    "view-einvoice-xml-dialog": ViewEInvoiceXMLDialog
+    "view-einvoice-xml-dialog": ViewEInvoiceXMLDialog,
+    "view-einvoice-pdf-dialog": ViewEInvoicePDFDialog,
   },
   data: () => ({
 
@@ -342,7 +378,8 @@ export default {
         CODE: 'E',
       },
     ],
-    objInvoiceM:{}
+    objInvoiceM:{},
+    tei_einvoice_d_pk_row:""
   }),
 
   mounted() {
@@ -559,6 +596,32 @@ export default {
         case "preview":
           this.OnPreview();
           break;
+        case "previewBB":
+        this.OnPreviewBB();
+          break;  
+
+      }
+    },
+    async OnPreviewBB()
+    {
+      if(this.tei_einvoice_d_pk_row != "")
+      {
+        let res_url = await this.$axios.$post("/einvoice/general-url-pdf-einvoice-bb", {
+              responseType: "json",
+              tei_wt_sale_bill_pk: this.tei_einvoice_d_pk_row,
+            });
+        if(res_url.success)
+        {
+          this.pdfUrl = res_url.data;
+
+          this.$nextTick(() => {
+            this.isProcessing = false
+            this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+          });
+        }
+      }else
+      {
+        this.showNotification("warning", this.$t("no_row_selected"), '');
       }
     },
 
@@ -1177,6 +1240,14 @@ export default {
       } else {
         this.salaryStatus = this.$t("fail_to_export_report");
       }
+    },
+
+
+    async onCellClickDetail({ column, data, rowIndex, rowType }) {
+      console.log("tei_einvoice_d_pk_row  ", data)
+      this.tei_einvoice_d_pk_row = data.PK;
+      // this.maGD = data.CQT_MAGD;
+      // this.xml_signed = data.SIGN_XML;
     },
   }
 }

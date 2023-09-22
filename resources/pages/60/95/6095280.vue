@@ -282,7 +282,7 @@
         <v-icon>mdi-window-restore</v-icon>
       </v-btn>
     </v-scale-transition>
-    <!-- <view-einvoice-pdf-dialog ref="ViewEInvoicePDFDialog" :src_pdfUrl="urlPDF"></view-einvoice-pdf-dialog> -->
+    <!-- <view-einvoice-pdf-dialog ref="ViewEInvoicePDFDialog" :src_pdfUrl="pdfUrl"></view-einvoice-pdf-dialog> -->
   </v-container>
 </template>
 
@@ -297,7 +297,6 @@ export default {
     "view-einvoice-pdf-dialog": ViewEInvoicePDFDialog,
   },
   data: () => ({
-    urlPDF: "",
     showPDF: false,
     isMaximized: false,
     showLoading: false,
@@ -616,7 +615,7 @@ export default {
                 data: this.modelMaster.PK,
             });
             if (res_url.success) {
-              this.urlPDF = res_url.data;
+              this.pdfUrl = res_url.data;
 
               this.$nextTick(() => {
                 this.isProcessing = false;
@@ -637,10 +636,11 @@ export default {
               responseType: "json",
               tei_einvoice_d_pk_row: this.tei_einvoice_d_pk_row,
             });
+
         if(res_url.success)
         {
-          this.xmlUrl = res_url.data;
-          console.log("this.pdfUrl  ", this.xmlUrl)
+          this.pdfUrl = res_url.data;
+          console.log("this.pdfUrl  ", this.pdfUrl)
           this.$nextTick(() => {
             this.isProcessing = false
             this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;

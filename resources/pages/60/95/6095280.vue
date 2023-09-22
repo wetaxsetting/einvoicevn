@@ -596,12 +596,32 @@ export default {
           break;
         case "preview":
           this.OnPreview();
+
           break;
         case "previewBB":
         this.OnPreviewBB();
           break;  
 
       }
+    },
+    async OnPreview()
+    {
+      if (this.modelMaster.PK) {
+            let res_url = await this.$axios.$post("/einvoice/general-pdf-template-04SS", {
+              responseType: "json",
+                data: this.modelMaster.PK,
+            });
+            if (res_url.success) {
+              this.urlPDF = res_url.data;
+
+              this.$nextTick(() => {
+                this.isProcessing = false;
+                this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+              });
+            }
+          } else {
+            this.showNotification("warning", this.$t("no_row_selected"), "");
+          }
     },
     async OnPreviewBB()
     {

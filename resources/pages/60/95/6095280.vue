@@ -183,7 +183,8 @@
                       'CUSTOMER_NM',
                       'BUYER_POSITION',
                       'BUYER_REPRESENT',
-                    ]" />
+                    ]" 
+                    @cellClick="onCellClickDetail"/>
                 </v-col>
               </v-row>
             </v-card>
@@ -228,25 +229,60 @@
           </v-row>
           <v-row>
             <v-col>
-              <BaseGridView ref="popupGrid" :autoresize="false" :header="headerList.grdPopup" :setting="true"
-                :multiselect="true" :selectionmode="'checkbox'" :headertype="1" :height="limitHeightGridDetails"
-                sel_procedure="AC_SEL_6095280_DATA_POPUP" :filter_paras="[
-                  this.modelSearch.COMPANY_PK,
-                  this.form_no_pop,
-                  this.selected_serial_no,
-                  this.invoice_no_pop,
-                  this.form_date,
-                  this.form_to,
-                ]" />
+              <BaseGridView
+                ref="popupGrid"
+                :autoresize="false"
+                :header="headerList.grdPopup"
+                :setting="true"
+                :multiselect="true"
+                :selectionmode="'checkbox'"
+                :headertype="1"
+                :height="limitHeightGridDetails"
+                sel_procedure="AC_SEL_6095280_DATA_POPUP"
+                :filter_paras="[this.modelSearch.COMPANY_PK, this.form_no_pop, this.selected_serial_no, this.invoice_no_pop, this.form_date, this.form_to]"
+              />
             </v-col>
           </v-row>
         </v-container>
       </v-card>
     </v-dialog>
 
-    <view-einvoice-xml-dialog ref="ViewEInvoiceXMLDialog" :src_xmlUrl="xmlUrl" :xmlFileNm="xmlFileNm" dwnFile
+    <view-einvoice-pdf-dialog
+      ref="ViewEInvoicePDFDialog"
+      :src_pdfUrl="pdfUrl"
+      @minimizeDialogPDF="manualIsMinimizedPDF = true"
+      @closeManualDialog="manualIsMinimizedPDF = false"
+    ></view-einvoice-pdf-dialog>
+    <view-einvoice-xml-dialog
+      ref="ViewEInvoiceXMLDialog"
+      :src_xmlUrl="xmlUrl"
+      :xmlFileNm="xmlFileNm"
+      dwnFile
       @minimizeDialog="manualIsMinimized = true"
-      @closeManualDialog="manualIsMinimized = false"></view-einvoice-xml-dialog>
+      @closeManualDialog="manualIsMinimized = false"
+    ></view-einvoice-xml-dialog>
+    <div class="squareBox" v-if="false">
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on }">
+          <v-btn icon small v-on="on" @click="openManualDialog">
+            <v-icon :color="currentTheme">mdi-help-box</v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $t("show_manual") }}</span>
+      </v-tooltip>
+    </div>
+    <v-scale-transition origin="bottom center">
+      <v-btn dark depressed fab fixed bottom right small :color="currentTheme" v-if="manualIsMinimized" @click="restoreManualDialog">
+        <v-icon>mdi-window-restore</v-icon>
+      </v-btn>
+    </v-scale-transition>
+
+    <v-scale-transition origin="bottom center">
+      <v-btn dark depressed fab fixed bottom right small :color="currentTheme" v-if="manualIsMinimizedPDF" @click="restoreManualDialogPDF">
+        <v-icon>mdi-window-restore</v-icon>
+      </v-btn>
+    </v-scale-transition>
+    <view-einvoice-pdf-dialog ref="ViewEInvoicePDFDialog" :src_pdfUrl="urlPDF"></view-einvoice-pdf-dialog>
   </v-container>
 </template>
 
@@ -341,7 +377,8 @@ export default {
         CODE: "E",
       },
     ],
-    objInvoiceM:{}
+    objInvoiceM:{},
+    tei_einvoice_d_pk_row:""
   }),
 
   mounted() {
@@ -560,8 +597,55 @@ export default {
         case "preview":
           this.OnPreview();
           break;
+        case "previewBB":
+        this.OnPreviewBB();
+          break;  
+
       }
     },
+    async OnPreviewBB()
+    {
+      if (this.modelMaster.PK) {
+            let res_url = await this.$axios.$post("/einvoice/general-pdf-template-04SS", {
+              responseType: "json",
+                data: this.modelMaster.PK,
+            });
+            if (res_url.success) {
+              this.urlPDF = res_url.data;
+
+              this.$nextTick(() => {
+                this.isProcessing = false;
+                this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+              });
+            }
+          } else {
+            this.showNotification("warning", this.$t("no_row_selected"), "");
+          }
+    },
+
+    async OnPreviewBBDetail()
+    {
+      if(this.tei_einvoice_d_pk_row != "")
+      {
+        let res_url = await this.$axios.$post("/einvoice/general-url-pdf-einvoice-bb", {
+              responseType: "json",
+              tei_wt_sale_bill_pk: this.tei_einvoice_d_pk_row,
+            });
+        if(res_url.success)
+        {
+          this.pdfUrl = res_url.data;
+
+          this.$nextTick(() => {
+            this.isProcessing = false
+            this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+          });
+        }
+      }else
+      {
+        this.showNotification("warning", this.$t("no_row_selected"), '');
+      }
+    },
+
 
     async dsoMaster(action) {
       let abc = this.dataMasterList.taxOfficeList.find((item) => item.CODE == this.modelMaster.MCQT);
@@ -1175,6 +1259,12 @@ export default {
       } else {
         this.salaryStatus = this.$t("fail_to_export_report");
       }
+    },
+    async onCellClickDetail({ column, data, rowIndex, rowType }) {
+      console.log("tei_einvoice_d_pk_row  ", data)
+      this.tei_einvoice_d_pk_row = data.PK;
+      // this.maGD = data.CQT_MAGD;
+      // this.xml_signed = data.SIGN_XML;
     },
   }
 }

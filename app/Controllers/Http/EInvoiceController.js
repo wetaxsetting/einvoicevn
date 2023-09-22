@@ -74,14 +74,6 @@ if (REDIS_CONNECTION != "NO_REDIS") {
 }
 
 class EInvoiceController {
-  async renderJsonToExcelFile() {
-    const exjs = new RenderJsonToExcelFile();
-    const propsEx = {
-      filename: "test02.xlsx",
-    };
-    const result = await exjs.createFille(propsEx);
-    return response.send(result);
-  }
 
   async einvoicePdfConvert({ request, response, auth }) {
     var p_language = request.header("accept-language", "ENG");
@@ -571,169 +563,6 @@ class EInvoiceController {
     }
   }
 
-  validateDeclareJson(declare) {
-    let status = true;
-    let resMess = "";
-    const mess1 = "Invalid field";
-    const mess2 = "Data invalid";
-    const errorList = {
-      version: 6,
-      declare_name: 100,
-      declare_type: 1,
-      declare_form_no: 15,
-      seller_company_name: 400,
-      seller_taxcode: 14,
-      tax_office_name: 100,
-      tax_office_code: 5,
-      contact_person: 50,
-      contact_address: 400,
-      contact_email: 50,
-      contact_phone: 20,
-      location_name: 50,
-      created_date: 10,
-      has_code: 1,
-      no_code: 1,
-      pos_code: 1,
-      taxpayer_from_difficult_location: 1,
-      taxpayer_from_people_committee_suggestions: 1,
-      transfer_data_directly_to_tax_office: 1,
-      cdlqtvan: 1,
-      full_transfer: 1,
-      summary_transfer: 1,
-      vat_invoice: 1,
-      sales_invoice: 1,
-      sales_invoice_passet: 1,
-      sales_invoice_national: 1,
-      other_invoice: 1,
-      voucher: 1,
-      digital_certificates: [
-        {
-          sequence: 1,
-          organization_name: "SmartSign",
-          serial_no: "540101072FBF82CD8A4D89AEADEBCF88",
-          from_date: "2023-04-27T08:47:43",
-          to_date: "2024-07-27T08:47:42",
-          type: "1",
-        },
-      ],
-    };
-
-    for (const key in errorList) {
-      // valid null of not null values
-      if (declare[key] === undefined || declare[key] == null) {
-        status = false;
-        resMess = `${mess1} ${key}.`;
-        return {
-          status,
-          message: resMess,
-        };
-      }
-
-      // valid length
-      if (String(declare[key]).length > errorList[key] && key != "digital_certificates") {
-        return {
-          status: false,
-          message: `Length of ${key} too long.`,
-        };
-      }
-
-      // valid data must be in valueReq
-      const valueReq = ["0", "1"];
-      if (
-        key == "has_code" ||
-        key == "no_code" ||
-        key == "pos_code" ||
-        key == "taxpayer_from_difficult_location" ||
-        key == "taxpayer_from_people_committee_suggestions" ||
-        key == "transfer_data_directly_to_tax_office" ||
-        key == "cdlqtvan" ||
-        key == "full_transfer" ||
-        key == "summary_transfer" ||
-        key == "vat_invoice" ||
-        key == "sales_invoice" ||
-        key == "sales_invoice_passet" ||
-        key == "sales_invoice_national" ||
-        key == "other_invoice" ||
-        key == "voucher"
-      ) {
-        if (!valueReq.includes(String(declare[key]))) {
-          status = false;
-          resMess = `${mess2}. Field ${key}.`;
-          return {
-            status,
-            message: resMess,
-          };
-        }
-      }
-    }
-
-    // valid digital_certificates
-    if (!declare.digital_certificates[0]) {
-      return {
-        status: false,
-        message: `${mess1} digital_certificates.`,
-      };
-    }
-    for (let i = 0; i < declare.digital_certificates.length; i++) {
-      for (const key in errorList.digital_certificates[0]) {
-        // valid digital_certificates
-        if (declare.digital_certificates[i][key] === undefined || declare.digital_certificates[i][key] == null) {
-          status = false;
-          resMess = `${mess1} digital_certificates ${key}.`;
-          return {
-            status,
-            message: resMess,
-          };
-        }
-        // vald date
-        if (key == "from_date" || key == "to_date") {
-          if (new Date(declare.digital_certificates[i][key]) == "Invalid Date") {
-            return {
-              status: false,
-              message: `Invalid Date. key digital_certificates ${key}`,
-            };
-          }
-        }
-      }
-    }
-
-    // valid declare_type must be in valueDT
-    const valueDT = ["1", "2"];
-    if (!valueDT.includes(String(declare.declare_type))) {
-      return {
-        status: false,
-        message: `declare_type must be 1 or 2. Receive: declare_type = ${declare.declare_type}`,
-      };
-    }
-
-    // if dont have any problem
-    return {
-      status,
-      message: resMess,
-    };
-  }
-
-  OBJtoXML(obj) {
-    var xml = "";
-    for (var prop in obj) {
-      xml += obj[prop] instanceof Array ? "" : "<" + prop + ">";
-      if (obj[prop] instanceof Array) {
-        for (var array in obj[prop]) {
-          xml += "<" + prop + ">";
-          xml += this.OBJtoXML(new Object(obj[prop][array]));
-          xml += "</" + prop + ">";
-        }
-      } else if (typeof obj[prop] == "object") {
-        xml += this.OBJtoXML(new Object(obj[prop]));
-      } else {
-        xml += obj[prop];
-      }
-      xml += obj[prop] instanceof Array ? "" : "</" + prop + ">";
-    }
-    var xml = xml.replace(/<\/?[0-9]{1,}>/g, "");
-    return xml;
-  }
-
   async convertInvoiceToXMLClient({ request, response, auth }) {
     try {
       var p_language = request.header("accept-language", "ENG");
@@ -994,108 +823,6 @@ class EInvoiceController {
       });
       return response.send(Utils.response(false, e.message));
     }
-  }
-
-  validateJsonInvalidInvoiceToXML(invalid_invoices) {
-    let status = true;
-    let resMess = "";
-    const mess1 = "Invalid field";
-    const errorList = {
-      version: 6,
-      declare_name: 100,
-      declare_type: 1,
-      form_no: 15,
-      tax_office_code: 5,
-      tax_office_name: 100,
-      seller_taxcode: 14,
-      seller_company_name: 400,
-      location_name: 50,
-      inform_date: 10,
-      invoices: [
-        {
-          tax_confirmation_code: 34,
-          form_no: 1,
-          serial_no: 8,
-          invoice_no: 8,
-          invoice_date: 10,
-          invoice_type: 1,
-          inform_type: 1,
-          reason: 255,
-        },
-      ],
-    };
-
-    for (const key in errorList) {
-      // valid null of not null values
-      if (invalid_invoices[key] === undefined || invalid_invoices[key] == null) {
-        status = false;
-        resMess = `${mess1} ${key}.`;
-        return {
-          status,
-          message: resMess,
-        };
-      }
-
-      // valid length
-      if (String(invalid_invoices[key]).length > errorList[key] && key != "invoices") {
-        return {
-          status: false,
-          message: `Length of ${key} too long.`,
-        };
-      }
-    }
-
-    // valid invoices
-    if (!invalid_invoices.invoices[0]) {
-      return {
-        status: false,
-        message: `${mess1} invoices.`,
-      };
-    }
-
-    for (let i = 0; i < invalid_invoices.invoices.length; i++) {
-      for (const key in errorList.invoices[0]) {
-        // valid digital_certificates
-        if (invalid_invoices.invoices[i][key] === undefined || invalid_invoices.invoices[i][key] == null) {
-          status = false;
-          resMess = `${mess1} invoices ${key}.`;
-          return {
-            status,
-            message: resMess,
-          };
-        }
-        // vald length
-        if (String(invalid_invoices.invoices[i][key]).length > errorList.invoices[0][key]) {
-          return {
-            status: false,
-            message: `Length of invoices.${key} too long.`,
-          };
-        }
-      }
-    }
-    const valueDT = ["1", "2"];
-    if (!valueDT.includes(String(invalid_invoices.declare_type))) {
-      return {
-        status: false,
-        message: `invalid_invoices must be 1 or 2. Receive: declare_type = ${invalid_invoices.declare_type}`,
-      };
-    }
-
-    // if dont have any problem
-    return {
-      status,
-      message: resMess,
-    };
-  }
-
-  parseXmlToJson(xml) {
-    const json = {};
-    for (const res of xml.matchAll(/(?:<(\w*)(?:\s[^>]*)*>)((?:(?!<\1).)*)(?:<\/\1>)|<(\w*)(?:\s*)*\/>/gm)) {
-      const key = res[1] || res[3];
-      const value = res[2] && this.parseXmlToJson(res[2]);
-      json[key] = (value && Object.keys(value).length ? value : res[2]) || null;
-    }
-    return json;
   }
 
   async convertInvoiceToXML({ request, response, auth }) {
@@ -1448,19 +1175,6 @@ class EInvoiceController {
     }
   }
 
-  convertHtmlCode(sText) {
-    if (sText != null || sText == "") {
-      return this.replaceAllExt(this.replaceAllExt(sText, "&", "&#38;"), '"', "&#34;");
-    } else {
-      return "";
-    }
-  }
-
-  replaceAllExt(strOgr, search, replacement) {
-    var target = strOgr.toString();
-    return target.replace(new RegExp(search, "g"), replacement);
-  }
-
   async sendInvoiceToTaxOfficeFromClient({ request, response, auth }) {
     try {
       var p_language = request.header("accept-language", "ENG");
@@ -1692,370 +1406,6 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       return response.send(Utils.response(false, "error", e.message));
-    }
-  }
-
-  async extractXMLContent(
-    p_xml_content,
-    p_mail_to,
-    p_mail_cc,
-    p_invoice_type,
-    p_tr_type,
-    p_tax_serial_number,
-    p_tac_crca_pk,
-    p_invoice_form_symbol,
-    p_language,
-    p_crt_by
-  ) {
-    let result_extra = {};
-    try {
-      const templateTTChung = [
-        "HDon/DLHDon/TTChung",
-        {
-          PBan: "PBan",
-          THDon: "THDon",
-          KHMSHDon: "KHMSHDon",
-          KHHDon: "KHHDon",
-          SHDon: "SHDon",
-          MHSo: "MHSo",
-          NLap: "NLap",
-          SBKe: "SBKe",
-          NBKe: "NBKe",
-          DVTTe: "DVTTe",
-          TGia: "TGia",
-          HTTToan: "HTTToan",
-          MSTTCGP: "MSTTCGP",
-          MSTDVNUNLHDon: "MSTDVNUNLHDon",
-          TDVNUNLHDon: "TDVNUNLHDon",
-          DCDVNUNLHDon: "DCDVNUNLHDon",
-        },
-      ];
-      const jsonTTChung = await transform(p_xml_content, templateTTChung);
-      // console.log("jsonTTChung", jsonTTChung)
-      const templateTTKhac = [
-        "HDon/DLHDon/TTChung/TTKhac/TTin",
-        {
-          TTruong: "TTruong",
-          DLieu: "DLieu",
-        },
-      ];
-      let jsonTTKhac = null;
-      try {
-        jsonTTKhac = await transform(p_xml_content, templateTTKhac);
-      } catch (e) { }
-      // console.log("jsonTTKhac", jsonTTKhac)
-      let customField1 = "",
-        customField2 = "",
-        customField3 = "",
-        customField4 = "",
-        customField5 = "",
-        customField6 = "",
-        customField7 = "",
-        customField8 = "",
-        customField9 = "",
-        customField10 = "";
-      if (jsonTTKhac && jsonTTKhac.length > 0) {
-        customField1 = jsonTTKhac[0].TTruong + ": " + jsonTTKhac[0].DLieu;
-        if (jsonTTKhac.length > 1) {
-          customField2 = jsonTTKhac[1].TTruong + ": " + jsonTTKhac[1].DLieu;
-        }
-        if (jsonTTKhac.length > 2) {
-          customField2 = jsonTTKhac[1].TTruong + ": " + jsonTTKhac[1].DLieu;
-          customField3 = jsonTTKhac[2].TTruong + ": " + jsonTTKhac[2].DLieu;
-        }
-        if (jsonTTKhac.length > 3) {
-          customField2 = jsonTTKhac[1].TTruong + ": " + jsonTTKhac[1].DLieu;
-          customField3 = jsonTTKhac[2].TTruong + ": " + jsonTTKhac[2].DLieu;
-          customField4 = jsonTTKhac[3].TTruong + ": " + jsonTTKhac[3].DLieu;
-        }
-        if (jsonTTKhac.length > 4) {
-          customField2 = jsonTTKhac[1].TTruong + ": " + jsonTTKhac[1].DLieu;
-          customField3 = jsonTTKhac[2].TTruong + ": " + jsonTTKhac[2].DLieu;
-          customField4 = jsonTTKhac[3].TTruong + ": " + jsonTTKhac[3].DLieu;
-          customField5 = jsonTTKhac[4].TTruong + ": " + jsonTTKhac[4].DLieu;
-        }
-        if (jsonTTKhac.length > 5) {
-          customField2 = jsonTTKhac[1].TTruong + ": " + jsonTTKhac[1].DLieu;
-          customField3 = jsonTTKhac[2].TTruong + ": " + jsonTTKhac[2].DLieu;
-          customField4 = jsonTTKhac[3].TTruong + ": " + jsonTTKhac[3].DLieu;
-          customField5 = jsonTTKhac[4].TTruong + ": " + jsonTTKhac[4].DLieu;
-          customField6 = jsonTTKhac[5].TTruong + ": " + jsonTTKhac[5].DLieu;
-        }
-        if (jsonTTKhac.length > 6) {
-          customField2 = jsonTTKhac[1].TTruong + ": " + jsonTTKhac[1].DLieu;
-          customField3 = jsonTTKhac[2].TTruong + ": " + jsonTTKhac[2].DLieu;
-          customField4 = jsonTTKhac[3].TTruong + ": " + jsonTTKhac[3].DLieu;
-          customField5 = jsonTTKhac[4].TTruong + ": " + jsonTTKhac[4].DLieu;
-          customField6 = jsonTTKhac[5].TTruong + ": " + jsonTTKhac[5].DLieu;
-          customField7 = jsonTTKhac[6].TTruong + ": " + jsonTTKhac[6].DLieu;
-        }
-        if (jsonTTKhac.length > 7) {
-          customField2 = jsonTTKhac[1].TTruong + ": " + jsonTTKhac[1].DLieu;
-          customField3 = jsonTTKhac[2].TTruong + ": " + jsonTTKhac[2].DLieu;
-          customField4 = jsonTTKhac[3].TTruong + ": " + jsonTTKhac[3].DLieu;
-          customField5 = jsonTTKhac[4].TTruong + ": " + jsonTTKhac[4].DLieu;
-          customField6 = jsonTTKhac[5].TTruong + ": " + jsonTTKhac[5].DLieu;
-          customField7 = jsonTTKhac[6].TTruong + ": " + jsonTTKhac[6].DLieu;
-          customField8 = jsonTTKhac[7].TTruong + ": " + jsonTTKhac[7].DLieu;
-        }
-        if (jsonTTKhac.length > 8) {
-          customField2 = jsonTTKhac[1].TTruong + ": " + jsonTTKhac[1].DLieu;
-          customField3 = jsonTTKhac[2].TTruong + ": " + jsonTTKhac[2].DLieu;
-          customField4 = jsonTTKhac[3].TTruong + ": " + jsonTTKhac[3].DLieu;
-          customField5 = jsonTTKhac[4].TTruong + ": " + jsonTTKhac[4].DLieu;
-          customField6 = jsonTTKhac[5].TTruong + ": " + jsonTTKhac[5].DLieu;
-          customField7 = jsonTTKhac[6].TTruong + ": " + jsonTTKhac[6].DLieu;
-          customField8 = jsonTTKhac[7].TTruong + ": " + jsonTTKhac[7].DLieu;
-          customField9 = jsonTTKhac[8].TTruong + ": " + jsonTTKhac[8].DLieu;
-        }
-        if (jsonTTKhac.length > 9) {
-          customField2 = jsonTTKhac[1].TTruong + ": " + jsonTTKhac[1].DLieu;
-          customField3 = jsonTTKhac[2].TTruong + ": " + jsonTTKhac[2].DLieu;
-          customField4 = jsonTTKhac[3].TTruong + ": " + jsonTTKhac[3].DLieu;
-          customField5 = jsonTTKhac[4].TTruong + ": " + jsonTTKhac[4].DLieu;
-          customField6 = jsonTTKhac[5].TTruong + ": " + jsonTTKhac[5].DLieu;
-          customField7 = jsonTTKhac[6].TTruong + ": " + jsonTTKhac[6].DLieu;
-          customField8 = jsonTTKhac[7].TTruong + ": " + jsonTTKhac[7].DLieu;
-          customField9 = jsonTTKhac[8].TTruong + ": " + jsonTTKhac[8].DLieu;
-          customField10 = jsonTTKhac[9].TTruong + ": " + jsonTTKhac[9].DLieu;
-        }
-      }
-
-      const templateTTHDLQuan = [
-        "HDon/DLHDon/TTChung/TTHDLQuan",
-        {
-          TCHDon: "TCHDon",
-          LHDCLQuan: "LHDCLQuan",
-          KHMSHDCLQuan: "KHMSHDCLQuan",
-          KHHDCLQuan: "KHHDCLQuan",
-          SHDCLQuan: "SHDCLQuan",
-          NLHDCLQuan: "NLHDCLQuan",
-          GChu: "GChu",
-        },
-      ];
-      const jsonTTHDLQuan = await transform(p_xml_content, templateTTHDLQuan);
-      // console.log("templateTTHDLQuan", jsonTTHDLQuan)
-
-      const arrTTChung = [
-        jsonTTChung[0].PBan,
-        jsonTTChung[0].THDon,
-        jsonTTChung[0].KHMSHDon,
-        jsonTTChung[0].KHHDon,
-        jsonTTChung[0].SHDon,
-        jsonTTChung[0].MHSo,
-        jsonTTChung[0].NLap,
-        jsonTTChung[0].SBKe,
-        jsonTTChung[0].NBKe,
-        jsonTTChung[0].DVTTe,
-        jsonTTChung[0].TGia,
-        jsonTTChung[0].HTTToan,
-        jsonTTChung[0].MSTTCGP,
-        jsonTTChung[0].MSTDVNUNLHDon,
-        jsonTTChung[0].TDVNUNLHDon,
-        jsonTTChung[0].DCDVNUNLHDon,
-      ];
-      const templateNBan = [
-        "HDon/DLHDon/NDHDon/NBan",
-        {
-          Ten: "Ten",
-          MST: "MST",
-          DChi: "DChi",
-          SDThoai: "SDThoai",
-          DCTDTu: "DCTDTu",
-          STKNHang: "STKNHang",
-          NNBSTKNHang: "NNBSTKNHang",
-          TNHang: "TNHang",
-          Fax: "Fax",
-          Website: "Website",
-          TTKhac: "TTKhac",
-        },
-      ];
-      const jsonNBan = await transform(p_xml_content, templateNBan);
-      const arrNBan = [
-        jsonNBan[0].Ten,
-        jsonNBan[0].MST,
-        jsonNBan[0].DChi,
-        jsonNBan[0].SDThoai,
-        jsonNBan[0].DCTDTu,
-        jsonNBan[0].STKNHang,
-        jsonNBan[0].NNBSTKNHang,
-        jsonNBan[0].TNHang,
-        jsonNBan[0].Fax,
-        jsonNBan[0].Website,
-        jsonNBan[0].TTKhac,
-      ];
-      // console.log("jsonNBan", jsonNBan)
-      const templateNMua = [
-        "HDon/DLHDon/NDHDon/NMua",
-        {
-          Ten: "Ten",
-          MST: "MST",
-          DChi: "DChi",
-          SDThoai: "SDThoai",
-          DCTDTu: "DCTDTu",
-          MKHang: "MKHang",
-          HVTNMHang: "HVTNMHang",
-          STKNHang: "STKNHang",
-          TNHang: "TNHang",
-          TTKhac: "TTKhac",
-        },
-      ];
-      const jsonNMua = await transform(p_xml_content, templateNMua);
-      // console.log("jsonNMua", jsonNMua)
-      const arrNMua = [
-        jsonNMua[0].Ten,
-        jsonNMua[0].MST,
-        jsonNMua[0].DChi,
-        jsonNMua[0].SDThoai,
-        jsonNMua[0].DCTDTu,
-        jsonNMua[0].MKHang,
-        jsonNMua[0].HVTNMHang,
-        jsonNMua[0].STKNHang,
-        jsonNMua[0].TNHang,
-        jsonNMua[0].TTKhac,
-      ];
-      const templateLTSuat = [
-        "HDon/DLHDon/NDHDon/TToan/THTTLTSuat/LTSuat",
-        {
-          TSuat: "TSuat",
-          ThTien: "ThTien",
-          TThue: "TThue",
-        },
-      ];
-      const jsonLTSuat = await transform(p_xml_content, templateLTSuat);
-      // console.log("jsonLTSuat", jsonLTSuat)
-      const arrLTSuat = [jsonLTSuat[0].TSuat, jsonLTSuat[0].ThTien, jsonLTSuat[0].TThue];
-      const templateTToan = [
-        "HDon/DLHDon/NDHDon/TToan",
-        {
-          TgTCThue: "TgTCThue",
-          TgTThue: "TgTThue",
-          TTCKTMai: "TTCKTMai",
-          TgTTTBSo: "TgTTTBSo",
-          TgTTTBChu: "TgTTTBChu",
-        },
-      ];
-      const jsonTToan = await transform(p_xml_content, templateTToan);
-      // console.log("jsonTToan", jsonTToan)
-      const arrTToan = [
-        jsonTToan[0].TgTCThue,
-        jsonTToan[0].TgTThue,
-        jsonTToan[0].TTCKTMai,
-        jsonTToan[0].TgTTTBSo,
-        jsonTToan[0].TgTTTBChu,
-      ];
-      let v_vn_amount = Utils.Num2VNText(jsonTToan[0].TgTTTBSo, jsonTTChung[0].DVTTe);
-      // console.log("  v_vn_amount ", v_vn_amount);
-      /*const templateMCCQT = ['HDon', {
-                                  MCCQT: 'MCCQT'
-                              }]
-                              const jsonMCCQT = await transform(p_xml_content, templateMCCQT);
-                              //console.log(jsonMCCQT)
-                              */
-      const arrMCCQT = ""; //[jsonMCCQT[0].MCCQT];
-
-      const templateDSHHDVu = [
-        "HDon/DLHDon/NDHDon/DSHHDVu/HHDVu",
-        {
-          TChat: "TChat",
-          STT: "STT",
-          MHHDVu: "MHHDVu",
-          THHDVu: "THHDVu",
-          DVTinh: "DVTinh",
-          SLuong: "SLuong",
-          DGia: "DGia",
-          TLCKhau: "TLCKhau",
-          STCKhau: "STCKhau",
-          ThTien: "ThTien",
-          TSuat: "TSuat",
-        },
-      ];
-      let masterPara = arrTTChung.concat(arrNBan).concat(arrNMua).concat(arrLTSuat).concat(arrTToan).concat(arrMCCQT);
-      //const xmlRelativePath = p_xml_path.replace(ROOT_DIR_FILES, "");
-      masterPara = masterPara.concat(["", "", "", ""]);
-      if (jsonTTHDLQuan && jsonTTHDLQuan.length > 0) {
-        masterPara = masterPara.concat([
-          jsonTTHDLQuan[0].TCHDon,
-          jsonTTHDLQuan[0].LHDCLQuan,
-          jsonTTHDLQuan[0].KHMSHDCLQuan,
-          jsonTTHDLQuan[0].KHHDCLQuan,
-          jsonTTHDLQuan[0].SHDCLQuan,
-          jsonTTHDLQuan[0].NLHDCLQuan,
-          jsonTTHDLQuan[0].GChu,
-        ]);
-      } else {
-        masterPara = masterPara.concat(["", "", "", "", "", "", ""]);
-      }
-
-      masterPara = masterPara.concat([
-        customField1,
-        customField2,
-        customField3,
-        customField4,
-        customField5,
-        customField6,
-        customField7,
-        customField8,
-        customField9,
-        customField10,
-        p_mail_to,
-        p_mail_cc,
-        p_invoice_type,
-        v_vn_amount,
-        p_tr_type,
-        p_tax_serial_number,
-        p_tac_crca_pk,
-        p_invoice_form_symbol,
-      ]);
-
-      // console.log("masterPara", masterPara)
-      //const master = await callAPI(_jwtToken, { proc: 'ei_upd_tei_einvoice_cloud', para: masterPara });
-      const master = await DBService.callProcCursor("ei_upd_tei_einvoice_ar", masterPara, p_language, p_crt_by);
-      // console.log("master", master);
-
-      if (master && master[0].PK > 0) {
-        const jsonDSHHDVu = await transform(p_xml_content, templateDSHHDVu);
-        //console.log(jsonDSHHDVu)
-        for (let i = 0; i < jsonDSHHDVu.length; i++) {
-          const detailPara = [
-            master[0].PK,
-            jsonDSHHDVu[i].TChat,
-            jsonDSHHDVu[i].STT,
-            jsonDSHHDVu[i].MHHDVu,
-            jsonDSHHDVu[i].THHDVu,
-            jsonDSHHDVu[i].DVTinh,
-            jsonDSHHDVu[i].SLuong,
-            jsonDSHHDVu[i].DGia,
-            jsonDSHHDVu[i].ThTien,
-            jsonDSHHDVu[i].TLCKhau,
-            jsonDSHHDVu[i].STCKhau,
-            jsonDSHHDVu[i].TSuat,
-            master[0].TEI_EINVOICE_M_PK,
-          ];
-          const detail = await DBService.callProcCursor("ei_upd_tei_einvoiced_ar", detailPara, p_language, p_crt_by);
-          // console.log("detail", detail);
-        }
-        return (result_extra = {
-          PK: master[0].PK,
-          TEI_EINVOICE_M_PK: master[0].TEI_EINVOICE_M_PK,
-        });
-      } else {
-        return (result_extra = {
-          PK: master[0].PK,
-          TEI_EINVOICE_M_PK: master[0].TEI_EINVOICE_M_PK,
-        }); //master[0].PK;
-      }
-    } catch (e) {
-      Utils.Logger({
-        LVL: "error",
-        MODULE: "EInvoiceController",
-        FUNC: "extractXMLContent",
-        CONTENT: e.message,
-      });
-      return (result_extra = {
-        PK: -2,
-        TEI_EINVOICE_M_PK: 0,
-      }); //master[0].PK;;
     }
   }
 
@@ -2661,175 +2011,6 @@ class EInvoiceController {
       });
       return response.send(Utils.response(false, e.message));
     }
-  }
-
-  validateDeclareXML(declare) {
-    let status = true;
-    let resMess = "";
-    const mess1 = "Invalid field";
-    const mess2 = "Data invalid";
-    if (!declare.TKhai) {
-      return {
-        status: false,
-        message: `${mess1} TKhai.`,
-      };
-    }
-    if (!declare.TKhai.DLTKhai) {
-      return {
-        status: false,
-        message: `${mess1} DLTKhai.`,
-      };
-    }
-    if (!declare.TKhai.DSCKS) {
-      return {
-        status: false,
-        message: `${mess1} DSCKS (unsigned).`,
-      };
-    }
-    if (!declare.TKhai.DSCKS.NNT) {
-      return {
-        status: false,
-        message: `${mess1} NNT (unsigned).`,
-      };
-    }
-
-    const errorList = {
-      DLTKhai: {
-        TTChung: {
-          PBan: 6,
-          MSo: 15,
-          Ten: 100,
-          HThuc: 1,
-          TNNT: 400,
-          MST: 14,
-          CQTQLy: 100,
-          MCQTQLy: 5,
-          NLHe: 50,
-          DCLHe: 400,
-          DCTDTu: 50,
-          DTLHe: 20,
-          DDanh: 50,
-          NLap: 10,
-        },
-        NDTKhai: {
-          HTHDon: {
-            CMa: 1,
-            KCMa: 1,
-            CMTMTTien: 1,
-          },
-          HTGDLHDDT: {
-            NNTDBKKhan: 1,
-            NNTKTDNUBND: 1,
-            CDLTTDCQT: 1,
-            CDLQTVAN: 1,
-          },
-          PThuc: {
-            CDDu: 1,
-            CBTHop: 1,
-          },
-          LHDSDung: {
-            HDGTGT: 1,
-            HDBHang: 1,
-            HDBTSCong: 1,
-            HDBHDTQGia: 1,
-            HDKhac: 1,
-            CTu: 1,
-          },
-          DSCTSSDung: {
-            CTS: {
-              STT: 1,
-              TTChuc: "SmartSign",
-              Seri: "540101072FBF82CD8A4D89AEADEBCF88",
-              TNgay: "2023-04-27T08:47:43",
-              DNgay: "2024-07-27T08:47:42",
-              HThuc: "1",
-            },
-          },
-        },
-      },
-    };
-
-    for (const key in errorList.DLTKhai) {
-      // valid null of not null values
-      if (declare.TKhai.DLTKhai[key] === undefined || declare.TKhai.DLTKhai[key] == null) {
-        status = false;
-        resMess = `${mess2} ${key}.`;
-        return {
-          status,
-          message: resMess,
-        };
-      }
-    }
-    for (const key in errorList.DLTKhai.TTChung) {
-      if (String(declare.TKhai.DLTKhai.TTChung[key]).length > errorList.DLTKhai.TTChung[key]) {
-        return {
-          status: false,
-          message: `${mess2} ${key}.`,
-        };
-      }
-    }
-    //     for (const key in errorList.DLTKhai.NDTKhai) {
-    //         // if(status == false){
-    //         //     return {
-    //         //         status: status,
-    //         //         message: resMess,
-    //         //     };
-    //         // }
-    //         for (const childKey in errorList.DLTKhai.NDTKhai[key]) {
-    //             if(String(declare.TKhai.DLTKhai.NDTKhai[key][childKey]).length > errorList.DLTKhai.NDTKhai[key][childKey] && childKey != 'DSCTSSDung'){
-    //                 status= false;
-    //                 resMess = `Length of ${key} ${childKey} too long.`
-    //                 return {
-    //                     status: status,
-    //                     message: resMess,
-    //                 };
-    //             }
-
-    //           // valid data must be in valueReq
-    //           const valueReq = ["0", "1"];
-    //           if (
-    //             key == 'CMa' ||
-    //             key == 'KCMa' ||
-    //             key == 'CMTMTTien' ||
-    //             key == 'NNTDBKKhan' ||
-    //             key == 'NNTKTDNUBND' ||
-    //             key == 'CDLTTDCQT' ||
-    //             // key == 'CDLQTVAN' ||
-    //             key == 'CDDu' ||
-    //             key == 'CBTHop' ||
-    //             key == 'HDGTGT' ||
-    //             key == 'HDBHang' ||
-    //             key == 'HDBTSCong' ||
-    //             key == 'HDBHDTQGia' ||
-    //             key == 'HDKhac' ||
-    //             key == 'CTuer'
-    //           ) {
-    //             if (!valueReq.includes(String(declare.TKhai.DLTKhai.NDTKhai[key][childKey]))) {
-    //               status = false;
-    //               resMess = `${mess2}. Field ${key} ${key}.`;
-    //               return {
-    //                 status: status,
-    //                 message: resMess,
-    //             };
-    //             }
-    //           }
-    //         }
-    //         console.log(resMess);
-    //    }
-    // for (const key in errorList.DLTKhai.NDTKhai.DSCTSSDung.CTS) {
-    //     if(!declare.TKhai.DLTKhai.NDTKhai.DSCTSSDung.CTS[key]) {
-    //         status = false;
-    //         resMess = `${mess1} CTS ${key}.`;
-    //         return {
-    //             status,
-    //             message: resMess,
-    //         };
-    //     }
-    // }
-    return {
-      status: status,
-      message: resMess,
-    };
   }
 
   async sendDeclarationToTaxOfficeFromClient({ request, response, auth }) {
@@ -4543,154 +3724,6 @@ class EInvoiceController {
     }
   }
 
-  IsNullOrEmpty(str) {
-    return str === null || str === undefined || str.trim() === "";
-  }
-
-  async GetToken() {
-    try {
-      const tokenResponse = await Request.post(`${URL}/authenticate`, {
-        username: Username,
-        password: Password,
-        rememberMe: false,
-      });
-      // console.log("res.data", tokenResponse);
-      return tokenResponse.data.id_token;
-    } catch (err) {
-      console.log("err", err);
-      return null;
-    }
-  }
-
-  async GetCertificateRawData(token) {
-    let para = {
-      serial: Serial,
-      pin: Pin,
-    };
-    const agent = {
-      Agent: {
-        defaultPort: 443,
-        protocol: "https:",
-        options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
-      },
-    };
-    try {
-      const config = {
-        headers: { Authorization: `Bearer ${token}` },
-        params: para,
-      };
-
-      const certDataRes = await Request.get(`${URL}/certificate/get`, config);
-
-      return certDataRes.data.data;
-    } catch (err) {
-      console.log("err", err);
-      return null;
-    }
-  }
-
-  async tempSignature(
-    base64Digest, //byte[]
-    base64SignatureValue, //byte[]
-    CustomerCert, //X509Certificate2
-    SignedTagId, //string
-    SigningTagId, //string
-    useNamespacePrefix, //bool
-    isTagName //bool
-  ) {
-    if (this.IsNullOrEmpty(SigningTagId)) {
-      SigningTagId = "serSig";
-    }
-    if (this.IsNullOrEmpty(SignedTagId)) {
-      throw new Exception("Signed Tag Id is required");
-    }
-    //string str1 = "serSig";
-    let signingTagId = SigningTagId;
-    let refSigningTagId = ""; //`#${SignedTagId}`;
-    let signatureValue = base64SignatureValue == null ? "" : base64SignatureValue.toString();
-    let signatureMethod__Algorithm = "";
-    let canonicalizationMethod_Algorithm = "";
-    if (useNamespacePrefix) {
-      canonicalizationMethod_Algorithm = "http://www.w3.org/2001/10/xml-exc-c14n#";
-    } else {
-      canonicalizationMethod_Algorithm = "http://www.w3.org/TR/2001/REC-xml-c14n-20010315";
-    }
-
-    let signatureMethod_Algorithm = "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
-
-    if (isTagName) {
-      refSigningTagId = ""; //`#${SignedTagId}`;
-    } else {
-      refSigningTagId = `#${SignedTagId}`;
-    }
-
-    let transform_Algorithm = "http://www.w3.org/2000/09/xmldsig#enveloped-signature";
-
-    // loai 2 transform
-    if (useNamespacePrefix) {
-    }
-
-    let digestMethod_Algorithm = "http://www.w3.org/2000/09/xmldsig#sha1"; // "http://www.w3.org/2001/04/xmlenc#sha256";
-
-    const signedInfoXml = create({ version: "1.0" })
-      .ele("Signature", { Id: signingTagId, xmlns: "http://www.w3.org/2000/09/xmldsig#" })
-      .ele("SignedInfo")
-      .ele("CanonicalizationMethod", { Algorithm: canonicalizationMethod_Algorithm })
-      .up()
-      .ele("SignatureMethod", { Algorithm: signatureMethod_Algorithm })
-      .up()
-      .ele("Reference", { URI: refSigningTagId })
-      .ele("Transforms")
-      .ele("Transform", { Algorithm: transform_Algorithm })
-      .up()
-      .up()
-      .ele("DigestMethod", { Algorithm: digestMethod_Algorithm })
-      .ele("DigestValue")
-      .txt(base64Digest.toString())
-
-      .end({ prettyPrint: true });
-    console.log(signedInfoXml);
-  }
-
-  async HashForRemote(
-    xd, //XmlDocument
-    SignedTagId, //string
-    SigningTagId, //string
-    namespacePrefix, //string
-    CustomerCert, //X509Certificate2
-    path, //string
-    isSignTagName //bool
-  ) {
-    try {
-      //XmlNode signature = null;
-      // if (isSignTagName)
-      // {
-      //     signature = DsigSignature.tempSignature(DsigSignature.getDigestForRemoteByTagName(xd, SignedTagId, namespacePrefix), (byte[])null, CustomerCert, SignedTagId, SigningTagId, !string.IsNullOrEmpty(namespacePrefix), true);
-      // }
-      // else
-      // {
-      //     signature = DsigSignature.tempSignature(DsigSignature.getDigestForRemoteByID(xd, SignedTagId, namespacePrefix), (byte[])null, CustomerCert, SignedTagId, SigningTagId, !string.IsNullOrEmpty(namespacePrefix), false);
-      // }
-      // return DsigSignature.PerformHash(xd, signature, path);
-    } catch (ex) {
-      console.log("error ", ex);
-    }
-  }
-
-  async createHashxml(
-    xmlRaw,
-    SignedTagId,
-    SigningTagId,
-    namespacePrefix,
-    certificate2,
-    xmlWithHashInfo,
-    path,
-    isSignTagName
-  ) {
-    const builder = new Builder();
-    const xmlDocument = builder.buildObject(xmlRaw);
-  }
-
   async SignXml({ request, response, auth }) {
     try {
       var p_language = request.header("accept-language", "ENG");
@@ -6064,9 +5097,9 @@ class EInvoiceController {
         p_language,
         p_crt_by
       );
-      let data_resutl = rtnValue_status.p_rtn_cur;
+      let data_resutl = await this.convertKeysToLowerCase(rtnValue_status.p_rtn_cur);
 
-      //console.log("data  ", rtnValue_status);
+      console.log("data_resutl  ", data_resutl);
 
       return response.send(Utils.response(true, `Successfully!`, data_resutl));
     } catch (error) {
@@ -6079,169 +5112,6 @@ class EInvoiceController {
       console.log(e);
       return response.send(Utils.response(false, e.message));
     }
-  }
-
-  async createXMLByOne(dataObject) {
-    let objInvoice_M = {
-      HDon: {
-        DLHDon: {
-          TTChung: {
-            PBan: "",
-            THDon: "",
-            KHMSHDon: "",
-            KHHDon: "",
-            SHDon: "",
-            MHSo: "",
-            NLap: "",
-            NBKe: "",
-            DVTTe: "",
-            TGia: "",
-            HTTToan: "",
-          },
-          NDHDon: {
-            NBan: {
-              Ten: "",
-              MST: "",
-              DChi: "",
-              SDThoai: "",
-              NNBSTKNHang: "",
-            },
-            NMua: {
-              Ten: "",
-              MST: "",
-              DChi: "",
-              SDThoai: "",
-              HVTNMHang: "",
-              CCCDan: "",
-            },
-            DSHHDVu: {},
-            TToan: {
-              THTTLTSuat: {
-                // LTSuat: [
-                //     {
-                //         TSuat: "",
-                //         ThTien: "",
-                //         TThue: "",
-                //     }
-                // ],
-              },
-              TgTCTHue: "",
-              TgTThue: "",
-              DSLPhi: {
-                LPhi: {},
-              },
-              TTCKTMai: "",
-              TgTTTBSo: "",
-              TgTTTBChu: "",
-            },
-          },
-        },
-        DSCKS: {},
-      },
-    };
-
-    if (dataObject.form_no == 1) {
-      objInvoice_M.HDon.DLHDon.TTChung.THDon = "Hóa đơn giá trị gia tăng khởi tạo từ máy tính tiền";
-    } else if (dataObject.form_no == 2) {
-      objInvoice_M.HDon.DLHDon.TTChung.THDon = "Hóa đơn bán hàng khởi tạo từ máy tính tiền";
-    } else if (dataObject.form_no == 3) {
-      objInvoice_M.HDon.DLHDon.TTChung.THDon = "Hóa đơn bán tài sản công khởi tạo từ máy tính tiền";
-    } else if (dataObject.form_no == 4) {
-      objInvoice_M.HDon.DLHDon.TTChung.THDon = "Hóa đơn bán hàng dự trữ quốc gia khởi tạo từ máy tính tiền";
-    } else if (dataObject.form_no == 5) {
-      objInvoice_M.HDon.DLHDon.TTChung.THDon =
-        "Tem điện tử, vé điện tử, thẻ điện tử, phiếu thu điện tử, chứng từ thu phí DV ngân hàng khởi tạo từ máy tính tiền";
-    } else if (dataObject.form_no == 6) {
-      objInvoice_M.HDon.DLHDon.TTChung.THDon =
-        "Phiếu xuất kho kiêm vận chuyển nội bộ, phiếu xuất kho hàng gửi bán đại lý khởi tạo từ máy tính tiền";
-    }
-    objInvoice_M.HDon.DLHDon.TTChung.PBan = dataObject.version;
-    objInvoice_M.HDon.DLHDon.TTChung.KHMSHDon = dataObject.form_no;
-    objInvoice_M.HDon.DLHDon.TTChung.KHHDon = dataObject.serial_no;
-    objInvoice_M.HDon.DLHDon.TTChung.SHDon = dataObject.invoice_no;
-    objInvoice_M.HDon.DLHDon.TTChung.NLap = dataObject.invoice_date;
-    objInvoice_M.HDon.DLHDon.TTChung.DVTTe = dataObject.currency;
-    objInvoice_M.HDon.DLHDon.TTChung.TGia = dataObject.ex_rate;
-    objInvoice_M.HDon.DLHDon.TTChung.HTTToan = dataObject.payment_method;
-    objInvoice_M.HDon.DLHDon.TTChung.MSTTCGP = "1201496252"; //webcashgenuwin.com taxcode
-
-    objInvoice_M.HDon.DLHDon.NDHDon.NBan.Ten = dataObject.seller_comp_name;
-    objInvoice_M.HDon.DLHDon.NDHDon.NBan.MST = dataObject.seller_taxcode;
-    objInvoice_M.HDon.DLHDon.NDHDon.NBan.DChi = dataObject.seller_address;
-    objInvoice_M.HDon.DLHDon.NDHDon.NBan.SDThoai = dataObject.seller_tel;
-
-    objInvoice_M.HDon.DLHDon.NDHDon.NMua.Ten = dataObject.buyer_comp_name;
-    objInvoice_M.HDon.DLHDon.NDHDon.NMua.MST = dataObject.buyer_taxcode;
-    objInvoice_M.HDon.DLHDon.NDHDon.NMua.DChi = dataObject.buyer_address;
-    objInvoice_M.HDon.DLHDon.NDHDon.NMua.CCCDan = dataObject.buyer_cccd;
-    objInvoice_M.HDon.DLHDon.NDHDon.NMua.SDThoai = dataObject.buyer_tel;
-
-    objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu = [];
-
-    objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu = {};
-    objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu = [];
-
-    for (let j = 0; j < dataObject.detail_invoice.length; j++) {
-      objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
-        TChat: dataObject.detail_invoice[j].nature,
-        STT: dataObject.detail_invoice[j].seq,
-        MHHDVu: dataObject.detail_invoice[j].item_code,
-        THHDVu: dataObject.detail_invoice[j].item_name,
-        DVTinh: dataObject.detail_invoice[j].uom,
-        SLuong: dataObject.detail_invoice[j].quantity,
-        DGia: dataObject.detail_invoice[j].uprice,
-        TLCKhau: dataObject.detail_invoice[j].dc_rate,
-        STCKhau: dataObject.detail_invoice[j].dc_amt,
-        ThTien: dataObject.detail_invoice[j].amt,
-        TSuat: dataObject.detail_invoice[j].vat_rate,
-      });
-    }
-
-    // objInvoice_M.HDon.DLHDon.NDHDon.TToan = {};
-
-    objInvoice_M.HDon.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat = [];
-
-    for (let k = 0; k < dataObject.list_amt_vat.length; k++) {
-      objInvoice_M.HDon.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat.push({
-        TSuat: dataObject.list_amt_vat[k].sub_vat_rate,
-        ThTien: dataObject.list_amt_vat[k].sub_amt,
-        TThue: dataObject.list_amt_vat[k].sub_amt_vat,
-      });
-    }
-
-    objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTCThue = dataObject.total_amt;
-    objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTThue = dataObject.total_vat_amt;
-
-    objInvoice_M.HDon.DLHDon.NDHDon.TToan.TTCKTMai = dataObject.total_dc_amt;
-    objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = dataObject.total_payment;
-    objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = dataObject.total_payment_word_vie;
-
-    objInvoice_M.HDon.DSCKS.NBan = "";
-
-    objInvoice_M.HDon.MCCQT = dataObject.mccqt;
-
-    const xml = this.OBJtoXML(objInvoice_M);
-
-    return xml;
-    //console.log("  xml   ", xml);
-  }
-
-  async getUrlXML(pk, proc) {
-    const current = new Date();
-    const year = current.getFullYear();
-    let month = current.getMonth() + 1;
-    let day = current.getDate();
-    if (day < 10) {
-      day = "0" + day;
-    }
-    if (month < 10) {
-      month = "0" + month;
-    }
-    let tokenEncrypted = AES.encrypt(proc + "|" + year + month + day, APP_KEY);
-    tokenEncrypted = tokenEncrypted.replace(/\+/g, "p1L2u3S").replace(/\//g, "s1L2a3S4h").replace(/=/g, "e1Q2u3A4l");
-    //let url_xml =  response.send(APP_URL_LOCAL+"/api/dso/getfiledbtoken?pk=" + pk + "&proc=" + proc + "&token=" + tokenEncrypted);
-    let url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + pk + "&proc=" + proc + "&token=");
-    return url_xml;
   }
 
   async weTaxCheckInvoiceStatusFromTaxOffice({ request, response, auth }) {
@@ -6796,230 +5666,6 @@ class EInvoiceController {
     }
   }
 
-  Num2VNText(s, ccy) {
-    // console.log("Num2VNText  ", s)
-    //process minus case
-    let minus = "";
-    if (s.trim().substr(0, 1) == "-") {
-      s = s.replace("-", "").trim();
-      minus = "Trừ ";
-    }
-
-    let rtnf = "";
-    let l = 0;
-    let i = 0;
-    let j = 0;
-    let dk = 0;
-    let A = [];
-    s = s.replace(",", "");
-    let s1 = "";
-    let strTmp = "";
-    if (s.includes(".")) {
-      s1 = s.substr(s.indexOf(".") + 1);
-      s = s.substr(0, s.indexOf("."));
-    }
-    let B = [];
-    s = s.trim();
-    l = s.length;
-    //l = s1.length();
-    if (l > 32) {
-      rtnf = "Number Very Large!";
-      return rtnf;
-    }
-    for (i = 0; i < l; i++) {
-      A[i] = s.substr(i, 1);
-    }
-    for (i = 0; i < l; i++) {
-      if ((l - i) % 3 == 0 && A[i] == "0" && (A[i + 1] != "0" || A[i + 2] != "0")) {
-        rtnf += " Không";
-      }
-      if (A[i] == "2") {
-        rtnf += " Hai";
-      } else if (A[i] == "3") {
-        rtnf += " Ba";
-      } else if (A[i] == "4") {
-        rtnf += " Bốn";
-      } else if (A[i] == "6") {
-        rtnf += " Sáu";
-      } else if (A[i] == "7") {
-        rtnf += " Bảy";
-      } else if (A[i] == "8") {
-        rtnf += " Tám";
-      } else if (A[i] == "9") {
-        rtnf += " Chín";
-      } else if (A[i] == "5") {
-        if (i > 0 && (l - i) % 3 == 1 && A[i - 1] != "0") {
-          rtnf += " Lăm";
-        } else {
-          if (i > 0 && (l - i) % 3 == 1 && A[i - 1] != "0") {
-            rtnf += " Lăm";
-          } else {
-            rtnf += " Năm";
-          }
-        }
-      }
-
-      if (i > 2 && A[i] == "1" && (l - i) % 3 == 1 && parseInt(A[i - 1]) > 1) {
-        rtnf += " Mốt";
-      } else if (A[i] == "1" && (l - i) % 3 != 2) {
-        if ((l - i) % 3 == 1) {
-          if (
-            (i > 2 && A[i - 2] == "0") ||
-            (i < 2 && A[0] == "1") ||
-            (i > 2 && A[i - 1] == "0") ||
-            (i > 2 && A[i - 1] == "0")
-          ) {
-            rtnf += " Một";
-          } else {
-            if (A[i - 1] == "1" || A[i - 1] == "0") {
-              rtnf += " Một";
-            } else {
-              rtnf += " Mốt";
-            }
-          }
-        } else {
-          rtnf += " Một";
-        }
-      }
-
-      if ((l - i) % 3 == 2 && A[i] != "0" && A[i] != "1") {
-        rtnf += " Mươi";
-      } else if ((l - i) % 3 == 2 && A[i] != "0") {
-        rtnf += " Mười";
-      }
-      if (i == 0) {
-        if ((l - i) % 3 == 2 && A[i] == "0" && A[i + 1] != "0") {
-          rtnf += " Không";
-        }
-      } else {
-        if ((l - i) % 3 == 2 && A[i] == "0" && A[i + 1] != "0") {
-          rtnf += " Lẻ";
-        }
-      }
-      if ((l - i) % 3 == 0 && A[i + 1] != "0") {
-        //  || A[i + 2] == "0"
-        rtnf += " Trăm";
-      } else if ((l - i) % 3 == 0 && A[i] != "0") {
-        rtnf += " Trăm";
-      }
-
-      if (l - i == 4) {
-        rtnf += " Nghìn";
-      }
-      if (l - i == 7) {
-        rtnf += " Triệu";
-      }
-      if (l - i == 10) {
-        rtnf += " Tỷ";
-      }
-      if (l - i == 13) {
-        rtnf += " Nghìn Tỷ";
-      }
-      if (l - i == 16) {
-        rtnf += " Triệu Tỷ";
-      }
-      if (l - i == 19) {
-        rtnf += " Tỷ Tỷ";
-      }
-      if (l - i == 22) {
-        rtnf += " Triệu Tỷ Tỷ";
-      }
-      if (l - i == 25) {
-        rtnf += " Triệu Tỷ Tỷ";
-      }
-      if (l - i == 28) {
-        rtnf += " Tỷ Tỷ Tỷ";
-      }
-      if ((l - i) % 3 == 0 && A[i] == "0" && A[i + 1] == "0" && A[i + 2] == "0") {
-        i = i + 2;
-      }
-      if ((l - i) % 3 == 1) {
-        dk = 1;
-        for (j = i; j < l; j++) {
-          if (A[j] != "0") {
-            dk = 0;
-          }
-        }
-      }
-      if (dk == 1) break;
-    }
-    if (ccy == "USD") {
-      rtnf += " Đô La Mỹ";
-      if (s1.length > 0) {
-        //Đọc số lẻ
-        l = s1.length;
-        if (l > 8) {
-          rtnf += " ERROR!!!";
-          return rtnf;
-        }
-        for (i = 0; i < l; i++) {
-          B[i] = s1.substr(i, 1);
-        }
-        strTmp = "";
-        //Dịch Tạm
-        for (i = 0; i < 2; i++) {
-          if (i > 0 && B[0] != "0" && B[0] != "1") {
-            strTmp += " Mươi";
-          }
-
-          if (B[i] == "1") {
-            if (i == 0) {
-              strTmp += " Mười";
-            } else {
-              if (B[0] == "1") {
-                strTmp += " Một";
-              } else {
-                strTmp += " Mốt";
-              }
-            }
-          }
-
-          switch (parseInt(B[i])) {
-            case 2:
-              strTmp += " Hai";
-              break;
-            case 3:
-              strTmp += " Ba";
-              break;
-            case 4:
-              strTmp += " Bốn";
-              break;
-            case 5:
-              if (i % 2 == 1 && parseInt(B[0]) > 0) {
-                strTmp += " Lăm";
-              } else {
-                strTmp += " Năm";
-              }
-              break;
-            case 6:
-              strTmp += " Sáu";
-              break;
-            case 7:
-              strTmp += " Bảy";
-              break;
-            case 8:
-              strTmp += " Tám";
-              break;
-            case 9:
-              strTmp += " Chín";
-              break;
-          }
-        }
-      }
-      if (strTmp != "") {
-        rtnf = rtnf + " Và" + strTmp + " Xu";
-      }
-    }
-
-    if (ccy == "VND") {
-      rtnf += " Đồng.";
-    }
-
-    rtnf = minus + rtnf; //process minus case
-
-    return rtnf;
-  }
-
   async weTaxSendInvoiceToTaxOffice({ request, response, auth }) {
     try {
       var p_language = request.header("accept-language", "ENG");
@@ -7450,213 +6096,6 @@ class EInvoiceController {
   // end weTAX
 
   // e -invoice
-  async generalXmlPosInvoiceIn(p_tei_einvoice_m_pk, p_user_id,p_language, p_crt_by ) {
-    try {
-   
-      let rtnXML = [];
-      let objInvoice = {
-        HDon: {
-          DLHDon: {
-            TTChung: {
-              PBan: "",
-              THDon: "",
-              KHMSHDon: "",
-              KHHDon: "",
-              SHDon: "",
-              MHSo: "",
-              NLap: "",
-              NBKe: "",
-              DVTTe: "",
-              TGia: "",
-              HTTToan: "",
-            },
-            NDHDon: {
-              NBan: {
-                Ten: "",
-                MST: "",
-                DChi: "",
-                SDThoai: "",
-                NNBSTKNHang: "",
-              },
-              NMua: {
-                Ten: "",
-                MST: "",
-                DChi: "",
-                SDThoai: "",
-                HVTNMHang: "",
-                CCCDan: "",
-              },
-              DSHHDVu: {},
-              TToan: {
-                THTTLTSuat: {
-                  LTSuat: {
-                    TSuat: "",
-                    ThTien: "",
-                    TThue: "",
-                  },
-                },
-                TgTCTHue: "",
-                TgTThue: "",
-                DSLPhi: {
-                  LPhi: {},
-                },
-                TTCKTMai: "",
-                TgTTTBSo: "",
-                TgTTTBChu: "",
-              },
-            },
-          },
-          DSCKS: {},
-        }
-      };
-     
-
-        const para_value = {
-          p_tei_einvoice_m_pk: p_tei_einvoice_m_pk,
-          p_user_id: p_user_id,
-        };
-        // console.log("para_value  ", para_value);
-
-        const rtnValueMaster = await DBService.ExecuteSQLBlob(
-          `BEGIN ei_sel_einvoice_xml_m (  :p_tei_einvoice_m_pk,
-                                                    :p_user_id,
-                                                    :p_language, 
-                                                    :p_crt_by, 
-                                                    :p_rtn_cur); END;`,
-          para_value,
-          p_language,
-          p_crt_by
-        );
-
-        // console.log("rtnValueMaster  ", rtnValueMaster);
-
-        const rtnValueDetail = await DBService.ExecuteSQLBlob(
-          `BEGIN ei_sel_einvoice_xml_d (  :p_tei_einvoice_m_pk,
-                                                    :p_user_id,
-                                                    :p_language, 
-                                                    :p_crt_by, 
-                                                    :p_rtn_cur); END;`,
-          para_value,
-          p_language,
-          p_crt_by
-        );
-
-         //console.log("rtnValueDetail  ", rtnValueDetail);
-
-        const rtnValueVAT = await DBService.ExecuteSQLBlob(
-          `BEGIN ei_sel_einvoice_xml_vat (  :p_tei_einvoice_m_pk,
-                                                    :p_user_id,
-                                                    :p_language, 
-                                                    :p_crt_by, 
-                                                    :p_rtn_cur); END;`,
-          para_value,
-          p_language,
-          p_crt_by
-        );
-
-        //console.log("rtnValueVAT  ", rtnValueVAT);
-
-        const invoiceM = rtnValueMaster.p_rtn_cur[0];
-        const invoiceD = rtnValueDetail.p_rtn_cur;
-        const invoiceVAT = rtnValueVAT.p_rtn_cur;
-
-        if (invoiceM.FORM_NO == 1) {
-          objInvoice.HDon.DLHDon.TTChung.THDon = "Hóa đơn giá trị gia tăng khởi tạo từ máy tính tiền";
-        } else if (invoiceM.FORM_NO == 2) {
-          objInvoice.HDon.DLHDon.TTChung.THDon = "Hóa đơn bán hàng khởi tạo từ máy tính tiền";
-        } else if (invoiceM.FORM_NO == 3) {
-          objInvoice.HDon.DLHDon.TTChung.THDon = "Hóa đơn bán tài sản công khởi tạo từ máy tính tiền";
-        } else if (invoiceM.FORM_NO == 4) {
-          objInvoice.HDon.DLHDon.TTChung.THDon = "Hóa đơn bán hàng dự trữ quốc gia khởi tạo từ máy tính tiền";
-        } else if (invoiceM.FORM_NO == 5) {
-          objInvoice.HDon.DLHDon.TTChung.THDon =
-            "Tem điện tử, vé điện tử, thẻ điện tử, phiếu thu điện tử, chứng từ thu phí DV ngân hàng khởi tạo từ máy tính tiền";
-        } else if (invoiceM.FORM_NO == 6) {
-          objInvoice.DLHDon.TTChung.THDon =
-            "Phiếu xuất kho kiêm vận chuyển nội bộ, phiếu xuất kho hàng gửi bán đại lý khởi tạo từ máy tính tiền";
-        }
-        objInvoice.HDon.DLHDon.TTChung.PBan = invoiceM.VERSION;
-        objInvoice.HDon.DLHDon.TTChung.KHMSHDon = invoiceM.FORM_NO;
-        objInvoice.HDon.DLHDon.TTChung.KHHDon = invoiceM.SERIAL_NO;
-        objInvoice.HDon.DLHDon.TTChung.SHDon = invoiceM.INVOICE_NO;
-        objInvoice.HDon.DLHDon.TTChung.NLap = invoiceM.INVOICE_DATE;
-        objInvoice.HDon.DLHDon.TTChung.DVTTe = invoiceM.CURRENCY;
-        objInvoice.HDon.DLHDon.TTChung.TGia = invoiceM.EX_RATE;
-        objInvoice.HDon.DLHDon.TTChung.HTTToan = invoiceM.PAYMENT_METHOD;
-        objInvoice.HDon.DLHDon.TTChung.MSTTCGP = "1201496252"; //webcashgenuwin.com taxcode
-
-        objInvoice.HDon.DLHDon.NDHDon.NBan.Ten = invoiceM.SELLER_NAME;
-        objInvoice.HDon.DLHDon.NDHDon.NBan.MST = invoiceM.SELLER_TAXCODE;
-        objInvoice.HDon.DLHDon.NDHDon.NBan.DChi = invoiceM.SELLER_ADDRESS;
-        objInvoice.HDon.DLHDon.NDHDon.NBan.SDThoai = invoiceM.SELLER_TEL;
-
-        objInvoice.HDon.DLHDon.NDHDon.NMua.Ten = invoiceM.BUYER_COMP_NAME;
-        objInvoice.HDon.DLHDon.NDHDon.NMua.MST = invoiceM.BUYER_TAXCODE;
-        objInvoice.HDon.DLHDon.NDHDon.NMua.DChi = invoiceM.BUYER_ADDRESS;
-        objInvoice.HDon.DLHDon.NDHDon.NMua.CCCDan = invoiceM.BUYER_CCCD;
-        objInvoice.HDon.DLHDon.NDHDon.NMua.SDThoai = invoiceM.BUYER_TEL;
-
-        objInvoice.HDon.DLHDon.NDHDon.DSHHDVu = [];
-
-        objInvoice.HDon.DLHDon.NDHDon.DSHHDVu = {};
-        objInvoice.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu = [];
-
-        for (let j = 0; j < invoiceD.length; j++) {
-          objInvoice.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
-            TChat: invoiceD[j].TCHAT,
-            STT: invoiceD[j].SEQ_DIS,
-            MHHDVu: invoiceD[j].ITEM_CODE,
-            THHDVu: invoiceD[j].ITEM_NAME,
-            DVTinh: invoiceD[j].ITEM_UOM,
-            SLuong: invoiceD[j].QTY,
-            DGia: invoiceD[j].U_PRICE,
-            TLCKhau: "", //invoiceD[j].dc_rate,
-            STCKhau: "", //invoiceD[j].dc_amt,
-            ThTien: invoiceD[j].NET_TR_AMT,
-            TSuat: invoiceD[j].VAT_RATE,
-          });
-        }
-
-        objInvoice.HDon.DLHDon.NDHDon.TToan = {};
-        objInvoice.HDon.DLHDon.NDHDon.TToan.THTTLTSuat = {};
-        objInvoice.HDon.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat = [];
-
-        for (let j = 0; j < invoiceVAT.length; j++) {
-          objInvoice.HDon.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat.push({
-            TSuat: invoiceVAT[j].SUB_VAT_RATE,
-            ThTien: invoiceVAT[j].SUB_AMT,
-            TThue: invoiceVAT[j].SUB_AMT_VAT,
-          });
-        }
-
-        objInvoice.HDon.DLHDon.NDHDon.TToan.TgTCThue = invoiceM.TOTAL_AMT;
-        objInvoice.HDon.DLHDon.NDHDon.TToan.TgTThue = invoiceM.TOTAL_VAT_AMT;
-
-        objInvoice.HDon.DLHDon.NDHDon.TToan.TTCKTMai = invoiceM.TOTAL_DC_AMT;
-        objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = invoiceM.TOTAL_PAYMENT;
-        objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await this.Num2VNText(
-          invoiceM.TOTAL_PAYMENT.toString(),
-          invoiceM.CURRENCY
-        );
-
-        objInvoice.HDon.DSCKS.NBan = "";
-
-        objInvoice.HDon.MCCQT = invoiceM.MCCQT;
-
-      
-
-      const id = uuid.v4();
-      const xml = this.OBJtoXML(objInvoice);
-      //const xmlId = xml.toString().replace("<DLieu>", `<DLieu Id=\'${id}\'>`);
-      const xmlId = xml.toString().replace("<DLieu>", `<DLieu Id='ID1'>`);
-      const xmlRemoveLine = xmlId.toString().replace(/\n/g, "");
-     
-      return xmlRemoveLine;
-    } catch (e) {
-  
-      console.log(e);
-    }
-  }
  
   async generalXmlPosInvoiceView({ request, response, auth }) {
     try {
@@ -9342,6 +7781,1593 @@ class EInvoiceController {
       return response.send(Utils.response(false, "error", e.message));
     }
   }
+
+
+  // pivate function 
+  convertKeysToLowerCase(obj) {
+    //console.log("obj ", obj);
+    let newObjM = [];
+    let newObj = {};
+    for(const keyM in obj )
+    {
+      for (const key in obj[keyM]) {
+        if (Object.hasOwnProperty.call(obj[keyM], key)) {
+          //console.log("key", key);
+          newObj[key.toLowerCase()] = obj[keyM][key];
+        }
+        newObjM.push(newObj);
+      }
+      
+    }
+
+    //console.log("newObjM",    newObjM);
+    //console.log("newObj", newObj);
+    return newObjM;
+  }
+
+  Num2VNText(s, ccy) {
+    // console.log("Num2VNText  ", s)
+    //process minus case
+    let minus = "";
+    if (s.trim().substr(0, 1) == "-") {
+      s = s.replace("-", "").trim();
+      minus = "Trừ ";
+    }
+
+    let rtnf = "";
+    let l = 0;
+    let i = 0;
+    let j = 0;
+    let dk = 0;
+    let A = [];
+    s = s.replace(",", "");
+    let s1 = "";
+    let strTmp = "";
+    if (s.includes(".")) {
+      s1 = s.substr(s.indexOf(".") + 1);
+      s = s.substr(0, s.indexOf("."));
+    }
+    let B = [];
+    s = s.trim();
+    l = s.length;
+    //l = s1.length();
+    if (l > 32) {
+      rtnf = "Number Very Large!";
+      return rtnf;
+    }
+    for (i = 0; i < l; i++) {
+      A[i] = s.substr(i, 1);
+    }
+    for (i = 0; i < l; i++) {
+      if ((l - i) % 3 == 0 && A[i] == "0" && (A[i + 1] != "0" || A[i + 2] != "0")) {
+        rtnf += " Không";
+      }
+      if (A[i] == "2") {
+        rtnf += " Hai";
+      } else if (A[i] == "3") {
+        rtnf += " Ba";
+      } else if (A[i] == "4") {
+        rtnf += " Bốn";
+      } else if (A[i] == "6") {
+        rtnf += " Sáu";
+      } else if (A[i] == "7") {
+        rtnf += " Bảy";
+      } else if (A[i] == "8") {
+        rtnf += " Tám";
+      } else if (A[i] == "9") {
+        rtnf += " Chín";
+      } else if (A[i] == "5") {
+        if (i > 0 && (l - i) % 3 == 1 && A[i - 1] != "0") {
+          rtnf += " Lăm";
+        } else {
+          if (i > 0 && (l - i) % 3 == 1 && A[i - 1] != "0") {
+            rtnf += " Lăm";
+          } else {
+            rtnf += " Năm";
+          }
+        }
+      }
+
+      if (i > 2 && A[i] == "1" && (l - i) % 3 == 1 && parseInt(A[i - 1]) > 1) {
+        rtnf += " Mốt";
+      } else if (A[i] == "1" && (l - i) % 3 != 2) {
+        if ((l - i) % 3 == 1) {
+          if (
+            (i > 2 && A[i - 2] == "0") ||
+            (i < 2 && A[0] == "1") ||
+            (i > 2 && A[i - 1] == "0") ||
+            (i > 2 && A[i - 1] == "0")
+          ) {
+            rtnf += " Một";
+          } else {
+            if (A[i - 1] == "1" || A[i - 1] == "0") {
+              rtnf += " Một";
+            } else {
+              rtnf += " Mốt";
+            }
+          }
+        } else {
+          rtnf += " Một";
+        }
+      }
+
+      if ((l - i) % 3 == 2 && A[i] != "0" && A[i] != "1") {
+        rtnf += " Mươi";
+      } else if ((l - i) % 3 == 2 && A[i] != "0") {
+        rtnf += " Mười";
+      }
+      if (i == 0) {
+        if ((l - i) % 3 == 2 && A[i] == "0" && A[i + 1] != "0") {
+          rtnf += " Không";
+        }
+      } else {
+        if ((l - i) % 3 == 2 && A[i] == "0" && A[i + 1] != "0") {
+          rtnf += " Lẻ";
+        }
+      }
+      if ((l - i) % 3 == 0 && A[i + 1] != "0") {
+        //  || A[i + 2] == "0"
+        rtnf += " Trăm";
+      } else if ((l - i) % 3 == 0 && A[i] != "0") {
+        rtnf += " Trăm";
+      }
+
+      if (l - i == 4) {
+        rtnf += " Nghìn";
+      }
+      if (l - i == 7) {
+        rtnf += " Triệu";
+      }
+      if (l - i == 10) {
+        rtnf += " Tỷ";
+      }
+      if (l - i == 13) {
+        rtnf += " Nghìn Tỷ";
+      }
+      if (l - i == 16) {
+        rtnf += " Triệu Tỷ";
+      }
+      if (l - i == 19) {
+        rtnf += " Tỷ Tỷ";
+      }
+      if (l - i == 22) {
+        rtnf += " Triệu Tỷ Tỷ";
+      }
+      if (l - i == 25) {
+        rtnf += " Triệu Tỷ Tỷ";
+      }
+      if (l - i == 28) {
+        rtnf += " Tỷ Tỷ Tỷ";
+      }
+      if ((l - i) % 3 == 0 && A[i] == "0" && A[i + 1] == "0" && A[i + 2] == "0") {
+        i = i + 2;
+      }
+      if ((l - i) % 3 == 1) {
+        dk = 1;
+        for (j = i; j < l; j++) {
+          if (A[j] != "0") {
+            dk = 0;
+          }
+        }
+      }
+      if (dk == 1) break;
+    }
+    if (ccy == "USD") {
+      rtnf += " Đô La Mỹ";
+      if (s1.length > 0) {
+        //Đọc số lẻ
+        l = s1.length;
+        if (l > 8) {
+          rtnf += " ERROR!!!";
+          return rtnf;
+        }
+        for (i = 0; i < l; i++) {
+          B[i] = s1.substr(i, 1);
+        }
+        strTmp = "";
+        //Dịch Tạm
+        for (i = 0; i < 2; i++) {
+          if (i > 0 && B[0] != "0" && B[0] != "1") {
+            strTmp += " Mươi";
+          }
+
+          if (B[i] == "1") {
+            if (i == 0) {
+              strTmp += " Mười";
+            } else {
+              if (B[0] == "1") {
+                strTmp += " Một";
+              } else {
+                strTmp += " Mốt";
+              }
+            }
+          }
+
+          switch (parseInt(B[i])) {
+            case 2:
+              strTmp += " Hai";
+              break;
+            case 3:
+              strTmp += " Ba";
+              break;
+            case 4:
+              strTmp += " Bốn";
+              break;
+            case 5:
+              if (i % 2 == 1 && parseInt(B[0]) > 0) {
+                strTmp += " Lăm";
+              } else {
+                strTmp += " Năm";
+              }
+              break;
+            case 6:
+              strTmp += " Sáu";
+              break;
+            case 7:
+              strTmp += " Bảy";
+              break;
+            case 8:
+              strTmp += " Tám";
+              break;
+            case 9:
+              strTmp += " Chín";
+              break;
+          }
+        }
+      }
+      if (strTmp != "") {
+        rtnf = rtnf + " Và" + strTmp + " Xu";
+      }
+    }
+
+    if (ccy == "VND") {
+      rtnf += " Đồng.";
+    }
+
+    rtnf = minus + rtnf; //process minus case
+
+    return rtnf;
+  }
+
+  async createXMLByOne(dataObject) {
+    let objInvoice_M = {
+      HDon: {
+        DLHDon: {
+          TTChung: {
+            PBan: "",
+            THDon: "",
+            KHMSHDon: "",
+            KHHDon: "",
+            SHDon: "",
+            MHSo: "",
+            NLap: "",
+            NBKe: "",
+            DVTTe: "",
+            TGia: "",
+            HTTToan: "",
+          },
+          NDHDon: {
+            NBan: {
+              Ten: "",
+              MST: "",
+              DChi: "",
+              SDThoai: "",
+              NNBSTKNHang: "",
+            },
+            NMua: {
+              Ten: "",
+              MST: "",
+              DChi: "",
+              SDThoai: "",
+              HVTNMHang: "",
+              CCCDan: "",
+            },
+            DSHHDVu: {},
+            TToan: {
+              THTTLTSuat: {
+                // LTSuat: [
+                //     {
+                //         TSuat: "",
+                //         ThTien: "",
+                //         TThue: "",
+                //     }
+                // ],
+              },
+              TgTCTHue: "",
+              TgTThue: "",
+              DSLPhi: {
+                LPhi: {},
+              },
+              TTCKTMai: "",
+              TgTTTBSo: "",
+              TgTTTBChu: "",
+            },
+          },
+        },
+        DSCKS: {},
+      },
+    };
+
+    if (dataObject.form_no == 1) {
+      objInvoice_M.HDon.DLHDon.TTChung.THDon = "Hóa đơn giá trị gia tăng khởi tạo từ máy tính tiền";
+    } else if (dataObject.form_no == 2) {
+      objInvoice_M.HDon.DLHDon.TTChung.THDon = "Hóa đơn bán hàng khởi tạo từ máy tính tiền";
+    } else if (dataObject.form_no == 3) {
+      objInvoice_M.HDon.DLHDon.TTChung.THDon = "Hóa đơn bán tài sản công khởi tạo từ máy tính tiền";
+    } else if (dataObject.form_no == 4) {
+      objInvoice_M.HDon.DLHDon.TTChung.THDon = "Hóa đơn bán hàng dự trữ quốc gia khởi tạo từ máy tính tiền";
+    } else if (dataObject.form_no == 5) {
+      objInvoice_M.HDon.DLHDon.TTChung.THDon =
+        "Tem điện tử, vé điện tử, thẻ điện tử, phiếu thu điện tử, chứng từ thu phí DV ngân hàng khởi tạo từ máy tính tiền";
+    } else if (dataObject.form_no == 6) {
+      objInvoice_M.HDon.DLHDon.TTChung.THDon =
+        "Phiếu xuất kho kiêm vận chuyển nội bộ, phiếu xuất kho hàng gửi bán đại lý khởi tạo từ máy tính tiền";
+    }
+    objInvoice_M.HDon.DLHDon.TTChung.PBan = dataObject.version;
+    objInvoice_M.HDon.DLHDon.TTChung.KHMSHDon = dataObject.form_no;
+    objInvoice_M.HDon.DLHDon.TTChung.KHHDon = dataObject.serial_no;
+    objInvoice_M.HDon.DLHDon.TTChung.SHDon = dataObject.invoice_no;
+    objInvoice_M.HDon.DLHDon.TTChung.NLap = dataObject.invoice_date;
+    objInvoice_M.HDon.DLHDon.TTChung.DVTTe = dataObject.currency;
+    objInvoice_M.HDon.DLHDon.TTChung.TGia = dataObject.ex_rate;
+    objInvoice_M.HDon.DLHDon.TTChung.HTTToan = dataObject.payment_method;
+    objInvoice_M.HDon.DLHDon.TTChung.MSTTCGP = "1201496252"; //webcashgenuwin.com taxcode
+
+    objInvoice_M.HDon.DLHDon.NDHDon.NBan.Ten = dataObject.seller_comp_name;
+    objInvoice_M.HDon.DLHDon.NDHDon.NBan.MST = dataObject.seller_taxcode;
+    objInvoice_M.HDon.DLHDon.NDHDon.NBan.DChi = dataObject.seller_address;
+    objInvoice_M.HDon.DLHDon.NDHDon.NBan.SDThoai = dataObject.seller_tel;
+
+    objInvoice_M.HDon.DLHDon.NDHDon.NMua.Ten = dataObject.buyer_comp_name;
+    objInvoice_M.HDon.DLHDon.NDHDon.NMua.MST = dataObject.buyer_taxcode;
+    objInvoice_M.HDon.DLHDon.NDHDon.NMua.DChi = dataObject.buyer_address;
+    objInvoice_M.HDon.DLHDon.NDHDon.NMua.CCCDan = dataObject.buyer_cccd;
+    objInvoice_M.HDon.DLHDon.NDHDon.NMua.SDThoai = dataObject.buyer_tel;
+
+    objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu = [];
+
+    objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu = {};
+    objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu = [];
+
+    for (let j = 0; j < dataObject.detail_invoice.length; j++) {
+      objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
+        TChat: dataObject.detail_invoice[j].nature,
+        STT: dataObject.detail_invoice[j].seq,
+        MHHDVu: dataObject.detail_invoice[j].item_code,
+        THHDVu: dataObject.detail_invoice[j].item_name,
+        DVTinh: dataObject.detail_invoice[j].uom,
+        SLuong: dataObject.detail_invoice[j].quantity,
+        DGia: dataObject.detail_invoice[j].uprice,
+        TLCKhau: dataObject.detail_invoice[j].dc_rate,
+        STCKhau: dataObject.detail_invoice[j].dc_amt,
+        ThTien: dataObject.detail_invoice[j].amt,
+        TSuat: dataObject.detail_invoice[j].vat_rate,
+      });
+    }
+
+    // objInvoice_M.HDon.DLHDon.NDHDon.TToan = {};
+
+    objInvoice_M.HDon.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat = [];
+
+    for (let k = 0; k < dataObject.list_amt_vat.length; k++) {
+      objInvoice_M.HDon.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat.push({
+        TSuat: dataObject.list_amt_vat[k].sub_vat_rate,
+        ThTien: dataObject.list_amt_vat[k].sub_amt,
+        TThue: dataObject.list_amt_vat[k].sub_amt_vat,
+      });
+    }
+
+    objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTCThue = dataObject.total_amt;
+    objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTThue = dataObject.total_vat_amt;
+
+    objInvoice_M.HDon.DLHDon.NDHDon.TToan.TTCKTMai = dataObject.total_dc_amt;
+    objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = dataObject.total_payment;
+    objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = dataObject.total_payment_word_vie;
+
+    objInvoice_M.HDon.DSCKS.NBan = "";
+
+    objInvoice_M.HDon.MCCQT = dataObject.mccqt;
+
+    const xml = this.OBJtoXML(objInvoice_M);
+
+    return xml;
+    //console.log("  xml   ", xml);
+  }
+
+  async getUrlXML(pk, proc) {
+    const current = new Date();
+    const year = current.getFullYear();
+    let month = current.getMonth() + 1;
+    let day = current.getDate();
+    if (day < 10) {
+      day = "0" + day;
+    }
+    if (month < 10) {
+      month = "0" + month;
+    }
+    let tokenEncrypted = AES.encrypt(proc + "|" + year + month + day, APP_KEY);
+    tokenEncrypted = tokenEncrypted.replace(/\+/g, "p1L2u3S").replace(/\//g, "s1L2a3S4h").replace(/=/g, "e1Q2u3A4l");
+    //let url_xml =  response.send(APP_URL_LOCAL+"/api/dso/getfiledbtoken?pk=" + pk + "&proc=" + proc + "&token=" + tokenEncrypted);
+    let url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + pk + "&proc=" + proc + "&token=");
+    return url_xml;
+  }
+
+  IsNullOrEmpty(str) {
+    return str === null || str === undefined || str.trim() === "";
+  }
+
+  async GetToken() {
+    try {
+      const tokenResponse = await Request.post(`${URL}/authenticate`, {
+        username: Username,
+        password: Password,
+        rememberMe: false,
+      });
+      // console.log("res.data", tokenResponse);
+      return tokenResponse.data.id_token;
+    } catch (err) {
+      console.log("err", err);
+      return null;
+    }
+  }
+
+  async GetCertificateRawData(token) {
+    let para = {
+      serial: Serial,
+      pin: Pin,
+    };
+    const agent = {
+      Agent: {
+        defaultPort: 443,
+        protocol: "https:",
+        options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
+      },
+    };
+    try {
+      const config = {
+        headers: { Authorization: `Bearer ${token}` },
+        params: para,
+      };
+
+      const certDataRes = await Request.get(`${URL}/certificate/get`, config);
+
+      return certDataRes.data.data;
+    } catch (err) {
+      console.log("err", err);
+      return null;
+    }
+  }
+
+  async tempSignature(
+    base64Digest, //byte[]
+    base64SignatureValue, //byte[]
+    CustomerCert, //X509Certificate2
+    SignedTagId, //string
+    SigningTagId, //string
+    useNamespacePrefix, //bool
+    isTagName //bool
+  ) {
+    if (this.IsNullOrEmpty(SigningTagId)) {
+      SigningTagId = "serSig";
+    }
+    if (this.IsNullOrEmpty(SignedTagId)) {
+      throw new Exception("Signed Tag Id is required");
+    }
+    //string str1 = "serSig";
+    let signingTagId = SigningTagId;
+    let refSigningTagId = ""; //`#${SignedTagId}`;
+    let signatureValue = base64SignatureValue == null ? "" : base64SignatureValue.toString();
+    let signatureMethod__Algorithm = "";
+    let canonicalizationMethod_Algorithm = "";
+    if (useNamespacePrefix) {
+      canonicalizationMethod_Algorithm = "http://www.w3.org/2001/10/xml-exc-c14n#";
+    } else {
+      canonicalizationMethod_Algorithm = "http://www.w3.org/TR/2001/REC-xml-c14n-20010315";
+    }
+
+    let signatureMethod_Algorithm = "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
+
+    if (isTagName) {
+      refSigningTagId = ""; //`#${SignedTagId}`;
+    } else {
+      refSigningTagId = `#${SignedTagId}`;
+    }
+
+    let transform_Algorithm = "http://www.w3.org/2000/09/xmldsig#enveloped-signature";
+
+    // loai 2 transform
+    if (useNamespacePrefix) {
+    }
+
+    let digestMethod_Algorithm = "http://www.w3.org/2000/09/xmldsig#sha1"; // "http://www.w3.org/2001/04/xmlenc#sha256";
+
+    const signedInfoXml = create({ version: "1.0" })
+      .ele("Signature", { Id: signingTagId, xmlns: "http://www.w3.org/2000/09/xmldsig#" })
+      .ele("SignedInfo")
+      .ele("CanonicalizationMethod", { Algorithm: canonicalizationMethod_Algorithm })
+      .up()
+      .ele("SignatureMethod", { Algorithm: signatureMethod_Algorithm })
+      .up()
+      .ele("Reference", { URI: refSigningTagId })
+      .ele("Transforms")
+      .ele("Transform", { Algorithm: transform_Algorithm })
+      .up()
+      .up()
+      .ele("DigestMethod", { Algorithm: digestMethod_Algorithm })
+      .ele("DigestValue")
+      .txt(base64Digest.toString())
+
+      .end({ prettyPrint: true });
+    console.log(signedInfoXml);
+  }
+
+  async HashForRemote(
+    xd, //XmlDocument
+    SignedTagId, //string
+    SigningTagId, //string
+    namespacePrefix, //string
+    CustomerCert, //X509Certificate2
+    path, //string
+    isSignTagName //bool
+  ) {
+    try {
+      //XmlNode signature = null;
+      // if (isSignTagName)
+      // {
+      //     signature = DsigSignature.tempSignature(DsigSignature.getDigestForRemoteByTagName(xd, SignedTagId, namespacePrefix), (byte[])null, CustomerCert, SignedTagId, SigningTagId, !string.IsNullOrEmpty(namespacePrefix), true);
+      // }
+      // else
+      // {
+      //     signature = DsigSignature.tempSignature(DsigSignature.getDigestForRemoteByID(xd, SignedTagId, namespacePrefix), (byte[])null, CustomerCert, SignedTagId, SigningTagId, !string.IsNullOrEmpty(namespacePrefix), false);
+      // }
+      // return DsigSignature.PerformHash(xd, signature, path);
+    } catch (ex) {
+      console.log("error ", ex);
+    }
+  }
+
+  async createHashxml(
+    xmlRaw,
+    SignedTagId,
+    SigningTagId,
+    namespacePrefix,
+    certificate2,
+    xmlWithHashInfo,
+    path,
+    isSignTagName
+  ) {
+    const builder = new Builder();
+    const xmlDocument = builder.buildObject(xmlRaw);
+  }
+
+  convertHtmlCode(sText) {
+    if (sText != null || sText == "") {
+      return this.replaceAllExt(this.replaceAllExt(sText, "&", "&#38;"), '"', "&#34;");
+    } else {
+      return "";
+    }
+  }
+
+  replaceAllExt(strOgr, search, replacement) {
+    var target = strOgr.toString();
+    return target.replace(new RegExp(search, "g"), replacement);
+  }
+  
+  validateJsonInvalidInvoiceToXML(invalid_invoices) {
+    let status = true;
+    let resMess = "";
+    const mess1 = "Invalid field";
+    const errorList = {
+      version: 6,
+      declare_name: 100,
+      declare_type: 1,
+      form_no: 15,
+      tax_office_code: 5,
+      tax_office_name: 100,
+      seller_taxcode: 14,
+      seller_company_name: 400,
+      location_name: 50,
+      inform_date: 10,
+      invoices: [
+        {
+          tax_confirmation_code: 34,
+          form_no: 1,
+          serial_no: 8,
+          invoice_no: 8,
+          invoice_date: 10,
+          invoice_type: 1,
+          inform_type: 1,
+          reason: 255,
+        },
+      ],
+    };
+
+    for (const key in errorList) {
+      // valid null of not null values
+      if (invalid_invoices[key] === undefined || invalid_invoices[key] == null) {
+        status = false;
+        resMess = `${mess1} ${key}.`;
+        return {
+          status,
+          message: resMess,
+        };
+      }
+
+      // valid length
+      if (String(invalid_invoices[key]).length > errorList[key] && key != "invoices") {
+        return {
+          status: false,
+          message: `Length of ${key} too long.`,
+        };
+      }
+    }
+
+    // valid invoices
+    if (!invalid_invoices.invoices[0]) {
+      return {
+        status: false,
+        message: `${mess1} invoices.`,
+      };
+    }
+
+    for (let i = 0; i < invalid_invoices.invoices.length; i++) {
+      for (const key in errorList.invoices[0]) {
+        // valid digital_certificates
+        if (invalid_invoices.invoices[i][key] === undefined || invalid_invoices.invoices[i][key] == null) {
+          status = false;
+          resMess = `${mess1} invoices ${key}.`;
+          return {
+            status,
+            message: resMess,
+          };
+        }
+        // vald length
+        if (String(invalid_invoices.invoices[i][key]).length > errorList.invoices[0][key]) {
+          return {
+            status: false,
+            message: `Length of invoices.${key} too long.`,
+          };
+        }
+      }
+    }
+    const valueDT = ["1", "2"];
+    if (!valueDT.includes(String(invalid_invoices.declare_type))) {
+      return {
+        status: false,
+        message: `invalid_invoices must be 1 or 2. Receive: declare_type = ${invalid_invoices.declare_type}`,
+      };
+    }
+
+    // if dont have any problem
+    return {
+      status,
+      message: resMess,
+    };
+  }
+
+  parseXmlToJson(xml) {
+    const json = {};
+    for (const res of xml.matchAll(/(?:<(\w*)(?:\s[^>]*)*>)((?:(?!<\1).)*)(?:<\/\1>)|<(\w*)(?:\s*)*\/>/gm)) {
+      const key = res[1] || res[3];
+      const value = res[2] && this.parseXmlToJson(res[2]);
+      json[key] = (value && Object.keys(value).length ? value : res[2]) || null;
+    }
+    return json;
+  }
+
+  validateDeclareJson(declare) {
+    let status = true;
+    let resMess = "";
+    const mess1 = "Invalid field";
+    const mess2 = "Data invalid";
+    const errorList = {
+      version: 6,
+      declare_name: 100,
+      declare_type: 1,
+      declare_form_no: 15,
+      seller_company_name: 400,
+      seller_taxcode: 14,
+      tax_office_name: 100,
+      tax_office_code: 5,
+      contact_person: 50,
+      contact_address: 400,
+      contact_email: 50,
+      contact_phone: 20,
+      location_name: 50,
+      created_date: 10,
+      has_code: 1,
+      no_code: 1,
+      pos_code: 1,
+      taxpayer_from_difficult_location: 1,
+      taxpayer_from_people_committee_suggestions: 1,
+      transfer_data_directly_to_tax_office: 1,
+      cdlqtvan: 1,
+      full_transfer: 1,
+      summary_transfer: 1,
+      vat_invoice: 1,
+      sales_invoice: 1,
+      sales_invoice_passet: 1,
+      sales_invoice_national: 1,
+      other_invoice: 1,
+      voucher: 1,
+      digital_certificates: [
+        {
+          sequence: 1,
+          organization_name: "SmartSign",
+          serial_no: "540101072FBF82CD8A4D89AEADEBCF88",
+          from_date: "2023-04-27T08:47:43",
+          to_date: "2024-07-27T08:47:42",
+          type: "1",
+        },
+      ],
+    };
+
+    for (const key in errorList) {
+      // valid null of not null values
+      if (declare[key] === undefined || declare[key] == null) {
+        status = false;
+        resMess = `${mess1} ${key}.`;
+        return {
+          status,
+          message: resMess,
+        };
+      }
+
+      // valid length
+      if (String(declare[key]).length > errorList[key] && key != "digital_certificates") {
+        return {
+          status: false,
+          message: `Length of ${key} too long.`,
+        };
+      }
+
+      // valid data must be in valueReq
+      const valueReq = ["0", "1"];
+      if (
+        key == "has_code" ||
+        key == "no_code" ||
+        key == "pos_code" ||
+        key == "taxpayer_from_difficult_location" ||
+        key == "taxpayer_from_people_committee_suggestions" ||
+        key == "transfer_data_directly_to_tax_office" ||
+        key == "cdlqtvan" ||
+        key == "full_transfer" ||
+        key == "summary_transfer" ||
+        key == "vat_invoice" ||
+        key == "sales_invoice" ||
+        key == "sales_invoice_passet" ||
+        key == "sales_invoice_national" ||
+        key == "other_invoice" ||
+        key == "voucher"
+      ) {
+        if (!valueReq.includes(String(declare[key]))) {
+          status = false;
+          resMess = `${mess2}. Field ${key}.`;
+          return {
+            status,
+            message: resMess,
+          };
+        }
+      }
+    }
+
+    // valid digital_certificates
+    if (!declare.digital_certificates[0]) {
+      return {
+        status: false,
+        message: `${mess1} digital_certificates.`,
+      };
+    }
+    for (let i = 0; i < declare.digital_certificates.length; i++) {
+      for (const key in errorList.digital_certificates[0]) {
+        // valid digital_certificates
+        if (declare.digital_certificates[i][key] === undefined || declare.digital_certificates[i][key] == null) {
+          status = false;
+          resMess = `${mess1} digital_certificates ${key}.`;
+          return {
+            status,
+            message: resMess,
+          };
+        }
+        // vald date
+        if (key == "from_date" || key == "to_date") {
+          if (new Date(declare.digital_certificates[i][key]) == "Invalid Date") {
+            return {
+              status: false,
+              message: `Invalid Date. key digital_certificates ${key}`,
+            };
+          }
+        }
+      }
+    }
+
+    // valid declare_type must be in valueDT
+    const valueDT = ["1", "2"];
+    if (!valueDT.includes(String(declare.declare_type))) {
+      return {
+        status: false,
+        message: `declare_type must be 1 or 2. Receive: declare_type = ${declare.declare_type}`,
+      };
+    }
+
+    // if dont have any problem
+    return {
+      status,
+      message: resMess,
+    };
+  }
+
+  OBJtoXML(obj) {
+    var xml = "";
+    for (var prop in obj) {
+      xml += obj[prop] instanceof Array ? "" : "<" + prop + ">";
+      if (obj[prop] instanceof Array) {
+        for (var array in obj[prop]) {
+          xml += "<" + prop + ">";
+          xml += this.OBJtoXML(new Object(obj[prop][array]));
+          xml += "</" + prop + ">";
+        }
+      } else if (typeof obj[prop] == "object") {
+        xml += this.OBJtoXML(new Object(obj[prop]));
+      } else {
+        xml += obj[prop];
+      }
+      xml += obj[prop] instanceof Array ? "" : "</" + prop + ">";
+    }
+    var xml = xml.replace(/<\/?[0-9]{1,}>/g, "");
+    return xml;
+  }
+
+  async renderJsonToExcelFile() {
+    const exjs = new RenderJsonToExcelFile();
+    const propsEx = {
+      filename: "test02.xlsx",
+    };
+    const result = await exjs.createFille(propsEx);
+    return response.send(result);
+  }
+
+  async extractXMLContent(
+    p_xml_content,
+    p_mail_to,
+    p_mail_cc,
+    p_invoice_type,
+    p_tr_type,
+    p_tax_serial_number,
+    p_tac_crca_pk,
+    p_invoice_form_symbol,
+    p_language,
+    p_crt_by
+  ) {
+    let result_extra = {};
+    try {
+      const templateTTChung = [
+        "HDon/DLHDon/TTChung",
+        {
+          PBan: "PBan",
+          THDon: "THDon",
+          KHMSHDon: "KHMSHDon",
+          KHHDon: "KHHDon",
+          SHDon: "SHDon",
+          MHSo: "MHSo",
+          NLap: "NLap",
+          SBKe: "SBKe",
+          NBKe: "NBKe",
+          DVTTe: "DVTTe",
+          TGia: "TGia",
+          HTTToan: "HTTToan",
+          MSTTCGP: "MSTTCGP",
+          MSTDVNUNLHDon: "MSTDVNUNLHDon",
+          TDVNUNLHDon: "TDVNUNLHDon",
+          DCDVNUNLHDon: "DCDVNUNLHDon",
+        },
+      ];
+      const jsonTTChung = await transform(p_xml_content, templateTTChung);
+      // console.log("jsonTTChung", jsonTTChung)
+      const templateTTKhac = [
+        "HDon/DLHDon/TTChung/TTKhac/TTin",
+        {
+          TTruong: "TTruong",
+          DLieu: "DLieu",
+        },
+      ];
+      let jsonTTKhac = null;
+      try {
+        jsonTTKhac = await transform(p_xml_content, templateTTKhac);
+      } catch (e) { }
+      // console.log("jsonTTKhac", jsonTTKhac)
+      let customField1 = "",
+        customField2 = "",
+        customField3 = "",
+        customField4 = "",
+        customField5 = "",
+        customField6 = "",
+        customField7 = "",
+        customField8 = "",
+        customField9 = "",
+        customField10 = "";
+      if (jsonTTKhac && jsonTTKhac.length > 0) {
+        customField1 = jsonTTKhac[0].TTruong + ": " + jsonTTKhac[0].DLieu;
+        if (jsonTTKhac.length > 1) {
+          customField2 = jsonTTKhac[1].TTruong + ": " + jsonTTKhac[1].DLieu;
+        }
+        if (jsonTTKhac.length > 2) {
+          customField2 = jsonTTKhac[1].TTruong + ": " + jsonTTKhac[1].DLieu;
+          customField3 = jsonTTKhac[2].TTruong + ": " + jsonTTKhac[2].DLieu;
+        }
+        if (jsonTTKhac.length > 3) {
+          customField2 = jsonTTKhac[1].TTruong + ": " + jsonTTKhac[1].DLieu;
+          customField3 = jsonTTKhac[2].TTruong + ": " + jsonTTKhac[2].DLieu;
+          customField4 = jsonTTKhac[3].TTruong + ": " + jsonTTKhac[3].DLieu;
+        }
+        if (jsonTTKhac.length > 4) {
+          customField2 = jsonTTKhac[1].TTruong + ": " + jsonTTKhac[1].DLieu;
+          customField3 = jsonTTKhac[2].TTruong + ": " + jsonTTKhac[2].DLieu;
+          customField4 = jsonTTKhac[3].TTruong + ": " + jsonTTKhac[3].DLieu;
+          customField5 = jsonTTKhac[4].TTruong + ": " + jsonTTKhac[4].DLieu;
+        }
+        if (jsonTTKhac.length > 5) {
+          customField2 = jsonTTKhac[1].TTruong + ": " + jsonTTKhac[1].DLieu;
+          customField3 = jsonTTKhac[2].TTruong + ": " + jsonTTKhac[2].DLieu;
+          customField4 = jsonTTKhac[3].TTruong + ": " + jsonTTKhac[3].DLieu;
+          customField5 = jsonTTKhac[4].TTruong + ": " + jsonTTKhac[4].DLieu;
+          customField6 = jsonTTKhac[5].TTruong + ": " + jsonTTKhac[5].DLieu;
+        }
+        if (jsonTTKhac.length > 6) {
+          customField2 = jsonTTKhac[1].TTruong + ": " + jsonTTKhac[1].DLieu;
+          customField3 = jsonTTKhac[2].TTruong + ": " + jsonTTKhac[2].DLieu;
+          customField4 = jsonTTKhac[3].TTruong + ": " + jsonTTKhac[3].DLieu;
+          customField5 = jsonTTKhac[4].TTruong + ": " + jsonTTKhac[4].DLieu;
+          customField6 = jsonTTKhac[5].TTruong + ": " + jsonTTKhac[5].DLieu;
+          customField7 = jsonTTKhac[6].TTruong + ": " + jsonTTKhac[6].DLieu;
+        }
+        if (jsonTTKhac.length > 7) {
+          customField2 = jsonTTKhac[1].TTruong + ": " + jsonTTKhac[1].DLieu;
+          customField3 = jsonTTKhac[2].TTruong + ": " + jsonTTKhac[2].DLieu;
+          customField4 = jsonTTKhac[3].TTruong + ": " + jsonTTKhac[3].DLieu;
+          customField5 = jsonTTKhac[4].TTruong + ": " + jsonTTKhac[4].DLieu;
+          customField6 = jsonTTKhac[5].TTruong + ": " + jsonTTKhac[5].DLieu;
+          customField7 = jsonTTKhac[6].TTruong + ": " + jsonTTKhac[6].DLieu;
+          customField8 = jsonTTKhac[7].TTruong + ": " + jsonTTKhac[7].DLieu;
+        }
+        if (jsonTTKhac.length > 8) {
+          customField2 = jsonTTKhac[1].TTruong + ": " + jsonTTKhac[1].DLieu;
+          customField3 = jsonTTKhac[2].TTruong + ": " + jsonTTKhac[2].DLieu;
+          customField4 = jsonTTKhac[3].TTruong + ": " + jsonTTKhac[3].DLieu;
+          customField5 = jsonTTKhac[4].TTruong + ": " + jsonTTKhac[4].DLieu;
+          customField6 = jsonTTKhac[5].TTruong + ": " + jsonTTKhac[5].DLieu;
+          customField7 = jsonTTKhac[6].TTruong + ": " + jsonTTKhac[6].DLieu;
+          customField8 = jsonTTKhac[7].TTruong + ": " + jsonTTKhac[7].DLieu;
+          customField9 = jsonTTKhac[8].TTruong + ": " + jsonTTKhac[8].DLieu;
+        }
+        if (jsonTTKhac.length > 9) {
+          customField2 = jsonTTKhac[1].TTruong + ": " + jsonTTKhac[1].DLieu;
+          customField3 = jsonTTKhac[2].TTruong + ": " + jsonTTKhac[2].DLieu;
+          customField4 = jsonTTKhac[3].TTruong + ": " + jsonTTKhac[3].DLieu;
+          customField5 = jsonTTKhac[4].TTruong + ": " + jsonTTKhac[4].DLieu;
+          customField6 = jsonTTKhac[5].TTruong + ": " + jsonTTKhac[5].DLieu;
+          customField7 = jsonTTKhac[6].TTruong + ": " + jsonTTKhac[6].DLieu;
+          customField8 = jsonTTKhac[7].TTruong + ": " + jsonTTKhac[7].DLieu;
+          customField9 = jsonTTKhac[8].TTruong + ": " + jsonTTKhac[8].DLieu;
+          customField10 = jsonTTKhac[9].TTruong + ": " + jsonTTKhac[9].DLieu;
+        }
+      }
+
+      const templateTTHDLQuan = [
+        "HDon/DLHDon/TTChung/TTHDLQuan",
+        {
+          TCHDon: "TCHDon",
+          LHDCLQuan: "LHDCLQuan",
+          KHMSHDCLQuan: "KHMSHDCLQuan",
+          KHHDCLQuan: "KHHDCLQuan",
+          SHDCLQuan: "SHDCLQuan",
+          NLHDCLQuan: "NLHDCLQuan",
+          GChu: "GChu",
+        },
+      ];
+      const jsonTTHDLQuan = await transform(p_xml_content, templateTTHDLQuan);
+      // console.log("templateTTHDLQuan", jsonTTHDLQuan)
+
+      const arrTTChung = [
+        jsonTTChung[0].PBan,
+        jsonTTChung[0].THDon,
+        jsonTTChung[0].KHMSHDon,
+        jsonTTChung[0].KHHDon,
+        jsonTTChung[0].SHDon,
+        jsonTTChung[0].MHSo,
+        jsonTTChung[0].NLap,
+        jsonTTChung[0].SBKe,
+        jsonTTChung[0].NBKe,
+        jsonTTChung[0].DVTTe,
+        jsonTTChung[0].TGia,
+        jsonTTChung[0].HTTToan,
+        jsonTTChung[0].MSTTCGP,
+        jsonTTChung[0].MSTDVNUNLHDon,
+        jsonTTChung[0].TDVNUNLHDon,
+        jsonTTChung[0].DCDVNUNLHDon,
+      ];
+      const templateNBan = [
+        "HDon/DLHDon/NDHDon/NBan",
+        {
+          Ten: "Ten",
+          MST: "MST",
+          DChi: "DChi",
+          SDThoai: "SDThoai",
+          DCTDTu: "DCTDTu",
+          STKNHang: "STKNHang",
+          NNBSTKNHang: "NNBSTKNHang",
+          TNHang: "TNHang",
+          Fax: "Fax",
+          Website: "Website",
+          TTKhac: "TTKhac",
+        },
+      ];
+      const jsonNBan = await transform(p_xml_content, templateNBan);
+      const arrNBan = [
+        jsonNBan[0].Ten,
+        jsonNBan[0].MST,
+        jsonNBan[0].DChi,
+        jsonNBan[0].SDThoai,
+        jsonNBan[0].DCTDTu,
+        jsonNBan[0].STKNHang,
+        jsonNBan[0].NNBSTKNHang,
+        jsonNBan[0].TNHang,
+        jsonNBan[0].Fax,
+        jsonNBan[0].Website,
+        jsonNBan[0].TTKhac,
+      ];
+      // console.log("jsonNBan", jsonNBan)
+      const templateNMua = [
+        "HDon/DLHDon/NDHDon/NMua",
+        {
+          Ten: "Ten",
+          MST: "MST",
+          DChi: "DChi",
+          SDThoai: "SDThoai",
+          DCTDTu: "DCTDTu",
+          MKHang: "MKHang",
+          HVTNMHang: "HVTNMHang",
+          STKNHang: "STKNHang",
+          TNHang: "TNHang",
+          TTKhac: "TTKhac",
+        },
+      ];
+      const jsonNMua = await transform(p_xml_content, templateNMua);
+      // console.log("jsonNMua", jsonNMua)
+      const arrNMua = [
+        jsonNMua[0].Ten,
+        jsonNMua[0].MST,
+        jsonNMua[0].DChi,
+        jsonNMua[0].SDThoai,
+        jsonNMua[0].DCTDTu,
+        jsonNMua[0].MKHang,
+        jsonNMua[0].HVTNMHang,
+        jsonNMua[0].STKNHang,
+        jsonNMua[0].TNHang,
+        jsonNMua[0].TTKhac,
+      ];
+      const templateLTSuat = [
+        "HDon/DLHDon/NDHDon/TToan/THTTLTSuat/LTSuat",
+        {
+          TSuat: "TSuat",
+          ThTien: "ThTien",
+          TThue: "TThue",
+        },
+      ];
+      const jsonLTSuat = await transform(p_xml_content, templateLTSuat);
+      // console.log("jsonLTSuat", jsonLTSuat)
+      const arrLTSuat = [jsonLTSuat[0].TSuat, jsonLTSuat[0].ThTien, jsonLTSuat[0].TThue];
+      const templateTToan = [
+        "HDon/DLHDon/NDHDon/TToan",
+        {
+          TgTCThue: "TgTCThue",
+          TgTThue: "TgTThue",
+          TTCKTMai: "TTCKTMai",
+          TgTTTBSo: "TgTTTBSo",
+          TgTTTBChu: "TgTTTBChu",
+        },
+      ];
+      const jsonTToan = await transform(p_xml_content, templateTToan);
+      // console.log("jsonTToan", jsonTToan)
+      const arrTToan = [
+        jsonTToan[0].TgTCThue,
+        jsonTToan[0].TgTThue,
+        jsonTToan[0].TTCKTMai,
+        jsonTToan[0].TgTTTBSo,
+        jsonTToan[0].TgTTTBChu,
+      ];
+      let v_vn_amount = Utils.Num2VNText(jsonTToan[0].TgTTTBSo, jsonTTChung[0].DVTTe);
+      // console.log("  v_vn_amount ", v_vn_amount);
+      /*const templateMCCQT = ['HDon', {
+                                  MCCQT: 'MCCQT'
+                              }]
+                              const jsonMCCQT = await transform(p_xml_content, templateMCCQT);
+                              //console.log(jsonMCCQT)
+                              */
+      const arrMCCQT = ""; //[jsonMCCQT[0].MCCQT];
+
+      const templateDSHHDVu = [
+        "HDon/DLHDon/NDHDon/DSHHDVu/HHDVu",
+        {
+          TChat: "TChat",
+          STT: "STT",
+          MHHDVu: "MHHDVu",
+          THHDVu: "THHDVu",
+          DVTinh: "DVTinh",
+          SLuong: "SLuong",
+          DGia: "DGia",
+          TLCKhau: "TLCKhau",
+          STCKhau: "STCKhau",
+          ThTien: "ThTien",
+          TSuat: "TSuat",
+        },
+      ];
+      let masterPara = arrTTChung.concat(arrNBan).concat(arrNMua).concat(arrLTSuat).concat(arrTToan).concat(arrMCCQT);
+      //const xmlRelativePath = p_xml_path.replace(ROOT_DIR_FILES, "");
+      masterPara = masterPara.concat(["", "", "", ""]);
+      if (jsonTTHDLQuan && jsonTTHDLQuan.length > 0) {
+        masterPara = masterPara.concat([
+          jsonTTHDLQuan[0].TCHDon,
+          jsonTTHDLQuan[0].LHDCLQuan,
+          jsonTTHDLQuan[0].KHMSHDCLQuan,
+          jsonTTHDLQuan[0].KHHDCLQuan,
+          jsonTTHDLQuan[0].SHDCLQuan,
+          jsonTTHDLQuan[0].NLHDCLQuan,
+          jsonTTHDLQuan[0].GChu,
+        ]);
+      } else {
+        masterPara = masterPara.concat(["", "", "", "", "", "", ""]);
+      }
+
+      masterPara = masterPara.concat([
+        customField1,
+        customField2,
+        customField3,
+        customField4,
+        customField5,
+        customField6,
+        customField7,
+        customField8,
+        customField9,
+        customField10,
+        p_mail_to,
+        p_mail_cc,
+        p_invoice_type,
+        v_vn_amount,
+        p_tr_type,
+        p_tax_serial_number,
+        p_tac_crca_pk,
+        p_invoice_form_symbol,
+      ]);
+
+      // console.log("masterPara", masterPara)
+      //const master = await callAPI(_jwtToken, { proc: 'ei_upd_tei_einvoice_cloud', para: masterPara });
+      const master = await DBService.callProcCursor("ei_upd_tei_einvoice_ar", masterPara, p_language, p_crt_by);
+      // console.log("master", master);
+
+      if (master && master[0].PK > 0) {
+        const jsonDSHHDVu = await transform(p_xml_content, templateDSHHDVu);
+        //console.log(jsonDSHHDVu)
+        for (let i = 0; i < jsonDSHHDVu.length; i++) {
+          const detailPara = [
+            master[0].PK,
+            jsonDSHHDVu[i].TChat,
+            jsonDSHHDVu[i].STT,
+            jsonDSHHDVu[i].MHHDVu,
+            jsonDSHHDVu[i].THHDVu,
+            jsonDSHHDVu[i].DVTinh,
+            jsonDSHHDVu[i].SLuong,
+            jsonDSHHDVu[i].DGia,
+            jsonDSHHDVu[i].ThTien,
+            jsonDSHHDVu[i].TLCKhau,
+            jsonDSHHDVu[i].STCKhau,
+            jsonDSHHDVu[i].TSuat,
+            master[0].TEI_EINVOICE_M_PK,
+          ];
+          const detail = await DBService.callProcCursor("ei_upd_tei_einvoiced_ar", detailPara, p_language, p_crt_by);
+          // console.log("detail", detail);
+        }
+        return (result_extra = {
+          PK: master[0].PK,
+          TEI_EINVOICE_M_PK: master[0].TEI_EINVOICE_M_PK,
+        });
+      } else {
+        return (result_extra = {
+          PK: master[0].PK,
+          TEI_EINVOICE_M_PK: master[0].TEI_EINVOICE_M_PK,
+        }); //master[0].PK;
+      }
+    } catch (e) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "extractXMLContent",
+        CONTENT: e.message,
+      });
+      return (result_extra = {
+        PK: -2,
+        TEI_EINVOICE_M_PK: 0,
+      }); //master[0].PK;;
+    }
+  }
+
+  async generalXmlPosInvoiceIn(p_tei_einvoice_m_pk, p_user_id,p_language, p_crt_by ) {
+    try {
+   
+      let rtnXML = [];
+      let objInvoice = {
+        HDon: {
+          DLHDon: {
+            TTChung: {
+              PBan: "",
+              THDon: "",
+              KHMSHDon: "",
+              KHHDon: "",
+              SHDon: "",
+              MHSo: "",
+              NLap: "",
+              NBKe: "",
+              DVTTe: "",
+              TGia: "",
+              HTTToan: "",
+            },
+            NDHDon: {
+              NBan: {
+                Ten: "",
+                MST: "",
+                DChi: "",
+                SDThoai: "",
+                NNBSTKNHang: "",
+              },
+              NMua: {
+                Ten: "",
+                MST: "",
+                DChi: "",
+                SDThoai: "",
+                HVTNMHang: "",
+                CCCDan: "",
+              },
+              DSHHDVu: {},
+              TToan: {
+                THTTLTSuat: {
+                  LTSuat: {
+                    TSuat: "",
+                    ThTien: "",
+                    TThue: "",
+                  },
+                },
+                TgTCTHue: "",
+                TgTThue: "",
+                DSLPhi: {
+                  LPhi: {},
+                },
+                TTCKTMai: "",
+                TgTTTBSo: "",
+                TgTTTBChu: "",
+              },
+            },
+          },
+          DSCKS: {},
+        }
+      };
+     
+
+        const para_value = {
+          p_tei_einvoice_m_pk: p_tei_einvoice_m_pk,
+          p_user_id: p_user_id,
+        };
+        // console.log("para_value  ", para_value);
+
+        const rtnValueMaster = await DBService.ExecuteSQLBlob(
+          `BEGIN ei_sel_einvoice_xml_m (  :p_tei_einvoice_m_pk,
+                                                    :p_user_id,
+                                                    :p_language, 
+                                                    :p_crt_by, 
+                                                    :p_rtn_cur); END;`,
+          para_value,
+          p_language,
+          p_crt_by
+        );
+
+        // console.log("rtnValueMaster  ", rtnValueMaster);
+
+        const rtnValueDetail = await DBService.ExecuteSQLBlob(
+          `BEGIN ei_sel_einvoice_xml_d (  :p_tei_einvoice_m_pk,
+                                                    :p_user_id,
+                                                    :p_language, 
+                                                    :p_crt_by, 
+                                                    :p_rtn_cur); END;`,
+          para_value,
+          p_language,
+          p_crt_by
+        );
+
+         //console.log("rtnValueDetail  ", rtnValueDetail);
+
+        const rtnValueVAT = await DBService.ExecuteSQLBlob(
+          `BEGIN ei_sel_einvoice_xml_vat (  :p_tei_einvoice_m_pk,
+                                                    :p_user_id,
+                                                    :p_language, 
+                                                    :p_crt_by, 
+                                                    :p_rtn_cur); END;`,
+          para_value,
+          p_language,
+          p_crt_by
+        );
+
+        //console.log("rtnValueVAT  ", rtnValueVAT);
+
+        const invoiceM = rtnValueMaster.p_rtn_cur[0];
+        const invoiceD = rtnValueDetail.p_rtn_cur;
+        const invoiceVAT = rtnValueVAT.p_rtn_cur;
+
+        if (invoiceM.FORM_NO == 1) {
+          objInvoice.HDon.DLHDon.TTChung.THDon = "Hóa đơn giá trị gia tăng khởi tạo từ máy tính tiền";
+        } else if (invoiceM.FORM_NO == 2) {
+          objInvoice.HDon.DLHDon.TTChung.THDon = "Hóa đơn bán hàng khởi tạo từ máy tính tiền";
+        } else if (invoiceM.FORM_NO == 3) {
+          objInvoice.HDon.DLHDon.TTChung.THDon = "Hóa đơn bán tài sản công khởi tạo từ máy tính tiền";
+        } else if (invoiceM.FORM_NO == 4) {
+          objInvoice.HDon.DLHDon.TTChung.THDon = "Hóa đơn bán hàng dự trữ quốc gia khởi tạo từ máy tính tiền";
+        } else if (invoiceM.FORM_NO == 5) {
+          objInvoice.HDon.DLHDon.TTChung.THDon =
+            "Tem điện tử, vé điện tử, thẻ điện tử, phiếu thu điện tử, chứng từ thu phí DV ngân hàng khởi tạo từ máy tính tiền";
+        } else if (invoiceM.FORM_NO == 6) {
+          objInvoice.DLHDon.TTChung.THDon =
+            "Phiếu xuất kho kiêm vận chuyển nội bộ, phiếu xuất kho hàng gửi bán đại lý khởi tạo từ máy tính tiền";
+        }
+        objInvoice.HDon.DLHDon.TTChung.PBan = invoiceM.VERSION;
+        objInvoice.HDon.DLHDon.TTChung.KHMSHDon = invoiceM.FORM_NO;
+        objInvoice.HDon.DLHDon.TTChung.KHHDon = invoiceM.SERIAL_NO;
+        objInvoice.HDon.DLHDon.TTChung.SHDon = invoiceM.INVOICE_NO;
+        objInvoice.HDon.DLHDon.TTChung.NLap = invoiceM.INVOICE_DATE;
+        objInvoice.HDon.DLHDon.TTChung.DVTTe = invoiceM.CURRENCY;
+        objInvoice.HDon.DLHDon.TTChung.TGia = invoiceM.EX_RATE;
+        objInvoice.HDon.DLHDon.TTChung.HTTToan = invoiceM.PAYMENT_METHOD;
+        objInvoice.HDon.DLHDon.TTChung.MSTTCGP = "1201496252"; //webcashgenuwin.com taxcode
+
+        objInvoice.HDon.DLHDon.NDHDon.NBan.Ten = invoiceM.SELLER_NAME;
+        objInvoice.HDon.DLHDon.NDHDon.NBan.MST = invoiceM.SELLER_TAXCODE;
+        objInvoice.HDon.DLHDon.NDHDon.NBan.DChi = invoiceM.SELLER_ADDRESS;
+        objInvoice.HDon.DLHDon.NDHDon.NBan.SDThoai = invoiceM.SELLER_TEL;
+
+        objInvoice.HDon.DLHDon.NDHDon.NMua.Ten = invoiceM.BUYER_COMP_NAME;
+        objInvoice.HDon.DLHDon.NDHDon.NMua.MST = invoiceM.BUYER_TAXCODE;
+        objInvoice.HDon.DLHDon.NDHDon.NMua.DChi = invoiceM.BUYER_ADDRESS;
+        objInvoice.HDon.DLHDon.NDHDon.NMua.CCCDan = invoiceM.BUYER_CCCD;
+        objInvoice.HDon.DLHDon.NDHDon.NMua.SDThoai = invoiceM.BUYER_TEL;
+
+        objInvoice.HDon.DLHDon.NDHDon.DSHHDVu = [];
+
+        objInvoice.HDon.DLHDon.NDHDon.DSHHDVu = {};
+        objInvoice.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu = [];
+
+        for (let j = 0; j < invoiceD.length; j++) {
+          objInvoice.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
+            TChat: invoiceD[j].TCHAT,
+            STT: invoiceD[j].SEQ_DIS,
+            MHHDVu: invoiceD[j].ITEM_CODE,
+            THHDVu: invoiceD[j].ITEM_NAME,
+            DVTinh: invoiceD[j].ITEM_UOM,
+            SLuong: invoiceD[j].QTY,
+            DGia: invoiceD[j].U_PRICE,
+            TLCKhau: "", //invoiceD[j].dc_rate,
+            STCKhau: "", //invoiceD[j].dc_amt,
+            ThTien: invoiceD[j].NET_TR_AMT,
+            TSuat: invoiceD[j].VAT_RATE,
+          });
+        }
+
+        objInvoice.HDon.DLHDon.NDHDon.TToan = {};
+        objInvoice.HDon.DLHDon.NDHDon.TToan.THTTLTSuat = {};
+        objInvoice.HDon.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat = [];
+
+        for (let j = 0; j < invoiceVAT.length; j++) {
+          objInvoice.HDon.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat.push({
+            TSuat: invoiceVAT[j].SUB_VAT_RATE,
+            ThTien: invoiceVAT[j].SUB_AMT,
+            TThue: invoiceVAT[j].SUB_AMT_VAT,
+          });
+        }
+
+        objInvoice.HDon.DLHDon.NDHDon.TToan.TgTCThue = invoiceM.TOTAL_AMT;
+        objInvoice.HDon.DLHDon.NDHDon.TToan.TgTThue = invoiceM.TOTAL_VAT_AMT;
+
+        objInvoice.HDon.DLHDon.NDHDon.TToan.TTCKTMai = invoiceM.TOTAL_DC_AMT;
+        objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = invoiceM.TOTAL_PAYMENT;
+        objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await this.Num2VNText(
+          invoiceM.TOTAL_PAYMENT.toString(),
+          invoiceM.CURRENCY
+        );
+
+        objInvoice.HDon.DSCKS.NBan = "";
+
+        objInvoice.HDon.MCCQT = invoiceM.MCCQT;
+
+      
+
+      const id = uuid.v4();
+      const xml = this.OBJtoXML(objInvoice);
+      //const xmlId = xml.toString().replace("<DLieu>", `<DLieu Id=\'${id}\'>`);
+      const xmlId = xml.toString().replace("<DLieu>", `<DLieu Id='ID1'>`);
+      const xmlRemoveLine = xmlId.toString().replace(/\n/g, "");
+     
+      return xmlRemoveLine;
+    } catch (e) {
+  
+      console.log(e);
+    }
+  }
+
+  validateDeclareXML(declare) {
+    let status = true;
+    let resMess = "";
+    const mess1 = "Invalid field";
+    const mess2 = "Data invalid";
+    if (!declare.TKhai) {
+      return {
+        status: false,
+        message: `${mess1} TKhai.`,
+      };
+    }
+    if (!declare.TKhai.DLTKhai) {
+      return {
+        status: false,
+        message: `${mess1} DLTKhai.`,
+      };
+    }
+    if (!declare.TKhai.DSCKS) {
+      return {
+        status: false,
+        message: `${mess1} DSCKS (unsigned).`,
+      };
+    }
+    if (!declare.TKhai.DSCKS.NNT) {
+      return {
+        status: false,
+        message: `${mess1} NNT (unsigned).`,
+      };
+    }
+
+    const errorList = {
+      DLTKhai: {
+        TTChung: {
+          PBan: 6,
+          MSo: 15,
+          Ten: 100,
+          HThuc: 1,
+          TNNT: 400,
+          MST: 14,
+          CQTQLy: 100,
+          MCQTQLy: 5,
+          NLHe: 50,
+          DCLHe: 400,
+          DCTDTu: 50,
+          DTLHe: 20,
+          DDanh: 50,
+          NLap: 10,
+        },
+        NDTKhai: {
+          HTHDon: {
+            CMa: 1,
+            KCMa: 1,
+            CMTMTTien: 1,
+          },
+          HTGDLHDDT: {
+            NNTDBKKhan: 1,
+            NNTKTDNUBND: 1,
+            CDLTTDCQT: 1,
+            CDLQTVAN: 1,
+          },
+          PThuc: {
+            CDDu: 1,
+            CBTHop: 1,
+          },
+          LHDSDung: {
+            HDGTGT: 1,
+            HDBHang: 1,
+            HDBTSCong: 1,
+            HDBHDTQGia: 1,
+            HDKhac: 1,
+            CTu: 1,
+          },
+          DSCTSSDung: {
+            CTS: {
+              STT: 1,
+              TTChuc: "SmartSign",
+              Seri: "540101072FBF82CD8A4D89AEADEBCF88",
+              TNgay: "2023-04-27T08:47:43",
+              DNgay: "2024-07-27T08:47:42",
+              HThuc: "1",
+            },
+          },
+        },
+      },
+    };
+
+    for (const key in errorList.DLTKhai) {
+      // valid null of not null values
+      if (declare.TKhai.DLTKhai[key] === undefined || declare.TKhai.DLTKhai[key] == null) {
+        status = false;
+        resMess = `${mess2} ${key}.`;
+        return {
+          status,
+          message: resMess,
+        };
+      }
+    }
+    for (const key in errorList.DLTKhai.TTChung) {
+      if (String(declare.TKhai.DLTKhai.TTChung[key]).length > errorList.DLTKhai.TTChung[key]) {
+        return {
+          status: false,
+          message: `${mess2} ${key}.`,
+        };
+      }
+    }
+    //     for (const key in errorList.DLTKhai.NDTKhai) {
+    //         // if(status == false){
+    //         //     return {
+    //         //         status: status,
+    //         //         message: resMess,
+    //         //     };
+    //         // }
+    //         for (const childKey in errorList.DLTKhai.NDTKhai[key]) {
+    //             if(String(declare.TKhai.DLTKhai.NDTKhai[key][childKey]).length > errorList.DLTKhai.NDTKhai[key][childKey] && childKey != 'DSCTSSDung'){
+    //                 status= false;
+    //                 resMess = `Length of ${key} ${childKey} too long.`
+    //                 return {
+    //                     status: status,
+    //                     message: resMess,
+    //                 };
+    //             }
+
+    //           // valid data must be in valueReq
+    //           const valueReq = ["0", "1"];
+    //           if (
+    //             key == 'CMa' ||
+    //             key == 'KCMa' ||
+    //             key == 'CMTMTTien' ||
+    //             key == 'NNTDBKKhan' ||
+    //             key == 'NNTKTDNUBND' ||
+    //             key == 'CDLTTDCQT' ||
+    //             // key == 'CDLQTVAN' ||
+    //             key == 'CDDu' ||
+    //             key == 'CBTHop' ||
+    //             key == 'HDGTGT' ||
+    //             key == 'HDBHang' ||
+    //             key == 'HDBTSCong' ||
+    //             key == 'HDBHDTQGia' ||
+    //             key == 'HDKhac' ||
+    //             key == 'CTuer'
+    //           ) {
+    //             if (!valueReq.includes(String(declare.TKhai.DLTKhai.NDTKhai[key][childKey]))) {
+    //               status = false;
+    //               resMess = `${mess2}. Field ${key} ${key}.`;
+    //               return {
+    //                 status: status,
+    //                 message: resMess,
+    //             };
+    //             }
+    //           }
+    //         }
+    //         console.log(resMess);
+    //    }
+    // for (const key in errorList.DLTKhai.NDTKhai.DSCTSSDung.CTS) {
+    //     if(!declare.TKhai.DLTKhai.NDTKhai.DSCTSSDung.CTS[key]) {
+    //         status = false;
+    //         resMess = `${mess1} CTS ${key}.`;
+    //         return {
+    //             status,
+    //             message: resMess,
+    //         };
+    //     }
+    // }
+    return {
+      status: status,
+      message: resMess,
+    };
+  }
+
 }
 
 module.exports = EInvoiceController;

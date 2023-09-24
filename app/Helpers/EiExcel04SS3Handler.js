@@ -63,6 +63,13 @@ class EiExcelHandler {
         _db2
       );
 
+      const einvoiceDetailDataReplace = await DBService.callProcCursor(
+        "EI_SEL_04SS_02_D_R", [tei_einvoice_m_pk],
+        p_language,
+        p_crt_by,
+        _db2
+      );
+
       // const einvoiceMasterParam = await DBService.callProcCursor(
       //   "ac_sel_einvoice_m_param", [tradecode, einvoiceMasterData[0].FORM_NO , einvoiceMasterData[0].SERIAL_NO,''],
       //   p_language,
@@ -185,7 +192,7 @@ class EiExcelHandler {
       if (this.masterDataArray.length > 0){
        // console.log("masterDataArray ", this.masterDataArray);
         resultExcel = await exceljs.ExcelBuilder(
-          p_crt_by, einvoiceMasterData, einvoiceDetailData, '',
+          p_crt_by, einvoiceMasterData, einvoiceDetailData,einvoiceDetailDataReplace, '',
           _sourceRow, _sourceRow_2, _sourceRow_3, headerRowCount, countFromEndDetailToSignBox,
           lastPageRowsHeight, reportPath, reportSheet, signPath, cancelPath, bgPath,
           this.masterDataArray, detailCellFormat, logos, signCell, signBoxCell, signByCell, cancelYn,

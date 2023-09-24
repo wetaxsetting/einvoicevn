@@ -377,7 +377,8 @@ export default {
       },
     ],
     objInvoiceM:{},
-    tei_einvoice_d_pk_row:"",
+    tei_einvoice_ss_m_pk_row:"",
+    tei_einvoice_m_pk_row:"",
     pdfUrl:"",
     manualIsMinimized: false,
     manualIsMinimizedPDF: false,
@@ -603,9 +604,13 @@ export default {
         case "previewBB":
         this.OnPreviewBB();
           break;  
+        case "previewEinvoice":
+          this.OnPreviewEinvoice();
+          break;
 
       }
     },
+
     async OnPreview()
     {
       if (this.modelMaster.PK) {
@@ -627,14 +632,33 @@ export default {
           }
     },
 
-    
+    async OnPreviewEinvoice()
+    {
+      if (this.modelMaster.PK) {
+            let res_url = await this.$axios.$post("/einvoice/general-url-pdf", {
+              responseType: "json",
+              tei_wt_sale_bill_pk: this.tei_einvoice_m_pk_row,
+            });
+            if (res_url.success) {
+              this.pdfUrl = res_url.data;
+
+              this.$nextTick(() => {
+                this.isProcessing = false;
+                this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+              });
+            }
+          } else {
+            this.showNotification("warning", this.$t("no_row_selected"), "");
+          }
+    },
+
     async OnPreviewBB()
     {
-      if(this.tei_einvoice_d_pk_row != "")
+      if(this.tei_einvoice_m_pk_row != "")
       {
         let res_url = await this.$axios.$post("/einvoice/general-url-pdf-einvoice-bb", {
               responseType: "json",
-              tei_einvoice_d_pk_row: this.tei_einvoice_d_pk_row,
+              tei_einvoice_m_pk_row: this.tei_einvoice_m_pk_row,
             });
 
         if(res_url.success)
@@ -651,7 +675,6 @@ export default {
         this.showNotification("warning", this.$t("no_row_selected"), '');
       }
     },
-
 
     async dsoMaster(action) {
       let abc = this.dataMasterList.taxOfficeList.find((item) => item.CODE == this.modelMaster.MCQT);
@@ -1268,8 +1291,8 @@ export default {
     },
 
     async onCellClickDetail({ column, data, rowIndex, rowType }) {
-      console.log("tei_einvoice_d_pk_row  ", data)
-      this.tei_einvoice_d_pk_row = data.TEI_EINVOICE_M_PK;
+      console.log("tei_einvoice_ss_m_pk_row  ", data)
+      this.tei_einvoice_m_pk_row = data.TEI_EINVOICE_M_PK;
       // this.maGD = data.CQT_MAGD;
       // this.xml_signed = data.SIGN_XML;
     },

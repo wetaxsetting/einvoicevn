@@ -7657,11 +7657,11 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
 
-      const { tei_einvoice_d_pk_row } = request.all();
+      const { tei_einvoice_m_pk_row } = request.all();
 
 
       let EiExcels = new EiExcel04SS2Handler();
-      let url_pdf = await EiExcels.getEinvoice(tei_einvoice_d_pk_row, p_language, p_crt_by);
+      let url_pdf = await EiExcels.getEinvoice(tei_einvoice_m_pk_row, p_language, p_crt_by);
       console.log("base64PDf  ", url_pdf);
 
       return response.send(Utils.response(true, "general url pdf success", url_pdf));

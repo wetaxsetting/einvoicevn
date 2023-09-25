@@ -382,6 +382,7 @@ export default {
     pdfUrl:"",
     manualIsMinimized: false,
     manualIsMinimizedPDF: false,
+    invoiceType:"0",
   }),
 
   mounted() {
@@ -599,7 +600,6 @@ export default {
           break;
         case "preview":
           this.OnPreview();
-
           break;
         case "previewBB":
         this.OnPreviewBB();
@@ -607,6 +607,9 @@ export default {
         case "previewEinvoice":
           this.OnPreviewEinvoice();
           break;
+        case "previewBB_Replace":
+        this.OnPreviewBBR();
+        break;
 
       }
     },
@@ -657,6 +660,30 @@ export default {
       if(this.tei_einvoice_m_pk_row != "")
       {
         let res_url = await this.$axios.$post("/einvoice/general-url-pdf-einvoice-bb", {
+              responseType: "json",
+              tei_einvoice_m_pk_row: this.tei_einvoice_m_pk_row,
+            });
+
+        if(res_url.success)
+        {
+          this.pdfUrl = res_url.data;
+          console.log("this.pdfUrl  ", this.pdfUrl)
+          this.$nextTick(() => {
+            this.isProcessing = false
+            this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+          });
+        }
+      }else
+      {
+        this.showNotification("warning", this.$t("no_row_selected"), '');
+      }
+    },
+
+    async OnPreviewBBR()
+    {
+      if(this.tei_einvoice_m_pk_row != "")
+      {
+        let res_url = await this.$axios.$post("/einvoice/general-url-pdf-einvoice-bb-r", {
               responseType: "json",
               tei_einvoice_m_pk_row: this.tei_einvoice_m_pk_row,
             });

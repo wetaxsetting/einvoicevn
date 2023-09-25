@@ -45,6 +45,7 @@ const EiPosExcelHandler = use("App/Helpers/EiPosExcelHandler");
 const EiPosExcelHandlerAuto = use("App/Helpers/EiPosExcelHandlerAuto");
 const EiExcelTemplateHandler = use("App/Helpers/EiExcelTemplateHandler");
 const EiExcel04SS2Handler = use("App/Helpers/EiExcel04SS2Handler");
+const EiExcel04SS3Handler = use("App/Helpers/EiExcel04SS3Handler");
 const EiExcel04SSHandler = use("App/Helpers/EiExcel04SSHandler");
 const URL = "http://demosign.easyca.vn:8080/api";
 const Username = "demo_easysign";
@@ -7676,6 +7677,35 @@ class EInvoiceController {
       return response.send(Utils.response(false, "error", e.message));
     }
   }
+
+  async viewPDFEinvoiceBBReplaceEPortal({ request, response, auth }) {
+    try {
+      var p_language = request.header("accept-language", "ENG");
+      var p_crt_by = "";
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+
+      const { tei_einvoice_m_pk_row } = request.all();
+
+
+      let EiExcels = new EiExcel04SS3Handler();
+      let url_pdf = await EiExcels.getEinvoice(tei_einvoice_m_pk_row, p_language, p_crt_by);
+      console.log("base64PDf  ", url_pdf);
+
+      return response.send(Utils.response(true, "general url pdf success", url_pdf));
+    } catch (e) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "checkInvoiceStatusFromTaxOffice",
+        CONTENT: e.message,
+      });
+      console.log(e);
+      return response.send(Utils.response(false, "error", e.message));
+    }
+  }
   // end e - invoce
 
 
@@ -9430,8 +9460,6 @@ class EInvoiceController {
       message: resMess,
     };
   }
-
-
 
   ///vng-304
   async viewPDFTemplate_04SS({ request, response, auth }) {

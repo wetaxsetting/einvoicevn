@@ -7,7 +7,7 @@ class EiExcelConverterAuto {
 	constructor() {
 
 	}
-	async ExcelBuilder(p_crt_by, einvoiceMasterData, einvoiceDetailData,einvoiceDetailDataReplace, einvoicePk,_sourceRow, _sourceRow_2, _sourceRow_3, headerRowCount, countFromEndDetailToSignBox,lastPageRowsHeight, reportPath, reportSheet, signPath, cancelPath, bgPath,masterDataArray, detailCellFormat, logos, signCell, signBoxCell, signByCell, cancelYn,backgroundCell,backgroundRow, backgroundWidth, backgroundHeight){
+	async ExcelBuilder(p_crt_by, einvoiceMasterData, einvoiceDetailData, einvoiceDetailDataReplace, einvoicePk,_sourceRow, _sourceRow_2, _sourceRow_3, headerRowCount, countFromEndDetailToSignBox,lastPageRowsHeight, reportPath, reportSheet, signPath, cancelPath, bgPath, masterDataArray, detailCellFormat, logos, signCell, signBoxCell, signByCell, cancelYn, backgroundCell, backgroundRow, backgroundWidth, backgroundHeight){
 		//(p_crt_by, einvoiceDetailData, einvoicePk, _sourceRow, _sourceRow_2, _sourceRow_3, headerRowCount, countFromEndDetailToSignBox, lastPageRowsHeight, reportPath, reportSheet, signPath, cancelPath, bgPath, masterDataArray, detailCellFormat, logos, signCell, signBoxCell, signByCell, cancelYn, backgroundCell,backgroundRow, backgroundWidth, backgroundHeight) {
 		// console.log('===> ', p_crt_by)
 		// console.log(einvoiceDetailData)
@@ -187,7 +187,28 @@ class EiExcelConverterAuto {
 							console.log("lastCell  ", lastCell)
 							worksheet.getCell( `${lastCell +  (_sourceRow + totalRowCount)}`).style.border = { right: { style: 'thin' },bottom: { style: detailCellFormat[0].cellBorder }, left: { style: 'thin' }  };
 						
-							
+						} catch (error) {
+							console.log("err", error)
+							console.log(_sourceRow)
+							console.log(totalRowCount)
+
+						}
+						
+						_sourceRow = _sourceRow + 7;
+						const _e_r = einvoiceDetailDataReplace[i + count];
+						//console.log("  _e  " , _e);
+						try {
+
+							const _item_name = _e_r["CQT_MCCQT_ID"];
+							this.addValueToCellsWithItemName(worksheet, _sourceRow + totalRowCount, _e_r, _item_name, detailCellFormat, excCols)
+
+							detailCellFormat.forEach((_e_r, i) => {
+								worksheet.mergeCells(_sourceRow + totalRowCount, e.startCell, _sourceRow + totalRowCount, e.endCell)
+								worksheet.getCell(`${excCols[e.startCell] + (_sourceRow + totalRowCount)}`).style.border = { bottom: { style: detailCellFormat[i].cellBorder }, left: { style: 'thin' }, };
+							});
+							console.log("lastCell  ", lastCell)
+							worksheet.getCell( `${lastCell +  (_sourceRow + totalRowCount)}`).style.border = { right: { style: 'thin' },bottom: { style: detailCellFormat[0].cellBorder }, left: { style: 'thin' }  };
+						
 						} catch (error) {
 							console.log("err", error)
 							console.log(_sourceRow)

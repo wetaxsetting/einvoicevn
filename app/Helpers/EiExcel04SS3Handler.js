@@ -1,6 +1,6 @@
 'use strict'
 const DBService = use("DBService");
-const EiExcelConverter = use("App/Helpers/EiExcel04SS2Converter");
+const EiExcelConverter = use("App/Helpers/EiExcel04SS3Converter");
 class EiExcelHandler {
 
   constructor() {
@@ -48,42 +48,27 @@ class EiExcelHandler {
       let companyName = ""
       let backgroundRow = 0
 
-      tei_einvoice_m_pk = "574306";
+      tei_einvoice_m_pk = "470723";  // hóa đơn replace
 
       const einvoiceMasterData = await DBService.callProcCursor(
-        "EI_SEL_04SS_02_M", [tei_einvoice_m_pk],
+        "EI_SEL_04SS_03_M", [tei_einvoice_m_pk],
         p_language,
         p_crt_by,
         _db2
       );
       const einvoiceDetailData = await DBService.callProcCursor(
-        "EI_SEL_04SS_02_D", [tei_einvoice_m_pk],
+        "EI_SEL_04SS_03_D", [tei_einvoice_m_pk],
         p_language,
         p_crt_by,
         _db2
       );
 
       const einvoiceDetailDataReplace = await DBService.callProcCursor(
-        "EI_SEL_04SS_02_D_R", [tei_einvoice_m_pk],
+        "EI_SEL_04SS_03_D_R", [tei_einvoice_m_pk],
         p_language,
         p_crt_by,
         _db2
       );
-
-      // const einvoiceMasterParam = await DBService.callProcCursor(
-      //   "ac_sel_einvoice_m_param", [tradecode, einvoiceMasterData[0].FORM_NO , einvoiceMasterData[0].SERIAL_NO,''],
-      //   p_language,
-      //   p_crt_by,
-      //   _db2
-      // );
-
-      // const einvoiceDetailsParam = await DBService.callProcCursor(
-      //   "ac_sel_einvoice_d_param", [tradecode, einvoiceMasterData[0].FORM_NO , einvoiceMasterData[0].SERIAL_NO,''],
-      //   p_language,
-      //   p_crt_by,
-      //   _db2
-      // );
-
 
      
     //console.log(einvoiceDetailData)
@@ -100,7 +85,7 @@ class EiExcelHandler {
 
     this.masterDataArray = []
         
-      reportPath = 'report/60/95/ex_04ss/HD_04SS_2.xlsx';
+      reportPath = 'report/60/95/ex_04ss/HD_04SS_3.xlsx';
       reportSheet = "Invoice";
       //mảng data của master
       this.masterDataArray.push(
@@ -124,10 +109,8 @@ class EiExcelHandler {
 
         { Cell: `B32`, Info: [`REASON`], Type: 1 },
 
-        { Cell: `D41`, Info: [`COMPANY_SIGN`], Type: 1 },
-        { Cell: `D42`, Info: [`COMPANY_SIGN_DT`], Type: 1 },
-
-        
+        { Cell: `D46`, Info: [`COMPANY_SIGN`], Type: 1 },
+        { Cell: `D47`, Info: [`COMPANY_SIGN_DT`], Type: 1 },
 
       )  
 
@@ -136,43 +119,17 @@ class EiExcelHandler {
         { startCell: 4, endCell: 4, cellType: 3, cellBorder: "thin", field: "CQT_MCCQT_ID" },//từ cell bắt đầu tới cell kết thúc, type 3: cell kế tiếp cell đầu tiên,
         { startCell: 5, endCell: 5, cellType: 1, cellBorder: "thin", field: "SERIAL_NO" },//type 1: còn lại
         { startCell: 6, endCell: 6, cellType: 1, cellBorder: "thin", field: "INVOICE_NO" },//type 1: còn lại
-        { startCell: 7, endCell: 7, cellType: 1, cellBorder: "thin", field: "TOT_NET_TR_AMT" },//type 1: còn lại
-        { startCell: 8, endCell: 9, cellType: 1, cellBorder: "thin", field: "TOT_VAT_TR_AMT" },//type 1: còn lại
+        { startCell: 7, endCell: 7, cellType: 1, cellBorder: "thin", field: "INVOICE_DATE" },//type 1: còn lại
+        { startCell: 8, endCell: 8, cellType: 1, cellBorder: "thin", field: "TOT_NET_TR_AMT" },//type 1: còn lại
+        { startCell: 9, endCell: 9, cellType: 1, cellBorder: "thin", field: "TOT_VAT_TR_AMT" },//type 1: còn lại
         { startCell: 10, endCell: 10, cellType: 1, cellBorder: "thin", field: "TOT_AMT" },//type 1: còn lại
 
       ]
 
-        // if(einvoiceMasterData[0].URL_IMG_BG != "" && einvoiceMasterData[0].URL_IMG_BG != null )
-        // {
-        //   bgPath = `${einvoiceMasterData[0].URL_IMG_BG}`;
-        // }else
-        // {
-        //   bgPath = "";
-        // }
-
-        // if(einvoiceMasterData[0].URL_IMG_LOGO != "" && einvoiceMasterData[0].URL_IMG_LOGO != null)
-        // {
-        //   logos = [
-        //     { start: einvoiceMasterData[0].LOGO_START_ROW, 
-        //       width: 0.99 * dpi, 
-        //       height: 0.99 * dpi, 
-        //       logoStartCount: einvoiceMasterData[0].LOGO_START_COL, 
-        //       logoPath: `${einvoiceMasterData[0].URL_IMG_LOGO}` },
-        //   ];
-        // }
-        // else{
-        //   logos = [];
-        // }
-         
         console.log("bgPath  ", bgPath);
         console.log("logos   ", logos);
 
     
-
-        // backgroundCell = einvoiceMasterData[0].BG_START_ROW
-        // backgroundRow = einvoiceMasterData[0].BG_END_ROW
-        // backgroundWidth = einvoiceMasterData[0].BG_WIDTH
-        // backgroundHeight = einvoiceMasterData[0].BG_HEIGHT
 
         signCell = { start: einvoiceMasterData[0].SIGN_START_CELL, end: einvoiceMasterData[0].SIGN_END_CELL }
         signBoxCell = einvoiceMasterData[0].SIGN_CELL_BOX
@@ -186,17 +143,38 @@ class EiExcelHandler {
         headerRowCount = einvoiceMasterData[0].DETAILS_START_ROW == null ? 0 : einvoiceMasterData[0].DETAILS_START_ROW
         lastPageRowsHeight = 18
 
-      // console.log("this.masterDataArray ", this.masterDataArray);
+       console.log("reportPath", reportPath);
     
    
       if (this.masterDataArray.length > 0){
-       // console.log("masterDataArray ", this.masterDataArray);
         resultExcel = await exceljs.ExcelBuilder(
-          p_crt_by, einvoiceMasterData, einvoiceDetailData,einvoiceDetailDataReplace, '',
-          _sourceRow, _sourceRow_2, _sourceRow_3, headerRowCount, countFromEndDetailToSignBox,
-          lastPageRowsHeight, reportPath, reportSheet, signPath, cancelPath, bgPath,
-          this.masterDataArray, detailCellFormat, logos, signCell, signBoxCell, signByCell, cancelYn,
-          backgroundCell,backgroundRow, backgroundWidth, backgroundHeight)
+          p_crt_by, 
+          einvoiceMasterData, 
+          einvoiceDetailData,
+          einvoiceDetailDataReplace, 
+          '',
+          _sourceRow, 
+          _sourceRow_2, 
+          _sourceRow_3, 
+          headerRowCount, 
+          countFromEndDetailToSignBox,
+          lastPageRowsHeight, 
+          reportPath, 
+          reportSheet, 
+          signPath, 
+          cancelPath, 
+          bgPath,
+          this.masterDataArray, 
+          detailCellFormat, 
+          logos, 
+          signCell, 
+          signBoxCell, 
+          signByCell, 
+          cancelYn,
+          backgroundCell,
+          backgroundRow, 
+          backgroundWidth, 
+          backgroundHeight)
       }
       
     return resultExcel
@@ -206,7 +184,6 @@ class EiExcelHandler {
     }
 
   }
-
 
   msThueCutter(msothueArray, taxCode, taxRow) {
     for (let i = 0; i < taxCode.length; i++) {

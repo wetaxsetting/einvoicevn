@@ -138,8 +138,8 @@
               <v-row class="pt-3" dense>
                 <v-col md="7" class="d-flex pl-2">
                   <BaseButton icon_type="eye_on" :btn_text="$t('preview_E-invoice')" @onclick="onClick('previewEinvoice')" />
-                  <BaseButton icon_type="eye_on" :btn_text="$t('preview_bb')" @onclick="onClick('previewBB')" />
-                  <BaseButton icon_type="eye_on" :btn_text="$t('preview_bb_replace')" @onclick="onClick('previewBB_Replace')" />
+                  <BaseButton icon_type="eye_on" :btn_text="$t('preview_bb')" @onclick="onClick('previewBB')" :disabled="modelSearch.STATUS == 7" />
+                  <BaseButton icon_type="eye_on" :btn_text="$t('preview_bb_replace')" @onclick="onClick('previewBB_Replace')"  :disabled="modelSearch.STATUS == 7"/>
                   <BaseButton icon_type="email" :btn_text="$t('send_mail')" @onclick="onClick('sendMail')" />
                 </v-col>
                 <v-col md="3" class="pr-2">
@@ -282,7 +282,7 @@
         <v-icon>mdi-window-restore</v-icon>
       </v-btn>
     </v-scale-transition>
-    <view-einvoice-pdf-dialog ref="ViewEInvoicePDFDialog" :src_pdfUrl="urlPDF"></view-einvoice-pdf-dialog>
+    <!-- <view-einvoice-pdf-dialog ref="ViewEInvoicePDFDialog" :src_pdfUrl="pdfUrl"></view-einvoice-pdf-dialog> -->
   </v-container>
 </template>
 
@@ -297,7 +297,6 @@ export default {
     "view-einvoice-pdf-dialog": ViewEInvoicePDFDialog,
   },
   data: () => ({
-    urlPDF: "",
     showPDF: false,
     isMaximized: false,
     showLoading: false,
@@ -378,7 +377,11 @@ export default {
       },
     ],
     objInvoiceM:{},
-    tei_einvoice_d_pk_row:""
+    tei_einvoice_ss_m_pk_row:"",
+    tei_einvoice_m_pk_row:"",
+    pdfUrl:"",
+    manualIsMinimized: false,
+    manualIsMinimizedPDF: false,
   }),
 
   mounted() {
@@ -601,18 +604,23 @@ export default {
         case "previewBB":
         this.OnPreviewBB();
           break;  
+        case "previewEinvoice":
+          this.OnPreviewEinvoice();
+          break;
 
       }
     },
+
     async OnPreview()
     {
       if (this.modelMaster.PK) {
+        console.log(this.modelMaster.PK)
             let res_url = await this.$axios.$post("/einvoice/general-pdf-template-04SS", {
               responseType: "json",
                 data: this.modelMaster.PK,
             });
             if (res_url.success) {
-              this.urlPDF = res_url.data;
+              this.pdfUrl = res_url.data;
 
               this.$nextTick(() => {
                 this.isProcessing = false;
@@ -624,19 +632,39 @@ export default {
           }
     },
 
-    
+    async OnPreviewEinvoice()
+    {
+      if (this.modelMaster.PK) {
+            let res_url = await this.$axios.$post("/einvoice/general-url-pdf", {
+              responseType: "json",
+              tei_wt_sale_bill_pk: this.tei_einvoice_m_pk_row,
+            });
+            if (res_url.success) {
+              this.pdfUrl = res_url.data;
+
+              this.$nextTick(() => {
+                this.isProcessing = false;
+                this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+              });
+            }
+          } else {
+            this.showNotification("warning", this.$t("no_row_selected"), "");
+          }
+    },
+
     async OnPreviewBB()
     {
-      if(this.tei_einvoice_d_pk_row != "")
+      if(this.tei_einvoice_m_pk_row != "")
       {
         let res_url = await this.$axios.$post("/einvoice/general-url-pdf-einvoice-bb", {
               responseType: "json",
-              tei_wt_sale_bill_pk: this.tei_einvoice_d_pk_row,
+              tei_einvoice_m_pk_row: this.tei_einvoice_m_pk_row,
             });
+
         if(res_url.success)
         {
           this.pdfUrl = res_url.data;
-
+          console.log("this.pdfUrl  ", this.pdfUrl)
           this.$nextTick(() => {
             this.isProcessing = false
             this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
@@ -647,7 +675,6 @@ export default {
         this.showNotification("warning", this.$t("no_row_selected"), '');
       }
     },
-
 
     async dsoMaster(action) {
       let abc = this.dataMasterList.taxOfficeList.find((item) => item.CODE == this.modelMaster.MCQT);
@@ -1262,11 +1289,44 @@ export default {
         this.salaryStatus = this.$t("fail_to_export_report");
       }
     },
+
     async onCellClickDetail({ column, data, rowIndex, rowType }) {
-      console.log("tei_einvoice_d_pk_row  ", data)
-      this.tei_einvoice_d_pk_row = data.PK;
+      console.log("tei_einvoice_ss_m_pk_row  ", data)
+      this.tei_einvoice_m_pk_row = data.TEI_EINVOICE_M_PK;
       // this.maGD = data.CQT_MAGD;
       // this.xml_signed = data.SIGN_XML;
+    },
+
+    penManualDialogPDF() {
+      if (this.hasForm) {
+        if (this.manualIsMinimizedPDF) {
+          this.manualIsMinimizedPDF = false;
+          this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+        } else {
+          this.dialogIsShow = true;
+        }
+      }
+    },
+
+    restoreManualDialogPDF() {
+      this.manualIsMinimizedPDF = false;
+      this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+    },
+
+    openManualDialog() {
+      if (this.hasForm) {
+        if (this.manualIsMinimized) {
+          this.manualIsMinimized = false;
+          this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
+        } else {
+          this.dialogIsShow = true;
+        }
+      }
+    },
+
+    restoreManualDialog() {
+      this.manualIsMinimized = false;
+      this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
     },
   }
 }

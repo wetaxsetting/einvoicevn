@@ -117,6 +117,11 @@ class EiExcelHandler {
 
         { Cell: `B32`, Info: [`REASON`], Type: 1 },
 
+        { Cell: `D41`, Info: [`COMPANY_SIGN`], Type: 1 },
+        { Cell: `D42`, Info: [`COMPANY_SIGN_DT`], Type: 1 },
+
+        
+
       )  
 
       detailCellFormat = [

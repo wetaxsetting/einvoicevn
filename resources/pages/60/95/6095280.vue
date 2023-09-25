@@ -139,7 +139,7 @@
                 <v-col md="7" class="d-flex pl-2">
                   <BaseButton icon_type="eye_on" :btn_text="$t('preview_E-invoice')" @onclick="onClick('previewEinvoice')" />
                   <BaseButton icon_type="eye_on" :btn_text="$t('preview_bb')" @onclick="onClick('previewBB')" :disabled="modelSearch.STATUS == 7" />
-                  <BaseButton icon_type="eye_on" :btn_text="$t('preview_bb_replace')" @onclick="onClick('previewBB_Replace')"  :disabled="modelSearch.STATUS == 7"/>
+                  <BaseButton icon_type="eye_on" :btn_text="$t('preview_bb_replace')" @onclick="onClick('previewBB_Replace')"  :disabled=" invoiceType != 3"/>
                   <BaseButton icon_type="email" :btn_text="$t('send_mail')" @onclick="onClick('sendMail')" />
                 </v-col>
                 <v-col md="3" class="pr-2">
@@ -382,7 +382,7 @@ export default {
     pdfUrl:"",
     manualIsMinimized: false,
     manualIsMinimizedPDF: false,
-    invoiceType:"0",
+    invoiceType: 0,
   }),
 
   mounted() {
@@ -470,9 +470,10 @@ export default {
           break;
         case "grdSearchClick":
           this.modelMaster.PK = await this.$refs.grdSearch.onSelectedData().PK;
-          console.log("file: 6095280.vue:431 [vng-304] onClick [vng-304] data:", this.modelMaster.PK);
+          //console.log("file: 6095280.vue:431 [vng-304] onClick [vng-304] data:", this.modelMaster.PK);
 
           await this.dsoMaster("select");
+          this.invoiceType = 0;
           this.$refs.grdDetail.loadData();
           break;
         case "newMaster":
@@ -1320,6 +1321,7 @@ export default {
     async onCellClickDetail({ column, data, rowIndex, rowType }) {
       console.log("tei_einvoice_ss_m_pk_row  ", data)
       this.tei_einvoice_m_pk_row = data.TEI_EINVOICE_M_PK;
+      this.invoiceType = data.TCTBAO;
       // this.maGD = data.CQT_MAGD;
       // this.xml_signed = data.SIGN_XML;
     },

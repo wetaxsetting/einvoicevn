@@ -71,7 +71,7 @@
                     <BaseButton icon_type="xml" :btn_text="$t('view_xml')" @onclick="onClick('viewXML')" />
                     <BaseButton icon_type="eye_on" :btn_text="$t('preview')" @onclick="onClick('preview')" />
                     <BaseButton icon_type="eye_on" :btn_text="$t('checking_result_cqt')" @onclick="onClick('CHECKCQT')" />
-                    <BaseButton icon_type="sign" :btn_text="$t('sign')" @onclick="onClick()" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
+                    <BaseButton icon_type="sign" :btn_text="$t('sign')" @onclick="onClick('sign')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
                     <!-- Add -->
                     <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')" @onclick="onClick('newMaster')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
                     <!-- Save -->
@@ -611,7 +611,9 @@ export default {
         case "previewBB_Replace":
         this.OnPreviewBBR();
         break;
-
+        case "sign":
+         this.OnSignXml();  
+        break;
       }
     },
 
@@ -1356,6 +1358,90 @@ export default {
     restoreManualDialog() {
       this.manualIsMinimized = false;
       this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
+    },
+
+    async OnSignXml(){
+      if (this.modelMaster.PK !== "" ) {
+      this.onGeneralXML();
+      let data_invoice = this.onGeneralXML();
+      let res_send = await this.$axios.$post("/einvoice/invalidinvoice2xml", {
+            responseType: "json",
+            invalid_invoices: data_invoice,
+          });
+      
+      console.log("res_send  ", res_send);
+      if(res_send.success)
+        {
+          const objXml = [{
+            req_key : this.modelMaster.PK,
+            xml : JSON.stringify(res_send.data).toString().replaceAll('\"','').replaceAll("<DLTBao>","<DLTBao Id='ID1'>")
+          }];
+
+          // console.log("objXml ", objXml);
+          jQuery.support.cors = true;
+          $.ajax({
+          url: "http://localhost:1080/issueXmlList",
+          dataType: "json",
+          method: "POST",
+          data: {
+                crt_by: this.user.USER_ID,
+                xml: JSON.stringify(objXml).toString()
+              },
+          error: this.onErrorissueXmlList,
+          success: this.onSuccessissueXmlList,
+          });
+        }
+
+      }else
+      {
+        return this.showNotification("warning", this.$t("error_occurs"), "pls_select_invalid_invoices");
+      }
+    },
+
+    async onErrorissueXmlList(json, textStatus, errorThrown) {
+      return this.showNotification("warning", this.$t("error_occurs"), errorThrown);//   alert(" Error :" + errorThrown);
+    },
+
+    async onSuccessissueXmlList(data) {
+      const jsonSendData = {
+        req_key : this.modelMaster.PK,
+        xml_signed : data.result[0]["xml"].toString()  
+      }
+
+      const dso_process_check_serialno = {
+        type: "list",
+        selpro: "EI_PRO_6095280_SERIAL_CHECK",
+        para: [ this.modelMaster.TEI_COMPANY_PK, 
+                data.serial_number, 
+                data.not_before, 
+                data.not_after],
+      };
+
+      const check_serial_no_result = await this._dsoCall(
+        dso_process_check_serialno,
+        "select",
+        false
+      );
+      if (check_serial_no_result[0].STATUS =="OK")
+      {
+        let res = await this.$axios.$post("/einvoice/sendinformadjustinvoice", {
+          responseType: "json",
+          para: jsonSendData
+        });
+
+          console.log("res",res);
+        if (res.success) {
+          this.showNotification("success", res.message, "" );  
+              this.$refs.grdSearch.loadData(); 
+          
+        } else {
+          this.showNotification("danger", res.message, "");
+        }
+      }else
+      {
+        this.showNotification("danger", "Token not suitable !!!", "");
+      }
+
     },
   }
 }

@@ -2358,13 +2358,17 @@ class EInvoiceController {
 
       if (trade_code && trade_code.data) {
         const para_value = {
-          erp_einvoice_ss_m_pk: para.erp_einvoice_ss_m_pk,
+          req_key: para.req_key,    //erp_einvoice_ss_m_pk
           trade_code: trade_code.data.maGDich,
           xml_sign: para.xml_signed,
         };
         const res = await DBService.ExecuteSQLBlob(
-          `BEGIN EI_UP_6095280_DATA_TRADE_CODE(:erp_einvoice_ss_m_pk,:trade_code, :xml_sign,
-                            :p_language, :p_crt_by, :p_rtn_cur); END;`,
+          `BEGIN EI_UP_6095280_TRADE_CODE(      :req_key,
+                                                :trade_code, 
+                                                :xml_sign,
+                                                :p_language, 
+                                                :p_crt_by, 
+                                                :p_rtn_cur); END;`,
           para_value,
           p_language,
           p_crt_by
@@ -2380,7 +2384,7 @@ class EInvoiceController {
             Utils.response(
               false,
               `Something went wrong, please try again later.
-                  EI_UP_6095280_DATA_TRADE_CODE`,
+                  EI_UP_6095280_TRADE_CODE`,
               para_value
             )
           );
@@ -2395,6 +2399,7 @@ class EInvoiceController {
         FUNC: "sendInvoiceToTaxOffice",
         CONTENT: e.message,
       });
+      console.log(e);
       return response.send(Utils.response(false, "error", e.message));
     }
   }

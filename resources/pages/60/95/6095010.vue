@@ -217,17 +217,11 @@ export default {
       COMPANY_CD: "",
       COMPANY_NM: "",
       COMPANY_FNM: "",
-      TAX_CODE: "",
-      ADDR: "",
       ADDR_L: "",
       ADDR_F: "",
       TEL: "",
       FAX: "",
-      ACC_NO: "",
       ACC_CCY: "",
-      ACC_HOLDER: "",
-      BANK_NAME: "",
-      CONTACT_PERSON: "",
       REP_PERSON: "",
       TAX_NAME: "",
       REMARKS: "",
@@ -582,6 +576,7 @@ export default {
           break;
         case "NEW":
           this.addNewMaster(); //
+          
           break;
         case "SAVE":
           if (this.MasterInfo.COMPANY_NM == "") {
@@ -656,7 +651,7 @@ export default {
       this.MasterInfo.MCQTQLY = "00";
       // this.MasterInfo. = null;
       // this.MasterInfo. = null;
-      // this.$refs.grdCompany.Clear();
+      this.$refs.grdDetail.Clear();
     },
     async onGetDetailDeclaration() {
       if (this.MasterInfo.PK != "") {

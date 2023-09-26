@@ -1461,6 +1461,43 @@ class ReportHelper {
         return imageID;
     }
 
+    async insertImageBase64 (imageBase64, cell) { 
+        let imageID = null;
+        const sheetModel = this.worksheet.model;
+        
+        if(imageBase64) {
+            
+            // let tmp = that._arrayBufferToBase64(imageBuffer);
+            // let imageBase64 = "data:image/png;base64,"+ tmp
+            imageID = this.workbook.addImage({
+                base64: imageBase64,
+                extension: 'png'
+            });
+    
+            if(imageID === "" || !imageID) {
+                // imageBase64 = "data:image/jpeg;base64, "+ tmp;
+                imageID = this.workbook.addImage({
+                    base64: imageBase64,
+                    extension: 'jpeg'
+                });
+            }
+        
+        }
+    
+        if(cell) {
+            if( cell.isMerged)   {
+                //console.log("_worksheet", _worksheet);
+                const idxMerge = sheetModel.merges.findIndex( x =>  x.includes(cell.address));
+                const mergeRange = sheetModel.merges[idxMerge];
+                this.worksheet.addImage(imageID, mergeRange);
+            }  else {
+                this.worksheet.addImage(imageID, cell.address+":"+cell.address);
+            }
+        }
+    
+        return imageID;
+    }
+
 
     async insertPathImage(path) { 
         let imageID = null;

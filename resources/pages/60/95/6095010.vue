@@ -588,19 +588,19 @@ export default {
             this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_company"));
             break;
           } else if (this.MasterInfo.TAX_CODE == "") {
-            this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_from_no"));
+            this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_tax_code"));
             break;
           } else if (this.MasterInfo.REPRESENT == "") {
             this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_represent"));
             break;
           }  else if (this.MasterInfo.ADDR == "") {
-            this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_represent"));
+            this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_address"));
             break;
           }else if (this.MasterInfo.CONTACT_EMAIL == "") {
-            this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_represent"));
+            this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_contact_email"));
             break;
           }else if (this.MasterInfo.MCQTQLY == "00") {
-            this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_represent"));
+            this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_tax_authority_name"));
             break;
           }else {
             this.dsoMaster("update");

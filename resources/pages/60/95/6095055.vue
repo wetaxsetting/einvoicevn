@@ -86,7 +86,7 @@
             </v-badge>
           </v-col>
           <v-col lg="2">
-            <b style="color: red">{{ MasterInfo.SERIAL_NO }}</b>
+            <b style="color: red">{{ MasterInfo.TEMPLATE_NM }}</b>
           </v-col>
           <v-col md="1" class="d-flex justify-end">
             <!-- <BaseButton btn_type="icon" icon_type="excel" :btn_text="$t('template_file')" :disabled="!issue_pk" @onclick="getImpFile" /> -->
@@ -455,6 +455,7 @@ export default {
       FORM_NO: "",
       FROM_NO: "",
       USE_YN: "",
+      TT: "",
     },
     img_dialog: false,
     img_dialogbg: false,
@@ -757,6 +758,7 @@ export default {
       if (cell.data.PK != this.issue_pk) {
         this.issue_pk = cell.data.PK;
         this.dataIssued = cell.data;
+        this.MasterInfo.TT = cell.data.SERIAL_NO;
         if (cell.data._rowstatus == "i") {
           this.MasterInfo.USE_YN = cell.data.USE_YN;
         } else {
@@ -937,6 +939,7 @@ export default {
           switch (action) {
             case "select":
               this.MasterInfo = { ...res };
+              console.log("file: 6095055.vue:942 [vng-304] awaitthis._dsoCall [vng-304] res:", res)
               this.MasterInfo._rowstatus = "u";
               ////   Bộ data để view pdf
               this.dataTemp = {
@@ -956,7 +959,7 @@ export default {
 
               this.itemTemplatesPK = res.PK;
               this.url_template = res.URL_FILE_EXCEL;
-              this.MasterInfo.SERIAL_NO = res.TEMPLATE_NM;
+              this.MasterInfo.TEMPLATE_NM = res.TEMPLATE_NM;
               ///  Load ra được hình ảnh////
               let imgLOGO = this.MasterInfo.URL_IMG_LOGO;
               this.imageLOGO = imgLOGO;
@@ -1113,12 +1116,6 @@ export default {
         TCO_BUSPLACE_PK: this.lstBizplace,
         REMARKS: "",
         USE_YN: "Y",
-
-        COMPANY_NM: "",
-        TAX_CODE: "",
-        ADDR1: "",
-        TEL: "",
-        BANK_ACCOUNT1: "",
         BANK_NM1: "",
 
         TEI_TEMPLATE_PK: this.MasterInfo.PK,

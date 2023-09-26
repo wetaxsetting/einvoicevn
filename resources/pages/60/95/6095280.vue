@@ -1180,39 +1180,71 @@ export default {
       return this.objInvoiceM.invalid_invoices;
     },
 
-    // async OnCheckingDec() {
-    //   var count = 1;
-    //   if (confirm("Bạn muốn kiểm tra tờ khai này?")) {
-    //     jQuery.support.cors = true;
-    //     $.ajax({
-    //       url: "http://genuclouding.com/wseinvoice/BSService.asmx/CheckingDeclationCQT_v3",
-    //       dataType: 'text',
-    //       method: 'POST',
-    //       data: {
-    //         tei_einvoice_issuse_cqt_pk: modelMaster.TEI_COMPANY_PK.value,
-    //         tei_company_pk: dataMasterList.companyList.value,
-    //         tradecode: txtTrade_Code_CQT.value,
-    //         ctr_by: txtUserName.value
-    //       },
-    //       error: function (response, json, textStatus, errorThrown) {
-    //         alert(' Error :' + errorThrown);
-    //       },
-    //       success: function (response) {
+    async OnCheckingDec() {
 
-    //         var xmlDoc = $.parseXML(response);
-    //         var xml = $(xmlDoc);
-    //         //alert(xml.text());
-    //         let obj = $.parseJSON(xml.text());
-    //         if (obj.msg == "OK") {
-    //           alert("Checking Ma CQT is OK !!");
-    //           //dso_steafrstea010003_s_01.Call('SELECT');
-    //           //txtXMl_T.value = obj.result;
+      var tempTradeCode = this.$refs.grdSearch
+        .getDataSource()
+        .find((item) => item.PK == this.modelMaster.PK);
 
-    //         }
-    //       }
-    //     });
-    //   }
-    // },
+      if (!tempTradeCode?.TRADE_CODE) {
+        this.showNotification("danger", this.$t("tradecode_null"), "");
+        return;
+      }
+
+      console.log("tempTradeCode  ", tempTradeCode);
+      if (this.modelMaster.PK) {
+        let res = await this.$axios.$post("/einvoice/checkinformadjustinvoice", {
+          responseType: "json",
+          para: {
+            req_key: this.modelMaster.PK,
+            //trade_code: [tempTradeCode.TRADE_CODE],
+            tei_company_pk : this.modelMaster,TEI_COMPANY_PK,
+            trade_code: ["V01041285654CE1CD6D4B5D46DD92634808B649F41C"],
+            
+          },
+        });
+        console.log("checkinformadjustinvoice " + JSON.stringify(res));
+        if (res.success) {
+          this.$refs.grdLeft.loadData();
+          this.showNotification("success", this.$t(res.message), "");
+        } else {
+          this.showNotification("danger", this.$t(res.message), "");
+        }
+      }
+
+
+      // var count = 1;
+      // if (confirm("Bạn muốn kiểm tra tờ khai này?")) {
+      //   jQuery.support.cors = true;
+      //   $.ajax({
+      //     url: "http://genuclouding.com/wseinvoice/BSService.asmx/CheckingDeclationCQT_v3",
+      //     dataType: 'text',
+      //     method: 'POST',
+      //     data: {
+      //       tei_einvoice_issuse_cqt_pk: modelMaster.TEI_COMPANY_PK.value,
+      //       tei_company_pk: dataMasterList.companyList.value,
+      //       tradecode: txtTrade_Code_CQT.value,
+      //       ctr_by: txtUserName.value
+      //     },
+      //     error: function (response, json, textStatus, errorThrown) {
+      //       alert(' Error :' + errorThrown);
+      //     },
+      //     success: function (response) {
+
+      //       var xmlDoc = $.parseXML(response);
+      //       var xml = $(xmlDoc);
+      //       //alert(xml.text());
+      //       let obj = $.parseJSON(xml.text());
+      //       if (obj.msg == "OK") {
+      //         alert("Checking Ma CQT is OK !!");
+      //         //dso_steafrstea010003_s_01.Call('SELECT');
+      //         //txtXMl_T.value = obj.result;
+
+      //       }
+      //     }
+      //   });
+      // }
+    },
 
     async onPreviewXML() {
       if (!this.modelMaster.PK == null) {

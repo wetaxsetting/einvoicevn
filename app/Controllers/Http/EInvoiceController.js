@@ -2618,19 +2618,19 @@ class EInvoiceController {
         },
       };
 
+      // const authUserName = "GENUWIN"; // "GENUWIN";
+      // const authPassword = "genuwin123"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+      // let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+      const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
       const authUserName = "GENUWIN"; // "GENUWIN";
-      const authPassword = "genuwin123"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
-
-      //const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
-      let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
-
+      const authPassword = "e_GX4v@";// "genuwin123";// "e_GX4v@";
       const { proc, para } = request.all();
 
       console.log("para", para);
-      //   @TODO: remove return
-      return response.send(Utils.response(true, `checking_declare_success`, para));
-
+      //@TODO: remove return
+      //return response.send(Utils.response(true, `checking_declare_success`, para));
       //console.log(para.trade_code.length)
+
       let rtnValue = [];
       //for (let i = 0; i < para.length; i++) {
       for (let i = 0; i < para.trade_code.length; i++) {
@@ -2647,7 +2647,11 @@ class EInvoiceController {
           return response.send(Utils.response(false, `no data found.`));
         }
         let tenTBao = "",
-          maTBao = "";
+            maTBao = "",
+            base64XML = "",
+            cqt_result = "",
+            cqt_status = "",
+            mccqt = "";
         for (let j = 0; j < result.data.length; j++) {
           //res.length undefined !!!!!!!!!!!!!!!!!
           const items = result.data[j];
@@ -2657,13 +2661,116 @@ class EInvoiceController {
             if (items[k].loaiTBao == "0") {
               tenTBao = items[k].tenTBao;
               maTBao = items[k].loaiTBao;
-            } else if (items[k].loaiTBao == "17") {
+            }  else if (items[k].loaiTBao == "1") { 
+              base64XML = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
+
+            }else if (items[k].loaiTBao == "17" || items[k].loaiTBao == "15") {
               tenTBao = items[k].tenTBao;
               maTBao = items[k].loaiTBao;
-            } else if (items[k].loaiTBao == "15") {
-              tenTBao = items[k].tenTBao;
-              maTBao = items[k].loaiTBao;
-            }
+              for (const invoice of items[k].ndungTBao.tbaoTNhanSSotDoc.dsachHDonLoi) {  
+
+                if(invoice.dsachLoi.length == 0)
+                {
+                  cqt_result = "Thành công";
+                  cqt_status = invoice.tthaiTNCQT;
+                }else
+                {
+                  for( const error of invoice.dsachLoi)
+                  {
+                    cqt_result += error.MaLoi + " - " +  error.MTaLoi;
+                    cqt_status = invoice.tthaiTNCQT;
+                  }
+                }
+                let para_value_d = {
+                  p_req_key: para.req_key,
+                  p_mccqt : invoice.MCCQT,
+                  p_form_no : invoice.khieuMauHDon,
+                  p_serial_no : invoice.khieuHDon,
+                  p_invoice_no : invoice.soHDon,
+                  p_cqt_result : cqt_result,
+                  p_cqt_status : cqt_status,
+                };
+                await DBService.ExecuteSQLBlob(
+                  `BEGIN ei_upd_hd04ss_d(
+                                    :p_req_key, 
+                                    :p_mccqt, 
+                                    :p_form_no, 
+                                    :p_serial_no,
+                                    :p_invoice_no,
+                                    :p_cqt_result,
+                                    :p_cqt_status,
+                                    :p_language, 
+                                    :p_crt_by, 
+                                    :p_rtn_cur
+                                ); END;`,
+                                para_value_d,
+                  p_language,
+                  p_crt_by
+                );
+              }
+
+              let para_value_m = {
+                p_req_key: para.req_key,
+                p_xml_sign : base64XML,
+                p_messCQT : tenTBao,
+                p_status : "1",
+              };
+              await DBService.ExecuteSQLBlob(
+                `BEGIN ei_upd_hd04ss_m(
+                                  :p_req_key, 
+                                  :p_xml_sign, 
+                                  :p_messCQT, 
+                                  :p_status,
+                                  :p_language, 
+                                  :p_crt_by, 
+                                  :p_rtn_cur
+                              ); END;`,
+                para_value_m,
+                p_language,
+                p_crt_by
+              );
+              
+
+              let para_value_mail = {
+                p_tei_einvoice_m_pk : para.req_key, //"4090",// 
+                p_tco_company_pk : para.tei_company_pk,
+              };
+              let data_mail = await DBService.ExecuteSQLBlob(
+                `BEGIN ei_sel_data_send_mail(
+                                  :p_tei_einvoice_m_pk, 
+                                  :p_tco_company_pk, 
+                                  :p_language, 
+                                  :p_crt_by, 
+                                  :p_rtn_cur
+                              ); END;`,
+                para_value_mail,
+                p_language,
+                p_crt_by
+              );
+              console.log(data_mail);
+
+              if(data_mail.p_rtn_cur.length > 0)
+              {
+                for(const mail of data_mail.p_rtn_cur)
+                {
+                  let invoice_data = {
+                    subject : mail.SUBJECT,
+                    body : mail.BODY_1_MAIL,
+                    buyer_email : mail.EMAIL_ADDRESS,
+                    buyer_email_cc : mail.EMAIL_ADDRESS_CC,
+                    pk : mail.PK,
+                    filename1 : mail.FILENAME1,
+                    filename2 : mail.FILENAME2,
+                  }
+
+                  const { res_send_mail } = await this.sendMaiToCustomerWhenCancelEinvoice(
+                    invoice_data,
+                    p_language,
+                    p_crt_by
+                  );
+                }
+              }
+            } 
           }
         }
         rtnValue.push({
@@ -2673,7 +2780,7 @@ class EInvoiceController {
         });
       }
 
-      return response.send(Utils.response(true, `checking_declare_success`, rtnValue));
+      return response.send(Utils.response(true, `checking_invalid_invoices_was_success`, rtnValue));
     } catch (e) {
       Utils.Logger({
         LVL: "error",
@@ -2681,6 +2788,7 @@ class EInvoiceController {
         FUNC: "checkInformAdjustToTaxOffice",
         CONTENT: e.message,
       });
+      console.log(e)
       return response.send(Utils.response(false, "error", e.message));
     }
   }
@@ -6136,7 +6244,6 @@ class EInvoiceController {
   // end weTAX
 
   // e -invoice
- 
   async generalXmlPosInvoiceView({ request, response, auth }) {
     try {
       var p_language = request.header("accept-language", "ENG");
@@ -7383,7 +7490,6 @@ class EInvoiceController {
 
   async sendMaiToCustomer(tei_wt_sale_bill_pk, data_invoice, p_language, p_crt_by) {
     try {
-
       //console.log("sSSSS ", tei_wt_sale_bill_pk);
     let EiExcels = new EiPosExcelHandlerAuto();
     let url_pdf = await EiExcels.getEinvoice(tei_wt_sale_bill_pk, p_language, p_crt_by);
@@ -7477,6 +7583,37 @@ class EInvoiceController {
     });
     console.log("res_send_mail  ", res_send_mail);
     return { res_send_mail, subject, body };
+    } catch (error) {
+      console.log("res_send_mail error  ", error);
+    }
+  }
+
+  async sendMaiToCustomerWhenCancelEinvoice(  data_invoice, 
+                                              p_language, 
+                                              p_crt_by) {
+    try {
+
+    let EiExcels = new EiExcelHandlerAuto();
+    let url_pdf1 = await EiExcels.getEinvoice(data_invoice.pk, p_language, p_crt_by);
+    console.log("url_pdf1  ", url_pdf1);
+
+   let EiExcels1 = new EiExcel04SS2Handler();
+   let url_pdf2 = await EiExcels1.getEinvoice(data_invoice.pk, p_language, p_crt_by);
+   console.log("url_pdf2  ", url_pdf2);
+
+
+    const res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {
+                              mail_to: data_invoice.buyer_email,
+                              cc_to: data_invoice.buyer_email_cc,
+                              subject: data_invoice.subject,
+                              body: data_invoice.body,
+                              attachfile1: url_pdf1,
+                              attachfile2: url_pdf2,
+                              filename1: data_invoice.filename1,
+                              filename2: data_invoice.filename2,
+    });
+    console.log("res_send_mail  ", res_send_mail);
+    return { res_send_mail};
     } catch (error) {
       console.log("res_send_mail error  ", error);
     }
@@ -7652,7 +7789,6 @@ class EInvoiceController {
       return response.send(Utils.response(false, "error", e.message));
     }
   }
-
 
   async viewPDFEinvoiceBBEPortal({ request, response, auth }) {
     try {

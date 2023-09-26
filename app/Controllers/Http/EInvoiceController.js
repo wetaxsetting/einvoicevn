@@ -1899,7 +1899,7 @@ class EInvoiceController {
             dn_mst: tokens[i].dn_mst,
             raw_data: tokens[i].raw_data,
             status: tokens[i].status,
-            company_id: seller_company_id,
+            company_id: seller_taxcode,
           };
           const result = await DBService.ExecuteSQLBlob(
             `BEGIN AC_UPD_TOKEN_6095010_01(

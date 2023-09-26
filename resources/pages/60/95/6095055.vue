@@ -66,7 +66,7 @@
                 'ADDR1',
                 'TEL',
                 'BANK_ACCOUNT1',
-                'BANK_NM1',
+                'BANK_NM1'
               ]"
               :height="limitHeight"
               @cellClick="cellClickCell"

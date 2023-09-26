@@ -5502,6 +5502,7 @@ class EInvoiceController {
           Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
         },
       }).then(async (res) => {
+        console.log(" res  ", res.data);
         if (res.data.length) {
           for (let j = 0; j < res.data.length; j++) {
             const items = res.data[j];

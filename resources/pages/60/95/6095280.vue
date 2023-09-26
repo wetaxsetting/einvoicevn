@@ -346,7 +346,7 @@ export default {
       NTBAO: null,
       TMESS_CQT: null,
       VOUCHER_NO: null,
-      PBAN: "2.0.0",
+      PBAN: "2.0.1",
       SELLER_POSITION: null,
       SELLER_REPRESENT: null,
     },
@@ -392,8 +392,8 @@ export default {
     console.clear();
     await this.initDataList();
     await this.initModel();
-    await this.getListCodes("form_no");
-    await this.getListCodes("serial_no");
+    // await this.getListCodes("form_no");
+    // await this.getListCodes("serial_no");
     await this.getListCodes("e-invoice_type");
 
     await this.initHeaderList();
@@ -430,12 +430,14 @@ export default {
     },
     "modelSearch.COMPANY_PK"(val) {
       if (val) {
+        console.log("val  " , val);
         this.modelMaster.TEI_COMPANY_PK = val;
         this.dataMasterList.companyInfoList.forEach((item) => {
           if (item.TEI_COMPANY_PK == val) {
             this.modelMaster.TNNT = item.NAME;
             this.modelMaster.MST = item.TAX_CODE;
             this.modelMaster.DDANH = item.DDANH;
+            this.modelMaster.MCQT = item.MCQTQLY;
           }
         });
       }
@@ -451,15 +453,15 @@ export default {
       }
     },
     form_no_pop(val) {
-      this.getListCodes("serial_no");
+      //this.getListCodes("serial_no");
     },
     form_date(val) {
-      this.getListCodes("form_no");
-      this.getListCodes("serial_no");
+      //this.getListCodes("form_no");
+      //this.getListCodes("serial_no");
     },
     form_to(val) {
-      this.getListCodes("form_no");
-      this.getListCodes("serial_no");
+      //this.getListCodes("form_no");
+      //this.getListCodes("serial_no");
     },
   },
   methods: {
@@ -1056,6 +1058,18 @@ export default {
       // if (this.serial_no_list.length > 0) {
       //   this.selected_serial_no = this.serial_no_list[0].selected_serial_no;
       // };
+      console.log("this.modelSearch.COMPANY_PK  ", this.modelSearch.COMPANY_PK);
+      setTimeout(async () => {
+        await this.dataMasterList.companyInfoList.forEach((item) => {
+          if (item.TEI_COMPANY_PK == this.modelSearch.COMPANY_PK) {
+            this.modelMaster.TNNT = item.NAME;
+            this.modelMaster.MST = item.TAX_CODE;
+            this.modelMaster.DDANH = item.DDANH;
+            this.modelMaster.MCQT = item.MCQTQLY;
+          }
+        });
+      }, 1000);
+      
     },
 
     async getListCodes(pos) {

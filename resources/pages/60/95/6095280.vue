@@ -773,6 +773,7 @@ export default {
 
     onSelect() {
       let selectedData = this.$refs.popupGrid.getSelectedRows();
+      console.log("selectedData   ", selectedData);
       for (let i = 0; i < selectedData.length; i++) {
         this.$refs.grdDetail.onAdd({
           _rowstatus: "i",
@@ -786,8 +787,7 @@ export default {
           NGAY: selectedData[i].NGAY,
           LADHDDT: selectedData[i].LADHDDT,
           LDO: selectedData[i].CANCEL_REASON,
-          // CUSTOMER_NM: selectedData[i].CUSTOMER_NM,
-          // TTHAI: selectedData[i].EI_STATUS,
+          CUSTOMER_NM: selectedData[i].CUSTOMER_NM,
           TEI_EINVOICE_SS_M_PK: this.modelMaster.PK,
         });
       }
@@ -949,7 +949,7 @@ export default {
         {
           dataField: "INVOICE_NO",
           caption: this.$t("invoice_nod"),
-          alignment: "left",
+          alignment: "center",
           type: "text",
         },
         {
@@ -961,44 +961,55 @@ export default {
         {
           dataField: "FORM_NO",
           caption: this.$t("form_nod"),
-          alignment: "left",
+          alignment: "center",
           type: "text",
         },
         {
           dataField: "NGAY",
           caption: this.$t("date_d"),
-          alignment: "left",
+          alignment: "center",
           type: "date",
         },
         {
           dataField: "LADHDDT",
-          caption: this.$t("type_invoice"),
-          alignment: "left",
-          type: "text",
+          caption: this.$t("type_e_invoice"),
+          alignment: "center",
+          allowEditing: true,
+          width: 300,
+          datasource: {
+            KEY: "CODE",
+            VALUE: "NAME",
+            data: this.type_invoice_list,
+          },
         },
+        // {
+        //   dataField: "LADHDDT_NM",
+        //   caption: this.$t("type_invoice_name"),
+        //   alignment: "left",
+        //   type: "text",
+        // },
+        // {
+        //   dataField: "TCTBAO",
+        //   caption: this.$t("invoice_type"),
+        //   alignment: "left",
+        //   type: "text",
+        // },
+        // {
+        //   dataField: "TCTBAO_NM",
+        //   caption: this.$t("invoice_type_name"),
+        //   alignment: "left",
+        //   type: "text",
+        // },
+        // {
+        //   dataField: "CANCEL_REASON",
+        //   caption: this.$t("cancel_reason"),
+        //   alignment: "left",
+        //   type: "text",
+        // },
         {
-          dataField: "LADHDDT_NM",
-          caption: this.$t("type_invoice_name"),
-          alignment: "left",
-          type: "text",
-        },
-        {
-          dataField: "TCTBAO",
-          caption: this.$t("invoice_type"),
-          alignment: "left",
-          type: "text",
-        },
-        {
-          dataField: "TCTBAO_NM",
-          caption: this.$t("invoice_type_name"),
-          alignment: "left",
-          type: "text",
-        },
-        {
-          dataField: "CANCEL_REASON",
-          caption: this.$t("cancel_reason"),
-          alignment: "left",
-          type: "text",
+          dataField: "CUSTOMER_NM",
+          caption: this.$t("customer_nm"),
+          width: 200,
         },
         {
           dataField: "BUYER_POSITION",

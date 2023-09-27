@@ -2763,7 +2763,7 @@ class EInvoiceController {
                     filename2 : mail.FILENAME2,
                   }
 
-                  const { res_send_mail } = await this.sendMaiToCustomerWhenCancelEinvoice(
+                  const { res_send_mail } = await this.sendMailToCustomerWhenCancelEinvoice(
                     invoice_data,
                     p_language,
                     p_crt_by
@@ -4761,7 +4761,7 @@ class EInvoiceController {
       //   return response.send(Utils.response(true, `error!`, {err_msg: 'exec error: ei_upd_order_info'}));
       // }
 
-      const { res_send_mail, subject, body } = await this.sendMaiToCustomer(
+      const { res_send_mail, subject, body } = await this.sendMailToCustomer(
         tei_wt_sale_bill_pk,
         data_invoice,
         p_language,
@@ -4796,8 +4796,8 @@ class EInvoiceController {
           mail_form: res_send_mail.data.data.mail_from,
           mail_to: res_send_mail.data.data.mail_to,
           mail_to_cc: res_send_mail.data.data.mail_to_cc,
-          error_code: "",
-          error_name: "",
+          etax_result: "D",
+          etax_status: "W",
           title: subject,
           content: body,
         };
@@ -4829,8 +4829,8 @@ class EInvoiceController {
           mail_form: res_send_mail.data.data.mail_from,
           mail_to: res_send_mail.data.data.mail_to,
           mail_to_cc: res_send_mail.data.data.mail_to_cc,
-          error_code: "",
-          error_name: "",
+          etax_result: "D",
+          etax_status: "W",
           title: subject,
           content: body,
         };
@@ -4915,7 +4915,7 @@ class EInvoiceController {
             buyer_email: infor_send_mail.buyer_email,
             buyer_email_cc : infor_send_mail.buyer_email_cc,
         }
-        const { res_send_mail, subject, body } = await this.sendMaiToCustomer(
+        const { res_send_mail, subject, body } = await this.sendMailToCustomer(
           tei_wt_sale_bill_pk,
           invoice_data,
           p_language,
@@ -7209,7 +7209,7 @@ class EInvoiceController {
           p_crt_by
         );
 
-        const res_send_mail = await this.sendMaiToCustomerEPort(trade_code.data.maGDich, p_language, p_crt_by);
+        const res_send_mail = await this.sendMailToCustomerEPort(trade_code.data.maGDich, p_language, p_crt_by);
 
         rtnValue.push({
           req_key: invoices[i].req_key,
@@ -7489,7 +7489,7 @@ class EInvoiceController {
     }
   }
 
-  async sendMaiToCustomer(tei_wt_sale_bill_pk, data_invoice, p_language, p_crt_by) {
+  async sendMailToCustomer(tei_wt_sale_bill_pk, data_invoice, p_language, p_crt_by) {
     try {
       //console.log("sSSSS ", tei_wt_sale_bill_pk);
     let EiExcels = new EiPosExcelHandlerAuto();
@@ -7589,7 +7589,7 @@ class EInvoiceController {
     }
   }
 
-  async sendMaiToCustomerWhenCancelEinvoice(  data_invoice, 
+  async sendMailToCustomerWhenCancelEinvoice(  data_invoice, 
                                               p_language, 
                                               p_crt_by) {
     try {
@@ -7620,7 +7620,86 @@ class EInvoiceController {
     }
   }
 
-  async sendMaiToCustomerEPort(trade_code, p_language, p_crt_by) {
+  async sendMailInvalidInvoice({ request, response, auth }) {
+    try {
+      var p_language = request.header("accept-language", "ENG");
+      var p_crt_by = "";
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const { data } = request.all();
+
+      let para_value_mail = {
+        p_tei_einvoice_m_pk : data.req_key, //"4090",// 
+        p_tco_company_pk : data.tei_company_pk,
+      };
+      let data_mail = await DBService.ExecuteSQLBlob(
+        `BEGIN ei_sel_data_send_mail_2(
+                          :p_tei_einvoice_m_pk, 
+                          :p_tco_company_pk, 
+                          :p_language, 
+                          :p_crt_by, 
+                          :p_rtn_cur
+                      ); END;`,
+        para_value_mail,
+        p_language,
+        p_crt_by
+      );
+      console.log(data_mail);
+    //if()
+
+    let EiExcels = new EiExcelHandlerAuto();
+    let url_pdf1 = await EiExcels.getEinvoice(data_invoice.pk, p_language, p_crt_by);
+    console.log("url_pdf1  ", url_pdf1);
+
+    let EiExcels1 = new EiExcel04SS2Handler();
+    let url_pdf2 = await EiExcels1.getEinvoice(data_invoice.pk, p_language, p_crt_by);
+    console.log("url_pdf2  ", url_pdf2);
+
+
+    const res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {
+                              mail_to: data_invoice.buyer_email,
+                              cc_to: data_invoice.buyer_email_cc,
+                              subject: data_invoice.subject,
+                              body: data_invoice.body,
+                              attachfile1: url_pdf1,
+                              attachfile2: url_pdf2,
+                              filename1: data_invoice.filename1,
+                              filename2: data_invoice.filename2,
+    });
+    console.log("res_send_mail  ", res_send_mail);
+
+    if (res_send_mail.data.success) {
+      let rtnValue = {
+        send_date: res_send_mail.data.data.date_send,
+        send_time: res_send_mail.data.data.time_send,
+        mail_form: res_send_mail.data.data.mail_from,
+        mail_to: res_send_mail.data.data.mail_to,
+        mail_to_cc: res_send_mail.data.data.mail_to_cc,
+      };
+
+      response.send(
+        Utils.response(true, `${data.length} invoices was update status from tax office.`, rtnValue)
+      );
+    }
+    else
+    {
+      response.send(
+        Utils.response(false, `${data.length} invoices was update status from tax office.`, rtnValue)
+      );
+    }
+
+
+
+   
+    return { res_send_mail};
+    } catch (error) {
+      console.log("res_send_mail error  ", error);
+    }
+  }
+
+  async sendMailToCustomerEPort(trade_code, p_language, p_crt_by) {
     try {
       const para_inv_st = {
         trade_code: trade_code,

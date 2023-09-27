@@ -392,8 +392,8 @@ export default {
     console.clear();
     await this.initDataList();
     await this.initModel();
-    // await this.getListCodes("form_no");
-    // await this.getListCodes("serial_no");
+    await this.getListCodes("form_no");
+    await this.getListCodes("serial_no");
     await this.getListCodes("e-invoice_type");
 
     await this.initHeaderList();
@@ -453,15 +453,15 @@ export default {
       }
     },
     form_no_pop(val) {
-      //this.getListCodes("serial_no");
+      this.getListCodes("serial_no");
     },
     form_date(val) {
-      //this.getListCodes("form_no");
-      //this.getListCodes("serial_no");
+      this.getListCodes("form_no");
+      this.getListCodes("serial_no");
     },
     form_to(val) {
-      //this.getListCodes("form_no");
-      //this.getListCodes("serial_no");
+      this.getListCodes("form_no");
+      this.getListCodes("serial_no");
     },
   },
   methods: {
@@ -615,6 +615,9 @@ export default {
         break;
         case "sign":
          this.OnSignXml();  
+        break;
+        case "sendMail" :
+         this.onSendMail();
         break;
       }
     },
@@ -1500,6 +1503,10 @@ export default {
       }
 
     },
+
+    async onSendMail(){
+
+    }
   }
 }
 </script>

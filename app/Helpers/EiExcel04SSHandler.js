@@ -79,8 +79,10 @@ class EiExcelHandler {
         { Cell: `B7`, Info: [`TCQT`], Type: 1 },
         { Cell: `K2`, Info: [`MSO`], Type: 1 },
 
-        { Cell: `H16`, Info: [`NOW`], Type: 1 },
-        { Cell: `I19`, Info: [`COMPANY_SIGN`], Type: 1 },
+        { Cell: `I17`, Info: [`NOW`], Type: 1 },
+        { Cell: `I22`, Info: [`COMPANY_SIGN`], Type: 1 },
+        { Cell: `I23`, Info: [`NGAY_SIGN`], Type: 1 },
+        
       );
       console.log("file: EiExcel04SSHandler.js:87 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] detailCellFormat:", detailCellFormat)
 

@@ -66,14 +66,10 @@ class EiExcelHandler {
       //let url_file_excel = "report/60/95/einvoices_template/Bornga/Bornga.xlsx";
 
       this.masterDataArray = [];
-      reportPath = "report/60/95/ex_04ss/HD_04SS.xlsx";
+      reportPath = "report/60/95/ex_04ss/HD_04SS_1.xlsx";
       reportSheet = "Invoice";
       //mảng data của master
       this.masterDataArray.push(
-        // { Cell: `B6`, Info: [`TEN_BIEN_BAN`], Type: 1 },
-        // { Cell: `B7`, Info: [`VOUCHER_NO`], Type: 1 },
-        // { Cell: `B15`, Info: [`NOW`], Type: 1 },
-
         { Cell: `E10`, Info: [`MST`], Type: 1 },
         { Cell: `F9`, Info: [`TNNT`], Type: 1 },
         { Cell: `B7`, Info: [`TCQT`], Type: 1 },
@@ -84,7 +80,6 @@ class EiExcelHandler {
         { Cell: `J23`, Info: [`NGAY_SIGN`], Type: 1 },
         
       );
-      console.log("file: EiExcel04SSHandler.js:87 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] detailCellFormat:", detailCellFormat)
 
       detailCellFormat = [
         { startCell: 2, endCell: 3, cellType: 2, cellBorder: "thin", field: "STT" }, //từ cell bắt đầu tới cell kết thúc, type 2: cell đầu tiên

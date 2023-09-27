@@ -72,34 +72,16 @@ class EiExcelConverterAuto {
       let count_col_index = 0;
 
       let totalRows = 0;
-      let countPerPage = 0;
       let extendedRows = 0;
-      let count = 0;
       let totalRowCount = 0;
       let logoArray = [];
-      let extendedArray = [];
-      let totalRowCount_2 = 0;
-      let count_2 = 0;
-      let read_price = "";
-      let read_priceV = "";
-      let read_priceU = "";
-      let amount_vat = "";
-      let amount_total = "";
-      let amount_trans = "";
-      let amount_net = "";
-      let lb_amount_trans = "";
 
-      const sheetModel = worksheet.model;
-      let lstMergeTemp = [];
-      let lstNewMerge = [];
+    //   const sheetModel = worksheet.model
 
       let excCols = exceljs.excelCols;
       let sttCell = "";
       let nmCell = "";
       let lastCell = excCols[detailCellFormat[detailCellFormat.length - 1].endCell]; // cái này update
-      let startMergeRedundantRow = detailCellFormat[0].startCell;
-      let endMergeRedundantRow = detailCellFormat[detailCellFormat.length - 1].endCell;
-      let convertStr = "(HÓA ĐƠN CHUYỂN ĐỔI TỪ HÓA ĐƠN ĐIỆN TỬ)";
       detailCellFormat.forEach((e) => {
         if (e.cellType == 2) {
           sttCell = excCols[e.startCell];
@@ -108,12 +90,17 @@ class EiExcelConverterAuto {
           nmCell = excCols[e.startCell];
         }
       });
-
-      //   console.log("page", page);
-      //this part set the master data to each cell. that 100% base on template.
-
       if (einvoiceDetailData && einvoiceDetailData.length > 0) {
         masterDataArray.forEach((e) => {
+			let infoData = "";
+            e.Info.forEach((_e) => {
+              if (einvoiceMasterData[0][`${_e}`] != null || einvoiceMasterData[0][`${_e}`] != undefined) {
+                infoData = infoData + einvoiceMasterData[0][`${_e}`];
+              } else {
+                infoData = infoData + " ";
+              }
+            });
+            worksheet.getCell(`${e.Cell}`).value = infoData;
           if (e.Type == 1) {
             let infoData = "";
             e.Info.forEach((_e) => {
@@ -145,11 +132,6 @@ class EiExcelConverterAuto {
       //this part insert range header for each page
       //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
       //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
-      //if(einvoiceDetailData.length  %10== 0){
-      // lấy số lượng đòng detail xong / 10 nếu số không dư ((+1))
-      // kiểm tra só lượng sheet cần kiểm tra
-      // }
-
       for (let j = 1; j < einvoiceDetailData.length; j++) {
         Utils.excelInsertRow(worksheet, _sourceRow);
       }
@@ -162,6 +144,11 @@ class EiExcelConverterAuto {
         base64: imageBase64,
         extension: "png",
       });
+	  //Cách 2 add ảnh bằng folder
+	//   let imageID = exceljs.workbook.addImage({
+	// 	filename: 'path/to/image.jpg',
+	// 	extension: 'png',
+	//   });
       ////////
 
       for (let j = 0; j < einvoiceDetailData.length; j++) {
@@ -193,7 +180,11 @@ class EiExcelConverterAuto {
       worksheet.mergeCells(_sourceRow + einvoiceDetailData.length + 7, 10, _sourceRow + einvoiceDetailData.length + 7, 12); //cty
       worksheet.mergeCells(_sourceRow + einvoiceDetailData.length + 8, 10, _sourceRow + einvoiceDetailData.length + 8, 11); //ngay ky
 
-      worksheet.addImage(imageID, `J${_sourceRow + einvoiceDetailData.length + 6}:J${_sourceRow + einvoiceDetailData.length + 8}`);
+      worksheet.addImage(imageID, {
+		tl: { col: 9.5, row: (_sourceRow + einvoiceDetailData.length + 6)},
+		ext: { width: 50, height: 40 }
+	  });
+	  //`J${_sourceRow + einvoiceDetailData.length + 7}:J${_sourceRow + einvoiceDetailData.length + 8}`);
       //END-this part insert range header for each page
 
       //this part add more style to the rows that missing(optional) Last Page.
@@ -217,13 +208,13 @@ class EiExcelConverterAuto {
       }
       /*==pagebreak*/
       let rowbreakpage = 0;
-      if (einvoiceDetailData.length <= 6) {
+      if (einvoiceDetailData.length <= 7) {
         rowbreakpage = 0;
       } else {
         let nextrow = 1;
         rowbreakpage = worksheet.getRow(_sourceRow + 5);
         rowbreakpage.addPageBreak();
-        for (let i = 6; i < einvoiceDetailData.length; i++) {
+        for (let i = 7; i < einvoiceDetailData.length; i++) {
           nextrow++;
           if (nextrow == 10) {
             rowbreakpage = worksheet.getRow(_sourceRow + einvoiceDetailData.length - 5);

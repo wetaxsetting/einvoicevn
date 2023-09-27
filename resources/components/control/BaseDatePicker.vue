@@ -63,7 +63,7 @@
         no-title
         :color="currentTheme"
         :locale="curLang.CODE"
-        :type="type"
+        :active-picker.sync="activePicker"
         :max="max_value"
         :min="min_value"
         min-width="auto"
@@ -125,6 +125,7 @@ export default {
       isError: false,
       isErrorMessages: "",
       hideDetails: true,
+      activePicker: null
     };
   },
   components: {
@@ -246,6 +247,18 @@ export default {
       //     // this.isError = true;
       //   }
       // }
+    },
+
+    menu2 (val) {
+      val && setTimeout(() => {
+        if(this.type === "year") {
+          this.activePicker = "YEAR";
+        } else if(this.type === "month") {
+          this.activePicker = "MONTH";
+        } else {
+          this.activePicker = "DATE";
+        }
+      })
     },
   },
 

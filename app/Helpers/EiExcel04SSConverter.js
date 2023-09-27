@@ -189,9 +189,9 @@ class EiExcelConverterAuto {
       worksheet.mergeCells(_sourceRow + einvoiceDetailData.length + 3, 10, _sourceRow + einvoiceDetailData.length + 3, 11); /////merge nguoi nop thue
       worksheet.mergeCells(_sourceRow + einvoiceDetailData.length + 4, 10, _sourceRow + einvoiceDetailData.length + 4, 11); ///merge chu ky so
 
-      worksheet.mergeCells(_sourceRow + einvoiceDetailData.length + 6, 8, _sourceRow + einvoiceDetailData.length + 6, 9); //signvalid
-      worksheet.mergeCells(_sourceRow + einvoiceDetailData.length + 7, 9, _sourceRow + einvoiceDetailData.length + 7, 11); //cty
-      worksheet.mergeCells(_sourceRow + einvoiceDetailData.length + 8, 9, _sourceRow + einvoiceDetailData.length + 8, 10); //ngay ky
+      worksheet.mergeCells(_sourceRow + einvoiceDetailData.length + 6, 9, _sourceRow + einvoiceDetailData.length + 6, 10); //signvalid
+      worksheet.mergeCells(_sourceRow + einvoiceDetailData.length + 7, 10, _sourceRow + einvoiceDetailData.length + 7, 12); //cty
+      worksheet.mergeCells(_sourceRow + einvoiceDetailData.length + 8, 10, _sourceRow + einvoiceDetailData.length + 8, 11); //ngay ky
 
       worksheet.addImage(imageID, `J${_sourceRow + einvoiceDetailData.length + 6}:J${_sourceRow + einvoiceDetailData.length + 8}`);
       //END-this part insert range header for each page

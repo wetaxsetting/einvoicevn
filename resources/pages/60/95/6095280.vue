@@ -67,13 +67,13 @@
                 </v-col>
                 <v-col md="8" class="pr-3">
                   <GwFlexBox justify="end">
-                    <BaseButton icon_type="xml" :btn_text="$t('view_xml_04_ss')" @onclick="onClick('viewXML_04_SS')" />
+                    <BaseButton icon_type="xml" :btn_text="$t('view_xml_04_ss')" @onclick="onClick('viewXML_04_SS')"  :disabled="invoiceStatus == 7 || invoiceStatus == 0" />
                     <BaseButton icon_type="xml" :btn_text="$t('view_xml')" @onclick="onClick('viewXML')" />
                     <BaseButton icon_type="eye_on" :btn_text="$t('preview')" @onclick="onClick('preview')" />
                     <BaseButton icon_type="eye_on" :btn_text="$t('checking_result_cqt')" @onclick="onClick('CHECKCQT')" />
                     <BaseButton icon_type="sign" :btn_text="$t('sign')" @onclick="onClick('sign')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
                     <!-- Add -->
-                    <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')" @onclick="onClick('newMaster')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
+                    <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')" @onclick="onClick('newMaster')"  />
                     <!-- Save -->
                     <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClick('saveMaster')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
                     <!-- Delete -->
@@ -138,9 +138,9 @@
               <v-row class="pt-3" dense>
                 <v-col md="7" class="d-flex pl-2">
                   <BaseButton icon_type="eye_on" :btn_text="$t('preview_E-invoice')" @onclick="onClick('previewEinvoice')" />
-                  <BaseButton icon_type="eye_on" :btn_text="$t('preview_bb')" @onclick="onClick('previewBB')" :disabled="modelSearch.STATUS == 7" />
+                  <BaseButton icon_type="eye_on" :btn_text="$t('preview_bb')" @onclick="onClick('previewBB')" :disabled="invoiceStatus == 7" />
                   <BaseButton icon_type="eye_on" :btn_text="$t('preview_bb_replace')" @onclick="onClick('previewBB_Replace')"  :disabled=" invoiceType != 3"/>
-                  <BaseButton icon_type="email" :btn_text="$t('send_mail')" @onclick="onClick('sendMail')" />
+                  <BaseButton icon_type="email" :btn_text="$t('send_mail')" @onclick="onClick('sendMail')" :disabled="invoiceStatus == 7"  />
                 </v-col>
                 <v-col md="3" class="pr-2">
                   <BaseSelect outlined v-model="selectedTable" :lstData="tables" item-text="NAME" item-value="CODE" />
@@ -383,6 +383,7 @@ export default {
     manualIsMinimized: false,
     manualIsMinimizedPDF: false,
     invoiceType: 0,
+    invoiceStatus: 7
   }),
 
   mounted() {
@@ -472,8 +473,7 @@ export default {
           break;
         case "grdSearchClick":
           this.modelMaster.PK = await this.$refs.grdSearch.onSelectedData().PK;
-          //console.log("file: 6095280.vue:431 [vng-304] onClick [vng-304] data:", this.modelMaster.PK);
-
+          this.invoiceStatus = await this.$refs.grdSearch.onSelectedData().STATUS;
           await this.dsoMaster("select");
           this.invoiceType = 0;
           this.$refs.grdDetail.loadData();
@@ -809,6 +809,11 @@ export default {
         {
           dataField: "STATUS",
           caption: this.$t("status"),
+          datasource: {
+            KEY: "CODE",
+            VALUE: "NAME",
+            data: this.dataSearchList.statusList,
+          },
         },
         {
           dataField: "TRADE_CODE",
@@ -1118,6 +1123,7 @@ export default {
           this.modelMaster.TNNT = item.NAME;
           this.modelMaster.MST = item.TAX_CODE;
           this.modelMaster.DDANH = item.DDANH;
+          this.modelMaster.MCQT = item.MCQTQLY;
         }
       });
       // this.modelMaster.TNNT = await this.dataMasterList.companyList.find(item => item.TEI_COMPANY_PK == this.modelSearch.COMPANY_PK).NAME;
@@ -1287,36 +1293,36 @@ export default {
           this.showNotification("danger", resConvertXML.message);
         }
       } else {
-        // try {
-        //   this.xmlUrl = this.modelMaster.XML_SIGNED; //new Blob([byteArray], { type: _typeFile });;
-        //   this.$nextTick(() => {
-        //     this.isProcessing = false;
-        //     this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
-        //   });
-        //   this.isProcessing = false;
-        // } catch (e) {
-        //   this.isProcessing = false;
-        //   return this.showNotification("danger", e.message);
-        // }
+        try {
+          this.xmlUrl = this.modelMaster.XML_SIGN; //new Blob([byteArray], { type: _typeFile });;
+          this.$nextTick(() => {
+            this.isProcessing = false;
+            this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
+          });
+          this.isProcessing = false;
+        } catch (e) {
+          this.isProcessing = false;
+          return this.showNotification("danger", e.message);
+        }
       }
     },
 
     async OnPreviewXMLSS() {
-      var v_user_id = System.getSessionUserId();
-      if (txtPK.value != "") {
-        var url = "/system/index.gw?openType=F&objId=stacpustac710001";
-        url += "&p_tac_e_invoice_crca_pk=" + txtPK.value;
-        url += "&p_option=XML";
-        url += "&p_TradingType=04SS";
-        url += "&p_user_id=" + v_user_id;
-        url += "&p_tei_company_pk=XML";
-        url += "&p_status=" + v_sign_stamp;
-
-        System.OpenModal(url, 1024, 1000, "HDGTGT", document, "");
-      } else {
-        alert("please select row search grid");
-        return;
+      if (!this.modelMaster.PK == null) {
+        return this.showNotification("warning", this.$t("error_occurs"), "pls_select_declaration");
       }
+      this.isProcessing = true;
+      if (!this.modelMaster.CQT_MAGD) {
+        this.xmlUrl = this.modelMaster.TAX_XML_RESULT; 
+          this.$nextTick(() => {
+            this.isProcessing = false;
+            this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
+          });
+          this.isProcessing = false;
+      }
+          
+        
+      
     },
 
     async onReport() {
@@ -1505,7 +1511,27 @@ export default {
     },
 
     async onSendMail(){
+      if(this.tei_einvoice_m_pk_row != "")
+      {
+        let res_url = await this.$axios.$post("/einvoice/send-mail-invalid-invoice", {
+              responseType: "json",
+              data: {
+                req_key : this.tei_einvoice_m_pk_row,
+                tei_company_pk: this.modelMaster.TEI_COMPANY_PK
+              }
+            });
 
+        if(res_url.success)
+        {
+          this.showNotification("success", this.$t(`${res_url.success}`), '');
+        }else
+        {
+          this.showNotification("warning", this.$t(`${res_url.success}`), '');
+        }
+      }else
+      {
+        this.showNotification("warning", this.$t("no_row_selected"), '');
+      }
     }
   }
 }

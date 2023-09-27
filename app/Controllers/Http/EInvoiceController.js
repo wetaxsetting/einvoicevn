@@ -7627,7 +7627,7 @@ class EInvoiceController {
       }
       const { data } = request.all();
 
-      console.log(data);
+      // console.log(data);
 
       let para_value_mail = {
         p_tei_einvoice_m_pk: data.req_key, //"4090",// 
@@ -7645,8 +7645,8 @@ class EInvoiceController {
         p_language,
         p_crt_by
       );
-      console.log(data_mail.p_rtn_cur);
-      console.log(data_mail.p_rtn_cur.length);
+      // console.log(data_mail.p_rtn_cur);
+      // console.log(data_mail.p_rtn_cur.length);
 
       if(data_mail.p_rtn_cur.length > 0)
       {
@@ -7662,8 +7662,8 @@ class EInvoiceController {
   
   
           const res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {
-            mail_to: "lvthe.zh@gmail.com",//  data_mail.p_rtn_cur[0].EMAIL_ADDRESS,
-            cc_to: "",//data_mail.p_rtn_cur[0].EMAIL_ADDRESS_CC,
+            mail_to: data_mail.p_rtn_cur[0].EMAIL_ADDRESS,
+            cc_to: data_mail.p_rtn_cur[0].EMAIL_ADDRESS_CC,
             subject: data_mail.p_rtn_cur[0].SUBJECT,
             body: data_mail.p_rtn_cur[0].BODY_1_MAIL,
             attachfile1: url_pdf1,
@@ -7704,13 +7704,13 @@ class EInvoiceController {
 
 
           const res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {
-            mail_to: "lvthe.zh@gmail.com",//  data_mail.p_rtn_cur[0].EMAIL_ADDRESS,
-            cc_to: "",//data_mail.p_rtn_cur[0].EMAIL_ADDRESS_CC,
+            mail_to: data_mail.p_rtn_cur[0].EMAIL_ADDRESS,
+            cc_to: data_mail.p_rtn_cur[0].EMAIL_ADDRESS_CC,
             subject: data_mail.p_rtn_cur[0].SUBJECT,
             body: data_mail.p_rtn_cur[0].BODY_1_MAIL,
             attachfile1: url_pdf2,
             //attachfile2: url_pdf2,
-            filename1: data_mail.p_rtn_cur[0].FILENAME2,
+            filename1: data_mail.p_rtn_cur[0].FILENAME1,
             //filename2: data_mail.p_rtn_cur[0].FILENAME1,
           });
           console.log("res_send_mail  ", res_send_mail);

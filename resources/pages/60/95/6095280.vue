@@ -139,7 +139,7 @@
                 <v-col md="7" class="d-flex pl-2">
                   <BaseButton icon_type="eye_on" :btn_text="$t('preview_E-invoice')" @onclick="onClick('previewEinvoice')" />
                   <BaseButton icon_type="eye_on" :btn_text="$t('preview_bb')" @onclick="onClick('previewBB')" :disabled="invoiceStatus == 7" />
-                  <BaseButton icon_type="eye_on" :btn_text="$t('preview_bb_replace')" @onclick="onClick('previewBB_Replace')"  :disabled=" invoiceType != 3"/>
+                  <BaseButton icon_type="eye_on" :btn_text="$t('preview_bb_replace')" @onclick="onClick('previewBB_Replace')"  :disabled="invoiceStatus == 7 && invoiceType != 3"/>
                   <BaseButton icon_type="email" :btn_text="$t('send_mail')" @onclick="onClick('sendMail')" :disabled="invoiceStatus == 7"  />
                 </v-col>
                 <v-col md="3" class="pr-2">
@@ -645,7 +645,7 @@ export default {
 
     async OnPreviewEinvoice()
     {
-      if (this.modelMaster.PK) {
+      if (this.tei_einvoice_m_pk_row) {
             let res_url = await this.$axios.$post("/einvoice/general-url-pdf", {
               responseType: "json",
               tei_wt_sale_bill_pk: this.tei_einvoice_m_pk_row,
@@ -1118,14 +1118,16 @@ export default {
       this.modelMaster.PK = null;
       this.modelMaster.TEI_COMPANY_PK = this.modelSearch.COMPANY_PK;
 
-      this.dataMasterList.companyInfoList.forEach((item) => {
-        if (item.TEI_COMPANY_PK == this.modelSearch.COMPANY_PK) {
-          this.modelMaster.TNNT = item.NAME;
-          this.modelMaster.MST = item.TAX_CODE;
-          this.modelMaster.DDANH = item.DDANH;
-          this.modelMaster.MCQT = item.MCQTQLY;
-        }
-      });
+      setTimeout(async () => {
+        await this.dataMasterList.companyInfoList.forEach((item) => {
+          if (item.TEI_COMPANY_PK == this.modelSearch.COMPANY_PK) {
+            this.modelMaster.TNNT = item.NAME;
+            this.modelMaster.MST = item.TAX_CODE;
+            this.modelMaster.DDANH = item.DDANH;
+            this.modelMaster.MCQT = item.MCQTQLY;
+          }
+        });
+      }, 1000);
       // this.modelMaster.TNNT = await this.dataMasterList.companyList.find(item => item.TEI_COMPANY_PK == this.modelSearch.COMPANY_PK).NAME;
       // this.modelMaster.MST = await this.dataMasterList.companyList.find(item => item.TEI_COMPANY_PK == this.modelSearch.COMPANY_PK).TAX_CODE;
       // this.modelMaster.DDANH = await this.dataMasterList.companyInfoList.find(item => item.TEI_COMPANY_PK == this.modelSearch.COMPANY_PK).DDANH;

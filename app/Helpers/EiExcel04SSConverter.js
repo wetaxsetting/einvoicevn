@@ -185,7 +185,7 @@ class EiExcelConverterAuto {
       worksheet.mergeCells(_sourceRow + einvoiceDetailData.length, 2, _sourceRow + einvoiceDetailData.length, 12); ////ghi chú
       worksheet.mergeCells(_sourceRow + einvoiceDetailData.length + 1, 2, _sourceRow + einvoiceDetailData.length + 1, 9); //ghi chú
 
-      worksheet.mergeCells(_sourceRow + einvoiceDetailData.length + 2, 10, _sourceRow + einvoiceDetailData.length + 2, 12); ///merge ngay
+      worksheet.mergeCells(_sourceRow + einvoiceDetailData.length + 2, 9, _sourceRow + einvoiceDetailData.length + 2, 12); ///merge ngay
       worksheet.mergeCells(_sourceRow + einvoiceDetailData.length + 3, 10, _sourceRow + einvoiceDetailData.length + 3, 11); /////merge nguoi nop thue
       worksheet.mergeCells(_sourceRow + einvoiceDetailData.length + 4, 10, _sourceRow + einvoiceDetailData.length + 4, 11); ///merge chu ky so
 

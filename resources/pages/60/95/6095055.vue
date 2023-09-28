@@ -693,7 +693,7 @@ export default {
           width = this.naturalWidth;
           height = this.naturalHeight;
           //resize logo
-          if (width > height && width > 100) {
+          if (width >= height && width > 100) {
             width = 100;
             height = 100 * width / height;
           }

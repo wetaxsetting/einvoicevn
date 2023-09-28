@@ -278,6 +278,7 @@ export default {
                       tei_company_pk : this.selected_company
                     }
             });
+        this.isSending = false;    
         if(res_url.success)
         {
           this.showNotification("success", "Send mail to Tax Office was Successfully!", "");

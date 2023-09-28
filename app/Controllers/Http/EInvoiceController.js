@@ -7537,7 +7537,7 @@ class EInvoiceController {
             subject: invoice.SUBJECT,
             body: invoice.BODY_1_MAIL + invoice.BODY_2_MAIL,
             attachfile1: url_pdf1,
-            attachfile2: url_pdf2,
+            attachfile2: url_xml,
             filename1: data_mail.p_rtn_cur[0].FILENAME1,
             filename2: data_mail.p_rtn_cur[0].FILENAME2,
           });

@@ -7532,7 +7532,7 @@ class EInvoiceController {
           console.log("base64XXML  ", url_xml);
   
           const res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {
-            mail_to: "lvthe.zh@gmail.coom",//  invoice.EMAIL_ADDRESS,
+            mail_to: "lvthe.zh@gmail.com",//  invoice.EMAIL_ADDRESS,
             cc_to: "",//invoice.EMAIL_ADDRESS_CC,
             subject: invoice.SUBJECT,
             body: invoice.BODY_1_MAIL + invoice.BODY_2_MAIL,

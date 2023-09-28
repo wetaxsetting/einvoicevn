@@ -4568,23 +4568,23 @@ class EInvoiceController {
       const data_xml = await this.createXMLByOne(data_invoice);
       const count_length = data_xml.length;
       const xml_type = "application/xml";
-      console.log("data_invoice.buyer_comp_name  ", data_invoice.buyer_comp_name)
-      console.log("data_invoice.buyer_email  ", data_invoice.buyer_email)
+      // console.log("data_invoice.buyer_comp_name  ", data_invoice.buyer_comp_name)
+      // console.log("data_invoice.buyer_email  ", data_invoice.buyer_email)
 
-      if (!data_invoice.buyer_comp_name) {
-        return response.send(Utils.response(false, `Can't send e-invoice to customer if buyer_comp_name is null`, {
-          error_code: "3018",
-          error_name: "buyer_comp_name and  is null"
-        }));
-      }
+      // if (!data_invoice.buyer_comp_name) {
+      //   return response.send(Utils.response(false, `Can't send e-invoice to customer if buyer_comp_name is null`, {
+      //     error_code: "3018",
+      //     error_name: "buyer_comp_name and  is null"
+      //   }));
+      // }
 
-      if (!data_invoice.buyer_email) {
-        return response.send(Utils.response(false, `Can't send e-invoice to customer if buyer_email are null`, {
-          error_code: "3018",
-          error_name: " buyer_email are null"
-        })
-        );
-      }
+      // if (!data_invoice.buyer_email) {
+      //   return response.send(Utils.response(false, `Can't send e-invoice to customer if buyer_email are null`, {
+      //     error_code: "3018",
+      //     error_name: " buyer_email are null"
+      //   })
+      //   );
+      // }
 
       if (!data_invoice) {
         return response.send(Utils.response(false, `Invalid data_invoice `, {
@@ -4760,6 +4760,27 @@ class EInvoiceController {
       // else{
       //   return response.send(Utils.response(true, `error!`, {err_msg: 'exec error: ei_upd_order_info'}));
       // }
+
+      if(!data_invoice.buyer_email){
+        let data_r = {
+          link_invoice_preview: "https://einvoicevn.com/lookup",
+          security_code: "",
+          status_code: "D",
+          status_name: "Not Sent",
+          user_name: '',
+          send_date: '',
+          send_time: '',
+          mail_form: '',
+          mail_to: '',
+          mail_to_cc: '',
+          etax_result: "D",
+          etax_status: "W",
+          title: '',
+          content: '',
+        };
+        return response.send(Utils.response(true, `Send order to invoice was success, not send mail!`, data_r));
+      }
+
 
       const { res_send_mail, subject, body } = await this.sendMailToCustomer(
         tei_wt_sale_bill_pk,

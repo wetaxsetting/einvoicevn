@@ -7538,8 +7538,8 @@ class EInvoiceController {
             body: invoice.BODY_1_MAIL + invoice.BODY_2_MAIL,
             attachfile1: url_pdf1,
             attachfile2: url_xml,
-            filename1: data_mail.p_rtn_cur[0].FILENAME1,
-            filename2: data_mail.p_rtn_cur[0].FILENAME2,
+            filename1: invoice.FILENAME1,
+            filename2: invoice.FILENAME2,
           });
           console.log("res_send_mail  ", res_send_mail);
   

@@ -180,10 +180,13 @@ class EiExcelConverterAuto {
       worksheet.mergeCells(_sourceRow + einvoiceDetailData.length + 7, 10, _sourceRow + einvoiceDetailData.length + 7, 12); //cty
       worksheet.mergeCells(_sourceRow + einvoiceDetailData.length + 8, 10, _sourceRow + einvoiceDetailData.length + 8, 11); //ngay ky
 	  /////add image và căn chỉnh
-      worksheet.addImage(imageID, {
-		tl: { col: 9.8, row: (_sourceRow + einvoiceDetailData.length + 5.7)},
-		ext: { width: 50, height: 40 }
-	  });
+	  if (einvoiceMasterData[0]["SIGN_YN"] == "Y") {
+		worksheet.addImage(imageID, {
+			tl: { col: 9.8, row: (_sourceRow + einvoiceDetailData.length + 5.7)},
+			ext: { width: 50, height: 40 }
+		  });
+	  }
+      
 	  //`J${_sourceRow + einvoiceDetailData.length + 7}:J${_sourceRow + einvoiceDetailData.length + 8}`);
       //END-this part insert range header for each page
 

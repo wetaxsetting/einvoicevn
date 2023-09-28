@@ -76,8 +76,8 @@ class EiExcelHandler {
         { Cell: `K2`, Info: [`MSO`], Type: 1 },
 
         { Cell: `I17`, Info: [`NOW`], Type: 1 },
-        { Cell: `J22`, Info: [`COMPANY_SIGN`], Type: 1 },
-        { Cell: `J23`, Info: [`NGAY_SIGN`], Type: 1 },
+        { Cell: `J22`, Info: [`COMPANY_SIGN`], Type: 3 },
+        { Cell: `J23`, Info: [`NGAY_SIGN`], Type: 3 },
         
       );
 

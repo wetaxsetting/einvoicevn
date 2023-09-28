@@ -175,7 +175,7 @@ Route.group(() => {
     Route.post("general-url-pdf-einvoice-bb", "EInvoiceController.viewPDFEinvoiceBBEPortal")
     Route.post("general-url-pdf-einvoice-bb-r", "EInvoiceController.viewPDFEinvoiceBBReplaceEPortal")
     Route.post("send-mail-invalid-invoice", "EInvoiceController.sendMailInvalidInvoice")
-
+    Route.post("send-mail-at", "EInvoiceController.sendMailAt")
     Route.post("general-pdf-template-04SS", "EInvoiceController.viewPDFTemplate_04SS")   ////VNG-304
 
 }).prefix("api/einvoice").middleware("user");

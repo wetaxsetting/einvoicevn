@@ -6,7 +6,7 @@
         <v-col md="12" class="d-flex justify-end">
           <BaseButton icon_type="search" :btn_text="$t('search')" :disabled="isProcessing" @onclick="onSearch" />
           <BaseButton icon_type="preview" :btn_text="$t('preview')" @onclick="onPreview" :disabled="isProcessing" />
-          <BaseButton icon_type="open" :btn_text="$t('debit_note')" @onclick="debitNote" :disabled="isProcessing" />
+          <!-- <BaseButton icon_type="open" :btn_text="$t('debit_note')" @onclick="debitNote" :disabled="isProcessing" /> -->
           <BaseButton icon_type="email" :btn_text="$t('send_mail')" @onclick="sendMail" :disabled="isSending" />
         </v-col>
       </v-row>
@@ -190,12 +190,26 @@ export default {
   methods: {
     debitNote() { },
     async onPreview() {
-      this.isProcessing = true
-      this.pdfUrl = await this.pdfUrlGetter(this.tei_einvoice_m_pk_row);
-      this.$nextTick(() => {
-        this.isProcessing = false
-        this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
-      });
+      if(this.tei_einvoice_m_pk_row != "")
+      {
+        let res_url = await this.$axios.$post("/einvoice/general-url-pdf", {
+              responseType: "json",
+              tei_wt_sale_bill_pk: this.tei_einvoice_m_pk_row,
+            });
+        if(res_url.success)
+        {
+          this.pdfUrl = res_url.data;
+
+          this.$nextTick(() => {
+            this.isProcessing = false
+            this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+          });
+        }
+      }else
+      {
+        this.showNotification("warning", this.$t("no_row_selected"), '');
+      }
+      
     },
 
     async onSearch() {
@@ -236,8 +250,7 @@ export default {
     },
     async sendMail() {
       this.isSending = true;
-      var tei_einvoice_m_pk = "",
-        tei_company_pk = "";
+      let tei_einvoice_m_pk = "";
       this.PK_list = "";
       this.Email_Address_list = "";
       this.Email_Address_cc_list = "";
@@ -255,138 +268,26 @@ export default {
             " chưa được đăng ký mail người nhận !!"
           );
         } else {
-          if (
-            this.selected_company == "181" ||
-            this.selected_company == "482" ||
-            this.selected_company == "101" ||
-            this.selected_company == "1" ||
-            this.selected_company == "503" ||
-            this.selected_company == "442" ||
-            (this.selected_company == "221" &&
-              this.selected_rows[i].OLD_YN == "N") ||
-            (this.selected_company == "263" &&
-              this.selected_rows[i].OLD_YN == "N") ||
-            (this.selected_company == "502" &&
-              this.selected_rows[i].OLD_YN == "N") ||
-            (this.selected_company == "462" &&
-              this.selected_rows[i].OLD_YN == "N") ||
-            (this.selected_company == "201" &&
-              this.selected_rows[i].OLD_YN == "N") ||
-            (this.selected_company == "301" &&
-              this.selected_rows[i].OLD_YN == "N") ||
-            (this.selected_company == "422" &&
-              this.selected_rows[i].OLD_YN == "N") ||
-            (this.selected_company == "382" &&
-              this.selected_rows[i].OLD_YN == "N") ||
-            (this.selected_company == "583" &&
-              this.selected_rows[i].OLD_YN == "N") ||
-            (this.selected_company == "602" &&
-              this.selected_rows[i].OLD_YN == "N") ||
-            (this.selected_company == "622" &&
-              this.selected_rows[i].OLD_YN == "N") ||
-            (this.selected_company == "642" &&
-              this.selected_rows[i].OLD_YN == "N") ||
-            (this.selected_company == "643" &&
-              this.selected_rows[i].OLD_YN == "N") ||
-            (this.selected_company == "362" &&
-              this.selected_rows[i].OLD_YN == "N") ||
-            (this.selected_company == "321" &&
-              this.selected_rows[i].OLD_YN == "N") ||
-            (this.selected_company == "161" &&
-              this.selected_rows[i].OLD_YN == "N") ||
-            (this.selected_company == "341" &&
-              this.selected_rows[i].OLD_YN == "N") ||
-            this.selected_company == "281" ||
-            this.selected_company == "682"
-          ) {
-            this.l_seq += this.selected_rows[i].PK + "|";
-            let tmpObj = {
-              pk: this.selected_rows[i].PK,
-              mail: this.selected_rows[i].MAIL,
-              //mail: "tuan.tran@genuwinsolution.com",
-              email_address_cc: this.selected_rows[i].EMAIL_ADDRESS_CC,
-              body_mail:
-                this.selected_rows[i].BODY_1_MAIL +
-                this.selected_rows[i].BODY_2_MAIL,
-              subject: this.selected_rows[i].SUBJECT,
-              attachfile1: await this.pdfUrlGetter(this.selected_rows[i].PK),
-              // "http://genuclouding.com/wseinvoice/BSService.asmx/Download_File_PDF?pk=" +
-              // this.selected_rows[i].PK,
-              attachfile2: await this.xmlUrlGetter(this.selected_rows[i].PK),
-              // "http://genuclouding.com/wseinvoice/BSService.asmx/Download_File_XML_v4?pk=" +
-              // this.selected_rows[i].PK,
-              filename1:
-                this.selected_rows[i].FORM_NO.replace("/", "") +
-                "_" +
-                this.selected_rows[i].SERIAL_NO.replace("/", "") +
-                "_" +
-                this.selected_rows[i].INVOICE_NO +
-                ".pdf",
-              filename2:
-                this.selected_rows[i].FORM_NO.replace("/", "") +
-                "_" +
-                this.selected_rows[i].SERIAL_NO.replace("/", "") +
-                "_" +
-                this.selected_rows[i].INVOICE_NO +
-                ".xml",
-            };
-
-            this.mail.push(tmpObj);
-          } else {
-            this.l_seq += this.selected_rows[i].PK + "|";
-            let tmpObj = {
-              pk: this.selected_rows[i].PK,
-              mail: this.selected_rows[i].MAIL,
-              //mail: "tuan.tran@genuwinsolution.com",
-              email_address_cc: this.selected_rows[i].EMAIL_ADDRESS_CC,
-              body_mail:
-                this.selected_rows[i].BODY_1_MAIL +
-                this.selected_rows[i].BODY_2_MAIL,
-              subject: this.selected_rows[i].SUBJECT,
-              attachfile1: await this.pdfUrlGetter(this.selected_rows[i].PK),
-              // "http://genuclouding.com/wseinvoice/BSService.asmx/Download_File_PDF?pk=" +
-              // this.selected_rows[i].PK,
-              attachfile2: await this.xmlUrlGetter(this.selected_rows[i].PK),
-              // "http://genuclouding.com/wseinvoice/BSService.asmx/Download_File_XML?pk=" +
-              // this.selected_rows[i].PK,
-              filename1:
-                this.selected_rows[i].FORM_NO.replace("/", "") +
-                "_" +
-                this.selected_rows[i].SERIAL_NO.replace("/", "") +
-                "_" +
-                this.selected_rows[i].INVOICE_NO +
-                ".pdf",
-              filename2:
-                this.selected_rows[i].FORM_NO.replace("/", "") +
-                "_" +
-                this.selected_rows[i].SERIAL_NO.replace("/", "") +
-                "_" +
-                this.selected_rows[i].INVOICE_NO +
-                ".xml",
-            };
-
-            this.mail.push(tmpObj);
-          }
+            tei_einvoice_m_pk += this.selected_rows[i].PK + "|";
         }
       }
-      // jQuery.support.cors = true;
-      // // alert(this.l_seq + " - " + this.selected_company);
-      // //console.log(this.selected_company)
-      // $.ajax({
-      //   type: "POST",
-      //   url: "http://genuclouding.com/wseinvoice/BSService.asmx/SendPDF_R",
-      //   // 	url:"http://localhost:39236/BSService.asmx/SendPDF_R",
-      //   data: {
-      //     tei_einvoice_m_pk: this.l_seq,
-      //     tei_company_pk: this.selected_company,
-      //   },
-      //   dataType: "text",
-      //   crossDomain: true,
-      //   success: this.OnSuccessCall,
-      //   error: this.OnErrorCall,
-      // });
-      this.count_send = 0;
-      this.onBuildMail();
+    
+      let res_url = await this.$axios.$post("/einvoice/send-mail-at", {
+              responseType: "json",
+              data: { req_key: tei_einvoice_m_pk,
+                      tei_company_pk : this.selected_company
+                    }
+            });
+        if(res_url.success)
+        {
+          this.pdfUrl = res_url.data;
+
+          this.$nextTick(() => {
+            this.isProcessing = false
+            this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+          });
+        }
+      
     },
     async pdfUrlGetter(pk) {
       //351913 265263

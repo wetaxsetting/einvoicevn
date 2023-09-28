@@ -7486,6 +7486,99 @@ class EInvoiceController {
     }
   }
 
+  
+  async sendMailAt({ request, response, auth }) {
+    try {
+      var p_language = request.header("accept-language", "ENG");
+      var p_crt_by = "";
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const { data } = request.all();
+
+      console.log(data);
+
+      let para_value_mail = {
+        p_tei_einvoice_m_pk: data.req_key, //"4090",// 
+        p_tco_company_pk: data.tei_company_pk,
+      };
+      let data_mail = await DBService.ExecuteSQLBlob(
+        `BEGIN ei_sel_data_send_mail_3(
+                          :p_tei_einvoice_m_pk, 
+                          :p_tco_company_pk, 
+                          :p_language, 
+                          :p_crt_by, 
+                          :p_rtn_cur
+                      ); END;`,
+        para_value_mail,
+        p_language,
+        p_crt_by
+      );
+     
+      console.log(data_mail);
+      if(data_mail.p_rtn_cur.length > 0)
+      {
+        for(let i = 0; i< data_mail.p_rtn_cur.length; i++)
+
+        for(const  invoice of data_mail.p_rtn_cur)
+        { 
+          let EiExcels = new EiExcelHandlerAuto();
+          let url_pdf1 = await EiExcels.getEinvoice(invoice.PK, p_language, p_crt_by);
+          console.log("url_pdf1  ", url_pdf1);
+  
+          let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + invoice.PK + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token="); //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
+          let url_xml = re_url_xml.data;
+          console.log("base64XXML  ", url_xml);
+  
+          const res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {
+            mail_to: invoice.EMAIL_ADDRESS,
+            cc_to: invoice.EMAIL_ADDRESS_CC,
+            subject: invoice.SUBJECT,
+            body: invoice.BODY_1_MAIL + invoice.BODY_2_MAIL,
+            attachfile1: url_pdf1,
+            attachfile2: url_pdf2,
+            filename1: data_mail.p_rtn_cur[0].FILENAME1,
+            filename2: data_mail.p_rtn_cur[0].FILENAME2,
+          });
+          console.log("res_send_mail  ", res_send_mail);
+  
+          if (res_send_mail.data.success) {
+
+            let para_end_mail = {
+              p_tei_einvoice_m_pk : invoice.PK,
+              p_email_address : invoice.EMAIL_ADDRESS,
+              p_email_address_cc : invoice.EMAIL_ADDRESS_CC,
+            };
+            await DBService.ExecuteSQLBlob(
+              `BEGIN EI_UPD_6095100_2(
+                                :p_tei_einvoice_m_pk, 
+                                :p_email_address, 
+                                :p_email_address_cc, 
+                                :p_language, 
+                                :p_crt_by, 
+                                :p_rtn_cur
+                            ); END;`,
+              para_end_mail,
+              p_language,
+              p_crt_by
+            );
+          }
+        }
+        return response.send(
+          Utils.response(false, `Send mail customer was suscess`)
+        );
+      }else
+      {
+        return response.send(
+          Utils.response(true, `Send mail customer was faile`)
+        );
+      }
+    } catch (error) {
+      console.log("res_send_mail error  ", error);
+    }
+  }
+
   async sendMailToCustomer(tei_wt_sale_bill_pk, data_invoice, p_language, p_crt_by) {
     try {
       //console.log("sSSSS ", tei_wt_sale_bill_pk);

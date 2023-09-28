@@ -7519,15 +7519,13 @@ class EInvoiceController {
       console.log(data_mail);
       if(data_mail.p_rtn_cur.length > 0)
       {
-        for(let i = 0; i< data_mail.p_rtn_cur.length; i++)
-
         for(const  invoice of data_mail.p_rtn_cur)
         { 
           let EiExcels = new EiExcelHandlerAuto();
           let url_pdf1 = await EiExcels.getEinvoice(invoice.PK, p_language, p_crt_by);
           console.log("url_pdf1  ", url_pdf1);
   
-          let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + invoice.PK + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token="); //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
+          let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + invoice.CQT_MAGD + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token="); //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
           let url_xml = re_url_xml.data;
           console.log("base64XXML  ", url_xml);
   

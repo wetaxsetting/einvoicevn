@@ -4630,7 +4630,7 @@ class EInvoiceController {
         seller_taxcode: data_invoice.seller_taxcode,
         seller_address: data_invoice.seller_address,
         seller_phone: data_invoice.seller_phone,
-        buyer_comp_name: data_invoice.buyer_comp_name,
+        buyer_comp_name: data_invoice.buyer_comp_name || '',
         buyer_taxcode: data_invoice.buyer_taxcode,
         buyer_phone: data_invoice.buyer_phone,
         buyer_address: data_invoice.buyer_address,

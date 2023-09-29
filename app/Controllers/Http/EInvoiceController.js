@@ -4882,14 +4882,10 @@ class EInvoiceController {
         sale_date,
         store_code,
         store_name,
-        pos_no,
-        bill_no,
-        key,
-        tr_code_cqt,
         infor_send_mail
       } = request.all();
 
-      //  console.log("data  ", infor_send_mail);
+       console.log("data  ", infor_send_mail);
       let tei_wt_sale_bill_pk = 0;
       let data_r = [];
       //const data_xml = await this.createXMLByOne(data.data_invoice);
@@ -4905,17 +4901,16 @@ class EInvoiceController {
           invoice_no: invoice.invoice_no,
         };
   
-        //  console.log("para_value  ", para_value)
+          console.log("para_value  ", para_value)
   
         const rtnValue = await DBService.ExecuteSQLBlob(
           `BEGIN ei_sel_re_order_info (                   :tax_code,
                                                           :sale_date,
                                                           :store_code,
                                                           :store_name,
-                                                          :pos_no,
-                                                          :bill_no,
-                                                          :key,
-                                                          :tr_code_cqt,
+                                                          :form_no,
+                                                          :serial_no,
+                                                          :invoice_no,
                                                           :p_language, 
                                                           :p_crt_by, 
                                                           :p_rtn_cur); END;`,
@@ -4923,6 +4918,8 @@ class EInvoiceController {
           p_language,
           p_crt_by
         );
+
+        console.log("rtnValue  ", rtnValue)
 
         if (rtnValue?.p_rtn_cur?.[0]?.STATUS == "OK") {
           tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
@@ -5004,7 +5001,7 @@ class EInvoiceController {
 
             data_r.push({
               link_invoice_preview: "https://einvoicevn.com/lookup",
-              security_code: "1234567bac",
+              lookup_code: "1234567bac",
               seller_taxcode: tax_code,
               form_no: invoice.form_no,
               serial_no: invoice.serial_no,
@@ -5026,21 +5023,21 @@ class EInvoiceController {
           //return response.send(Utils.response(false, 'Order einvoice not exit'));
           data_r.push({
             link_invoice_preview: "https://einvoicevn.com/lookup",
-            security_code: "1234567bac",
+            lookup_code: "1234567bac",
             seller_taxcode: tax_code,
             form_no: invoice.form_no,
             serial_no: invoice.serial_no,
             invoice_no: invoice.invoice_no,
             status_code: "D",
-            status_name: "Order einvoice not exit",
-            user_name: rtnValue.p_rtn_cur[0].BUYER_COMP_NAME,
-            send_date: res_send_mail.data.data.date_send,
-            send_time: res_send_mail.data.data.time_send,
-            mail_form: res_send_mail.data.data.mail_from,
-            mail_to: res_send_mail.data.data.mail_to,
-            mail_to_cc: res_send_mail.data.data.mail_to_cc,
-            title: subject,
-            content: body,
+            status_name: "Order einvoice not exit/ Taxcode not yet register",
+            user_name: "",
+            send_date: "",
+            send_time: "",
+            mail_form: "",
+            mail_to: "",
+            mail_to_cc: "",
+            title: "",
+            content: "",
           });
         }
       }
@@ -5193,10 +5190,10 @@ class EInvoiceController {
         LVL: "error",
         MODULE: "EInvoiceController",
         FUNC: "weTaxReSendOrderInfo",
-        CONTENT: e.message,
+        CONTENT: error.message,
       });
-      console.log(e);
-      return response.send(Utils.response(false, e.message));
+      console.log(error);
+      return response.send(Utils.response(false, error.message));
     }
   }
 

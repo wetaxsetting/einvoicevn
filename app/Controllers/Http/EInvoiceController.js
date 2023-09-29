@@ -5043,11 +5043,6 @@ class EInvoiceController {
               });
             }
           }
-
-
-
-          
-         
         }
         else {
           //return response.send(Utils.response(false, 'Order einvoice not exit'));

@@ -4923,82 +4923,9 @@ class EInvoiceController {
 
         if (rtnValue?.p_rtn_cur?.[0]?.STATUS == "OK") {
           tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
-          let invoice_data =
+
+          if(!invoice.buyer_email && !invoice.buyer_email_cc && !rtnValue.p_rtn_cur[0].BUYER_EMAIL && !rtnValue.p_rtn_cur[0].BUYER_EMAIL_CC)
           {
-            buyer_comp_name: rtnValue.p_rtn_cur[0].BUYER_COMP_NAME,
-            seller_comp_name: rtnValue.p_rtn_cur[0].SELLER_COMP_NAME,
-            form_no: rtnValue.p_rtn_cur[0].FORM_NO,
-            serial_no: rtnValue.p_rtn_cur[0].SERIAL_NO,
-            invoice_no: rtnValue.p_rtn_cur[0].INVOICE_NO,
-            total_payment: rtnValue.p_rtn_cur[0].TOTAL_PAYMENT,
-            mccqt: rtnValue.p_rtn_cur[0].MCCQT,
-            buyer_email: invoice.buyer_email,
-            buyer_email_cc: invoice.buyer_email_cc,
-          }
-          const { res_send_mail, subject, body } = await this.sendMailToCustomer(
-            tei_wt_sale_bill_pk,
-            invoice_data,
-            p_language,
-            p_crt_by
-          );
-  
-          // console.log("res_send_mail  ", res_send_mail.data);
-          // console.log("res_send_mail  ", res_send_mail.data.success);
-  
-          if (res_send_mail.data.success) {
-            const para_inv_st = {
-              tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
-              status: "Sent Success",
-            };
-            const rtnValueSendMail = await DBService.ExecuteSQLBlob(
-              `BEGIN ei_upd_sale_bill_status (          
-                                                                :tei_wt_sale_bill_pk,
-                                                                :status,
-                                                                :p_language, 
-                                                                :p_crt_by, 
-                                                                :p_rtn_cur); END;`,
-              para_inv_st,
-              p_language,
-              p_crt_by
-            );
-            //console.log("rtnValueSendMail  ", rtnValueSendMail);
-            
-            data_r.push({
-              link_invoice_preview: "https://einvoicevn.com/lookup",
-              lookup_code: "1234567bac",
-              seller_taxcode: tax_code,
-              form_no: invoice.form_no,
-              serial_no: invoice.serial_no,
-              invoice_no: invoice.invoice_no,
-              status_code: "1",
-              status_name: "Sent Success",
-              user_name: rtnValue.p_rtn_cur[0].BUYER_COMP_NAME,
-              send_date: res_send_mail.data.data.date_send,
-              send_time: res_send_mail.data.data.time_send,
-              mail_form: res_send_mail.data.data.mail_from,
-              mail_to: res_send_mail.data.data.mail_to,
-              mail_to_cc: res_send_mail.data.data.mail_to_cc,
-              title: subject,
-              content: body,
-            });  
-
-          } else {
-            const para_inv_st = {
-              tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
-              status: "Sent Faile",
-            };
-            const rtnValueSendMail = await DBService.ExecuteSQLBlob(
-              `BEGIN ei_upd_sale_bill_status (          
-                                                                :tei_wt_sale_bill_pk,
-                                                                :status,
-                                                                :p_language, 
-                                                                :p_crt_by, 
-                                                                :p_rtn_cur); END;`,
-              para_inv_st,
-              p_language,
-              p_crt_by
-            );
-
             data_r.push({
               link_invoice_preview: "https://einvoicevn.com/lookup",
               lookup_code: "1234567bac",
@@ -5007,7 +4934,7 @@ class EInvoiceController {
               serial_no: invoice.serial_no,
               invoice_no: invoice.invoice_no,
               status_code: "0",
-              status_name: "Sent Faile",
+              status_name: "Buyer mail and buyer maill cc are null",
               user_name: "",
               send_date: "",
               send_time: "",
@@ -5017,7 +4944,110 @@ class EInvoiceController {
               title: "",
               content: "",
             });
+          }else
+
+          {
+            let invoice_data =
+            {
+              buyer_comp_name: rtnValue.p_rtn_cur[0].BUYER_COMP_NAME,
+              seller_comp_name: rtnValue.p_rtn_cur[0].SELLER_COMP_NAME,
+              form_no: rtnValue.p_rtn_cur[0].FORM_NO,
+              serial_no: rtnValue.p_rtn_cur[0].SERIAL_NO,
+              invoice_no: rtnValue.p_rtn_cur[0].INVOICE_NO,
+              total_payment: rtnValue.p_rtn_cur[0].TOTAL_PAYMENT,
+              mccqt: rtnValue.p_rtn_cur[0].MCCQT,
+              buyer_email: invoice.buyer_email,
+              buyer_email_cc: invoice.buyer_email_cc,
+            }
+            const { res_send_mail, subject, body } = await this.sendMailToCustomer(
+              tei_wt_sale_bill_pk,
+              invoice_data,
+              p_language,
+              p_crt_by
+            );
+    
+            // console.log("res_send_mail  ", res_send_mail.data);
+            // console.log("res_send_mail  ", res_send_mail.data.success);
+    
+            if (res_send_mail.data.success) {
+              const para_inv_st = {
+                tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
+                status: "Sent Success",
+              };
+              const rtnValueSendMail = await DBService.ExecuteSQLBlob(
+                `BEGIN ei_upd_sale_bill_status (          
+                                                                  :tei_wt_sale_bill_pk,
+                                                                  :status,
+                                                                  :p_language, 
+                                                                  :p_crt_by, 
+                                                                  :p_rtn_cur); END;`,
+                para_inv_st,
+                p_language,
+                p_crt_by
+              );
+              //console.log("rtnValueSendMail  ", rtnValueSendMail);
+              
+              data_r.push({
+                link_invoice_preview: "https://einvoicevn.com/lookup",
+                lookup_code: "1234567bac",
+                seller_taxcode: tax_code,
+                form_no: invoice.form_no,
+                serial_no: invoice.serial_no,
+                invoice_no: invoice.invoice_no,
+                status_code: "1",
+                status_name: "Sent Success",
+                user_name: rtnValue.p_rtn_cur[0].BUYER_COMP_NAME,
+                send_date: res_send_mail.data.data.date_send,
+                send_time: res_send_mail.data.data.time_send,
+                mail_form: res_send_mail.data.data.mail_from,
+                mail_to: res_send_mail.data.data.mail_to,
+                mail_to_cc: res_send_mail.data.data.mail_to_cc,
+                title: subject,
+                content: body,
+              });  
+  
+            } else {
+              const para_inv_st = {
+                tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
+                status: "Sent Faile",
+              };
+              const rtnValueSendMail = await DBService.ExecuteSQLBlob(
+                `BEGIN ei_upd_sale_bill_status (          
+                                                                  :tei_wt_sale_bill_pk,
+                                                                  :status,
+                                                                  :p_language, 
+                                                                  :p_crt_by, 
+                                                                  :p_rtn_cur); END;`,
+                para_inv_st,
+                p_language,
+                p_crt_by
+              );
+  
+              data_r.push({
+                link_invoice_preview: "https://einvoicevn.com/lookup",
+                lookup_code: "1234567bac",
+                seller_taxcode: tax_code,
+                form_no: invoice.form_no,
+                serial_no: invoice.serial_no,
+                invoice_no: invoice.invoice_no,
+                status_code: "0",
+                status_name: "Sent Faile",
+                user_name: "",
+                send_date: "",
+                send_time: "",
+                mail_form: "",
+                mail_to: "",
+                mail_to_cc: "",
+                title: "",
+                content: "",
+              });
+            }
           }
+
+
+
+          
+         
         }
         else {
           //return response.send(Utils.response(false, 'Order einvoice not exit'));

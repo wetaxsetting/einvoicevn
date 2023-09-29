@@ -4922,8 +4922,8 @@ class EInvoiceController {
         p_crt_by
       );
       // console.log("rtnValue  ", rtnValue);
-      tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
-      if (rtnValue.p_rtn_cur[0].STATUS == "OK") {
+      if (rtnValue?.p_rtn_cur?.[0]?.STATUS == "OK") {
+        tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
         let invoice_data =
         {
           buyer_comp_name: rtnValue.p_rtn_cur[0].BUYER_COMP_NAME,
@@ -5021,7 +5021,7 @@ class EInvoiceController {
         }
       }
       else {
-        return response.send(Utils.response(true, 'Order einvoice not exit'));
+        return response.send(Utils.response(false, 'Order einvoice not exit'));
       }
       // console.log("res_send_mail  ", res_send_mail);
     } catch (error) {

@@ -5008,14 +5008,14 @@ class EInvoiceController {
               invoice_no: invoice.invoice_no,
               status_code: "0",
               status_name: "Sent Faile",
-              user_name: rtnValue.p_rtn_cur[0].BUYER_COMP_NAME,
-              send_date: res_send_mail.data.data.date_send,
-              send_time: res_send_mail.data.data.time_send,
-              mail_form: res_send_mail.data.data.mail_from,
-              mail_to: res_send_mail.data.data.mail_to,
-              mail_to_cc: res_send_mail.data.data.mail_to_cc,
-              title: subject,
-              content: body,
+              user_name: "",
+              send_date: "",
+              send_time: "",
+              mail_form: "",
+              mail_to: "",
+              mail_to_cc: "",
+              title: "",
+              content: "",
             });
           }
         }

@@ -5244,43 +5244,68 @@ class EInvoiceController {
       const logo_image = request.file("logo_image");
       const background_image = request.file("background_image");
       
+      if(!seller_comp_taxcode)
+      {
+        return response.send(Utils.response(false, "seller_comp_taxcode can't null", ));
+      }
 
-      if (preview == "N") {
+      if(!form_no)
+      {
+        return response.send(Utils.response(false, "form_no can't null", ));
+      }
+
+      if(!serial_no)
+      {
+        return response.send(Utils.response(false, "serial_no can't null", ));
+      }
+
+      if(!template_id)
+      {
+        return response.send(Utils.response(false, "template_id can't null", ));
+      }
+
+      console.log(logo_image);
+      console.log(background_image);
+
+      //if (preview == "N") {
+
         const file_url_img = `/assets/images/einvoices_logo/${seller_comp_taxcode}`;
         const file_url_excel = `/resources/report/60/95/einvoices_template/${seller_comp_taxcode}`;
         let logo_width = 0, logo_height = 0;
+        let file_path_logo = "";
 
-        let file_path_logo = await Utils.putExcelRootPath(logo_image, file_url_img, "WETAXT");
+        if(logo_image)
+        {
+          file_path_logo = await Utils.putExcelRootPath(logo_image, file_url_img, "WETAXT");
 
-        //console.log("file_path_logo  ", file_path_logo);
-
-        //let file_path_bg = await Utils.putExcelRootPath(background_image, file_url_img, "WETAXT");
-        let savePath = Helpers.appRoot(file_path_logo);
-
-        const imagePath = savePath;//`${logo_image.tmpPath}`;
-
-        // Use sharp to read the image and get its metadata (width and height)
-        await sharp(imagePath)
-          .metadata()
-          .then((metadata) => {
-            const { width, height } = metadata;
-            // console.log(`Image width: ${width}px`);
-            // console.log(`Image height: ${height}px`);
-            logo_width = width;
-            logo_height = height;
-          })
-          .catch((error) => {
-            console.error('Error:', error);
-          });
-
-        if (logo_width > logo_height && logo_width > 100) {
-          logo_width = 100;
-          logo_height = 100 * logo_width / logo_height;
+          //console.log("file_path_logo  ", file_path_logo);
+          //let file_path_bg = await Utils.putExcelRootPath(background_image, file_url_img, "WETAXT");
+          let savePath = Helpers.appRoot(file_path_logo);
+  
+          const imagePath = savePath;//`${logo_image.tmpPath}`;
+  
+          // Use sharp to read the image and get its metadata (width and height)
+          await sharp(imagePath)
+            .metadata()
+            .then((metadata) => {
+              const { width, height } = metadata;
+              logo_width = width;
+              logo_height = height;
+            })
+            .catch((error) => {
+              console.error('Error:', error);
+            });
+  
+          if (logo_width > logo_height && logo_width > 100) {
+            logo_width = 100;
+            logo_height = 100 * logo_width / logo_height;
+          }
+          if (logo_height > logo_width && logo_height > 100) {
+            logo_height = 100;
+            logo_width = 100 * logo_height / logo_width;
+          }
         }
-        if (logo_height > logo_width && logo_height > 100) {
-          logo_height = 100;
-          logo_width = 100 * logo_height / logo_width;
-        }
+        
 
         const para_value = {
           p_seller_comp_seller: seller_comp_taxcode,
@@ -5298,7 +5323,7 @@ class EInvoiceController {
           p_logo_start_row: "1.7",
         };
 
-        //console.log("para_value  ", para_value);
+        console.log("para_value  ", para_value);
         const rtnValue = await DBService.ExecuteSQLBlob(
           `BEGIN ei_upd_template_comp (                   :p_seller_comp_seller,
                                                           :p_serial_no2,
@@ -5323,7 +5348,7 @@ class EInvoiceController {
 
 
 
-        //console.log("para_value  ", rtnValue)
+        console.log("para_value  ", rtnValue)
 
         let EiExcels = new EiExcelTemplateHandler();
         let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].PK, p_language, p_crt_by);
@@ -5335,10 +5360,10 @@ class EInvoiceController {
         }
 
         return response.send(Utils.response(true, "Send Company template was Successfully", req_value));
-      }
-      else {
+      // }
+      // else {
 
-      }
+      // }
     } catch (error) {
       Utils.Logger({
         LVL: "error",

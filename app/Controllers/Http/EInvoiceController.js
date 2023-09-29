@@ -1064,9 +1064,9 @@ class EInvoiceController {
         }
 
         objInvoice_M.HDon.DLHDon.TTChung.TTHDLQuan = [];
-        if (invoices[i].master.nature !== "0") {
+        if (invoices[i].master.feature !== "0") {
           objInvoice_M.HDon.DLHDon.TTChung.TTHDLQuan.push({
-            TCHDon: invoices[i].master.nature,
+            TCHDon: invoices[i].master.feature,
             LHDCLQuan: invoices[i].master.invoice_type_relative,
             KHMSHDCLQuan: invoices[i].master.form_no_relative,
             KHHDCLQuan: invoices[i].master.serial_no_relative,
@@ -4280,7 +4280,7 @@ class EInvoiceController {
 
         for (let j = 0; j < invoices[i].detail.length; j++) {
           objInvoice.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
-            TChat: invoices[i].detail[j].nature,
+            TChat: invoices[i].detail[j].feature,
             STT: invoices[i].detail[j].seq,
             MHHDVu: invoices[i].detail[j].item_code,
             THHDVu: invoices[i].detail[j].item_name,
@@ -4431,7 +4431,7 @@ class EInvoiceController {
           buyer_cccd: 12,
           detail: [
             {
-              nature: 1,
+              feature: 1,
               seq: 4,
               item_code: 50,
               item_name: 500,
@@ -4722,7 +4722,7 @@ class EInvoiceController {
         for (let j = 0; j < data_invoice.detail.length; j++) {
           const para_prod_details = {
             tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
-            nature: data_invoice.detail[j].nature,
+            feature: data_invoice.detail[j].feature,
             seq: data_invoice.detail[j].seq,
             item_code: data_invoice.detail[j].item_code,
             item_name: data_invoice.detail[j].item_name,
@@ -4737,7 +4737,7 @@ class EInvoiceController {
           const rtnValue_VAT = await DBService.ExecuteSQLBlob(
             `BEGIN ei_upd_sale_prod (          
                                                                 :tei_wt_sale_bill_pk,
-                                                                :nature,
+                                                                :feature,
                                                                 :seq,
                                                                 :item_code,
                                                                 :item_name,
@@ -6161,9 +6161,9 @@ class EInvoiceController {
         objInvoice_M.HDon.DLHDon.TTChung.MSTTCGP = "1201496252"; //webcashgenuwin.com taxcode
 
         objInvoice_M.HDon.DLHDon.TTChung.TTHDLQuan = [];
-        if (invoices[i].invoice_nature !== "0") {
+        if (invoices[i].invoice_feature !== "0") {
           objInvoice_M.HDon.DLHDon.TTChung.TTHDLQuan.push({
-            TCHDon: invoices[i].invoice_nature || "0",
+            TCHDon: invoices[i].feature || "0",
             LHDCLQuan: invoices[i].invoice_type_relative || "0",
             KHMSHDCLQuan: invoices[i].form_no_relative || "",
             KHHDCLQuan: invoices[i].serial_no_relative || "",
@@ -6223,7 +6223,7 @@ class EInvoiceController {
 
         for (let j = 0; j < invoices[i].detail.length; j++) {
           objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
-            TChat: invoices[i].detail[j].nature || "",
+            TChat: invoices[i].detail[j].feature || "",
             STT: invoices[i].detail[j].seq || "",
             MHHDVu: invoices[i].detail[j].item_code || "",
             THHDVu: invoices[i].detail[j].item_name || "",
@@ -8606,7 +8606,7 @@ class EInvoiceController {
 
     for (let j = 0; j < dataObject.detail_invoice.length; j++) {
       objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
-        TChat: dataObject.detail_invoice[j].nature,
+        TChat: dataObject.detail_invoice[j].feature,
         STT: dataObject.detail_invoice[j].seq,
         MHHDVu: dataObject.detail_invoice[j].item_code,
         THHDVu: dataObject.detail_invoice[j].item_name,

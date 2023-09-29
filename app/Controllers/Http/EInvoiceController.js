@@ -5243,20 +5243,7 @@ class EInvoiceController {
       const template_excel = request.file("template_excel");
       const logo_image = request.file("logo_image");
       const background_image = request.file("background_image");
-      // const seller_comp_taxcode = request.tex   .file("seller_comp_taxcode");
-      // const symbol_type = request.file("symbol_type");
-      // const form_no = request.file("form_no");
-      // const serial_no = request.file("serial_no");
-      // const template_id = request.file("template_id");
-      // const start_date = request.file("start_date");
-      // const start_number = request.file("start_number");
-
-      //const outputPath = `F:/NODE/einvoicevn.com/tmp/Bornga.xlsx`
-      //const fileContent = await Utils.readFile(template_excel.tmpPath);
-
-      // console.log("template_excel  ", template_excel);
-      // console.log("logo_image  ", logo_image);
-      // console.log("template_excel  ", background_image);
+      
 
       if (preview == "N") {
         const file_url_img = `/assets/images/einvoices_logo/${seller_comp_taxcode}`;
@@ -5360,7 +5347,7 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       console.log(error);
-      return response.send(Utils.response(false, "error", { err_msg: e.message }));
+      return response.send(Utils.response(false, "error", { err_msg: error.message }));
     }
   }
 

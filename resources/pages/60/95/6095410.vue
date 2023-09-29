@@ -87,51 +87,67 @@
           <BaseButton icon_type="search" :btn_text="$t('search')" :disabled="isProcessing" @onclick="funcSearch()" />
           <BaseButton icon_type="view" :btn_text="$t('preview')" :disabled="isProcessing" @onclick="onPreview" />
           <BaseButton icon_type="xml" :btn_text="$t('view_xml')" @onclick="onPreviewXml" />
-          <BaseButton icon_type="attach" :btn_text="$t('invoice_sign')" :disabled="selected_status == 1 || selected_status == 5"  @onclick="InvoiceSign()" />
-          <BaseButton icon_type="add_new" :btn_text="$t('check_code_cqt')" :disabled="selected_status == 0" @onclick="checkingCQT()" />
+          <BaseButton icon_type="attach" :btn_text="$t('invoice_sign')"
+            :disabled="selected_status == 1 || selected_status == 5" @onclick="InvoiceSign()" />
+          <BaseButton icon_type="add_new" :btn_text="$t('check_code_cqt')" :disabled="selected_status == 0"
+            @onclick="checkingCQT()" />
         </v-col>
       </v-row>
 
 
       <v-row dense align="stretch" justify="space-between">
-        <v-col cols="12">
+        <v-col cols="6">
           <v-card outlined>
-              <!-- :selectionmode="'checkbox'" -->
-              <BaseGridView ref="gridview" :header="grdReviewSign" sel_procedure="EI_SEL_6095410_SEL_DATA_NC"
-                :multiselect="true" :selectionmode="'checkbox'" :autocheckbox="false" :headertype="1"
-                @onSelectionDataChanged="onGridSelectionChanged" :filter_paras="[
-                  this.selected_company,
-                  this.txtFromInvoiceNo,
-                  this.txtToInvoiceNo,
-                  this.selected_form_no,
-                  this.selected_serial_no,
-                  this.dt_from,
-                  this.dt_to,
-                  this.selected_status,
-                  this.txtPartner,
-                  this.selected_trading_type,
-                  this.selected_yn,
-                  this.selected_etaxStatus,
-                  this.selected_etaxResult
-                ]" @setDataSource="onAfterLoad" :height="limitHeight" @cellClick="onCellClick" />
+            <!-- :selectionmode="'checkbox'" -->
+            <BaseGridView ref="gridboxview" :header="grdReviewBoxSign" sel_procedure="EI_SEL_6095410_SEL_DATA_NC"
+              :multiselect="true" :selectionmode="'checkbox'" :autocheckbox="false" :headertype="1"
+              @onSelectionDataChanged="onGridSelectionChanged" :filter_paras="[
+                this.selected_company,
+                this.txtFromInvoiceNo,
+                this.txtToInvoiceNo,
+                this.selected_form_no,
+                this.selected_serial_no,
+                this.dt_from,
+                this.dt_to,
+                this.selected_status,
+                this.txtPartner,
+                this.selected_trading_type,
+                this.selected_yn,
+                this.selected_etaxStatus,
+                this.selected_etaxResult
+              ]" @setDataSource="onAfterLoad" :height="limitHeight" @cellClick="onCellClick" />
+          </v-card>
+        </v-col>
+        <v-col cols="6">
+          <v-card outlined>
+            <!-- :selectionmode="'checkbox'" -->
+            <BaseGridView ref="gridview" :header="grdReviewSign" sel_procedure="EI_SEL_6095410_SEL_DATA_NC"
+              :multiselect="true" :selectionmode="'checkbox'" :autocheckbox="false" :headertype="1"
+              @onSelectionDataChanged="onGridSelectionChanged" :filter_paras="[
+                this.selected_company,
+                this.txtFromInvoiceNo,
+                this.txtToInvoiceNo,
+                this.selected_form_no,
+                this.selected_serial_no,
+                this.dt_from,
+                this.dt_to,
+                this.selected_status,
+                this.txtPartner,
+                this.selected_trading_type,
+                this.selected_yn,
+                this.selected_etaxStatus,
+                this.selected_etaxResult
+              ]" @setDataSource="onAfterLoad" :height="limitHeight" @cellClick="onCellClick" />
           </v-card>
         </v-col>
       </v-row>
     </v-card>
-    <view-einvoice-pdf-dialog
-      ref="ViewEInvoicePDFDialog"
-      :src_pdfUrl="pdfUrl"
+    <view-einvoice-pdf-dialog ref="ViewEInvoicePDFDialog" :src_pdfUrl="pdfUrl"
       @minimizeDialogPDF="manualIsMinimizedPDF = true"
-      @closeManualDialog="manualIsMinimizedPDF = false"
-    ></view-einvoice-pdf-dialog>
-    <view-einvoice-xml-dialog
-      ref="ViewEInvoiceXMLDialog"
-      :src_xmlUrl="xmlUrl"
-      :xmlFileNm="xmlFileNm"
-      dwnFile
+      @closeManualDialog="manualIsMinimizedPDF = false"></view-einvoice-pdf-dialog>
+    <view-einvoice-xml-dialog ref="ViewEInvoiceXMLDialog" :src_xmlUrl="xmlUrl" :xmlFileNm="xmlFileNm" dwnFile
       @minimizeDialog="manualIsMinimized = true"
-      @closeManualDialog="manualIsMinimized = false"
-    ></view-einvoice-xml-dialog>
+      @closeManualDialog="manualIsMinimized = false"></view-einvoice-xml-dialog>
     <div class="squareBox" v-if="false">
       <v-tooltip bottom>
         <template v-slot:activator="{ on }">
@@ -143,13 +159,15 @@
       </v-tooltip>
     </div>
     <v-scale-transition origin="bottom center">
-      <v-btn dark depressed fab fixed bottom right small :color="currentTheme" v-if="manualIsMinimized" @click="restoreManualDialog">
+      <v-btn dark depressed fab fixed bottom right small :color="currentTheme" v-if="manualIsMinimized"
+        @click="restoreManualDialog">
         <v-icon>mdi-window-restore</v-icon>
       </v-btn>
     </v-scale-transition>
 
     <v-scale-transition origin="bottom center">
-      <v-btn dark depressed fab fixed bottom right small :color="currentTheme" v-if="manualIsMinimizedPDF" @click="restoreManualDialogPDF">
+      <v-btn dark depressed fab fixed bottom right small :color="currentTheme" v-if="manualIsMinimizedPDF"
+        @click="restoreManualDialogPDF">
         <v-icon>mdi-window-restore</v-icon>
       </v-btn>
     </v-scale-transition>
@@ -223,13 +241,13 @@ export default {
     txtISSUETO: "",
     txtDN_NAME: "",
     txtDN_MST: "",
-    invoice : [],
+    invoice: [],
     manualIsMinimized: false,
     manualIsMinimizedPDF: false,
-    maGD:"",
-    xml_signed : "",
-    xmlFileNm:"",
-    xmlUrl:""
+    maGD: "",
+    xml_signed: "",
+    xmlFileNm: "",
+    xmlUrl: ""
   }),
 
   async created() {
@@ -247,7 +265,7 @@ export default {
 
   },
   mounted() {
-    
+
   },
   watch: {
     selected_status(val) {
@@ -284,7 +302,125 @@ export default {
       }
     }, // this.windowHeight },
 
-    grdReviewSign(){
+    grdReviewBoxSign() {
+      let _headerObj1 = [
+        {
+          dataField: "RN",
+          caption: this.$t("no"),
+          type: "text",
+          width: 80,
+          alignment: "left",
+        },
+        {
+          dataField: "INVOICE_DATE",
+          caption: this.$t("invoice_date"),
+          type: "text",
+          width: 80,
+          alignment: "left",
+          format: this.curLang.DATE_FORMAT,
+        },
+        {
+          dataField: "SLLR_COMP_NM",
+          caption: this.$t("cus_id"),
+          type: "text",
+          width: 100,
+          alignment: "left",
+        },
+        {
+          dataField: "SLLR_COMP_ENM",
+          caption: this.$t("cus_nm"),
+          type: "text",
+          width: 120,
+          alignment: "left",
+        },
+        {
+          dataField: "SLLR_TAXCODE",
+          caption: this.$t("cus_fnm"),
+          type: "text",
+          width: 120,
+          alignment: "left",
+        },
+        {
+          dataField: "TEMP_ID",
+          caption: this.$t("tax_code"),
+          type: "text",
+          width: 80,
+          alignment: "left",
+        },
+        {
+          dataField: "EI_STATUS",
+          caption: this.$t("buyer_nm"),
+          type: "text",
+          width: 120,
+          alignment: "left",
+        },
+        {
+          dataField: "SIGN_YN",
+          caption: this.$t("form_no"),
+          type: "text",
+          width: 80,
+          alignment: "left",
+        },
+        {
+          dataField: "SIGN_DT",
+          caption: this.$t("serial_no"),
+          type: "text",
+          width: 80,
+          alignment: "left",
+        },
+        {
+          dataField: "SIGN_BY",
+          caption: this.$t("invoice_no"),
+          type: "text",
+          width: 80,
+          alignment: "left",
+        },
+        {
+          dataField: "SIGN_SERIAL_NUMBER",
+          caption: this.$t("tr_ccy"),
+          type: "text",
+          width: 50,
+          alignment: "left",
+        },
+        {
+          dataField: "TABLE_NM",
+          caption: this.$t("tr_rate"),
+          type: "text",
+          width: 50,
+          alignment: "left",
+        },
+        //
+        {
+          dataField: "TABLE_PK",
+          caption: this.$t("tot_net_tr_amt"),
+          type: "number",
+          formatFloat: 0,
+          width: 150,
+          alignment: "right",
+        },
+        {
+          dataField: "API_ID",
+          caption: this.$t("tot_net_bk_amt"),
+          type: "number",
+          formatFloat: 0,
+          width: 150,
+          alignment: "right",
+          hidden: true
+        },
+        {
+          dataField: "TEI_WT_INVOICE_P_XML_PK",
+          caption: this.$t("tot_vat_tr_amt"),
+          type: "number",
+          formatFloat: 0,
+          width: 150,
+          alignment: "right",
+        }
+      ];
+
+      return _headerObj1;
+    }
+    ,
+    grdReviewSign() {
       let _headerObj = [
         {
           dataField: "RN",
@@ -478,7 +614,7 @@ export default {
           type: "text",
           width: 80,
           alignment: "left",
-          hidden:true
+          hidden: true
         },
         {
           dataField: "CQT_MAGD",
@@ -511,7 +647,7 @@ export default {
           caption: this.$t("etax_result"),
           width: 150,
           allowEditing: true,
-          
+
         },
         {
           dataField: "CQT_ERROR_CODE",
@@ -531,7 +667,7 @@ export default {
           dataField: "TAX_RATE_MULTI",
           caption: this.$t("tax_rate_multi"),
           alignment: "left",
-          hidden:true
+          hidden: true
         },
       ];
 
@@ -551,74 +687,72 @@ export default {
     async onGridSelectionChanged(data) {
       this.selected_rows = data;
     },
-    
-    getObjectJsonInvoice(){
+
+    getObjectJsonInvoice() {
     },
 
-    async checkingCQT(){
+    async checkingCQT() {
       this.invoice = [];
       const grdSelectedRow = this.$refs.gridview.getSelectedRows();
-      for(let i =0; i< grdSelectedRow.length; i++)
-      {
+      for (let i = 0; i < grdSelectedRow.length; i++) {
         this.invoice.push({
-            req_key : grdSelectedRow[i].PK,
-            trade_code : grdSelectedRow[i].CQT_MAGD,
-            tax_code: grdSelectedRow[i].SELLER_TAXCODE,
-          })
-        
+          req_key: grdSelectedRow[i].PK,
+          trade_code: grdSelectedRow[i].CQT_MAGD,
+          tax_code: grdSelectedRow[i].SELLER_TAXCODE,
+        })
+
       }
 
       let res_check = await this.$axios.$post("/einvoice/check-status-invoice", {
-          responseType: "json",
-          data: this.invoice,
-        });
+        responseType: "json",
+        data: this.invoice,
+      });
 
-        if (res_check.success) {
-          this.funcSearch();
-          this.showNotification("success", "Checking invoice to Tax Office was Successfully!", "");
-        }
+      if (res_check.success) {
+        this.funcSearch();
+        this.showNotification("success", "Checking invoice to Tax Office was Successfully!", "");
+      }
     },
 
     async InvoiceSign() {
       const grdSelectedRow = this.$refs.gridview.getSelectedRows();
-       this.invoice = []
+      this.invoice = []
 
       // console.log("grdSelectedRow  ", grdSelectedRow.length);
 
       // console.log("grdSelectedRow  ", grdSelectedRow);
-      for(let i =0; i< grdSelectedRow.length; i++)
-      {
+      for (let i = 0; i < grdSelectedRow.length; i++) {
         this.invoice.push({
-            PK : grdSelectedRow[i].PK,
-            USER_ID : this.user.USER_ID,
-          })
-        
+          PK: grdSelectedRow[i].PK,
+          USER_ID: this.user.USER_ID,
+        })
+
       }
       //console.log("invoice  ",this.invoice);
 
       let res = await this.$axios.$post("/einvoice/general-pos-invoice-xml", {
-          responseType: "json",
-          list_invoice: this.invoice,
+        responseType: "json",
+        list_invoice: this.invoice,
+      });
+
+      //console.log("res  ", res);
+
+      if (res.success) {
+        // console.log("response", res.data);
+        jQuery.support.cors = true;
+        $.ajax({
+          url: "http://localhost:1080/issueXmlPOSList",
+          dataType: "json",
+          method: "POST",
+          data: {
+            crt_by: this.user.USER_ID,
+            xml: JSON.stringify(res.data.xml_converted),
+          },
+          error: this.onErrorissueXmlList,
+          success: this.onSuccessissueXmlList,
         });
 
-        //console.log("res  ", res);
-  
-        if (res.success) {
-          // console.log("response", res.data);
-          jQuery.support.cors = true;
-          $.ajax({
-            url: "http://localhost:1080/issueXmlPOSList",
-            dataType: "json",
-            method: "POST",
-            data: {
-              crt_by: this.user.USER_ID,
-              xml: JSON.stringify(res.data.xml_converted),
-            },
-            error: this.onErrorissueXmlList,
-            success: this.onSuccessissueXmlList,
-          });
-
-        }
+      }
     },
 
     async onErrorissueXmlList(json, textStatus, errorThrown) {
@@ -658,57 +792,54 @@ export default {
 
       //console.log("check_serial_no_result  ", check_serial_no_result);
 
-        if (check_serial_no_result[0].STATUS == "1") {
-          
+      if (check_serial_no_result[0].STATUS == "1") {
 
-          let data_invoice = {
-            tax_serial_number : this.txtSerial_Number,
-            seller_tax_code : this.txtDN_MST,
-            sale_date : "",
-            store_code: "",
-            store_name: "",
-            pos_no: "",
-            sign_by: this.txtDN_MST,
-            invoice_xml_signed:this.txtXMl_T,
-            list_invoice: this.invoice,
-          }
 
-          let res_send = await this.$axios.$post("/einvoice/send-pos-invoice-at", {
-            responseType: "json",
-            data: data_invoice,
-          });
-
-          //console.log("res  ", res_send);
-          if(res_send.success)
-          {
-            this.funcSearch();
-              this.showNotification("success", "Send invoice to Tax Office was Successfully!", "");
-            
-
-            
-
-          }
-          else {
-              this.funcSearch();
-              this.showNotification("danger", "Send invoice to Tax Office was Faile!");
-            }
-         
-        } else {
-          alert("Token not suitable !!!");
+        let data_invoice = {
+          tax_serial_number: this.txtSerial_Number,
+          seller_tax_code: this.txtDN_MST,
+          sale_date: "",
+          store_code: "",
+          store_name: "",
+          pos_no: "",
+          sign_by: this.txtDN_MST,
+          invoice_xml_signed: this.txtXMl_T,
+          list_invoice: this.invoice,
         }
-      
+
+        let res_send = await this.$axios.$post("/einvoice/send-pos-invoice-at", {
+          responseType: "json",
+          data: data_invoice,
+        });
+
+        //console.log("res  ", res_send);
+        if (res_send.success) {
+          this.funcSearch();
+          this.showNotification("success", "Send invoice to Tax Office was Successfully!", "");
+
+
+
+
+        }
+        else {
+          this.funcSearch();
+          this.showNotification("danger", "Send invoice to Tax Office was Faile!");
+        }
+
+      } else {
+        alert("Token not suitable !!!");
+      }
+
       //************call something */ dso_process_check_serialno.Call();
     },
 
     async onPreview() {
-      if(this.tei_einvoice_m_pk_row != "")
-      {
+      if (this.tei_einvoice_m_pk_row != "") {
         let res_url = await this.$axios.$post("/einvoice/general-url-pdf", {
-              responseType: "json",
-              tei_wt_sale_bill_pk: this.tei_einvoice_m_pk_row,
-            });
-        if(res_url.success)
-        {
+          responseType: "json",
+          tei_wt_sale_bill_pk: this.tei_einvoice_m_pk_row,
+        });
+        if (res_url.success) {
           this.pdfUrl = res_url.data;
 
           this.$nextTick(() => {
@@ -716,11 +847,10 @@ export default {
             this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
           });
         }
-      }else
-      {
+      } else {
         this.showNotification("warning", this.$t("no_row_selected"), '');
       }
-      
+
     },
 
     onAfterLoad() {
@@ -742,7 +872,7 @@ export default {
     funcSearch() {
       this.$refs.gridview.loadData();
     },
-    
+
     async onCellClick({ column, data, rowIndex, rowType }) {
       this.tei_einvoice_m_pk_row = data.PK;
       this.maGD = data.CQT_MAGD;
@@ -814,7 +944,7 @@ export default {
 
       const TrandingTypeList = await this._getCommonCode2(["ACEI0040"], this.user.PK);
       this.trading_type_list = TrandingTypeList[0];
-      
+
       const dso_directly_list = {
         type: "list",
         selpro: "EI_SEL_6095090_YN",
@@ -866,32 +996,30 @@ export default {
       }
     },
 
-    async onPreviewXml(){
-      if(this.tei_einvoice_m_pk_row != "")
-      {
+    async onPreviewXml() {
+      if (this.tei_einvoice_m_pk_row != "") {
         if (!this.maGD) {
-            this.invoice = [];
-            this.invoice.push({
-              PK : this.tei_einvoice_m_pk_row,
-              USER_ID : this.user.USER_ID,
-            });
+          this.invoice = [];
+          this.invoice.push({
+            PK: this.tei_einvoice_m_pk_row,
+            USER_ID: this.user.USER_ID,
+          });
 
-            let res = await this.$axios.$post("/einvoice/general-pos-invoice-xml-view", {
-                responseType: "json",
-                list_invoice: this.invoice,
-              });
-            console.log("res  ", res);
-            if (res.success) {
-              this.xmlUrl = res.data.xml_converted;
-              await this.$nextTick();
-              this.isProcessing = false;
-              this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
-            }else {
+          let res = await this.$axios.$post("/einvoice/general-pos-invoice-xml-view", {
+            responseType: "json",
+            list_invoice: this.invoice,
+          });
+          console.log("res  ", res);
+          if (res.success) {
+            this.xmlUrl = res.data.xml_converted;
+            await this.$nextTick();
+            this.isProcessing = false;
+            this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
+          } else {
             this.showNotification("danger", res.message);
           }
         }
-        else
-        {
+        else {
           try {
             this.xmlUrl = this.xml_signed; //new Blob([byteArray], { type: _typeFile });;
             this.$nextTick(() => {
@@ -905,8 +1033,7 @@ export default {
             return this.showNotification("danger", e.message);
           }
         }
-      }else
-      {
+      } else {
         this.showNotification("warning", this.$t("no_row_selected"), '');
       }
     },

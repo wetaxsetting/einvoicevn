@@ -5264,6 +5264,11 @@ class EInvoiceController {
         return response.send(Utils.response(false, "template_id can't null", ));
       }
 
+      if(!start_date)
+      {
+        return response.send(Utils.response(false, "start_date can't null", ));
+      }
+
       console.log(logo_image);
       console.log(background_image);
 

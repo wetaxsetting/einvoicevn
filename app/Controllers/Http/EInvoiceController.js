@@ -4318,19 +4318,19 @@ class EInvoiceController {
         objInvoice.DLHDon.NDHDon.DSHHDVu = {};
         objInvoice.DLHDon.NDHDon.DSHHDVu.HHDVu = [];
 
-        for (let j = 0; j < invoices[i].detail.length; j++) {
+        for (let j = 0; j < invoices[i].detail_invoice.length; j++) {
           objInvoice.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
-            TChat: invoices[i].detail[j].feature,
-            STT: invoices[i].detail[j].seq,
-            MHHDVu: invoices[i].detail[j].item_code,
-            THHDVu: invoices[i].detail[j].item_name,
-            DVTinh: invoices[i].detail[j].item_uom,
-            SLuong: invoices[i].detail[j].quantity,
-            DGia: invoices[i].detail[j].uprice,
-            TLCKhau: invoices[i].detail[j].dc_rate,
-            STCKhau: invoices[i].detail[j].dc_amt,
-            ThTien: invoices[i].detail[j].amt,
-            TSuat: invoices[i].detail[j].vat_rate,
+            TChat: invoices[i].detail_invoice[j].feature,
+            STT: invoices[i].detail_invoice[j].seq,
+            MHHDVu: invoices[i].detail_invoice[j].item_code,
+            THHDVu: invoices[i].detail_invoice[j].item_name,
+            DVTinh: invoices[i].detail_invoice[j].item_uom,
+            SLuong: invoices[i].detail_invoice[j].quantity,
+            DGia: invoices[i].detail_invoice[j].uprice,
+            TLCKhau: invoices[i].detail_invoice[j].dc_rate,
+            STCKhau: invoices[i].detail_invoice[j].dc_amt,
+            ThTien: invoices[i].detail_invoice[j].amt,
+            TSuat: invoices[i].detail_invoice[j].vat_rate,
           });
         }
 
@@ -4469,7 +4469,7 @@ class EInvoiceController {
           buyer_address: 400,
           buyer_tel: 20,
           buyer_cccd: 12,
-          detail: [
+          detail_invoice: [
             {
               feature: 1,
               seq: 4,
@@ -4530,12 +4530,12 @@ class EInvoiceController {
       for (let i = 0; i < invalid_pos_invoices.length; i++) {
         // console.log(" i ", i, "  sss", invalid_pos_invoices[i]);
 
-        for (let j = 0; j < invalid_pos_invoices[i].detail.length; j++) {
-          for (const key in errorList[0].detail[0]) {
+        for (let j = 0; j < invalid_pos_invoices[i].detail_invoice.length; j++) {
+          for (const key in errorList[0].detail_invoice[0]) {
             // valid digital_certificates
             if (
-              invalid_pos_invoices[i].detail[j][key] === undefined ||
-              invalid_pos_invoices[i].detail[j][key] == null
+              invalid_pos_invoices[i].detail_invoice[j][key] === undefined ||
+              invalid_pos_invoices[i].detail_invoice[j][key] == null
             ) {
               status = false;
               resMess = `${mess1} invoices ${key}.`;
@@ -4545,7 +4545,7 @@ class EInvoiceController {
               };
             }
             // vald length
-            if (String(invalid_pos_invoices[i].detail[j][key]).length > errorList[0].detail[0][key]) {
+            if (String(invalid_pos_invoices[i].detail_invoice[j][key]).length > errorList[0].detail_invoice[0][key]) {
               return {
                 status: false,
                 message: `Length of invoices.${key} too long.`,
@@ -4791,7 +4791,7 @@ class EInvoiceController {
           data_rep.push({
             link_invoice_preview: "https://einvoicevn.com/lookup",
             security_code: "",
-            status_code: "D",
+            status_code: "0",
             status_name: "Tax code has not been registered",
             user_name: '',
             send_date: '',
@@ -6464,19 +6464,19 @@ class EInvoiceController {
         objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu = {};
         objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu = [];
 
-        for (let j = 0; j < invoices[i].detail.length; j++) {
+        for (let j = 0; j < invoices[i].detail_invoice.length; j++) {
           objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
-            TChat: invoices[i].detail[j].feature || "",
-            STT: invoices[i].detail[j].seq || "",
-            MHHDVu: invoices[i].detail[j].item_code || "",
-            THHDVu: invoices[i].detail[j].item_name || "",
-            DVTinh: invoices[i].detail[j].unit || "",
-            SLuong: invoices[i].detail[j].quantity || "",
-            DGia: invoices[i].detail[j].unit_price || "",
-            TLCKhau: invoices[i].detail[j].dc_rate || "",
-            STCKhau: invoices[i].detail[j].dc_amt || "",
-            ThTien: invoices[i].detail[j].amount || "",
-            TSuat: invoices[i].detail[j].vat_rate || "",
+            TChat: invoices[i].detail_invoice[j].feature || "",
+            STT: invoices[i].detail_invoice[j].seq || "",
+            MHHDVu: invoices[i].detail_invoice[j].item_code || "",
+            THHDVu: invoices[i].detail_invoice[j].item_name || "",
+            DVTinh: invoices[i].detail_invoice[j].unit || "",
+            SLuong: invoices[i].detail_invoice[j].quantity || "",
+            DGia: invoices[i].detail_invoice[j].unit_price || "",
+            TLCKhau: invoices[i].detail_invoice[j].dc_rate || "",
+            STCKhau: invoices[i].detail_invoice[j].dc_amt || "",
+            ThTien: invoices[i].detail_invoice[j].amount || "",
+            TSuat: invoices[i].detail_invoice[j].vat_rate || "",
           });
         }
         count_inv++;

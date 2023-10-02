@@ -4741,7 +4741,28 @@ class EInvoiceController {
             );
           }
         }
-
+        else (rtnValue.p_rtn_cur[0].STATUS == "NOEXIT")
+        {
+          data_rep.push({
+            link_invoice_preview: "https://einvoicevn.com/lookup",
+            security_code: "",
+            status_code: "D",
+            status_name: "Tax code has not been registered",
+            user_name: '',
+            send_date: '',
+            send_time: '',
+            mail_form: '',
+            mail_to: '',
+            mail_to_cc: '',
+            etax_result: "D",
+            etax_status: "W",
+            title: '',
+            content: '',
+          });
+          continue;
+        }
+  
+        
         if (!invoice.buyer_email && !invoice.buyer_email_cc) {
           data_rep.push({
             link_invoice_preview: "https://einvoicevn.com/lookup",
@@ -4835,7 +4856,9 @@ class EInvoiceController {
               content: body,
             });
           }
+          
         }
+        
       }
 
       return response.send(Utils.response(true, `Send order to invoice was successfully!`, data_rep));

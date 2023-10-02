@@ -4603,29 +4603,6 @@ class EInvoiceController {
         data_invoice = []
       } = request.all();
 
-
-      let tei_wt_sale_bill_pk = 0;
-      const data_xml = await this.createXMLByOne(data_invoice);
-      const count_length = data_xml.length;
-      const xml_type = "application/xml";
-      // console.log("data_invoice.buyer_comp_name  ", data_invoice.buyer_comp_name)
-      // console.log("data_invoice.buyer_email  ", data_invoice.buyer_email)
-
-      // if (!data_invoice.buyer_comp_name) {
-      //   return response.send(Utils.response(false, `Can't send e-invoice to customer if buyer_comp_name is null`, {
-      //     error_code: "3018",
-      //     error_name: "buyer_comp_name and  is null"
-      //   }));
-      // }
-
-      // if (!data_invoice.buyer_email) {
-      //   return response.send(Utils.response(false, `Can't send e-invoice to customer if buyer_email are null`, {
-      //     error_code: "3018",
-      //     error_name: " buyer_email are null"
-      //   })
-      //   );
-      // }
-
       if (!data_invoice) {
         return response.send(Utils.response(false, `Invalid data_invoice `, {
           error_code: "3018",
@@ -4633,119 +4610,126 @@ class EInvoiceController {
         })
         );
       }
+      let data_rep = [];
+      for (const invoice of data_invoice) {
+        let tei_wt_sale_bill_pk = 0;
+        const data_xml = await this.createXMLByOne(invoice);
+        const count_length = invoice.length;
+        const xml_type = "application/xml";
 
-      if (!data_invoice.form_no || !data_invoice.serial_no || !data_invoice.invoice_no) {
-        return response.send(Utils.response(false, `Invalid infor for e-invoice `, {
-          error_code: "3018",
-          error_name: "Invalid infor for e-invoice"
-        })
+        if (!invoice.form_no || !invoice.serial_no || !invoice.invoice_no) {
+          return response.send(Utils.response(false, `Invalid infor for e-invoice `, {
+            error_code: "3018",
+            error_name: "Invalid infor for e-invoice"
+          })
+          );
+        }
+
+        if (!invoice.seller_comp_name || !invoice.seller_taxcode) {
+          return response.send(Utils.response(false, `Invalid infor for company `, {
+            error_code: "3018",
+            error_name: "Invalid infor for company"
+          })
+          );
+        }
+
+        const para_value = {
+          sale_date: sale_date,
+          store_code: store_code,
+          store_name: store_name,
+          pos_no: pos_no,
+          bill_no: bill_no,
+          version: invoice.version,
+          invoice_name: invoice.invoice_name,
+          symbol_type: invoice.form_no, //invoice.symbol_type,
+          form_no: invoice.form_no,
+          serial_no: invoice.serial_no,
+          invoice_date: invoice.invoice_date,
+          invoice_no: invoice.invoice_no,
+          currency: invoice.currency,
+          ex_rate: invoice.ex_rate,
+          payment_method: invoice.payment_method,
+          seller_comp_name: invoice.seller_comp_name,
+          seller_taxcode: invoice.seller_taxcode,
+          seller_address: invoice.seller_address,
+          seller_phone: invoice.seller_phone,
+          buyer_comp_name: invoice.buyer_comp_name || '',
+          buyer_taxcode: invoice.buyer_taxcode,
+          buyer_phone: invoice.buyer_phone,
+          buyer_address: invoice.buyer_address,
+          buyer_cccd: invoice.buyer_cccd,
+          buyer_email: invoice.buyer_email,
+          buyer_email_cc: invoice.buyer_email_cc,
+          total_amt_no_vat: invoice.total_amt_no_vat,
+          total_amt_dc: invoice.total_amt_dc,
+          total_amt_vat: invoice.total_amt_vat,
+          total_payment: invoice.total_payment,
+          total_payment_word_vie: invoice.total_payment_word_vie,
+          mccqt: invoice.mccqt,
+          data_xml: data_xml,
+          count_length: count_length,
+          xml_type: xml_type,
+        };
+
+        const rtnValue = await DBService.ExecuteSQLBlob(
+          `BEGIN ei_upd_order_info (          
+                                                          :sale_date,
+                                                          :store_code,
+                                                          :store_name,
+                                                          :pos_no,
+                                                          :bill_no,
+                                                          :version,
+                                                          :invoice_name,
+                                                          :symbol_type,
+                                                          :form_no,
+                                                          :serial_no,
+                                                          :invoice_date,
+                                                          :invoice_no,
+                                                          :currency,
+                                                          :ex_rate,
+                                                          :payment_method,
+                                                          :seller_comp_name,
+                                                          :seller_taxcode,
+                                                          :seller_address,
+                                                          :seller_phone,
+                                                          :buyer_comp_name,
+                                                          :buyer_taxcode,
+                                                          :buyer_phone,
+                                                          :buyer_address,
+                                                          :buyer_cccd,
+                                                          :buyer_email,
+                                                          :buyer_email_cc,
+                                                          :total_amt_no_vat,
+                                                          :total_amt_dc,
+                                                          :total_amt_vat,
+                                                          :total_payment,
+                                                          :total_payment_word_vie,
+                                                          :mccqt,
+                                                          :data_xml,
+                                                          :count_length,
+                                                          :xml_type,
+                                                          :p_language, 
+                                                          :p_crt_by, 
+                                                          :p_rtn_cur); END;`,
+          para_value,
+          p_language,
+          p_crt_by
         );
-      }
 
-      if (!data_invoice.seller_comp_name || !data_invoice.seller_taxcode) {
-        return response.send(Utils.response(false, `Invalid infor for company `, {
-          error_code: "3018",
-          error_name: "Invalid infor for company"
-        })
-        );
-      }
 
-      const para_value = {
-        sale_date: sale_date,
-        store_code: store_code,
-        store_name: store_name,
-        pos_no: pos_no,
-        bill_no: bill_no,
-        version: data_invoice.version,
-        invoice_name: data_invoice.invoice_name,
-        symbol_type: data_invoice.form_no, //data_invoice.symbol_type,
-        form_no: data_invoice.form_no,
-        serial_no: data_invoice.serial_no,
-        invoice_date: data_invoice.invoice_date,
-        invoice_no: data_invoice.invoice_no,
-        currency: data_invoice.currency,
-        ex_rate: data_invoice.ex_rate,
-        payment_method: data_invoice.payment_method,
-        seller_comp_name: data_invoice.seller_comp_name,
-        seller_taxcode: data_invoice.seller_taxcode,
-        seller_address: data_invoice.seller_address,
-        seller_phone: data_invoice.seller_phone,
-        buyer_comp_name: data_invoice.buyer_comp_name || '',
-        buyer_taxcode: data_invoice.buyer_taxcode,
-        buyer_phone: data_invoice.buyer_phone,
-        buyer_address: data_invoice.buyer_address,
-        buyer_cccd: data_invoice.buyer_cccd,
-        buyer_email: data_invoice.buyer_email,
-        buyer_email_cc: data_invoice.buyer_email_cc,
-        total_amt_no_vat: data_invoice.total_amt_no_vat,
-        total_amt_dc: data_invoice.total_amt_dc,
-        total_amt_vat: data_invoice.total_amt_vat,
-        total_payment: data_invoice.total_payment,
-        total_payment_word_vie: data_invoice.total_payment_word_vie,
-        mccqt: data_invoice.mccqt,
-        data_xml: data_xml,
-        count_length: count_length,
-        xml_type: xml_type,
-      };
-
-      const rtnValue = await DBService.ExecuteSQLBlob(
-        `BEGIN ei_upd_order_info (          
-                                                        :sale_date,
-                                                        :store_code,
-                                                        :store_name,
-                                                        :pos_no,
-                                                        :bill_no,
-                                                        :version,
-                                                        :invoice_name,
-                                                        :symbol_type,
-                                                        :form_no,
-                                                        :serial_no,
-                                                        :invoice_date,
-                                                        :invoice_no,
-                                                        :currency,
-                                                        :ex_rate,
-                                                        :payment_method,
-                                                        :seller_comp_name,
-                                                        :seller_taxcode,
-                                                        :seller_address,
-                                                        :seller_phone,
-                                                        :buyer_comp_name,
-                                                        :buyer_taxcode,
-                                                        :buyer_phone,
-                                                        :buyer_address,
-                                                        :buyer_cccd,
-                                                        :buyer_email,
-                                                        :buyer_email_cc,
-                                                        :total_amt_no_vat,
-                                                        :total_amt_dc,
-                                                        :total_amt_vat,
-                                                        :total_payment,
-                                                        :total_payment_word_vie,
-                                                        :mccqt,
-                                                        :data_xml,
-                                                        :count_length,
-                                                        :xml_type,
-                                                        :p_language, 
-                                                        :p_crt_by, 
-                                                        :p_rtn_cur); END;`,
-        para_value,
-        p_language,
-        p_crt_by
-      );
-
-      tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
-      console.log("tei_wt_sale_bill_pk  ", tei_wt_sale_bill_pk);
-      if (rtnValue.p_rtn_cur[0].STATUS == "OK") {
-        console.log("tei_wt_sale_bill_pk OK ", tei_wt_sale_bill_pk);
-        for (let j = 0; j < data_invoice.total_vat_list.length; j++) {
-          const para_amt_vat = {
-            tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
-            sub_amt: data_invoice.total_vat_list[j].sub_amt,
-            sub_vat_rate: data_invoice.total_vat_list[j].sub_vat_rate,
-            sub_vat_amt: data_invoice.total_vat_list[j].sub_vat_amt,
-          };
-          const rtnValue_VAT = await DBService.ExecuteSQLBlob(
-            `BEGIN ei_upd_sale_bill_vat (          
+        tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
+        console.log("tei_wt_sale_bill_pk  ", tei_wt_sale_bill_pk);
+        if (rtnValue.p_rtn_cur[0].STATUS == "OK") {
+          console.log("tei_wt_sale_bill_pk OK ", tei_wt_sale_bill_pk);
+          for (let j = 0; j < invoice.total_vat_list.length; j++) {
+            const para_amt_vat = {
+              tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
+              sub_amt: invoice.total_vat_list[j].sub_amt,
+              sub_vat_rate: invoice.total_vat_list[j].sub_vat_rate,
+              sub_vat_amt: invoice.total_vat_list[j].sub_vat_amt,
+            };
+            const rtnValue_VAT = await DBService.ExecuteSQLBlob(
+              `BEGIN ei_upd_sale_bill_vat (          
                                                                 :tei_wt_sale_bill_pk,
                                                                 :sub_amt,
                                                                 :sub_vat_rate,
@@ -4753,29 +4737,29 @@ class EInvoiceController {
                                                                 :p_language, 
                                                                 :p_crt_by, 
                                                                 :p_rtn_cur); END;`,
-            para_amt_vat,
-            p_language,
-            p_crt_by
-          );
-        }
+              para_amt_vat,
+              p_language,
+              p_crt_by
+            );
+          }
 
-        for (let j = 0; j < data_invoice.detail.length; j++) {
-          const para_prod_details = {
-            tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
-            feature: data_invoice.detail[j].feature,
-            seq: data_invoice.detail[j].seq,
-            item_code: data_invoice.detail[j].item_code,
-            item_name: data_invoice.detail[j].item_name,
-            unit: data_invoice.detail[j].unit,
-            quantity: data_invoice.detail[j].quantity,
-            unit_price: data_invoice.detail[j].unit_price,
-            dc_rate: data_invoice.detail[j].dc_rate,
-            dc_amt: data_invoice.detail[j].dc_amt,
-            amount: data_invoice.detail[j].amount,
-            vat_rate: data_invoice.detail[j].vat_rate,
-          };
-          const rtnValue_VAT = await DBService.ExecuteSQLBlob(
-            `BEGIN ei_upd_sale_prod (          
+          for (let j = 0; j < invoice.detail.length; j++) {
+            const para_prod_details = {
+              tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
+              feature: invoice.detail[j].feature,
+              seq: invoice.detail[j].seq,
+              item_code: invoice.detail[j].item_code,
+              item_name: invoice.detail[j].item_name,
+              unit: invoice.detail[j].unit,
+              quantity: invoice.detail[j].quantity,
+              unit_price: invoice.detail[j].unit_price,
+              dc_rate: invoice.detail[j].dc_rate,
+              dc_amt: invoice.detail[j].dc_amt,
+              amount: invoice.detail[j].amount,
+              vat_rate: invoice.detail[j].vat_rate,
+            };
+            const rtnValue_VAT = await DBService.ExecuteSQLBlob(
+              `BEGIN ei_upd_sale_prod (          
                                                                 :tei_wt_sale_bill_pk,
                                                                 :feature,
                                                                 :seq,
@@ -4791,121 +4775,142 @@ class EInvoiceController {
                                                                 :p_language, 
                                                                 :p_crt_by, 
                                                                 :p_rtn_cur); END;`,
-            para_prod_details,
+              para_prod_details,
+              p_language,
+              p_crt_by
+            );
+          }
+        }
+        else (rtnValue.p_rtn_cur[0].STATUS == "NOEXIT")
+        {
+          data_rep.push({
+            link_invoice_preview: "https://einvoicevn.com/lookup",
+            security_code: "",
+            status_code: "D",
+            status_name: "Tax code has not been registered",
+            user_name: '',
+            send_date: '',
+            send_time: '',
+            mail_form: '',
+            mail_to: '',
+            mail_to_cc: '',
+            etax_result: "D",
+            etax_status: "W",
+            title: '',
+            content: '',
+          });
+          continue;
+        }
+  
+        
+        if (!invoice.buyer_email && !invoice.buyer_email_cc) {
+          data_rep.push({
+            link_invoice_preview: "https://einvoicevn.com/lookup",
+            security_code: "",
+            status_code: "D",
+            status_name: "Not Sent",
+            user_name: '',
+            send_date: '',
+            send_time: '',
+            mail_form: '',
+            mail_to: '',
+            mail_to_cc: '',
+            etax_result: "D",
+            etax_status: "W",
+            title: '',
+            content: '',
+          });
+        } else {
+          const { res_send_mail, subject, body } = await this.sendMailToCustomer(
+            tei_wt_sale_bill_pk,
+            invoice,
             p_language,
             p_crt_by
           );
+
+          if (res_send_mail.data.success) {
+            const para_inv_st = {
+              tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
+              status: "Sent Success",
+            };
+            // const rtnValueSendMail = 
+            await DBService.ExecuteSQLBlob(
+              `BEGIN ei_upd_sale_bill_status (          
+                                                              :tei_wt_sale_bill_pk,
+                                                              :status,
+                                                              :p_language, 
+                                                              :p_crt_by, 
+                                                              :p_rtn_cur); END;`,
+              para_inv_st,
+              p_language,
+              p_crt_by
+            );
+
+             data_rep.push({
+              link_invoice_preview: "https://einvoicevn.com/lookup",
+              lookup_code: "1234567bac",
+              status_code: "1",
+              status_name: "Sent Success",
+              customer_name: invoice.buyer_comp_name,
+              send_date: res_send_mail.data.data.date_send,
+              send_time: res_send_mail.data.data.time_send,
+              mail_form: res_send_mail.data.data.mail_from,
+              mail_to: res_send_mail.data.data.mail_to,
+              mail_to_cc: res_send_mail.data.data.mail_to_cc,
+              etax_result: "D",
+              etax_status: "W",
+              title: subject,
+              content: body,
+            });
+          } else {
+            const para_inv_st = {
+              tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
+              status: "Sent Faile",
+            };
+            // const rtnValueSendMail = 
+            await DBService.ExecuteSQLBlob(
+              `BEGIN ei_upd_sale_bill_status (          
+                                                              :tei_wt_sale_bill_pk,
+                                                              :status,
+                                                              :p_language, 
+                                                              :p_crt_by, 
+                                                              :p_rtn_cur); END;`,
+              para_inv_st,
+              p_language,
+              p_crt_by
+            );
+            data_rep.push({
+              link_invoice_preview: "https://einvoicevn.com/lookup",
+              security_code: "1234567bac",
+              status_code: "0",
+              status_name: "Sent Faile",
+              user_name: data.data_invoice.buyer_comp_name,
+              send_date: res_send_mail.data.data.date_send,
+              send_time: res_send_mail.data.data.time_send,
+              mail_form: res_send_mail.data.data.mail_from,
+              mail_to: res_send_mail.data.data.mail_to,
+              mail_to_cc: res_send_mail.data.data.mail_to_cc,
+              etax_result: "D",
+              etax_status: "W",
+              title: subject,
+              content: body,
+            });
+          }
+          
         }
-      }
-      // else{
-      //   return response.send(Utils.response(true, `error!`, {err_msg: 'exec error: ei_upd_order_info'}));
-      // }
-
-      if(!data_invoice.buyer_email){
-        let data_r = {
-          link_invoice_preview: "https://einvoicevn.com/lookup",
-          security_code: "",
-          status_code: "D",
-          status_name: "Not Sent",
-          user_name: '',
-          send_date: '',
-          send_time: '',
-          mail_form: '',
-          mail_to: '',
-          mail_to_cc: '',
-          etax_result: "D",
-          etax_status: "W",
-          title: '',
-          content: '',
-        };
-        return response.send(Utils.response(true, `Send order to invoice was success, not send mail!`, data_r));
+        
       }
 
-
-      const { res_send_mail, subject, body } = await this.sendMailToCustomer(
-        tei_wt_sale_bill_pk,
-        data_invoice,
-        p_language,
-        p_crt_by
-      );
-
-      if (res_send_mail.data.success) {
-        const para_inv_st = {
-          tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
-          status: "Sent Success",
-        };
-        const rtnValueSendMail = await DBService.ExecuteSQLBlob(
-          `BEGIN ei_upd_sale_bill_status (          
-                                                            :tei_wt_sale_bill_pk,
-                                                            :status,
-                                                            :p_language, 
-                                                            :p_crt_by, 
-                                                            :p_rtn_cur); END;`,
-          para_inv_st,
-          p_language,
-          p_crt_by
-        );
-
-        let data_r = {
-          link_invoice_preview: "https://einvoicevn.com/lookup",
-          lookup_code: "1234567bac",
-          status_code: "1",
-          status_name: "Sent Success",
-          customer_name: data_invoice.buyer_comp_name,
-          send_date: res_send_mail.data.data.date_send,
-          send_time: res_send_mail.data.data.time_send,
-          mail_form: res_send_mail.data.data.mail_from,
-          mail_to: res_send_mail.data.data.mail_to,
-          mail_to_cc: res_send_mail.data.data.mail_to_cc,
-          etax_result: "D",
-          etax_status: "W",
-          title: subject,
-          content: body,
-        };
-        return response.send(Utils.response(true, `Send order to invoice was successfully!`, data_r));
-      } else {
-        const para_inv_st = {
-          tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
-          status: "Sent Faile",
-        };
-        const rtnValueSendMail = await DBService.ExecuteSQLBlob(
-          `BEGIN ei_upd_sale_bill_status (          
-                                                            :tei_wt_sale_bill_pk,
-                                                            :status,
-                                                            :p_language, 
-                                                            :p_crt_by, 
-                                                            :p_rtn_cur); END;`,
-          para_inv_st,
-          p_language,
-          p_crt_by
-        );
-        let data_r = {
-          link_invoice_preview: "https://einvoicevn.com/lookup",
-          security_code: "1234567bac",
-          status_code: "0",
-          status_name: "Sent Faile",
-          user_name: data.data_invoice.buyer_comp_name,
-          send_date: res_send_mail.data.data.date_send,
-          send_time: res_send_mail.data.data.time_send,
-          mail_form: res_send_mail.data.data.mail_from,
-          mail_to: res_send_mail.data.data.mail_to,
-          mail_to_cc: res_send_mail.data.data.mail_to_cc,
-          etax_result: "D",
-          etax_status: "W",
-          title: subject,
-          content: body,
-        };
-        return response.send(Utils.response(true, `Send order to invoice was failure!`, data_r));
-      }
+      return response.send(Utils.response(true, `Send order to invoice was successfully!`, data_rep));
       // console.log("res_send_mail  ", res_send_mail);
-    } catch (error) {
+    } catch (e) {
       Utils.Logger({
         LVL: "error",
         MODULE: "EInvoiceController",
         FUNC: "weTaxSendOrderInfo",
         CONTENT: e.message,
       });
-      console.log(error);
+      console.log(e);
       return response.send(Utils.response(false, e.message));
     }
   }
@@ -4925,12 +4930,11 @@ class EInvoiceController {
         infor_send_mail
       } = request.all();
 
-       console.log("data  ", infor_send_mail);
+      console.log("data  ", infor_send_mail);
       let tei_wt_sale_bill_pk = 0;
       let data_r = [];
       //const data_xml = await this.createXMLByOne(data.data_invoice);
-      for( const invoice of infor_send_mail)
-      {
+      for (const invoice of infor_send_mail) {
         const para_value = {
           tax_code: tax_code,
           sale_date: sale_date,
@@ -4940,9 +4944,9 @@ class EInvoiceController {
           serial_no: invoice.serial_no,
           invoice_no: invoice.invoice_no,
         };
-  
-          console.log("para_value  ", para_value)
-  
+
+        console.log("para_value  ", para_value)
+
         const rtnValue = await DBService.ExecuteSQLBlob(
           `BEGIN ei_sel_re_order_info (                   :tax_code,
                                                           :sale_date,
@@ -4964,8 +4968,7 @@ class EInvoiceController {
         if (rtnValue?.p_rtn_cur?.[0]?.STATUS == "OK") {
           tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
 
-          if(!invoice.buyer_email && !invoice.buyer_email_cc && !rtnValue.p_rtn_cur[0].BUYER_EMAIL && !rtnValue.p_rtn_cur[0].BUYER_EMAIL_CC)
-          {
+          if (!invoice.buyer_email && !invoice.buyer_email_cc && !rtnValue.p_rtn_cur[0].BUYER_EMAIL && !rtnValue.p_rtn_cur[0].BUYER_EMAIL_CC) {
             data_r.push({
               link_invoice_preview: "https://einvoicevn.com/lookup",
               lookup_code: "1234567bac",
@@ -4984,9 +4987,7 @@ class EInvoiceController {
               title: "",
               content: "",
             });
-          }else
-
-          {
+          } else {
             let invoice_data =
             {
               buyer_comp_name: rtnValue.p_rtn_cur[0].BUYER_COMP_NAME,
@@ -5005,10 +5006,10 @@ class EInvoiceController {
               p_language,
               p_crt_by
             );
-    
+
             // console.log("res_send_mail  ", res_send_mail.data);
             // console.log("res_send_mail  ", res_send_mail.data.success);
-    
+
             if (res_send_mail.data.success) {
               const para_inv_st = {
                 tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
@@ -5026,7 +5027,7 @@ class EInvoiceController {
                 p_crt_by
               );
               //console.log("rtnValueSendMail  ", rtnValueSendMail);
-              
+
               data_r.push({
                 link_invoice_preview: "https://einvoicevn.com/lookup",
                 lookup_code: "1234567bac",
@@ -5044,8 +5045,8 @@ class EInvoiceController {
                 mail_to_cc: res_send_mail.data.data.mail_to_cc,
                 title: subject,
                 content: body,
-              });  
-  
+              });
+
             } else {
               const para_inv_st = {
                 tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
@@ -5062,7 +5063,7 @@ class EInvoiceController {
                 p_language,
                 p_crt_by
               );
-  
+
               data_r.push({
                 link_invoice_preview: "https://einvoicevn.com/lookup",
                 lookup_code: "1234567bac",
@@ -5283,30 +5284,25 @@ class EInvoiceController {
       const template_excel = request.file("template_excel");
       const logo_image = request.file("logo_image");
       const background_image = request.file("background_image");
-      
-      if(!seller_comp_taxcode)
-      {
-        return response.send(Utils.response(false, "seller_comp_taxcode can't null", ));
+
+      if (!seller_comp_taxcode) {
+        return response.send(Utils.response(false, "seller_comp_taxcode can't null",));
       }
 
-      if(!form_no)
-      {
-        return response.send(Utils.response(false, "form_no can't null", ));
+      if (!form_no) {
+        return response.send(Utils.response(false, "form_no can't null",));
       }
 
-      if(!serial_no)
-      {
-        return response.send(Utils.response(false, "serial_no can't null", ));
+      if (!serial_no) {
+        return response.send(Utils.response(false, "serial_no can't null",));
       }
 
-      if(!template_id)
-      {
-        return response.send(Utils.response(false, "template_id can't null", ));
+      if (!template_id) {
+        return response.send(Utils.response(false, "template_id can't null",));
       }
 
-      if(!start_date)
-      {
-        return response.send(Utils.response(false, "start_date can't null", ));
+      if (!start_date) {
+        return response.send(Utils.response(false, "start_date can't null",));
       }
 
       console.log(logo_image);
@@ -5314,63 +5310,62 @@ class EInvoiceController {
 
       //if (preview == "N") {
 
-        const file_url_img = `/assets/images/einvoices_logo/${seller_comp_taxcode}`;
-        const file_url_excel = `/resources/report/60/95/einvoices_template/${seller_comp_taxcode}`;
-        let logo_width = 0, logo_height = 0;
-        let file_path_logo = "";
+      const file_url_img = `/assets/images/einvoices_logo/${seller_comp_taxcode}`;
+      const file_url_excel = `/resources/report/60/95/einvoices_template/${seller_comp_taxcode}`;
+      let logo_width = 0, logo_height = 0;
+      let file_path_logo = "";
 
-        if(logo_image)
-        {
-          file_path_logo = await Utils.putExcelRootPath(logo_image, file_url_img, "WETAXT");
+      if (logo_image) {
+        file_path_logo = await Utils.putExcelRootPath(logo_image, file_url_img, "WETAXT");
 
-          //console.log("file_path_logo  ", file_path_logo);
-          //let file_path_bg = await Utils.putExcelRootPath(background_image, file_url_img, "WETAXT");
-          let savePath = Helpers.appRoot(file_path_logo);
-  
-          const imagePath = savePath;//`${logo_image.tmpPath}`;
-  
-          // Use sharp to read the image and get its metadata (width and height)
-          await sharp(imagePath)
-            .metadata()
-            .then((metadata) => {
-              const { width, height } = metadata;
-              logo_width = width;
-              logo_height = height;
-            })
-            .catch((error) => {
-              console.error('Error:', error);
-            });
-  
-          if (logo_width > logo_height && logo_width > 100) {
-            logo_width = 100;
-            logo_height = 100 * logo_width / logo_height;
-          }
-          if (logo_height > logo_width && logo_height > 100) {
-            logo_height = 100;
-            logo_width = 100 * logo_height / logo_width;
-          }
+        //console.log("file_path_logo  ", file_path_logo);
+        //let file_path_bg = await Utils.putExcelRootPath(background_image, file_url_img, "WETAXT");
+        let savePath = Helpers.appRoot(file_path_logo);
+
+        const imagePath = savePath;//`${logo_image.tmpPath}`;
+
+        // Use sharp to read the image and get its metadata (width and height)
+        await sharp(imagePath)
+          .metadata()
+          .then((metadata) => {
+            const { width, height } = metadata;
+            logo_width = width;
+            logo_height = height;
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+
+        if (logo_width > logo_height && logo_width > 100) {
+          logo_width = 100;
+          logo_height = 100 * logo_width / logo_height;
         }
-        
+        if (logo_height > logo_width && logo_height > 100) {
+          logo_height = 100;
+          logo_width = 100 * logo_height / logo_width;
+        }
+      }
 
-        const para_value = {
-          p_seller_comp_seller: seller_comp_taxcode,
-          p_serial_no2: symbol_type,
-          p_form_no: form_no,
-          p_serial_no: serial_no,
-          p_from_dt: start_date,
-          p_start_num: start_number,
-          p_template_cd: template_id,
-          p_url_img_logo: file_path_logo,
-          p_url_img_bg: "",//file_path_bg,
-          p_logo_width: logo_width,
-          p_logo_height: logo_height,
-          p_logo_start_col: "0.5",
-          p_logo_start_row: "1.7",
-        };
 
-        console.log("para_value  ", para_value);
-        const rtnValue = await DBService.ExecuteSQLBlob(
-          `BEGIN ei_upd_template_comp (                   :p_seller_comp_seller,
+      const para_value = {
+        p_seller_comp_seller: seller_comp_taxcode,
+        p_serial_no2: symbol_type,
+        p_form_no: form_no,
+        p_serial_no: serial_no,
+        p_from_dt: start_date,
+        p_start_num: start_number,
+        p_template_cd: template_id,
+        p_url_img_logo: file_path_logo,
+        p_url_img_bg: "",//file_path_bg,
+        p_logo_width: logo_width,
+        p_logo_height: logo_height,
+        p_logo_start_col: "0.5",
+        p_logo_start_row: "1.7",
+      };
+
+      console.log("para_value  ", para_value);
+      const rtnValue = await DBService.ExecuteSQLBlob(
+        `BEGIN ei_upd_template_comp (                   :p_seller_comp_seller,
                                                           :p_serial_no2,
                                                           :p_form_no,
                                                           :p_serial_no,
@@ -5386,25 +5381,25 @@ class EInvoiceController {
                                                           :p_language, 
                                                           :p_crt_by, 
                                                           :p_rtn_cur); END;`,
-          para_value,
-          p_language,
-          p_crt_by
-        );
+        para_value,
+        p_language,
+        p_crt_by
+      );
 
 
 
-        console.log("para_value  ", rtnValue)
+      console.log("para_value  ", rtnValue)
 
-        let EiExcels = new EiExcelTemplateHandler();
-        let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].PK, p_language, p_crt_by);
-        //console.log("base64PDf  ", url_pdf);
-        let req_value = {
-          seller_comp_taxcode: seller_comp_taxcode,
-          req_key: rtnValue.p_rtn_cur[0].PK,
-          template: url_pdf
-        }
+      let EiExcels = new EiExcelTemplateHandler();
+      let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].PK, p_language, p_crt_by);
+      //console.log("base64PDf  ", url_pdf);
+      let req_value = {
+        seller_comp_taxcode: seller_comp_taxcode,
+        req_key: rtnValue.p_rtn_cur[0].PK,
+        template: url_pdf
+      }
 
-        return response.send(Utils.response(true, "Send Company template was Successfully", req_value));
+      return response.send(Utils.response(true, "Send Company template was Successfully", req_value));
       // }
       // else {
 
@@ -7750,7 +7745,7 @@ class EInvoiceController {
     }
   }
 
-  
+
   async sendMailAt({ request, response, auth }) {
     try {
       var p_language = request.header("accept-language", "ENG");
@@ -7779,22 +7774,20 @@ class EInvoiceController {
         p_language,
         p_crt_by
       );
-     
+
       console.log(data_mail);
-      if(data_mail.p_rtn_cur.length > 0)
-      {
-        for(const  invoice of data_mail.p_rtn_cur)
-        { 
+      if (data_mail.p_rtn_cur.length > 0) {
+        for (const invoice of data_mail.p_rtn_cur) {
           let EiExcels = new EiExcelHandlerAuto();
           let url_pdf1 = await EiExcels.getEinvoice(invoice.PK, p_language, p_crt_by);
           console.log("url_pdf1  ", url_pdf1);
-  
+
           let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + invoice.CQT_MAGD + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token="); //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
           let url_xml = re_url_xml.data;
           console.log("base64XXML  ", url_xml);
-  
+
           const res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {
-            mail_to:  invoice.EMAIL_ADDRESS,
+            mail_to: invoice.EMAIL_ADDRESS,
             cc_to: invoice.EMAIL_ADDRESS_CC,
             subject: invoice.SUBJECT,
             body: invoice.BODY_1_MAIL + invoice.BODY_2_MAIL,
@@ -7804,13 +7797,13 @@ class EInvoiceController {
             filename2: invoice.FILENAME2,
           });
           console.log("res_send_mail  ", res_send_mail);
-  
+
           if (res_send_mail.data.success) {
 
             let para_end_mail = {
-              p_tei_einvoice_m_pk : invoice.PK,
-              p_email_address : invoice.EMAIL_ADDRESS,
-              p_email_address_cc : invoice.EMAIL_ADDRESS_CC,
+              p_tei_einvoice_m_pk: invoice.PK,
+              p_email_address: invoice.EMAIL_ADDRESS,
+              p_email_address_cc: invoice.EMAIL_ADDRESS_CC,
             };
             await DBService.ExecuteSQLBlob(
               `BEGIN EI_UPD_6095100_2(
@@ -7830,8 +7823,7 @@ class EInvoiceController {
         return response.send(
           Utils.response(true, `Send mail customer was suscess`)
         );
-      }else
-      {
+      } else {
         return response.send(
           Utils.response(false, `Send mail customer was faile`)
         );
@@ -8003,19 +7995,17 @@ class EInvoiceController {
       // console.log(data_mail.p_rtn_cur);
       // console.log(data_mail.p_rtn_cur.length);
 
-      if(data_mail.p_rtn_cur.length > 0)
-      {
-        if(data_mail.p_rtn_cur[0].EI_STATUS == "5")
-        { 
+      if (data_mail.p_rtn_cur.length > 0) {
+        if (data_mail.p_rtn_cur[0].EI_STATUS == "5") {
           let EiExcels = new EiExcelHandlerAuto();
           let url_pdf1 = await EiExcels.getEinvoice(data.req_key, p_language, p_crt_by);
           console.log("url_pdf1  ", url_pdf1);
-  
+
           let EiExcels1 = new EiExcel04SS2Handler();
           let url_pdf2 = await EiExcels1.getEinvoice(data.req_key, p_language, p_crt_by);
           console.log("url_pdf2  ", url_pdf2);
-  
-  
+
+
           const res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {
             mail_to: data_mail.p_rtn_cur[0].EMAIL_ADDRESS,
             cc_to: data_mail.p_rtn_cur[0].EMAIL_ADDRESS_CC,
@@ -8027,7 +8017,7 @@ class EInvoiceController {
             filename2: data_mail.p_rtn_cur[0].FILENAME1,
           });
           console.log("res_send_mail  ", res_send_mail);
-  
+
           if (res_send_mail.data.success) {
             let rtnValue = {
               send_date: res_send_mail.data.data.date_send,
@@ -8036,7 +8026,7 @@ class EInvoiceController {
               mail_to: res_send_mail.data.data.mail_to,
               mail_to_cc: res_send_mail.data.data.mail_to_cc,
             };
-  
+
             return response.send(
               Utils.response(true, `Sending mail customer was suscce`, rtnValue)
             );
@@ -8047,8 +8037,7 @@ class EInvoiceController {
             );
           }
         }
-        else
-        {
+        else {
           // let EiExcels = new EiExcelHandlerAuto();
           // let url_pdf1 = await EiExcels.getEinvoice(data.req_key, p_language, p_crt_by);
           // console.log("url_pdf1  ", url_pdf1);
@@ -8089,16 +8078,15 @@ class EInvoiceController {
             );
           }
         }
-        
-      }else
-      {
+
+      } else {
         return response.send(
           Utils.response(true, `The origin invoice not yet send customer`)
         );
       }
       //if()
 
-      
+
     } catch (error) {
       console.log("res_send_mail error  ", error);
     }

@@ -4298,11 +4298,11 @@ class EInvoiceController {
         objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat = {};
         objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat = [];
 
-        for (let j = 0; j < invoices[i].list_amt_vat.length; j++) {
+        for (let j = 0; j < invoices[i].total_vat_list.length; j++) {
           objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat.push({
-            TSuat: invoices[i].list_amt_vat[j].sub_vat_rate,
-            ThTien: invoices[i].list_amt_vat[j].sub_amt,
-            TThue: invoices[i].list_amt_vat[j].sub_amt_vat,
+            TSuat: invoices[i].total_vat_list[j].sub_vat_rate,
+            ThTien: invoices[i].total_vat_list[j].sub_amt,
+            TThue: invoices[i].total_vat_list[j].sub_amt_vat,
           });
         }
 
@@ -4445,7 +4445,7 @@ class EInvoiceController {
               amt_vat: 28,
             },
           ],
-          list_amt_vat: [
+          total_vat_list: [
             {
               sub_vat_rate: 11,
               sub_amt: 28,
@@ -4513,11 +4513,11 @@ class EInvoiceController {
             }
           }
 
-          for (const key in errorList[0].list_amt_vat[0]) {
+          for (const key in errorList[0].total_vat_list[0]) {
             // valid digital_certificates
             if (
-              invalid_pos_invoices[i].list_amt_vat[j][key] === undefined ||
-              invalid_pos_invoices[i].list_amt_vat[j][key] == null
+              invalid_pos_invoices[i].total_vat_list[j][key] === undefined ||
+              invalid_pos_invoices[i].total_vat_list[j][key] == null
             ) {
               status = false;
               resMess = `${mess1} invoices ${key}.`;
@@ -4527,7 +4527,7 @@ class EInvoiceController {
               };
             }
             // vald length
-            if (String(invalid_pos_invoices[i].list_amt_vat[j][key]).length > errorList[0].list_amt_vat[0][key]) {
+            if (String(invalid_pos_invoices[i].total_vat_list[j][key]).length > errorList[0].total_vat_list[0][key]) {
               return {
                 status: false,
                 message: `Length of invoices.${key} too long.`,
@@ -4574,7 +4574,7 @@ class EInvoiceController {
       for (const invoice of data_invoice) {
         let tei_wt_sale_bill_pk = 0;
         const data_xml = await this.createXMLByOne(invoice);
-        const count_length = invoice.length;
+        const count_length = data_xml.length;
         const xml_type = "application/xml";
 
         if (!invoice.form_no || !invoice.serial_no || !invoice.invoice_no) {
@@ -4620,11 +4620,11 @@ class EInvoiceController {
           buyer_cccd: invoice.buyer_cccd,
           buyer_email: invoice.buyer_email,
           buyer_email_cc: invoice.buyer_email_cc,
-          total_amt_no_vat: invoice.total_amt_no_vat,
-          total_amt_dc: invoice.total_amt_dc,
+          total_amt_no_vat: invoice.total_amt,
+          total_amt_dc: invoice.total_dc_amt,
           total_amt_vat: invoice.total_amt_vat,
           total_payment: invoice.total_payment,
-          total_payment_word_vie: invoice.total_payment_word_vie,
+          total_payment_word_vie: Utils.Num2VNText(invoice.total_payment,invoice.currency),//  invoice.total_payment_word_vie,
           mccqt: invoice.mccqt,
           data_xml: data_xml,
           count_length: count_length,
@@ -4679,6 +4679,9 @@ class EInvoiceController {
 
         tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
         console.log("tei_wt_sale_bill_pk  ", tei_wt_sale_bill_pk);
+        //console.log("para_value   ", para_value);
+        //console.log("rtnValue   ", rtnValue);
+
         if (rtnValue.p_rtn_cur[0].STATUS == "OK") {
           console.log("tei_wt_sale_bill_pk OK ", tei_wt_sale_bill_pk);
           for (let j = 0; j < invoice.total_vat_list.length; j++) {
@@ -4741,8 +4744,10 @@ class EInvoiceController {
             );
           }
         }
-        else (rtnValue.p_rtn_cur[0].STATUS == "NOEXIT")
+        else if (rtnValue.p_rtn_cur[0].STATUS == "NOEXIT")
         {
+          console.log("tei_wt_sale_bill_pk NOEXIT ", tei_wt_sale_bill_pk);
+
           data_rep.push({
             link_invoice_preview: "https://einvoicevn.com/lookup",
             security_code: "",
@@ -4754,14 +4759,14 @@ class EInvoiceController {
             mail_form: '',
             mail_to: '',
             mail_to_cc: '',
-            etax_result: "D",
-            etax_status: "W",
+            etax_result: "",
+            etax_status: "",
             title: '',
             content: '',
           });
           continue;
         }
-  
+       
         
         if (!invoice.buyer_email && !invoice.buyer_email_cc) {
           data_rep.push({
@@ -8782,13 +8787,13 @@ class EInvoiceController {
     objInvoice_M.HDon.DLHDon.NDHDon.NBan.Ten = dataObject.seller_comp_name;
     objInvoice_M.HDon.DLHDon.NDHDon.NBan.MST = dataObject.seller_taxcode;
     objInvoice_M.HDon.DLHDon.NDHDon.NBan.DChi = dataObject.seller_address;
-    objInvoice_M.HDon.DLHDon.NDHDon.NBan.SDThoai = dataObject.seller_tel;
+    objInvoice_M.HDon.DLHDon.NDHDon.NBan.SDThoai = dataObject.seller_phone;
 
     objInvoice_M.HDon.DLHDon.NDHDon.NMua.Ten = dataObject.buyer_comp_name;
     objInvoice_M.HDon.DLHDon.NDHDon.NMua.MST = dataObject.buyer_taxcode;
     objInvoice_M.HDon.DLHDon.NDHDon.NMua.DChi = dataObject.buyer_address;
     objInvoice_M.HDon.DLHDon.NDHDon.NMua.CCCDan = dataObject.buyer_cccd;
-    objInvoice_M.HDon.DLHDon.NDHDon.NMua.SDThoai = dataObject.buyer_tel;
+    objInvoice_M.HDon.DLHDon.NDHDon.NMua.SDThoai = dataObject.buyer_phone;
 
     objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu = [];
 
@@ -8815,20 +8820,30 @@ class EInvoiceController {
 
     objInvoice_M.HDon.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat = [];
 
-    for (let k = 0; k < dataObject.list_amt_vat.length; k++) {
+    for (let k = 0; k < dataObject.total_vat_list.length; k++) {
       objInvoice_M.HDon.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat.push({
-        TSuat: dataObject.list_amt_vat[k].sub_vat_rate,
-        ThTien: dataObject.list_amt_vat[k].sub_amt,
-        TThue: dataObject.list_amt_vat[k].sub_amt_vat,
+        TSuat: dataObject.total_vat_list[k].sub_vat_rate,
+        ThTien: dataObject.total_vat_list[k].sub_amt,
+        TThue: dataObject.total_vat_list[k].sub_amt_vat,
       });
     }
 
     objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTCThue = dataObject.total_amt;
-    objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTThue = dataObject.total_vat_amt;
+    objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTThue = dataObject.total_amt_vat;
 
     objInvoice_M.HDon.DLHDon.NDHDon.TToan.TTCKTMai = dataObject.total_dc_amt;
     objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = dataObject.total_payment;
-    objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = dataObject.total_payment_word_vie;
+    if(!dataObject.total_payment_word_vie)
+    {
+      let wordsAmt = Utils.Num2VNText(dataObject.total_payment, dataObject.ccy);
+      objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = wordsAmt.substr(0, 2) + wordsAmt.substr(2, wordsAmt.length - 2).toLowerCase() + '.'; //  wordsAmt.substring(0,2) + wordsAmt.substring(2);  // dataObject.total_payment_word_vie;
+
+    }else
+    {
+      objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = dataObject.total_payment_word_vie;
+
+    }
+    
 
     objInvoice_M.HDon.DSCKS.NBan = "";
 

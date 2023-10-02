@@ -4840,14 +4840,14 @@ class EInvoiceController {
 
       return response.send(Utils.response(true, `Send order to invoice was successfully!`, data_rep));
       // console.log("res_send_mail  ", res_send_mail);
-    } catch (error) {
+    } catch (e) {
       Utils.Logger({
         LVL: "error",
         MODULE: "EInvoiceController",
         FUNC: "weTaxSendOrderInfo",
         CONTENT: e.message,
       });
-      console.log(error);
+      console.log(e);
       return response.send(Utils.response(false, e.message));
     }
   }

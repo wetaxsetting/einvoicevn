@@ -488,7 +488,8 @@ class Utils {
         }
     }
 
-    Num2VNText(s, ccy) {
+    Num2VNText(s_r, ccy) {
+        let s = s_r.toString();
         //process minus case
         var minus = "";
         if (s.substring(0, 1) == "-") {
@@ -676,8 +677,8 @@ class Utils {
 
         return rtnf;
     }
-    Num2EngText(s, ccy) {
-
+    Num2EngText(s_r, ccy) {
+        let s = s_r.toString();
         //process minus case
         var minus = "";
         if (s.substring(0, 1) == "-") {

@@ -9,7 +9,7 @@
           </v-col>
           <v-col md="5" class="d-flex justify-end">
             <BaseButton icon_type="search" btn_type="icon" :btn_text="$t('search')" @onclick="onClickButton('SEARCH_ISSUE')" />
-            <!-- <BaseButton btn_type="icon" icon_type="copy" @onclick="copyToDialog = true" /> -->
+            <BaseButton btn_type="icon" icon_type="copy" @onclick="copyToDialog = true" />
             <BaseButton btn_type="icon" icon_type="new" :btn_text="$t('new')" @onclick="onClickButton('NEW_ISSUE')" />
             <!-- <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClickButton('DELETE_M')" /> -->
             <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClickButton('SAVE_ISSUE')" />
@@ -66,7 +66,7 @@
                 'ADDR1',
                 'TEL',
                 'BANK_ACCOUNT1',
-                'BANK_NM1'
+                'BANK_NM1',
               ]"
               :height="limitHeight"
               @cellClick="cellClickCell"
@@ -280,40 +280,15 @@
         <v-card-text class="pa-4 pb-2 d-flex flex-column align-space-between">
           <v-row>
             <v-col md="6">
-              <v-select
-                cache-items
-                dense
-                hide-details
-                outlined
-                clearable
-                class="pb-3"
-                item-value="PK"
-                item-text="TEXT"
-                :label="$t('from_company')"
-                :items="company_list"
-                v-model="selectedCompanyFrom"
-                @change="onChangeCompanyFrom"
-              ></v-select>
+              <BaseSelect outlined item-value="PK" item-text="TEXT" :label="$t('from_company')" :lstData="company_list" v-model="selectedCompanyFrom"  ></BaseSelect>
             </v-col>
             <v-col md="6">
-              <v-select
-                cache-items
-                dense
-                hide-details
-                outlined
-                class="pb-3"
-                item-value="PK"
-                item-text="TEXT"
-                :label="$t('to_company')"
-                :items="company_list"
-                v-model="selectedCompanyTo"
-                @change="onChangeCompanyFrom"
-              ></v-select>
+              <BaseSelect outlined item-value="PK" item-text="TEXT" :label="$t('to_company')" :lstData="company_list" v-model="selectedCompanyTo" ></BaseSelect>
             </v-col>
           </v-row>
           <v-row>
             <v-col md="6">
-              <v-select cache-items dense hide-details outlined class="pb-3" item-value="CODE" item-text="NAME" :label="$t('from_no_from')" :items="fromNoList" v-model="lstFrom_No_From"></v-select>
+              <BaseSelect outlined item-value="CODE" item-text="NAME" :label="$t('from_no_from')" :lstData="fromNoList" v-model="lstFrom_No_From"></BaseSelect>
             </v-col>
             <v-col md="6">
               <BaseInput :label="$t('from_no_to')" w v-model="txtForm_No_To" />
@@ -321,31 +296,19 @@
           </v-row>
           <v-row>
             <v-col md="6">
-              <v-select
-                cache-items
-                dense
-                hide-details
-                outlined
-                class="pb-3"
-                item-value="CODE"
-                item-text="NAME"
-                :label="$t('seria_no_from')"
-                :items="serialNoList"
-                v-model="lstSerial_No_From"
-              ></v-select>
+              <BaseSelect outlined item-value="CODE" item-text="NAME" :label="$t('seria_no_from')" :lstData="serialNoList" v-model="lstSerial_No_From"></BaseSelect>
             </v-col>
             <v-col md="6">
               <BaseInput :label="$t('seria_no_to')" v-model="txtSerial_No_To" />
             </v-col>
           </v-row>
-
-          <v-checkbox v-show="false" dense hide-details class="my-0 py-0" true-value="Y" false-value="N" :label="$t('overwrite')" v-model="overWriteYN"></v-checkbox>
+          <BaseCheckbox v-show="false" dense hide-details class="my-0 py-0" true-value="Y" false-value="N" :label="$t('overwrite')" v-model="overWriteYN"></BaseCheckbox>
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions>
           <span class="red--text">{{ copyResult }}</span>
           <v-spacer></v-spacer>
-          <v-btn text :color="currentTheme" @click="copyToDialog = false">{{ $t("cancel", "common") }}</v-btn>
+          <v-btn text :color="currentTheme" @click="copyToDialog = false">{{ $t("cancel") }}</v-btn>
           <v-btn depressed class="white--text" :color="currentTheme" @click="onProcessConfirm('copy')">{{ $t("copy") }}</v-btn>
         </v-card-actions>
       </v-card>
@@ -472,7 +435,7 @@ export default {
     folder: "",
     fileSaveBG: null,
     width: null,
-    height: null
+    height: null,
   }),
   /*############### created #######################*/
   async created() {
@@ -496,16 +459,14 @@ export default {
         this.fromDate = val + "01";
         this.toDate = val + this._maxDateOfMonth(val);
       }
-    },
-    selectedCompanyFrom(val) {
-      this.getListCodes("form_no");
-    },
+    }, 
     lstFrom_No_From(val) {
       this.getListCodes("serial_no");
     },
     selectedCompanyFrom(val) {
       if (val) {
-        this.selectedCompanyTo = val;
+        this.selectedCompanyTo = val; 
+        this.getListCodes("form_no");
       }
     },
     year(val) {
@@ -514,6 +475,11 @@ export default {
         this.toDate = this.year + "1231";
       }
     },
+    selected_company(val){
+      if (val) {
+        this.selectedCompanyFrom = this.selected_company;
+      }
+    }
   },
   /*############### computed ######################*/
   computed: {
@@ -639,13 +605,13 @@ export default {
       }
     },
     renderImg(imgUrl) {
-      if(!imgUrl) {
+      if (!imgUrl) {
         return require("@/assets/images/no_image.png");
       } else {
-        if(imgUrl.includes("base64")) {
+        if (imgUrl.includes("base64")) {
           return imgUrl;
         }
-        return require("@/assets/images/" + imgUrl.replace('assets/images/', ''));
+        return require("@/assets/images/" + imgUrl.replace("assets/images/", ""));
       }
     },
     async onUploadImgFolder(file, folder, _type) {
@@ -682,27 +648,28 @@ export default {
         const fr = new FileReader();
         fr.readAsDataURL(files[0]);
         fr.addEventListener("load", () => {
-          this.imageLOGO = fr.result // this.renderImg(fr.result, true);
+          this.imageLOGO = fr.result; // this.renderImg(fr.result, true);
           this.fileSaveLOGO = files[0];
         });
         ////Lấy được thông tin Width, Height;
         var img = new Image();
         img.src = window.URL.createObjectURL(files[0]);
         img.onload = function () {
-          let width = 0, height = 0;
+          let width = 0,
+            height = 0;
           width = this.naturalWidth;
           height = this.naturalHeight;
           //resize logo
           if (width >= height && width > 100) {
             width = 100;
-            height = 100 * width / height;
+            height = (100 * width) / height;
           }
           if (height > width && height > 100) {
             height = 100;
-            width = 100 * height/ width ;
+            width = (100 * height) / width;
           }
           self.MasterInfo.LOGO_WIDTH = Number(width).toFixed(2); /////Cách 2
-          self.MasterInfo.LOGO_HEIGHT = Number(height).toFixed(2);/////Cách 2
+          self.MasterInfo.LOGO_HEIGHT = Number(height).toFixed(2); /////Cách 2
           self.MasterInfo.LOGO_START_ROW = "1.7";
           self.MasterInfo.LOGO_START_COL = "0.5";
           //this.MasterInfo.LOGO_START_ROW = Number(this.MasterInfo.LOGO_START_ROW).toFixed(2);
@@ -726,20 +693,21 @@ export default {
         var img = new Image();
         img.src = window.URL.createObjectURL(files[0]);
         img.onload = function () {
-          let width = 0, height = 0;
+          let width = 0,
+            height = 0;
           width = this.naturalWidth;
           height = this.naturalHeight;
           //resize logo
           if (width > height && width > 756) {
             width = 756;
-            height = 100 * width / height;
+            height = (100 * width) / height;
           }
           if (height > width && height > 756) {
             height = 756;
-            width = 100 * height/ width ;
+            width = (100 * height) / width;
           }
-          self.MasterInfo.BG_WIDTH =  Number(width).toFixed(2);
-          self.MasterInfo.BG_HEIGHT =  Number(height).toFixed(2);
+          self.MasterInfo.BG_WIDTH = Number(width).toFixed(2);
+          self.MasterInfo.BG_HEIGHT = Number(height).toFixed(2);
           self.MasterInfo.BG_START_ROW = "15";
           self.MasterInfo.BG_START_COL = "1.5";
         };
@@ -754,7 +722,7 @@ export default {
       this.$refs.fileLOGO.click();
     },
     async cellClickCell(cell) {
-      console.log("file: 6095055.vue:757 [vng-304] cellClickCell [vng-304] cell:", cell)
+      console.log("file: 6095055.vue:757 [vng-304] cellClickCell [vng-304] cell:", cell);
       if (cell.data.PK != this.issue_pk) {
         this.issue_pk = cell.data.PK;
         this.dataIssued = cell.data;
@@ -765,7 +733,6 @@ export default {
           this.issue_pk = cell.data.PK;
           this.MasterInfo.PK = cell.data.TEI_TEMPLATE_PK;
           await this.dsoMaster("select");
-         
         }
       }
     },
@@ -781,7 +748,7 @@ export default {
         //   this.onDelete();
         //   break;
         case "SAVE_ISSUE":
-        let data = this.$refs.grdEinvoiceIssue.getData();
+          let data = this.$refs.grdEinvoiceIssue.getData();
           for (let i = 0; i < data.length; i++) {
             if (!data[i].INVOICE_KIND) {
               this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_invoice_kind_at_" + (i + 1)));
@@ -839,9 +806,10 @@ export default {
       }
     },
     async dsoMaster(action) {
+      if(action=='update'){
       ///// Luu duong dan file excel
-      let TEMPLATE = this.templateID_list.find(item => item.CODE == this.MasterInfo.TEMPLATE_CD)
-          this.MasterInfo.URL_FILE_EXCEL =  TEMPLATE.URL_FILE_EXCEL;
+      let TEMPLATE = this.templateID_list.find((item) => item.CODE == this.MasterInfo.TEMPLATE_CD);
+      this.MasterInfo.URL_FILE_EXCEL = (TEMPLATE&&TEMPLATE.URL_FILE_EXCEL?TEMPLATE.URL_FILE_EXCEL:"");
       /// Luu duong dan hinh anh
       let pathLOGOImg = "";
       if (this.fileSaveLOGO) {
@@ -858,6 +826,7 @@ export default {
         this.fileSaveBG = null;
       }
       this.MasterInfo.URL_IMG_BG = pathBGImg == "" ? this.MasterInfo.URL_IMG_BG : pathBGImg;
+    }
       this.MasterInfo._rowstatus = this.MasterInfo._rowstatus == "i" ? "i" : action == "update" ? "u" : "d";
       /////////////////////////
       let dsoControl = {
@@ -939,7 +908,7 @@ export default {
           switch (action) {
             case "select":
               this.MasterInfo = { ...res };
-              console.log("file: 6095055.vue:942 [vng-304] awaitthis._dsoCall [vng-304] res:", res)
+              console.log("file: 6095055.vue:942 [vng-304] awaitthis._dsoCall [vng-304] res:", res);
               this.MasterInfo._rowstatus = "u";
               ////   Bộ data để view pdf
               this.dataTemp = {
@@ -1025,7 +994,8 @@ export default {
             para: [this.selectedCompanyFrom],
           };
           this.fromNoList = await this._dsoCall(dso_from_no, "select", false);
-          this.lstFrom_No_From = this.fromNoList.length > 0 ? this.fromNoList[0].CODE : "";
+          // this.lstFrom_No_From = this.fromNoList.length > 0 ? this.fromNoList[0].CODE : "";
+          this.lstFrom_No_From = this.fromNoList[0].CODE;
           break;
         case "serial_no":
           const dso_serial_no = {
@@ -1034,8 +1004,8 @@ export default {
             para: [this.selectedCompanyFrom],
           };
           this.serialNoList = await this._dsoCall(dso_serial_no, "select", false);
-          this.lstSerial_No_From = this.serialNoList.length > 0 ? this.serialNoList[0].CODE : "";
-
+          // this.lstSerial_No_From = this.serialNoList.length > 0 ? this.serialNoList[0].CODE : "";
+          this.lstSerial_No_From = this.serialNoList[0].CODE;
           break;
 
         case "status":
@@ -1048,7 +1018,6 @@ export default {
             updpro: "EI_SEL_EINVOICE_TYPE",
             para: [
               this.selected_company,
-              //   this.lstBizplace, //this.lstBizPlace,
               "Y",
               "Y",
             ],
@@ -1185,17 +1154,6 @@ export default {
     async pdfUrlGetter(pk) {
       const pdfUrlExcel = await this.getEinvoiceERP_V2(this, pk);
       return pdfUrlExcel;
-    },
-    async onChangeCompanyFrom() {
-      //this.selectedCompanyFrom = this.selected_company;
-      this.fromNoList = [];
-      this.serialNoList = [];
-    },
-
-    async onChangeCompanyFromM() {
-      //this.selectedCompanyFrom = this.selected_company;
-      this.fromNoList = [];
-      this.serialNoList = [];
     },
     async getImpFile() {
       // console.log("this.url_template  ", this.url_template);

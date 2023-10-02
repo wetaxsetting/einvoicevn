@@ -51,9 +51,11 @@ class EiExcelConverterAuto {
 		}
 		console.log("logos  " , logos  );
 		console.log("logos[0].logoPath  " , logos[0].logoPath  );
-		if ( logos.length ) {
+		if (logos && logos.length>0 && logos[0].logoPath) {
 			try {
-				worksheet.addImage(await exceljs.insertPathImage(logos[0].logoPath), {
+				let idimg = await exceljs.insertPathImage(logos[0].logoPath)
+				console.log("file: EiExcelTemplateConverter.js:57 [vng-304] ExcelBuilder [vng-304] idimg:", idimg)
+				worksheet.addImage(idimg, {
 					tl: { col:  logos[0].logo_start_col, row:  logos[0].logo_start_row },
 					ext: { width: logos[0].logo_width, height: logos[0].logo_height }
 				});

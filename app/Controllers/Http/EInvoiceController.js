@@ -4793,6 +4793,10 @@ class EInvoiceController {
             security_code: "",
             status_code: "0",
             status_name: "Tax code has not been registered",
+            seller_tax_code : invoice.seller_taxcode,
+            form_no : invoice.form_no,
+            serial_no : invoice.serial_no,
+            invoice_no :invoice.invoice_no,
             user_name: '',
             send_date: '',
             send_time: '',
@@ -4814,6 +4818,10 @@ class EInvoiceController {
             security_code: "",
             status_code: "D",
             status_name: "Not Sent",
+            seller_tax_code : invoice.seller_taxcode,
+            form_no : invoice.form_no,
+            serial_no : invoice.serial_no,
+            invoice_no :invoice.invoice_no,
             user_name: '',
             send_date: '',
             send_time: '',
@@ -4856,6 +4864,10 @@ class EInvoiceController {
               lookup_code: "1234567bac",
               status_code: "1",
               status_name: "Sent Success",
+              seller_tax_code : invoice.seller_taxcode,
+              form_no : invoice.form_no,
+              serial_no : invoice.serial_no,
+              invoice_no :invoice.invoice_no,
               customer_name: invoice.buyer_comp_name,
               send_date: res_send_mail.data.data.date_send,
               send_time: res_send_mail.data.data.time_send,
@@ -4889,6 +4901,10 @@ class EInvoiceController {
               security_code: "1234567bac",
               status_code: "0",
               status_name: "Sent Faile",
+              seller_tax_code : invoice.seller_taxcode,
+              form_no : invoice.form_no,
+              serial_no : invoice.serial_no,
+              invoice_no :invoice.invoice_no,
               user_name: data.data_invoice.buyer_comp_name,
               send_date: res_send_mail.data.data.date_send,
               send_time: res_send_mail.data.data.time_send,
@@ -9186,7 +9202,7 @@ class EInvoiceController {
     objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = dataObject.total_payment;
     if(!dataObject.total_payment_word_vie)
     {
-      let wordsAmt = Utils.Num2VNText(dataObject.total_payment, dataObject.ccy);
+      let wordsAmt = Utils.Num2VNText(dataObject.total_payment.toString(), dataObject.ccy);
       objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = wordsAmt.substr(0, 2) + wordsAmt.substr(2, wordsAmt.length - 2).toLowerCase() + '.'; //  wordsAmt.substring(0,2) + wordsAmt.substring(2);  // dataObject.total_payment_word_vie;
 
     }else

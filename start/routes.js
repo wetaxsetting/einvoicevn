@@ -185,5 +185,9 @@ Route.group(() => {
     Route.post("general-convert-einvoice", "EInvoiceController.generalConvertEinvoice")
 }).prefix("api/einvoice");
 
+Route.group(() => {
+    Route.get("ReceiveSmsStatus", "EInvoiceController.receiveSmsStatus")
+}).prefix("api/callbackotp");
+
 // Frontend
 Route.any("*", "NuxtController.render");

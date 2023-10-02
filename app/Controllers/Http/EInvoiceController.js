@@ -281,6 +281,46 @@ class EInvoiceController {
     }
   }
 
+  async receiveSmsStatus({ request, response, auth }) {
+    try {
+      var p_language = request.header("accept-language", "ENG");
+      var p_crt_by = "";
+    
+      const {
+        SMSGUID,
+        SMSSTATUS,
+        SECRECTSIGN
+      } = request.all();
+
+      const para_value = {
+        id: SMSGUID,
+        stt: SMSSTATUS,
+        sign: SECRECTSIGN,
+      };
+      const res = await DBService.ExecuteSQLBlob(
+        `BEGIN EI_UPD_OTP_STS_WT(:id, :stt, :sign,
+                              :p_language, :p_crt_by, :p_rtn_cur); END;`,
+        para_value,
+        p_language,
+        p_crt_by
+      );
+      
+      return response.send(
+        Utils.response(true, 'ok', {  SMSGUID,
+          SMSSTATUS,
+          SECRECTSIGN })
+      );
+    } catch (e) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "receiveSmsStatus",
+        CONTENT: e.message,
+      });
+      return response.send(Utils.response(false, e.message));
+    }
+  }
+
   async convertDeclareUsingInvoiceToXML({ request, response, auth }) {
     try {
       var p_language = request.header("accept-language", "ENG");

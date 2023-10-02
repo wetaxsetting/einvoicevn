@@ -5452,10 +5452,9 @@ class EInvoiceController {
       const rtnValue = await DBService.ExecuteSQLBlob(
         `BEGIN WETAX_UPD_ORDER_INFO (          
                     :seller_tax_code,
-                    :sale_date,
-                    :store_code,
-                    :pos_no,
-                    :bill_no,
+                    :form_no,
+                    :serial_no,
+                    :invoice_no,
                     :buyer_comp_name,
                     :buyer_taxcode,
                     :buyer_tel,
@@ -5470,9 +5469,25 @@ class EInvoiceController {
         p_language,
         p_crt_by
       );
+      console.log("rtnValue ", rtnValue);
+      if(rtnValue?.p_rtn_cur)
+      {
+        let data_rep = {
+          status_code : rtnValue.p_rtn_cur[0].STATUS_CD,
+          status_name : rtnValue.p_rtn_cur[0].STATUS_NM }
 
-      return response.send(Utils.response(true, rtnValue.p_rtn_cur[0].STATUS_NM));
-    } catch (error) {
+        return response.send(Utils.response(true, rtnValue.p_rtn_cur[0].STATUS_NM, data_rep));
+      }
+      else
+      {
+        let data_rep = {
+          status_code : rtnValue.p_rtn_cur[0].STATUS_CD,
+          status_name : rtnValue.p_rtn_cur[0].STATUS_NM }
+
+        return response.send(Utils.response(false, rtnValue.p_rtn_cur[0].STATUS_NM, data_rep));
+      }
+      
+    } catch (e) {
       Utils.Logger({
         LVL: "error",
         MODULE: "EInvoiceController",

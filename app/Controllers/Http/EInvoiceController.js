@@ -57,6 +57,7 @@ const sharp = require('sharp');
 const { Builder, parseString } = require("xml2js");
 const { X509Certificate, crypto } = require("crypto");
 const { create, createCB } = require("xmlbuilder2");
+const { log, Console } = require("console");
 const EINVOICE_ESIGN_XML = "http://genuclouding.com/wseinvoice/BSService.asmx/SignXml";
 const EINVOICE_API_SEND_MAIL = "http://sendmail.genuwinsolution.com/api/user/sendmail";
 
@@ -5131,15 +5132,6 @@ class EInvoiceController {
 
       return response.send(Utils.response(true, `ReSend order to invoice was Successfully!`, data_r));
 
-
-
-
-
-
-
-
-
-
       /*const para_value = {
         tax_code: tax_code,
         sale_date: sale_date,
@@ -5762,7 +5754,7 @@ class EInvoiceController {
         store_name,
         pos_no,
         invoice_xml_signed,
-
+        req_key,
       } = request.all();
       //console.log("data  ", data);
       const agent = {
@@ -5828,6 +5820,7 @@ class EInvoiceController {
         store_name: store_name,
         tax_serial_number: tax_serial_number,
         pos_no: pos_no,
+        req_key: req_key,
         inform_code: maTBao,
         inform_name: tenTBao,
         mccqt: maCQT,
@@ -5845,269 +5838,6 @@ class EInvoiceController {
       });
       console.log("e ", e);
       return response.send(Utils.response(false, e.message));
-    }
-  }
-
-  async weTaxExtractPosXMLContent(
-    p_xml_content,
-    p_seller_tax_code,
-    p_seller_date,
-    p_store_code,
-    p_store_name,
-    p_tax_serial_number,
-    p_pos_no,
-    p_language,
-    p_crt_by
-  ) {
-    let result_extra = {};
-    try {
-      console.log("weTaxExtractPosXMLContent");
-
-      const template = [
-        "TDiep/DLieu",
-        {
-          HDon: {
-            DLHDon: {
-              TTChung: {
-                PBan: "PBan",
-                THDon: "THDon",
-                KHMSHDon: "KHMSHDon",
-                KHHDon: "KHHDon",
-                SHDon: "SHDon",
-                MHSo: "MHSo",
-                NLap: "NLap",
-              },
-              NDHDon: {
-                NBan: {
-                  Ten: "Ten",
-                  MST: "MST",
-                  DChi: "DChi",
-                  SDThoai: "SDThoai",
-                },
-                NMua: {
-                  Ten: "Ten",
-                  MST: "MST",
-                  DChi: "DChi",
-                  SDThoai: "SDThoai",
-                  CCCDan: "CCCDan",
-                },
-                DSHHDVu: {
-                  HHDVu: [
-                    {
-                      TChat: "TChat",
-                      STT: "STT",
-                      MHHDVu: "MHHDVu",
-                      THHDVu: "THHDVu",
-                      DVTinh: "DVTinh",
-                      SLuong: "SLuong",
-                      DGia: "DGia",
-                      TLCKhau: "TLCKhau",
-                      STCKhau: "STCKhau",
-                      ThTien: "ThTien",
-                      TSuat: "TSuat",
-                    },
-                  ],
-                },
-                TToan: {
-                  THTTLTSuat: {
-                    LTSuat: {
-                      TSuat: "TSuat",
-                      ThTien: "ThTien",
-                      TThue: "TThue",
-                    },
-                  },
-                  TgTCThue: "TgTCThue",
-                  TgTThue: "TgTThue",
-                  TTCKTMai: "TTCKTMai",
-                  TgTTTBSo: "TgTTTBSo",
-                  TgTTTBChu: "TgTTTBChu",
-                },
-              },
-              DSCKS: {},
-            },
-          },
-        },
-      ];
-      const jsonTT = await transform(xml_content, template);
-
-      const templateTTChung = [
-        "TDiep/DLieu/HDon/DLHDon/TTChung",
-        {
-          PBan: "PBan",
-          THDon: "THDon",
-          KHMSHDon: "KHMSHDon",
-          KHHDon: "KHHDon",
-          SHDon: "SHDon",
-          MHSo: "MHSo",
-          NLap: "NLap",
-        },
-      ];
-      const jsonTTChung = await transform(p_xml_content, templateTTChung);
-      console.log("jsonTTChung", jsonTTChung);
-      const templateTTHDLQuan = [
-        "TDiep/DLieu/HDon/DLHDon/TTChung/TTHDLQuan",
-        {
-          TCHDon: "TCHDon",
-          LHDCLQuan: "LHDCLQuan",
-          KHMSHDCLQuan: "KHMSHDCLQuan",
-          KHHDCLQuan: "KHHDCLQuan",
-          SHDCLQuan: "SHDCLQuan",
-          NLHDCLQuan: "NLHDCLQuan",
-          GChu: "GChu",
-        },
-      ];
-      const jsonTTHDLQuan = await transform(xml_content, templateTTHDLQuan);
-      console.log("templateTTHDLQuan", jsonTTHDLQuan);
-
-      const arrTTChung = [
-        jsonTTChung[0].PBan,
-        jsonTTChung[0].THDon,
-        jsonTTChung[0].KHMSHDon,
-        jsonTTChung[0].KHHDon,
-        jsonTTChung[0].SHDon,
-        jsonTTChung[0].MHSo,
-        jsonTTChung[0].NLap,
-      ];
-
-      console.log("arrTTChung  ", arrTTChung);
-
-      const templateNBan = [
-        "TDiep/DLieu/HDon/DLHDon/NDHDon/NBan",
-        {
-          Ten: "Ten",
-          MST: "MST",
-          DChi: "DChi",
-          SDThoai: "SDThoai",
-        },
-      ];
-      const jsonNBan = await transform(p_xml_content, templateNBan);
-      const arrNBan = [jsonNBan[0].Ten, jsonNBan[0].MST, jsonNBan[0].DChi, jsonNBan[0].SDThoai];
-      console.log("jsonNBan", jsonNBan);
-      const templateNMua = [
-        "TDiep/DLieu/HDon/DLHDon/NDHDon/NMua",
-        {
-          Ten: "Ten",
-          MST: "MST",
-          DChi: "DChi",
-          SDThoai: "SDThoai",
-          CCCDan: "CCCDan",
-        },
-      ];
-      const jsonNMua = await transform(p_xml_content, templateNMua);
-      console.log("jsonNMua", jsonNMua);
-      const arrNMua = [jsonNMua[0].Ten, jsonNMua[0].MST, jsonNMua[0].DChi, jsonNMua[0].SDThoai, jsonNMua[0].CCCDan];
-      const templateLTSuat = [
-        "TDiep/DLieu/HDon/DLHDon/NDHDon/TToan/THTTLTSuat/LTSuat",
-        {
-          TSuat: "TSuat",
-          ThTien: "ThTien",
-          TThue: "TThue",
-        },
-      ];
-      const jsonLTSuat = await transform(p_xml_content, templateLTSuat);
-      console.log("jsonLTSuat", jsonLTSuat);
-      const arrLTSuat = [jsonLTSuat[0].TSuat, jsonLTSuat[0].ThTien, jsonLTSuat[0].TThue];
-      const templateTToan = [
-        "TDiep/DLieu/HDon/DLHDon/NDHDon/TToan",
-        {
-          TgTCThue: "TgTCThue",
-          TgTThue: "TgTThue",
-          TTCKTMai: "TTCKTMai",
-          TgTTTBSo: "TgTTTBSo",
-          TgTTTBChu: "TgTTTBChu",
-        },
-      ];
-      const jsonTToan = await transform(p_xml_content, templateTToan);
-      // console.log("jsonTToan", jsonTToan)
-      const arrTToan = [
-        jsonTToan[0].TgTCThue,
-        jsonTToan[0].TgTThue,
-        jsonTToan[0].TTCKTMai,
-        jsonTToan[0].TgTTTBSo,
-        jsonTToan[0].TgTTTBChu,
-      ];
-      const arrMCCQT = ""; //[jsonMCCQT[0].MCCQT];
-
-      const templateDSHHDVu = [
-        "TDiep/DLieu/HDon/DLHDon/NDHDon/DSHHDVu/HHDVu",
-        {
-          TChat: "TChat",
-          STT: "STT",
-          MHHDVu: "MHHDVu",
-          THHDVu: "THHDVu",
-          DVTinh: "DVTinh",
-          SLuong: "SLuong",
-          DGia: "DGia",
-          TLCKhau: "TLCKhau",
-          STCKhau: "STCKhau",
-          ThTien: "ThTien",
-          TSuat: "TSuat",
-        },
-      ];
-      let masterPara = arrTTChung.concat(arrNBan).concat(arrNMua).concat(arrLTSuat).concat(arrTToan).concat(arrMCCQT);
-      //console.log("templateDSHHDVu", templateDSHHDVu)
-      //const xmlRelativePath = p_xml_path.replace(ROOT_DIR_FILES, "");
-      masterPara = masterPara.concat(["", "", "", ""]);
-
-      // masterPara = masterPara.concat([
-      //     p_invoice_type,
-      //     v_vn_amount,
-      //     p_tr_type,
-      //     p_tax_serial_number,
-      //     p_tac_crca_pk,
-      //     p_invoice_form_symbol,
-      // ]);
-
-      // console.log("masterPara", masterPara)
-      //const master = await callAPI(_jwtToken, { proc: 'ei_upd_tei_einvoice_cloud', para: masterPara });
-      //let master = await DBService.callProcCursor("ei_upd_tei_einvoice_ar", masterPara, p_language, p_crt_by);
-      // console.log("master", master);
-      const jsonDSHHDVu = await transform(xml_content, templateDSHHDVu);
-      console.log("jsonDSHHDVu  ", jsonDSHHDVu);
-      // if (master && master[0].PK > 0) {
-      //     const jsonDSHHDVu = await transform(xml_content, templateDSHHDVu);
-      //     console.log("jsonDSHHDVu  ", jsonDSHHDVu)
-      //     for (let i = 0; i < jsonDSHHDVu.length; i++) {
-      //         const detailPara = [
-      //             master[0].PK,
-      //             jsonDSHHDVu[i].TChat,
-      //             jsonDSHHDVu[i].STT,
-      //             jsonDSHHDVu[i].MHHDVu,
-      //             jsonDSHHDVu[i].THHDVu,
-      //             jsonDSHHDVu[i].DVTinh,
-      //             jsonDSHHDVu[i].SLuong,
-      //             jsonDSHHDVu[i].DGia,
-      //             jsonDSHHDVu[i].ThTien,
-      //             jsonDSHHDVu[i].TLCKhau,
-      //             jsonDSHHDVu[i].STCKhau,
-      //             jsonDSHHDVu[i].TSuat,
-      //             master[0].TEI_EINVOICE_M_PK,
-      //         ];
-      //         const detail = await DBService.callProcCursor("ei_upd_tei_einvoiced_ar", detailPara, p_language, p_crt_by);
-      //         // console.log("detail", detail);
-      //     }
-      //     return (result_extra = {
-      //         PK: master[0].PK,
-      //         TEI_EINVOICE_M_PK: master[0].TEI_EINVOICE_M_PK,
-      //     });
-      // } else {
-      //     return (result_extra = {
-      //         PK: master[0].PK,
-      //         TEI_EINVOICE_M_PK: master[0].TEI_EINVOICE_M_PK,
-      //     }); //master[0].PK;
-      // }
-    } catch (e) {
-      Utils.Logger({
-        LVL: "error",
-        MODULE: "EInvoiceController",
-        FUNC: "extractXMLContent",
-        CONTENT: e.message,
-      });
-      console.log(e.message);
-      return (result_extra = {
-        PK: -2,
-        TEI_EINVOICE_M_PK: 0,
-      }); //master[0].PK;;
     }
   }
 
@@ -7784,7 +7514,6 @@ class EInvoiceController {
     }
   }
 
-
   async sendMailAt({ request, response, auth }) {
     try {
       var p_language = request.header("accept-language", "ENG");
@@ -8649,6 +8378,135 @@ class EInvoiceController {
       });
       console.log(e);
       return response.send(Utils.response(false, "error", e.message));
+    }
+  }
+
+  async sendPosInvoiceErp({ request, response, auth }) {
+    try {
+      var p_language = request.header("accept-language", "ENG");
+      var p_crt_by = "";
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+     
+      const authUserName = "GENUWIN"; // "GENUWIN";
+      const authPassword = "genuwin123"; // "e_GX4v@";
+      const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien";
+      const urlCheck = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+
+      const {
+        tax_serial_number,
+        seller_tax_code,
+        sale_date,
+        store_code,
+        store_name,
+        pos_no,
+        invoice_xml_signed,
+        req_key,
+      } = request.all();
+
+
+      // let json =  this.parseXmlToJson(invoice_xml_signed);
+
+      let json =  await this.weTaxExtractPosXMLContent(invoice_xml_signed,
+                                                      seller_tax_code,
+                                                      sale_date,
+                                                      tax_serial_number,
+                                                      req_key,
+                                                      p_language,
+                                                      p_crt_by);
+
+      //console.log("json  ", json);
+
+      // console.log("json.TDiep.DLieu.HDon  ", json.TDiep.DLieu.HDon);
+
+      
+
+      return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, json));
+
+
+
+
+      const agent = {
+        Agent: {
+          defaultPort: 443,
+          protocol: "https:",
+          options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
+        },
+      };
+      let trade_code = "";
+      let maCQT = "";
+      let maTBao = "";
+      let tenTBao = "";
+      let xml_tax_signed = "";
+      let rtnValue = {};
+
+      const res = await Request.post(
+        url,
+        { base64XML: Buffer.from(invoice_xml_signed).toString("base64") },
+        {
+          agent,
+          headers: {
+            Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
+          },
+        }
+      );
+
+      trade_code = res.data.maGDich;
+      //
+      await Request.get(urlCheck + trade_code, {
+        agent,
+        headers: {
+          Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
+        },
+      }).then(async (res) => {
+        console.log(" res  ", res.data);
+        if (res.data.length) {
+          for (let j = 0; j < res.data.length; j++) {
+            const items = res.data[j];
+            for (let k = 0; k < items.length; k++) {
+              if (items[k].loaiTBao == "10") {
+                maCQT = items[k].ndungTBao.maCQT;
+                xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
+                maTBao = items[k].loaiTBao;
+                tenTBao = items[k].tenTBao;
+              } else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "16") {
+                maTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].maLoi;
+                tenTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].mtaLoi;
+              } else if (items[k].loaiTBao == "15") {
+                tenTBao = items[k].tenTBao;
+                maTBao = items[k].loaiTBao;
+              }
+            }
+          }
+        }
+      });
+      rtnValue = {
+        trade_code: trade_code,
+        seller_tax_code: seller_tax_code,
+        sale_date: sale_date,
+        store_code: store_code,
+        store_name: store_name,
+        tax_serial_number: tax_serial_number,
+        pos_no: pos_no,
+        inform_code: maTBao,
+        inform_name: tenTBao,
+        mccqt: maCQT,
+        xml_tax_signed: xml_tax_signed,
+      };
+
+      return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
+
+    } catch (e) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "sendInvoiceToTaxOffice",
+        CONTENT: e.message,
+      });
+      console.log("e ", e);
+      return response.send(Utils.response(false, e.message));
     }
   }
   // end e - invoce
@@ -10191,6 +10049,507 @@ class EInvoiceController {
       message: resMess,
     };
   }
+
+  async weTaxExtractPosXMLContent(
+    xml_content,
+    seller_tax_code,
+    seller_date,
+    tax_serial_number,
+    req_key,
+    p_language,
+    p_crt_by
+) {
+    let result_extra = {};
+    try {
+        const template =
+            ["//HDon", {
+                DLHDon: ["DLHDon", {
+                    TTChung: ["TTChung",
+                        {
+                            PBan: "PBan",
+                            THDon: "THDon",
+                            KHMSHDon: "KHMSHDon",
+                            KHHDon: "KHHDon",
+                            SHDon: "SHDon",
+                            MHSo: "MHSo",
+                            NLap: "NLap",
+                        },
+                    ],
+                    NDHDon: ["NDHDon", {
+                        NBan: ["NBan",
+                            {
+                                Ten: "Ten",
+                                MST: "MST",
+                                DChi: "DChi",
+                                SDThoai: "SDThoai",
+                            }
+                        ],
+                        NMua: ["NMua",
+                            {
+                                Ten: "Ten",
+                                MST: "MST",
+                                DChi: "DChi",
+                                SDThoai: "SDThoai",
+                                CCCDan: "CCCDan",
+                            }
+                        ],
+                        DSHHDVu: {
+                            HHDVu: ["DSHHDVu/HHDVu",
+                                {
+                                    TChat: "TChat",
+                                    STT: "STT",
+                                    MHHDVu: "MHHDVu",
+                                    THHDVu: "THHDVu",
+                                    DVTinh: "DVTinh",
+                                    SLuong: "SLuong",
+                                    DGia: "DGia",
+                                    TLCKhau: "TLCKhau",
+                                    STCKhau: "STCKhau",
+                                    ThTien: "ThTien",
+                                    TSuat: "TSuat",
+                                }
+
+                            ]
+                        },
+                        TToan: ["TToan",
+                            {
+                                THTTLTSuat: ["THTTLTSuat", {
+                                    LTSuat: ["LTSuat",
+                                        {
+                                            TSuat: "TSuat",
+                                            ThTien: "ThTien",
+                                            TThue: "TThue",
+                                        }
+                                    ]
+                                },
+
+                                ],
+                                TgTCThue: "TgTCThue",
+                                TgTThue: "TgTThue",
+                                TTCKTMai: "TTCKTMai",
+                                TgTTTBSo: "TgTTTBSo",
+                                TgTTTBChu: "TgTTTBChu",
+
+                            }
+                        ]
+                    }
+                    ]
+                }
+
+                ],
+                DSCKS: ["DSCKS", {
+                    NBan: "NBan"
+                },
+                ],
+                MCCQT: "MCCQT"
+            },
+            ]
+           ;
+        const jsonInvoice = await transform(xml_content, template);
+
+        const templateSignTime = {
+          SigningTime : "TDiep/CKSNNT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime"
+        }
+        const signingTime = await transform(xml_content, templateSignTime);
+
+        //return jsonInvoice;
+        if(jsonInvoice)
+        {
+          const paraPos = {
+              invoice_date: seller_date,
+              seller_tax_code:  seller_tax_code,
+              tax_serial_number: tax_serial_number,
+              pos_xml: xml_content,
+              req_key : req_key,
+              signing_time : signingTime.SigningTime
+          }
+
+          const rtnValuePos = await DBService.ExecuteSQLBlob(
+            `BEGIN ei_upd_pos_xml_box (          
+                                            :invoice_date,
+                                            :seller_tax_code,
+                                            :tax_serial_number,
+                                            :pos_xml,
+                                            :req_key,
+                                            :signing_time,
+                                            :p_language, 
+                                            :p_crt_by, 
+                                            :p_rtn_cur); END;`,
+            paraPos,
+            p_language,
+            p_crt_by
+          );
+
+          console.log("rtnValuePos  ", rtnValuePos);
+
+          if(rtnValuePos.p_rtn_cur[0].STATUS == "OK")
+          {
+            console.log("jsonInvoice  ", jsonInvoice);
+            for(const invoice of jsonInvoice)
+            {
+                const paraMaster = {
+                  PBan: invoice.DLHDon[0].TTChung[0].PBan,
+                  THDon: invoice.DLHDon[0].TTChung[0].THDon,
+                  KHMSHDon: invoice.DLHDon[0].TTChung[0].KHMSHDon,
+                  KHHDon: invoice.DLHDon[0].TTChung[0].KHHDon,
+                  SHDon: invoice.DLHDon[0].TTChung[0].SHDon,
+                  NLap: invoice.DLHDon[0].TTChung[0].NLap,
+                  NBan_Ten: invoice.DLHDon[0].NDHDon[0].NBan[0].Ten,
+                  NBan_MST: invoice.DLHDon[0].NDHDon[0].NBan[0].MST,
+                  NBan_DChi: invoice.DLHDon[0].NDHDon[0].NBan[0].DChi,
+                  NBan_SDThoai: invoice.DLHDon[0].NDHDon[0].NBan[0].SDThoai,
+
+                  NMua_Ten: invoice.DLHDon[0].NDHDon[0].NMua[0].Ten,
+                  NMua_MST: invoice.DLHDon[0].NDHDon[0].NMua[0].MST,
+                  NMua_DChi: invoice.DLHDon[0].NDHDon[0].NMua[0].DChi,
+                  NMua_SDThoai: invoice.DLHDon[0].NDHDon[0].NMua[0].SDThoai,
+                  NMua_CCCDan: invoice.DLHDon[0].NDHDon[0].NMua[0].CCCDan,
+
+                  TgTCThue: invoice.DLHDon[0].NDHDon[0].TToan[0].TgTCThue,
+                  TgTThue: invoice.DLHDon[0].NDHDon[0].TToan[0].TgTThue,
+                  TTCKTMai: invoice.DLHDon[0].NDHDon[0].TToan[0].TTCKTMai,
+                  TgTTTBSo: invoice.DLHDon[0].NDHDon[0].TToan[0].TgTTTBSo,
+                  TgTTTBChu: invoice.DLHDon[0].NDHDon[0].TToan[0].TgTTTBChu,
+                  MCCQT:  invoice.MCCQT,
+                  seller_tax_code: seller_tax_code,
+                  seller_date: seller_date,
+                  store_code: store_code,
+                  store_name: store_name,
+                  tax_serial_number: tax_serial_number,
+                  pos_no: pos_no,
+              } 
+
+              const rtnValueMaster = await DBService.ExecuteSQLBlob(
+                  `BEGIN ei_upd_sale_bill_status (          
+                                                  :tei_wt_sale_bill_pk,
+                                                  :status,
+                                                  :p_language, 
+                                                  :p_crt_by, 
+                                                  :p_rtn_cur); END;`,
+                  para_inv_st,
+                  p_language,
+                  p_crt_by
+              );
+            }
+          }
+          else
+          {
+
+          }
+          return jsonInvoice;
+        }
+       
+        
+        for(let i = 0;i < jsonInvoice.length; i ++)
+        {
+            const paraMaster = {
+                PBan: jsonInvoice[i].DLHDon[0].TTChung[0].PBan,
+                THDon: jsonInvoice[i].DLHDon[0].TTChung[0].THDon,
+                KHMSHDon: jsonInvoice[i].DLHDon[0].TTChung[0].KHMSHDon,
+                KHHDon: jsonInvoice[i].DLHDon[0].TTChung[0].KHHDon,
+                SHDon: jsonInvoice[i].DLHDon[0].TTChung[0].SHDon,
+                NLap: jsonInvoice[i].DLHDon[0].TTChung[0].NLap,
+                NBan_Ten: jsonInvoice[i].DLHDon[0].NDHDon[0].NBan[0].Ten,
+                NBan_MST: jsonInvoice[i].DLHDon[0].NDHDon[0].NBan[0].MST,
+                NBan_DChi: jsonInvoice[i].DLHDon[0].NDHDon[0].NBan[0].DChi,
+                NBan_SDThoai: jsonInvoice[i].DLHDon[0].NDHDon[0].NBan[0].SDThoai,
+
+                NMua_Ten: jsonInvoice[i].DLHDon[0].NDHDon[0].NMua[0].Ten,
+                NMua_MST: jsonInvoice[i].DLHDon[0].NDHDon[0].NMua[0].MST,
+                NMua_DChi: jsonInvoice[i].DLHDon[0].NDHDon[0].NMua[0].DChi,
+                NMua_SDThoai: jsonInvoice[i].DLHDon[0].NDHDon[0].NMua[0].SDThoai,
+                NMua_CCCDan: jsonInvoice[i].DLHDon[0].NDHDon[0].NMua[0].CCCDan,
+
+                TgTCThue: jsonInvoice[i].DLHDon[0].NDHDon[0].TToan[0].TgTCThue,
+                TgTThue: jsonInvoice[i].DLHDon[0].NDHDon[0].TToan[0].TgTThue,
+                TTCKTMai: jsonInvoice[i].DLHDon[0].NDHDon[0].TToan[0].TTCKTMai,
+                TgTTTBSo: jsonInvoice[i].DLHDon[0].NDHDon[0].TToan[0].TgTTTBSo,
+                TgTTTBChu: jsonInvoice[i].DLHDon[0].NDHDon[0].TToan[0].TgTTTBChu,
+                MCCQT:  jsonInvoice[i].MCCQT,
+                seller_tax_code: seller_tax_code,
+                seller_date: seller_date,
+                store_code: store_code,
+                store_name: store_name,
+                tax_serial_number: tax_serial_number,
+                pos_no: pos_no,
+            } 
+
+            const rtnValueMaster = await DBService.ExecuteSQLBlob(
+                `BEGIN ei_upd_sale_bill_status (          
+                                                :tei_wt_sale_bill_pk,
+                                                :status,
+                                                :p_language, 
+                                                :p_crt_by, 
+                                                :p_rtn_cur); END;`,
+                para_inv_st,
+                p_language,
+                p_crt_by
+            );
+            console.log("==================")
+            console.log("jsonTT", paraMaster)
+        }
+       
+        // const template = [
+        //     "TDiep/DLieu/HDon",
+        //     {
+        //         DLHDon:{
+        //             TTChung:{
+        //                 PBan: "PBan",
+        //                 THDon: "THDon",
+        //                 KHMSHDon: "KHMSHDon",
+        //                 KHHDon: "KHHDon",
+        //                 SHDon: "SHDon",
+        //                 MHSo: "MHSo",
+        //                 NLap: "NLap",
+        //             },
+        //             // NDHDon:{
+        //             //     NBan:{
+        //             //         Ten: "Ten",
+        //             //         MST: "MST",
+        //             //         DChi: "DChi",
+        //             //         SDThoai: "SDThoai",
+        //             //     },
+        //             //     NMua:{
+        //             //         Ten: "Ten",
+        //             //         MST: "MST",
+        //             //         DChi: "DChi",
+        //             //         SDThoai: "SDThoai",
+        //             //         CCCDan: "CCCDan",
+        //             //     },
+        //             //     DSHHDVu:{
+        //             //         HHDVu:[{
+        //             //             TChat: "TChat",
+        //             //             STT: "STT",
+        //             //             MHHDVu: "MHHDVu",
+        //             //             THHDVu: "THHDVu",
+        //             //             DVTinh: "DVTinh",
+        //             //             SLuong: "SLuong",
+        //             //             DGia: "DGia",
+        //             //             TLCKhau: "TLCKhau",
+        //             //             STCKhau: "STCKhau",
+        //             //             ThTien: "ThTien",
+        //             //             TSuat: "TSuat",
+        //             //         }]
+        //             //     },
+        //             //     TToan:{
+        //             //         THTTLTSuat:
+        //             //         {
+        //             //             LTSuat:{
+        //             //                 TSuat: "TSuat",
+        //             //                 ThTien: "ThTien",
+        //             //                 TThue: "TThue",
+        //             //             },
+
+        //             //         },
+        //             //         TgTCThue: "TgTCThue",
+        //             //         TgTThue: "TgTThue",
+        //             //         TTCKTMai: "TTCKTMai",
+        //             //         TgTTTBSo: "TgTTTBSo",
+        //             //         TgTTTBChu: "TgTTTBChu",
+        //             //     }  
+        //             // },
+        //             // DSCKS:{
+        //             //     NBan:"NBan"
+        //             // },
+        //             // MCCQT:"MCCQT"
+        //         }
+
+        //     },
+        // ];
+      
+
+        return jsonTT;
+        const templateTTChung = [
+            "TDiep/DLieu/HDon/DLHDon/TTChung",
+            {
+                PBan: "PBan",
+                THDon: "THDon",
+                KHMSHDon: "KHMSHDon",
+                KHHDon: "KHHDon",
+                SHDon: "SHDon",
+                MHSo: "MHSo",
+                NLap: "NLap",
+            },
+        ];
+        const jsonTTChung = await transform(xml_content, templateTTChung);
+        console.log("jsonTTChung", jsonTTChung)
+        const templateTTHDLQuan = [
+            "TDiep/DLieu/HDon/DLHDon/TTChung/TTHDLQuan",
+            {
+                TCHDon: "TCHDon",
+                LHDCLQuan: "LHDCLQuan",
+                KHMSHDCLQuan: "KHMSHDCLQuan",
+                KHHDCLQuan: "KHHDCLQuan",
+                SHDCLQuan: "SHDCLQuan",
+                NLHDCLQuan: "NLHDCLQuan",
+                GChu: "GChu",
+            },
+        ];
+        const jsonTTHDLQuan = await transform(xml_content, templateTTHDLQuan);
+        console.log("templateTTHDLQuan", jsonTTHDLQuan)
+
+        const arrTTChung = [
+            jsonTTChung[0].PBan,
+            jsonTTChung[0].THDon,
+            jsonTTChung[0].KHMSHDon,
+            jsonTTChung[0].KHHDon,
+            jsonTTChung[0].SHDon,
+            jsonTTChung[0].MHSo,
+            jsonTTChung[0].NLap,
+        ];
+
+        console.log("arrTTChung  ", arrTTChung)
+
+        const templateNBan = [
+            "TDiep/DLieu/HDon/DLHDon/NDHDon/NBan",
+            {
+                Ten: "Ten",
+                MST: "MST",
+                DChi: "DChi",
+                SDThoai: "SDThoai",
+            },
+        ];
+        const jsonNBan = await transform(xml_content, templateNBan);
+        const arrNBan = [
+            jsonNBan[0].Ten,
+            jsonNBan[0].MST,
+            jsonNBan[0].DChi,
+            jsonNBan[0].SDThoai,
+        ];
+        console.log("jsonNBan", jsonNBan)
+        const templateNMua = [
+            "TDiep/DLieu/HDon/DLHDon/NDHDon/NMua",
+            {
+                Ten: "Ten",
+                MST: "MST",
+                DChi: "DChi",
+                SDThoai: "SDThoai",
+                CCCDan: "CCCDan",
+            },
+        ];
+        const jsonNMua = await transform(xml_content, templateNMua);
+        console.log("jsonNMua", jsonNMua)
+        const arrNMua = [
+            jsonNMua[0].Ten,
+            jsonNMua[0].MST,
+            jsonNMua[0].DChi,
+            jsonNMua[0].SDThoai,
+            jsonNMua[0].CCCDan,
+        ];
+        const templateLTSuat = [
+            "TDiep/DLieu/HDon/DLHDon/NDHDon/TToan/THTTLTSuat/LTSuat",
+            {
+                TSuat: "TSuat",
+                ThTien: "ThTien",
+                TThue: "TThue",
+            },
+        ];
+        const jsonLTSuat = await transform(xml_content, templateLTSuat);
+        console.log("jsonLTSuat", jsonLTSuat)
+        const arrLTSuat = [jsonLTSuat[0].TSuat, jsonLTSuat[0].ThTien, jsonLTSuat[0].TThue];
+        const templateTToan = [
+            "TDiep/DLieu/HDon/DLHDon/NDHDon/TToan",
+            {
+                TgTCThue: "TgTCThue",
+                TgTThue: "TgTThue",
+                TTCKTMai: "TTCKTMai",
+                TgTTTBSo: "TgTTTBSo",
+                TgTTTBChu: "TgTTTBChu",
+            },
+        ];
+        const jsonTToan = await transform(xml_content, templateTToan);
+        // console.log("jsonTToan", jsonTToan)
+        const arrTToan = [
+            jsonTToan[0].TgTCThue,
+            jsonTToan[0].TgTThue,
+            jsonTToan[0].TTCKTMai,
+            jsonTToan[0].TgTTTBSo,
+            jsonTToan[0].TgTTTBChu,
+        ];
+        const arrMCCQT = ""; //[jsonMCCQT[0].MCCQT];
+
+        const templateDSHHDVu = [
+            "TDiep/DLieu/HDon/DLHDon/NDHDon/DSHHDVu/HHDVu",
+            {
+                TChat: "TChat",
+                STT: "STT",
+                MHHDVu: "MHHDVu",
+                THHDVu: "THHDVu",
+                DVTinh: "DVTinh",
+                SLuong: "SLuong",
+                DGia: "DGia",
+                TLCKhau: "TLCKhau",
+                STCKhau: "STCKhau",
+                ThTien: "ThTien",
+                TSuat: "TSuat",
+            },
+        ];
+        let masterPara = arrTTChung.concat(arrNBan).concat(arrNMua).concat(arrLTSuat).concat(arrTToan).concat(arrMCCQT);
+        //console.log("templateDSHHDVu", templateDSHHDVu)
+        //const xmlRelativePath = p_xml_path.replace(ROOT_DIR_FILES, "");
+        masterPara = masterPara.concat(["", "", "", ""]);
+
+        // masterPara = masterPara.concat([
+        //     p_invoice_type,
+        //     v_vn_amount,
+        //     p_tr_type,
+        //     p_tax_serial_number,
+        //     p_tac_crca_pk,
+        //     p_invoice_form_symbol,
+        // ]);
+
+        // console.log("masterPara", masterPara)
+        //const master = await callAPI(_jwtToken, { proc: 'ei_upd_tei_einvoice_cloud', para: masterPara });
+        //let master = await DBService.callProcCursor("ei_upd_tei_einvoice_ar", masterPara, p_language, p_crt_by);
+        // console.log("master", master);
+        const jsonDSHHDVu = await transform(xml_content, templateDSHHDVu);
+        console.log("jsonDSHHDVu  ", jsonDSHHDVu)
+        // if (master && master[0].PK > 0) {
+        //     const jsonDSHHDVu = await transform(xml_content, templateDSHHDVu);
+        //     console.log("jsonDSHHDVu  ", jsonDSHHDVu)
+        //     for (let i = 0; i < jsonDSHHDVu.length; i++) {
+        //         const detailPara = [
+        //             master[0].PK,
+        //             jsonDSHHDVu[i].TChat,
+        //             jsonDSHHDVu[i].STT,
+        //             jsonDSHHDVu[i].MHHDVu,
+        //             jsonDSHHDVu[i].THHDVu,
+        //             jsonDSHHDVu[i].DVTinh,
+        //             jsonDSHHDVu[i].SLuong,
+        //             jsonDSHHDVu[i].DGia,
+        //             jsonDSHHDVu[i].ThTien,
+        //             jsonDSHHDVu[i].TLCKhau,
+        //             jsonDSHHDVu[i].STCKhau,
+        //             jsonDSHHDVu[i].TSuat,
+        //             master[0].TEI_EINVOICE_M_PK,
+        //         ];
+        //         const detail = await DBService.callProcCursor("ei_upd_tei_einvoiced_ar", detailPara, p_language, p_crt_by);
+        //         // console.log("detail", detail);
+        //     }
+        //     return (result_extra = {
+        //         PK: master[0].PK,
+        //         TEI_EINVOICE_M_PK: master[0].TEI_EINVOICE_M_PK,
+        //     });
+        // } else {
+        //     return (result_extra = {
+        //         PK: master[0].PK,
+        //         TEI_EINVOICE_M_PK: master[0].TEI_EINVOICE_M_PK,
+        //     }); //master[0].PK;
+        // }
+    } catch (e) {
+        Utils.Logger({
+            LVL: "error",
+            MODULE: "EInvoiceController",
+            FUNC: "extractXMLContent",
+            CONTENT: e.message,
+        });
+        console.log(e.message);
+        return (result_extra = {
+            PK: -2,
+            TEI_EINVOICE_M_PK: 0,
+        }); //master[0].PK;;
+    }
+}
 
   ///vng-304
   async viewPDFTemplate_04SS({ request, response, auth }) {

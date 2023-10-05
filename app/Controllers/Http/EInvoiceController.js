@@ -5304,14 +5304,20 @@ class EInvoiceController {
 
       if (!form_no) {
         return response.send(Utils.response(false, "form_no can't null",));
+      }if(form_no && form_no.length !== 1) {
+        return response.send(Utils.response(false, "length form_no is 1 ",));
       }
 
       if (!serial_no) {
         return response.send(Utils.response(false, "serial_no can't null",));
+      }else if(serial_no && serial_no.length !== 6) {
+        return response.send(Utils.response(false, "length serial_no is 6 ",));
       }
 
       if (!template_id) {
         return response.send(Utils.response(false, "template_id can't null",));
+      } if(template_id && template_id.length !== 3) {
+        return response.send(Utils.response(false, "length template_id is 3 ",));
       }
 
       if (!start_date) {
@@ -10217,6 +10223,7 @@ class EInvoiceController {
                   store_name: store_name,
                   tax_serial_number: tax_serial_number,
                   pos_no: pos_no,
+                  signing_time: signingTime.SigningTime,
               } 
 
               const rtnValueMaster = await DBService.ExecuteSQLBlob(
@@ -10272,6 +10279,7 @@ class EInvoiceController {
                 store_name: store_name,
                 tax_serial_number: tax_serial_number,
                 pos_no: pos_no,
+                signing_time: signingTime.SigningTime,
             } 
 
             const rtnValueMaster = await DBService.ExecuteSQLBlob(

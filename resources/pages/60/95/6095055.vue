@@ -583,7 +583,7 @@ export default {
         },
         { dataField: "TCO_BUSPLACE_PK", width: 100, caption: this.$t("tco_busplace_pk"), alignment: "left", type: "text", visible: false },
         { dataField: "REMARKS", width: 100, caption: this.$t("remarks"), editable: true, alignment: "left", type: "text" },
-        { dataField: "USE_YN", width: 100, caption: this.$t("use_yn"), editable: true, alignment: "center", columntype: "checkbox" },
+        { dataField: "USE_YN", width: 100, caption: this.$t("use_yn"), editable: true, alignment: "center", type: "checkbox" },
       ];
     },
   },

@@ -489,8 +489,6 @@ export default {
     async grdSearchClick(cell) {
       this.MasterInfo.PK = await cell.data.PK;
       this.dsoMaster("select");
-      // console.log("file: 6095420.vue:236 [vng-304] grdSearchClick [vng-304] cell:", cell.data);
-      // this.MasterInfo = cell.data;
 
       await this.$refs.grdDetail.loadData();
     },
@@ -608,6 +606,15 @@ export default {
           this.$refs.confirmDialog.showConfirm(this.$t("do_you_want_delete"), "warning");
           break;
         case "saveDetail":
+        let data = this.$refs.grdDetail.getData();
+          for (let i = 0; i < data.length; i++) {
+            if (data[i]._rowstatus == "i" || data[i]._rowstatus == "u") {
+              if (!data[i].D_CERTIFICATE_TYPE) {
+                this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_type_of_certificate_at_" + (i + 1)));
+                return;
+              } 
+            }
+          }
           this.$refs.grdDetail.saveData();
           break;
         case "deleteDetail":

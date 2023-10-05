@@ -8424,7 +8424,7 @@ class EInvoiceController {
 
       // let json =  this.parseXmlToJson(invoice_xml_signed);
 
-      let json =  await this.weTaxExtractPosXMLContent(invoice_xml_signed,
+      const check_data =  await this.weTaxExtractPosXMLContent(invoice_xml_signed,
                                                       seller_tax_code,
                                                       sale_date,
                                                       tax_serial_number,
@@ -8436,15 +8436,19 @@ class EInvoiceController {
                                                       p_crt_by);
 
       //console.log("json  ", json);
-
+      //  
       // console.log("json.TDiep.DLieu.HDon  ", json.TDiep.DLieu.HDon);
 
-      
-
-      return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, json));
-
-
-
+      if(check_data.STATUS == 'FAILE')
+      {
+        return response.send(Utils.response(true, `Send invoice to Tax Office was Faile!`, check_data));
+      }else if (check_data.STATUS == 'EXIT' )
+      {
+        return response.send(Utils.response(true, `The sign xml was send Tax Offiec`, check_data));
+      }else if (check_data.STATUS == 'NOEXIT' )
+      {
+        return response.send(Utils.response(true, `Compay not yet register`, check_data));
+      }
 
       const agent = {
         Agent: {
@@ -8472,48 +8476,66 @@ class EInvoiceController {
       );
 
       trade_code = res.data.maGDich;
-      //
-      await Request.get(urlCheck + trade_code, {
-        agent,
-        headers: {
-          Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
-        },
-      }).then(async (res) => {
-        console.log(" res  ", res.data);
-        if (res.data.length) {
-          for (let j = 0; j < res.data.length; j++) {
-            const items = res.data[j];
-            for (let k = 0; k < items.length; k++) {
-              if (items[k].loaiTBao == "10") {
-                maCQT = items[k].ndungTBao.maCQT;
-                xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
-                maTBao = items[k].loaiTBao;
-                tenTBao = items[k].tenTBao;
-              } else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "16") {
-                maTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].maLoi;
-                tenTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].mtaLoi;
-              } else if (items[k].loaiTBao == "15") {
-                tenTBao = items[k].tenTBao;
-                maTBao = items[k].loaiTBao;
-              }
-            }
-          }
-        }
-      });
-      rtnValue = {
-        trade_code: trade_code,
-        seller_tax_code: seller_tax_code,
-        sale_date: sale_date,
-        store_code: store_code,
-        store_name: store_name,
-        tax_serial_number: tax_serial_number,
-        pos_no: pos_no,
-        inform_code: maTBao,
-        inform_name: tenTBao,
-        mccqt: maCQT,
-        xml_tax_signed: xml_tax_signed,
-      };
+      console.log("trade_code   ", trade_code);
 
+      
+
+      this.waitThreeSeconds()
+        .then(async (result) => {
+          console.log(result);
+          await setTimeout(async () => {
+            console.log("Delayed function executed after 2 seconds "+ trade_code);
+    
+            await Request.get(urlCheck + trade_code, {
+              agent,
+              headers: {
+                Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
+              },
+            }).then(async (res) => {
+              console.log(" res  ", res.data);
+              if (res.data.length) {
+                for (let j = 0; j < res.data.length; j++) {
+                  const items = res.data[j];
+                  for (let k = 0; k < items.length; k++) {
+                    if (items[k].loaiTBao == "10") {
+                      maCQT = items[k].ndungTBao.maCQT;
+                      xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
+                      maTBao = items[k].loaiTBao;
+                      tenTBao = items[k].tenTBao;
+                    } else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "16") {
+                      maTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].maLoi;
+                      tenTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].mtaLoi;
+                    } else if (items[k].loaiTBao == "15") {
+                      tenTBao = items[k].tenTBao;
+                      maTBao = items[k].loaiTBao;
+                    }
+                  }
+                }
+              }
+    
+              rtnValue = {
+                trade_code: trade_code,
+                seller_tax_code: seller_tax_code,
+                sale_date: sale_date,
+                store_code: store_code,
+                store_name: store_name,
+                tax_serial_number: tax_serial_number,
+                pos_no: pos_no,
+                inform_code: maTBao,
+                inform_name: tenTBao,
+                mccqt: maCQT,
+                xml_tax_signed: xml_tax_signed,
+              };
+      
+    
+            });
+          }, 5000);
+
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+      
       return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
 
     } catch (e) {
@@ -10082,41 +10104,120 @@ class EInvoiceController {
 ) {
     let result_extra = {};
     try {
-        const template =
-            ["//HDon", {
-                DLHDon: ["DLHDon", {
-                    TTChung: ["TTChung",
-                        {
-                            PBan: "PBan",
-                            THDon: "THDon",
-                            KHMSHDon: "KHMSHDon",
-                            KHHDon: "KHHDon",
-                            SHDon: "SHDon",
-                            MHSo: "MHSo",
-                            NLap: "NLap",
-                        },
-                    ],
-                    NDHDon: ["NDHDon", {
-                        NBan: ["NBan",
-                            {
-                                Ten: "Ten",
-                                MST: "MST",
-                                DChi: "DChi",
-                                SDThoai: "SDThoai",
-                            }
-                        ],
-                        NMua: ["NMua",
-                            {
-                                Ten: "Ten",
-                                MST: "MST",
-                                DChi: "DChi",
-                                SDThoai: "SDThoai",
-                                CCCDan: "CCCDan",
-                            }
-                        ],
-                        DSHHDVu: {
-                            HHDVu: ["DSHHDVu/HHDVu",
-                                {
+        // const template =
+        //     ["//HDon", {
+        //         DLHDon: ["DLHDon", {
+        //             TTChung: ["TTChung",
+        //                 {
+        //                     PBan: "PBan",
+        //                     THDon: "THDon",
+        //                     KHMSHDon: "KHMSHDon",
+        //                     KHHDon: "KHHDon",
+        //                     SHDon: "SHDon",
+        //                     MHSo: "MHSo",
+        //                     NLap: "NLap",
+        //                 },
+        //             ],
+        //             NDHDon: ["NDHDon", {
+        //                 NBan: ["NBan",
+        //                     {
+        //                         Ten: "Ten",
+        //                         MST: "MST",
+        //                         DChi: "DChi",
+        //                         SDThoai: "SDThoai",
+        //                     }
+        //                 ],
+        //                 NMua: ["NMua",
+        //                     {
+        //                         Ten: "Ten",
+        //                         MST: "MST",
+        //                         DChi: "DChi",
+        //                         SDThoai: "SDThoai",
+        //                         CCCDan: "CCCDan",
+        //                     }
+        //                 ],
+        //                 DSHHDVu: {
+        //                     HHDVu: ["DSHHDVu/HHDVu",
+        //                         {
+        //                             TChat: "TChat",
+        //                             STT: "STT",
+        //                             MHHDVu: "MHHDVu",
+        //                             THHDVu: "THHDVu",
+        //                             DVTinh: "DVTinh",
+        //                             SLuong: "SLuong",
+        //                             DGia: "DGia",
+        //                             TLCKhau: "TLCKhau",
+        //                             STCKhau: "STCKhau",
+        //                             ThTien: "ThTien",
+        //                             TSuat: "TSuat",
+        //                         }
+
+        //                     ]
+        //                 },
+        //                 TToan: ["TToan",
+        //                     {
+        //                         THTTLTSuat: ["THTTLTSuat", {
+        //                             LTSuat: ["LTSuat",
+        //                                 {
+        //                                     TSuat: "TSuat",
+        //                                     ThTien: "ThTien",
+        //                                     TThue: "TThue",
+        //                                 }
+        //                             ]
+        //                         },
+
+        //                         ],
+        //                         TgTCThue: "TgTCThue",
+        //                         TgTThue: "TgTThue",
+        //                         TTCKTMai: "TTCKTMai",
+        //                         TgTTTBSo: "TgTTTBSo",
+        //                         TgTTTBChu: "TgTTTBChu",
+
+        //                     }
+        //                 ]
+        //             }
+        //             ]
+        //         }
+
+        //         ],
+        //         DSCKS: ["DSCKS", {
+        //             NBan: "NBan"
+        //         },
+        //         ],
+        //         MCCQT: "MCCQT"
+        //     },
+        //     ]
+        //    ;
+
+           const template =
+            ["//HDon", { 
+                         DLHDon: {
+                          TTChung : {
+                              PBan: "DLHDon/TTChung/PBan",
+                              THDon: "DLHDon/TTChung/THDon",
+                              KHMSHDon: "DLHDon/TTChung/KHMSHDon",
+                              KHHDon: "DLHDon/TTChung/KHHDon",
+                              SHDon: "DLHDon/TTChung/SHDon",
+                              MHSo: "DLHDon/TTChung/MHSo",
+                              NLap: "DLHDon/TTChung/NLap",
+                            },
+                            NDHDon:{
+                                NBan:{
+                                    Ten: "DLHDon/NDHDon/NBan/Ten",
+                                    MST: "DLHDon/NDHDon/NBan/MST",
+                                    DChi: "DLHDon/NDHDon/NBan/DChi",
+                                    SDThoai: "DLHDon/NDHDon/NBan/SDThoai",
+                                  },
+                                NMua:{
+                                  Ten: "DLHDon/NDHDon/NMua/Ten",
+                                  MST: "DLHDon/NDHDon/NMua/MST",
+                                  DChi: "DLHDon/NDHDon/NMua/DChi",
+                                  SDThoai: "DLHDon/NDHDon/NMua/SDThoai",
+                                  CCCDan: "DLHDon/NDHDon/NMua/CCCDan",
+                                  },
+                                DSHHDVu:{
+                                  HHDVu:["DLHDon/NDHDon/DSHHDVu/HHDVu",
+                                  {
                                     TChat: "TChat",
                                     STT: "STT",
                                     MHHDVu: "MHHDVu",
@@ -10128,42 +10229,44 @@ class EInvoiceController {
                                     STCKhau: "STCKhau",
                                     ThTien: "ThTien",
                                     TSuat: "TSuat",
-                                }
+                                  }
 
-                            ]
-                        },
-                        TToan: ["TToan",
-                            {
-                                THTTLTSuat: ["THTTLTSuat", {
-                                    LTSuat: ["LTSuat",
-                                        {
-                                            TSuat: "TSuat",
-                                            ThTien: "ThTien",
-                                            TThue: "TThue",
-                                        }
-                                    ]
+                                  ]
                                 },
-
-                                ],
-                                TgTCThue: "TgTCThue",
-                                TgTThue: "TgTThue",
-                                TTCKTMai: "TTCKTMai",
-                                TgTTTBSo: "TgTTTBSo",
-                                TgTTTBChu: "TgTTTBChu",
-
-                            }
-                        ]
-                    }
-                    ]
-                }
-
-                ],
-                DSCKS: ["DSCKS", {
-                    NBan: "NBan"
-                },
-                ],
-                MCCQT: "MCCQT"
-            },
+                                TToan:  {
+                                  THTTLTSuat:
+                                  {
+                                    LTSuat:["DLHDon/NDHDon/TToan/THTTLTSuat/LTSuat",
+                                      {
+                                        TSuat: "TSuat",
+                                        ThTien: "ThTien",
+                                        TThue: "TThue",
+                                      }
+                                    ]
+                                  }     
+                                  ,DSLPhi:
+                                  {
+                                    LPhi:["DLHDon/NDHDon/TToan/DSLPhi/LPhi",
+                                      {
+                                        TLPhi: "TLPhi",
+                                        TPhi: "TPhi",
+                                      }
+                                    ]
+                                  },
+                                  TgTCThue: "DLHDon/NDHDon/TToan/TgTCThue",
+                                  TgTThue: "DLHDon/NDHDon/TToan/TgTThue",
+                                  TTCKTMai: "DLHDon/NDHDon/TToan/TTCKTMai",
+                                  TgTTTBSo: "DLHDon/NDHDon/TToan/TgTTTBSo",
+                                  TgTTTBChu: "DLHDon/NDHDon/TToan/TgTTTBChu",
+                                }
+                              }
+                          },
+                          DSCKS: ["DSCKS", {
+                            NBan: "NBan"
+                          },
+                          ],
+                          MCCQT: "MCCQT"
+                         },
             ]
            ;
         const jsonInvoice = await transform(xml_content, template);
@@ -10209,28 +10312,28 @@ class EInvoiceController {
             for(const invoice of jsonInvoice)
             {
                 const paraMaster = {
-                  pban: invoice.DLHDon[0].TTChung[0].PBan,
-                  thdon: invoice.DLHDon[0].TTChung[0].THDon,
-                  khmshdon: invoice.DLHDon[0].TTChung[0].KHMSHDon,
-                  khhdon: invoice.DLHDon[0].TTChung[0].KHHDon,
-                  shdon: invoice.DLHDon[0].TTChung[0].SHDon,
-                  nlap: invoice.DLHDon[0].TTChung[0].NLap,
-                  nban_ten: invoice.DLHDon[0].NDHDon[0].NBan[0].Ten,
-                  nban_mst: invoice.DLHDon[0].NDHDon[0].NBan[0].MST,
-                  nban_dchi: invoice.DLHDon[0].NDHDon[0].NBan[0].DChi,
-                  nban_sdthoai: invoice.DLHDon[0].NDHDon[0].NBan[0].SDThoai,
+                  pban: invoice.DLHDon.TTChung.PBan,
+                  thdon: invoice.DLHDon.TTChung.THDon,
+                  khmshdon: invoice.DLHDon.TTChung.KHMSHDon,
+                  khhdon: invoice.DLHDon.TTChung.KHHDon,
+                  shdon: invoice.DLHDon.TTChung.SHDon,
+                  nlap: invoice.DLHDon.TTChung.NLap,
+                  nban_ten: invoice.DLHDon.NDHDon.NBan.Ten,
+                  nban_mst: invoice.DLHDon.NDHDon.NBan.MST,
+                  nban_dchi: invoice.DLHDon.NDHDon.NBan.DChi,
+                  nban_sdthoai: invoice.DLHDon.NDHDon.NBan.SDThoai,
 
-                  nmua_ten: invoice.DLHDon[0].NDHDon[0].NMua[0].Ten,
-                  nmua_mst: invoice.DLHDon[0].NDHDon[0].NMua[0].MST,
-                  nmua_dchi: invoice.DLHDon[0].NDHDon[0].NMua[0].DChi,
-                  nmua_sdthoai: invoice.DLHDon[0].NDHDon[0].NMua[0].SDThoai,
-                  nmua_cccdan: invoice.DLHDon[0].NDHDon[0].NMua[0].CCCDan,
+                  nmua_ten: invoice.DLHDon.NDHDon.NMua.Ten,
+                  nmua_mst: invoice.DLHDon.NDHDon.NMua.MST,
+                  nmua_dchi: invoice.DLHDon.NDHDon.NMua.DChi,
+                  nmua_sdthoai: invoice.DLHDon.NDHDon.NMua.SDThoai,
+                  nmua_cccdan: invoice.DLHDon.NDHDon.NMua.CCCDan,
 
-                  tgtcthue: invoice.DLHDon[0].NDHDon[0].TToan[0].TgTCThue,
-                  tgtthue: invoice.DLHDon[0].NDHDon[0].TToan[0].TgTThue,
-                  ttcktmai: invoice.DLHDon[0].NDHDon[0].TToan[0].TTCKTMai,
-                  tgtttbso: invoice.DLHDon[0].NDHDon[0].TToan[0].TgTTTBSo,
-                  tgtttbchu: invoice.DLHDon[0].NDHDon[0].TToan[0].TgTTTBChu,
+                  tgtcthue: invoice.DLHDon.NDHDon.TToan.TgTCThue,
+                  tgtthue: invoice.DLHDon.NDHDon.TToan.TgTThue,
+                  ttcktmai: invoice.DLHDon.NDHDon.TToan.TTCKTMai,
+                  tgtttbso: invoice.DLHDon.NDHDon.TToan.TgTTTBSo,
+                  tgtttbchu: invoice.DLHDon.NDHDon.TToan.TgTTTBChu,
                   mccqt:  invoice.MCCQT,
                   seller_tax_code: seller_tax_code,
                   seller_date: seller_date,
@@ -10282,314 +10385,91 @@ class EInvoiceController {
                   p_crt_by
               );
               console.log("rtnValueMaster  ", rtnValueMaster);
-            }
-          }
-          else
-          {
+              if(rtnValueMaster.p_rtn_cur[0].STATUS == "OK")
+              {
+                const invoice_detail = invoice.DLHDon.NDHDon.DSHHDVu.HHDVu;
+                for( let inv_d of invoice_detail)
+                {
+                  console.log(" invoice_detail  ", invoice_detail);
+                  const paraDetails = {
+                    tei_wt_invoice_m_pk: rtnValueMaster.p_rtn_cur[0].PK,
+                    tchat	:inv_d.TChat,
+                    stt		:inv_d.STT,
+                    mhhdvu	:inv_d.MHHDVu,
+                    thhdvu	:inv_d.THHDVu,
+                    dvtinh	:inv_d.DVTinh,
+                    sluong	:inv_d.SLuong,
+                    dgia	: inv_d.DGia,
+                    tlckhau	: inv_d.TLCKhau,
+                    stckhau	: inv_d.STCKhau,
+                    thtien	: inv_d.ThTien,
+                    tsuat	: inv_d.TSuat,
+                } 
+                 const rtnValueDetail =  await DBService.ExecuteSQLBlob(
+                    `BEGIN ei_upd_sale_bill_d (          
+                                                    :tei_wt_invoice_m_pk,
+                                                    :tchat,
+                                                    :stt,
+                                                    :mhhdvu,
+                                                    :thhdvu,
+                                                    :dvtinh,
+                                                    :sluong,
+                                                    :dgia,
+                                                    :tlckhau,
+                                                    :stckhau,
+                                                    :thtien,
+                                                    :tsuat,
+                                                    :p_language, 
+                                                    :p_crt_by, 
+                                                    :p_rtn_cur); END;`,
+                                                    paraDetails,
+                    p_language,
+                    p_crt_by
+                  );
 
+                  console.log(" rtnValueDetail  ", rtnValueDetail);
+                }
+              
+                const invoice_detail_vat = invoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat;
+                for(const inv_d_vat of invoice_detail_vat)
+                {
+                  const para_amt_vat = {
+                    tei_wt_sale_bill_pk: rtnValueMaster.p_rtn_cur[0].PK,
+                    sub_amt: inv_d_vat.ThTien,
+                    sub_vat_rate: inv_d_vat.TSuat,
+                    sub_vat_amt: inv_d_vat.TThue,
+                  };
+                  const rtnValue_VAT = await DBService.ExecuteSQLBlob(
+                    `BEGIN ei_upd_sale_bill_d_vat (          
+                                                                      :tei_wt_sale_bill_pk,
+                                                                      :sub_amt,
+                                                                      :sub_vat_rate,
+                                                                      :sub_vat_amt,
+                                                                      :p_language, 
+                                                                      :p_crt_by, 
+                                                                      :p_rtn_cur); END;`,
+                    para_amt_vat,
+                    p_language,
+                    p_crt_by
+                  );
+
+                  console.log(" invoice_detail_vat  ", rtnValue_VAT);
+                }
+               
+              }//else
+              // {
+
+              // }
+            }
+           
           }
+
+          return (result_extra = {
+              PK: rtnValuePos.p_rtn_cur[0].PK,
+              STATUS:  rtnValuePos.p_rtn_cur[0].STATUS,
+          }); 
           
         }
-       
-        return jsonInvoice;
-        for(let i = 0;i < jsonInvoice.length; i ++)
-        {
-            const paraMaster = {
-                PBan: jsonInvoice[i].DLHDon[0].TTChung[0].PBan,
-                THDon: jsonInvoice[i].DLHDon[0].TTChung[0].THDon,
-                KHMSHDon: jsonInvoice[i].DLHDon[0].TTChung[0].KHMSHDon,
-                KHHDon: jsonInvoice[i].DLHDon[0].TTChung[0].KHHDon,
-                SHDon: jsonInvoice[i].DLHDon[0].TTChung[0].SHDon,
-                NLap: jsonInvoice[i].DLHDon[0].TTChung[0].NLap,
-                NBan_Ten: jsonInvoice[i].DLHDon[0].NDHDon[0].NBan[0].Ten,
-                NBan_MST: jsonInvoice[i].DLHDon[0].NDHDon[0].NBan[0].MST,
-                NBan_DChi: jsonInvoice[i].DLHDon[0].NDHDon[0].NBan[0].DChi,
-                NBan_SDThoai: jsonInvoice[i].DLHDon[0].NDHDon[0].NBan[0].SDThoai,
-
-                NMua_Ten: jsonInvoice[i].DLHDon[0].NDHDon[0].NMua[0].Ten,
-                NMua_MST: jsonInvoice[i].DLHDon[0].NDHDon[0].NMua[0].MST,
-                NMua_DChi: jsonInvoice[i].DLHDon[0].NDHDon[0].NMua[0].DChi,
-                NMua_SDThoai: jsonInvoice[i].DLHDon[0].NDHDon[0].NMua[0].SDThoai,
-                NMua_CCCDan: jsonInvoice[i].DLHDon[0].NDHDon[0].NMua[0].CCCDan,
-
-                TgTCThue: jsonInvoice[i].DLHDon[0].NDHDon[0].TToan[0].TgTCThue,
-                TgTThue: jsonInvoice[i].DLHDon[0].NDHDon[0].TToan[0].TgTThue,
-                TTCKTMai: jsonInvoice[i].DLHDon[0].NDHDon[0].TToan[0].TTCKTMai,
-                TgTTTBSo: jsonInvoice[i].DLHDon[0].NDHDon[0].TToan[0].TgTTTBSo,
-                TgTTTBChu: jsonInvoice[i].DLHDon[0].NDHDon[0].TToan[0].TgTTTBChu,
-                MCCQT:  jsonInvoice[i].MCCQT,
-                seller_tax_code: seller_tax_code,
-                seller_date: seller_date,
-                store_code: store_code,
-                store_name: store_name,
-                tax_serial_number: tax_serial_number,
-                pos_no: pos_no,
-                signing_time: signingTime.SigningTime,
-
-            } 
-
-            const rtnValueMaster = await DBService.ExecuteSQLBlob(
-                `BEGIN ei_upd_sale_bill_status (          
-                                                :tei_wt_sale_bill_pk,
-                                                :status,
-                                                :p_language, 
-                                                :p_crt_by, 
-                                                :p_rtn_cur); END;`,
-                para_inv_st,
-                p_language,
-                p_crt_by
-            );
-            console.log("==================")
-            console.log("jsonTT", paraMaster)
-        }
-       
-        // const template = [
-        //     "TDiep/DLieu/HDon",
-        //     {
-        //         DLHDon:{
-        //             TTChung:{
-        //                 PBan: "PBan",
-        //                 THDon: "THDon",
-        //                 KHMSHDon: "KHMSHDon",
-        //                 KHHDon: "KHHDon",
-        //                 SHDon: "SHDon",
-        //                 MHSo: "MHSo",
-        //                 NLap: "NLap",
-        //             },
-        //             // NDHDon:{
-        //             //     NBan:{
-        //             //         Ten: "Ten",
-        //             //         MST: "MST",
-        //             //         DChi: "DChi",
-        //             //         SDThoai: "SDThoai",
-        //             //     },
-        //             //     NMua:{
-        //             //         Ten: "Ten",
-        //             //         MST: "MST",
-        //             //         DChi: "DChi",
-        //             //         SDThoai: "SDThoai",
-        //             //         CCCDan: "CCCDan",
-        //             //     },
-        //             //     DSHHDVu:{
-        //             //         HHDVu:[{
-        //             //             TChat: "TChat",
-        //             //             STT: "STT",
-        //             //             MHHDVu: "MHHDVu",
-        //             //             THHDVu: "THHDVu",
-        //             //             DVTinh: "DVTinh",
-        //             //             SLuong: "SLuong",
-        //             //             DGia: "DGia",
-        //             //             TLCKhau: "TLCKhau",
-        //             //             STCKhau: "STCKhau",
-        //             //             ThTien: "ThTien",
-        //             //             TSuat: "TSuat",
-        //             //         }]
-        //             //     },
-        //             //     TToan:{
-        //             //         THTTLTSuat:
-        //             //         {
-        //             //             LTSuat:{
-        //             //                 TSuat: "TSuat",
-        //             //                 ThTien: "ThTien",
-        //             //                 TThue: "TThue",
-        //             //             },
-
-        //             //         },
-        //             //         TgTCThue: "TgTCThue",
-        //             //         TgTThue: "TgTThue",
-        //             //         TTCKTMai: "TTCKTMai",
-        //             //         TgTTTBSo: "TgTTTBSo",
-        //             //         TgTTTBChu: "TgTTTBChu",
-        //             //     }  
-        //             // },
-        //             // DSCKS:{
-        //             //     NBan:"NBan"
-        //             // },
-        //             // MCCQT:"MCCQT"
-        //         }
-
-        //     },
-        // ];
-      
-
-        return jsonTT;
-        const templateTTChung = [
-            "TDiep/DLieu/HDon/DLHDon/TTChung",
-            {
-                PBan: "PBan",
-                THDon: "THDon",
-                KHMSHDon: "KHMSHDon",
-                KHHDon: "KHHDon",
-                SHDon: "SHDon",
-                MHSo: "MHSo",
-                NLap: "NLap",
-            },
-        ];
-        const jsonTTChung = await transform(xml_content, templateTTChung);
-        console.log("jsonTTChung", jsonTTChung)
-        const templateTTHDLQuan = [
-            "TDiep/DLieu/HDon/DLHDon/TTChung/TTHDLQuan",
-            {
-                TCHDon: "TCHDon",
-                LHDCLQuan: "LHDCLQuan",
-                KHMSHDCLQuan: "KHMSHDCLQuan",
-                KHHDCLQuan: "KHHDCLQuan",
-                SHDCLQuan: "SHDCLQuan",
-                NLHDCLQuan: "NLHDCLQuan",
-                GChu: "GChu",
-            },
-        ];
-        const jsonTTHDLQuan = await transform(xml_content, templateTTHDLQuan);
-        console.log("templateTTHDLQuan", jsonTTHDLQuan)
-
-        const arrTTChung = [
-            jsonTTChung[0].PBan,
-            jsonTTChung[0].THDon,
-            jsonTTChung[0].KHMSHDon,
-            jsonTTChung[0].KHHDon,
-            jsonTTChung[0].SHDon,
-            jsonTTChung[0].MHSo,
-            jsonTTChung[0].NLap,
-        ];
-
-        console.log("arrTTChung  ", arrTTChung)
-
-        const templateNBan = [
-            "TDiep/DLieu/HDon/DLHDon/NDHDon/NBan",
-            {
-                Ten: "Ten",
-                MST: "MST",
-                DChi: "DChi",
-                SDThoai: "SDThoai",
-            },
-        ];
-        const jsonNBan = await transform(xml_content, templateNBan);
-        const arrNBan = [
-            jsonNBan[0].Ten,
-            jsonNBan[0].MST,
-            jsonNBan[0].DChi,
-            jsonNBan[0].SDThoai,
-        ];
-        console.log("jsonNBan", jsonNBan)
-        const templateNMua = [
-            "TDiep/DLieu/HDon/DLHDon/NDHDon/NMua",
-            {
-                Ten: "Ten",
-                MST: "MST",
-                DChi: "DChi",
-                SDThoai: "SDThoai",
-                CCCDan: "CCCDan",
-            },
-        ];
-        const jsonNMua = await transform(xml_content, templateNMua);
-        console.log("jsonNMua", jsonNMua)
-        const arrNMua = [
-            jsonNMua[0].Ten,
-            jsonNMua[0].MST,
-            jsonNMua[0].DChi,
-            jsonNMua[0].SDThoai,
-            jsonNMua[0].CCCDan,
-        ];
-        const templateLTSuat = [
-            "TDiep/DLieu/HDon/DLHDon/NDHDon/TToan/THTTLTSuat/LTSuat",
-            {
-                TSuat: "TSuat",
-                ThTien: "ThTien",
-                TThue: "TThue",
-            },
-        ];
-        const jsonLTSuat = await transform(xml_content, templateLTSuat);
-        console.log("jsonLTSuat", jsonLTSuat)
-        const arrLTSuat = [jsonLTSuat[0].TSuat, jsonLTSuat[0].ThTien, jsonLTSuat[0].TThue];
-        const templateTToan = [
-            "TDiep/DLieu/HDon/DLHDon/NDHDon/TToan",
-            {
-                TgTCThue: "TgTCThue",
-                TgTThue: "TgTThue",
-                TTCKTMai: "TTCKTMai",
-                TgTTTBSo: "TgTTTBSo",
-                TgTTTBChu: "TgTTTBChu",
-            },
-        ];
-        const jsonTToan = await transform(xml_content, templateTToan);
-        // console.log("jsonTToan", jsonTToan)
-        const arrTToan = [
-            jsonTToan[0].TgTCThue,
-            jsonTToan[0].TgTThue,
-            jsonTToan[0].TTCKTMai,
-            jsonTToan[0].TgTTTBSo,
-            jsonTToan[0].TgTTTBChu,
-        ];
-        const arrMCCQT = ""; //[jsonMCCQT[0].MCCQT];
-
-        const templateDSHHDVu = [
-            "TDiep/DLieu/HDon/DLHDon/NDHDon/DSHHDVu/HHDVu",
-            {
-                TChat: "TChat",
-                STT: "STT",
-                MHHDVu: "MHHDVu",
-                THHDVu: "THHDVu",
-                DVTinh: "DVTinh",
-                SLuong: "SLuong",
-                DGia: "DGia",
-                TLCKhau: "TLCKhau",
-                STCKhau: "STCKhau",
-                ThTien: "ThTien",
-                TSuat: "TSuat",
-            },
-        ];
-        let masterPara = arrTTChung.concat(arrNBan).concat(arrNMua).concat(arrLTSuat).concat(arrTToan).concat(arrMCCQT);
-        //console.log("templateDSHHDVu", templateDSHHDVu)
-        //const xmlRelativePath = p_xml_path.replace(ROOT_DIR_FILES, "");
-        masterPara = masterPara.concat(["", "", "", ""]);
-
-        // masterPara = masterPara.concat([
-        //     p_invoice_type,
-        //     v_vn_amount,
-        //     p_tr_type,
-        //     p_tax_serial_number,
-        //     p_tac_crca_pk,
-        //     p_invoice_form_symbol,
-        // ]);
-
-        // console.log("masterPara", masterPara)
-        //const master = await callAPI(_jwtToken, { proc: 'ei_upd_tei_einvoice_cloud', para: masterPara });
-        //let master = await DBService.callProcCursor("ei_upd_tei_einvoice_ar", masterPara, p_language, p_crt_by);
-        // console.log("master", master);
-        const jsonDSHHDVu = await transform(xml_content, templateDSHHDVu);
-        console.log("jsonDSHHDVu  ", jsonDSHHDVu)
-        // if (master && master[0].PK > 0) {
-        //     const jsonDSHHDVu = await transform(xml_content, templateDSHHDVu);
-        //     console.log("jsonDSHHDVu  ", jsonDSHHDVu)
-        //     for (let i = 0; i < jsonDSHHDVu.length; i++) {
-        //         const detailPara = [
-        //             master[0].PK,
-        //             jsonDSHHDVu[i].TChat,
-        //             jsonDSHHDVu[i].STT,
-        //             jsonDSHHDVu[i].MHHDVu,
-        //             jsonDSHHDVu[i].THHDVu,
-        //             jsonDSHHDVu[i].DVTinh,
-        //             jsonDSHHDVu[i].SLuong,
-        //             jsonDSHHDVu[i].DGia,
-        //             jsonDSHHDVu[i].ThTien,
-        //             jsonDSHHDVu[i].TLCKhau,
-        //             jsonDSHHDVu[i].STCKhau,
-        //             jsonDSHHDVu[i].TSuat,
-        //             master[0].TEI_EINVOICE_M_PK,
-        //         ];
-        //         const detail = await DBService.callProcCursor("ei_upd_tei_einvoiced_ar", detailPara, p_language, p_crt_by);
-        //         // console.log("detail", detail);
-        //     }
-        //     return (result_extra = {
-        //         PK: master[0].PK,
-        //         TEI_EINVOICE_M_PK: master[0].TEI_EINVOICE_M_PK,
-        //     });
-        // } else {
-        //     return (result_extra = {
-        //         PK: master[0].PK,
-        //         TEI_EINVOICE_M_PK: master[0].TEI_EINVOICE_M_PK,
-        //     }); //master[0].PK;
-        // }
     } catch (e) {
         Utils.Logger({
             LVL: "error",
@@ -10600,10 +10480,18 @@ class EInvoiceController {
         console.log(e.message);
         return (result_extra = {
             PK: -2,
-            TEI_EINVOICE_M_PK: 0,
+            STATUS: "FAILE",
         }); //master[0].PK;;
     }
-}
+  }
+
+  waitThreeSeconds() {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        
+      }, 3000);
+    });
+  }
 
   ///vng-304
   async viewPDFTemplate_04SS({ request, response, auth }) {

@@ -280,10 +280,10 @@
         <v-card-text class="pa-4 pb-2 d-flex flex-column align-space-between">
           <v-row>
             <v-col md="6">
-              <BaseSelect outlined item-value="PK" item-text="TEXT" :label="$t('from_company')" :lstData="company_list" v-model="selectedCompanyFrom"  ></BaseSelect>
+              <BaseSelect outlined item-value="PK" item-text="TEXT" :label="$t('from_company')" :lstData="company_list" v-model="selectedCompanyFrom"></BaseSelect>
             </v-col>
             <v-col md="6">
-              <BaseSelect outlined item-value="PK" item-text="TEXT" :label="$t('to_company')" :lstData="company_list" v-model="selectedCompanyTo" ></BaseSelect>
+              <BaseSelect outlined item-value="PK" item-text="TEXT" :label="$t('to_company')" :lstData="company_list" v-model="selectedCompanyTo"></BaseSelect>
             </v-col>
           </v-row>
           <v-row>
@@ -459,13 +459,13 @@ export default {
         this.fromDate = val + "01";
         this.toDate = val + this._maxDateOfMonth(val);
       }
-    }, 
+    },
     lstFrom_No_From(val) {
       this.getListCodes("serial_no");
     },
     selectedCompanyFrom(val) {
       if (val) {
-        this.selectedCompanyTo = val; 
+        this.selectedCompanyTo = val;
         this.getListCodes("form_no");
       }
     },
@@ -475,11 +475,11 @@ export default {
         this.toDate = this.year + "1231";
       }
     },
-    selected_company(val){
+    selected_company(val) {
       if (val) {
         this.selectedCompanyFrom = this.selected_company;
       }
-    }
+    },
   },
   /*############### computed ######################*/
   computed: {
@@ -583,7 +583,7 @@ export default {
         },
         { dataField: "TCO_BUSPLACE_PK", width: 100, caption: this.$t("tco_busplace_pk"), alignment: "left", type: "text", visible: false },
         { dataField: "REMARKS", width: 100, caption: this.$t("remarks"), editable: true, alignment: "left", type: "text" },
-        { dataField: "USE_YN", width: 100, caption: this.$t("use_yn"), editable: true, alignment: "center", columntype: "checkbox" },
+        { dataField: "USE_YN", width: 100, caption: this.$t("use_yn"), editable: true, alignment: "center", type: "checkbox" },
       ];
     },
   },
@@ -750,30 +750,32 @@ export default {
         case "SAVE_ISSUE":
           let data = this.$refs.grdEinvoiceIssue.getData();
           for (let i = 0; i < data.length; i++) {
-            if (!data[i].INVOICE_KIND) {
-              this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_invoice_kind_at_" + (i + 1)));
-              return;
-            } else if (!data[i].SERIAL_NO_2) {
-              this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_invoice_symbol_at_" + (i + 1)));
-              return;
-            } else if (!data[i].FORM_NO) {
-              this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_form_no_at_" + (i + 1)));
-              return;
-            } else if (!data[i].SERIAL_NO) {
-              this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_serial_no_at_" + (i + 1)));
-              return;
-            } else if (!data[i].FROM_NO) {
-              this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_start_invoice_no_at_" + (i + 1)));
-              return;
-            } else if (!data[i].FROM_DT) {
-              this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_form_date_at_" + (i + 1)));
-              return;
-            } else if (!data[i].TO_DT) {
-              this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_to_date_at_" + (i + 1)));
-              return;
-            } else if (!data[i].STATUS) {
-              this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_status_at_" + (i + 1)));
-              return;
+            if (data[i]._rowstatus == "i" || data[i]._rowstatus == "u") {
+              if (!data[i].INVOICE_KIND) {
+                this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_invoice_kind_at_" + (i + 1)));
+                return;
+              } else if (!data[i].SERIAL_NO_2) {
+                this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_invoice_symbol_at_" + (i + 1)));
+                return;
+              } else if (!data[i].FORM_NO) {
+                this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_form_no_at_" + (i + 1)));
+                return;
+              } else if (!data[i].SERIAL_NO) {
+                this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_serial_no_at_" + (i + 1)));
+                return;
+              } else if (!data[i].FROM_NO) {
+                this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_start_invoice_no_at_" + (i + 1)));
+                return;
+              } else if (!data[i].FROM_DT) {
+                this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_form_date_at_" + (i + 1)));
+                return;
+              } else if (!data[i].TO_DT) {
+                this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_to_date_at_" + (i + 1)));
+                return;
+              } else if (!data[i].STATUS) {
+                this.showNotification("danger", this.$t("can_not_save"), this.$t("please_input_status_at_" + (i + 1)));
+                return;
+              }
             }
           }
           this.$refs.grdEinvoiceIssue.saveData();
@@ -806,27 +808,27 @@ export default {
       }
     },
     async dsoMaster(action) {
-      if(action=='update'){
-      ///// Luu duong dan file excel
-      let TEMPLATE = this.templateID_list.find((item) => item.CODE == this.MasterInfo.TEMPLATE_CD);
-      this.MasterInfo.URL_FILE_EXCEL = (TEMPLATE&&TEMPLATE.URL_FILE_EXCEL?TEMPLATE.URL_FILE_EXCEL:"");
-      /// Luu duong dan hinh anh
-      let pathLOGOImg = "";
-      if (this.fileSaveLOGO) {
-        let urlImg = await this.onUploadImgFolder(this.fileSaveLOGO, this.folder, "LOGO");
-        pathLOGOImg = urlImg;
-        this.fileSaveLOGO = null;
+      if (action == "update") {
+        ///// Luu duong dan file excel
+        let TEMPLATE = this.templateID_list.find((item) => item.CODE == this.MasterInfo.TEMPLATE_CD);
+        this.MasterInfo.URL_FILE_EXCEL = TEMPLATE && TEMPLATE.URL_FILE_EXCEL ? TEMPLATE.URL_FILE_EXCEL : "";
+        /// Luu duong dan hinh anh
+        let pathLOGOImg = "";
+        if (this.fileSaveLOGO) {
+          let urlImg = await this.onUploadImgFolder(this.fileSaveLOGO, this.folder, "LOGO");
+          pathLOGOImg = urlImg;
+          this.fileSaveLOGO = null;
+        }
+        this.MasterInfo.URL_IMG_LOGO = pathLOGOImg == "" ? this.MasterInfo.URL_IMG_LOGO : pathLOGOImg;
+        ////////////////////////////
+        let pathBGImg = "";
+        if (this.fileSaveBG) {
+          let urlBG = await this.onUploadImgFolder(this.fileSaveBG, this.folder, "BG");
+          pathBGImg = urlBG;
+          this.fileSaveBG = null;
+        }
+        this.MasterInfo.URL_IMG_BG = pathBGImg == "" ? this.MasterInfo.URL_IMG_BG : pathBGImg;
       }
-      this.MasterInfo.URL_IMG_LOGO = pathLOGOImg == "" ? this.MasterInfo.URL_IMG_LOGO : pathLOGOImg;
-      ////////////////////////////
-      let pathBGImg = "";
-      if (this.fileSaveBG) {
-        let urlBG = await this.onUploadImgFolder(this.fileSaveBG, this.folder, "BG");
-        pathBGImg = urlBG;
-        this.fileSaveBG = null;
-      }
-      this.MasterInfo.URL_IMG_BG = pathBGImg == "" ? this.MasterInfo.URL_IMG_BG : pathBGImg;
-    }
       this.MasterInfo._rowstatus = this.MasterInfo._rowstatus == "i" ? "i" : action == "update" ? "u" : "d";
       /////////////////////////
       let dsoControl = {
@@ -1016,11 +1018,7 @@ export default {
           const dso1 = {
             type: "list",
             updpro: "EI_SEL_EINVOICE_TYPE",
-            para: [
-              this.selected_company,
-              "Y",
-              "Y",
-            ],
+            para: [this.selected_company, "Y", "Y"],
           };
 
           const parentCodes = [

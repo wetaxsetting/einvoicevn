@@ -148,7 +148,7 @@
                     upd_procedure="AC_UPD_6095010_02"
                     :headertype="1"
                     :filter_paras="[this.MasterInfo.PK]"
-                    :update_paras="['PK', 'TEI_COMPANY_PK', 'CA_NAME', 'DN_MST', 'SERIAL_NUMBER', 'NOTAFTER', 'NOTBEFORE', 'TOKEN_TYPE', 'STATUS', 'D_CERTIFICATE_TYPE']"
+                    :update_paras="['PK', 'TEI_COMPANY_PK', 'CA_NAME', 'DN_NAME', 'DN_MST', 'SERIAL_NUMBER', 'NOTAFTER', 'NOTBEFORE', 'TOKEN_TYPE', 'STATUS', 'D_CERTIFICATE_TYPE']"
                     :max_height="limitHeightGridDetails"
                   />
                 </v-col>
@@ -703,12 +703,14 @@ export default {
 
     async onSuccessGetDetailDeclaration(data) {
       let obj_token = $.parseJSON(data);
+      console.log("file: 6095010.vue:706 [vng-304] onSuccessGetDetailDeclaration [vng-304] obj_token:", obj_token)
       this.$refs.grdDetail.addRowStruct({
         _rowstatus: "i",
         NO: this.$refs.grdDetail.getDataSource().length + 1,
         PK: "",
         TEI_COMPANY_PK: this.MasterInfo.PK,
         CA_NAME: this.getPara("CN", obj_token.issue_by),
+        DN_NAME:obj_token.dn_name,
         DN_MST: obj_token.dn_mst,
         SERIAL_NUMBER: obj_token.serial_number,
         NOTAFTER: obj_token.not_after,

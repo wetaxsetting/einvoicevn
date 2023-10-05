@@ -5304,19 +5304,19 @@ class EInvoiceController {
 
       if (!form_no) {
         return response.send(Utils.response(false, "form_no can't null",));
-      }if(form_no && form_no.length !== 1) {
+      }if(form_no.length !== 1) {
         return response.send(Utils.response(false, "length form_no is 1 ",));
       }
 
       if (!serial_no) {
         return response.send(Utils.response(false, "serial_no can't null",));
-      }else if(serial_no && serial_no.length !== 6) {
+      }else if(serial_no.length !== 6) {
         return response.send(Utils.response(false, "length serial_no is 6 ",));
       }
 
       if (!template_id) {
         return response.send(Utils.response(false, "template_id can't null",));
-      } if(template_id && template_id.length !== 10) {
+      } if(template_id.length !== 10) {
         return response.send(Utils.response(false, "length template_id is 10 ",));
       }
 
@@ -8478,64 +8478,50 @@ class EInvoiceController {
       trade_code = res.data.maGDich;
       console.log("trade_code   ", trade_code);
 
-      
+      await Utils._sleep(5);
 
-      this.waitThreeSeconds()
-        .then(async (result) => {
-          console.log(result);
-          await setTimeout(async () => {
-            console.log("Delayed function executed after 2 seconds "+ trade_code);
-    
-            await Request.get(urlCheck + trade_code, {
-              agent,
-              headers: {
-                Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
-              },
-            }).then(async (res) => {
-              console.log(" res  ", res.data);
-              if (res.data.length) {
-                for (let j = 0; j < res.data.length; j++) {
-                  const items = res.data[j];
-                  for (let k = 0; k < items.length; k++) {
-                    if (items[k].loaiTBao == "10") {
-                      maCQT = items[k].ndungTBao.maCQT;
-                      xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
-                      maTBao = items[k].loaiTBao;
-                      tenTBao = items[k].tenTBao;
-                    } else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "16") {
-                      maTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].maLoi;
-                      tenTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].mtaLoi;
-                    } else if (items[k].loaiTBao == "15") {
-                      tenTBao = items[k].tenTBao;
-                      maTBao = items[k].loaiTBao;
-                    }
-                  }
+      await Request.get(urlCheck + trade_code, {
+          agent,
+          headers: {
+            Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
+          },
+        }).then(async (res) => {
+          console.log(" res  ", res.data);
+          if (res.data.length) {
+            for (let j = 0; j < res.data.length; j++) {
+              const items = res.data[j];
+              for (let k = 0; k < items.length; k++) {
+                if (items[k].loaiTBao == "10") {
+                  maCQT = items[k].ndungTBao.maCQT;
+                  xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
+                  maTBao = items[k].loaiTBao;
+                  tenTBao = items[k].tenTBao;
+                } else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "16") {
+                  maTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].maLoi;
+                  tenTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].mtaLoi;
+                } else if (items[k].loaiTBao == "15") {
+                  tenTBao = items[k].tenTBao;
+                  maTBao = items[k].loaiTBao;
                 }
               }
-    
-              rtnValue = {
-                trade_code: trade_code,
-                seller_tax_code: seller_tax_code,
-                sale_date: sale_date,
-                store_code: store_code,
-                store_name: store_name,
-                tax_serial_number: tax_serial_number,
-                pos_no: pos_no,
-                inform_code: maTBao,
-                inform_name: tenTBao,
-                mccqt: maCQT,
-                xml_tax_signed: xml_tax_signed,
-              };
-      
-    
-            });
-          }, 5000);
+            }
+          }
 
-        })
-        .catch((error) => {
-          console.error(error);
+          rtnValue = {
+            trade_code: trade_code,
+            seller_tax_code: seller_tax_code,
+            sale_date: sale_date,
+            store_code: store_code,
+            store_name: store_name,
+            tax_serial_number: tax_serial_number,
+            pos_no: pos_no,
+            inform_code: maTBao,
+            inform_name: tenTBao,
+            mccqt: maCQT,
+            xml_tax_signed: xml_tax_signed,
+          };
         });
-      
+        console.log("rtnValue  ", rtnValue);
       return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
 
     } catch (e) {

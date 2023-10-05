@@ -5316,8 +5316,8 @@ class EInvoiceController {
 
       if (!template_id) {
         return response.send(Utils.response(false, "template_id can't null",));
-      } if(template_id && template_id.length !== 3) {
-        return response.send(Utils.response(false, "length template_id is 3 ",));
+      } if(template_id && template_id.length !== 10) {
+        return response.send(Utils.response(false, "length template_id is 10 ",));
       }
 
       if (!start_date) {
@@ -8429,6 +8429,9 @@ class EInvoiceController {
                                                       sale_date,
                                                       tax_serial_number,
                                                       req_key,
+                                                      store_code,
+                                                      store_name,
+                                                      pos_no,
                                                       p_language,
                                                       p_crt_by);
 
@@ -10071,6 +10074,9 @@ class EInvoiceController {
     seller_date,
     tax_serial_number,
     req_key,
+    store_code,
+    store_name,
+    pos_no,
     p_language,
     p_crt_by
 ) {
@@ -10203,29 +10209,29 @@ class EInvoiceController {
             for(const invoice of jsonInvoice)
             {
                 const paraMaster = {
-                  PBan: invoice.DLHDon[0].TTChung[0].PBan,
-                  THDon: invoice.DLHDon[0].TTChung[0].THDon,
-                  KHMSHDon: invoice.DLHDon[0].TTChung[0].KHMSHDon,
-                  KHHDon: invoice.DLHDon[0].TTChung[0].KHHDon,
-                  SHDon: invoice.DLHDon[0].TTChung[0].SHDon,
-                  NLap: invoice.DLHDon[0].TTChung[0].NLap,
-                  NBan_Ten: invoice.DLHDon[0].NDHDon[0].NBan[0].Ten,
-                  NBan_MST: invoice.DLHDon[0].NDHDon[0].NBan[0].MST,
-                  NBan_DChi: invoice.DLHDon[0].NDHDon[0].NBan[0].DChi,
-                  NBan_SDThoai: invoice.DLHDon[0].NDHDon[0].NBan[0].SDThoai,
+                  pban: invoice.DLHDon[0].TTChung[0].PBan,
+                  thdon: invoice.DLHDon[0].TTChung[0].THDon,
+                  khmshdon: invoice.DLHDon[0].TTChung[0].KHMSHDon,
+                  khhdon: invoice.DLHDon[0].TTChung[0].KHHDon,
+                  shdon: invoice.DLHDon[0].TTChung[0].SHDon,
+                  nlap: invoice.DLHDon[0].TTChung[0].NLap,
+                  nban_ten: invoice.DLHDon[0].NDHDon[0].NBan[0].Ten,
+                  nban_mst: invoice.DLHDon[0].NDHDon[0].NBan[0].MST,
+                  nban_dchi: invoice.DLHDon[0].NDHDon[0].NBan[0].DChi,
+                  nban_sdthoai: invoice.DLHDon[0].NDHDon[0].NBan[0].SDThoai,
 
-                  NMua_Ten: invoice.DLHDon[0].NDHDon[0].NMua[0].Ten,
-                  NMua_MST: invoice.DLHDon[0].NDHDon[0].NMua[0].MST,
-                  NMua_DChi: invoice.DLHDon[0].NDHDon[0].NMua[0].DChi,
-                  NMua_SDThoai: invoice.DLHDon[0].NDHDon[0].NMua[0].SDThoai,
-                  NMua_CCCDan: invoice.DLHDon[0].NDHDon[0].NMua[0].CCCDan,
+                  nmua_ten: invoice.DLHDon[0].NDHDon[0].NMua[0].Ten,
+                  nmua_mst: invoice.DLHDon[0].NDHDon[0].NMua[0].MST,
+                  nmua_dchi: invoice.DLHDon[0].NDHDon[0].NMua[0].DChi,
+                  nmua_sdthoai: invoice.DLHDon[0].NDHDon[0].NMua[0].SDThoai,
+                  nmua_cccdan: invoice.DLHDon[0].NDHDon[0].NMua[0].CCCDan,
 
-                  TgTCThue: invoice.DLHDon[0].NDHDon[0].TToan[0].TgTCThue,
-                  TgTThue: invoice.DLHDon[0].NDHDon[0].TToan[0].TgTThue,
-                  TTCKTMai: invoice.DLHDon[0].NDHDon[0].TToan[0].TTCKTMai,
-                  TgTTTBSo: invoice.DLHDon[0].NDHDon[0].TToan[0].TgTTTBSo,
-                  TgTTTBChu: invoice.DLHDon[0].NDHDon[0].TToan[0].TgTTTBChu,
-                  MCCQT:  invoice.MCCQT,
+                  tgtcthue: invoice.DLHDon[0].NDHDon[0].TToan[0].TgTCThue,
+                  tgtthue: invoice.DLHDon[0].NDHDon[0].TToan[0].TgTThue,
+                  ttcktmai: invoice.DLHDon[0].NDHDon[0].TToan[0].TTCKTMai,
+                  tgtttbso: invoice.DLHDon[0].NDHDon[0].TToan[0].TgTTTBSo,
+                  tgtttbchu: invoice.DLHDon[0].NDHDon[0].TToan[0].TgTTTBChu,
+                  mccqt:  invoice.MCCQT,
                   seller_tax_code: seller_tax_code,
                   seller_date: seller_date,
                   store_code: store_code,
@@ -10233,29 +10239,59 @@ class EInvoiceController {
                   tax_serial_number: tax_serial_number,
                   pos_no: pos_no,
                   signing_time: signingTime.SigningTime,
+                  tei_wt_invoice_pos_pk: rtnValuePos.p_rtn_cur[0].PK,
+                  
               } 
 
               const rtnValueMaster = await DBService.ExecuteSQLBlob(
-                  `BEGIN ei_upd_sale_bill_status (          
-                                                  :tei_wt_sale_bill_pk,
-                                                  :status,
+                  `BEGIN ei_upd_sale_bill (          
+                                                  :pban,
+                                                  :thdon,
+                                                  :khmshdon,
+                                                  :khhdon,
+                                                  :shdon,
+                                                  :nlap,
+                                                  :nban_ten,
+                                                  :nban_mst,
+                                                  :nban_dchi,
+                                                  :nban_sdthoai,
+                                                  :nmua_ten,
+                                                  :nmua_mst,
+                                                  :nmua_dchi,
+                                                  :nmua_sdthoai,
+                                                  :nmua_cccdan,
+                                                  :tgtcthue,
+                                                  :tgtthue,
+                                                  :ttcktmai,
+                                                  :tgtttbso,
+                                                  :tgtttbchu,
+                                                  :mccqt,
+                                                  :seller_tax_code,
+                                                  :seller_date,
+                                                  :store_code,
+                                                  :store_name,
+                                                  :tax_serial_number,
+                                                  :pos_no,
+                                                  :signing_time,
+                                                  :tei_wt_invoice_pos_pk,
                                                   :p_language, 
                                                   :p_crt_by, 
                                                   :p_rtn_cur); END;`,
-                  para_inv_st,
+                                                  paraMaster,
                   p_language,
                   p_crt_by
               );
+              console.log("rtnValueMaster  ", rtnValueMaster);
             }
           }
           else
           {
 
           }
-          return jsonInvoice;
+          
         }
        
-        
+        return jsonInvoice;
         for(let i = 0;i < jsonInvoice.length; i ++)
         {
             const paraMaster = {
@@ -10289,6 +10325,7 @@ class EInvoiceController {
                 tax_serial_number: tax_serial_number,
                 pos_no: pos_no,
                 signing_time: signingTime.SigningTime,
+
             } 
 
             const rtnValueMaster = await DBService.ExecuteSQLBlob(

@@ -5404,25 +5404,34 @@ class EInvoiceController {
         p_language,
         p_crt_by
       );
-
-
-
       console.log("para_value  ", rtnValue)
 
-      let EiExcels = new EiExcelTemplateHandler();
-      let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].PK, p_language, p_crt_by);
-      //console.log("base64PDf  ", url_pdf);
-      let req_value = {
-        seller_comp_taxcode: seller_comp_taxcode,
-        req_key: rtnValue.p_rtn_cur[0].PK,
-        template: url_pdf
+      if(rtnValue.p_rtn_cur[0].STATUS == "OK"){
+        let EiExcels = new EiExcelTemplateHandler();
+        let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].PK, p_language, p_crt_by);
+        //console.log("base64PDf  ", url_pdf);
+        let req_value = {
+          seller_comp_taxcode: seller_comp_taxcode,
+          req_key: rtnValue.p_rtn_cur[0].PK,
+          template: url_pdf
+        }
+
+        return response.send(Utils.response(true, "Send Company template was Successfully", req_value));
+      
+      }else
+      {
+        let req_value = {
+          seller_comp_taxcode: seller_comp_taxcode,
+          req_key: "",
+          template: "",
+          status_code: "001",
+          status_name: rtnValue.p_rtn_cur[0].ERRCODE
+        }
+        return response.send(Utils.response(false, "Send Company template was Faile", req_value));
       }
 
-      return response.send(Utils.response(true, "Send Company template was Successfully", req_value));
-      // }
-      // else {
 
-      // }
+      
     } catch (error) {
       Utils.Logger({
         LVL: "error",

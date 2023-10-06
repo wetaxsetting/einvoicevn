@@ -761,7 +761,7 @@ export default {
 
     async onSuccessissueXmlList(data) {
       //let obj_token = $.parseJSON(data);
-
+      return;
       console.log(data);
       this.txtXMl_T = data.result[0].xml;
       this.txtSerial_Number = data.serial_number;

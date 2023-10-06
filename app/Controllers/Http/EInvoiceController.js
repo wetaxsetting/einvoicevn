@@ -4352,7 +4352,7 @@ class EInvoiceController {
 
         objInvoice.DLHDon.NDHDon.TToan.TTCKTMai = invoices[i].total_dc_amt;
         objInvoice.DLHDon.NDHDon.TToan.TgTTTBSo = invoices[i].total_payment;
-        objInvoice.DLHDon.NDHDon.TToan.TgTTTBChu = await this.Num2VNText(
+        objInvoice.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText(
           invoices[i].total_payment.toString(),
           invoices[i].currency
         );
@@ -6234,7 +6234,7 @@ class EInvoiceController {
         objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTThue = invoices[i].total_amt_vat || "0";
         objInvoice_M.HDon.DLHDon.NDHDon.TToan.TTCKTMai = invoices[i].total_amt_dc || "0";
         objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = invoices[i].total_payment || "0";
-        objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await this.Num2VNText(
+        objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText(
           invoices[i].total_payment.toString() || "0",
           invoices[i].currency
         );
@@ -6479,7 +6479,7 @@ class EInvoiceController {
 
         objInvoice.HDon.DLHDon.NDHDon.TToan.TTCKTMai = invoiceM.TOTAL_DC_AMT;
         objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = invoiceM.TOTAL_PAYMENT;
-        objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await this.Num2VNText(
+        objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText(
           invoiceM.TOTAL_PAYMENT.toString(),
           invoiceM.CURRENCY
         );
@@ -6769,7 +6769,7 @@ class EInvoiceController {
 
         objInvoice.DLHDon.NDHDon.TToan.TTCKTMai = invoiceM.TOTAL_DC_AMT;
         objInvoice.DLHDon.NDHDon.TToan.TgTTTBSo = invoiceM.TOTAL_PAYMENT;
-        objInvoice.DLHDon.NDHDon.TToan.TgTTTBChu = await this.Num2VNText(
+        objInvoice.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText(
           invoiceM.TOTAL_PAYMENT.toString(),
           invoiceM.CURRENCY
         );
@@ -7087,7 +7087,7 @@ class EInvoiceController {
 
         objInvoice.HDon.DLHDon.NDHDon.TToan.TTCKTMai = invoiceM.TOTAL_DC_AMT;
         objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = invoiceM.TOTAL_PAYMENT;
-        objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await this.Num2VNText(
+        objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText(
           invoiceM.TOTAL_PAYMENT.toString(),
           invoiceM.CURRENCY
         );
@@ -8304,7 +8304,7 @@ class EInvoiceController {
 
         objInvoice.DLHDon.NDHDon.TToan.TTCKTMai = invoiceM.TOTAL_DC_AMT;
         objInvoice.DLHDon.NDHDon.TToan.TgTTTBSo = invoiceM.TOTAL_PAYMENT;
-        objInvoice.DLHDon.NDHDon.TToan.TgTTTBChu = await this.Num2VNText(
+        objInvoice.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText(
           invoiceM.TOTAL_PAYMENT.toString(),
           invoiceM.CURRENCY
         );
@@ -9883,7 +9883,7 @@ class EInvoiceController {
 
       objInvoice.HDon.DLHDon.NDHDon.TToan.TTCKTMai = invoiceM.TOTAL_DC_AMT;
       objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = invoiceM.TOTAL_PAYMENT;
-      objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await this.Num2VNText(
+      objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText(
         invoiceM.TOTAL_PAYMENT.toString(),
         invoiceM.CURRENCY
       );

@@ -980,7 +980,7 @@ export default {
       if (resConvertXML.success) {
         const objXml = [
           {
-            master_pk: this.modelMaster.PK,
+            req_key: this.modelMaster.PK,
             xml: JSON.stringify(resConvertXML.data).toString().replaceAll('"', "").replaceAll("<DLTKhai>", "<DLTKhai Id='ID1'>"),
           },
         ];

@@ -1790,6 +1790,8 @@ class EInvoiceController {
       const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/dkyhddt/dkysdung";
       const { proc, para } = request.all();
 
+      console.log("para   ", para);
+
       const agent = {
         Agent: {
           defaultPort: 443,
@@ -1815,7 +1817,7 @@ class EInvoiceController {
           trade_code: trade_code.data.maGDich,
         };
         const res = await DBService.ExecuteSQLBlob(
-          `BEGIN AC_SEL_DECLARATION_M_AR( :tei_declaration_m_pk, 
+          `BEGIN AC_UPD_DECLARATION_M_AR( :tei_declaration_m_pk, 
                                                     :trade_code,
                                                     :xml_sign,  
                                                     :p_language, 

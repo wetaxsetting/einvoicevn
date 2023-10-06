@@ -1853,7 +1853,7 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-
+      console.log("weTaxSendCompanyInfo user ==> ", user);
       const {
         seller_company_id = "",
         seller_company_nm,

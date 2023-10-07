@@ -1999,6 +1999,11 @@ class EInvoiceController {
       const urlCheck = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
       const { xml_signed, tax_code, req_key } = request.all();
 
+
+      console.log(" weTaxSendDeclarationToTaxOffice  xml_signed  ", xml_signed)
+      console.log(" weTaxSendDeclarationToTaxOffice tax_code  ", tax_code)
+      console.log(" weTaxSendDeclarationToTaxOffice req_key  ", req_key)
+
       const valid = this.validateDeclareXML(this.parseXmlToJson(xml_signed));
       if (!valid.status) {
         return response.send(Utils.response(valid.status, valid.message));

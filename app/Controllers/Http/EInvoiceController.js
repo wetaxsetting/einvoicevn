@@ -60,6 +60,7 @@ const { create, createCB } = require("xmlbuilder2");
 const { log, Console } = require("console");
 const EINVOICE_ESIGN_XML = "http://genuclouding.com/wseinvoice/BSService.asmx/SignXml";
 const EINVOICE_API_SEND_MAIL = "http://sendmail.genuwinsolution.com/api/user/sendmail";
+const moment = require('moment');
 
 // real site
 const TAX_CHECK_TRADE_CODE = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
@@ -400,7 +401,7 @@ class EInvoiceController {
       jsonDeclare.TKhai.DLTKhai.TTChung.DCTDTu = declare.contact_email;
       jsonDeclare.TKhai.DLTKhai.TTChung.DTLHe = declare.contact_phone;
       jsonDeclare.TKhai.DLTKhai.TTChung.DDanh = this.convertHtmlCode(declare.location_name);
-      jsonDeclare.TKhai.DLTKhai.TTChung.NLap = declare.created_date;
+      jsonDeclare.TKhai.DLTKhai.TTChung.NLap = await this.formatDate(declare.created_date);
       jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.CMa = declare.has_code;
       jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.KCMa = declare.no_code;
       jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.CMTMTTien = declare.pos_code;
@@ -408,6 +409,7 @@ class EInvoiceController {
       jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NNTKTDNUBND = declare.taxpayer_from_people_committee_suggestions;
       jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLTTDCQT = declare.transfer_data_directly_to_tax_office;
       jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLQTVAN = declare.cdlqtvan;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLQTCTN = "0";
       jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CDDu = declare.full_transfer;
       jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CBTHop = declare.summary_transfer;
 
@@ -5326,8 +5328,8 @@ class EInvoiceController {
         return response.send(Utils.response(false, "start_date can't null",));
       }
 
-      console.log(logo_image);
-      console.log(background_image);
+      console.log("weTaxSendCompanyTemplate logo_image : ", logo_image);
+      console.log("weTaxSendCompanyTemplate background_image :",background_image);
 
       //if (preview == "N") {
 
@@ -8493,18 +8495,17 @@ class EInvoiceController {
             for (let j = 0; j < res.data.length; j++) {
               const items = res.data[j];
               for (let k = 0; k < items.length; k++) {
-                if (items[k].loaiTBao == "10") {
-                  maCQT = items[k].ndungTBao.maCQT;
+                if(items[k].loaiTBao == "1"){
                   xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
+                }else if (items[k].loaiTBao == "8") {
+                  maCQT = items[k].ndungTBao.maCQT;
+                 
                   maTBao = items[k].loaiTBao;
                   tenTBao = items[k].tenTBao;
-                } else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "16") {
+                } else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "7") {
                   maTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].maLoi;
                   tenTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].mtaLoi;
-                } else if (items[k].loaiTBao == "15") {
-                  tenTBao = items[k].tenTBao;
-                  maTBao = items[k].loaiTBao;
-                }
+                } 
               }
             }
           }
@@ -10479,6 +10480,14 @@ class EInvoiceController {
         
       }, 3000);
     });
+  }
+
+  formatDate(yyyymmdd)
+  {
+    const date = moment(yyyymmdd);
+    const formattedDate = date.format('YYYY-MM-DD');
+
+    return formattedDate
   }
 
   ///vng-304

@@ -5330,6 +5330,10 @@ class EInvoiceController {
 
       console.log("weTaxSendCompanyTemplate logo_image : ", logo_image);
       console.log("weTaxSendCompanyTemplate background_image :",background_image);
+      console.log("weTaxSendCompanyTemplate symbol_type : ", symbol_type);
+      console.log("weTaxSendCompanyTemplate template_id :",template_id);
+      console.log("weTaxSendCompanyTemplate start_date : ", start_date);
+      console.log("weTaxSendCompanyTemplate seller_comp_taxcode :",seller_comp_taxcode);
 
       //if (preview == "N") {
 
@@ -5408,7 +5412,7 @@ class EInvoiceController {
         p_language,
         p_crt_by
       );
-      console.log("para_value  ", rtnValue)
+      //console.log("para_value  ", rtnValue)
 
       if(rtnValue.p_rtn_cur[0].STATUS == "OK"){
         let EiExcels = new EiExcelTemplateHandler();

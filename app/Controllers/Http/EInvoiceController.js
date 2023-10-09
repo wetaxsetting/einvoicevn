@@ -1857,7 +1857,7 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      //console.log("weTaxSendCompanyInfo user ==> ", user); 
+      console.log("weTaxSendCompanyInfo user ==> ", p_crt_by); 
       const {
         seller_company_id = "",
         seller_company_nm,
@@ -1926,7 +1926,7 @@ class EInvoiceController {
         p_language,
         p_crt_by
       );
-      console.log(res);
+      //console.log(res);
       let req_key = res.p_rtn_cur[0].TEI_COMPANY_PK;
       if (res.p_rtn_cur[0].STATUS_CD == "000") {
         for (let i = 0; i < tokens.length; i++) {
@@ -1970,7 +1970,7 @@ class EInvoiceController {
             p_crt_by
           );
             
-          console.log("result  ", result);
+          //console.log("result  ", result);
 
         }
       }

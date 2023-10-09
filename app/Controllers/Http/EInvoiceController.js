@@ -10895,8 +10895,8 @@ class EInvoiceController {
 
       let rtnValue = [];
       for (let i = 0; i < invoices.length; i++) {
-        /*
-                const masterInvoicePK = await this.extractXMLContent(
+        
+                const masterInvoicePK = await this.weTaxExtractXMLContent(
                     invoices[i].xml_signed,
                     invoices[i].mail_to || '',
                     invoices[i].mail_cc || '',
@@ -10932,91 +10932,91 @@ class EInvoiceController {
                     });
                     continue;
                 }
-                const trade_code = await Request.post(
-                    url,
-                    { base64XML: Buffer.from(invoices[i].xml_signed).toString("base64") },
-                    {
-                        agent,
-                        headers: {
-                            Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
-                        },
-                    }
-                );
-                //console.log("masterInvoicePK  ", masterInvoicePK);
+                // const trade_code = await Request.post(
+                //     url,
+                //     { base64XML: Buffer.from(invoices[i].xml_signed).toString("base64") },
+                //     {
+                //         agent,
+                //         headers: {
+                //             Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
+                //         },
+                //     }
+                // );
+                // //console.log("masterInvoicePK  ", masterInvoicePK);
 
-                if (trade_code && trade_code.data) {
-                    const para_value = {
-                        tei_einvoice_ar_pk: masterInvoicePK.PK,
-                        xml_sign: invoices[i].xml_signed,
-                        issuer: invoices[i].issuer,
-                        issueby: invoices[i].token_issue_by,
-                        issueto: invoices[i].token_issue_to,
-                        dn_name: invoices[i].buyer_name,
-                        dn_mst: invoices[i].buyer_tax_code,
-                        notafter: invoices[i].token_date_to,
-                        notbefore: invoices[i].token_date_from,
-                        serialnumber: invoices[i].token_serial_number,
-                        trade_code: trade_code.data.maGDich,
-                        cqt_code: "", //cqt_code
-                        tei_einvoice_m_pk: masterInvoicePK.TEI_EINVOICE_M_PK,
-                    };
+                // if (trade_code && trade_code.data) {
+                //     const para_value = {
+                //         tei_einvoice_ar_pk: masterInvoicePK.PK,
+                //         xml_sign: invoices[i].xml_signed,
+                //         issuer: invoices[i].issuer,
+                //         issueby: invoices[i].token_issue_by,
+                //         issueto: invoices[i].token_issue_to,
+                //         dn_name: invoices[i].buyer_name,
+                //         dn_mst: invoices[i].buyer_tax_code,
+                //         notafter: invoices[i].token_date_to,
+                //         notbefore: invoices[i].token_date_from,
+                //         serialnumber: invoices[i].token_serial_number,
+                //         trade_code: trade_code.data.maGDich,
+                //         cqt_code: "", //cqt_code
+                //         tei_einvoice_m_pk: masterInvoicePK.TEI_EINVOICE_M_PK,
+                //     };
 
-                    await DBService.ExecuteSQLBlob(
-                        `BEGIN ei_upd_file_xml_ar(
-                                        :tei_einvoice_ar_pk,
-                                        :xml_sign,
-                                        :issuer,
-                                        :issueby,
-                                        :issueto,
-                                        :dn_name,
-                                        :dn_mst,
-                                        :notafter,
-                                        :notbefore,
-                                        :serialnumber,
-                                        :trade_code,
-                                        :cqt_code,
-                                        :tei_einvoice_m_pk, 
-                                        :p_language, 
-                                        :p_crt_by, 
-                                        :p_rtn_cur); 
-                        END;`,
-                        para_value,
-                        p_language,
-                        p_crt_by
-                    );
-                    let base64PDf = '';
+                //     await DBService.ExecuteSQLBlob(
+                //         `BEGIN ei_upd_file_xml_ar(
+                //                         :tei_einvoice_ar_pk,
+                //                         :xml_sign,
+                //                         :issuer,
+                //                         :issueby,
+                //                         :issueto,
+                //                         :dn_name,
+                //                         :dn_mst,
+                //                         :notafter,
+                //                         :notbefore,
+                //                         :serialnumber,
+                //                         :trade_code,
+                //                         :cqt_code,
+                //                         :tei_einvoice_m_pk, 
+                //                         :p_language, 
+                //                         :p_crt_by, 
+                //                         :p_rtn_cur); 
+                //         END;`,
+                //         para_value,
+                //         p_language,
+                //         p_crt_by
+                //     );
+                //     let base64PDf = '';
                   
-                        let EiExcel = new EiExcelHandlerAuto();
-                        base64PDf = await EiExcel.getEinvoice(trade_code.data.maGDich, p_language, p_crt_by);
-                        console.log("base64PDf  ", base64PDf);
+                //         let EiExcel = new EiExcelHandlerAuto();
+                //         base64PDf = await EiExcel.getEinvoice(trade_code.data.maGDich, p_language, p_crt_by);
+                //         console.log("base64PDf  ", base64PDf);
                   
 
-                    const para_pdf = {
-                        tei_einvoice_m_pk: masterInvoicePK.TEI_EINVOICE_M_PK,
-                        url_pdf: base64PDf,
-                    };
-                    await DBService.ExecuteSQLBlob(
-                        `BEGIN ei_upd_file_pdf_ar(
-                                        :tei_einvoice_m_pk, 
-                                        :url_pdf,
-                                        :p_language, 
-                                        :p_crt_by, 
-                                        :p_rtn_cur); 
-                        END;`,
-                        para_pdf,
-                        p_language,
-                        p_crt_by
-                    );
+                //     const para_pdf = {
+                //         tei_einvoice_m_pk: masterInvoicePK.TEI_EINVOICE_M_PK,
+                //         url_pdf: base64PDf,
+                //     };
+                //     await DBService.ExecuteSQLBlob(
+                //         `BEGIN ei_upd_file_pdf_ar(
+                //                         :tei_einvoice_m_pk, 
+                //                         :url_pdf,
+                //                         :p_language, 
+                //                         :p_crt_by, 
+                //                         :p_rtn_cur); 
+                //         END;`,
+                //         para_pdf,
+                //         p_language,
+                //         p_crt_by
+                //     );
 
-                    //console.log("rtnValue ", rtnValue);
-                    rtnValue.push({
-                        req_key: invoices[i].req_key,
-                        trade_code: trade_code.data.maGDich,
-                    });
-                } else {
-                    return response.send(Utils.response(false, `Failed to call taxoffice api.`, null));
-                }
-                */
+                //     //console.log("rtnValue ", rtnValue);
+                //     rtnValue.push({
+                //         req_key: invoices[i].req_key,
+                //         trade_code: trade_code.data.maGDich,
+                //     });
+                // } else {
+                //     return response.send(Utils.response(false, `Failed to call taxoffice api.`, null));
+                // }
+                
 
         // ======================== tam thoi =========================
         const trade_code = await Request.post(
@@ -11035,6 +11035,8 @@ class EInvoiceController {
         let maCQT = "";
         let xml_tax_signed;
 
+        Utils._sleep(5);
+
         await Request.get(urlCheck + trade_code.data.maGDich, {
           agent,
           headers: {
@@ -11046,11 +11048,14 @@ class EInvoiceController {
               const items = res.data[j];
               for (let k = 0; k < items.length; k++) {
                 // console.log("items[k].loaiTBao " + items[k].loaiTBao);
+                
                 if (items[k].loaiTBao == "10") {
                   maCQT = items[k].ndungTBao.maCQT;
                   xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
                   maTBao = items[k].loaiTBao;
                   tenTBao = items[k].tenTBao;
+                } else if (items[k].loaiTBao == "1") {
+                  xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
                 } else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "16") {
                   maTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].maLoi;
                   tenTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].mtaLoi;

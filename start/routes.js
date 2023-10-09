@@ -178,6 +178,8 @@ Route.group(() => {
     Route.post("send-mail-at", "EInvoiceController.sendMailAt")
     Route.post("general-pdf-template-04SS", "EInvoiceController.viewPDFTemplate_04SS")   ////VNG-304
     Route.post("send-data-pos-invoice-erp", "EInvoiceController.sendPosInvoiceErp")
+    Route.post("send-invoice-erp", "EInvoiceController.weTaxSendInvoiceToTaxOffice")
+
 
 
 

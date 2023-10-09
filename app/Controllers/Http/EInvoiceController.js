@@ -1857,7 +1857,7 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      console.log("weTaxSendCompanyInfo user ==> ", user); 
+      //console.log("weTaxSendCompanyInfo user ==> ", user); 
       const {
         seller_company_id = "",
         seller_company_nm,
@@ -1926,10 +1926,11 @@ class EInvoiceController {
         p_language,
         p_crt_by
       );
-      // console.log(res);
+      console.log(res);
+      let req_key = res.p_rtn_cur[0].TEI_COMPANY_PK;
       if (res.p_rtn_cur[0].STATUS_CD == "000") {
         for (let i = 0; i < tokens.length; i++) {
-          const caName = tokens[i].issuer.split('CN=');
+          //const caName = tokens[i].issuer.split('CN=');
 
           const para_token_list = {
             serial_number: tokens[i].serial_number,
@@ -1945,9 +1946,10 @@ class EInvoiceController {
             raw_data: "",//tokens[i].raw_data,
             status: tokens[i].status,
             company_id: seller_taxcode,
+            tei_company_pk : res.p_rtn_cur[0].TEI_COMPANY_PK,
           };
           const result = await DBService.ExecuteSQLBlob(
-            `BEGIN WETAX_UPD_TOKEN_INFO(
+            `BEGIN WETAX_PRO_TOKEN_INFO(
                             :company_id,
                             :serial_number,
                             :tax_institute,
@@ -1960,17 +1962,21 @@ class EInvoiceController {
                             :dn_name,
                             :dn_mst,
                             :raw_data,
-                            :status
-                            ,:p_language, :p_crt_by, :p_rtn_cur); END;`,
+                            :status,
+                            :tei_company_pk,
+                            :p_language, :p_crt_by, :p_rtn_cur); END;`,
             para_token_list,
             p_language,
             p_crt_by
           );
+            
+          console.log("result  ", result);
+
         }
       }
 
       return response.send(
-        Utils.response(true, res.p_rtn_cur[0].STATUS_NM, { company_id: res.p_rtn_cur[0].COMPANY_ID, seller_company_id : seller_company_id })
+        Utils.response(true, res.p_rtn_cur[0].STATUS_NM, { company_id: res.p_rtn_cur[0].COMPANY_ID, seller_company_id : seller_company_id, req_key : req_key })
       );
     } catch (e) {
       Utils.Logger({

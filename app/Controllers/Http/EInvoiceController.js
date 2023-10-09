@@ -4826,7 +4826,7 @@ class EInvoiceController {
           data_rep.push({
             link_invoice_preview: "https://einvoicevn.com/lookup",
             security_code: "",
-            status_code: "D",
+            status_code: "0",
             status_name: "Not Sent",
             seller_tax_code : invoice.seller_taxcode,
             form_no : invoice.form_no,
@@ -4838,8 +4838,8 @@ class EInvoiceController {
             mail_form: '',
             mail_to: '',
             mail_to_cc: '',
-            etax_result: "D",
-            etax_status: "W",
+            etax_result: "0",
+            etax_status: "",
             title: '',
             content: '',
           });
@@ -4884,8 +4884,8 @@ class EInvoiceController {
               mail_form: res_send_mail.data.data.mail_from,
               mail_to: res_send_mail.data.data.mail_to,
               mail_to_cc: res_send_mail.data.data.mail_to_cc,
-              etax_result: "D",
-              etax_status: "W",
+              etax_result: "0",
+              etax_status: "",
               title: subject,
               content: body,
             });
@@ -4921,8 +4921,8 @@ class EInvoiceController {
               mail_form: res_send_mail.data.data.mail_from,
               mail_to: res_send_mail.data.data.mail_to,
               mail_to_cc: res_send_mail.data.data.mail_to_cc,
-              etax_result: "D",
-              etax_status: "W",
+              etax_result: "0",
+              etax_status: "",
               title: subject,
               content: body,
             });

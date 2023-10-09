@@ -1936,18 +1936,18 @@ class EInvoiceController {
             tax_institute: tokens[i].tax_institute,
             from_dt: tokens[i].from_dt,
             to_dt: tokens[i].to_dt,
-            issuer: tokens[i].issuer,
-            issue_by: tokens[i].issue_by,
-            issue_to: tokens[i].issue_to,
-            ca_name: tokens[i].ca_name ? tokens[i].ca_name : caName[1],
-            dn_name: tokens[i].dn_name,
-            dn_mst: tokens[i].dn_mst,
-            raw_data: tokens[i].raw_data,
+            issuer: "",//tokens[i].issuer,
+            issue_by: "",//tokens[i].issue_by,
+            issue_to: "",//tokens[i].issue_to,
+            ca_name: "",//tokens[i].ca_name ? tokens[i].ca_name : caName[1],
+            dn_name: "",//tokens[i].dn_name,
+            dn_mst: "",//tokens[i].dn_mst,
+            raw_data: "",//tokens[i].raw_data,
             status: tokens[i].status,
             company_id: seller_taxcode,
           };
           const result = await DBService.ExecuteSQLBlob(
-            `BEGIN AC_UPD_TOKEN_6095010_01(
+            `BEGIN WETAX_UPD_TOKEN_INFO(
                             :company_id,
                             :serial_number,
                             :tax_institute,
@@ -1970,7 +1970,7 @@ class EInvoiceController {
       }
 
       return response.send(
-        Utils.response(true, res.p_rtn_cur[0].STATUS_NM, { company_id: res.p_rtn_cur[0].COMPANY_ID })
+        Utils.response(true, res.p_rtn_cur[0].STATUS_NM, { company_id: res.p_rtn_cur[0].COMPANY_ID, seller_company_id : seller_company_id })
       );
     } catch (e) {
       Utils.Logger({

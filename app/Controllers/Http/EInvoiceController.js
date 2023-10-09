@@ -5397,7 +5397,7 @@ class EInvoiceController {
 
       console.log("para_value  ", para_value);
       const rtnValue = await DBService.ExecuteSQLBlob(
-        `BEGIN ei_upd_template_comp (                   :p_seller_comp_seller,
+        `BEGIN ei_upd_template_comp (                     :p_seller_comp_seller,
                                                           :p_serial_no2,
                                                           :p_form_no,
                                                           :p_serial_no,
@@ -5450,10 +5450,10 @@ class EInvoiceController {
         LVL: "error",
         MODULE: "EInvoiceController",
         FUNC: "weTaxSendCompanyTemplate",
-        CONTENT: e.message,
+        CONTENT: error.message,
       });
       console.log(error);
-      return response.send(Utils.response(false, "error", { err_msg: error }));
+      return response.send(Utils.response(false, "error", { err_msg: error.message }));
     }
   }
 

@@ -1799,9 +1799,10 @@ class EInvoiceController {
           NLap: "NLap",
         },
       ];
+      //console.log("p_xml_content  ", p_xml_content);
 
       const jsonTTChung = await transform(p_xml_content, templateTTChung);
-
+      //console.log("jsonTTChung  ", jsonTTChung);
       const arrTTChung = [
         jsonTTChung[0].PBan,
         jsonTTChung[0].MSo,
@@ -1897,9 +1898,9 @@ class EInvoiceController {
 
       let masterPara = arrTTChung.concat(arrNDTKhai).concat(arrHTGDLHDDT).concat(arrPThuc).concat(arrLHDSDung);
 
-      //console.log("masterPara  ",masterPara)
+      console.log("masterPara  ",masterPara)
       const master = await DBService.callProcCursor("WT_UPD_DECLARATION_M", masterPara, p_language, p_crt_by);
-      //console.log("master", master);
+      console.log("master", master);
       if (master && master[0].PK > 0) {
         //const jsonDSHHDVu = await transform(p_xml_content, templateDSHHDVu);
         //console.log(jsonDSHHDVu)
@@ -1932,7 +1933,8 @@ class EInvoiceController {
         FUNC: "extractXMLContent_Dec",
         CONTENT: e.message,
       });
-      return -1;
+      console.log("e   ", e);
+      return -2;
     }
   }
 
@@ -2173,6 +2175,7 @@ class EInvoiceController {
       if (!valid.status) {
         return response.send(Utils.response(valid.status, valid.message));
       }
+      console.log(" weTaxSendDeclarationToTaxOffice req_key  ssss")
 
       const matesDecPK = await this.weTaxExtractXMLContentDec(xml_signed, p_crt_by, p_language);
       console.log("matesDecPK  ", matesDecPK);
@@ -2186,10 +2189,20 @@ class EInvoiceController {
             tax_code: tax_code,
           })
         );
-      }else if (matesDecPK < 0 )
+      }else if (matesDecPK == -1 )
       {
         return response.send(
           Utils.response(false, `Taxcode company not yet register! `, {
+            req_key: "",
+            xml_signed: "",
+            trade_code: "",
+            tax_code: tax_code,
+          })
+        );
+      } else if (matesDecPK == -2 )
+      {
+        return response.send(
+          Utils.response(false, `The file xml is wrong! `, {
             req_key: "",
             xml_signed: "",
             trade_code: "",

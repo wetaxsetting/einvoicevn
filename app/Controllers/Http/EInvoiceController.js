@@ -1777,6 +1777,165 @@ class EInvoiceController {
     }
   }
 
+  async weTaxExtractXMLContentDec(p_xml_content, p_language, p_crt_by) {
+    try {
+      const templateTTChung = [
+        "TKhai/DLTKhai/TTChung",
+        {
+          PBan: "PBan",
+          MSo: "MSo",
+          Ten: "Ten",
+          HThuc: "HThuc",
+          TNNT: "TNNT",
+          MST: "MST",
+          CQTQLy: "CQTQLy",
+          MCQTQLy: "MCQTQLy",
+          NLHe: "NLHe",
+          DCLHe: "DCLHe",
+          DCTDTu: "DCTDTu",
+          DTLHe: "DTLHe",
+          MSTTCGP: "MSTTCGP",
+          DDanh: "DDanh",
+          NLap: "NLap",
+        },
+      ];
+
+      const jsonTTChung = await transform(p_xml_content, templateTTChung);
+
+      const arrTTChung = [
+        jsonTTChung[0].PBan,
+        jsonTTChung[0].MSo,
+        jsonTTChung[0].Ten,
+        jsonTTChung[0].HThuc,
+        jsonTTChung[0].TNNT,
+        jsonTTChung[0].MST,
+        jsonTTChung[0].CQTQLy,
+        jsonTTChung[0].MCQTQLy,
+        jsonTTChung[0].NLHe,
+        jsonTTChung[0].DCLHe,
+        jsonTTChung[0].DCTDTu,
+        jsonTTChung[0].DTLHe,
+        jsonTTChung[0].DDanh,
+        jsonTTChung[0].NLap,
+      ];
+      //TKhai.DLTKhai.NDTKhai.HTHDon.CMa
+      const templateNDTKhai = [
+        "TKhai/DLTKhai/NDTKhai/HTHDon",
+        {
+          CMa: "CMa",
+          KCMa: "KCMa",
+          CMTMTTien: "CMTMTTien",
+        },
+      ];
+      const jsonNDTKhai = await transform(p_xml_content, templateNDTKhai);
+      const arrNDTKhai = [jsonNDTKhai[0].CMa, jsonNDTKhai[0].KCMa, jsonNDTKhai[0].CMTMTTien];
+
+      //TKhai.DLTKhai.NDTKhai.HTGDLHDDT
+      const templateHTGDLHDDT = [
+        "TKhai/DLTKhai/NDTKhai/HTGDLHDDT",
+        {
+          NNTDBKKhan: "NNTDBKKhan",
+          NNTKTDNUBND: "NNTKTDNUBND",
+          CDLTTDCQT: "CDLTTDCQT",
+          CDLQTVAN: "CDLQTVAN",
+        },
+      ];
+      const jsonHTGDLHDDT = await transform(p_xml_content, templateHTGDLHDDT);
+      const arrHTGDLHDDT = [
+        jsonHTGDLHDDT[0].NNTDBKKhan,
+        jsonHTGDLHDDT[0].NNTKTDNUBND,
+        jsonHTGDLHDDT[0].CDLTTDCQT,
+        jsonHTGDLHDDT[0].CDLQTVAN,
+      ];
+
+      //TKhai.DLTKhai.NDTKhai.PThuc
+      const templatePThuc = [
+        "TKhai/DLTKhai/NDTKhai/PThuc",
+        {
+          CDDu: "CDDu",
+          CBTHop: "CBTHop",
+        },
+      ];
+      const jsonPThuc = await transform(p_xml_content, templatePThuc);
+      const arrPThuc = [jsonPThuc[0].CDDu, jsonPThuc[0].CBTHop];
+
+      //TKhai.DLTKhai.NDTKhai.LHDSDung
+      const templateLHDSDung = [
+        "TKhai/DLTKhai/NDTKhai/LHDSDung",
+        {
+          HDGTGT: "HDGTGT",
+          HDGHDBHangTGT: "HDBHang",
+          HDBTSCong: "HDBTSCong",
+          HDBHDTQGia: "HDBHDTQGia",
+          HDKhac: "HDKhac",
+          CTu: "CTu",
+        },
+      ];
+      const jsonLHDSDung = await transform(p_xml_content, templateLHDSDung);
+      const arrLHDSDung = [
+        jsonLHDSDung[0].HDGTGT,
+        jsonLHDSDung[0].HDGHDBHangTGT,
+        jsonLHDSDung[0].HDBTSCong,
+        jsonLHDSDung[0].HDBHDTQGia,
+        jsonLHDSDung[0].HDKhac,
+        jsonLHDSDung[0].CTu,
+      ];
+
+      //TKhai.DLTKhai.NDTKhai.DSCTSSDung
+      const templateCTS = [
+        "TKhai/DLTKhai/NDTKhai/DSCTSSDung/CTS",
+        {
+          STT: "STT",
+          TTChuc: "TTChuc",
+          Seri: "Seri",
+          TNgay: "TNgay",
+          DNgay: "DNgay",
+          HThuc: "HThuc",
+        },
+      ];
+      const jsonCTS = await transform(p_xml_content, templateCTS);
+
+      let masterPara = arrTTChung.concat(arrNDTKhai).concat(arrHTGDLHDDT).concat(arrPThuc).concat(arrLHDSDung);
+
+      //console.log("masterPara  ",masterPara)
+      const master = await DBService.callProcCursor("WT_UPD_DECLARATION_M", masterPara, p_language, p_crt_by);
+      //console.log("master", master);
+      if (master && master[0].PK > 0) {
+        //const jsonDSHHDVu = await transform(p_xml_content, templateDSHHDVu);
+        //console.log(jsonDSHHDVu)
+        for (let i = 0; i < jsonCTS.length; i++) {
+          const detailPara = [
+            master[0].PK,
+            jsonCTS[i].STT,
+            jsonCTS[i].TTChuc,
+            jsonCTS[i].Seri,
+            jsonCTS[i].TNgay,
+            jsonCTS[i].DNgay,
+            jsonCTS[i].HThuc,
+          ];
+          const detail = await DBService.callProcCursor(
+            "WT_UPD_DECLARATION_D",
+            detailPara,
+            p_language,
+            p_crt_by
+          );
+          //console.log("detail", detail);
+        }
+        return master[0].PK;
+      } else {
+        return 0;
+      }
+    } catch (e) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "extractXMLContent_Dec",
+        CONTENT: e.message,
+      });
+      return -1;
+    }
+  }
+
   async sendDeclarationToTaxOffice({ request, response, auth }) {
     try {
       var p_language = request.header("accept-language", "ENG");
@@ -2015,6 +2174,29 @@ class EInvoiceController {
         return response.send(Utils.response(valid.status, valid.message));
       }
 
+      const matesDecPK = await this.weTaxExtractXMLContentDec(xml_signed, p_crt_by, p_language);
+      console.log("matesDecPK  ", matesDecPK);
+      if(matesDecPK == 0 )
+      {
+        return response.send(
+          Utils.response(false, `Declaration have not details`, {
+            req_key: "",
+            xml_signed: "",
+            trade_code: "",
+            tax_code: tax_code,
+          })
+        );
+      }else if (matesDecPK < 0 )
+      {
+        return response.send(
+          Utils.response(false, `Taxcode company not yet register! `, {
+            req_key: "",
+            xml_signed: "",
+            trade_code: "",
+            tax_code: tax_code,
+          })
+        );
+      }
       const agent = {
         Agent: {
           defaultPort: 443,
@@ -2022,6 +2204,8 @@ class EInvoiceController {
           options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
         },
       };
+
+
       const tradeCode = await Request.post(
         url,
         { base64XML: Buffer.from(xml_signed).toString("base64") },
@@ -2033,22 +2217,80 @@ class EInvoiceController {
         }
       );
 
-      // console.log(tradeCode);
+      Utils._sleep(5);
 
-      if (tradeCode && tradeCode.data) {
+
+      if (tradeCode.data.maGDich.length > 0) {
+
+        // const res_tradeCode = await Request.get(urlCheck + tradeCode.data.maGDich, {
+        //   agent,
+        //   headers: {
+        //     Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
+        //   },
+        // });
+
+        // let tenTBao = "",
+        //   status = "",
+        //   base64XML = "";
+
+
+        // if (!res_tradeCode.data) {
+        //   return response.send(Utils.response(false, `no data found.`));
+        // }
+        // for (let item of res.data) {
+        //   for (let child of item) {
+        //     if (child.loaiTBao == "1") {
+        //       base64XML = Buffer.from(child.ndungTBao.base64XML, "base64").toString("utf8");
+        //     } else if (child.loaiTBao == "3") {
+        //       status = "0";
+        //     } else {
+        //       status = "1";
+        //     }
+        //     tenTBao = child.tenTBao;
+
+        //     para_value = {
+        //       p_tei_einvoice_issuse_cqt_pk: para.p_tei_einvoice_issuse_cqt_pk,
+        //       xml_sign: base64XML,
+        //       p_messCQT: tenTBao,
+        //       p_status: status,
+        //     };
+        //     await DBService.ExecuteSQLBlob(
+        //       `BEGIN ei_upd_file_xml_v6(
+        //                         :p_tei_einvoice_issuse_cqt_pk, :xml_sign, :p_messCQT, :p_status,
+        //                         :p_language, :p_crt_by, :p_rtn_cur
+        //                     ); END;`,
+        //       para_value,
+        //       p_language,
+        //       p_crt_by
+        //     );
+        //   }
+        // }
+
+
+
         const para_value = {
-          req_key: req_key,
+          req_key: matesDecPK,
           xml_sign: xml_signed,
           trade_code: tradeCode.data.maGDich,
           tax_code: tax_code,
         };
+
+        // console.log(para_value);
         const res = await DBService.ExecuteSQLBlob(
-          `BEGIN ei_upd_einvoice_ss_xml_ar(:req_key, :xml_sign, :trade_code, :tax_code,
-                                :p_language, :p_crt_by, :p_rtn_cur); END;`,
+          `BEGIN WT_UPD_DECLARATION_STATUS( :req_key, 
+                                            :xml_sign, 
+                                            :trade_code, 
+                                            :tax_code,
+                                            :p_language, 
+                                            :p_crt_by, 
+                                            :p_rtn_cur); END;`,
           para_value,
           p_language,
           p_crt_by
         );
+
+        // console.log("res  ", res);
+
       } else {
         return response.send(Utils.response(false, `Failed to call tax office api.`, tradeCode));
       }
@@ -5147,138 +5389,6 @@ class EInvoiceController {
 
       return response.send(Utils.response(true, `ReSend order to invoice was Successfully!`, data_r));
 
-      /*const para_value = {
-        tax_code: tax_code,
-        sale_date: sale_date,
-        store_code: store_code,
-        store_name: store_name,
-        pos_no: pos_no,
-        bill_no: bill_no,
-        key: key,
-        tr_code_cqt: tr_code_cqt
-      };
-
-      //  console.log("para_value  ", para_value)
-
-      const rtnValue = await DBService.ExecuteSQLBlob(
-        `BEGIN ei_sel_re_order_info (                   :tax_code,
-                                                        :sale_date,
-                                                        :store_code,
-                                                        :store_name,
-                                                        :pos_no,
-                                                        :bill_no,
-                                                        :key,
-                                                        :tr_code_cqt,
-                                                        :p_language, 
-                                                        :p_crt_by, 
-                                                        :p_rtn_cur); END;`,
-        para_value,
-        p_language,
-        p_crt_by
-      );
-      // console.log("rtnValue  ", rtnValue);
-      if (rtnValue?.p_rtn_cur?.[0]?.STATUS == "OK") {
-        tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
-        let invoice_data =
-        {
-          buyer_comp_name: rtnValue.p_rtn_cur[0].BUYER_COMP_NAME,
-          seller_comp_name: rtnValue.p_rtn_cur[0].SELLER_COMP_NAME,
-          form_no: rtnValue.p_rtn_cur[0].FORM_NO,
-          serial_no: rtnValue.p_rtn_cur[0].SERIAL_NO,
-          invoice_no: rtnValue.p_rtn_cur[0].INVOICE_NO,
-          total_payment: rtnValue.p_rtn_cur[0].TOTAL_PAYMENT,
-          mccqt: rtnValue.p_rtn_cur[0].MCCQT,
-          buyer_email: infor_send_mail.buyer_email,
-          buyer_email_cc: infor_send_mail.buyer_email_cc,
-        }
-        const { res_send_mail, subject, body } = await this.sendMailToCustomer(
-          tei_wt_sale_bill_pk,
-          invoice_data,
-          p_language,
-          p_crt_by
-        );
-
-        // console.log("res_send_mail  ", res_send_mail.data);
-        // console.log("res_send_mail  ", res_send_mail.data.success);
-
-        if (res_send_mail.data.success) {
-          const para_inv_st = {
-            tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
-            status: "Sent Success",
-          };
-          const rtnValueSendMail = await DBService.ExecuteSQLBlob(
-            `BEGIN ei_upd_sale_bill_status (          
-                                                              :tei_wt_sale_bill_pk,
-                                                              :status,
-                                                              :p_language, 
-                                                              :p_crt_by, 
-                                                              :p_rtn_cur); END;`,
-            para_inv_st,
-            p_language,
-            p_crt_by
-          );
-          //console.log("rtnValueSendMail  ", rtnValueSendMail);
-
-          let data_r = {
-            link_invoice_preview: "https://einvoicevn.com/lookup",
-            lookup_code: "1234567bac",
-            status_code: "1",
-            status_name: "Sent Success",
-            user_name: rtnValue.p_rtn_cur[0].BUYER_COMP_NAME,
-            send_date: res_send_mail.data.data.date_send,
-            send_time: res_send_mail.data.data.time_send,
-            mail_form: res_send_mail.data.data.mail_from,
-            mail_to: res_send_mail.data.data.mail_to,
-            mail_to_cc: res_send_mail.data.data.mail_to_cc,
-            error_code: "",
-            error_name: "",
-            title: subject,
-            content: body,
-          };
-
-          // console.log("data_r  ", data_r);
-
-          return response.send(Utils.response(true, `ReSend order to invoice was Successfully!`, data_r));
-
-        } else {
-          const para_inv_st = {
-            tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
-            status: "Sent Faile",
-          };
-          const rtnValueSendMail = await DBService.ExecuteSQLBlob(
-            `BEGIN ei_upd_sale_bill_status (          
-                                                              :tei_wt_sale_bill_pk,
-                                                              :status,
-                                                              :p_language, 
-                                                              :p_crt_by, 
-                                                              :p_rtn_cur); END;`,
-            para_inv_st,
-            p_language,
-            p_crt_by
-          );
-          let data_r = {
-            link_invoice_preview: "https://einvoicevn.com/lookup",
-            security_code: "1234567bac",
-            status_code: "0",
-            status_name: "Sent Faile",
-            user_name: rtnValue.p_rtn_cur[0].BUYER_COMP_NAME,
-            send_date: res_send_mail.data.data.date_send,
-            send_time: res_send_mail.data.data.time_send,
-            mail_form: res_send_mail.data.data.mail_from,
-            mail_to: res_send_mail.data.data.mail_to,
-            mail_to_cc: res_send_mail.data.data.mail_to_cc,
-            error_code: "",
-            error_name: "",
-            title: subject,
-            content: body,
-          };
-          return response.send(Utils.response(true, `Send order to invoice was failure!`, data_r));
-        }
-      }
-      else {
-        return response.send(Utils.response(false, 'Order einvoice not exit'));
-      }*/
-      // console.log("res_send_mail  ", res_send_mail);
     } catch (error) {
       Utils.Logger({
         LVL: "error",

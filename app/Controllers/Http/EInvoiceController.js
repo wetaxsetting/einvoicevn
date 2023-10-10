@@ -2040,9 +2040,9 @@ class EInvoiceController {
       if (!seller_company_nm) {
         return response.send(Utils.response(false, `Invalid: seller_company_nm`));
       }
-      if (!seller_company_fnm) {
-        return response.send(Utils.response(false, `Invalid: seller_company_fnm`));
-      }
+      // if (!seller_company_fnm) {
+      //   return response.send(Utils.response(false, `Invalid: seller_company_fnm`));
+      // }
       if (!seller_taxcode) {
         return response.send(Utils.response(false, `Invalid: seller_taxcode`));
       }

@@ -11119,16 +11119,12 @@ class EInvoiceController {
 
         if(tr_code.trade_code)
         {
-          await Request.get(TAX_CHECK_TRADE_CODE + "V0104128565C9418BFE6FC6479BB28E0F05C0A576FF", {
-            agent,
-            headers: {
-              Authorization: "Basic " + Buffer.from(`${TAX_USER_NAME}:${TAX_PASSWORD}`).toString("base64"),
-            },
-          /*await Request.get(urlCheck + tr_code.trade_code, {
+          
+          await Request.get(urlCheck + tr_code.trade_code, {
             agent,
             headers: {
               Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
-            },*/
+            },
           }).then(async (res) => {
             //console.log("res ", res);
             //return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, res.data));

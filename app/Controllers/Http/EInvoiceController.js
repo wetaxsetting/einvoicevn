@@ -11086,7 +11086,7 @@ class EInvoiceController {
         };
         console.log("para_trade_code  ", para_trade_code);
 
-        const res_op = await DBService.ExecuteSQLBlob(
+        await DBService.ExecuteSQLBlob(
                   `BEGIN EI_UPD_TEI_WT_INVOICE_TRADECODE(
                                   :req_wt_key, 
                                   :trade_code,
@@ -11099,7 +11099,7 @@ class EInvoiceController {
                   p_crt_by
           );
 
-        console.log("res_op  ", res_op);
+       // console.log("res_op  ", res_op);
 
         rtnValueTradecode.push({
           req_key : invoices[i].req_key,
@@ -11166,8 +11166,25 @@ class EInvoiceController {
             }
           });
         }
-         
+        const para_status = {
+          req_wt_key : masterInvoicePK.PK,
+          maCQT : maCQT,
+          xml_tax_signed : xml_tax_signed
+          };
 
+          const res_op = await DBService.ExecuteSQLBlob(
+                    `BEGIN ET_UPD_TEI_WT_INVOICE_UP(
+                                    :req_wt_key, 
+                                    :maCQT,
+                                    :xml_tax_signed,
+                                    :p_language, 
+                                    :p_crt_by, 
+                                    :p_rtn_cur); 
+                    END;`,
+                    para_status,
+                    p_language,
+                    p_crt_by
+            );
         
           rtnValue.push({
             req_key: tr_code.req_key,

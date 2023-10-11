@@ -5435,6 +5435,7 @@ class EInvoiceController {
         serial_no,
         template_id,
         start_date,
+        end_date,
         start_number,
         preview,
       } = request.all();
@@ -5468,12 +5469,12 @@ class EInvoiceController {
         return response.send(Utils.response(false, "start_date can't null",));
       }
 
-      console.log("weTaxSendCompanyTemplate logo_image : ", logo_image);
-      console.log("weTaxSendCompanyTemplate background_image :",background_image);
-      console.log("weTaxSendCompanyTemplate symbol_type : ", symbol_type);
-      console.log("weTaxSendCompanyTemplate template_id :",template_id);
-      console.log("weTaxSendCompanyTemplate start_date : ", start_date);
-      console.log("weTaxSendCompanyTemplate seller_comp_taxcode :",seller_comp_taxcode);
+      // console.log("weTaxSendCompanyTemplate logo_image : ", logo_image);
+      // console.log("weTaxSendCompanyTemplate background_image :",background_image);
+      // console.log("weTaxSendCompanyTemplate symbol_type : ", symbol_type);
+      // console.log("weTaxSendCompanyTemplate template_id :",template_id);
+      // console.log("weTaxSendCompanyTemplate start_date : ", start_date);
+      // console.log("weTaxSendCompanyTemplate seller_comp_taxcode :",seller_comp_taxcode);
 
       //if (preview == "N") {
 
@@ -5520,6 +5521,7 @@ class EInvoiceController {
         p_form_no: form_no,
         p_serial_no: serial_no,
         p_from_dt: start_date,
+        p_end_dt: end_date || '',
         p_start_num: start_number,
         p_template_cd: template_id,
         p_url_img_logo: file_path_logo,
@@ -5537,6 +5539,7 @@ class EInvoiceController {
                                                           :p_form_no,
                                                           :p_serial_no,
                                                           :p_from_dt,
+                                                          :p_end_dt
                                                           :p_start_num,
                                                           :p_template_cd,
                                                           :p_url_img_logo,

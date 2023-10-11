@@ -11115,11 +11115,11 @@ class EInvoiceController {
         let maTBao = "";
           let tenTBao = "";
           let maCQT = "";
-          let xml_tax_signed;
+          let xml_tax_signed = "";
 
         if(tr_code.trade_code)
         {
-          await Request.get(TAX_CHECK_TRADE_CODE + "V0104128565159E69923D2F451C835E46CEEC5E2BB9", {
+          await Request.get(TAX_CHECK_TRADE_CODE + "V0104128565C9418BFE6FC6479BB28E0F05C0A576FF", {
             agent,
             headers: {
               Authorization: "Basic " + Buffer.from(`${TAX_USER_NAME}:${TAX_PASSWORD}`).toString("base64"),
@@ -11167,6 +11167,8 @@ class EInvoiceController {
           });
         }
 
+
+        
           rtnValue.push({
             req_key: tr_code.req_key,
             trade_code: tr_code.trade_code,

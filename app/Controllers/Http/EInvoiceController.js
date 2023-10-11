@@ -1705,7 +1705,7 @@ class EInvoiceController {
         "TKhai/DLTKhai/NDTKhai/LHDSDung",
         {
           HDGTGT: "HDGTGT",
-          HDGHDBHangTGT: "HDBHang",
+          HDBHang: "HDBHang",
           HDBTSCong: "HDBTSCong",
           HDBHDTQGia: "HDBHDTQGia",
           HDKhac: "HDKhac",
@@ -1715,7 +1715,7 @@ class EInvoiceController {
       const jsonLHDSDung = await transform(p_xml_content, templateLHDSDung);
       const arrLHDSDung = [
         jsonLHDSDung[0].HDGTGT,
-        jsonLHDSDung[0].HDGHDBHangTGT,
+        jsonLHDSDung[0].HDBHang,
         jsonLHDSDung[0].HDBTSCong,
         jsonLHDSDung[0].HDBHDTQGia,
         jsonLHDSDung[0].HDKhac,
@@ -1865,7 +1865,7 @@ class EInvoiceController {
         "TKhai/DLTKhai/NDTKhai/LHDSDung",
         {
           HDGTGT: "HDGTGT",
-          HDGHDBHangTGT: "HDBHang",
+          HDBHang: "HDBHang",
           HDBTSCong: "HDBTSCong",
           HDBHDTQGia: "HDBHDTQGia",
           HDKhac: "HDKhac",
@@ -1875,7 +1875,7 @@ class EInvoiceController {
       const jsonLHDSDung = await transform(p_xml_content, templateLHDSDung);
       const arrLHDSDung = [
         jsonLHDSDung[0].HDGTGT,
-        jsonLHDSDung[0].HDGHDBHangTGT,
+        jsonLHDSDung[0].HDBHang,
         jsonLHDSDung[0].HDBTSCong,
         jsonLHDSDung[0].HDBHDTQGia,
         jsonLHDSDung[0].HDKhac,

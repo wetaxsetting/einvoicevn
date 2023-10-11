@@ -1843,10 +1843,10 @@ class EInvoiceController {
       ];
       const jsonHTGDLHDDT = await transform(p_xml_content, templateHTGDLHDDT);
       const arrHTGDLHDDT = [
-        jsonHTGDLHDDT[0].NNTDBKKhan,
-        jsonHTGDLHDDT[0].NNTKTDNUBND,
-        jsonHTGDLHDDT[0].CDLTTDCQT,
-        jsonHTGDLHDDT[0].CDLQTVAN,
+        jsonHTGDLHDDT[0].NNTDBKKhan || '0',
+        jsonHTGDLHDDT[0].NNTKTDNUBND || '0',
+        jsonHTGDLHDDT[0].CDLTTDCQT || '0',
+        jsonHTGDLHDDT[0].CDLQTVAN || '0',
       ];
 
       //TKhai.DLTKhai.NDTKhai.PThuc

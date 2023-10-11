@@ -5539,7 +5539,7 @@ class EInvoiceController {
                                                           :p_form_no,
                                                           :p_serial_no,
                                                           :p_from_dt,
-                                                          :p_end_dt
+                                                          :p_end_dt,
                                                           :p_start_num,
                                                           :p_template_cd,
                                                           :p_url_img_logo,
@@ -11139,24 +11139,11 @@ class EInvoiceController {
                   // console.log("items[k].loaiTBao " + items[k].loaiTBao);
                   //console.log("items  ", items[k]);
                   if (items[k].loaiTBao == "10") {
-                    let xml_draft = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
-                    // const template_draft = [
-                    //   "TDiep/DLieu",
-                    //   {
-                    //     HDon: "HDon"
-                    //   },
-                    // ];
-                    // const jsonTTChung = await transform(xml_draft, template_draft);
 
-
-                    var DOMParser = new (require('xmldom')).DOMParser;
-                    var document = DOMParser.parseFromString(xml_draft);
-
-                    var nodesByName = document.getElementsByTagName('DLieu');
-
-                    console.log("nodesByName  ", nodesByName);
+                    let xml_draft = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8").split('</TTChung><DLieu>');
+                    xml_tax_signed ='<?xml version="1.0" encoding="UTF-8"?>'+ xml_draft[1].replace('</DLieu></TDiep>','');
                     maCQT = items[k].ndungTBao.maCQT;
-                    
+
                     //xml_tax_signed = 
                     maTBao = items[k].loaiTBao;
                     tenTBao = items[k].tenTBao;

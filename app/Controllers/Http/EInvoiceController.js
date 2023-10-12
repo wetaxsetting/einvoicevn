@@ -4872,6 +4872,18 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
+
+      console.log("======================weTaxSendOrderInfo BEGIN===================");
+      console.log("weTaxSendOrderInfo p_crt_by  ",p_crt_by );
+      console.log("weTaxSendOrderInfo sale_date  ",sale_date );
+      console.log("weTaxSendOrderInfo store_code  ",store_code );
+      console.log("weTaxSendOrderInfo store_name  ",store_name );
+      console.log("weTaxSendOrderInfo pos_no  ",pos_no );
+      console.log("weTaxSendOrderInfo bill_no  ",bill_no );
+      console.log("weTaxSendOrderInfo data_invoice  ",data_invoice );
+      console.log("======================weTaxSendOrderInfo END===================");
+
+
       const { sale_date = "",
         store_code = "",
         store_name = "",

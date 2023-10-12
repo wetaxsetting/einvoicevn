@@ -5903,6 +5903,150 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
+     
+      const authUserName = "GENUWIN"; // "GENUWIN";
+      const authPassword = "genuwin123"; // "e_GX4v@";
+      const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien";
+      const urlCheck = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+
+      const {
+        tax_serial_number,
+        seller_tax_code,
+        sale_date,
+        store_code,
+        store_name,
+        pos_no,
+        invoice_xml_signed,
+        req_key,
+      } = request.all();
+
+
+      // let json =  this.parseXmlToJson(invoice_xml_signed);
+
+      const check_data =  await this.weTaxExtractPosXMLContent(invoice_xml_signed,
+                                                      seller_tax_code,
+                                                      sale_date,
+                                                      tax_serial_number,
+                                                      req_key,
+                                                      store_code,
+                                                      store_name,
+                                                      pos_no,
+                                                      p_language,
+                                                      p_crt_by);
+
+      //console.log("json  ", json);
+      //  
+      // console.log("json.TDiep.DLieu.HDon  ", json.TDiep.DLieu.HDon);
+
+      if(check_data.STATUS == 'FAILE')
+      {
+        return response.send(Utils.response(true, `Send invoice to Tax Office was Faile!`, check_data));
+      }else if (check_data.STATUS == 'EXIT' )
+      {
+        return response.send(Utils.response(true, `The sign xml was send Tax Offiec`, check_data));
+      }else if (check_data.STATUS == 'NOEXIT' )
+      {
+        return response.send(Utils.response(true, `Compay not yet register`, check_data));
+      }
+
+      const agent = {
+        Agent: {
+          defaultPort: 443,
+          protocol: "https:",
+          options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
+        },
+      };
+      let trade_code = "";
+      let maCQT = "";
+      let maTBao = "";
+      let tenTBao = "";
+      let xml_tax_signed = "";
+      let rtnValue = {};
+
+      const res = await Request.post(
+        url,
+        { base64XML: Buffer.from(invoice_xml_signed).toString("base64") },
+        {
+          agent,
+          headers: {
+            Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
+          },
+        }
+      );
+
+      trade_code = res.data.maGDich;
+      console.log("trade_code   ", trade_code);
+
+      await Utils._sleep(5);
+
+      await Request.get(urlCheck + trade_code, {
+          agent,
+          headers: {
+            Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
+          },
+        }).then(async (res) => {
+          console.log(" res  ", res.data);
+          if (res.data.length) {
+            for (let j = 0; j < res.data.length; j++) {
+              const items = res.data[j];
+              for (let k = 0; k < items.length; k++) {
+                if(items[k].loaiTBao == "1"){
+                  xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
+                }else if (items[k].loaiTBao == "8") {
+                  maCQT = items[k].ndungTBao.maCQT;
+                 
+                  maTBao = items[k].loaiTBao;
+                  tenTBao = items[k].tenTBao;
+                } else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "7") {
+                  for(let invoice of items[k].ndungTBao.dsachLoiKTraDLieu)
+                  {
+                    
+                  }
+
+                  maTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].maLoi;
+                  tenTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].mtaLoi;
+                } 
+              }
+            }
+          }
+
+          rtnValue = {
+            trade_code: trade_code,
+            seller_tax_code: seller_tax_code,
+            sale_date: sale_date,
+            store_code: store_code,
+            store_name: store_name,
+            tax_serial_number: tax_serial_number,
+            pos_no: pos_no,
+            inform_code: maTBao,
+            inform_name: tenTBao,
+            mccqt: maCQT,
+            xml_tax_signed: xml_tax_signed,
+          };
+        });
+        console.log("rtnValue  ", rtnValue);
+      return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
+
+    } catch (e) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "sendInvoiceToTaxOffice",
+        CONTENT: e.message,
+      });
+      console.log("e ", e);
+      return response.send(Utils.response(false, e.message));
+    }
+  }
+
+  /*async weTaxSendPosInvoiceToTaxOffice({ request, response, auth }) {
+    try {
+      var p_language = request.header("accept-language", "ENG");
+      var p_crt_by = "";
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
       //const authPassword = "e_GX4v@"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
       //const url = "https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon";
       //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon";

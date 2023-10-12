@@ -487,6 +487,10 @@ class EInvoiceController {
         digital_certificates
       } = request.all();
 
+      if(!digital_certificates)
+      {
+        return response.send(Utils.response(false, `The declaration not yet digital_certificates`));
+      }
       // const valid = this.validateDeclareJson(declare);
       // if (!valid.status) {
       //   return response.send(Utils.response(valid.status, valid.message, null));

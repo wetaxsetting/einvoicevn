@@ -454,7 +454,7 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      const { declare,
+      const { 
         version,
         declare_name,
         declare_type,
@@ -487,10 +487,6 @@ class EInvoiceController {
         digital_certificates
       } = request.all();
 
-      // if(!digital_certificates)
-      // {
-      //   return response.send(Utils.response(false, `The declaration not yet digital_certificates`));
-      // }
        const valid = this.validateDeclareJson({
         version,
         declare_name,
@@ -820,10 +816,20 @@ class EInvoiceController {
 
       } = request.all();
 
-      // const valid = this.validateJsonInvalidInvoiceToXML(invalid_invoices);
-      // if (!valid.status) {
-      //   return response.send(Utils.response(valid.status, valid.message));
-      // }
+      const valid = this.validateJsonInvalidInvoiceToXML({version,
+        declare_name,
+        declare_type,
+        form_no,
+        tax_office_code,
+        tax_office_name,
+        seller_taxcode,
+        seller_company_name,
+        location_name,
+        inform_date,
+        invoices});
+      if (!valid.status) {
+        return response.send(Utils.response(valid.status, valid.message));
+      }
 
       let jsonInvalidInvoices = {
         TBao: {

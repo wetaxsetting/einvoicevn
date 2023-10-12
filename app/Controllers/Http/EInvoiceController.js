@@ -5458,6 +5458,7 @@ class EInvoiceController {
       console.log("weTaxSendCompanyTemplate logo_image : ", logo_image);
       console.log("weTaxSendCompanyTemplate background_image :",background_image);
       console.log("weTaxSendCompanyTemplate form_no :",form_no);
+      console.log("weTaxSendCompanyTemplate serial_no :",serial_no);
       console.log("weTaxSendCompanyTemplate symbol_type : ", symbol_type);
       console.log("weTaxSendCompanyTemplate template_id :",template_id);
       console.log("weTaxSendCompanyTemplate start_number :",start_number);

@@ -5443,6 +5443,8 @@ class EInvoiceController {
       const logo_image = request.file("logo_image");
       const background_image = request.file("background_image");
 
+      console.log('logo_image', logo_image);
+
       if (!seller_comp_taxcode) {
         return response.send(Utils.response(false, "seller_comp_taxcode can't null",));
       }
@@ -5468,7 +5470,10 @@ class EInvoiceController {
       if (!start_date) {
         return response.send(Utils.response(false, "start_date can't null",));
       }
-
+      if (!logo_image) {
+        return response.send(Utils.response(false, "logo_image can't null",));
+      }
+      
       // console.log("weTaxSendCompanyTemplate logo_image : ", logo_image);
       // console.log("weTaxSendCompanyTemplate background_image :",background_image);
       // console.log("weTaxSendCompanyTemplate symbol_type : ", symbol_type);

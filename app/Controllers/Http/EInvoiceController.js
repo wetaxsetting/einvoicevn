@@ -11174,11 +11174,20 @@ class EInvoiceController {
           const detail = await DBService.callProcCursor("EI_UPD_TEI_WT_INVOICE_D", detailPara, p_language, p_crt_by);
           // console.log("detail", detail);
         }
+
+        // const para_detail_vat = [
+        //   req_wt_key : ,
+        // ]
+        
+        const detail_vat = await DBService.callProcCursor("EI_UPD_TEI_WT_INVOICE_D_VAT", [master[0].PK], p_language, p_crt_by);
+
+
         return (result_extra = {
           PK: master[0].PK,
           TEI_EINVOICE_M_PK: master[0].TEI_EINVOICE_M_PK,
         });
       } else {
+        console.log();
         return (result_extra = {
           PK: master[0].PK,
           TEI_EINVOICE_M_PK: master[0].TEI_EINVOICE_M_PK,
@@ -11191,6 +11200,7 @@ class EInvoiceController {
         FUNC: "weTaxExtractXMLContent",
         CONTENT: e.message,
       });
+      console.log(e)
       return (result_extra = {
         PK: -2,
         TEI_EINVOICE_M_PK: 0,
@@ -11234,6 +11244,7 @@ class EInvoiceController {
 
       let rtnValue = [];
       let rtnValueTradecode = [];
+      let ei_upd_tei_wt_invoice_m_pk = 0;
       for (let i = 0; i < invoices.length; i++) {
         
                 const masterInvoicePK = await this.weTaxExtractXMLContent(
@@ -11272,7 +11283,8 @@ class EInvoiceController {
                     });
                     continue;
                 }
-              
+                
+                ei_upd_tei_wt_invoice_m_pk = masterInvoicePK.PK;
               
         // ======================== tam thoi =========================
         const trade_code = await Request.post(
@@ -11369,7 +11381,7 @@ class EInvoiceController {
           });
         }
         const para_status = {
-          req_wt_key : masterInvoicePK.PK,
+          req_wt_key : ei_upd_tei_wt_invoice_m_pk,
           maCQT : maCQT,
           xml_tax_signed : xml_tax_signed
           };

@@ -5486,12 +5486,20 @@ class EInvoiceController {
         return response.send(Utils.response(false, "logo_image can't null",));
       }
       
-      console.log("weTaxSendCompanyTemplate logo_image : ", logo_image);
-      console.log("weTaxSendCompanyTemplate background_image :",background_image);
-      console.log("weTaxSendCompanyTemplate symbol_type : ", symbol_type);
-      console.log("weTaxSendCompanyTemplate template_id :",template_id);
-      console.log("weTaxSendCompanyTemplate start_date : ", start_date);
-      console.log("weTaxSendCompanyTemplate seller_comp_taxcode :",seller_comp_taxcode);
+      // console.log("weTaxSendCompanyTemplate logo_image : ", logo_image);
+      // console.log("weTaxSendCompanyTemplate background_image :",background_image);
+      // console.log("weTaxSendCompanyTemplate symbol_type : ", symbol_type);
+      // console.log("weTaxSendCompanyTemplate template_id :",template_id);
+      // console.log("weTaxSendCompanyTemplate start_date : ", start_date);
+      // console.log("weTaxSendCompanyTemplate seller_comp_taxcode :",seller_comp_taxcode);
+      console.log('seller_comp_taxcode: ', seller_comp_taxcode,
+        'symbol_type: ', symbol_type,
+        'form_no: ', form_no,
+        'serial_no: ',serial_no,
+        'template_id: ', template_id,
+        'start_date: ' ,start_date ,
+        'end_date ', end_date,
+        'start_number: ', start_number);
 
       //if (preview == "N") {
 

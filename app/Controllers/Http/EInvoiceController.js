@@ -5456,7 +5456,15 @@ class EInvoiceController {
       const background_image = request.file("background_image");
 
       console.log('logo_image', logo_image);
-
+      console.log('seller_comp_taxcode: ', seller_comp_taxcode,
+      'symbol_type: ', symbol_type,
+      'form_no: ', form_no,
+      'serial_no: ',serial_no,
+      'template_id: ', template_id,
+      'start_date: ' ,start_date ,
+      'end_date ', end_date,
+      'start_number: ', start_number);
+      
       if (!seller_comp_taxcode) {
         return response.send(Utils.response(false, "seller_comp_taxcode can't null",));
       }
@@ -5492,14 +5500,7 @@ class EInvoiceController {
       // console.log("weTaxSendCompanyTemplate template_id :",template_id);
       // console.log("weTaxSendCompanyTemplate start_date : ", start_date);
       // console.log("weTaxSendCompanyTemplate seller_comp_taxcode :",seller_comp_taxcode);
-      console.log('seller_comp_taxcode: ', seller_comp_taxcode,
-        'symbol_type: ', symbol_type,
-        'form_no: ', form_no,
-        'serial_no: ',serial_no,
-        'template_id: ', template_id,
-        'start_date: ' ,start_date ,
-        'end_date ', end_date,
-        'start_number: ', start_number);
+      
 
       //if (preview == "N") {
 

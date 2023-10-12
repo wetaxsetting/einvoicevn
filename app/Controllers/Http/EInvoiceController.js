@@ -5455,16 +5455,15 @@ class EInvoiceController {
       const logo_image = request.file("logo_image");
       const background_image = request.file("background_image");
 
-      console.log('logo_image', logo_image);
-      console.log('seller_comp_taxcode: ', seller_comp_taxcode,
-      'symbol_type: ', symbol_type,
-      'form_no: ', form_no,
-      'serial_no: ',serial_no,
-      'template_id: ', template_id,
-      'start_date: ' ,start_date ,
-      'end_date ', end_date,
-      'start_number: ', start_number);
-      
+      console.log("weTaxSendCompanyTemplate logo_image : ", logo_image);
+      console.log("weTaxSendCompanyTemplate background_image :",background_image);
+      console.log("weTaxSendCompanyTemplate form_no :",form_no);
+      console.log("weTaxSendCompanyTemplate symbol_type : ", symbol_type);
+      console.log("weTaxSendCompanyTemplate template_id :",template_id);
+      console.log("weTaxSendCompanyTemplate start_number :",start_number);
+      console.log("weTaxSendCompanyTemplate start_date : ", start_date);
+      console.log("weTaxSendCompanyTemplate seller_comp_taxcode :",seller_comp_taxcode);
+
       if (!seller_comp_taxcode) {
         return response.send(Utils.response(false, "seller_comp_taxcode can't null",));
       }
@@ -5494,12 +5493,7 @@ class EInvoiceController {
         return response.send(Utils.response(false, "logo_image can't null",));
       }
       
-      // console.log("weTaxSendCompanyTemplate logo_image : ", logo_image);
-      // console.log("weTaxSendCompanyTemplate background_image :",background_image);
-      // console.log("weTaxSendCompanyTemplate symbol_type : ", symbol_type);
-      // console.log("weTaxSendCompanyTemplate template_id :",template_id);
-      // console.log("weTaxSendCompanyTemplate start_date : ", start_date);
-      // console.log("weTaxSendCompanyTemplate seller_comp_taxcode :",seller_comp_taxcode);
+      
       
 
       //if (preview == "N") {

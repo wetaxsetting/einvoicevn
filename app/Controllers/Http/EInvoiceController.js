@@ -523,6 +523,39 @@ class EInvoiceController {
         return response.send(Utils.response(valid.status, valid.message, null));
        }
 
+       console.log("weTaxConvertDeclareUsingInvoiceToXML  ", {
+        version,
+        declare_name,
+        declare_type,
+        declare_form_no,
+        seller_company_name,
+        seller_taxcode,
+        tax_office_name,
+        tax_office_code,
+        contact_person,
+        contact_address,
+        contact_email,
+        contact_phone,
+        location_name,
+        created_date,
+        has_code,
+        no_code,
+        pos_code,
+        taxpayer_from_difficult_location,
+        taxpayer_from_people_committee_suggestions,
+        transfer_data_directly_to_tax_office,
+        cdlqtvan,
+        full_transfer,
+        summary_transfer,
+        vat_invoice,
+        sales_invoice,
+        sales_invoice_passet,
+        sales_invoice_national,
+        other_invoice,
+        voucher,
+        digital_certificates
+       });
+
       let jsonDeclare = {
         TKhai: {
           DLTKhai: {

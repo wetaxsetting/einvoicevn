@@ -5,17 +5,11 @@ const Hash = use("Hash");
 const AES = use("AES");
 const DBService = use("DBService");
 const Env = use("Env");
+const SESSION_TIMEOUT = Env.get("SESSION_TIMEOUT", 60);
 const SSO_KEY = Env.get("SSO_KEY");
 const UserRepo = use("UserRepo");
-const svgCaptcha = use("svg-captcha");
-
-const REDIS_CONNECTION = Env.get("REDIS_CONNECTION", "NO_REDIS")
-let Redis = false
-if (REDIS_CONNECTION != "NO_REDIS") {
-  Redis = use('Redis')
-} else {
-  Redis = false
-}
+const CryptoJS = use("crypto-js");
+const AppName = Env.get("APP_NAME");
 
 var hexcase = 0; /* hex output format. 0 - lowercase; 1 - uppercase        */
 var b64pad = ""; /* base-64 pad character. "=" for strict RFC compliance   */
@@ -39,30 +33,24 @@ class UserController {
         ip = request.ip();
       }
       const { user_id, password } = request.all();
-      console.log("user_id ", user_id, "password  ", password);
       let user = await UserRepo.findBy({ USER_ID: user_id, DEL_IF: 0 });
       if (!user) {
-        return response.send(Utils.response(false, "error", { err_msg: "user_not_found" }));
+        return response.send(Utils.response(false, "user_not_found", null));
       }
       // const verify = await Hash.verify(password, user.USER_PW)
       const md5_64 = this.b64_md5(password);
-
-      // console.log(" user ",  user);
-
-      console.log(" user.USER_PW ", user.USER_PW, "md5_64  ", md5_64);
       let verify = md5_64 == user.USER_PW;
       if (!verify) {
         verify = await Hash.verify(password, user.USER_PW);
       }
-      console.log("verify  ", verify);
       let result;
       if (!verify) {
         result = await DBService.callProcCursor("sys_login_auth", [user_id, "invalid_userid_or_password", ip], "ENG", user_id);
         user = result[0];
         if (user) {
-          return response.send(Utils.response(false, "error", { err_msg: user.STATUS }));
+          return response.send(Utils.response(false, user.STATUS, null));
         }
-        return response.send(Utils.response(false, "error", { err_msg: "user_not_found" }));
+        return response.send(Utils.response(false, "user_not_found", null));
       }
 
       result = await DBService.callProcCursor("sys_login_auth", [user_id, user.USER_PW, ip], "ENG", user_id);
@@ -72,16 +60,15 @@ class UserController {
       if (user) {
         if (user.STATUS === "OK") {
           const token = await auth.generate(user);
-          //Utils.Logger({ LVL: "info", MODULE: "UserController", FUNC: "logIn", CONTENT: `Login OK. IP:${ip}`, CRT_BY: user_id });
-          return response.send(Utils.response(true, "Log In Successfully!", { user: user, token: token.token, token_type: "Bearer", expires_in: 86400 }));
+          return response.send(Utils.response(true, "Log In Successfully!", { user: user, token: token.token }));
         }
         Utils.Logger({ LVL: "info", MODULE: "UserController", FUNC: "logIn", CONTENT: `Login ERROR. IP:${ip}`, CRT_BY: user_id });
-        return response.send(Utils.response(false, "error", { err_msg: user.STATUS }));
+        return response.send(Utils.response(false, user.STATUS, null));
       }
-      return response.send(Utils.response(false, "error", "User not found!"));
+      return response.send(Utils.response(false, "User not found!", null));
     } catch (e) {
       Utils.Logger({ LVL: "error", MODULE: "UserController", FUNC: "logIn", CONTENT: `${e.message}. IP:${ip}` });
-      return response.send(Utils.response(false, "error", { err_msg: e.message }));
+      return response.send(Utils.response(false, e.message, null));
     }
   }
 
@@ -91,16 +78,22 @@ class UserController {
       ip = request.ip();
     }
     try {
-      let { proc, para } = request.all();
-      //const decodeToken = AES.decrypt2(para[0], SSO_KEY); //for java
+      let { proc, para, encrypt_type } = request.all();
+      let decodeToken;
       //console.log(para)
-      //const decodeToken = AES.decryptDotNet(para[0].replace(/\s/g, "+"), SSO_KEY);
       const token = para[0]
         .replace(/p1L2u3S/g, "+")
         .replace(/s1L2a3S4h/g, "/")
         .replace(/e1Q2u3A4l/g, "=");
-      const decodeToken = AES.decrypt(token, SSO_KEY);
-      //console.log(decodeToken)
+      if (encrypt_type == "java") {
+        decodeToken = AES.decryptJava(token, SSO_KEY);
+      } else if (encrypt_type == "dotnet") {
+        decodeToken = AES.decryptDotNet(token, SSO_KEY);
+      } else {
+        //for nodejs
+        decodeToken = AES.decrypt(token, SSO_KEY);
+      }
+      console.log("decodeToken: " + decodeToken);
       const arrToken = decodeToken.split("|");
       if (arrToken.length != 2) {
         Utils.Logger({ LVL: "error", MODULE: "UserController", FUNC: "ssoLogin", CONTENT: `Invalid token. IP:${ip} decodeToken:${decodeToken}` });
@@ -108,7 +101,7 @@ class UserController {
       }
       const currUnixTime = new Date().getTime();
       //console.log("currUnixTime", currUnixTime)
-      if (currUnixTime - Number(arrToken[1]) > 30 * 1000) {
+      if (currUnixTime - Number(arrToken[1]) > 60 * 60 * 1000) {
         //30 seconds
         Utils.Logger({ LVL: "error", MODULE: "UserController", FUNC: "ssoLogin", CONTENT: `Token was expired. IP:${ip}` });
         return response.send(Utils.response(false, "Token was expired", null));
@@ -122,6 +115,9 @@ class UserController {
       if (user) {
         if (user.STATUS === "OK") {
           const token = await auth.generate(user);
+          const now = new Date();
+          const miliseconds = now.getTime();
+          DBService.setCache("" + user.PK, miliseconds, SESSION_TIMEOUT)
           Utils.Logger({ LVL: "info", MODULE: "UserController", FUNC: "ssoLogin", CONTENT: `Login OK. IP:${ip}`, CRT_BY: para[0] });
           return response.send(Utils.response(true, "Log In Successfully!", { user: user, token: token.token }));
         }
@@ -134,22 +130,36 @@ class UserController {
       return response.send(Utils.response(false, e.message, null));
     }
   }
-  async getSSOToken({ response, auth }) {
+
+  async getSSOToken({ request, response, auth }) {
     try {
+      const { encrypt_type } = request.all();
       const user = await auth.getUser();
       const unixTime = new Date().getTime();
-      //console.log("unixTime", unixTime)
+      console.log("unixTime", unixTime);
+      let token;
       if (!user) {
         return response.send(Utils.response(false, "Request failed!", null));
       } else {
-        let token = AES.encrypt(user.USER_ID + "|" + unixTime, SSO_KEY);
-        token = token.replace(/\+/g, "p1L2u3S").replace(/\//g, "s1L2a3S4h").replace(/=/g, "e1Q2u3A4l");
+        if (encrypt_type == "java") {
+          token = AES.encryptJava(user.USER_ID + "|" + unixTime, SSO_KEY);
+          console.log(token);
+        } else if (encrypt_type == "dotnet") {
+          token = AES.encryptDotNet(user.USER_ID + "|" + unixTime, SSO_KEY);
+        } else {
+          token = AES.encrypt(user.USER_ID + "|" + unixTime, SSO_KEY);
+        }
+        token = token
+          .replace(/\+/g, "p1L2u3S")
+          .replace(/\//g, "s1L2a3S4h")
+          .replace(/=/g, "e1Q2u3A4l");
         return response.send(Utils.response(true, "sso_token", { ssotoken: token }));
       }
     } catch (e) {
       return response.send(Utils.response(false, "error_occur", e.message));
     }
   }
+
   async getUser({ response, auth }) {
     try {
       const user = await auth.getUser();
@@ -240,7 +250,13 @@ class UserController {
       if (newPassword !== confirmPassword) {
         return response.send(Utils.response(false, "confirm_pass_not_match", null));
       }
-      const hashPassword = await Hash.make(newPassword);
+      let hashPassword = await Hash.make(newPassword);
+
+      //vng-207 20230328 update theo gasp
+      if (Env.get("GASP_YN")) {
+        hashPassword = this.b64_md5(newPassword);
+      }
+
       const params = [user.PK, hashPassword];
       const result = await DBService.callProcCursor(proc, params, p_language, p_crt_by);
       if (result) {
@@ -252,28 +268,149 @@ class UserController {
     }
   }
 
-  async captchar({ request, response }) {
+  async enable2FA({ request, response, auth }) {
+    let ip = request.header("x-real-ip");
     try {
-      const { req_sessionid } = request.all();
-      const option = {
-        size: 4, // size of random string
-        ignoreChars: "0oOIl1i", // filter out some characters like 0o1i
-        noise: 2, // number of noise lines
-        color: false, // characters will have distinct colors instead of grey, true if background option is set
-        // background: "#BCDFFE", // background color of the svg image
-        // height: '55px', // height of the svg
-      };
-      const captcha = svgCaptcha.create(option);
-      //session.put("captcha", captcha.text);
-      const sessionid = new Date().getTime();
-      if (Redis) {
-        await Redis.set(sessionid, captcha.text, "EX", 60 * 1000); //1 minute
+      if (ip == undefined) {
+        ip = request.ip();
       }
-      return response.send({ sessionid, captcha: captcha.data });
+      const user = await auth.getUser();
+      if (!user) {
+        return response.send(Utils.response(false, "Request failed!", null));
+      }
+      // đây là tên ứng dụng của các bạn, nó sẽ được hiển thị trên app Google Authenticator hoặc Authy sau khi bạn quét mã QR
+      const serviceName = AppName;
+      const userSecret = Utils.generateUniqueSecret();
+      // Thực hiện tạo mã OTP
+      const otpAuth = Utils.generateOTPToken(user.USER_ID, serviceName, userSecret);
+      //console.log("otpAuth:", otpAuth)
+      // Tạo ảnh QR Code để gửi về client
+      const QRCodeImage = await Utils.generateQRCode(otpAuth);
+      return response.send(
+        Utils.response(true, "Enable Two Factor Authentication Successfully!", {
+          qrCodeImage: QRCodeImage,
+          userSecret: userSecret,
+        })
+      );
     } catch (e) {
-      return response.send(Utils.response(false, "get_captcha_failed", e.message));
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "UserController",
+        FUNC: "enable2FA",
+        CONTENT: `${e.message}. IP:${ip}`,
+      });
+      return response.send(Utils.response(false, e.message, null));
     }
   }
+
+  async update2FA({ request, response, auth }) {
+    let ip = request.header("x-real-ip");
+    try {
+      if (ip == undefined) {
+        ip = request.ip();
+      }
+      var p_language = request.header("accept-language", "ENG");
+      var p_crt_by = "";
+      const user = await auth.getUser();
+      if (!user) {
+        return response.send(Utils.response(false, "Request failed!", null));
+      }
+      p_crt_by = user.USER_ID;
+      const { proc, otpToken, userSecret, twoFactorAuthYN } = request.all();
+      let params;
+      if (twoFactorAuthYN === "N") {
+        params = [user.PK, "", twoFactorAuthYN];
+        const result = await DBService.callProcCursor(proc, params, p_language, p_crt_by);
+        if (result) {
+          return response.send(Utils.response(true, "Update two factor authentication successful!", result));
+        }
+        return response.send(Utils.response(false, "Update two factor authentication failed!", null));
+      } else {
+        /* Validate OTP */
+        const isValid = Utils.verifyOTPToken(otpToken, userSecret);
+        if (isValid) {
+          params = [user.PK, userSecret, twoFactorAuthYN];
+          const result = await DBService.callProcCursor(proc, params, p_language, p_crt_by);
+          if (result) {
+            return response.send(Utils.response(true, "Update two factor authentication successful!", result));
+          }
+          return response.send(Utils.response(false, "Update two factor authentication failed!", null));
+        }
+        return response.send(Utils.response(true, "Verify two factor authentication failed! Your OTP does not match!", null));
+      }
+    } catch (e) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "UserController",
+        FUNC: "update2FA",
+        CONTENT: `${e.message}. IP:${ip}`,
+      });
+      return response.send(Utils.response(false, e.message, null));
+    }
+  }
+
+  async get2FAKey({ request, response, auth }) {
+    let ip = request.header("x-real-ip");
+    try {
+      if (ip == undefined) {
+        ip = request.ip();
+      }
+      const user = await auth.getUser();
+      if (!user) {
+        return response.send(Utils.response(false, "Request failed!", null));
+      }
+      if (user.TWO_FACTOR_AUTH_YN === "N" || user.TWO_FACTOR_AUTH_YN === undefined) {
+        return response.send(Utils.response(false, "This account haven't enabled two factor authentication yet!", null));
+      }
+      const serviceName = AppName;
+      const otpAuth = Utils.generateOTPToken(user.USER_ID, serviceName, user.USER_SECRET);
+      const QRCodeImage = await Utils.generateQRCode(otpAuth);
+      if (QRCodeImage) {
+        return response.send(Utils.response(true, "Get 2FA Key successfully!", { qrCodeImage: QRCodeImage }));
+      }
+      return response.send(Utils.response(false, "Get 2FA Key failed!", null));
+    } catch (e) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "UserController",
+        FUNC: "get2FAKey",
+        CONTENT: `${e.message}. IP:${ip}`,
+      });
+      return response.send(Utils.response(false, e.message, null));
+    }
+  }
+
+  async verify2FA({ request, response, auth }) {
+    let ip = request.header("x-real-ip");
+    try {
+      if (ip == undefined) {
+        ip = request.ip();
+      }
+      const user = await auth.getUser();
+      if (!user) {
+        return response.send(Utils.response(false, "Request failed!", null));
+      }
+      if (user.TWO_FACTOR_AUTH_YN === "N" || user.TWO_FACTOR_AUTH_YN === undefined) {
+        return response.send(Utils.response(true, "This account haven't enabled two factor authentication yet!", null));
+      }
+      const { otpToken } = request.all();
+      // Kiểm tra mã token người dùng truyền lên có hợp lệ hay không?
+      const isValid = Utils.verifyOTPToken(otpToken, user.USER_SECRET);
+      if (isValid) {
+        return response.send(Utils.response(true, "Verify two factor successfully!", { user: user }));
+      }
+      return response.send(Utils.response(true, "Verify two factor failed!", null));
+    } catch (e) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "UserController",
+        FUNC: "verify2FA",
+        CONTENT: `${e.message}. IP:${ip}`,
+      });
+      return response.send(Utils.response(false, e.message, null));
+    }
+  }
+
   /*convet password md5 base 64 */
   b64_md5(s) {
     return this.binl2b64(this.core_md5(this.str2binl(s), s.length * chrsz));

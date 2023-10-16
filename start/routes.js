@@ -180,6 +180,8 @@ Route.group(() => {
     Route.post("general-pdf-template-WT", "EInvoiceController.viewPDF_InvoiceWT")   ////VNG-304
     Route.post("general-pdf-template-send-bill", "EInvoiceController.viewPDF_SaleBillWT")   ////VNG-304
     Route.post("send-data-pos-invoice-erp", "EInvoiceController.sendPosInvoiceErp")
+    Route.post("send-invoice-erp", "EInvoiceController.sendInvoiceErp")
+
 
 
 

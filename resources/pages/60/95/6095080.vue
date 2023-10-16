@@ -980,7 +980,7 @@ export default {
       if (resConvertXML.success) {
         const objXml = [
           {
-            master_pk: this.modelMaster.PK,
+            req_key: this.modelMaster.PK,
             xml: JSON.stringify(resConvertXML.data).toString().replaceAll('"', "").replaceAll("<DLTKhai>", "<DLTKhai Id='ID1'>"),
           },
         ];
@@ -1141,7 +1141,7 @@ export default {
       this.modelMaster.HTHUC = "1";
       this.modelMaster.DTLHE = null;
       this.modelMaster.DCTDTU = null;
-      this.modelMaster.NLAP = new Date().toISOString().substr(0, 10).replaceAll("-", "");
+      this.modelMaster.NLAP = new Date().toISOString().substr(0, 10);//.replaceAll("-", "");
       this.modelMaster.CMA = "0";
       this.modelMaster.KCMA = "0";
       this.modelMaster.NNTDBKKHAN = "0";

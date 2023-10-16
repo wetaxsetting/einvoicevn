@@ -363,6 +363,7 @@ class EInvoiceController {
                 NNTKTDNUBND: 0,
                 CDLTTDCQT: 0,
                 CDLQTVAN: 0,
+                CDLQTCTN: 0
               },
               PThuc: {
                 CDDu: 1,
@@ -587,6 +588,7 @@ class EInvoiceController {
                 NNTKTDNUBND: 0,
                 CDLTTDCQT: 0,
                 CDLQTVAN: 0,
+                CDLQTCTN: 0,
               },
               PThuc: {
                 CDDu: 1,
@@ -631,6 +633,7 @@ class EInvoiceController {
       jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NNTKTDNUBND = taxpayer_from_people_committee_suggestions;
       jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLTTDCQT = transfer_data_directly_to_tax_office;
       jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLQTVAN = cdlqtvan;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLQTCTN = 0;
       jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CDDu = full_transfer;
       jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CBTHop = summary_transfer;
 
@@ -10572,6 +10575,7 @@ class EInvoiceController {
             NNTKTDNUBND: 1,
             CDLTTDCQT: 1,
             CDLQTVAN: 1,
+            CDLQTCTN: 0,
           },
           PThuc: {
             CDDu: 1,

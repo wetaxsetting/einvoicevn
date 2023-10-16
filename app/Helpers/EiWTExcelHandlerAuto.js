@@ -1,6 +1,6 @@
 'use strict'
 const DBService = use("DBService");
-const EiExcelConverter = use("App/Helpers/EiPosExcelConverterAuto");
+const EiExcelConverter = use("App/Helpers/EiWTExcelConverterAuto");
 class EiExcelHandler {
 
   constructor() {
@@ -49,40 +49,42 @@ class EiExcelHandler {
       let backgroundRow = 0
 
       const einvoiceMasterData = await DBService.callProcCursor(
-        "EI_SEL_POS_EINVOICE_M_PDF", [pk],
+        "EI_SEL_WT_EINVOICE_M_PDF", [pk],
         p_language,
         p_crt_by,
         _db2
       );
+      // console.log("file: EiWTExcelHandlerAuto.js:57 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceMasterData:", einvoiceMasterData)
+
+
       const einvoiceDetailData = await DBService.callProcCursor(
-        "EI_SEL_POS_EINVOICE_D_PDF", [pk],
+        "EI_SEL_WT_EINVOICE_D_PDF", [pk],
         p_language,
         p_crt_by,
         _db2
       );
+      // console.log("file: EiWTExcelHandlerAuto.js:64 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceDetailData:", einvoiceDetailData)
+
 
       const einvoiceMasterParam = await DBService.callProcCursor(
-        "AC_SEL_POS_EINVOICE_M_PARAM", [pk, einvoiceMasterData[0].FORM_NO, einvoiceMasterData[0].SERIAL_NO, ''],
+        "AC_SEL_WT_EINVOICE_M_PARAM", [pk, einvoiceMasterData[0].FORM_NO, einvoiceMasterData[0].SERIAL_NO, ''],
         p_language,
         p_crt_by,
         _db2
       );
+      // console.log("file: EiWTExcelHandlerAuto.js:72 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceMasterParam:", einvoiceMasterParam)
+
 
       const einvoiceDetailsParam = await DBService.callProcCursor(
-        "AC_SEL_POS_EINVOICE_D_PARAM", [pk, einvoiceMasterData[0].FORM_NO, einvoiceMasterData[0].SERIAL_NO, ''],
+        "AC_SEL_WT_EINVOICE_D_PARAM", [pk, einvoiceMasterData[0].FORM_NO, einvoiceMasterData[0].SERIAL_NO, ''],
         p_language,
         p_crt_by,
         _db2
       );
+      // console.log("file: EiWTExcelHandlerAuto.js:80 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceDetailsParam:", einvoiceDetailsParam)
 
 
-      // console.log("einvoiceMasterData  ", einvoiceMasterData)
-
-      // console.log("einvoiceDetailData  ", einvoiceDetailData)
-
-      // console.log("einvoiceMasterParam  ", einvoiceMasterParam)
-
-      // console.log("einvoiceDetailsParam ", einvoiceDetailsParam)
+      
       if (einvoiceMasterData.length <= 0) {
         return that.showNotification(
           "warning",
@@ -108,9 +110,10 @@ class EiExcelHandler {
 
       this.masterDataArray = []
 
-      reportPath = einvoiceMasterData[0].URL_FILE_EXCEL;//'report/60/95/einvoices_template/Bornga/Bornga.xlsx'
+      reportPath = einvoiceMasterData[0].URL_FILE_EXCEL_IMP;//'report/60/95/einvoices_template/Bornga/Bornga.xlsx'
       reportSheet = "Invoice"
 
+      
       for (let i = 0; i < einvoiceMasterParam.length; i++) {
         //console.log(" Cell: einvoiceMasterParam[i].CELL_CODE ", einvoiceMasterParam[i].CELL_CODE + " - " + einvoiceMasterParam[i].DATA_MAPPING + "  - " + einvoiceMasterParam[i].TYPE );
         this.masterDataArray.push({ Cell: einvoiceMasterParam[i].CELL_CODE, Info: [einvoiceMasterParam[i].DATA_MAPPING], Type: einvoiceMasterParam[i].TYPE },)

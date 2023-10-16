@@ -168,28 +168,32 @@ class EiExcelConverterAuto {
 		//END-this part calculate the number of pages base on the data.
 
 		//this part re-format amt.
-		// if(einvoiceMasterData[0]["TOTAL_PAYMENT_WORD_VIE"] == null){
-
+		console.log("file: EiWTExcelConverterAuto.js:172 [vng-304] ExcelBuilder [vng-304] einvoiceMasterData:", einvoiceMasterData)
+		// if(einvoiceMasterData[0]["TOTALAMOUNTINWORD_VIE"] ){
+			if (einvoiceMasterData[0]["CCY"].toString() == "VND") {
+				lb_amount_trans = "";
+				amount_trans = "";
+				amount_total = einvoiceMasterData[0]["TOTALAMOUNT_DISPLAY"] == null ? null : einvoiceMasterData[0]["TOTALAMOUNT_DISPLAY"].toString();
+				amount_vat = einvoiceMasterData[0]["VATAMOUNT_DISPLAY"] == null ? null : einvoiceMasterData[0]["VATAMOUNT_DISPLAY"].toString();
+				amount_net = einvoiceMasterData[0]["NETAMOUNT_DISPLAY"] == null ? null : einvoiceMasterData[0]["NETAMOUNT_DISPLAY"].toString();
+				read_price = einvoiceMasterData[0]["TOTALAMOUNTINWORD"] == null ? null : einvoiceMasterData[0]["TOTALAMOUNTINWORD"].toString();
+	
+				// read_price = einvoiceMasterData[0]["TOTALAMOUNTINWORD"].substr(0, 2) + einvoiceMasterData[0]["TOTALAMOUNTINWORD"].substr(2, einvoiceMasterData[0]["TOTALAMOUNTINWORD"].length - 2).toLowerCase() + '.';
+				console.log("file: EiWTExcelConverterAuto.js:180 [vng-304] ExcelBuilder [vng-304] read_price:", read_price)
+			}
+			else {
+				lb_amount_trans = einvoiceMasterData[0]["EXCHANGE_RATE"] == null ? null : einvoiceMasterData[0]["EXCHANGE_RATE"].toString();
+				amount_trans = einvoiceMasterData[0]["TOTALAMT_TR_DISPLAY"] == null ? null : einvoiceMasterData[0]["TOTALAMT_TR_DISPLAY"].toString();
+				amount_total = einvoiceMasterData[0]["TOTALAMOUNT_DISPLAY"] == null ? null : einvoiceMasterData[0]["TOTALAMOUNT_DISPLAY"].toString();
+				amount_vat = einvoiceMasterData[0]["VATAMOUNT_DISPLAY"] == null ? null : einvoiceMasterData[0]["VATAMOUNT_DISPLAY"].toString();
+				amount_net = einvoiceMasterData[0]["NETAMOUNT_DISPLAY"] == null ? null : einvoiceMasterData[0]["NETAMOUNT_DISPLAY"].toString();
+	
+				read_price = this.Num2VNText(einvoiceMasterData[0]["TOTALAMOUNTINWORD"].toString(), "USD");
+			}
 		// }
-		if (einvoiceMasterData[0]["CCY"].toString() == "VND") {
-			lb_amount_trans = "";
-			amount_trans = "";
-			amount_total = einvoiceMasterData[0]["TOTALAMOUNT_DISPLAY"] == null ? null : einvoiceMasterData[0]["TOTALAMOUNT_DISPLAY"].toString();
-			amount_vat = einvoiceMasterData[0]["VATAMOUNT_DISPLAY"] == null ? null : einvoiceMasterData[0]["VATAMOUNT_DISPLAY"].toString();
-			amount_net = einvoiceMasterData[0]["NETAMOUNT_DISPLAY"] == null ? null : einvoiceMasterData[0]["NETAMOUNT_DISPLAY"].toString();
-			read_price = einvoiceMasterData[0]["TOTALAMOUNTINWORD"] == null ? null : einvoiceMasterData[0]["TOTALAMOUNTINWORD"].toString();
-			// read_price = this.NumberToTextVN(parseFloat(einvoiceMasterData[0]["TOTALAMOUNTINWORD"] == null ? null : einvoiceMasterData[0]["TOTALAMOUNTINWORD"].toString()));
-		}
-		else {
-			lb_amount_trans = einvoiceMasterData[0]["EXCHANGE_RATE"] == null ? null : einvoiceMasterData[0]["EXCHANGE_RATE"].toString();
-			amount_trans = einvoiceMasterData[0]["TOTALAMT_TR_DISPLAY"] == null ? null : einvoiceMasterData[0]["TOTALAMT_TR_DISPLAY"].toString();
-			amount_total = einvoiceMasterData[0]["TOTALAMOUNT_DISPLAY"] == null ? null : einvoiceMasterData[0]["TOTALAMOUNT_DISPLAY"].toString();
-			amount_vat = einvoiceMasterData[0]["VATAMOUNT_DISPLAY"] == null ? null : einvoiceMasterData[0]["VATAMOUNT_DISPLAY"].toString();
-			amount_net = einvoiceMasterData[0]["NETAMOUNT_DISPLAY"] == null ? null : einvoiceMasterData[0]["NETAMOUNT_DISPLAY"].toString();
-
-			read_price = this.Num2VNText(einvoiceMasterData[0]["TOTALAMOUNTINWORD"].toString(), "USD");
-		}
+		
 		read_price = read_price.substr(0, 2) + read_price.substr(2, read_price.length - 2).toLowerCase() + '.';
+		// console.log("file: EiWTExcelConverterAuto.js:192 [vng-304] ExcelBuilder [vng-304] read_price:", read_price)
 		//read_priceV=NumberToTextVN(parseFloat(einvoiceMasterData[0]["TOTALAMOUNTINWORD"] == null ? null : einvoiceMasterData[0]["TOTALAMOUNTINWORD"].toString()));
 		//read_priceU=Num2VNText(einvoiceMasterData[0]["TOTALAMOUNTINWORD"].toString(), "USD");
 		
@@ -199,7 +203,9 @@ class EiExcelConverterAuto {
 
 		let dateString = `Ngày (Date) ${einvoiceMasterData[0]["INVOICE_DATE_DD"]}   tháng (month)  ${einvoiceMasterData[0]["INVOICE_DATE_MM"]}  năm (year) ${einvoiceMasterData[0]["INVOICE_DATE_YYYY"]}`
 		let footerStr = '(In tại phần mềm Genuwin E-INVOICE của CÔNG TY CỔ PHẦN WEBCASH GENUWIN - MST: 1201496252)'
+		
 		if (einvoiceDetailData && einvoiceDetailData.length > 0) {
+			console.log("file: EiWTExcelConverterAuto.js:201 [vng-304] ExcelBuilder [vng-304] einvoiceDetailData:", einvoiceDetailData)
 			masterDataArray.forEach(e => {
 				console.log("e    ", e);
 				if (e.Type == 1) {
@@ -245,7 +251,7 @@ class EiExcelConverterAuto {
 								//console.log(e.Cell+"+"+e.Info)
 								break;
 							case "TOTALAMOUNTINWORD":
-								console.log("e    ", e ,  read_price)
+								// console.log("read_price;;;;aaaaaa", e ,  read_price)
 								worksheet.getCell( `${e.Cell}`).value = read_price != null ? read_price : '';
 								// console.log(e.Cell+"+"+e.Info)
 								break;

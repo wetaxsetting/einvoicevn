@@ -44,6 +44,7 @@ const EiPosExcelConverter = use("App/Helpers/EiPosExcelConverter");
 const EiPosExcelHandler = use("App/Helpers/EiPosExcelHandler");
 const EiPosExcelHandlerAuto = use("App/Helpers/EiPosExcelHandlerAuto");
 const EiExcelTemplateHandler = use("App/Helpers/EiExcelTemplateHandler");
+const EiWTExcelHandlerAuto = use("App/Helpers/EiWTExcelHandlerAuto");
 const EiExcel04SS2Handler = use("App/Helpers/EiExcel04SS2Handler");
 const EiExcel04SS3Handler = use("App/Helpers/EiExcel04SS3Handler");
 const EiExcel04SSHandler = use("App/Helpers/EiExcel04SSHandler");
@@ -7621,6 +7622,7 @@ class EInvoiceController {
       //console.log("sSSSS ", tei_wt_sale_bill_pk);
       let EiExcels = new EiPosExcelHandlerAuto();
       let url_pdf = await EiExcels.getEinvoice(tei_wt_sale_bill_pk, p_language, p_crt_by);
+      console.log("file: EInvoiceController.js:7625 [vng-304] sendMailToCustomer [vng-304] url_pdf:", url_pdf)
       // console.log("base64PDf  ", url_pdf);
 
       //console.log("sSSSS2 ", tei_wt_sale_bill_pk);
@@ -10496,6 +10498,66 @@ class EInvoiceController {
       let EiExcels = new EiExcel04SSHandler();
       let url_pdf = await EiExcels.getEinvoice(data, p_language, p_crt_by);
       console.log("file: EInvoiceController.js:8644 [vng-304] viewPDFTemplate_04SS [vng-304] url_pdf:", url_pdf)
+
+      return response.send(Utils.response(true, "general url pdf success", url_pdf));
+    } catch (e) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "checkInvoiceStatusFromTaxOffice",
+        CONTENT: e.message,
+      });
+      console.log(e);
+      return response.send(Utils.response(false, "error", e.message));
+    }
+  }
+
+  async viewPDF_InvoiceWT({ request, response, auth }) {
+    try {
+      var p_language = request.header("accept-language", "ENG");
+      var p_crt_by = "";
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+
+      const { proc, data } = request.all(); //data:6030
+
+      // console.log("data ", data);
+
+      let EiExcels = new EiWTExcelHandlerAuto();
+      let url_pdf = await EiExcels.getEinvoice(data, p_language, p_crt_by);
+      console.log("file: EInvoiceController.js:10529 [vng-304] viewPDF_InvoiceWT [vng-304] url_pdf:", url_pdf)
+
+      return response.send(Utils.response(true, "general url pdf success", url_pdf));
+    } catch (e) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "checkInvoiceStatusFromTaxOffice",
+        CONTENT: e.message,
+      });
+      console.log(e);
+      return response.send(Utils.response(false, "error", e.message));
+    }
+  }
+
+  async viewPDF_SaleBillWT({ request, response, auth }) {
+    try {
+      var p_language = request.header("accept-language", "ENG");
+      var p_crt_by = "";
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+
+      const { proc, data } = request.all(); //data:6030
+
+      // console.log("data ", data);
+
+      let EiExcels = new EiPosExcelHandlerAuto();
+      let url_pdf = await EiExcels.getEinvoice(data, p_language, p_crt_by);
+      console.log("file: EInvoiceController.js:10529 [vng-304] viewPDF_InvoiceWT [vng-304] url_pdf:", url_pdf)
 
       return response.send(Utils.response(true, "general url pdf success", url_pdf));
     } catch (e) {

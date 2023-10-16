@@ -902,6 +902,7 @@ export default {
           "ATT09_NUM",
           "ATT10_NUM",
           "RANGE_DETAILS_SIGN",
+          "LOGO_SIZE"
         ],
         data: this.MasterInfo,
       };

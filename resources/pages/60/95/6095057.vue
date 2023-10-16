@@ -219,7 +219,7 @@ export default {
     template_id: "",
 
     formNo_list: [],
-    selected_formNo: "",
+    selected_formNo: "1",
   }),
   /*############### created #######################*/
   async created() {

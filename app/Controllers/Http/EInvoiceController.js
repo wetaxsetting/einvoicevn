@@ -4953,15 +4953,7 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
 
-      console.log("======================weTaxSendOrderInfo BEGIN===================");
-      console.log("weTaxSendOrderInfo p_crt_by  ",p_crt_by );
-      console.log("weTaxSendOrderInfo sale_date  ",sale_date );
-      console.log("weTaxSendOrderInfo store_code  ",store_code );
-      console.log("weTaxSendOrderInfo store_name  ",store_name );
-      console.log("weTaxSendOrderInfo pos_no  ",pos_no );
-      console.log("weTaxSendOrderInfo bill_no  ",bill_no );
-      console.log("weTaxSendOrderInfo data_invoice  ",data_invoice );
-      console.log("======================weTaxSendOrderInfo END===================");
+    
 
 
       const { sale_date = "",
@@ -4972,6 +4964,16 @@ class EInvoiceController {
         data_invoice = []
       } = request.all();
 
+      console.log("======================weTaxSendOrderInfo BEGIN===================");
+      console.log("weTaxSendOrderInfo p_crt_by  ",p_crt_by );
+      console.log("weTaxSendOrderInfo sale_date  ",sale_date );
+      console.log("weTaxSendOrderInfo store_code  ",store_code );
+      console.log("weTaxSendOrderInfo store_name  ",store_name );
+      console.log("weTaxSendOrderInfo pos_no  ",pos_no );
+      console.log("weTaxSendOrderInfo bill_no  ",bill_no );
+      console.log("weTaxSendOrderInfo data_invoice  ",data_invoice );
+      console.log("======================weTaxSendOrderInfo END===================");
+      
       if (!data_invoice) {
         return response.send(Utils.response(false, `Invalid data_invoice `, {
           error_code: "3018",

@@ -4796,10 +4796,11 @@ class EInvoiceController {
   }
 
   weTaxValidateJsonInvalidPosInvoiceToXML(invalid_pos_invoices) {
+    let status = true;
+    let resMess = "";
+    const mess1 = "Invalid field";
     try {
-      let status = true;
-      let resMess = "";
-      const mess1 = "Invalid field";
+    
       const errorList = [
         {
           version: 6,
@@ -4885,10 +4886,8 @@ class EInvoiceController {
         for (let j = 0; j < invalid_pos_invoices[i].detail_invoice.length; j++) {
           for (const key in errorList[0].detail_invoice[0]) {
             // valid digital_certificates
-            if (
-              invalid_pos_invoices[i].detail_invoice[j][key] === undefined ||
-              invalid_pos_invoices[i].detail_invoice[j][key] == null
-            ) {
+            if ( invalid_pos_invoices[i].detail_invoice[j][key] === undefined || invalid_pos_invoices[i].detail_invoice[j][key] == null ) 
+            {
               status = false;
               resMess = `${mess1} invoices ${key}.`;
               return {
@@ -4904,13 +4903,11 @@ class EInvoiceController {
               };
             }
           }
-
+          
           for (const key in errorList[0].total_vat_list[0]) {
             // valid digital_certificates
-            if (
-              invalid_pos_invoices[i].total_vat_list[j][key] === undefined ||
-              invalid_pos_invoices[i].total_vat_list[j][key] == null
-            ) {
+            console.log(invalid_pos_invoices[i].total_vat_list[j][key])
+            if ( invalid_pos_invoices[i].total_vat_list[j][key] === undefined ||   invalid_pos_invoices[i].total_vat_list[j][key] == null ) {
               status = false;
               resMess = `${mess1} invoices ${key}.`;
               return {
@@ -4919,7 +4916,7 @@ class EInvoiceController {
               };
             }
             // vald length
-            if (String(invalid_pos_invoices[i].total_vat_list[j][key]).length > errorList[0].total_vat_list[0][key]) {
+            if (String(invalid_pos_invoices[i].total_vat_list[0][key]).length > errorList[0].total_vat_list[0][key]) {
               return {
                 status: false,
                 message: `Length of invoices.${key} too long.`,
@@ -4936,6 +4933,11 @@ class EInvoiceController {
       };
     } catch (error) {
       console.log("error  ", error);
+      //let status = false;
+      return {
+        status,
+        message: resMess,
+      };
     }
   }
 

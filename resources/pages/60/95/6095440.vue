@@ -301,7 +301,7 @@
                         </v-col>
                         <v-col md="12">
                             <BaseGridView ref="grdDetail" :header="headerList.grdDetail"
-                                sel_procedure="EI_SEL_6095440_05_NC" upd_procedure="EI_UPD_6095440_WT_06" :headertype="1"
+                                sel_procedure="EI_SEL_6095440_05_NC" upd_procedure="EI_UPD_6095440_06" :headertype="1"
                                 :filter_paras="[this.modelMaster.PK]" :height="limitHeightGridDetails" :update_paras="[
                                     'PK',
                                     'TEI_WT_DECL_M_PK',
@@ -488,7 +488,7 @@ export default {
                     break;
                 case "grdSearchClick":
                     this.modelMaster.PK = await this.$refs.grdSearch.getSelectedRows()[0].PK;
-                    this.modelMaster.CQT_MAGD = await this.$refs.grdSearch.getSelectedRows()[0].TRADE_CODE;
+                    this.modelMaster.CQT_MAGD = await this.$refs.grdSearch.getSelectedRows()[0].CQT_MAGD;
                     await this.dsoMaster("select");
                     this.$refs.grdDetail.loadData();
                     break;
@@ -623,25 +623,7 @@ export default {
                 return this.showNotification("warning", this.$t("error_occurs"), "pls_select_declaration");
             }
             this.isProcessing = true;
-
-            if (!this.modelMaster.CQT_MAGD) {
-                let data_xml = this.onGeneralXML();
-                let resConvertXML = await this.$axios.$post("/einvoice/declare2xml", {
-                    responseType: "json",
-                    declare: data_xml,
-                });
-
-                if (resConvertXML.success && resConvertXML.data.length) {
-                    this.xmlUrl = resConvertXML.data; //new Blob([byteArray], { type: _typeFile });;
-                    await this.$nextTick();
-                    this.isProcessing = false;
-                    this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
-                } else {
-                    this.showNotification("danger", res.message);
-                }
-            }
-            else {
-                try {
+            try {
                     this.xmlUrl = this.modelMaster.XML_SIGNED; //new Blob([byteArray], { type: _typeFile });;
                     this.$nextTick(() => {
                         this.isProcessing = false;
@@ -653,14 +635,43 @@ export default {
                     this.isProcessing = false;
                     return this.showNotification("danger", e.message);
                 }
-            }
+            // if (!this.modelMaster.CQT_MAGD) {
+            //     let data_xml = this.onGeneralXML();
+            //     let resConvertXML = await this.$axios.$post("/einvoice/declare2xml", {
+            //         responseType: "json",
+            //         declare: data_xml,
+            //     });
+
+            //     if (resConvertXML.success && resConvertXML.data.length) {
+            //         this.xmlUrl = resConvertXML.data; //new Blob([byteArray], { type: _typeFile });;
+            //         await this.$nextTick();
+            //         this.isProcessing = false;
+            //         this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
+            //     } else {
+            //         this.showNotification("danger", res.message);
+            //     }
+            // }
+            // else {
+            //     try {
+            //         this.xmlUrl = this.modelMaster.XML_SIGNED; //new Blob([byteArray], { type: _typeFile });;
+            //         this.$nextTick(() => {
+            //             this.isProcessing = false;
+            //             this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
+            //         });
+
+            //         this.isProcessing = false;
+            //     } catch (e) {
+            //         this.isProcessing = false;
+            //         return this.showNotification("danger", e.message);
+            //     }
+            // }
         },
 
         async dsoMaster(action) {
             await this._dsoCall({
                 type: "control",
-                selpro: "EI_SEL_6095440_S_02",
-                updpro: "EI_UPD_6095440_WT_03",
+                selpro: "EI_SEL_6095440_02",
+                updpro: "EI_UPD_6095440_03",
                 para: [this.modelMaster.PK],
                 elname: [
                     "_rowstatus",

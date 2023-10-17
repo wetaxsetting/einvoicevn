@@ -142,6 +142,26 @@ let _exceljs  = {
 
         that.showNotification("success", that.$t("export_completed"), "");
     },
+
+    dowloadWorkbookUrl: async (that, _fileName) => {
+        const buffer = await _workbook.xlsx.writeBuffer();
+        let _blob = new Blob([buffer], {
+            type: "application/octet-stream",
+        });
+
+        let _url = window.URL.createObjectURL(_blob);
+        var tag_a = document.createElement("a");
+        document.body.appendChild(tag_a);
+        tag_a.style = "display: none";
+        tag_a.href = _url;
+        tag_a.download = _fileName;
+        tag_a.click();
+        window.URL.revokeObjectURL(_url);
+        tag_a.remove();
+
+        that.showNotification("success", that.$t("export_completed"), "");
+    },
+
     setWorksheet: (idx) => {
         _worksheet = _workbook.getWorksheet(idx);
     },

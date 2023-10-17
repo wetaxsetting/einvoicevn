@@ -5040,24 +5040,21 @@ class EInvoiceController {
 
       if (!data_invoice) {
         return response.send(Utils.response(false, `Invalid data_invoice `, {
-          error_code: "3018",
-          error_name: "Invalid data_invoice"
+        
         })
         );
       }
 
       if (!sale_date) {
         return response.send(Utils.response(false, `Invalid sale_date `, {
-          error_code: "3018",
-          error_name: "Invalid sale_date"
+         
         })
         );
       }
 
       if (!tax_code) {
         return response.send(Utils.response(false, `Invalid tax_code `, {
-          error_code: "3018",
-          error_name: "Invalid tax_code"
+         
         })
         );
       }
@@ -5070,16 +5067,14 @@ class EInvoiceController {
 
         if (!invoice.form_no || !invoice.serial_no || !invoice.invoice_no) {
           return response.send(Utils.response(false, `Invalid infor for e-invoice `, {
-            error_code: "3018",
-            error_name: "Invalid infor for e-invoice"
+            
           })
           );
         }
 
         if (!invoice.seller_comp_name || !invoice.seller_taxcode) {
           return response.send(Utils.response(false, `Invalid infor for company `, {
-            error_code: "3018",
-            error_name: "Invalid infor for company"
+           
           })
           );
         }

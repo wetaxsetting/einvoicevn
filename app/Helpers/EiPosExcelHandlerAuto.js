@@ -54,12 +54,14 @@ class EiExcelHandler {
         p_crt_by,
         _db2
       );
+      console.log("file: EiPosExcelHandlerAuto.js:57 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceMasterData:", einvoiceMasterData)
       const einvoiceDetailData = await DBService.callProcCursor(
         "EI_SEL_POS_EINVOICE_D_PDF", [pk],
         p_language,
         p_crt_by,
         _db2
       );
+
 
       const einvoiceMasterParam = await DBService.callProcCursor(
         "AC_SEL_POS_EINVOICE_M_PARAM", [pk, einvoiceMasterData[0].FORM_NO, einvoiceMasterData[0].SERIAL_NO, ''],
@@ -75,14 +77,14 @@ class EiExcelHandler {
         _db2
       );
 
+      const einvoiceVAT_Bill = await DBService.callProcCursor(
+        "EI_SEL_POS_EINVOICE_VAT_PDF", [pk],
+        p_language,
+        p_crt_by,
+        _db2
+      );
+      console.log("file: EiPosExcelHandlerAuto.js:86 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceVAT_Bill:", einvoiceVAT_Bill)
 
-      // console.log("einvoiceMasterData  ", einvoiceMasterData)
-
-      // console.log("einvoiceDetailData  ", einvoiceDetailData)
-
-      // console.log("einvoiceMasterParam  ", einvoiceMasterParam)
-
-      // console.log("einvoiceDetailsParam ", einvoiceDetailsParam)
       if (einvoiceMasterData.length <= 0) {
         return that.showNotification(
           "warning",
@@ -108,7 +110,7 @@ class EiExcelHandler {
 
       this.masterDataArray = []
 
-      reportPath = einvoiceMasterData[0].URL_FILE_EXCEL;//'report/60/95/einvoices_template/Bornga/Bornga.xlsx'
+      reportPath = einvoiceMasterData[0].URL_FILE_EXCEL_IMP;//'report/60/95/einvoices_template/Bornga/Bornga.xlsx'
       reportSheet = "Invoice"
 
       for (let i = 0; i < einvoiceMasterParam.length; i++) {
@@ -121,22 +123,21 @@ class EiExcelHandler {
         bgPath = "";
       }
 
-      // if (einvoiceMasterData.length && einvoiceMasterData[0].URL_IMG_LOGO) {
-      //   logos = [
-      //     {
-      //       start: einvoiceMasterData[0].LOGO_START_ROW,
-      //       width: 0.99 * dpi,
-      //       height: 0.99 * dpi,
-      //       logoStartCount: einvoiceMasterData[0].LOGO_START_COL,
-      //       logoPath: `${einvoiceMasterData[0].URL_IMG_LOGO}`
-      //     },
-      //   ];
-      // }
-      // else {
-      //   logos = [];
-      // }
-
-      // console.log(" bgPath  ", bgPath, "logos  ", logos);
+      if (einvoiceMasterData.length && einvoiceMasterData[0].URL_IMG_LOGO) {
+        logos = [
+          {
+            start: einvoiceMasterData[0].LOGO_START_ROW,
+            width: 0.99 * dpi,
+            height: 0.99 * dpi,
+            logoStartCount: einvoiceMasterData[0].LOGO_START_COL,
+            logoPath: `${einvoiceMasterData[0].URL_IMG_LOGO}`
+          },
+        ];
+      }
+      else {
+        logos = [];
+      }
+      console.log(" bgPath  ", bgPath, "logos  ", logos);
 
       for (let i = 0; i < einvoiceDetailsParam.length; i++) {
         detailCellFormat.push({
@@ -154,16 +155,16 @@ class EiExcelHandler {
       //cấu trúc dòng detail
       // thin//dotted//dashDot//hair//dashDotDot//slantDashDot//mediumDashed//mediumDashDotDot//mediumDashDot//medium//double//thick
       // detailCellFormat = [
-      //   { startCell: 1, endCell: 2, cellType: 2, cellBorder: "dotted", field: "STT" },//từ cell bắt đầu tới cell kết thúc, type 2: cell đầu tiên
-      //   { startCell: 3, endCell: 9, cellType: 3, cellBorder: "dotted", field: "ITEM_NAME" },//từ cell bắt đầu tới cell kết thúc, type 3: cell kế tiếp cell đầu tiên,
+      //   { startCell: 2, endCell: 2, cellType: 1, cellBorder: "dotted", field: "STT" },//từ cell bắt đầu tới cell kết thúc, type 2: cell đầu tiên
+      //   { startCell: 3, endCell: 7, cellType: 2, cellBorder: "dotted", field: "ITEM_NAME" },//từ cell bắt đầu tới cell kết thúc, type 3: cell kế tiếp cell đầu tiên,
 
-      //   { startCell: 10, endCell: 10, cellType: 1, cellBorder: "dotted", field: "ITEM_UOM" },//type 1: còn lại
-      //   { startCell: 11, endCell: 13, cellType: 1, cellBorder: "dotted", field: "QTY" },//type 1: còn lại
-      //   //{ startCell: 13, endCell: 14, cellType: 1, cellBorder: "dotted", field: "BLANK" },//type 1: còn lại
-      //   { startCell: 14, endCell: 16, cellType: 1, cellBorder: "dotted", field: "U_PRICE" },//type 1: còn lại
-      //   //{ startCell: 17, endCell: 1, cellType: 1, cellBorder: "dotted", field: "BLANK" },//type 1: còn lại
-      //   { startCell: 17, endCell: 18, cellType: 1, cellBorder: "dotted", field: "NET_TR_AMT" },//type 1: còn lại
-      //   // { startCell: 21, endCell: 22, cellType: 1, cellBorder: "dotted", field: "BLANK" },//type 1: còn lại
+      //   { startCell: 8, endCell: 8, cellType: 1, cellBorder: "dotted", field: "ITEM_UOM" },//type 1: còn lại
+      //   { startCell: 9, endCell: 9, cellType: 2, cellBorder: "dotted", field: "QTY" },//type 1: còn lại
+      //   //{ startCell: 10, endCell: 11, cellType: 2, cellBorder: "dotted", field: "U_PRICE" },//type 1: còn lại
+      //   { startCell: 14, endCell: 14, cellType: 2, cellBorder: "dotted", field: "VAT_AMOUNT" },//type 1: còn lại
+      //   //{ startCell: 15, endCell: 17, cellType: 2, cellBorder: "dotted", field: "TOTAL_AMOUNT" },//type 1: còn lại
+      //   { startCell: 12, endCell: 12, cellType: 2, cellBorder: "dotted", field: "NET_TR_AMT" },//type 1: còn lại
+      //   // { startCell: 13, endCell: 13, cellType: 2, cellBorder: "dotted", field: "VAT_RATE" },//type 1: còn lại
       // ]
 
 
@@ -180,7 +181,6 @@ class EiExcelHandler {
       _sourceRow = einvoiceMasterData[0].DETAILS_START_ROW//26
       _sourceRow_2 = einvoiceMasterData[0].DETAILS_START_ROW//26
       _sourceRow_3 = einvoiceMasterData[0].DETAILS_START_ROW//26
-
       headerRowCount = einvoiceMasterData[0].DETAILS_START_ROW == null ? 0 : einvoiceMasterData[0].DETAILS_START_ROW
       lastPageRowsHeight = 18
 
@@ -190,7 +190,7 @@ class EiExcelHandler {
       if (this.masterDataArray.length > 0) {
         // console.log("masterDataArray ", this.masterDataArray);
         resultExcel = await exceljs.ExcelBuilder(
-          p_crt_by, einvoiceMasterData, einvoiceDetailData, '',
+          p_crt_by, einvoiceMasterData, einvoiceDetailData, einvoiceVAT_Bill, '',
           _sourceRow, _sourceRow_2, _sourceRow_3, headerRowCount, countFromEndDetailToSignBox,
           lastPageRowsHeight, reportPath, reportSheet, signPath, cancelPath, bgPath,
           this.masterDataArray, detailCellFormat, logos, signCell, signBoxCell, signByCell, cancelYn,

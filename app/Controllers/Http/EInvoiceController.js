@@ -5200,17 +5200,17 @@ class EInvoiceController {
           for (let j = 0; j < invoice.detail_invoice.length; j++) {
             const para_prod_details = {
               tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
-              feature: invoice.detail[j].feature,
-              seq: invoice.detail[j].seq,
-              item_code: invoice.detail[j].item_code,
-              item_name: invoice.detail[j].item_name,
-              unit: invoice.detail[j].unit,
-              quantity: invoice.detail[j].quantity,
-              unit_price: invoice.detail[j].unit_price,
-              dc_rate: invoice.detail[j].dc_rate,
-              dc_amt: invoice.detail[j].dc_amt,
-              amount: invoice.detail[j].amount,
-              vat_rate: invoice.detail[j].vat_rate,
+              feature: invoice.detail_invoice[j].feature,
+              seq: invoice.detail_invoice[j].seq,
+              item_code: invoice.detail_invoice[j].item_code,
+              item_name: invoice.detail_invoice[j].item_name,
+              unit: invoice.detail_invoice[j].unit,
+              quantity: invoice.detail_invoice[j].quantity,
+              unit_price: invoice.detail_invoice[j].unit_price,
+              dc_rate: invoice.detail_invoice[j].dc_rate,
+              dc_amt: invoice.detail_invoice[j].dc_amt,
+              amount: invoice.detail_invoice[j].amount,
+              vat_rate: invoice.detail_invoice[j].vat_rate,
             };
             const rtnValue_VAT = await DBService.ExecuteSQLBlob(
               `BEGIN ei_upd_sale_prod (          

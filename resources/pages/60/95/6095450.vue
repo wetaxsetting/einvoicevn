@@ -150,21 +150,53 @@
         </v-card>
       </v-col>
     </v-row>
-    <view-einvoice-pdf-dialog ref="ViewEInvoicePDFDialog" :src_pdfUrl="pdfUrl"></view-einvoice-pdf-dialog>
+    <GwLoading :visible="showLoading" />
+    <!-- <view-einvoice-pdf-dialog ref="ViewEInvoicePDFDialog" :src_pdfUrl="pdfUrl"></view-einvoice-pdf-dialog> -->
+    <v-dialog v-model="showPDF" max-width="800">
+      <v-container fluid>
+        <v-row no-gutters>
+          <v-col cols="12">
+            <v-card outlined :height="limitHeight1" :max-height="limitHeight1" style="overflow-y: scroll" v-resize="onResize">
+              <v-overlay :value="showLoading" :absolute="true" opacity="0.3">
+                <v-progress-circular indeterminate size="50"></v-progress-circular>
+              </v-overlay>
+              <iframe :src="urlPDF" height="100%" width="100%"></iframe>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-dialog>
+    <view-einvoice-xml-dialog
+      ref="ViewEInvoiceXMLDialog"
+      :src_xmlUrl="xmlUrl"
+      :xmlFileNm="xmlFileNm"
+      dwnFile
+      @minimizeDialog="manualIsMinimized = true"
+      @closeManualDialog="manualIsMinimized = false"
+    ></view-einvoice-xml-dialog>
   </v-container>
 </template>
 
 <script>
 import ViewEInvoicePDFDialog from "@/components/dialog/ViewEInvoicePDFDialog.vue";
+import ViewEInvoiceXMLDialog from "@/components/dialog/ViewEInvoiceXMLDialog.vue";
 export default {
   layout: "default",
   middleware: "user",
 
   components: {
     "view-einvoice-pdf-dialog": ViewEInvoicePDFDialog,
+    "view-einvoice-xml-dialog": ViewEInvoiceXMLDialog,
   },
   data: () => ({
+    showLoading: false,
+    isMaximized: false,
     isShowLeft: true,
+    showLoading: false,
+    xml_signed: "",
+    urlPDF: "",
+    xmlUrl: "",
+    xmlFileNm: "",
 
     sellerName: "",
     sellerTaxcode: "",
@@ -210,6 +242,12 @@ export default {
     user() {
       return this.$store.getters["auth/user"];
     },
+    limitHeight1() {
+      if (this.isMaximized) {
+        return Math.floor(this._calculateHeight(this.windowHeight, 90));
+      }
+      return Math.floor(this._calculateHeight(this.windowHeight, 80));
+    },
     limitHeight() {
       if (this.$vuetify.breakpoint.smAndUp) {
         return 600;
@@ -248,21 +286,21 @@ export default {
           caption: this.$t("store_name"),
           dataType: "text",
         },
-        {
-          dataField: "POS_NO",
-          caption: this.$t("pos"),
-          dataType: "text",
-        },
-        {
-          dataField: "BILL_NO",
-          caption: this.$t("bill_number"),
-          dataType: "text",
-        },
-        {
-          dataField: "SALES_CATEGORY",
-          caption: this.$t("sales_category"),
-          dataType: "text",
-        },
+        // {
+        //   dataField: "POS_NO",
+        //   caption: this.$t("pos"),
+        //   dataType: "text",
+        // },
+        // {
+        //   dataField: "BILL_NO",
+        //   caption: this.$t("bill_number"),
+        //   dataType: "text",
+        // },
+        // {
+        //   dataField: "SALES_CATEGORY",
+        //   caption: this.$t("sales_category"),
+        //   dataType: "text",
+        // },
         {
           dataField: "PAYMENT_METHOD",
           caption: this.$t("payment_type"),
@@ -274,12 +312,12 @@ export default {
           formatFloat: 2,
           dataType: "number",
         },
-        {
-          dataField: "ACTUAL_SALES",
-          caption: this.$t("actual_sales"),
-          formatFloat: 2,
-          dataType: "number",
-        },
+        // {
+        //   dataField: "ACTUAL_SALES",
+        //   caption: this.$t("actual_sales"),
+        //   formatFloat: 2,
+        //   dataType: "number",
+        // },
         {
           dataField: "TOTAL_DC_AMT",
           caption: this.$t("discount"),
@@ -419,18 +457,21 @@ export default {
         {
           dataField: "SUB_VAT_RATE",
           caption: this.$t("tax_rate"),
+          width: 120,
         },
         {
           dataField: "SUB_AMT",
           caption: this.$t("net_amount"),
           formatFloat: 2,
           dataType: "number",
+          width: 200,
         },
         {
           dataField: "SUB_VAT_AMT",
           caption: this.$t("vat_amount"),
           formatFloat: 2,
           dataType: "number",
+          width: 200,
         },
       ];
     },
@@ -459,7 +500,7 @@ export default {
     async grdSearchClick(cell) {
       //   console.log("file: 6095450.vue:372 [vng-304] grdSearchClick [vng-304] cell:", cell);
       this.masterPK = await cell.data.PK;
-
+      this.xml_signed = cell.data.DATA_XML;
       await this.$refs.grdMaster.loadData();
       await this.$refs.grdDetail.loadData();
     },
@@ -508,54 +549,33 @@ export default {
           break;
       }
     },
-    // async onPreview() {
-    //   // if (!this.$refs.grdCompany.getSelectedRows().length) {
-    //   //   return this.showNotification("warning", this.$t("error_occurs"), "pls_select_einvoice");
-    //   // }
-    //   let _Pk = "";
-    //   _Pk = this.masterPK ;
-    //   this.isProcessing = true;
-
-    //   // this.pdfUrl = await this.pdfUrlGetter(_Pk);
-    //   // console.log("file: 6095450.vue:520 [vng-304] onPreview [vng-304] pdfUrl:", this.pdfUrl)
-
-    //   // const pdfUrl = window.URL.createObjectURL(new Blob([new Uint8Array(this.$refs.grdCompany.getSelectRowsData()[0].FILE_CONTENT.data)], {type: "application/octet-stream",}));
-    //   // this.pdfUrl = pdfUrl;
-      
-    //   this.$nextTick(() => {
-    //     this.isProcessing = false;
-    //     this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
-    //   });
-    // },
-    // async pdfUrlGetter(pk) {
-    //   console.log("file: 6095450.vue:526 [vng-304] pdfUrlGetter [vng-304] pk:", pk)
-    //   // const pdfUrlExcel = await this.getEinvoice(this, pk)
-    //   // return pdfUrlExcel
-
-    //   let _Pk = "";
-    //   this.masterPK = _Pk;
-
-    //   let res = await this.$axios.$post("/einvoice/downloadpdf", {
-    //     responseType: "json",
-    //     para: {
-    //       // tei_einvoice_m_pk: _Pk,
-    //       token: "",
-    //       proc: "EI_SEL_XML_FILE_F_CLIENT",
-    //       trade_code: pk,
-    //     },
-    //   });
-    //   console.log("file: 6095450.vue:540 [vng-304] pdfUrlGetter [vng-304] res:", res)
-    //   return res;
-      
-    // },
+    async onPreview() {
+      this.showLoading = true;
+        try {
+          let res_url = await this.$axios.$post("/einvoice/general-pdf-template-send-bill", {
+            responseType: "json",
+            data: this.masterPK,
+          });
+          this.urlPDF = null;
+          if (res_url.success) {
+            this.urlPDF = res_url.data;
+            this.showLoading = false;
+            this.showPDF = true;
+          }
+        } catch (e) {
+          this.showNotification("danger", this.$t("fail_view_to_url", "Error"), e.message);
+        }
+    },
     async OnPreviewXML() {
       if (!this.masterPK == null) {
         return this.showNotification("warning", this.$t("error_occurs"), "pls_select_invoice");
       }
 
-      if (!this.modelMaster.DATA_XML) {
-        let data_xml = this.onGeneralXML();
-      }
+      this.xmlUrl = this.xml_signed;
+      this.$nextTick(() => {
+        this.isProcessing = false;
+        this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
+      });
     },
     async getListCodes() {
       const results = await this._getCommonCode2(["ACEI0010", "ACEI0040", "ACEI0120", "ACEI0190", "ACEI0140", "ACEIN010", "ACJS0460"], this.user.PK);

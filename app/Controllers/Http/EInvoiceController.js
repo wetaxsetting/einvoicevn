@@ -2576,6 +2576,18 @@ class EInvoiceController {
     }
   }
 
+   makeid(length) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+    return result.toLocaleUpperCase();
+  }
+
   async weTaxCheckingDeclarations({ request, response, auth }) {
     try {
       var p_language = request.header("accept-language", "ENG");
@@ -2585,6 +2597,54 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
       const { trade_code, tax_code, req_key } = request.all();
+      let cr_pos_key = await this.makeid(5);
+
+      let para_value_r = {
+        req_key: req_key,
+        trade_code: trade_code,
+        content: "",
+        inform_desc: "Thông báo về việc chấp nhận đăng ký/thay đổi thông tin",
+        inform_code: "5",
+        pos_key: cr_pos_key,
+      };
+
+      const re_data = await DBService.ExecuteSQLBlob(
+        `BEGIN ei_upd_file_xml_v6_test(
+                                :req_key, 
+                                :trade_code,
+                                :content, 
+                                :inform_desc, 
+                                :inform_code,
+                                :pos_key,
+                                :p_language, 
+                                :p_crt_by, 
+                                :p_rtn_cur); END;`,
+                                para_value_r,
+        p_language,
+        p_crt_by
+      );
+        console.log("re_data  ", re_data);
+        cr_pos_key = re_data.p_rtn_cur[0].POS_KEY;
+      //// === tam thoi dong de tao pos key
+      return response.send(
+        Utils.response(true, `checking_declare_success`, {
+          tax_code: tax_code,
+          req_key: req_key,
+          inform_desc: "Thông báo về việc chấp nhận đăng ký/thay đổi thông tin",
+          inform_code: "5",
+          content: {
+                      soTBao: "177998/TB-CTHN-KDT",
+                      mauTBao: "01/TB-ĐKĐT",
+                      tenTBao: "Thông báo về việc chấp nhận thay đổi thông tin sử dụng hóa đơn điện tử",
+                      ngayTBao: "2023-08-10T08:08:44",
+                      ngayCQTKy: "2023-08-10T08:09:34",
+                      tthaiXNhanCQT: 1
+                  },
+          pos_key: cr_pos_key,
+        })
+      );
+
+      //// === tam thoi dong de tao pos key
 
       let para_value;
       let pos_key = "";
@@ -2650,6 +2710,8 @@ class EInvoiceController {
           pos_key: pos_key,
         })
       );
+
+
     } catch (e) {
       Utils.Logger({
         LVL: "error",

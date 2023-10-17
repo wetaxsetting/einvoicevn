@@ -105,8 +105,10 @@
                                     </BaseInput>
                                 </v-col>
                                 <v-col md="4" class="pl-5 pt-1 pr-5">
-                                    <BaseSelect outlined :label="$t('declaration_name')" v-model="modelMaster.DECLARE_CD"
-                                        :lstData="dataMasterList.declarationNameList" item-text="NAME" item-value="CODE" />
+                                    <!-- <BaseSelect outlined :label="$t('declaration_name')" v-model="modelMaster.DECLARE_CD"
+                                        :lstData="dataMasterList.declarationNameList" item-text="NAME" item-value="CODE" /> -->
+                                        <BaseInput outlined :label="$t('address')" v-model="modelMaster.TEN">
+                                    </BaseInput>
                                 </v-col>
                                 <!--  -->
                                 <v-col md="4" class="pl-5 pt-1">

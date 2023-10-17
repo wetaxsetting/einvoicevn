@@ -23,7 +23,7 @@
               <BaseGridView
                 ref="grdSearch"
                 :header="headerList.grdSearch"
-                sel_procedure="AC_SEL_6095080_S_04"
+                sel_procedure="AC_SEL_6095080_04"
                 selectionmode="singlerow"
                 :multiselect="true"
                 :height="limitHeight"

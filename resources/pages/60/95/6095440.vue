@@ -56,23 +56,22 @@
                                             @onclick="onClick('viewXML')" />
                                         <BaseButton icon_type="xml" :btn_text="$t('view_dec')"
                                             @onclick="onClick('viewDEC')" />
-
                                         <BaseButton btn_type="text" :btn_text="$t('checking_declaration')"
-                                            @onclick="onClick('checkingDeclaration')" />
+                                            @onclick="onClick('checkingDeclaration')" :disabled="1" />
                                         <BaseButton btn_type="text" :btn_text="$t('general_declaration')"
                                             @onclick="onClick('generalDeclaration')"
-                                            :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
+                                            :disabled="1" />
                                         <!-- Add -->
                                         <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')"
-                                            @onclick="onClick('newMaster')" />
+                                            @onclick="onClick('newMaster')" :disabled="1"/>
                                         <!-- Save -->
                                         <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')"
                                             @onclick="onClick('saveMaster')"
-                                            :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
+                                            :disabled="1" />
                                         <!-- Delete -->
                                         <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')"
                                             @onclick="onClick('deleteMaster')"
-                                            :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
+                                            :disabled="1" />
                                     </GwFlexBox>
                                 </v-col>
                             </v-row>
@@ -287,17 +286,17 @@
                         <v-col md="12">
                             <GwFlexBox justify="end">
                                 <BaseButton icon_type="import" :btn_text="$t('import_token')"
-                                    @onclick="onGetDetailDeclaration()" />
+                                    @onclick="onGetDetailDeclaration()" :disabled="true"/>
                                 <!-- Add -->
                                 <!-- <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')" @onclick="onClick('newDetail')" /> -->
                                 <!-- Save -->
                                 <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')"
                                     @onclick="onClick('saveDetail')"
-                                    :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
+                                    :disabled="true" />
                                 <!-- Delete -->
                                 <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')"
                                     @onclick="onClick('deleteDetail')"
-                                    :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
+                                    :disabled="true" />
                             </GwFlexBox>
                         </v-col>
                         <v-col md="12">
@@ -730,6 +729,16 @@ export default {
             this.headerList.grdSearch = [{
                 dataField: "NO",
                 caption: this.$t("no"),
+            },
+            {
+            dataField: "STATUS",
+            caption: this.$t("status"),
+            },
+            {
+            dataField: "NLAP",
+            caption: this.$t("reg_date"),
+            dataType: "date",
+            format: this.curLang.DATE_FORMAT,
             },
             {
                 dataField: "DECLARE_NM",

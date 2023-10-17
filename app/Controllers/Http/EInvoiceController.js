@@ -5029,6 +5029,7 @@ class EInvoiceController {
       } = request.all();
 
       console.log("======================weTaxSendOrderInfo BEGIN===================");
+      console.log("weTaxSendOrderInfo tax_code  ",tax_code );
       console.log("weTaxSendOrderInfo p_crt_by  ",p_crt_by );
       console.log("weTaxSendOrderInfo sale_date  ",sale_date );
       console.log("weTaxSendOrderInfo store_code  ",store_code );

@@ -131,6 +131,7 @@ let _exceljs  = {
         });
 
         let _url = window.URL.createObjectURL(_blob);
+        console.log("_url  ", _url)
         var tag_a = document.createElement("a");
         document.body.appendChild(tag_a);
         tag_a.style = "display: none";

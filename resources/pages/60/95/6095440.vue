@@ -57,21 +57,21 @@
                                         <BaseButton icon_type="xml" :btn_text="$t('view_dec')"
                                             @onclick="onClick('viewDEC')" />
                                         <BaseButton btn_type="text" :btn_text="$t('checking_declaration')"
-                                            @onclick="onClick('checkingDeclaration')" :disabled="1" />
+                                            @onclick="onClick('checkingDeclaration')" :disabled="true" />
                                         <BaseButton btn_type="text" :btn_text="$t('general_declaration')"
                                             @onclick="onClick('generalDeclaration')"
-                                            :disabled="1" />
+                                            :disabled="true" />
                                         <!-- Add -->
                                         <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')"
-                                            @onclick="onClick('newMaster')" :disabled="1"/>
+                                            @onclick="onClick('newMaster')" :disabled="true"/>
                                         <!-- Save -->
                                         <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')"
                                             @onclick="onClick('saveMaster')"
-                                            :disabled="1" />
+                                            :disabled="true" />
                                         <!-- Delete -->
                                         <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')"
                                             @onclick="onClick('deleteMaster')"
-                                            :disabled="1" />
+                                            :disabled="true" />
                                     </GwFlexBox>
                                 </v-col>
                             </v-row>

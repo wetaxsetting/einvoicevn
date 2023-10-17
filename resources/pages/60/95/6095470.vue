@@ -7,9 +7,8 @@
             <v-col lg="12" class="text-right">
               <GwFlexBox class="d-flex justify-end">
                 <BaseButton icon_type="search" :btn_text="$t('search')" :disabled="isProcessing" @onclick="onClickButton('search')" />
-                <BaseButton icon_type="preview" :btn_text="$t('preview')" :disabled="isProcessing" @onclick="onClickButton('preview')" />
-                <BaseButton icon_type="viewxml" :btn_text="$t('viewxml')" :disabled="isProcessing" @onclick="onClickButton('viewxml')" />
-                <!-- <BaseButton icon_type="viewpdf" :btn_text="$t('viewpdf')" :disabled="isProcessing" @onclick="onClickButton('viewpdf')" /> -->
+                <BaseButton icon_type="preview" :btn_text="$t('preview')" :disabled="!this.masterPK" @onclick="onClickButton('preview')" />
+                <BaseButton icon_type="viewxml" :btn_text="$t('viewxml')" :disabled="!this.masterPK" @onclick="onClickButton('viewxml')" />
               </GwFlexBox>
             </v-col>
           </v-row>
@@ -78,7 +77,7 @@
               <BaseGridView
                 ref="grdCompany"
                 :auto_load="false"
-                sel_procedure="AC_SEL_6095450_01_NC"
+                sel_procedure="AC_SEL_6095470_01_NC"
                 select_mode="Single"
                 :max_height="limitHeight"
                 :header="headerGrid"
@@ -128,7 +127,7 @@
                 :auto_load="false"
                 select_mode="Single"
                 :max_height="limitHeightM"
-                sel_procedure="AC_SEL_6095450_02_NC"
+                sel_procedure="AC_SEL_6095470_02_NC"
                 :header="headerProD"
                 :filter_paras="[this.masterPK]"
               />
@@ -141,7 +140,7 @@
                 :auto_load="false"
                 select_mode="Single"
                 :max_height="limitHeightGridDetails"
-                sel_procedure="AC_SEL_6095450_03_NC"
+                sel_procedure="AC_SEL_6095470_03_NC"
                 :header="headerProVAT"
                 :filter_paras="[this.masterPK]"
               />
@@ -151,7 +150,6 @@
       </v-col>
     </v-row>
     <GwLoading :visible="showLoading" />
-    <!-- <view-einvoice-pdf-dialog ref="ViewEInvoicePDFDialog" :src_pdfUrl="pdfUrl"></view-einvoice-pdf-dialog> -->
     <v-dialog v-model="showPDF" max-width="800">
       <v-container fluid>
         <v-row no-gutters>
@@ -189,9 +187,9 @@ export default {
     "view-einvoice-xml-dialog": ViewEInvoiceXMLDialog,
   },
   data: () => ({
-    showLoading: false,
-    isMaximized: false,
     isShowLeft: true,
+    isMaximized: false,
+    showPDF: false,
     showLoading: false,
     xml_signed: "",
     urlPDF: "",
@@ -260,7 +258,7 @@ export default {
     },
     limitHeightGridDetails() {
       if (this.$vuetify.breakpoint.smAndUp) {
-        return 200;
+        return 218;
       }
     },
     headerGrid() {
@@ -271,39 +269,39 @@ export default {
           caption: this.$t("no"),
         },
         {
-          dataField: "SALE_DATE",
+          dataField: "INVOICE_DATE",
           caption: this.$t("sale_date"),
           dataType: "date",
           format: this.curLang.DATE_FORMAT,
         },
+        //   {
+        //     dataField: "STORE_CODE",
+        //     caption: this.$t("store_id"),
+        //     dataType: "text",
+        //   },
+        //   {
+        //     dataField: "STORE_NAME",
+        //     caption: this.$t("store_name"),
+        //     dataType: "text",
+        //   },
+        //   {
+        //     dataField: "POS_NO",
+        //     caption: this.$t("pos"),
+        //     dataType: "text",
+        //   },
+        //   {
+        //     dataField: "BILL_NO",
+        //     caption: this.$t("bill_number"),
+        //     dataType: "text",
+        //   },
+        //   {
+        //     dataField: "SALES_CATEGORY",
+        //     caption: this.$t("sales_category"),
+        //     dataType: "text",
+        //   },
         {
-          dataField: "STORE_CODE",
-          caption: this.$t("store_id"),
-          dataType: "text",
-        },
-        {
-          dataField: "STORE_NAME",
-          caption: this.$t("store_name"),
-          dataType: "text",
-        },
-        // {
-        //   dataField: "POS_NO",
-        //   caption: this.$t("pos"),
-        //   dataType: "text",
-        // },
-        // {
-        //   dataField: "BILL_NO",
-        //   caption: this.$t("bill_number"),
-        //   dataType: "text",
-        // },
-        // {
-        //   dataField: "SALES_CATEGORY",
-        //   caption: this.$t("sales_category"),
-        //   dataType: "text",
-        // },
-        {
-          dataField: "PAYMENT_METHOD",
-          caption: this.$t("payment_type"),
+          dataField: "PAY_METHOD",
+          caption: this.$t("pay_method"),
           dataType: "text",
         },
         {
@@ -312,14 +310,14 @@ export default {
           formatFloat: 2,
           dataType: "number",
         },
-        // {
-        //   dataField: "ACTUAL_SALES",
-        //   caption: this.$t("actual_sales"),
-        //   formatFloat: 2,
-        //   dataType: "number",
-        // },
         {
-          dataField: "TOTAL_DC_AMT",
+          dataField: "ACTUAL_SALES",
+          caption: this.$t("actual_sales"),
+          formatFloat: 2,
+          dataType: "number",
+        },
+        {
+          dataField: "DIS_RATE",
           caption: this.$t("discount"),
           formatFloat: 2,
           dataType: "number",
@@ -347,36 +345,37 @@ export default {
           formatFloat: 0,
         },
         {
-          dataField: "MCCQT",
-          caption: this.$t("mccqt"),
-          width:160
+          dataField: "CQT_MCCQT",
+          caption: this.$t("cqt_mccqt"),
         },
         {
-          dataField: "BUYER_COMP_NAME",
+          dataField: "BUYER_COMP_NM",
           caption: this.$t("buyer_name"),
           dataType: "text",
         },
         {
           dataField: "BUYER_TAXCODE",
           caption: this.$t("buyer_taxcode"),
-          dataType: "text",
+          dataType: "number",
+          formatFloat: 0,
         },
         {
-          dataField: "BUYER_ADDRESS",
+          dataField: "BUYER_ADD",
           caption: this.$t("buyer_address"),
           dataType: "text",
         },
+        // {
+        //   dataField: "BUYER_INDENTIFICATION",
+        //   caption: this.$t("buyer_indentification"),
+        //   hidden: true,
+        // },
         {
-          dataField: "BUYER_INDENTIFICATION",
-          caption: this.$t("buyer_indentification"),
-        },
-        {
-          dataField: "BUYER_EMAIL",
+          dataField: "BUYER_EML",
           caption: this.$t("email"),
           dataType: "text",
         },
         {
-          dataField: "BUYER_EMAIL_CC",
+          dataField: "BUYER_EML_CC",
           caption: this.$t("email_cc"),
           dataType: "text",
         },
@@ -403,17 +402,17 @@ export default {
           caption: this.$t("production_name"),
         },
         {
-          dataField: "UOM",
+          dataField: "ITEM_UOM",
           caption: this.$t("unit"),
         },
         {
-          dataField: "QUANTITY",
+          dataField: "QTY",
           caption: this.$t("quantity"),
           dataType: "number",
           formatFloat: 0,
         },
         {
-          dataField: "UPRICE",
+          dataField: "U_PRICE",
           caption: this.$t("price"),
           formatFloat: 2,
           dataType: "number",
@@ -437,13 +436,13 @@ export default {
           dataType: "number",
         },
         {
-          dataField: "AMT",
+          dataField: "VAT_TR_AMT",
           caption: this.$t("amount"),
           formatFloat: 2,
           dataType: "number",
         },
         {
-          dataField: "NATURE",
+          dataField: "VAT_BK_AMT",
           caption: this.$t("nature"),
           dataType: "number",
           formatFloat: 0,
@@ -471,7 +470,7 @@ export default {
           caption: this.$t("vat_amount"),
           formatFloat: 2,
           dataType: "number",
-          width: 200,
+          width: 205,
         },
       ];
     },
@@ -498,9 +497,9 @@ export default {
   },
   methods: {
     async grdSearchClick(cell) {
-      //   console.log("file: 6095450.vue:372 [vng-304] grdSearchClick [vng-304] cell:", cell);
+      console.log("file: 6095470.vue:500 [vng-304] grdSearchClick [vng-304] cell:", cell);
       this.masterPK = await cell.data.PK;
-      this.xml_signed = cell.data.DATA_XML;
+      this.xml_signed = cell.data.CQT_XML_SIGNED;
       await this.$refs.grdMaster.loadData();
       await this.$refs.grdDetail.loadData();
     },
@@ -550,9 +549,10 @@ export default {
       }
     },
     async onPreview() {
-      this.showLoading = true;
+      if (this.masterPK) {
+        this.showLoading = true;
         try {
-          let res_url = await this.$axios.$post("/einvoice/general-pdf-template-send-bill", {
+          let res_url = await this.$axios.$post("/einvoice/general-pdf-template-WT", {
             responseType: "json",
             data: this.masterPK,
           });
@@ -565,17 +565,16 @@ export default {
         } catch (e) {
           this.showNotification("danger", this.$t("fail_view_to_url", "Error"), e.message);
         }
+      }
     },
     async OnPreviewXML() {
-      if (!this.masterPK == null) {
-        return this.showNotification("warning", this.$t("error_occurs"), "pls_select_invoice");
+      if (this.masterPK) {
+        this.xmlUrl = this.xml_signed;
+        this.$nextTick(() => {
+          this.isProcessing = false;
+          this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
+        });
       }
-
-      this.xmlUrl = this.xml_signed;
-      this.$nextTick(() => {
-        this.isProcessing = false;
-        this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
-      });
     },
     async getListCodes() {
       const results = await this._getCommonCode2(["ACEI0010", "ACEI0040", "ACEI0120", "ACEI0190", "ACEI0140", "ACEIN010", "ACJS0460"], this.user.PK);

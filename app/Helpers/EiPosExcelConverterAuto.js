@@ -7,7 +7,7 @@ class EiExcelConverterAuto {
 	constructor() {
 
 	}
-	async ExcelBuilder(p_crt_by, einvoiceMasterData, einvoiceDetailData, einvoicePk,_sourceRow, _sourceRow_2, _sourceRow_3, headerRowCount, countFromEndDetailToSignBox,lastPageRowsHeight, reportPath, reportSheet, signPath, cancelPath, bgPath,masterDataArray, detailCellFormat, logos, signCell, signBoxCell, signByCell, cancelYn,backgroundCell,backgroundRow, backgroundWidth, backgroundHeight){
+	async ExcelBuilder(p_crt_by, einvoiceMasterData, einvoiceDetailData,einvoiceVAT_Bill, einvoicePk,_sourceRow, _sourceRow_2, _sourceRow_3, headerRowCount, countFromEndDetailToSignBox,lastPageRowsHeight, reportPath, reportSheet, signPath, cancelPath, bgPath,masterDataArray, detailCellFormat, logos, signCell, signBoxCell, signByCell, cancelYn,backgroundCell,backgroundRow, backgroundWidth, backgroundHeight){
 		//(p_crt_by, einvoiceDetailData, einvoicePk, _sourceRow, _sourceRow_2, _sourceRow_3, headerRowCount, countFromEndDetailToSignBox, lastPageRowsHeight, reportPath, reportSheet, signPath, cancelPath, bgPath, masterDataArray, detailCellFormat, logos, signCell, signBoxCell, signByCell, cancelYn, backgroundCell,backgroundRow, backgroundWidth, backgroundHeight) {
 		// console.log('===> ', p_crt_by)
 		// console.log(einvoiceDetailData)
@@ -168,28 +168,22 @@ class EiExcelConverterAuto {
 		//END-this part calculate the number of pages base on the data.
 
 		//this part re-format amt.
-		// if(einvoiceMasterData[0]["TOTAL_PAYMENT_WORD_VIE"] == null){
+		
+		var  NOTVAT_DEL_YN		 = einvoiceMasterData[0]["NOTVAT_DEL_YN"].toString() ;
+		var VAT_RATE5_YN = einvoiceMasterData[0]["VAT_RATE5_YN"].toString() ;
+		var VAT_RATE8_YN = einvoiceMasterData[0]["VAT_RATE8_YN"].toString() ;
+		var VAT_RATE10_YN = einvoiceMasterData[0]["VAT_RATE10_YN"].toString() ;
+		var ORHER_VAT_RATE_YN = einvoiceMasterData[0]["ORHER_VAT_RATE_YN"].toString() ;
 
-		// }
-		if (einvoiceMasterData[0]["CCY"].toString() == "VND") {
-			lb_amount_trans = "";
-			amount_trans = "";
-			amount_total = einvoiceMasterData[0]["TOTALAMOUNT_DISPLAY"] == null ? null : einvoiceMasterData[0]["TOTALAMOUNT_DISPLAY"].toString();
-			amount_vat = einvoiceMasterData[0]["VATAMOUNT_DISPLAY"] == null ? null : einvoiceMasterData[0]["VATAMOUNT_DISPLAY"].toString();
-			amount_net = einvoiceMasterData[0]["NETAMOUNT_DISPLAY"] == null ? null : einvoiceMasterData[0]["NETAMOUNT_DISPLAY"].toString();
-			read_price = einvoiceMasterData[0]["TOTALAMOUNTINWORD"] == null ? null : einvoiceMasterData[0]["TOTALAMOUNTINWORD"].toString();
-			// read_price = this.NumberToTextVN(parseFloat(einvoiceMasterData[0]["TOTALAMOUNTINWORD"] == null ? null : einvoiceMasterData[0]["TOTALAMOUNTINWORD"].toString()));
-		}
-		else {
-			lb_amount_trans = einvoiceMasterData[0]["EXCHANGE_RATE"] == null ? null : einvoiceMasterData[0]["EXCHANGE_RATE"].toString();
-			amount_trans = einvoiceMasterData[0]["TOTALAMT_TR_DISPLAY"] == null ? null : einvoiceMasterData[0]["TOTALAMT_TR_DISPLAY"].toString();
-			amount_total = einvoiceMasterData[0]["TOTALAMOUNT_DISPLAY"] == null ? null : einvoiceMasterData[0]["TOTALAMOUNT_DISPLAY"].toString();
-			amount_vat = einvoiceMasterData[0]["VATAMOUNT_DISPLAY"] == null ? null : einvoiceMasterData[0]["VATAMOUNT_DISPLAY"].toString();
-			amount_net = einvoiceMasterData[0]["NETAMOUNT_DISPLAY"] == null ? null : einvoiceMasterData[0]["NETAMOUNT_DISPLAY"].toString();
+		if(einvoiceMasterData[0]["TOTALAMOUNTINWORD_VIE"]){
+			read_price = Utils.Num2VNText(einvoiceMasterData[0]["TOTALAMOUNT_DISPLAY_VIE"].toString(), einvoiceMasterData[0]["CCY"].toString());  
+			read_price = read_price.substr(0, 2) + read_price.substr(2, read_price.length - 2).toLowerCase() + '.';
 
-			read_price = this.Num2VNText(einvoiceMasterData[0]["TOTALAMOUNTINWORD"].toString(), "USD");
+		}else
+		{
+			read_price = einvoiceMasterData[0]["TOTALAMOUNTINWORD_VIE"];
 		}
-		read_price = read_price.substr(0, 2) + read_price.substr(2, read_price.length - 2).toLowerCase() + '.';
+
 		//read_priceV=NumberToTextVN(parseFloat(einvoiceMasterData[0]["TOTALAMOUNTINWORD"] == null ? null : einvoiceMasterData[0]["TOTALAMOUNTINWORD"].toString()));
 		//read_priceU=Num2VNText(einvoiceMasterData[0]["TOTALAMOUNTINWORD"].toString(), "USD");
 		
@@ -569,7 +563,7 @@ class EiExcelConverterAuto {
 				//"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
 				//"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
 
-				console.log("e  " , e)
+				console.log("file: EiPosExcelConverterAuto.js:573 [vng-304] ExcelBuilder [vng-304] e:", e)
 				if (e > 0) {
 					for (let i = 0; i < e; i++) {
 						const _e = einvoiceDetailData[i + count_2];
@@ -995,6 +989,40 @@ class EiExcelConverterAuto {
 			console.log(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox))
 		}
 
+		//Hidden dòng khi xuất ra VAT nào thừa
+		console.log("einvoiceVAT_Bill ", einvoiceVAT_Bill)
+
+		if(einvoiceVAT_Bill.length > 1)
+		{
+			console.log("einvoiceVAT_Bill 1111", einvoiceVAT_Bill)
+			try {
+				let rowVAT = totalRows + _sourceRow_3;
+			const row = worksheet.getRow(rowVAT);
+				if(NOTVAT_DEL_YN == 'Y')
+				{
+					worksheet.getRow(rowVAT + 1).hidden = true;
+				}
+				if(VAT_RATE5_YN == 'Y')
+				{
+					worksheet.getRow(rowVAT+ 2).hidden = true;
+				}
+				if(VAT_RATE8_YN == 'Y')
+				{
+					worksheet.getRow(rowVAT+ 3).hidden = true;
+				}
+				if(VAT_RATE10_YN == 'Y')
+				{
+					worksheet.getRow(rowVAT+ 4).hidden = true;
+				}
+				if(ORHER_VAT_RATE_YN == 'Y')
+				{
+					worksheet.getRow(rowVAT+ 5).hidden = true;
+				} 
+			} catch (error) {
+				console.log('delete_vat')
+			}
+		}
+		
 
 		let excelUrl = await exceljs.dowloadWorkbook();
 		return excelUrl

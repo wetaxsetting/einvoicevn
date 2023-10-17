@@ -4956,7 +4956,9 @@ class EInvoiceController {
     
 
 
-      const { sale_date = "",
+      const { 
+        tax_code = "",
+        sale_date = "",
         store_code = "",
         store_name = "",
         pos_no = "",
@@ -4973,11 +4975,27 @@ class EInvoiceController {
       console.log("weTaxSendOrderInfo bill_no  ",bill_no );
       console.log("weTaxSendOrderInfo data_invoice  ",data_invoice );
       console.log("======================weTaxSendOrderInfo END===================");
-      
+
       if (!data_invoice) {
         return response.send(Utils.response(false, `Invalid data_invoice `, {
           error_code: "3018",
           error_name: "Invalid data_invoice"
+        })
+        );
+      }
+
+      if (!sale_date) {
+        return response.send(Utils.response(false, `Invalid sale_date `, {
+          error_code: "3018",
+          error_name: "Invalid sale_date"
+        })
+        );
+      }
+
+      if (!tax_code) {
+        return response.send(Utils.response(false, `Invalid tax_code `, {
+          error_code: "3018",
+          error_name: "Invalid tax_code"
         })
         );
       }

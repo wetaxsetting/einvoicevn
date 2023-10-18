@@ -229,6 +229,7 @@ export default {
     },
     masterPK: "",
     pdfUrl: "",
+    showPDF:false
   }),
 
   async created() {

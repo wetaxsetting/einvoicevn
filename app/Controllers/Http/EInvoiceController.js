@@ -4864,6 +4864,7 @@ class EInvoiceController {
     let status = true;
     let resMess = "";
     const mess1 = "Invalid field";
+    console.log("invalid_pos_invoices  ", invalid_pos_invoices)
     try {
     
       const errorList = [
@@ -5097,6 +5098,7 @@ class EInvoiceController {
           seller_taxcode: invoice.seller_taxcode,
           seller_address: invoice.seller_address,
           seller_phone: invoice.seller_phone,
+          // buyer_nm: invoice.buyer_nm || '', tam thoi dong -- vng-199
           buyer_comp_name: invoice.buyer_comp_name || '',
           buyer_taxcode: invoice.buyer_taxcode,
           buyer_phone: invoice.buyer_phone,
@@ -9517,12 +9519,12 @@ class EInvoiceController {
         STT: dataObject.detail_invoice[j].seq,
         MHHDVu: dataObject.detail_invoice[j].item_code,
         THHDVu: dataObject.detail_invoice[j].item_name,
-        DVTinh: dataObject.detail_invoice[j].uom,
+        DVTinh: dataObject.detail_invoice[j].unit,
         SLuong: dataObject.detail_invoice[j].quantity,
-        DGia: dataObject.detail_invoice[j].uprice,
+        DGia: dataObject.detail_invoice[j].unit_price,
         TLCKhau: dataObject.detail_invoice[j].dc_rate,
         STCKhau: dataObject.detail_invoice[j].dc_amt,
-        ThTien: dataObject.detail_invoice[j].amt,
+        ThTien: dataObject.detail_invoice[j].amount,
         TSuat: dataObject.detail_invoice[j].vat_rate,
       });
     }

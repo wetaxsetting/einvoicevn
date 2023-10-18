@@ -438,7 +438,7 @@ export default {
         await this.initHeaderList();
         await this.initModel();
 
-        this.pdf_handler = require("./js/EiExcelDECHandler.js");
+        this.pdf_handler = require("./js/EiWTExcelDECHandler.js");
         if (!!this.pdf_handler) {
             Object.assign(this, this.pdf_handler.default);
         }

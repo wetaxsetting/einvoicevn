@@ -4947,7 +4947,7 @@ class EInvoiceController {
       // }
 
       for (let i = 0; i < invalid_pos_invoices.length; i++) {
-        // console.log(" i ", i, "  sss", invalid_pos_invoices[i]);
+         console.log(" i ", i, "  sss", invalid_pos_invoices[i]);
 
         for (let j = 0; j < invalid_pos_invoices[i].detail_invoice.length; j++) {
           for (const key in errorList[0].detail_invoice[0]) {
@@ -4969,10 +4969,12 @@ class EInvoiceController {
               };
             }
           }
-          
+        }
+        
+        for (let j = 0; j < invalid_pos_invoices[i].total_vat_list.length; j++) {
           for (const key in errorList[0].total_vat_list[0]) {
             // valid digital_certificates
-            console.log(invalid_pos_invoices[i].total_vat_list[j][key])
+            //console.log(invalid_pos_invoices[i].total_vat_list)
             if ( invalid_pos_invoices[i].total_vat_list[j][key] === undefined ||   invalid_pos_invoices[i].total_vat_list[j][key] == null ) {
               status = false;
               resMess = `${mess1} invoices ${key}.`;
@@ -4990,6 +4992,7 @@ class EInvoiceController {
             }
           }
         }
+
       }
       console.log("status ", status, " resMess ", resMess);
       // if dont have any problem

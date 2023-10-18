@@ -349,22 +349,27 @@ export default {
         {
           dataField: "MCCQT",
           caption: this.$t("mccqt"),
-          width:160
+          width:200
         },
         {
           dataField: "BUYER_COMP_NAME",
           caption: this.$t("buyer_name"),
           dataType: "text",
+          width:200
         },
         {
           dataField: "BUYER_TAXCODE",
           caption: this.$t("buyer_taxcode"),
           dataType: "text",
+          width:120
+
         },
         {
           dataField: "BUYER_ADDRESS",
           caption: this.$t("buyer_address"),
           dataType: "text",
+          width:500
+
         },
         {
           dataField: "BUYER_INDENTIFICATION",
@@ -374,6 +379,8 @@ export default {
           dataField: "BUYER_EMAIL",
           caption: this.$t("email"),
           dataType: "text",
+          width:200
+
         },
         {
           dataField: "BUYER_EMAIL_CC",
@@ -401,6 +408,7 @@ export default {
         {
           dataField: "ITEM_NAME",
           caption: this.$t("production_name"),
+          width:200
         },
         {
           dataField: "UOM",
@@ -441,6 +449,7 @@ export default {
           caption: this.$t("amount"),
           formatFloat: 2,
           dataType: "number",
+          width:200
         },
         {
           dataField: "NATURE",

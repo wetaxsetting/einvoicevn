@@ -176,7 +176,7 @@ class EiExcelConverterAuto {
 		var ORHER_VAT_RATE_YN = einvoiceMasterData[0]["ORHER_VAT_RATE_YN"].toString() ;
 
 		if(einvoiceMasterData[0]["TOTALAMOUNTINWORD_VIE"]){
-			read_price = Utils.Num2VNText(einvoiceMasterData[0]["TOTALAMOUNT_DISPLAY_VIE"].toString(), einvoiceMasterData[0]["CCY"].toString());  
+			read_price = Utils.Num2VNText(einvoiceMasterData[0]["TOTAL_PAYMENT"].toString(), einvoiceMasterData[0]["CCY"].toString());  
 			read_price = read_price.substr(0, 2) + read_price.substr(2, read_price.length - 2).toLowerCase() + '.';
 
 		}else
@@ -241,6 +241,8 @@ class EiExcelConverterAuto {
 							case "TOTALAMOUNTINWORD":
 								console.log("e    ", e ,  read_price)
 								worksheet.getCell( `${e.Cell}`).value = read_price != null ? read_price : '';
+								worksheet.getCell( `${e.Cell}`).style.border = { right: { style: 'thin' }, };
+
 								// console.log(e.Cell+"+"+e.Info)
 								break;
 							// case "read_priceV":
@@ -979,6 +981,7 @@ class EiExcelConverterAuto {
 			}
 			else
 			{
+				console.log("SIGN_YN  ++===> N  ", signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
 				worksheet.getCell(`${signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox)}`).style.border = { top: { style: 'thin' }, right: { style: 'thin' } };
 				worksheet.getCell(`${signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 1)}`).style.border = { right: { style: 'thin' } };
 				worksheet.getCell(`${signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 2)}`).style.border = { bottom: { style: 'thin' }, right: { style: 'thin' } };

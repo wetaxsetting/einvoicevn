@@ -4836,7 +4836,7 @@ class EInvoiceController {
       const id = "ID1";//uuid.v4();
       const xml = this.OBJtoXML(objData);
       const xmlId = xml.toString().replace("<DLieu>", `<DLieu Id=\'${id}\'>`);
-      const xmlRemoveLine = xmlId.toString().replace(/\n/g, "").replace("\"","\'");
+      const xmlRemoveLine = xmlId.toString().replace(/\n/g, "").replaceAll("\"","\'");
       rtnXML = {
         tax_code: tax_code,
         store_code: store_code,

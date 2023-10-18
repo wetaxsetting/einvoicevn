@@ -5015,9 +5015,6 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
 
-    
-
-
       const { 
         tax_code = "",
         sale_date = "",
@@ -8303,9 +8300,9 @@ class EInvoiceController {
       //console.log("sSSSS ", tei_wt_sale_bill_pk);
       let EiExcels = new EiPosExcelHandlerAuto();
       let url_pdf = await EiExcels.getEinvoice(tei_wt_sale_bill_pk, p_language, p_crt_by);
-      // console.log("file: EInvoiceController.js:7625 [vng-304] sendMailToCustomer [vng-304] url_pdf:", url_pdf)
+      console.log("base64PDf  ", url_pdf);
       // console.log("base64PDf  ", url_pdf);
-      //console.log("sSSSS2 ", tei_wt_sale_bill_pk);
+      // console.log("sSSSS2 ", tei_wt_sale_bill_pk);
 
       let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + tei_wt_sale_bill_pk + "&proc=" + "EI_SEL_XML_POS_EINVOICE" + "&token="); //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
       let url_xml = re_url_xml.data;

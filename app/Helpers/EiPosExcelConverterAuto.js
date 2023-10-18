@@ -983,7 +983,7 @@ class EiExcelConverterAuto {
 			{
 				//console.log("SIGN_YN  ++===> N  ", signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
 				// không cần worksheet.getCell(`${signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox)}`).style.border = { top: { style: 'thin' }, right: { style: 'thin' } };
-				worksheet.getCell(`${signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 1)}`).style.border = { right: { style: 'thin' }, left: { style: 'thin' } };
+				worksheet.getCell(`${signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 1)}`).style.border = { right: { style: 'thin' } };
 				//worksheet.getCell(`${signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 2)}`).style.border = { bottom: { style: 'thin' }, right: { style: 'thin' } };
 			
 			}

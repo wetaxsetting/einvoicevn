@@ -4836,7 +4836,7 @@ class EInvoiceController {
       const id = "ID1";//uuid.v4();
       const xml = this.OBJtoXML(objData);
       const xmlId = xml.toString().replace("<DLieu>", `<DLieu Id=\'${id}\'>`);
-      const xmlRemoveLine = xmlId.toString().replace(/\n/g, "");
+      const xmlRemoveLine = xmlId.toString().replace(/\n/g, "").replace("\"","\'");
       rtnXML = {
         tax_code: tax_code,
         store_code: store_code,
@@ -4970,7 +4970,7 @@ class EInvoiceController {
             }
           }
         }
-        
+
         for (let j = 0; j < invalid_pos_invoices[i].total_vat_list.length; j++) {
           for (const key in errorList[0].total_vat_list[0]) {
             // valid digital_certificates

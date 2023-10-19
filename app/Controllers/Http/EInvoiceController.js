@@ -2173,10 +2173,7 @@ class EInvoiceController {
       );
       //console.log(res);
       let req_key = res.p_rtn_cur[0].TEI_COMPANY_PK;
-      if (res.p_rtn_cur[0].STATUS_CD == "000") {
-        if (!tokens) {
-          tokens = []
-        }
+      if (res.p_rtn_cur[0].STATUS_CD == "000" && tokens?.length) {
         for (let i = 0; i < tokens.length; i++) {
           //const caName = tokens[i].issuer.split('CN=');
 

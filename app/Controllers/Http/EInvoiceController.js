@@ -5616,8 +5616,8 @@ class EInvoiceController {
       const logo_image = request.file("logo_image");
       const background_image = request.file("background_image");
 
-      console.log("weTaxSendCompanyTemplate logo_image : ", logo_image);
-      console.log("weTaxSendCompanyTemplate background_image :",background_image);
+      //console.log("weTaxSendCompanyTemplate logo_image : ", logo_image);
+      //console.log("weTaxSendCompanyTemplate background_image :",background_image);
       console.log("weTaxSendCompanyTemplate form_no :",form_no);
       console.log("weTaxSendCompanyTemplate serial_no :",serial_no);
       console.log("weTaxSendCompanyTemplate symbol_type : ", symbol_type);
@@ -5706,7 +5706,7 @@ class EInvoiceController {
         p_end_dt: end_date || '',
         p_start_num: start_number,
         p_template_cd: template_id,
-        p_url_img_logo: file_path_logo,
+        p_url_img_logo: file_path_logo.replace("/assets", "assets"),
         p_url_img_bg: "",//file_path_bg,
         p_logo_width: logo_width,
         p_logo_height: logo_height,

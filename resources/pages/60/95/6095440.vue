@@ -80,7 +80,10 @@
                                     <BaseSelect outlined :label="$t('version')" :lstData="dataMasterList.versionList"
                                         v-model="modelMaster.PBAN" item-text="NAME" item-value="CODE" />
                                 </v-col>
-                                <v-col md="10"></v-col>
+                                <v-col md="8"></v-col>
+                                <v-col md="2" class="pr-5 pt-1">
+                                    <BaseInput outlined :label="$t('pos_key')" v-model="modelMaster.POS_KEY" />
+                                </v-col>
                                 <!--  -->
                                 <v-col md="4" class="pl-5 pt-1">
                                     <BaseSelect outlined item-value="VAL" item-text="NAME" :label="$t('taxpayer_name')"

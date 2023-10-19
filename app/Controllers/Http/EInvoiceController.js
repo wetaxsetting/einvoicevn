@@ -5169,7 +5169,7 @@ class EInvoiceController {
         tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
         console.log("tei_wt_sale_bill_pk  ", tei_wt_sale_bill_pk);
         //console.log("para_value   ", para_value);
-        //console.log("rtnValue   ", rtnValue);
+        console.log("rtnValue   ", rtnValue);
 
         if (rtnValue.p_rtn_cur[0].STATUS == "OK") {
           console.log("tei_wt_sale_bill_pk OK ", tei_wt_sale_bill_pk);
@@ -5210,7 +5210,7 @@ class EInvoiceController {
               amount: invoice.detail_invoice[j].amount,
               vat_rate: invoice.detail_invoice[j].vat_rate,
             };
-            console.log("para_prod_details  ", para_prod_details)
+            //console.log("para_prod_details  ", para_prod_details)
             const rtnValue_VAT = await DBService.ExecuteSQLBlob(
               `BEGIN ei_upd_sale_prod (          
                                                                 :tei_wt_sale_bill_pk,
@@ -5236,7 +5236,7 @@ class EInvoiceController {
         }
         else if (rtnValue.p_rtn_cur[0].STATUS == "NOEXIT")
         {
-          console.log("tei_wt_sale_bill_pk NOEXIT ", tei_wt_sale_bill_pk);
+          //console.log("tei_wt_sale_bill_pk NOEXIT ", tei_wt_sale_bill_pk);
 
           data_rep.push({
             link_invoice_preview: "https://einvoicevn.com/lookup",
@@ -8401,10 +8401,10 @@ class EInvoiceController {
         filename1: data_invoice.mccqt + ".xml",
         filename2: data_invoice.mccqt + ".pdf",
       });
-      console.log("res_send_mail  ", res_send_mail);
+      //console.log("res_send_mail  ", res_send_mail);
       return { res_send_mail, subject, body };
     } catch (error) {
-      console.log("res_send_mail error  ", error);
+      //console.log("res_send_mail error  ", error);
     }
   }
 

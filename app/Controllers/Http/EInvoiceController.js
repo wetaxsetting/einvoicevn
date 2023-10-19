@@ -4864,7 +4864,7 @@ class EInvoiceController {
     let status = true;
     let resMess = "";
     const mess1 = "Invalid field";
-    console.log("invalid_pos_invoices  ", invalid_pos_invoices)
+    //console.log("invalid_pos_invoices  ", invalid_pos_invoices)
     try {
     
       const errorList = [
@@ -4947,7 +4947,7 @@ class EInvoiceController {
       // }
 
       for (let i = 0; i < invalid_pos_invoices.length; i++) {
-         console.log(" i ", i, "  sss", invalid_pos_invoices[i]);
+        // console.log(" i ", i, "  sss", invalid_pos_invoices[i]);
 
         for (let j = 0; j < invalid_pos_invoices[i].detail_invoice.length; j++) {
           for (const key in errorList[0].detail_invoice[0]) {
@@ -4994,7 +4994,7 @@ class EInvoiceController {
         }
 
       }
-      console.log("status ", status, " resMess ", resMess);
+      //console.log("status ", status, " resMess ", resMess);
       // if dont have any problem
       return {
         status,
@@ -9548,14 +9548,14 @@ class EInvoiceController {
       objInvoice_M.HDon.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat.push({
         TSuat: dataObject.total_vat_list[k].sub_vat_rate,
         ThTien: dataObject.total_vat_list[k].sub_amt,
-        TThue: dataObject.total_vat_list[k].sub_amt_vat,
+        TThue: dataObject.total_vat_list[k].sub_vat_amt,
       });
     }
 
     objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTCThue = dataObject.total_amt;
     objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTThue = dataObject.total_amt_vat;
 
-    objInvoice_M.HDon.DLHDon.NDHDon.TToan.TTCKTMai = dataObject.total_dc_amt;
+    objInvoice_M.HDon.DLHDon.NDHDon.TToan.TTCKTMai = dataObject.total_amt_dc;
     objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = dataObject.total_payment;
     if(!dataObject.total_payment_word_vie)
     {

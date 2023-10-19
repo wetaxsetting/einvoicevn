@@ -396,6 +396,7 @@ export default {
         {
           dataField: "ITEM_CODE",
           caption: this.$t("production_code"),
+          width: 120
         },
         {
           dataField: "ITEM_NAME",
@@ -442,7 +443,7 @@ export default {
           dataType: "number",
         },
         {
-          dataField: "VAT_BK_AMT",
+          dataField: "FEATURE",
           caption: this.$t("nature"),
           dataType: "number",
           formatFloat: 0,

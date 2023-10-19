@@ -4836,7 +4836,7 @@ class EInvoiceController {
       const id = "ID1";//uuid.v4();
       const xml = this.OBJtoXML(objData);
       const xmlId = xml.toString().replace("<DLieu>", `<DLieu Id=\'${id}\'>`);
-      const xmlRemoveLine = xmlId.toString().replace(/\n/g, "");
+      const xmlRemoveLine = xmlId.toString().replace(/\n/g, "").replaceAll("\"","\'");
       rtnXML = {
         tax_code: tax_code,
         store_code: store_code,
@@ -4864,6 +4864,7 @@ class EInvoiceController {
     let status = true;
     let resMess = "";
     const mess1 = "Invalid field";
+    console.log("invalid_pos_invoices  ", invalid_pos_invoices)
     try {
     
       const errorList = [
@@ -4946,7 +4947,7 @@ class EInvoiceController {
       // }
 
       for (let i = 0; i < invalid_pos_invoices.length; i++) {
-        // console.log(" i ", i, "  sss", invalid_pos_invoices[i]);
+         console.log(" i ", i, "  sss", invalid_pos_invoices[i]);
 
         for (let j = 0; j < invalid_pos_invoices[i].detail_invoice.length; j++) {
           for (const key in errorList[0].detail_invoice[0]) {
@@ -4968,10 +4969,12 @@ class EInvoiceController {
               };
             }
           }
-          
+        }
+
+        for (let j = 0; j < invalid_pos_invoices[i].total_vat_list.length; j++) {
           for (const key in errorList[0].total_vat_list[0]) {
             // valid digital_certificates
-            console.log(invalid_pos_invoices[i].total_vat_list[j][key])
+            //console.log(invalid_pos_invoices[i].total_vat_list)
             if ( invalid_pos_invoices[i].total_vat_list[j][key] === undefined ||   invalid_pos_invoices[i].total_vat_list[j][key] == null ) {
               status = false;
               resMess = `${mess1} invoices ${key}.`;
@@ -4989,6 +4992,7 @@ class EInvoiceController {
             }
           }
         }
+
       }
       console.log("status ", status, " resMess ", resMess);
       // if dont have any problem
@@ -5097,6 +5101,7 @@ class EInvoiceController {
           seller_taxcode: invoice.seller_taxcode,
           seller_address: invoice.seller_address,
           seller_phone: invoice.seller_phone,
+          // buyer_nm: invoice.buyer_nm || '', tam thoi dong -- vng-199
           buyer_comp_name: invoice.buyer_comp_name || '',
           buyer_taxcode: invoice.buyer_taxcode,
           buyer_phone: invoice.buyer_phone,
@@ -6096,7 +6101,15 @@ class EInvoiceController {
         invoice_xml_signed,
         req_key,
       } = request.all();
-
+      console.log("weTaxSendPosInvoiceToTaxOffice   =========================== BEGIN =======================", )
+      console.log("weTaxSendPosInvoiceToTaxOffice   tax_serial_number ", tax_serial_number )
+      console.log("weTaxSendPosInvoiceToTaxOffice   seller_tax_code ",seller_tax_code )
+      console.log("weTaxSendPosInvoiceToTaxOffice   sale_date ", sale_date )
+      console.log("weTaxSendPosInvoiceToTaxOffice   store_code ", store_code )
+      console.log("weTaxSendPosInvoiceToTaxOffice   pos_no ", pos_no )
+      console.log("weTaxSendPosInvoiceToTaxOffice   invoice_xml_signed ", invoice_xml_signed)
+      console.log("weTaxSendPosInvoiceToTaxOffice   req_key ", req_key)
+      console.log("weTaxSendPosInvoiceToTaxOffice   =========================== END =======================", )
 
       // let json =  this.parseXmlToJson(invoice_xml_signed);
 
@@ -6561,7 +6574,7 @@ class EInvoiceController {
       const urlCheck = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
       const { invoices } = request.all();
 
-      console.log("weTaxSendInvoiceToTaxOffice  invoices  ",p_crt_by);
+      console.log("weTaxSendInvoiceToTaxOffice  invoices  ",invoices);
       const agent = {
         Agent: {
           defaultPort: 443,
@@ -9517,12 +9530,12 @@ class EInvoiceController {
         STT: dataObject.detail_invoice[j].seq,
         MHHDVu: dataObject.detail_invoice[j].item_code,
         THHDVu: dataObject.detail_invoice[j].item_name,
-        DVTinh: dataObject.detail_invoice[j].uom,
+        DVTinh: dataObject.detail_invoice[j].unit,
         SLuong: dataObject.detail_invoice[j].quantity,
-        DGia: dataObject.detail_invoice[j].uprice,
+        DGia: dataObject.detail_invoice[j].unit_price,
         TLCKhau: dataObject.detail_invoice[j].dc_rate,
         STCKhau: dataObject.detail_invoice[j].dc_amt,
-        ThTien: dataObject.detail_invoice[j].amt,
+        ThTien: dataObject.detail_invoice[j].amount,
         TSuat: dataObject.detail_invoice[j].vat_rate,
       });
     }

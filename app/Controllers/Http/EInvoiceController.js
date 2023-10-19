@@ -5234,7 +5234,7 @@ class EInvoiceController {
             );
           }
         }
-        else if (rtnValue.p_rtn_cur[0].STATUS == "NOEXIT")
+        else //if (rtnValue.p_rtn_cur[0].STATUS == "NOEXIT")
         {
           //console.log("tei_wt_sale_bill_pk NOEXIT ", tei_wt_sale_bill_pk);
 
@@ -5259,7 +5259,7 @@ class EInvoiceController {
             content: '',
           });
           continue;
-        }
+        }else 
        
         
         if (!invoice.buyer_email && !invoice.buyer_email_cc) {

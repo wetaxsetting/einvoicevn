@@ -954,8 +954,43 @@ class Utils {
         } catch (e) {
             console.log(" putExcelRootPath", e);
         }
+    }
+    async putFileRandomNameToRootPath(file, folder, type_insert) {
+        try {
+            const type = typeof file;
+            const clientName =
+                type === "string" ?
+                    file
+                        .split("?")[0]
+                        .split(".")
+                        .pop() :
+                    file.clientName;
+            let path_result = ``;
+            let path = ``;
+            const timeName = new Date().getTime();
+
+            // console.log("type_insert =>>  " + type_insert  +  "folder  ===> " + folder + " clientName ==>  " + clientName)
+            if (type_insert == "EXCEL" || type_insert == "TEMPLATE" || type_insert == "TEMPLATE_C" || type_insert == "EXCEL_C") {
+                path_result = `/resources/report/${folder}/${ timeName +'_'+ clientName}`;
+                path = `/resources/report/${folder}`;
+            } else {
+                path_result = `${folder}/${timeName +'_'+ clientName}`;
+                path = `/resources/${folder}`;
+            }
 
 
+            let savePath = Helpers.appRoot(path);
+            if (type !== "string") {
+                await file.move(savePath, {
+                    name: timeName +'_' + clientName,
+                    overwrite: true
+                });
+            }
+
+            return `${path_result}`;
+        } catch (e) {
+            console.log(" putExcelRootPath", e);
+        }
     }
 }
 

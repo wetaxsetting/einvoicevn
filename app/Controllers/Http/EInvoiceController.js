@@ -62,7 +62,6 @@ const { log, Console } = require("console");
 const EINVOICE_ESIGN_XML = "http://genuclouding.com/wseinvoice/BSService.asmx/SignXml";
 const EINVOICE_API_SEND_MAIL = "http://sendmail.genuwinsolution.com/api/user/sendmail";
 const moment = require('moment');
-const sizeOf = require('image-size');
 
 // real site
 const TAX_CHECK_TRADE_CODE = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
@@ -5665,20 +5664,30 @@ class EInvoiceController {
         file_path_logo = await Utils.putFileRandomNameToRootPath(logo_image, file_url_img, "WETAXT");
         //file_path_bg = await Utils.putExcelRootPath(logo_image, file_url_img, "WETAXT");
 
-        let savePath = await Helpers.appRoot(`resources${file_path_logo}`);
-        const imagePath = savePath;  //`${logo_image.tmpPath}`;
+        console.log("file_path_logo có vào đây k 4?  ", file_path_logo);
 
+        let savePath = await Helpers.appRoot(`resources${file_path_logo}`);
+        const imagePath = savePath.replaceAll("\\","/");  //`${logo_image.tmpPath}`;
+
+        //let savePath1 = Helpers.appRoot(file_path_bg);
+        //const imagePath1 = savePath1;  
+
+        console.log("file_path_logo có vào đây k 4?  ", imagePath);
+
+        //const buffer_img = await Buffer.from(imagePath);
         // Use sharp to read the image and get its metadata (width and height)
-        await sharp(imagePath)
-          .metadata()
-          .then((metadata) => {
-            const { width, height } = metadata;
-            logo_width = width;
-            logo_height = height;
-          })
-          .catch((error) => {
-            console.error('Error:', error);
-          });
+        // await sharp(imagePath)
+        //   .metadata()
+        //   .then((metadata) => {
+        //     const { width, height } = metadata;
+        //     logo_width = width;
+        //     logo_height = height;
+        //   })
+        //   .catch((error) => {
+        //     console.error('Error:', error);
+        //   });
+
+        console.log("file_path_logo có vào đây k 5?  ", file_path_logo);
 
         if (logo_width > logo_height && logo_width > 100) {
           logo_width = 100;
@@ -5688,7 +5697,18 @@ class EInvoiceController {
           logo_height = 100;
           logo_width = 100 * logo_height / logo_width;
         }
+
+        await sizeOf(imagePath, (err, dimensions) => {
+          if (err) {
+            console.error('Error:', err);
+          } else {
+            console.log('Width:', dimensions.width);
+            console.log('Height:', dimensions.height);
+          }
+        });
       }
+
+      console.log("file_path_logo có vào đây k 6?  ", file_path_logo);
 
       const para_value = {
         p_seller_comp_seller: seller_comp_taxcode,
@@ -5707,6 +5727,7 @@ class EInvoiceController {
         p_logo_start_row: "1.7",
       };
 
+      console.log("para_value  ", para_value);
       const rtnValue = await DBService.ExecuteSQLBlob(
         `BEGIN ei_upd_template_comp (                     :p_seller_comp_seller,
                                                           :p_serial_no2,
@@ -5729,11 +5750,12 @@ class EInvoiceController {
         p_language,
         p_crt_by
       );
+      console.log("para_value  ", rtnValue)
 
       if(rtnValue.p_rtn_cur[0].STATUS == "OK"){
         let EiExcels = new EiExcelTemplateHandler();
         let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].PK, p_language, p_crt_by);
-        console.log("base64PDf  ", url_pdf);
+        //console.log("base64PDf  ", url_pdf);
         let req_value = {
           seller_comp_taxcode: seller_comp_taxcode,
           req_key: rtnValue.p_rtn_cur[0].PK,
@@ -5754,6 +5776,8 @@ class EInvoiceController {
         return response.send(Utils.response(false, "Send Company template was Faile", req_value));
       }
 
+
+      
     } catch (error) {
       Utils.Logger({
         LVL: "error",

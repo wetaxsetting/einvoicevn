@@ -137,7 +137,7 @@ class EiExcelHandler {
       else {
         logos = [];
       }
-      console.log(" bgPath  ", bgPath, "logos  ", logos);
+      //console.log(" bgPath  ", bgPath, "logos  ", logos);
 
       for (let i = 0; i < einvoiceDetailsParam.length; i++) {
         detailCellFormat.push({

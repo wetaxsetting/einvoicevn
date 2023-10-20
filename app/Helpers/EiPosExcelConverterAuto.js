@@ -446,6 +446,7 @@ class EiExcelConverterAuto {
 						totalRowCount += (pos_lv - totalRowCount)
 
 						worksheet.getRow(totalRowCount + _sourceRow + (pos_lv - totalRowCount)).addPageBreak();
+						
 						logoArray.push({ logoPos: totalRowCount + _sourceRow + (pos_lv - totalRowCount), logos: logos })
 
 					} else {

@@ -5664,30 +5664,21 @@ class EInvoiceController {
         file_path_logo = await Utils.putFileRandomNameToRootPath(logo_image, file_url_img, "WETAXT");
         //file_path_bg = await Utils.putExcelRootPath(logo_image, file_url_img, "WETAXT");
 
-        console.log("file_path_logo có vào đây k 4?  ", file_path_logo);
-
         let savePath = await Helpers.appRoot(`resources${file_path_logo}`);
         const imagePath = savePath.replaceAll("\\","/");  //`${logo_image.tmpPath}`;
 
-        //let savePath1 = Helpers.appRoot(file_path_bg);
-        //const imagePath1 = savePath1;  
-
-        console.log("file_path_logo có vào đây k 4?  ", imagePath);
-
-        //const buffer_img = await Buffer.from(imagePath);
         // Use sharp to read the image and get its metadata (width and height)
-        // await sharp(imagePath)
-        //   .metadata()
-        //   .then((metadata) => {
-        //     const { width, height } = metadata;
-        //     logo_width = width;
-        //     logo_height = height;
-        //   })
-        //   .catch((error) => {
-        //     console.error('Error:', error);
-        //   });
+        await sharp(imagePath)
+          .metadata()
+          .then((metadata) => {
+            const { width, height } = metadata;
+            logo_width = width;
+            logo_height = height;
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
 
-        console.log("file_path_logo có vào đây k 5?  ", file_path_logo);
 
         if (logo_width > logo_height && logo_width > 100) {
           logo_width = 100;
@@ -5699,8 +5690,6 @@ class EInvoiceController {
         }
 
       }
-
-      console.log("file_path_logo có vào đây k 6?  ", file_path_logo);
 
       const para_value = {
         p_seller_comp_seller: seller_comp_taxcode,
@@ -5719,7 +5708,6 @@ class EInvoiceController {
         p_logo_start_row: "1.7",
       };
 
-      console.log("para_value  ", para_value);
       const rtnValue = await DBService.ExecuteSQLBlob(
         `BEGIN ei_upd_template_comp (                     :p_seller_comp_seller,
                                                           :p_serial_no2,
@@ -5742,7 +5730,6 @@ class EInvoiceController {
         p_language,
         p_crt_by
       );
-      console.log("para_value  ", rtnValue)
 
       if(rtnValue.p_rtn_cur[0].STATUS == "OK"){
         let EiExcels = new EiExcelTemplateHandler();
@@ -8319,16 +8306,11 @@ class EInvoiceController {
       let EiExcels = new EiPosExcelHandlerAuto();
       let url_pdf = await EiExcels.getEinvoice(tei_wt_sale_bill_pk, p_language, p_crt_by);
       console.log("base64PDf  ", url_pdf);
-      // console.log("base64PDf  ", url_pdf);
-      // console.log("sSSSS2 ", tei_wt_sale_bill_pk);
 
       let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + tei_wt_sale_bill_pk + "&proc=" + "EI_SEL_XML_POS_EINVOICE" + "&token="); //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
       let url_xml = re_url_xml.data;
       console.log("base64XXML  ", url_xml);
 
-      //console.log("sSSSS3 ", tei_wt_sale_bill_pk);
-
-      //let url_xml = "",url_pdf = "";
       let subject = `${data_invoice.seller_comp_name}[Thông báo phát hành HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
       let body = `<html>
                             <body>

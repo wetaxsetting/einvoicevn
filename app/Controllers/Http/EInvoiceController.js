@@ -5259,7 +5259,7 @@ class EInvoiceController {
             content: '',
           });
           continue;
-        }else 
+        } 
        
         
         if (!invoice.buyer_email && !invoice.buyer_email_cc) {
@@ -5284,6 +5284,7 @@ class EInvoiceController {
             content: '',
           });
         } else {
+           
           const { res_send_mail, subject, body } = await this.sendMailToCustomer(
             tei_wt_sale_bill_pk,
             invoice,

@@ -5670,8 +5670,9 @@ class EInvoiceController {
         console.log("file_path_logo có vào đây k 2?  ", file_path_logo);
         //let file_path_bg = await Utils.putExcelRootPath(background_image, file_url_img, "WETAXT");
         let savePath = Helpers.appRoot(file_path_logo);
-
+        console.log("file_path_logo có vào đây k 3?  ", savePath);
         const imagePath = savePath;//`${logo_image.tmpPath}`;
+        console.log("file_path_logo có vào đây k 4?  ", imagePath);
 
         // Use sharp to read the image and get its metadata (width and height)
         await sharp(imagePath)
@@ -5684,7 +5685,7 @@ class EInvoiceController {
           .catch((error) => {
             console.error('Error:', error);
           });
-
+        console.log("file_path_logo có vào đây k 5?  ", file_path_logo);
         if (logo_width > logo_height && logo_width > 100) {
           logo_width = 100;
           logo_height = 100 * logo_width / logo_height;
@@ -5695,6 +5696,7 @@ class EInvoiceController {
         }
       }
 
+      console.log("file_path_logo có vào đây k 6?  ", file_path_logo);
 
       const para_value = {
         p_seller_comp_seller: seller_comp_taxcode,

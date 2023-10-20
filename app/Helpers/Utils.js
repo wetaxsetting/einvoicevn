@@ -891,6 +891,7 @@ class Utils {
         }
         return _str;
     } 
+
     handleDBInfo(user) {
         let dbinfo = {
             pool_name: "",
@@ -919,6 +920,7 @@ class Utils {
             return dbinfo;
         }
     }
+
     async putExcelRootPath(file, folder, type_insert) {
         try {
             const type = typeof file;
@@ -932,7 +934,7 @@ class Utils {
             let path_result = ``;
             let path = ``;
 
-            console.log("type_insert =>>  " + type_insert  +  "folder  ===> " + folder + " clientName ==>  " + clientName)
+            //console.log("type_insert =>>  " + type_insert  +  "  folder  ===> " + folder + " clientName ==>  " + clientName)
             if (type_insert == "EXCEL" || type_insert == "TEMPLATE" || type_insert == "TEMPLATE_C" || type_insert == "EXCEL_C") {
                 path_result = `/resources/report/${folder}/${clientName}`;
                 path = `/resources/report/${folder}`;
@@ -940,7 +942,6 @@ class Utils {
                 path_result = `${folder}/${clientName}`;
                 path = `/resources/${folder}`;
             }
-
 
             let savePath = Helpers.appRoot(path);
             if (type !== "string") {

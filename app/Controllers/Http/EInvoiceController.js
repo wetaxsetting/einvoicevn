@@ -62,6 +62,7 @@ const { log, Console } = require("console");
 const EINVOICE_ESIGN_XML = "http://genuclouding.com/wseinvoice/BSService.asmx/SignXml";
 const EINVOICE_API_SEND_MAIL = "http://sendmail.genuwinsolution.com/api/user/sendmail";
 const moment = require('moment');
+const sizeOf = require('image-size');
 
 // real site
 const TAX_CHECK_TRADE_CODE = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
@@ -5636,19 +5637,16 @@ class EInvoiceController {
       }if(form_no.length !== 1) {
         return response.send(Utils.response(false, "length form_no is 1 ",));
       }
-
       if (!serial_no) {
         return response.send(Utils.response(false, "serial_no can't null",));
       }else if(serial_no.length !== 6) {
         return response.send(Utils.response(false, "length serial_no is 6 ",));
       }
-
       if (!template_id) {
         return response.send(Utils.response(false, "template_id can't null",));
       } if(template_id.length !== 10) {
         return response.send(Utils.response(false, "length template_id is 10 ",));
       }
-
       if (!start_date) {
         return response.send(Utils.response(false, "start_date can't null",));
       }
@@ -5661,18 +5659,14 @@ class EInvoiceController {
       const file_url_img = `/assets/images/einvoices_logo/${seller_comp_taxcode}`;
       const file_url_excel = `/resources/report/60/95/einvoices_template/${seller_comp_taxcode}`;
       let logo_width = 0, logo_height = 0;
-      let file_path_logo = "";
+      let file_path_logo = "", file_path_bg = "";
 
       if (logo_image) {
-        console.log("file_path_logo có vào đây k 1?  ", file_path_logo);
         file_path_logo = await Utils.putFileRandomNameToRootPath(logo_image, file_url_img, "WETAXT");
+        //file_path_bg = await Utils.putExcelRootPath(logo_image, file_url_img, "WETAXT");
 
-        console.log("file_path_logo có vào đây k 2?  ", file_path_logo);
-        //let file_path_bg = await Utils.putExcelRootPath(background_image, file_url_img, "WETAXT");
-        let savePath = Helpers.appRoot(file_path_logo);
-        console.log("file_path_logo có vào đây k 3?  ", savePath);
-        const imagePath = savePath;//`${logo_image.tmpPath}`;
-        console.log("file_path_logo có vào đây k 4?  ", imagePath);
+        let savePath = await Helpers.appRoot(`resources${file_path_logo}`);
+        const imagePath = savePath;  //`${logo_image.tmpPath}`;
 
         // Use sharp to read the image and get its metadata (width and height)
         await sharp(imagePath)
@@ -5685,7 +5679,7 @@ class EInvoiceController {
           .catch((error) => {
             console.error('Error:', error);
           });
-        console.log("file_path_logo có vào đây k 5?  ", file_path_logo);
+
         if (logo_width > logo_height && logo_width > 100) {
           logo_width = 100;
           logo_height = 100 * logo_width / logo_height;
@@ -5695,8 +5689,6 @@ class EInvoiceController {
           logo_width = 100 * logo_height / logo_width;
         }
       }
-
-      console.log("file_path_logo có vào đây k 6?  ", file_path_logo);
 
       const para_value = {
         p_seller_comp_seller: seller_comp_taxcode,
@@ -5715,7 +5707,6 @@ class EInvoiceController {
         p_logo_start_row: "1.7",
       };
 
-      console.log("para_value  ", para_value);
       const rtnValue = await DBService.ExecuteSQLBlob(
         `BEGIN ei_upd_template_comp (                     :p_seller_comp_seller,
                                                           :p_serial_no2,
@@ -5738,12 +5729,11 @@ class EInvoiceController {
         p_language,
         p_crt_by
       );
-      console.log("para_value  ", rtnValue)
 
       if(rtnValue.p_rtn_cur[0].STATUS == "OK"){
         let EiExcels = new EiExcelTemplateHandler();
         let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].PK, p_language, p_crt_by);
-        //console.log("base64PDf  ", url_pdf);
+        console.log("base64PDf  ", url_pdf);
         let req_value = {
           seller_comp_taxcode: seller_comp_taxcode,
           req_key: rtnValue.p_rtn_cur[0].PK,
@@ -5764,8 +5754,6 @@ class EInvoiceController {
         return response.send(Utils.response(false, "Send Company template was Faile", req_value));
       }
 
-
-      
     } catch (error) {
       Utils.Logger({
         LVL: "error",

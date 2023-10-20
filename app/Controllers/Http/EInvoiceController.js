@@ -5698,14 +5698,6 @@ class EInvoiceController {
           logo_width = 100 * logo_height / logo_width;
         }
 
-        await sizeOf(imagePath, (err, dimensions) => {
-          if (err) {
-            console.error('Error:', err);
-          } else {
-            console.log('Width:', dimensions.width);
-            console.log('Height:', dimensions.height);
-          }
-        });
       }
 
       console.log("file_path_logo có vào đây k 6?  ", file_path_logo);

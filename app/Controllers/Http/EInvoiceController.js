@@ -5617,7 +5617,7 @@ class EInvoiceController {
       const logo_image = request.file("logo_image");
       const background_image = request.file("background_image");
 
-      //console.log("weTaxSendCompanyTemplate logo_image : ", logo_image);
+      console.log("weTaxSendCompanyTemplate logo_image : ", logo_image);
       //console.log("weTaxSendCompanyTemplate background_image :",background_image);
       console.log("weTaxSendCompanyTemplate form_no :",form_no);
       console.log("weTaxSendCompanyTemplate serial_no :",serial_no);
@@ -5656,9 +5656,6 @@ class EInvoiceController {
         return response.send(Utils.response(false, "logo_image can't null",));
       }
       
-      
-      
-
       //if (preview == "N") {
 
       const file_url_img = `/assets/images/einvoices_logo/${seller_comp_taxcode}`;
@@ -5667,9 +5664,10 @@ class EInvoiceController {
       let file_path_logo = "";
 
       if (logo_image) {
+        console.log("file_path_logo có vào đây k 1?  ", file_path_logo);
         file_path_logo = await Utils.putFileRandomNameToRootPath(logo_image, file_url_img, "WETAXT");
 
-        //console.log("file_path_logo  ", file_path_logo);
+        console.log("file_path_logo có vào đây k 2?  ", file_path_logo);
         //let file_path_bg = await Utils.putExcelRootPath(background_image, file_url_img, "WETAXT");
         let savePath = Helpers.appRoot(file_path_logo);
 

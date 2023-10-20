@@ -446,7 +446,7 @@ class EiExcelConverterAuto {
 						totalRowCount += (pos_lv - totalRowCount)
 
 						worksheet.getRow(totalRowCount + _sourceRow + (pos_lv - totalRowCount)).addPageBreak();
-						
+
 						logoArray.push({ logoPos: totalRowCount + _sourceRow + (pos_lv - totalRowCount), logos: logos })
 
 					} else {
@@ -926,6 +926,7 @@ class EiExcelConverterAuto {
 					let imgRow = imgPos + e.logoStartCount
 					//  let logoImage =  await createFile(e.logoPath);
 					let logoIconByteArray = await exceljs.insertPathImage(e.logoPath)
+					console.log("logoIconByteArray   ", logoIconByteArray);
 					try {
 						worksheet.addImage(logoIconByteArray, {
 							tl: { col: e.start, row: imgRow },

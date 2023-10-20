@@ -123,6 +123,8 @@ class EiExcelHandler {
         bgPath = "";
       }
 
+      let sss = require(einvoiceMasterData[0].URL_IMG_LOGO);
+      console.log("sss  ", sss);
       if (einvoiceMasterData.length && einvoiceMasterData[0].URL_IMG_LOGO) {
         logos = [
           {

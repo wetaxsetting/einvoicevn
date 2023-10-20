@@ -168,7 +168,7 @@ class EiExcelConverterAuto {
 		//END-this part calculate the number of pages base on the data.
 
 		//this part re-format amt.
-		console.log("file: EiWTExcelConverterAuto.js:172 [vng-304] ExcelBuilder [vng-304] einvoiceMasterData:", einvoiceMasterData)
+		//console.log("file: EiWTExcelConverterAuto.js:172 [vng-304] ExcelBuilder [vng-304] einvoiceMasterData:", einvoiceMasterData)
 		// if(einvoiceMasterData[0]["TOTALAMOUNTINWORD_VIE"] ){
 			if (einvoiceMasterData[0]["CCY"].toString() == "VND") {
 				lb_amount_trans = "";
@@ -179,7 +179,7 @@ class EiExcelConverterAuto {
 				read_price = einvoiceMasterData[0]["TOTALAMOUNTINWORD"] == null ? null : einvoiceMasterData[0]["TOTALAMOUNTINWORD"].toString();
 	
 				// read_price = einvoiceMasterData[0]["TOTALAMOUNTINWORD"].substr(0, 2) + einvoiceMasterData[0]["TOTALAMOUNTINWORD"].substr(2, einvoiceMasterData[0]["TOTALAMOUNTINWORD"].length - 2).toLowerCase() + '.';
-				console.log("file: EiWTExcelConverterAuto.js:180 [vng-304] ExcelBuilder [vng-304] read_price:", read_price)
+				//console.log("file: EiWTExcelConverterAuto.js:180 [vng-304] ExcelBuilder [vng-304] read_price:", read_price)
 			}
 			else {
 				lb_amount_trans = einvoiceMasterData[0]["EXCHANGE_RATE"] == null ? null : einvoiceMasterData[0]["EXCHANGE_RATE"].toString();
@@ -205,7 +205,7 @@ class EiExcelConverterAuto {
 		let footerStr = '(In tại phần mềm Genuwin E-INVOICE của CÔNG TY CỔ PHẦN WEBCASH GENUWIN - MST: 1201496252)'
 		
 		if (einvoiceDetailData && einvoiceDetailData.length > 0) {
-			console.log("file: EiWTExcelConverterAuto.js:201 [vng-304] ExcelBuilder [vng-304] einvoiceDetailData:", einvoiceDetailData)
+			//console.log("file: EiWTExcelConverterAuto.js:201 [vng-304] ExcelBuilder [vng-304] einvoiceDetailData:", einvoiceDetailData)
 			masterDataArray.forEach(e => {
 				console.log("e    ", e);
 				if (e.Type == 1) {
@@ -964,7 +964,7 @@ class EiExcelConverterAuto {
 				try {
 					worksheet.addImage(await exceljs.insertPathImage(signPath), {
 						tl: { col: signCell.start, row: totalRows + _sourceRow_3 + countFromEndDetailToSignBox -1 },
-						ext: { width: 100, height: 65 }
+						ext: { width: 70, height: 45 }
 					});
 				} catch (error) {
 					console.log(error)

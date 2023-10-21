@@ -11678,7 +11678,7 @@ class EInvoiceController {
 
       let EiExcels = new EiExcel04SSHandler();
       let url_pdf = await EiExcels.getEinvoice(data, p_language, p_crt_by);
-      console.log("file: EInvoiceController.js:8644 [vng-304] viewPDFTemplate_04SS [vng-304] url_pdf:", url_pdf)
+      //console.log("file: EInvoiceController.js:8644 [vng-304] viewPDFTemplate_04SS [vng-304] url_pdf:", url_pdf)
 
       return response.send(Utils.response(true, "general url pdf success", url_pdf));
     } catch (e) {
@@ -11708,7 +11708,7 @@ class EInvoiceController {
 
       let EiExcels = new EiWTExcelHandlerAuto();
       let url_pdf = await EiExcels.getEinvoice(data, p_language, p_crt_by);
-      console.log("file: EInvoiceController.js:10529 [vng-304] viewPDF_InvoiceWT [vng-304] url_pdf:", url_pdf)
+      //console.log("file: EInvoiceController.js:10529 [vng-304] viewPDF_InvoiceWT [vng-304] url_pdf:", url_pdf)
 
       return response.send(Utils.response(true, "general url pdf success", url_pdf));
     } catch (e) {
@@ -11738,7 +11738,7 @@ class EInvoiceController {
 
       let EiExcels = new EiPosExcelHandlerAuto();
       let url_pdf = await EiExcels.getEinvoice(data, p_language, p_crt_by);
-      console.log("file: EInvoiceController.js:10529 [vng-304] viewPDF_InvoiceWT [vng-304] url_pdf:", url_pdf)
+      //console.log("file: EInvoiceController.js:10529 [vng-304] viewPDF_InvoiceWT [vng-304] url_pdf:", url_pdf)
 
       return response.send(Utils.response(true, "general url pdf success", url_pdf));
     } catch (e) {

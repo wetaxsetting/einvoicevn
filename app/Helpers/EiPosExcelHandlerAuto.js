@@ -1,4 +1,6 @@
 'use strict'
+const Helpers       = use('Helpers');
+const fs = require('fs');
 const DBService = use("DBService");
 const EiExcelConverter = use("App/Helpers/EiPosExcelConverterAuto");
 class EiExcelHandler {
@@ -83,7 +85,7 @@ class EiExcelHandler {
         p_crt_by,
         _db2
       );
-      console.log("file: EiPosExcelHandlerAuto.js:86 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceVAT_Bill:", einvoiceVAT_Bill)
+      //console.log("file: EiPosExcelHandlerAuto.js:86 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceVAT_Bill:", einvoiceVAT_Bill)
 
       if (einvoiceMasterData.length <= 0) {
         return that.showNotification(
@@ -122,10 +124,23 @@ class EiExcelHandler {
       } else {
         bgPath = "";
       }
-
-      let sss = require(einvoiceMasterData[0].URL_IMG_LOGO);
-      console.log("sss  ", sss);
-      if (einvoiceMasterData.length && einvoiceMasterData[0].URL_IMG_LOGO) {
+      let checkYN = "N";
+      try {
+        checkYN = "Y";
+        let savePath = await Helpers.appRoot(`resources/${einvoiceMasterData[0].URL_IMG_LOGO}`);
+          if (fs.existsSync(savePath)) {
+            console.log('file exists'); 
+            checkYN = "Y";
+          } else {
+            console.log('file not found!');
+            checkYN = "N";
+          }
+      } catch (error) {
+        checkYN = "N";
+        console.log("error  require url ", error);
+      }
+       
+      if (einvoiceMasterData.length && einvoiceMasterData[0].URL_IMG_LOGO && checkYN == "Y") {
         logos = [
           {
             start: einvoiceMasterData[0].LOGO_START_ROW,

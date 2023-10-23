@@ -5119,7 +5119,7 @@ class EInvoiceController {
           count_length: count_length,
           xml_type: xml_type,
         };
-
+ 
         const rtnValue = await DBService.ExecuteSQLBlob(
           `BEGIN ei_upd_order_info (          
                                                           :sale_date,

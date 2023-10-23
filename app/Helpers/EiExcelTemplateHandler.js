@@ -62,16 +62,27 @@ class EiExcelHandler {
         _db2
       );
       //console.log("file: EiExcelTemplateHandler.js:56 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceMasterParam:", einvoiceMasterData)
-      logos = [
-        { 
-         logo_start_col : einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_START_COL ? einvoiceMasterData[0].LOGO_START_COL:1,
-         logo_start_row : einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_START_ROW ? einvoiceMasterData[0].LOGO_START_ROW:1,
-         logo_width     : einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_WIDTH ? einvoiceMasterData[0].LOGO_WIDTH:1,
-         logo_height    : einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_HEIGHT ? einvoiceMasterData[0].LOGO_HEIGHT:1,
-         logoPath       : `${einvoiceMasterData[0] &&einvoiceMasterData[0].URL_IMG_LOGO ? einvoiceMasterData[0].URL_IMG_LOGO: "assets/images/no_image.png"}`   ///assets/images/einvoices_logo/abc/
-       }  
-     ]
-      
+
+      try {
+        let savePath = await Helpers.appRoot(`resources/${einvoiceMasterData[0].URL_IMG_LOGO}`);
+          if (fs.existsSync(savePath)) {
+            logos = [
+              { 
+               logo_start_col : einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_START_COL ? einvoiceMasterData[0].LOGO_START_COL:1,
+               logo_start_row : einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_START_ROW ? einvoiceMasterData[0].LOGO_START_ROW:1,
+               logo_width     : einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_WIDTH ? einvoiceMasterData[0].LOGO_WIDTH:1,
+               logo_height    : einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_HEIGHT ? einvoiceMasterData[0].LOGO_HEIGHT:1,
+               logoPath       : `${einvoiceMasterData[0] &&einvoiceMasterData[0].URL_IMG_LOGO ? einvoiceMasterData[0].URL_IMG_LOGO: "assets/images/no_image.png"}`   ///assets/images/einvoices_logo/abc/
+             }  
+           ]
+          } else {
+            logos = []
+          }
+      } catch (error) {
+        logos = [];
+        console.log("error  require url ", error);
+      }  
+
       bg = [
         { 
           bg_start_row: einvoiceMasterData[0] && einvoiceMasterData[0].BG_START_ROW ? einvoiceMasterData[0].BG_START_ROW:1,  

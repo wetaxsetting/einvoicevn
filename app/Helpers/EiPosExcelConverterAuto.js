@@ -996,10 +996,8 @@ class EiExcelConverterAuto {
 
 		//Hidden dòng khi xuất ra VAT nào thừa
 		//console.log("einvoiceVAT_Bill ", einvoiceVAT_Bill)
-
-		if(einvoiceVAT_Bill.length > 1)
+		if(einvoiceMasterData[0]["TEMPLATE_CD"] && einvoiceMasterData[0]["TEMPLATE_CD"] === "1000000121")
 		{
-			//console.log("einvoiceVAT_Bill 1111", einvoiceVAT_Bill)
 			try {
 				let rowVAT = totalRows + _sourceRow_3;
 			const row = worksheet.getRow(rowVAT);
@@ -1027,6 +1025,37 @@ class EiExcelConverterAuto {
 				console.log('delete_vat')
 			}
 		}
+		
+		// if(einvoiceVAT_Bill.length > 1)
+		// {
+		// 	try {
+		// 		let rowVAT = totalRows + _sourceRow_3;
+		// 	const row = worksheet.getRow(rowVAT);
+		// 		if(NOTVAT_DEL_YN == 'Y')
+		// 		{
+		// 			worksheet.getRow(rowVAT + 1).hidden = true;
+		// 		}
+		// 		if(VAT_RATE5_YN == 'Y')
+		// 		{
+		// 			worksheet.getRow(rowVAT+ 2).hidden = true;
+		// 		}
+		// 		if(VAT_RATE8_YN == 'Y')
+		// 		{
+		// 			worksheet.getRow(rowVAT+ 3).hidden = true;
+		// 		}
+		// 		if(VAT_RATE10_YN == 'Y')
+		// 		{
+		// 			worksheet.getRow(rowVAT+ 4).hidden = true;
+		// 		}
+		// 		if(ORHER_VAT_RATE_YN == 'Y')
+		// 		{
+		// 			worksheet.getRow(rowVAT+ 5).hidden = true;
+		// 		} 
+		// 	} catch (error) {
+		// 		console.log('delete_vat')
+		// 	}
+			
+		// }
 		
 
 		let excelUrl = await exceljs.dowloadWorkbook();

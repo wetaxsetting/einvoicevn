@@ -56,7 +56,7 @@ class EiExcelHandler {
         p_crt_by,
         _db2
       );
-      console.log("file: EiPosExcelHandlerAuto.js:57 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceMasterData:", einvoiceMasterData)
+      //console.log("file: EiPosExcelHandlerAuto.js:57 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceMasterData:", einvoiceMasterData)
       const einvoiceDetailData = await DBService.callProcCursor(
         "EI_SEL_POS_EINVOICE_D_PDF", [pk],
         p_language,

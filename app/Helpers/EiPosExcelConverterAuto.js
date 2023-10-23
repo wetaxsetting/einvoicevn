@@ -170,6 +170,7 @@ class EiExcelConverterAuto {
 		//this part re-format amt.
 		
 		var  NOTVAT_DEL_YN		 = einvoiceMasterData[0]["NOTVAT_DEL_YN"].toString() ;
+		var  VAT_RATE0_YN		 = einvoiceMasterData[0]["VAT_RATE0_YN"].toString() ;
 		var VAT_RATE5_YN = einvoiceMasterData[0]["VAT_RATE5_YN"].toString() ;
 		var VAT_RATE8_YN = einvoiceMasterData[0]["VAT_RATE8_YN"].toString() ;
 		var VAT_RATE10_YN = einvoiceMasterData[0]["VAT_RATE10_YN"].toString() ;
@@ -1005,21 +1006,25 @@ class EiExcelConverterAuto {
 				{
 					worksheet.getRow(rowVAT + 1).hidden = true;
 				}
-				if(VAT_RATE5_YN == 'Y')
+				if(VAT_RATE0_YN == 'Y')
 				{
 					worksheet.getRow(rowVAT+ 2).hidden = true;
 				}
-				if(VAT_RATE8_YN == 'Y')
+				if(VAT_RATE5_YN == 'Y')
 				{
 					worksheet.getRow(rowVAT+ 3).hidden = true;
 				}
-				if(VAT_RATE10_YN == 'Y')
+				if(VAT_RATE8_YN == 'Y')
 				{
 					worksheet.getRow(rowVAT+ 4).hidden = true;
 				}
-				if(ORHER_VAT_RATE_YN == 'Y')
+				if(VAT_RATE10_YN == 'Y')
 				{
 					worksheet.getRow(rowVAT+ 5).hidden = true;
+				}
+				if(ORHER_VAT_RATE_YN == 'Y')
+				{
+					worksheet.getRow(rowVAT+ 6).hidden = true;
 				} 
 			} catch (error) {
 				console.log('delete_vat')

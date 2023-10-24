@@ -567,11 +567,11 @@ class EiExcelConverterAuto {
 				//"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
 				//"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
 
-				console.log("file: EiPosExcelConverterAuto.js:573 [vng-304] ExcelBuilder [vng-304] e:", e)
+				//console.log("file: EiPosExcelConverterAuto.js:573 [vng-304] ExcelBuilder [vng-304] e:", e)
 				if (e > 0) {
 					for (let i = 0; i < e; i++) {
 						const _e = einvoiceDetailData[i + count_2];
-						console.log("_e  " , _e)	
+						//console.log("_e  " , _e)	
 						try {
 
 							let item_name_lt = this.countlength_v2(_e["ITEM_NAME"])
@@ -642,7 +642,7 @@ class EiExcelConverterAuto {
 					}
 					if (j == 0) {
 						totalRowCount_2 += (pos_lv - totalRowCount_2)
-						console.log("totalRowCount_2  " + totalRowCount_2);
+						//console.log("totalRowCount_2  " + totalRowCount_2);
 						if (cancelYn == "Y") {
 							try {
 								worksheet.addImage(await exceljs.insertPathImage(cancelPath), {
@@ -655,7 +655,7 @@ class EiExcelConverterAuto {
 
 						}
 						if (bgPath != "") {
-							console.log("backgroundCell  " + backgroundCell  + "  j  " + j );
+							//console.log("backgroundCell  " + backgroundCell  + "  j  " + j );
 							try {
 								worksheet.addImage(await exceljs.insertPathImage(bgPath), {
 									tl: { col:  backgroundCell, row:  backgroundRow - 1 },
@@ -810,7 +810,7 @@ class EiExcelConverterAuto {
 	
 								}
 								if (bgPath != "") {
-									console.log("bgPath   ", bgPath, " backgroundCell  ", backgroundCell, "backgroundRow  ", backgroundRow, " backgroundWidth  ", backgroundWidth, " backgroundHeight  ", backgroundHeight);
+									//console.log("bgPath   ", bgPath, " backgroundCell  ", backgroundCell, "backgroundRow  ", backgroundRow, " backgroundWidth  ", backgroundWidth, " backgroundHeight  ", backgroundHeight);
 									try {
 										worksheet.addImage(await exceljs.insertPathImage(bgPath), {
 											tl: { col: backgroundCell, row: backgroundRow - 1 },
@@ -847,7 +847,7 @@ class EiExcelConverterAuto {
 		if (v_countNumberOfPages > 1) {
 			for (let o = 2; o < extendedRows; o++) {
 				try {
-					console.log(" totalRows + _sourceRow_3 - o  ++++===> ", totalRows + _sourceRow_3 - o )
+					//console.log(" totalRows + _sourceRow_3 - o  ++++===> ", totalRows + _sourceRow_3 - o )
 					detailCellFormat.forEach((e, i) => {
 						worksheet.mergeCells(totalRows + _sourceRow_3 - o, e.startCell, totalRows + _sourceRow_3 - o, e.endCell)
 						worksheet.getCell(`${excCols[e.startCell] + (totalRows + _sourceRow_3 - o)}`).style.border = { left: { style: 'thin' }, bottom: { style: detailCellFormat[i].cellBorder }, };
@@ -962,10 +962,10 @@ class EiExcelConverterAuto {
 				} catch (error) {
 					console.log(error)
 				}
-				console.log("totalRows + _sourceRow_3 + countFromEndDetailToSignBox  ", totalRows + _sourceRow_3 + countFromEndDetailToSignBox,
-							"signByCell.start  ", signByCell.start,
-							"totalRows + _sourceRow_3 + countFromEndDetailToSignBox  ", totalRows + _sourceRow_3 + countFromEndDetailToSignBox,
-							"signByCell.end  ", signByCell.end)
+				// console.log("totalRows + _sourceRow_3 + countFromEndDetailToSignBox  ", totalRows + _sourceRow_3 + countFromEndDetailToSignBox,
+				// 			"signByCell.start  ", signByCell.start,
+				// 			"totalRows + _sourceRow_3 + countFromEndDetailToSignBox  ", totalRows + _sourceRow_3 + countFromEndDetailToSignBox,
+				// 			"signByCell.end  ", signByCell.end)
 				worksheet.mergeCells(totalRows + _sourceRow_3 + countFromEndDetailToSignBox, signByCell.start, totalRows + _sourceRow_3 + countFromEndDetailToSignBox, signByCell.end)//re-merge the cell to fill signed by, signed date
 				worksheet.mergeCells(totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 1, signByCell.start, totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 1, signByCell.end)//re-merge the cell to fill signed by, signed date
 				worksheet.mergeCells(totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 2, signByCell.start, totalRows + _sourceRow_3 + + countFromEndDetailToSignBox + 2, signByCell.end)//re-merge the cell to fill signed by, signed date

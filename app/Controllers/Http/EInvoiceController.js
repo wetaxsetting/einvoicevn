@@ -8330,9 +8330,9 @@ class EInvoiceController {
                                             <br/>- Tổng thanh toán: 
                                             <b>       ${data_invoice.total_payment}</b>
                                             <br />- Link download file PDF: 
-                                            <a href=${url_pdf}>Tải file PDF</a>
+                                            <a href='${url_pdf}'>Tải file PDF</a>
                                             <br />- Link download file XML: 
-                                            <a href=${url_xml}>Tải file XML</a>
+                                            <a href='${url_xml}'>Tải file XML</a>
                                             <br />
                                         </div>
                                         <br/>
@@ -8358,9 +8358,9 @@ class EInvoiceController {
                                             <br/>- Total amount :  
                                             <b>       ${data_invoice.total_payment}</b>
                                             <br />- Download file PDF link:  
-                                            <a href=${url_pdf}>Download file PDF</a>
+                                            <a href='${url_pdf}'>Download file PDF</a>
                                             <br />- Download file XML link:  
-                                            <a href=${url_xml}>Download file XML</a>
+                                            <a href='${url_xml}'>Download file XML</a>
                                             <br />
                                         </p>
                                     </div>

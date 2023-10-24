@@ -277,6 +277,8 @@ export default {
         {
           dataField: "INVOICE_DATE",
           caption: this.$t("invoice_date"),
+          dataType: "date",
+          format: this.curLang.DATE_FORMAT,
           width: 190
         },
         {
@@ -334,66 +336,6 @@ export default {
           caption: this.$t("no"),
         },
         {
-          dataField: "INVOICE_DATE",
-          caption: this.$t("sale_date"),
-          dataType: "date",
-          format: this.curLang.DATE_FORMAT,
-        },
-        //   {
-        //     dataField: "STORE_CODE",
-        //     caption: this.$t("store_id"),
-        //     dataType: "text",
-        //   },
-        //   {
-        //     dataField: "STORE_NAME",
-        //     caption: this.$t("store_name"),
-        //     dataType: "text",
-        //   },
-        //   {
-        //     dataField: "POS_NO",
-        //     caption: this.$t("pos"),
-        //     dataType: "text",
-        //   },
-        //   {
-        //     dataField: "BILL_NO",
-        //     caption: this.$t("bill_number"),
-        //     dataType: "text",
-        //   },
-        //   {
-        //     dataField: "SALES_CATEGORY",
-        //     caption: this.$t("sales_category"),
-        //     dataType: "text",
-        //   },
-        {
-          dataField: "PAY_METHOD",
-          caption: this.$t("pay_method"),
-          dataType: "text",
-        },
-        {
-          dataField: "TOTAL_AMT",
-          caption: this.$t("total_amount"),
-          formatFloat: 2,
-          dataType: "number",
-        },
-        {
-          dataField: "ACTUAL_SALES",
-          caption: this.$t("actual_sales"),
-          formatFloat: 2,
-          dataType: "number",
-        },
-        {
-          dataField: "DIS_RATE",
-          caption: this.$t("discount"),
-          formatFloat: 2,
-          dataType: "number",
-        },
-        {
-          dataField: "TOTAL_VAT_AMT",
-          caption: this.$t("vat_amount"),
-          formatFloat: 2,
-          dataType: "number",
-        },
-        {
           dataField: "FORM_NO",
           caption: this.$t("form_no"),
           dataType: "number",
@@ -404,6 +346,12 @@ export default {
           caption: this.$t("serial_no"),
         },
         {
+          dataField: "INVOICE_DATE",
+          caption: this.$t("sale_date"),
+          dataType: "date",
+          format: this.curLang.DATE_FORMAT,
+        },
+        {
           dataField: "INVOICE_NO",
           caption: this.$t("invoice_no"),
           dataType: "number",
@@ -412,41 +360,30 @@ export default {
         {
           dataField: "CQT_MCCQT",
           caption: this.$t("cqt_mccqt"),
+          width: 220,
         },
         {
-          dataField: "BUYER_COMP_NM",
-          caption: this.$t("buyer_name"),
-          dataType: "text",
-        },
-        {
-          dataField: "BUYER_TAXCODE",
-          caption: this.$t("buyer_taxcode"),
+          dataField: "TOTAL_AMT",
+          caption: this.$t("total_amount"),
+          formatFloat: 2,
           dataType: "number",
-          formatFloat: 0,
         },
         {
-          dataField: "BUYER_ADD",
-          caption: this.$t("buyer_address"),
-          dataType: "text",
-        },
-        // {
-        //   dataField: "BUYER_INDENTIFICATION",
-        //   caption: this.$t("buyer_indentification"),
-        //   hidden: true,
-        // },
-        {
-          dataField: "BUYER_EML",
-          caption: this.$t("email"),
-          dataType: "text",
+          dataField: "TR_STATUS",
+          width: 100,
+          caption: this.$t("status"),
+          lookup: {
+            dataSource: this.statusList,
+            displayExpr: "NAME",
+            valueExpr: "CODE",
+          },
+          alignment: "left",
+          type: "text",
+          width: 120
         },
         {
-          dataField: "BUYER_EML_CC",
-          caption: this.$t("email_cc"),
-          dataType: "text",
-        },
-        {
-          dataField: "TRADE_CODE",
-          caption: this.$t("trade_code"),
+          dataField: "DESCRIPTION",
+          caption: this.$t("description"),
         },
       ];
     },

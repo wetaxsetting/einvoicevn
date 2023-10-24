@@ -5402,7 +5402,14 @@ class EInvoiceController {
         infor_send_mail
       } = request.all();
 
-      console.log("data  ", infor_send_mail);
+      console.log("weTaxReSendOrderInfo  BEGIN ============================= ");
+      console.log("weTaxReSendOrderInfo  tax_code ",tax_code);
+      console.log("weTaxReSendOrderInfo  sale_date ",sale_date);
+      console.log("weTaxReSendOrderInfo  store_code ",store_code);
+      console.log("weTaxReSendOrderInfo  store_name ",store_name);
+      console.log("weTaxReSendOrderInfo  infor_send_mail ",infor_send_mail);
+      console.log("weTaxReSendOrderInfo  END =============================== ");
+
       let tei_wt_sale_bill_pk = 0;
       let data_r = [];
       //const data_xml = await this.createXMLByOne(data.data_invoice);

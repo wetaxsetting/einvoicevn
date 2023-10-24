@@ -287,6 +287,10 @@ export default {
           caption: this.$t("sllr_taxcode"),
         },
         {
+          dataField: "CQT_MAGD",
+          caption: this.$t("cqt_magd"),
+        },
+        {
           dataField: "SIGN_SERIAL_NUMBER",
           caption: this.$t("sign_serial_number"),
         },
@@ -585,6 +589,7 @@ export default {
       switch (pos) {
         case "search":
           await this.$refs.grdCompany.loadData();
+          await this.$refs.grdMaster.Clear();
           break;
         case "preview":
           this.onPreview();

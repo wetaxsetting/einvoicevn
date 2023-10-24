@@ -937,6 +937,8 @@ export default {
               this.imageLOGO = imgLOGO;
               let imgBG = this.MasterInfo.URL_IMG_BG;
               this.imageBG = imgBG;
+              console.log('imgLOGO', imgLOGO);
+              console.log('this.MasterInfo', this.MasterInfo);
               try {
                 this.showLoading = true;
                 let res_url = await this.$axios.$post("/einvoice/general-url-pdf-template", {

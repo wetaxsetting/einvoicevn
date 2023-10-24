@@ -985,9 +985,10 @@ class EiExcelConverterAuto {
 			else
 			{
 				//console.log("SIGN_YN  ++===> N  ", signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
-				// không cần worksheet.getCell(`${signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox)}`).style.border = { top: { style: 'thin' }, right: { style: 'thin' } };
+				// không cần 
+				worksheet.getCell(`${signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox)}`).style.border = { top: { style: 'thin' }, right: { style: 'thin' } };
 				worksheet.getCell(`${signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 1)}`).style.border = { right: { style: 'thin' } };
-				//worksheet.getCell(`${signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 2)}`).style.border = { bottom: { style: 'thin' }, right: { style: 'thin' } };
+				worksheet.getCell(`${signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 2)}`).style.border = { bottom: { style: 'thin' }, right: { style: 'thin' } };
 			
 			}
 	
@@ -1030,37 +1031,6 @@ class EiExcelConverterAuto {
 				console.log('delete_vat')
 			}
 		}
-		
-		// if(einvoiceVAT_Bill.length > 1)
-		// {
-		// 	try {
-		// 		let rowVAT = totalRows + _sourceRow_3;
-		// 	const row = worksheet.getRow(rowVAT);
-		// 		if(NOTVAT_DEL_YN == 'Y')
-		// 		{
-		// 			worksheet.getRow(rowVAT + 1).hidden = true;
-		// 		}
-		// 		if(VAT_RATE5_YN == 'Y')
-		// 		{
-		// 			worksheet.getRow(rowVAT+ 2).hidden = true;
-		// 		}
-		// 		if(VAT_RATE8_YN == 'Y')
-		// 		{
-		// 			worksheet.getRow(rowVAT+ 3).hidden = true;
-		// 		}
-		// 		if(VAT_RATE10_YN == 'Y')
-		// 		{
-		// 			worksheet.getRow(rowVAT+ 4).hidden = true;
-		// 		}
-		// 		if(ORHER_VAT_RATE_YN == 'Y')
-		// 		{
-		// 			worksheet.getRow(rowVAT+ 5).hidden = true;
-		// 		} 
-		// 	} catch (error) {
-		// 		console.log('delete_vat')
-		// 	}
-			
-		// }
 		
 
 		let excelUrl = await exceljs.dowloadWorkbook();

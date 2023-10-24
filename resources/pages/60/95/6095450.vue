@@ -286,6 +286,7 @@ export default {
           dataField: "STORE_NAME",
           caption: this.$t("store_name"),
           dataType: "text",
+          width: 200,
         },
         // {
         //   dataField: "POS_NO",
@@ -312,6 +313,7 @@ export default {
           caption: this.$t("total_amount"),
           formatFloat: 2,
           dataType: "number",
+          width: 200,
         },
         // {
         //   dataField: "ACTUAL_SALES",
@@ -324,12 +326,14 @@ export default {
           caption: this.$t("discount"),
           formatFloat: 2,
           dataType: "number",
+          width: 200,
         },
         {
           dataField: "TOTAL_VAT_AMT",
           caption: this.$t("vat_amount"),
           formatFloat: 2,
           dataType: "number",
+          width: 200,
         },
         {
           dataField: "FORM_NO",
@@ -420,12 +424,14 @@ export default {
           caption: this.$t("quantity"),
           dataType: "number",
           formatFloat: 0,
+          width: 200,
         },
         {
           dataField: "UPRICE",
           caption: this.$t("price"),
           formatFloat: 2,
           dataType: "number",
+          width: 200,
         },
         {
           dataField: "DC_RATE",
@@ -438,6 +444,7 @@ export default {
           caption: this.$t("dic_amount"),
           formatFloat: 2,
           dataType: "number",
+          width: 200,
         },
         {
           dataField: "VAT_RATE",

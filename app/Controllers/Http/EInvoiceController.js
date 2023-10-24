@@ -6158,7 +6158,7 @@ class EInvoiceController {
 
       trade_code = res.data.maGDich;
       console.log("trade_code   ", trade_code);
-      if (trade_codes) {
+      if (trade_code) {
         const para_value = {
             tei_einvoice_ar_pk: check_data.PK,
             trade_code: trade_code.data.maGDich

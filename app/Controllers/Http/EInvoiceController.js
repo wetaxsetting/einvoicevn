@@ -6158,7 +6158,25 @@ class EInvoiceController {
 
       trade_code = res.data.maGDich;
       console.log("trade_code   ", trade_code);
+      if (trade_codes) {
+        const para_value = {
+            tei_einvoice_ar_pk: check_data.PK,
+            trade_code: trade_code.data.maGDich
+        };
 
+        await DBService.ExecuteSQLBlob(
+            `BEGIN ei_upd_tradecode_p_xml(
+                            :tei_einvoice_ar_pk,
+                            :trade_code,
+                            :p_language, 
+                            :p_crt_by, 
+                            :p_rtn_cur); 
+            END;`,
+            para_value,
+            p_language,
+            p_crt_by
+        );
+      }
       await Utils._sleep(5);
 
       await Request.get(urlCheck + trade_code, {

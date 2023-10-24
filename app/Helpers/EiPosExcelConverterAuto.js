@@ -196,7 +196,7 @@ class EiExcelConverterAuto {
 		let footerStr = '(In tại phần mềm Genuwin E-INVOICE của CÔNG TY CỔ PHẦN WEBCASH GENUWIN - MST: 1201496252)'
 		if (einvoiceDetailData && einvoiceDetailData.length > 0) {
 			masterDataArray.forEach(e => {
-				console.log("e    ", e);
+				//console.log("e    ", e);
 				if (e.Type == 1) {
 					let infoData = ""
 					e.Info.forEach(_e => {
@@ -240,7 +240,7 @@ class EiExcelConverterAuto {
 								//console.log(e.Cell+"+"+e.Info)
 								break;
 							case "TOTALAMOUNTINWORD":
-								console.log("e    ", e ,  read_price)
+								//console.log("e    ", e ,  read_price)
 								worksheet.getCell( `${e.Cell}`).value = read_price != null ? read_price : '';
 								worksheet.getCell( `${e.Cell}`).style.border = { right: { style: 'thin' }, };
 
@@ -904,7 +904,7 @@ class EiExcelConverterAuto {
 		
 		//this part insert logo for all the self gen header
 		let promises = logos.map(async (e, i) => {
-			console.log(" e +++===> ", e);
+			//console.log(" e +++===> ", e);
 			let imgRow = e.logoStartCount
 			//  let logoImage =  await createFile(e.logoPath);
 			let logoIconByteArray = await exceljs.insertPathImage(e.logoPath)
@@ -927,7 +927,7 @@ class EiExcelConverterAuto {
 					let imgRow = imgPos + e.logoStartCount
 					//  let logoImage =  await createFile(e.logoPath);
 					let logoIconByteArray = await exceljs.insertPathImage(e.logoPath)
-					console.log("logoIconByteArray   ", logoIconByteArray);
+					//console.log("logoIconByteArray   ", logoIconByteArray);
 					try {
 						worksheet.addImage(logoIconByteArray, {
 							tl: { col: e.start, row: imgRow },

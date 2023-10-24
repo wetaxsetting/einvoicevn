@@ -234,6 +234,7 @@ export default {
     form_dateM: "",
     to_dateM: "",
     prexml_Url: "",
+    statusList:[],
   }),
 
   async created() {
@@ -276,24 +277,55 @@ export default {
         {
           dataField: "INVOICE_DATE",
           caption: this.$t("invoice_date"),
+          dataType: "date",
+          format: this.curLang.DATE_FORMAT,
+          width: 190
         },
         {
-          dataField: "SLLR_COMP_NM",
-          caption: this.$t("sllr_comp_nm"),
-          width: 300,
+          dataField: "CRT_DT",
+          caption: this.$t("time"),
+          width: 120
         },
         {
-          dataField: "SLLR_TAXCODE",
-          caption: this.$t("sllr_taxcode"),
+          dataField: "POS_INV_XML",
+          caption: this.$t("box_key"),
+          width: 120
         },
         {
-          dataField: "CQT_MAGD",
-          caption: this.$t("cqt_magd"),
+          dataField: "INVOICE_QTY",
+          caption: this.$t("invoice_qty"),
+          width: 215
         },
         {
-          dataField: "SIGN_SERIAL_NUMBER",
-          caption: this.$t("sign_serial_number"),
+          dataField: "STATUS",
+          width: 100,
+          caption: this.$t("status"),
+          lookup: {
+            dataSource: this.statusList,
+            displayExpr: "NAME",
+            valueExpr: "CODE",
+          },
+          alignment: "left",
+          type: "text",
+          width: 120
         },
+        // {
+        //   dataField: "SLLR_COMP_NM",
+        //   caption: this.$t("sllr_comp_nm"),
+        //   width: 300,
+        // },
+        // {
+        //   dataField: "SLLR_TAXCODE",
+        //   caption: this.$t("sllr_taxcode"),
+        // },
+        // {
+        //   dataField: "CQT_MAGD",
+        //   caption: this.$t("cqt_magd"),
+        // },
+        // {
+        //   dataField: "SIGN_SERIAL_NUMBER",
+        //   caption: this.$t("sign_serial_number"),
+        // },
       ];
     },
     headerGridM() {
@@ -302,66 +334,6 @@ export default {
         {
           dataField: "RN",
           caption: this.$t("no"),
-        },
-        {
-          dataField: "INVOICE_DATE",
-          caption: this.$t("sale_date"),
-          dataType: "date",
-          format: this.curLang.DATE_FORMAT,
-        },
-        //   {
-        //     dataField: "STORE_CODE",
-        //     caption: this.$t("store_id"),
-        //     dataType: "text",
-        //   },
-        //   {
-        //     dataField: "STORE_NAME",
-        //     caption: this.$t("store_name"),
-        //     dataType: "text",
-        //   },
-        //   {
-        //     dataField: "POS_NO",
-        //     caption: this.$t("pos"),
-        //     dataType: "text",
-        //   },
-        //   {
-        //     dataField: "BILL_NO",
-        //     caption: this.$t("bill_number"),
-        //     dataType: "text",
-        //   },
-        //   {
-        //     dataField: "SALES_CATEGORY",
-        //     caption: this.$t("sales_category"),
-        //     dataType: "text",
-        //   },
-        {
-          dataField: "PAY_METHOD",
-          caption: this.$t("pay_method"),
-          dataType: "text",
-        },
-        {
-          dataField: "TOTAL_AMT",
-          caption: this.$t("total_amount"),
-          formatFloat: 2,
-          dataType: "number",
-        },
-        {
-          dataField: "ACTUAL_SALES",
-          caption: this.$t("actual_sales"),
-          formatFloat: 2,
-          dataType: "number",
-        },
-        {
-          dataField: "DIS_RATE",
-          caption: this.$t("discount"),
-          formatFloat: 2,
-          dataType: "number",
-        },
-        {
-          dataField: "TOTAL_VAT_AMT",
-          caption: this.$t("vat_amount"),
-          formatFloat: 2,
-          dataType: "number",
         },
         {
           dataField: "FORM_NO",
@@ -374,6 +346,12 @@ export default {
           caption: this.$t("serial_no"),
         },
         {
+          dataField: "INVOICE_DATE",
+          caption: this.$t("sale_date"),
+          dataType: "date",
+          format: this.curLang.DATE_FORMAT,
+        },
+        {
           dataField: "INVOICE_NO",
           caption: this.$t("invoice_no"),
           dataType: "number",
@@ -382,41 +360,30 @@ export default {
         {
           dataField: "CQT_MCCQT",
           caption: this.$t("cqt_mccqt"),
+          width: 220,
         },
         {
-          dataField: "BUYER_COMP_NM",
-          caption: this.$t("buyer_name"),
-          dataType: "text",
-        },
-        {
-          dataField: "BUYER_TAXCODE",
-          caption: this.$t("buyer_taxcode"),
+          dataField: "TOTAL_AMT",
+          caption: this.$t("total_amount"),
+          formatFloat: 2,
           dataType: "number",
-          formatFloat: 0,
         },
         {
-          dataField: "BUYER_ADD",
-          caption: this.$t("buyer_address"),
-          dataType: "text",
-        },
-        // {
-        //   dataField: "BUYER_INDENTIFICATION",
-        //   caption: this.$t("buyer_indentification"),
-        //   hidden: true,
-        // },
-        {
-          dataField: "BUYER_EML",
-          caption: this.$t("email"),
-          dataType: "text",
+          dataField: "TR_STATUS",
+          width: 100,
+          caption: this.$t("status"),
+          lookup: {
+            dataSource: this.statusList,
+            displayExpr: "NAME",
+            valueExpr: "CODE",
+          },
+          alignment: "left",
+          type: "text",
+          width: 120
         },
         {
-          dataField: "BUYER_EML_CC",
-          caption: this.$t("email_cc"),
-          dataType: "text",
-        },
-        {
-          dataField: "TRADE_CODE",
-          caption: this.$t("trade_code"),
+          dataField: "DESCRIPTION",
+          caption: this.$t("description"),
         },
       ];
     },
@@ -560,8 +527,8 @@ export default {
           break;
 
         case "form_no":
-        this.dataSearchList.formNoList = [];
-        this.form_No = '';
+          this.dataSearchList.formNoList = [];
+          this.form_No = "";
           const dso_form_list = {
             type: "list",
             selpro: "AC_SEL_6095450_FORM_NO",
@@ -573,15 +540,15 @@ export default {
           }
           break;
         case "serial_no":
-        this.dataSearchList.serialNoList = [];
-        this.serial_no = 'All';
+          this.dataSearchList.serialNoList = [];
+          this.serial_no = "All";
           const dso_serial_list = {
             type: "list",
             selpro: "AC_SEL_6095450_SERIAL_NO",
             para: [this.sellerName, this.form_No, this.form_date, this.to_date],
           };
           this.dataSearchList.serialNoList = await this._dsoCall(dso_serial_list, "select", false);
-        //   this.serial_no = this.dataSearchList.serialNoList[0].CODE;
+          //   this.serial_no = this.dataSearchList.serialNoList[0].CODE;
           break;
       }
     },
@@ -644,7 +611,7 @@ export default {
     },
     async getListCodes() {
       const results = await this._getCommonCode2(["ACEI0010", "ACEI0040", "ACEI0120", "ACEI0190", "ACEI0140", "ACEIN010", "ACJS0460"], this.user.PK);
-      this.dataSearchList.statusList = results[0];
+      this.statusList = results[0];
       this.dataSearchList.tradingTypeList = results[1];
     },
     async onAfterLoad() {

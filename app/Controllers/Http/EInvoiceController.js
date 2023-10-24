@@ -6161,7 +6161,7 @@ class EInvoiceController {
       if (trade_code) {
         const para_value = {
             tei_einvoice_ar_pk: check_data.PK,
-            trade_code: trade_code.data.maGDich
+            trade_code: trade_code
         };
 
         await DBService.ExecuteSQLBlob(

@@ -5356,7 +5356,7 @@ class EInvoiceController {
               form_no : invoice.form_no,
               serial_no : invoice.serial_no,
               invoice_no :invoice.invoice_no,
-              user_name: data.data_invoice.buyer_comp_name,
+              user_name: invoice.buyer_comp_name,
               send_date: res_send_mail.data.data.date_send,
               send_time: res_send_mail.data.data.time_send,
               mail_form: res_send_mail.data.data.mail_from,
@@ -9491,6 +9491,7 @@ class EInvoiceController {
             },
           },
         },
+        MCCQT: {},
         DSCKS: {},
       },
     };

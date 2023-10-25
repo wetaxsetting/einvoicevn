@@ -6120,13 +6120,13 @@ class EInvoiceController {
 
       if(check_data.STATUS == 'FAILE')
       {
-        return response.send(Utils.response(true, `Send invoice to Tax Office was failure!`, check_data));
+        return response.send(Utils.response(false, `Send invoice to Tax Office was failure!`, null));
       }else if (check_data.STATUS == 'EXIT' )
       {
-        return response.send(Utils.response(true, `The sign xml was send Tax Offiec`, check_data));
+        return response.send(Utils.response(false, `The sign xml was send Tax Offiec`, null));
       }else if (check_data.STATUS == 'NOEXIT' )
       {
-        return response.send(Utils.response(true, `Compay not yet register`, check_data));
+        return response.send(Utils.response(false, `Compay not yet register`, null));
       }
 
       const agent = {

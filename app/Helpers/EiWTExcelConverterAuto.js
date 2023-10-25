@@ -969,10 +969,10 @@ class EiExcelConverterAuto {
 				} catch (error) {
 					console.log(error)
 				}
-				console.log("totalRows + _sourceRow_3 + countFromEndDetailToSignBox  ", totalRows + _sourceRow_3 + countFromEndDetailToSignBox,
-							"signByCell.start  ", signByCell.start,
-							"totalRows + _sourceRow_3 + countFromEndDetailToSignBox  ", totalRows + _sourceRow_3 + countFromEndDetailToSignBox,
-							"signByCell.end  ", signByCell.end)
+				// console.log("totalRows + _sourceRow_3 + countFromEndDetailToSignBox  ", totalRows + _sourceRow_3 + countFromEndDetailToSignBox,
+				// 			"signByCell.start  ", signByCell.start,
+				// 			"totalRows + _sourceRow_3 + countFromEndDetailToSignBox  ", totalRows + _sourceRow_3 + countFromEndDetailToSignBox,
+				// 			"signByCell.end  ", signByCell.end)
 				worksheet.mergeCells(totalRows + _sourceRow_3 + countFromEndDetailToSignBox, signByCell.start, totalRows + _sourceRow_3 + countFromEndDetailToSignBox, signByCell.end)//re-merge the cell to fill signed by, signed date
 				worksheet.mergeCells(totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 1, signByCell.start, totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 1, signByCell.end)//re-merge the cell to fill signed by, signed date
 				worksheet.mergeCells(totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 2, signByCell.start, totalRows + _sourceRow_3 + + countFromEndDetailToSignBox + 2, signByCell.end)//re-merge the cell to fill signed by, signed date

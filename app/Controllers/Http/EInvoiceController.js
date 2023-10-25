@@ -5064,8 +5064,10 @@ class EInvoiceController {
       for (const invoice of data_invoice) {
         let tei_wt_sale_bill_pk = 0;
         const data_xml = await this.createXMLByOne(invoice);
-        const count_length = data_xml.length;
-        const xml_type = "application/xml";
+        var getLength = require("utf8-byte-length")
+        const count_length = getLength(data_xml);
+        console.log(" count_length   ", count_length);
+        const xml_type = "application/xhtml+xml; charset=utf-8";
 
         if (!invoice.form_no || !invoice.serial_no || !invoice.invoice_no) {
           return response.send(Utils.response(false, `Invalid infor for e-invoice `, {

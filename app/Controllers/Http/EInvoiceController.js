@@ -5817,21 +5817,20 @@ class EInvoiceController {
         p_crt_by
       );
       console.log("rtnValue ", rtnValue);
-      if(rtnValue?.p_rtn_cur)
+      if(rtnValue?.p_rtn_cur?.[0])
       {
         let data_rep = {
           status_code : rtnValue.p_rtn_cur[0].STATUS_CD,
           status_name : rtnValue.p_rtn_cur[0].STATUS_NM }
 
-        return response.send(Utils.response(true, rtnValue.p_rtn_cur[0].STATUS_NM, data_rep));
+        return response.send(Utils.response(rtnValue.p_rtn_cur[0].STATUS_CD == '000' ? true : false, rtnValue.p_rtn_cur[0].STATUS_NM, null));
       }
       else
       {
-        let data_rep = {
-          status_code : rtnValue.p_rtn_cur[0].STATUS_CD,
-          status_name : rtnValue.p_rtn_cur[0].STATUS_NM }
-
-        return response.send(Utils.response(false, rtnValue.p_rtn_cur[0].STATUS_NM, data_rep));
+        // let data_rep = {
+        //   status_code : rtnValue.p_rtn_cur[0].STATUS_CD,
+        //   status_name : rtnValue.p_rtn_cur[0].STATUS_NM }
+        return response.send(Utils.response(false, rtnValue?.p_rtn_cur?.[0]?.STATUS_NM, null));
       }
       
     } catch (e) {

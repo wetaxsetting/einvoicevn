@@ -865,7 +865,7 @@ class EInvoiceController {
         inform_date,
         invoices});
       if (!valid.status) {
-        return response.send(Utils.response(valid.status, valid.message));
+        return response.send(Utils.response(valid.status, valid.message, null));
       }
 
       let jsonInvalidInvoices = {
@@ -945,7 +945,7 @@ class EInvoiceController {
         FUNC: "weTaxConvertInvalidInvoiceToXML",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, e.message));
+      return response.send(Utils.response(false, e.message, null));
     }
   }
 
@@ -2118,16 +2118,16 @@ class EInvoiceController {
       } = request.all();
 
       if (!seller_company_nm) {
-        return response.send(Utils.response(false, `Invalid: seller_company_nm`));
+        return response.send(Utils.response(false, `Invalid: seller_company_nm`, null));
       }
       // if (!seller_company_fnm) {
       //   return response.send(Utils.response(false, `Invalid: seller_company_fnm`));
       // }
       if (!seller_taxcode) {
-        return response.send(Utils.response(false, `Invalid: seller_taxcode`));
+        return response.send(Utils.response(false, `Invalid: seller_taxcode`, null));
       }
       if (!seller_address) {
-        return response.send(Utils.response(false, `Invalid: seller_address`));
+        return response.send(Utils.response(false, `Invalid: seller_address`, null));
       }
 
       const para_value = {
@@ -2230,7 +2230,7 @@ class EInvoiceController {
         FUNC: "weTaxSendCompanyInfor",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, e.message));
+      return response.send(Utils.response(false, e.message, null));
     }
   }
 
@@ -2257,7 +2257,7 @@ class EInvoiceController {
 
       const valid = this.validateDeclareXML(this.parseXmlToJson(xml_signed));
       if (!valid.status) {
-        return response.send(Utils.response(valid.status, valid.message));
+        return response.send(Utils.response(valid.status, valid.message, null));
       }
       console.log(" weTaxSendDeclarationToTaxOffice req_key  ssss")
 
@@ -2407,7 +2407,7 @@ class EInvoiceController {
         FUNC: "weTaxSendDeclarationToTaxOffice",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, e.message));
+      return response.send(Utils.response(false, e.message, null));
     }
   }
 
@@ -2431,7 +2431,7 @@ class EInvoiceController {
         console.log("EINVOICE_URL_API_DECLARATION_SEND" + EINVOICE_URL_API_DECLARATION_SEND);
         const res = await Request.post(EINVOICE_URL_API_DECLARATION_SEND, { para: para }, config);
         console.log("sendDeclarationToTaxOfficeFromClient res.data" + res.data);
-        return response.send(res.data);
+        return response.send(Utils.response(true, `Success.`, res.data));
       } else {
         console.error("Failed to get api token");
       }
@@ -2443,7 +2443,7 @@ class EInvoiceController {
         FUNC: "checkingdeclarationfromclient",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, "error", e.message));
+      return response.send(Utils.response(false,  e.message, null));
     }
   }
 
@@ -2533,7 +2533,7 @@ class EInvoiceController {
         // console.log(`checkingDeclarations res.data `, res.data);
 
         if (!res.data) {
-          return response.send(Utils.response(false, `no data found.`));
+          return response.send(Utils.response(false, `no data found.`, null));
         }
         for (let item of res.data) {
           for (let child of item) {
@@ -2572,7 +2572,7 @@ class EInvoiceController {
         FUNC: "checkingDeclarations",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, "error", e.message));
+      return response.send(Utils.response(false, e.message, null));
     }
   }
 
@@ -2656,7 +2656,7 @@ class EInvoiceController {
       let tenTBao;
       let loaiTBao;
       if (!res.data.length) {
-        return response.send(Utils.response(false, 'Checking Tax Status Failure. No data found.'));
+        return response.send(Utils.response(false, 'Checking Tax Status Failure. No data found.', null));
       }
 
       const lastNotice = res.data[res.data.length - 1];
@@ -2719,7 +2719,7 @@ class EInvoiceController {
         FUNC: "weTaxCheckingDeclarations",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, e.message));
+      return response.send(Utils.response(false, e.message,null));
     }
   }
 
@@ -2765,7 +2765,7 @@ class EInvoiceController {
         };
         const res = await Request.post(EINVOICE_URL_API_DECLARATION_CHECK, { para: para }, config);
         console.log("checkingDeclarationsFromClient", res.data);
-        return response.send(res.data);
+        return response.send(Utils.response(true, `Send invoices successfuly.`, res.data));
       } else {
         console.error("Failed to get api token");
       }
@@ -2777,7 +2777,7 @@ class EInvoiceController {
         FUNC: "checkingDeclarationsFromClient",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, "error", e.message));
+      return response.send(Utils.response(false, e.message, null));
     }
   }
 
@@ -2857,7 +2857,7 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       console.log(e);
-      return response.send(Utils.response(false, "error", e.message));
+      return response.send(Utils.response(false, e.message, null));
     }
   }
 
@@ -2928,7 +2928,7 @@ class EInvoiceController {
         //     );
         // }
       } else {
-        return response.send(Utils.response(false, 'No data found!'));
+        return response.send(Utils.response(false, 'No data found!', null));
       }
     } catch (e) {
       Utils.Logger({
@@ -2937,7 +2937,7 @@ class EInvoiceController {
         FUNC: "sendInvoiceToTaxOffice",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, e.message));
+      return response.send(Utils.response(false, e.message, null));
     }
   }
 
@@ -3012,7 +3012,7 @@ class EInvoiceController {
       // console.log("result", JSON.stringify(result.data));
 
       if (!result.data.length) {
-        return response.send(Utils.response(false, 'Checking Tax Status Failure. No data found.'));
+        return response.send(Utils.response(false, 'Checking Tax Status Failure. No data found.',null));
       }
       let tenTBao = "",
         maTBao = "";
@@ -3054,7 +3054,7 @@ class EInvoiceController {
         FUNC: "weTaxCheckInformAdjustToTaxOffice",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, e.message));
+      return response.send(Utils.response(false, e.message, null));
     }
   }
 
@@ -4678,7 +4678,7 @@ class EInvoiceController {
       const invoices = list_invoice;
       const valid = this.weTaxValidateJsonInvalidPosInvoiceToXML(invoices);
       if (!valid.status) {
-        return response.send(Utils.response(valid.status, valid.message));
+        return response.send(Utils.response(valid.status, valid.message, null));
       }
       /*let invoices_sample=[
                             {master:{},detail:[{}]},
@@ -4687,7 +4687,7 @@ class EInvoiceController {
                         ];*/
       //console.log("invoices1:", invoices)
       if (invoices.length == undefined || invoices.length == 0) {
-        return response.send(Utils.response(false, `Invalid json format.`));
+        return response.send(Utils.response(false, `Invalid json format.`, null));
       }
 
       for (let i = 0; i < invoices.length; i++) {
@@ -4856,7 +4856,7 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       console.log("error ", e);
-      return response.send(Utils.response(false, e.message));
+      return response.send(Utils.response(false, e.message, null));
     }
   }
 
@@ -5041,23 +5041,17 @@ class EInvoiceController {
       console.log("======================weTaxSendOrderInfo END===================");
 
       if (!data_invoice) {
-        return response.send(Utils.response(false, `Invalid data_invoice `, {
-        
-        })
+        return response.send(Utils.response(false, `Invalid data_invoice `, null)
         );
       }
 
       if (!sale_date) {
-        return response.send(Utils.response(false, `Invalid sale_date `, {
-         
-        })
+        return response.send(Utils.response(false, `Invalid sale_date `, null)
         );
       }
 
       if (!tax_code) {
-        return response.send(Utils.response(false, `Invalid tax_code `, {
-         
-        })
+        return response.send(Utils.response(false, `Invalid tax_code `, null)
         );
       }
       let data_rep = [];
@@ -5070,16 +5064,12 @@ class EInvoiceController {
         const xml_type = "application/xhtml+xml; charset=utf-8";
 
         if (!invoice.form_no || !invoice.serial_no || !invoice.invoice_no) {
-          return response.send(Utils.response(false, `Invalid infor for e-invoice `, {
-            
-          })
+          return response.send(Utils.response(false, `Invalid infor for e-invoice `, null)
           );
         }
 
         if (!invoice.seller_comp_name || !invoice.seller_taxcode) {
-          return response.send(Utils.response(false, `Invalid infor for company `, {
-           
-          })
+          return response.send(Utils.response(false, `Invalid infor for company `, null)
           );
         }
 
@@ -5385,7 +5375,7 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       console.log(e);
-      return response.send(Utils.response(false, e.message));
+      return response.send(Utils.response(false, e.message, null));
     }
   }
 
@@ -5599,7 +5589,7 @@ class EInvoiceController {
         CONTENT: error.message,
       });
       console.log(error);
-      return response.send(Utils.response(false, error.message));
+      return response.send(Utils.response(false, error.message, null));
     }
   }
 
@@ -5637,29 +5627,29 @@ class EInvoiceController {
       console.log("weTaxSendCompanyTemplate seller_comp_taxcode :",seller_comp_taxcode);
 
       if (!seller_comp_taxcode) {
-        return response.send(Utils.response(false, "seller_comp_taxcode can't null",));
+        return response.send(Utils.response(false, "seller_comp_taxcode can't null",null));
       }
 
       if (!form_no) {
-        return response.send(Utils.response(false, "form_no can't null",));
+        return response.send(Utils.response(false, "form_no can't null",null));
       }if(form_no.length !== 1) {
-        return response.send(Utils.response(false, "length form_no is 1 ",));
+        return response.send(Utils.response(false, "length form_no is 1 ",null));
       }
       if (!serial_no) {
-        return response.send(Utils.response(false, "serial_no can't null",));
+        return response.send(Utils.response(false, "serial_no can't null",null));
       }else if(serial_no.length !== 6) {
-        return response.send(Utils.response(false, "length serial_no is 6 ",));
+        return response.send(Utils.response(false, "length serial_no is 6 ",null));
       }
       if (!template_id) {
-        return response.send(Utils.response(false, "template_id can't null",));
+        return response.send(Utils.response(false, "template_id can't null",null));
       } if(template_id.length !== 10) {
-        return response.send(Utils.response(false, "length template_id is 10 ",));
+        return response.send(Utils.response(false, "length template_id is 10 ",null));
       }
       if (!start_date) {
-        return response.send(Utils.response(false, "start_date can't null",));
+        return response.send(Utils.response(false, "start_date can't null",null));
       }
       if (!logo_image) {
-        return response.send(Utils.response(false, "logo_image can't null",));
+        return response.send(Utils.response(false, "logo_image can't null",null));
       }
       
       //if (preview == "N") {
@@ -5774,7 +5764,7 @@ class EInvoiceController {
         CONTENT: error.message,
       });
       console.log(error);
-      return response.send(Utils.response(false, "error", { err_msg: error.message }));
+      return response.send(Utils.response(false, error.message, null));
     }
   }
 
@@ -5852,7 +5842,7 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       console.log(e);
-      return response.send(Utils.response(false, e.message));
+      return response.send(Utils.response(false, e.message, null));
     }
   }
 
@@ -5895,7 +5885,7 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       console.log(e);
-      return response.send(Utils.response(false, e.message));
+      return response.send(Utils.response(false, e.message, null));
     }
   }
 
@@ -5943,7 +5933,7 @@ class EInvoiceController {
             // console.log("res  ++===> ", res.data);
 
             if (!res.data.length) {
-              return response.send(Utils.response(false, `No data found.`));
+              return response.send(Utils.response(false, `No data found.`, null));
             }
             for (let j = 0; j < res.data.length; j++) {
               const items = res.data[j];
@@ -5989,7 +5979,7 @@ class EInvoiceController {
           })
           .catch((error) => {
             console.log(error);
-            return response.send(Utils.response(false, error.message));
+            return response.send(Utils.response(false, error.message, null));
           });
 
         rtnValue.push({
@@ -6029,7 +6019,7 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       console.log(e);
-      return response.send(Utils.response(false, e.message));
+      return response.send(Utils.response(false, e.message, null));
     }
   }
 
@@ -6131,7 +6121,7 @@ class EInvoiceController {
 
       if(check_data.STATUS == 'FAILE')
       {
-        return response.send(Utils.response(true, `Send invoice to Tax Office was Faile!`, check_data));
+        return response.send(Utils.response(true, `Send invoice to Tax Office was failure!`, check_data));
       }else if (check_data.STATUS == 'EXIT' )
       {
         return response.send(Utils.response(true, `The sign xml was send Tax Offiec`, check_data));
@@ -6243,8 +6233,8 @@ class EInvoiceController {
         FUNC: "sendInvoiceToTaxOffice",
         CONTENT: e.message,
       });
-      console.log("e ", e);
-      return response.send(Utils.response(false, e.message));
+      // console.log("e ", e);
+      return response.send(Utils.response(false, e.message, null));
     }
   }
 
@@ -6778,7 +6768,7 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       console.log("e  ", e);
-      return response.send(Utils.response(false, e.message));
+      return response.send(Utils.response(false, e.message, null));
     }
   }
 
@@ -6862,7 +6852,7 @@ class EInvoiceController {
         },
       };
       if (invoices.length == undefined || invoices.length == 0) {
-        return response.send(Utils.response(false, `Invalid json format!`));
+        return response.send(Utils.response(false, `Invalid json format!`,null));
       }
 
       for (let i = 0; i < invoices.length; i++) {
@@ -6990,7 +6980,7 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       console.log(e);
-      return response.send(Utils.response(false, e.message));
+      return response.send(Utils.response(false, e.message, null));
     }
   }
 
@@ -7278,7 +7268,7 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       console.log(e);
-      return response.send(Utils.response(false, "error", e.message));
+      return response.send(Utils.response(false, e.message, null));
     }
   }
 
@@ -7568,7 +7558,7 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       console.log(e);
-      return response.send(Utils.response(false, "error", e.message));
+      return response.send(Utils.response(false, e.message, null));
     }
   }
 
@@ -7897,7 +7887,7 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       console.log(e);
-      return response.send(Utils.response(false, "error", e.message));
+      return response.send(Utils.response(false, e.message, null));
     }
   }
 
@@ -7976,7 +7966,7 @@ class EInvoiceController {
         FUNC: "sendInvoiceToTaxOffice",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, "error", e.message));
+      return response.send(Utils.response(false, e.message, null));
     }
   }
 

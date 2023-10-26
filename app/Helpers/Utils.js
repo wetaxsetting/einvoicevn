@@ -16,7 +16,7 @@ libre.convertAsync = require('util').promisify(libre.convert);
 class Utils {
     constructor() {
         this.Env = use('Env')
-        this.ROOT_DIR_FILES = this.Env.get("ROOT_DIR_FILES")
+        this.ROOT_DIR_FILES = this.Env.get("ROOT_DIR_FILES");
         this.Database = use("Database");
         this.fileLogger = use("Logger");
         this.Drive = use("Drive");
@@ -337,6 +337,7 @@ class Utils {
         }
         return `/${folder}/${year}/${month}/${fileName}`;
     }
+
     async putManualFile(file, folder, filename) {
         try {
             let path = `/manual/${folder}`;
@@ -350,6 +351,7 @@ class Utils {
             return ex.message;
         }
     }
+
     async putImageFile(file, folder) {
         try {
             const type = typeof file;
@@ -381,6 +383,7 @@ class Utils {
             return false;
         }
     }
+
     async putVideoFile(file, folder) {
         try {
             const type = typeof file;
@@ -412,6 +415,7 @@ class Utils {
             return false;
         }
     }
+
     async putAudioFile(file, folder) {
         try {
             const type = typeof file;
@@ -443,6 +447,7 @@ class Utils {
             return false;
         }
     }
+
     response(success, message, data = {}, code = 200) {
         return {
             success,
@@ -451,6 +456,7 @@ class Utils {
             code
         };
     }
+
     CurrentDate(separater = "") {
         const date = new Date();
         const yyyy = date.getFullYear();
@@ -677,6 +683,7 @@ class Utils {
 
         return rtnf;
     }
+
     Num2EngText(s_r, ccy) {
         let s = s_r.toString();
         //process minus case
@@ -956,6 +963,7 @@ class Utils {
             console.log(" putExcelRootPath", e);
         }
     }
+
     async putFileRandomNameToRootPath(file, folder, type_insert) {
         try {
             const type = typeof file;
@@ -993,6 +1001,37 @@ class Utils {
             console.log(" putExcelRootPath", e);
         }
     }
+
+    async putFileRandomNameRootPathOut(file, folder, type_insert) {
+        const type = typeof file;
+        const imageExt =
+            type === "string" ?
+                file
+                    .split("?")[0]
+                    .split(".")
+                    .pop() :
+                file.extname;
+        let current = new Date();
+        let year = current.getFullYear();
+        let month = current.getMonth() + 1;
+        if (month < 10) {
+            month = "0" + month;
+        }
+        let savePath = `${this.ROOT_DIR_FILES}/${folder}/${year}/${month}`;
+        let fileName = `${current.getTime()}.${imageExt.toLowerCase()}`;
+        const timeName = new Date().getTime();
+        try {
+            await file.move(savePath, {
+                name: timeName+ '_' +fileName
+            });
+        } catch (ex) {
+            console.error(ex)
+            return ex.message
+        }
+        return `${savePath}/${timeName+ '_' + fileName}`;
+    }
+
+
 }
 
 module.exports = Utils;

@@ -5791,7 +5791,7 @@ class EInvoiceController {
       console.log("weTaxSendOrderInfoV2 res ", res.data);
       console.log("======================weTaxSendOrderInfoV2 END===================");
 
-
+      return ;
       // console.log("res_send_mail  ", res_send_mail);
     } catch (e) {
       Utils.Logger({

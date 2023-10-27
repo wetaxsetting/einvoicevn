@@ -5788,7 +5788,7 @@ class EInvoiceController {
       );
       
       console.log("weTaxSendOrderInfoV2 data_response ", data_response);
-      console.log("weTaxSendOrderInfoV2 res ", res);
+      console.log("weTaxSendOrderInfoV2 res ", res.data);
       console.log("======================weTaxSendOrderInfoV2 END===================");
 
 

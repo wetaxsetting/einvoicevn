@@ -5685,7 +5685,7 @@ class EInvoiceController {
         }
       }
 
-      response.send(Utils.response(true, `Send order to invoice was successfully!`, data_rep));
+      return response.send(Utils.response(true, `Send order to invoice was successfully!`, data_rep));
       // send mail ............
       data_rep = [];
       for (const data of data_send_mail) {

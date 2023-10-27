@@ -185,6 +185,13 @@ Route.group(() => {
 
 }).prefix("api/einvoice").middleware("user");
 
+
+Route.group(() => {
+    // WeTax
+    Route.post("send-pos-invoice", "EInvoiceController.weTaxSendPosInvoiceToTaxOffice2")
+
+}).prefix("api/einvoice/v2").middleware("user");
+
 Route.group(() => {
     Route.post("lookup-code", "EInvoiceController.getDataEinvoiceFormLookupCode")
     Route.post("general-convert-einvoice", "EInvoiceController.generalConvertEinvoice")

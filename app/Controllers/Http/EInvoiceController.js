@@ -5765,7 +5765,13 @@ class EInvoiceController {
         seller_tax_code : tax_code,
         info_send_email : data_rep
       }
-
+      const agent = {
+        Agent: {
+          defaultPort: 443,
+          protocol: "https:",
+          options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
+        },
+      };
       const res = await Request.post(
         `${WETAX_API_URL}/api/wtx/v1/email-delivery-status`,
         { 
@@ -5774,6 +5780,7 @@ class EInvoiceController {
           info_send_email : data_rep
          },
         {
+          agent,
           headers: {
             Authorization: "Basic " + WETAX_TOKEN_CALLBACK,
           },

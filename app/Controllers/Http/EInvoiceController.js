@@ -5685,7 +5685,7 @@ class EInvoiceController {
         }
       }
 
-      this.sendMailWT(data_send_mail,  p_language, p_crt_by);
+      this.sendMailWT(data_send_mail,sale_id, msg_his_id,   p_language, p_crt_by);
 
       console.log("======================weTaxSendOrderInfoV2 END===================");
 
@@ -11880,7 +11880,7 @@ class EInvoiceController {
     }
   }
 
-  async sendMailWT(data_send_mail,  p_language, p_crt_by) {
+  async sendMailWT(data_send_mail,sale_id,msg_his_id,  p_language, p_crt_by) {
     try {
        // send mail ............
        let data_rep = [];
@@ -11996,7 +11996,7 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       console.log("e  ", e);
-      return response.send(Utils.response(false, e.message));
+      //return response.send(Utils.response(false, e.message));
     }
   }
 

@@ -5724,7 +5724,7 @@ class EInvoiceController {
               mail_form: res_send_mail.data.data.mail_from,
               mail_to: res_send_mail.data.data.mail_to,
               mail_to_cc: res_send_mail.data.data.mail_to_cc,
-              title: "SSSS",//  subject,
+              title:  subject,
               content: body,
             });
           } else {

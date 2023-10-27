@@ -67,7 +67,8 @@ const moment = require('moment');
 const TAX_CHECK_TRADE_CODE = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
 const TAX_USER_NAME = "GENUWIN";
 const TAX_PASSWORD = "e_GX4v@";
-
+const WETAX_TOKEN_CALLBACK = "bad056ce571e2f1459ced4f7ff4db6d493b6472026ac8a8997bc0c03625c8667";
+const WETAX_API_URL = "https://api.wetax.com.vn";
 // test site
 // const TAX_CHECK_TRADE_CODE = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
 
@@ -5383,12 +5384,15 @@ class EInvoiceController {
     try {
       var p_language = request.header("accept-language", "ENG");
       var p_crt_by = "";
+      let data_send_mail = [];
       const user = await auth.getUser();
       if (user) {
         p_crt_by = user.USER_ID;
       }
 
       const { 
+        sale_id = "",
+        msg_his_id = "",
         tax_code = "",
         sale_date = "",
         store_code = "",
@@ -5399,6 +5403,8 @@ class EInvoiceController {
       } = request.all();
 
       console.log("======================weTaxSendOrderInfoV2 BEGIN===================");
+      console.log("weTaxSendOrderInfoV2 sale_id   ",sale_id  );
+      console.log("weTaxSendOrderInfoV2 msg_his_id  ",msg_his_id );
       console.log("weTaxSendOrderInfoV2 tax_code  ",tax_code );
       console.log("weTaxSendOrderInfoV2 p_crt_by  ",p_crt_by );
       console.log("weTaxSendOrderInfoV2 sale_date  ",sale_date );
@@ -5407,7 +5413,6 @@ class EInvoiceController {
       console.log("weTaxSendOrderInfoV2 pos_no  ",pos_no );
       console.log("weTaxSendOrderInfoV2 bill_no  ",bill_no );
       console.log("weTaxSendOrderInfoV2 data_invoice  ",data_invoice );
-      console.log("======================weTaxSendOrderInfoV2 END===================");
 
       if (!data_invoice) {
         return response.send(Utils.response(false, `Invalid data_invoice `, null)
@@ -5534,6 +5539,10 @@ class EInvoiceController {
 
         if (rtnValue.p_rtn_cur[0].STATUS == "OK") {
           console.log("tei_wt_sale_bill_pk OK ", tei_wt_sale_bill_pk);
+          data_send_mail.push({
+            tei_wt_sale_bill_pk : tei_wt_sale_bill_pk,
+            invoice : invoice
+          });
           for (let j = 0; j < invoice.total_vat_list.length; j++) {
             const para_amt_vat = {
               tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
@@ -5600,6 +5609,8 @@ class EInvoiceController {
           //console.log("tei_wt_sale_bill_pk NOEXIT ", tei_wt_sale_bill_pk);
 
           data_rep.push({
+            sale_id : sale_id ,
+            msg_his_id: msg_his_id,
             link_invoice_preview: "https://einvoicevn.com/lookup",
             security_code: "",
             status_code: "0",
@@ -5625,6 +5636,8 @@ class EInvoiceController {
         
         if (!invoice.buyer_email && !invoice.buyer_email_cc) {
           data_rep.push({
+            sale_id : sale_id ,
+            msg_his_id: msg_his_id,
             link_invoice_preview: "https://einvoicevn.com/lookup",
             security_code: "",
             status_code: "0",
@@ -5647,16 +5660,45 @@ class EInvoiceController {
 
         } else {
            
-          const { res_send_mail, subject, body } = await this.sendMailToCustomer(
-            tei_wt_sale_bill_pk,
-            invoice,
+          data_rep.push({
+            sale_id : sale_id ,
+            msg_his_id: msg_his_id,
+            link_invoice_preview: "https://einvoicevn.com/lookup",
+            lookup_code: "1234567bac",
+            status_code: "3",
+            status_name: "In Process",
+            seller_tax_code : invoice.seller_taxcode,
+            form_no : invoice.form_no,
+            serial_no : invoice.serial_no,
+            invoice_no :invoice.invoice_no,
+            customer_name: invoice.buyer_comp_name,
+            send_date: "",
+            send_time: "",
+            mail_form: "",
+            mail_to: "",
+            mail_to_cc: "",
+            etax_result: "0",
+            etax_status: "",
+            title: "",
+            content: "",
+          });
+        }
+      }
+
+      response.send(Utils.response(true, `Send order to invoice was successfully!`, data_rep));
+      // send mail ............
+      data_rep = [];
+      for (const data of data_send_mail) {
+        const { res_send_mail, subject, body } = await this.sendMailToCustomer(
+            data.tei_wt_sale_bill_pk,
+            data.invoice,
             p_language,
             p_crt_by
           );
 
           if (res_send_mail.data.success) {
             const para_inv_st = {
-              tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
+              tei_wt_sale_bill_pk: data.tei_wt_sale_bill_pk,
               status: "Sent Success",
             };
             // const rtnValueSendMail = 
@@ -5673,28 +5715,21 @@ class EInvoiceController {
             );
 
              data_rep.push({
-              link_invoice_preview: "https://einvoicevn.com/lookup",
-              lookup_code: "1234567bac",
+              sale_id : sale_id ,
+              msg_his_id: msg_his_id,
               status_code: "1",
               status_name: "Sent Success",
-              seller_tax_code : invoice.seller_taxcode,
-              form_no : invoice.form_no,
-              serial_no : invoice.serial_no,
-              invoice_no :invoice.invoice_no,
-              customer_name: invoice.buyer_comp_name,
               send_date: res_send_mail.data.data.date_send,
               send_time: res_send_mail.data.data.time_send,
               mail_form: res_send_mail.data.data.mail_from,
               mail_to: res_send_mail.data.data.mail_to,
               mail_to_cc: res_send_mail.data.data.mail_to_cc,
-              etax_result: "0",
-              etax_status: "",
               title: subject,
               content: body,
             });
           } else {
             const para_inv_st = {
-              tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
+              tei_wt_sale_bill_pk: data.tei_wt_sale_bill_pk,
               status: "Sent Faile",
             };
             // const rtnValueSendMail = 
@@ -5710,32 +5745,43 @@ class EInvoiceController {
               p_crt_by
             );
             data_rep.push({
-              link_invoice_preview: "https://einvoicevn.com/lookup",
-              security_code: "1234567bac",
+              sale_id : sale_id ,
+              msg_his_id : msg_his_id,
               status_code: "0",
               status_name: "Sent Faile",
-              seller_tax_code : invoice.seller_taxcode,
-              form_no : invoice.form_no,
-              serial_no : invoice.serial_no,
-              invoice_no :invoice.invoice_no,
-              user_name: invoice.buyer_comp_name,
               send_date: res_send_mail.data.data.date_send,
               send_time: res_send_mail.data.data.time_send,
               mail_form: res_send_mail.data.data.mail_from,
               mail_to: res_send_mail.data.data.mail_to,
               mail_to_cc: res_send_mail.data.data.mail_to_cc,
-              etax_result: "0",
-              etax_status: "",
               title: subject,
               content: body,
             });
           }
-          
-        }
-        
+      }
+      
+      let data_response = {
+        service_id : "WTPTA002",
+        seller_tax_code : tax_code,
+        info_send_email : data_rep
       }
 
-      return response.send(Utils.response(true, `Send order to invoice was successfully!`, data_rep));
+      const res = await Request.post(
+        `${WETAX_TOKEN_CALLBACK}/api/wtx/v1/email-delivery-status`,
+        { data_response },
+        {
+          agent,
+          headers: {
+            Authorization: "Basic " + WETAX_TOKEN_CALLBACK,
+          },
+        }
+      );
+      
+      console.log("weTaxSendOrderInfoV2 data_response ", data_response);
+      console.log("weTaxSendOrderInfoV2 res ", res);
+      console.log("======================weTaxSendOrderInfoV2 END===================");
+
+
       // console.log("res_send_mail  ", res_send_mail);
     } catch (e) {
       Utils.Logger({

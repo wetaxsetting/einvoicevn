@@ -6237,6 +6237,205 @@ class EInvoiceController {
     }
   }
 
+  async weTaxSendPosInvoiceToTaxOffice2({ request, response, auth }) {
+    try {
+      var p_language = request.header("accept-language", "ENG");
+      var p_crt_by = "";
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+     
+      const authUserName = "GENUWIN"; // "GENUWIN";
+      const authPassword = "genuwin123"; // "e_GX4v@";
+      const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien";
+      const urlCheck = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+
+      const agent = {
+        Agent: {
+          defaultPort: 443,
+          protocol: "https:",
+          options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
+        },
+      };
+
+      const {
+        tax_serial_number,
+        seller_tax_code,
+        invoices
+      } = request.all();
+
+      let totalSuccess = 0;
+      let totalFail = 0;
+      let resArr = []
+
+
+      for (let i = 0; i < invoices?.length; i++) {
+        const element = invoices[i];
+
+        const check_data =  await this.weTaxExtractPosXMLContent(element.invoice_xml_signed,
+          seller_tax_code,
+          element.sale_date,
+          tax_serial_number,
+          element.req_key,
+          element.store_code,
+          element.store_name,
+          element.pos_no,
+          p_language,
+          p_crt_by);
+
+          if(check_data.STATUS == 'FAILE')
+          {
+            resArr = [...resArr, {...element, status_name: `Send invoice to Tax Office was failure!`, status_code: '001'}]
+            totalFail++;
+            continue;
+          }else if (check_data.STATUS == 'EXIT' )
+          {
+            resArr = [...resArr, {...element, status_name: `The sign xml was send to Tax Office`, status_code: '002'}]
+            totalFail++;
+            continue;
+          }else if (check_data.STATUS == 'NOEXIT' )
+          {  
+            resArr = [...resArr, {...element, status_name: `Compay not yet register`, status_code: '003'}]
+            totalFail++;
+            continue;
+          }
+
+          let trade_code = "";
+          const res = await Request.post(
+            url,
+            { base64XML: Buffer.from(element.invoice_xml_signed).toString("base64") },
+            {
+              agent,
+              headers: {
+                Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
+              },
+            }
+          );
+    
+          trade_code = res?.data?.maGDich;
+          console.log("trade_code   ", trade_code);
+          totalSuccess++;
+          resArr = [...resArr, {...element, trade_code, status_name: `Send to Tax Office succesfully`, status_code: '000'}]
+          if (trade_code) {
+            const para_value = {
+                tei_einvoice_ar_pk: check_data.PK,
+                trade_code: trade_code
+            };
+    
+            await DBService.ExecuteSQLBlob(
+                `BEGIN ei_upd_tradecode_p_xml(
+                                :tei_einvoice_ar_pk,
+                                :trade_code,
+                                :p_language, 
+                                :p_crt_by, 
+                                :p_rtn_cur); 
+                END;`,
+                para_value,
+                p_language,
+                p_crt_by
+            );
+          }
+         
+      }
+      this.newThreadCheckStatusinvoice(urlCheck, authUserName, authPassword,agent, resArr, seller_tax_code)
+      return  response.send({...Utils.response(true, `Send invoice to Tax Office was Successfully!`, resArr, ), totalSuccess, totalFail});
+    } catch (e) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "weTaxSendPosInvoiceToTaxOffice2",
+        CONTENT: e.message,
+      });
+      // console.log("e ", e);
+      return response.send(Utils.response(false, e.message, null));
+    }
+  }
+
+ async newThreadCheckStatusinvoice(url, authUserName, authPassword,agent, resArr, seller_tax_code){
+  if(!resArr?.length){
+    return;
+  }
+  let statusList = [];
+    setTimeout(() => {
+      console.log('==========> newThreadCheckStatusinvoice');
+      for (let i = 0; i < resArr?.length; i++) {
+        const element = resArr[i];
+        if(
+          element?.trade_code
+          )
+          Request.get(url + element.trade_code, {
+            agent,
+            headers: {
+              Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
+            },
+          }).then((res) => {
+            console.log(" res  ", res.data);
+            let xml_tax_signed = '';
+            let maCQT = '';
+            let maTBao = '';
+            let tenTBao = '';
+
+            if (res.data.length) {
+              for (let j = 0; j < res.data.length; j++) {
+                const items = res.data[j];
+                for (let k = 0; k < items.length; k++) {
+                  if(items[k].loaiTBao == "1"){
+                    xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
+                  }else if (items[k].loaiTBao == "8") {
+                    maCQT = items[k].ndungTBao.maCQT;
+                   
+                    maTBao = items[k].loaiTBao;
+                    tenTBao = items[k].tenTBao;
+                  } else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "7") {
+                    // for(let invoice of items[k].ndungTBao.dsachLoiKTraDLieu)
+                    // {
+                    // }
+                    maTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].maLoi;
+                    tenTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].mtaLoi;
+                  } 
+                }
+              }
+            }
+
+            statusList = [...statusList,  {
+              req_key: element.req_key,
+              trade_code: element?.trade_code,
+              sale_date: element?.sale_date,
+              store_code: element?.store_code,
+              store_name: element?.store_name,
+              pos_no: element?.pos_no,
+              inform_code: maTBao,
+              inform_name: tenTBao,
+              mccqt: maCQT,
+              xml_tax_signed: xml_tax_signed
+            }]
+    
+           
+          }).catch((err)=>{
+            console.log('===> newThreadcheckStatusinvoice ', err);
+          });
+      }
+// ------------------------------
+        for (let i = 0; i < 5; i++) {
+          Request.post('https://api.wetax.com.vn/api/wtx/v1/pos-invoice-delivery-status', {
+            service_id: 'WTPTA003',
+            seller_tax_code: seller_tax_code,
+            info_send_invoices: statusList
+          }, {
+            headers: {
+              Authorization: "Basic " + "bad056ce571e2f1459ced4f7ff4db6d493b6472026ac8a8997bc0c03625c8667",
+            },
+          }).then((res) =>{
+              if (res.data?.status?.code == '200') {
+                return;
+              }
+          }).catch((err)=> console.log('===> callback WeTax CheckStatusinvoice err ', err))
+
+        }
+
+    }, 10000);
+  }
  
   async weTaxSendInvoiceToTaxOffice({ request, response, auth }) {
     try {
@@ -10548,6 +10747,8 @@ class EInvoiceController {
            ;
         const jsonInvoice = await transform(xml_content, template);
 
+        // console.log('===> jsonInvoice ', jsonInvoice);
+
         const templateSignTime = {
           SigningTime : "TDiep/CKSNNT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime"
         }
@@ -10583,7 +10784,7 @@ class EInvoiceController {
             p_crt_by
           );
 
-          console.log("rtnValuePos  ", rtnValuePos);
+          // console.log("rtnValuePos  ", rtnValuePos);
 
           if(rtnValuePos.p_rtn_cur[0].STATUS == "OK")
           {
@@ -10756,7 +10957,7 @@ class EInvoiceController {
             FUNC: "extractXMLContent",
             CONTENT: e.message,
         });
-        console.log(e.message);
+        console.log('===> extractXMLContent ',e.message);
         return (result_extra = {
             PK: -2,
             STATUS: "FAILE",

@@ -5768,7 +5768,11 @@ class EInvoiceController {
 
       const res = await Request.post(
         `${WETAX_API_URL}/api/wtx/v1/email-delivery-status`,
-        { data_response },
+        { 
+          service_id : "WTPTA002",
+          seller_tax_code : tax_code,
+          info_send_email : data_rep
+         },
         {
           headers: {
             Authorization: "Basic " + WETAX_TOKEN_CALLBACK,

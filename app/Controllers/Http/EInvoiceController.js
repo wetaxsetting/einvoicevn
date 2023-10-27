@@ -6855,7 +6855,7 @@ class EInvoiceController {
               Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
             },
           }).then((res) => {
-            console.log(" res  ", res.data);
+            // console.log(" res  ", res.data);
             let xml_tax_signed = '';
             let maCQT = '';
             let maTBao = '';

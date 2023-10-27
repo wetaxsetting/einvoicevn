@@ -5983,7 +5983,6 @@ class EInvoiceController {
 
         if (rtnValue?.p_rtn_cur?.[0]?.STATUS == "OK") {
           tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
-          
           data_send_mail.push({
             tei_wt_sale_bill_pk : tei_wt_sale_bill_pk,
             invoice : {

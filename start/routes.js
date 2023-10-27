@@ -183,9 +183,6 @@ Route.group(() => {
     Route.post("send-data-pos-invoice-erp", "EInvoiceController.sendPosInvoiceErp")
     Route.post("send-invoice-erp", "EInvoiceController.sendInvoiceErp")
 
-
-
-
 }).prefix("api/einvoice").middleware("user");
 
 Route.group(() => {

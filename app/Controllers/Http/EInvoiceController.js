@@ -5685,7 +5685,7 @@ class EInvoiceController {
         }
       }
 
-      this.sendMailWT(data_send_mail);
+      this.sendMailWT(data_send_mail,  p_language, p_crt_by);
 
       console.log("======================weTaxSendOrderInfoV2 END===================");
 
@@ -11679,7 +11679,7 @@ class EInvoiceController {
     }
   }
 
-  async sendMailWT(data_send_mail) {
+  async sendMailWT(data_send_mail,  p_language, p_crt_by) {
     try {
        // send mail ............
        let data_rep = [];

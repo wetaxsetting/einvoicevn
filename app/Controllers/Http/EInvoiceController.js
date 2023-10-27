@@ -5391,8 +5391,8 @@ class EInvoiceController {
       }
 
       const { 
-        sale_id = "",
-        msg_his_id = "",
+        sale_id = "1",
+        msg_his_id = "1",
         tax_code = "",
         sale_date = "",
         store_code = "",

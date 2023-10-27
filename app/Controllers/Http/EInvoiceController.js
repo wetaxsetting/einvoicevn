@@ -5770,7 +5770,6 @@ class EInvoiceController {
         `${WETAX_API_URL}/api/wtx/v1/email-delivery-status`,
         { data_response },
         {
-          agent,
           headers: {
             Authorization: "Basic " + WETAX_TOKEN_CALLBACK,
           },

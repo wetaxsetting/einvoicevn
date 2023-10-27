@@ -5685,113 +5685,12 @@ class EInvoiceController {
         }
       }
 
-      return response.send(Utils.response(true, `Send order to invoice was successfully!`, data_rep));
-      // send mail ............
-      data_rep = [];
-      for (const data of data_send_mail) {
-        const { res_send_mail, subject, body } = await this.sendMailToCustomer(
-            data.tei_wt_sale_bill_pk,
-            data.invoice,
-            p_language,
-            p_crt_by
-          );
+      this.sendMailWT(data_send_mail);
 
-          if (res_send_mail.data.success) {
-            const para_inv_st = {
-              tei_wt_sale_bill_pk: data.tei_wt_sale_bill_pk,
-              status: "Sent Success",
-            };
-            // const rtnValueSendMail = 
-            await DBService.ExecuteSQLBlob(
-              `BEGIN ei_upd_sale_bill_status (          
-                                                              :tei_wt_sale_bill_pk,
-                                                              :status,
-                                                              :p_language, 
-                                                              :p_crt_by, 
-                                                              :p_rtn_cur); END;`,
-              para_inv_st,
-              p_language,
-              p_crt_by
-            );
-
-             data_rep.push({
-              sale_id : sale_id ,
-              msg_his_id: msg_his_id,
-              status_code: "1",
-              status_name: "Sent Success",
-              send_date: res_send_mail.data.data.date_send,
-              send_time: res_send_mail.data.data.time_send,
-              mail_form: res_send_mail.data.data.mail_from,
-              mail_to: res_send_mail.data.data.mail_to,
-              mail_to_cc: res_send_mail.data.data.mail_to_cc,
-              title:  subject,
-              content: body,
-            });
-          } else {
-            const para_inv_st = {
-              tei_wt_sale_bill_pk: data.tei_wt_sale_bill_pk,
-              status: "Sent Faile",
-            };
-            // const rtnValueSendMail = 
-            await DBService.ExecuteSQLBlob(
-              `BEGIN ei_upd_sale_bill_status (          
-                                                              :tei_wt_sale_bill_pk,
-                                                              :status,
-                                                              :p_language, 
-                                                              :p_crt_by, 
-                                                              :p_rtn_cur); END;`,
-              para_inv_st,
-              p_language,
-              p_crt_by
-            );
-            data_rep.push({
-              sale_id : sale_id ,
-              msg_his_id : msg_his_id,
-              status_code: "0",
-              status_name: "Sent Faile",
-              send_date: res_send_mail.data.data.date_send,
-              send_time: res_send_mail.data.data.time_send,
-              mail_form: res_send_mail.data.data.mail_from,
-              mail_to: res_send_mail.data.data.mail_to,
-              mail_to_cc: res_send_mail.data.data.mail_to_cc,
-              title: subject,
-              content: body,
-            });
-          }
-      }
-      
-      let data_response = {
-        service_id : "WTPTA002",
-        seller_tax_code : tax_code,
-        info_send_email : data_rep
-      }
-      const agent = {
-        Agent: {
-          defaultPort: 443,
-          protocol: "https:",
-          options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
-        },
-      };
-      const res = await Request.post(
-        `${WETAX_API_URL}/api/wtx/v1/email-delivery-status`,
-        { 
-          service_id : "WTPTA002",
-          seller_tax_code : tax_code,
-          info_send_email : data_rep
-         },
-        {
-          agent,
-          headers: {
-            Authorization: "Basic " + WETAX_TOKEN_CALLBACK,
-          },
-        }
-      );
-      
-      console.log("weTaxSendOrderInfoV2 data_response ", data_response);
-      console.log("weTaxSendOrderInfoV2 res ", res.data);
       console.log("======================weTaxSendOrderInfoV2 END===================");
 
-      return ;
+      return response.send(Utils.response(true, `Send order to invoice was successfully!`, data_rep));
+     
       // console.log("res_send_mail  ", res_send_mail);
     } catch (e) {
       Utils.Logger({
@@ -11780,6 +11679,126 @@ class EInvoiceController {
     }
   }
 
+  async sendMailWT(data_send_mail) {
+    try {
+       // send mail ............
+       let data_rep = [];
+       for (const data of data_send_mail) {
+         const { res_send_mail, subject, body } = await this.sendMailToCustomer(
+             data.tei_wt_sale_bill_pk,
+             data.invoice,
+             p_language,
+             p_crt_by
+           );
+ 
+           if (res_send_mail.data.success) {
+             const para_inv_st = {
+               tei_wt_sale_bill_pk: data.tei_wt_sale_bill_pk,
+               status: "Sent Success",
+             };
+             // const rtnValueSendMail = 
+             await DBService.ExecuteSQLBlob(
+               `BEGIN ei_upd_sale_bill_status (          
+                                                               :tei_wt_sale_bill_pk,
+                                                               :status,
+                                                               :p_language, 
+                                                               :p_crt_by, 
+                                                               :p_rtn_cur); END;`,
+               para_inv_st,
+               p_language,
+               p_crt_by
+             );
+ 
+              data_rep.push({
+               sale_id : sale_id ,
+               msg_his_id: msg_his_id,
+               status_code: "1",
+               status_name: "Sent Success",
+               send_date: res_send_mail.data.data.date_send,
+               send_time: res_send_mail.data.data.time_send,
+               mail_form: res_send_mail.data.data.mail_from,
+               mail_to: res_send_mail.data.data.mail_to,
+               mail_to_cc: res_send_mail.data.data.mail_to_cc,
+               title:  subject,
+               content: body,
+             });
+           } else {
+             const para_inv_st = {
+               tei_wt_sale_bill_pk: data.tei_wt_sale_bill_pk,
+               status: "Sent Faile",
+             };
+             // const rtnValueSendMail = 
+             await DBService.ExecuteSQLBlob(
+               `BEGIN ei_upd_sale_bill_status (          
+                                                               :tei_wt_sale_bill_pk,
+                                                               :status,
+                                                               :p_language, 
+                                                               :p_crt_by, 
+                                                               :p_rtn_cur); END;`,
+               para_inv_st,
+               p_language,
+               p_crt_by
+             );
+             data_rep.push({
+               sale_id : sale_id ,
+               msg_his_id : msg_his_id,
+               status_code: "0",
+               status_name: "Sent Faile",
+               send_date: res_send_mail.data.data.date_send,
+               send_time: res_send_mail.data.data.time_send,
+               mail_form: res_send_mail.data.data.mail_from,
+               mail_to: res_send_mail.data.data.mail_to,
+               mail_to_cc: res_send_mail.data.data.mail_to_cc,
+               title: subject,
+               content: body,
+             });
+           }
+       }
+       
+       let data_response = {
+         service_id : "WTPTA002",
+         seller_tax_code : tax_code,
+         info_send_email : data_rep
+       }
+       const agent = {
+         Agent: {
+           defaultPort: 443,
+           protocol: "https:",
+           options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
+         },
+       };
+       const res = await Request.post(
+         `${WETAX_API_URL}/api/wtx/v1/email-delivery-status`,
+         { 
+           service_id : "WTPTA002",
+           seller_tax_code : tax_code,
+           info_send_email : data_rep
+          },
+         {
+           agent,
+           headers: {
+             Authorization: "Basic " + WETAX_TOKEN_CALLBACK,
+           },
+         }
+       );
+       
+       console.log("weTaxSendOrderInfoV2 data_response ", data_response);
+       console.log("weTaxSendOrderInfoV2 res ", res.data);
+    
+       
+      
+    } catch (e) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "sendMailWT",
+        CONTENT: e.message,
+      });
+      console.log("e  ", e);
+      return response.send(Utils.response(false, e.message));
+    }
+  }
+
   ///vng-304
   async viewPDFTemplate_04SS({ request, response, auth }) {
     try {
@@ -11871,6 +11890,7 @@ class EInvoiceController {
     }
   }
 
+  
 }
 
 module.exports = EInvoiceController;

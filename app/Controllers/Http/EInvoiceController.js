@@ -5767,7 +5767,7 @@ class EInvoiceController {
       }
 
       const res = await Request.post(
-        `${WETAX_TOKEN_CALLBACK}/api/wtx/v1/email-delivery-status`,
+        `${WETAX_API_URL}/api/wtx/v1/email-delivery-status`,
         { data_response },
         {
           agent,

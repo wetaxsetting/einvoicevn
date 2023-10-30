@@ -5391,8 +5391,8 @@ class EInvoiceController {
       }
 
       const { 
-        sale_id = "1",
-        msg_his_id = "1",
+        sale_id = "",
+        msg_his_id = "",
         tax_code = "",
         sale_date = "",
         store_code = "",
@@ -5928,8 +5928,8 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
       const { 
-        sale_id = "1",
-        msg_his_id = "2",
+        sale_id,
+        msg_his_id,
         tax_code,
         sale_date,
         store_code,

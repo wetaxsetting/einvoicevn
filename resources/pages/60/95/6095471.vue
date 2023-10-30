@@ -262,13 +262,13 @@ export default {
     limitHeightM() {
       let _grdInitSHeight = 0;
       let showItem = this.ShowDetailItem ? (this.limitHeight1 / 6) * 4 : this.limitHeight1;
-      _grdInitSHeight = showItem - 82;
+      _grdInitSHeight = showItem - 75;
       return _grdInitSHeight;
     },
     limitHeightGridDetails() {
       let _grdInitSHeight = 0;
       let showItem = this.ShowDetailItem ? (this.limitHeight1 / 6) * 2 : 0;
-      _grdInitSHeight = showItem - 10;
+      _grdInitSHeight = showItem - 12;
       return _grdInitSHeight;
     },
     headerGridLeft() {

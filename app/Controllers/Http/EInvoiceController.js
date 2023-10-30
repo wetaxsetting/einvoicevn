@@ -6901,8 +6901,9 @@ class EInvoiceController {
             console.log('===> newThreadcheckStatusinvoice ', err);
           });
       }
-// ------------------------------
-        for (let i = 0; i < 5; i++) {
+// ------------------------------ 
+
+        for (let i = 0; i < 3; i++) {
           Request.post('https://api.wetax.com.vn/api/wtx/v1/pos-invoice-delivery-status', {
             service_id: 'WTPTA003',
             seller_tax_code: seller_tax_code,
@@ -6915,7 +6916,9 @@ class EInvoiceController {
               if (res.data?.status?.code == '200') {
                 return;
               }
-          }).catch((err)=> console.log('===> callback WeTax CheckStatusinvoice err ', err))
+          }).catch((err)=> {
+            // @TODO: save log to E-Portal DB if i == 4
+            console.log('===> callback WeTax CheckStatusinvoice err ', err)})
 
         }
 

@@ -279,41 +279,37 @@ export default {
           caption: this.$t("invoice_date"),
           dataType: "date",
           format: this.curLang.DATE_FORMAT,
-          width: 190
+          width: 120
         },
         {
           dataField: "CRT_DT",
           caption: this.$t("time"),
-          width: 120
         },
         {
           dataField: "POS_INV_XML",
           caption: this.$t("box_key"),
-          width: 120
+          alignment: "right",
         },
         {
           dataField: "INVOICE_QTY",
           caption: this.$t("invoice_qty"),
-          width: 215
         },
         {
           dataField: "STATUS",
-          width: 100,
           caption: this.$t("status"),
           lookup: {
             dataSource: this.statusList,
             displayExpr: "NAME",
             valueExpr: "CODE",
           },
-          alignment: "left",
+          alignment: "center",
           type: "text",
-          width: 120
         },
-        // {
-        //   dataField: "SLLR_COMP_NM",
-        //   caption: this.$t("sllr_comp_nm"),
-        //   width: 300,
-        // },
+        {
+          dataField: "CQT_MAGD",
+          caption: this.$t("cqt_magd"),
+          width: 300,
+        },
         // {
         //   dataField: "SLLR_TAXCODE",
         //   caption: this.$t("sllr_taxcode"),

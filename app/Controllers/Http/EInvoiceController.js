@@ -5995,11 +5995,15 @@ class EInvoiceController {
               mccqt: rtnValue.p_rtn_cur[0].MCCQT,
               buyer_email: invoice.buyer_email,
               buyer_email_cc: invoice.buyer_email_cc,
+              sale_id : invoice.sale_id ,
+              msg_his_id: invoice.msg_his_id,
             }
           });
 
           if (!invoice.buyer_email && !invoice.buyer_email_cc && !rtnValue.p_rtn_cur[0].BUYER_EMAIL && !rtnValue.p_rtn_cur[0].BUYER_EMAIL_CC) {
             data_r.push({
+              sale_id : invoice.sale_id ,
+              msg_his_id: invoice.msg_his_id,
               link_invoice_preview: "https://einvoicevn.com/lookup",
               lookup_code: "1234567bac",
               seller_taxcode: tax_code,
@@ -6021,6 +6025,8 @@ class EInvoiceController {
           } 
 
           data_r.push({
+            sale_id : invoice.sale_id ,
+            msg_his_id: invoice.msg_his_id,
             link_invoice_preview: "https://einvoicevn.com/lookup",
             lookup_code: "1234567bac",
             seller_taxcode: tax_code,
@@ -6042,6 +6048,8 @@ class EInvoiceController {
         else {
           //return response.send(Utils.response(false, 'Order einvoice not exit'));
           data_r.push({
+            sale_id : invoice.sale_id ,
+            msg_his_id: invoice.msg_his_id,
             link_invoice_preview: "https://einvoicevn.com/lookup",
             lookup_code: "1234567bac",
             seller_taxcode: tax_code,

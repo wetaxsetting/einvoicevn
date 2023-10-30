@@ -6821,10 +6821,10 @@ class EInvoiceController {
                 p_crt_by
             );
           }
-         
       }
-      this.newThreadCheckStatusinvoice(urlCheck, authUserName, authPassword,agent, resArr, seller_tax_code)
-      return  response.send({...Utils.response(true, `Send invoice to Tax Office was Successfully!`, resArr, ), totalSuccess, totalFail});
+      await Utils._sleep(5);
+      const statusList = await this.newThreadCheckStatusinvoice(urlCheck, authUserName, authPassword,agent, resArr, seller_tax_code)
+      return  response.send({...Utils.response(true, `Send invoice to Tax Office was Successfully!`, statusList ), totalSuccess, totalFail});
     } catch (e) {
       Utils.Logger({
         LVL: "error",
@@ -6838,92 +6838,89 @@ class EInvoiceController {
   }
 
  async newThreadCheckStatusinvoice(url, authUserName, authPassword,agent, resArr, seller_tax_code){
-  if(!resArr?.length){
-    return;
-  }
-  let statusList = [];
-    setTimeout(() => {
-      console.log('==========> newThreadCheckStatusinvoice');
-      for (let i = 0; i < resArr?.length; i++) {
-        const element = resArr[i];
-        if(
-          element?.trade_code
-          )
-          Request.get(url + element.trade_code, {
+  try {
+    if(!resArr?.length){
+      return;
+    }
+    let statusList = [];
+
+  //  setTimeout(() => {
+    console.log('==========> newThreadCheckStatusinvoice');
+    for (let i = 0; i < resArr?.length; i++) {
+      const element = resArr[i];
+      let xml_tax_signed = '';
+      let maCQT = '';
+      let maTBao = '';
+      let tenTBao = '';
+      if(element?.trade_code){
+        const res = await Request.get(url + element.trade_code, {
             agent,
             headers: {
               Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
             },
-          }).then((res) => {
-            // console.log(" res  ", res.data);
-            let xml_tax_signed = '';
-            let maCQT = '';
-            let maTBao = '';
-            let tenTBao = '';
-
-            if (res.data.length) {
-              for (let j = 0; j < res.data.length; j++) {
-                const items = res.data[j];
-                for (let k = 0; k < items.length; k++) {
-                  if(items[k].loaiTBao == "1"){
-                    xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
-                  }else if (items[k].loaiTBao == "8") {
-                    maCQT = items[k].ndungTBao.maCQT;
-                   
-                    maTBao = items[k].loaiTBao;
-                    tenTBao = items[k].tenTBao;
-                  } else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "7") {
-                    // for(let invoice of items[k].ndungTBao.dsachLoiKTraDLieu)
-                    // {
-                    // }
-                    maTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].maLoi;
-                    tenTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].mtaLoi;
-                  } 
-                }
-              }
-            }
-
-            statusList = [...statusList,  {
-              req_key: element.req_key,
-              trade_code: element?.trade_code,
-              sale_date: element?.sale_date,
-              store_code: element?.store_code,
-              store_name: element?.store_name,
-              pos_no: element?.pos_no,
-              inform_code: maTBao,
-              inform_name: tenTBao,
-              mccqt: maCQT,
-              xml_tax_signed: xml_tax_signed
-            }]
-    
-           
-          }).catch((err)=>{
-            console.log('===> newThreadcheckStatusinvoice ', err);
           });
+        if (res.data.length) {
+          for (let j = 0; j < res.data.length; j++) {
+            const items = res.data[j];
+            for (let k = 0; k < items.length; k++) {
+              if(items[k].loaiTBao == "1"){
+                xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
+              }else if (items[k].loaiTBao == "8") {
+                maCQT = items[k].ndungTBao.maCQT;
+              
+                maTBao = items[k].loaiTBao;
+                tenTBao = items[k].tenTBao;
+              } else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "7") {
+                maTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0]?.maLoi;
+                tenTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0]?.mtaLoi;
+              } else {
+                maTBao = items[k].ndungTBao?.maLoi;
+                tenTBao = items[k].ndungTBao?.mtaLoi;
+              }
+              console.log('===> items[k] ',items[k]);
+            }
+          }
+        }
       }
+
+      statusList = [...statusList,  {
+        ...element,
+        inform_code: maTBao,
+        inform_name: tenTBao,
+        mccqt: maCQT,
+        xml_tax_signed: xml_tax_signed
+      }]
+    }
+
+// ------------------------------ 
+      return statusList;
 // ------------------------------ 
 
-        for (let i = 0; i < 3; i++) {
-          Request.post('https://api.wetax.com.vn/api/wtx/v1/pos-invoice-delivery-status', {
-            service_id: 'WTPTA003',
-            seller_tax_code: seller_tax_code,
-            info_send_invoices: statusList
-          }, {
-            headers: {
-              Authorization: "Basic " + "bad056ce571e2f1459ced4f7ff4db6d493b6472026ac8a8997bc0c03625c8667",
-            },
-          }).then((res) =>{
-              if (res.data?.status?.code == '200') {
-                return;
-              }
-          }).catch((err)=> {
-            // @TODO: save log to E-Portal DB if i == 4
-            console.log('===> callback WeTax CheckStatusinvoice err ', err)})
+        // for (let i = 0; i < 3; i++) {
+        //   Request.post('https://api.wetax.com.vn/api/wtx/v1/pos-invoice-delivery-status', {
+        //     service_id: 'WTPTA003',
+        //     seller_tax_code: seller_tax_code,
+        //     info_send_invoices: statusList
+        //   }, {
+        //     headers: {
+        //       Authorization: "Basic " + "bad056ce571e2f1459ced4f7ff4db6d493b6472026ac8a8997bc0c03625c8667",
+        //     },
+        //   }).then((res) =>{
+        //       if (res.data?.status?.code == '200') {
+        //         return;
+        //       }
+        //   }).catch((err)=> {
+        //     // @TODO: save log to E-Portal DB if i == 4
+        //     console.log('===> callback WeTax CheckStatusinvoice err ', err)})
 
-        }
+        // }
 
-    }, 10000);
-  }
+    // }, 5000);
+
+  } catch (error) {
+      console.log('===> callback WeTax CheckStatusinvoice error ', error)
+    }
+}
  
   async weTaxSendInvoiceToTaxOffice({ request, response, auth }) {
     try {

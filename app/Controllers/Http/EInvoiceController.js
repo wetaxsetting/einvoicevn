@@ -6002,6 +6002,8 @@ class EInvoiceController {
 
           if (!invoice.buyer_email && !invoice.buyer_email_cc && !rtnValue.p_rtn_cur[0].BUYER_EMAIL && !rtnValue.p_rtn_cur[0].BUYER_EMAIL_CC) {
             data_r.push({
+              sale_id : invoice.sale_id ,
+              msg_his_id: invoice.msg_his_id,
               link_invoice_preview: "https://einvoicevn.com/lookup",
               lookup_code: "1234567bac",
               seller_taxcode: tax_code,

@@ -5938,8 +5938,8 @@ class EInvoiceController {
       } = request.all();
 
       console.log("weTaxReSendOrderInfoV2  BEGIN ============================= ");
-      console.log("weTaxReSendOrderInfoV2  sale_id ",sale_id);
-      console.log("weTaxReSendOrderInfoV2  msg_his_id ",msg_his_id);
+      //console.log("weTaxReSendOrderInfoV2  sale_id ",sale_id);
+      //console.log("weTaxReSendOrderInfoV2  msg_his_id ",msg_his_id);
       console.log("weTaxReSendOrderInfoV2  tax_code ",tax_code);
       console.log("weTaxReSendOrderInfoV2  sale_date ",sale_date);
       console.log("weTaxReSendOrderInfoV2  store_code ",store_code);
@@ -6062,7 +6062,7 @@ class EInvoiceController {
         }
       }
 
-      this.sendMailWT(data_send_mail, sale_id, msg_his_id, tax_code, p_language, p_crt_by);
+      this.sendMailWT(data_send_mail,tax_code, p_language, p_crt_by);
 
       return response.send(Utils.response(true, `ReSend order to invoice was Successfully!`, data_r));
 

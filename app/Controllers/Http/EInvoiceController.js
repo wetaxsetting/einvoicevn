@@ -5685,7 +5685,7 @@ class EInvoiceController {
         }
       }
 
-      this.sendMailWT(data_send_mail, tax_code, p_language, p_crt_by);
+      this.sendMailWT(data_send_mail,"WTPTA002", tax_code, p_language, p_crt_by);
 
       console.log("======================weTaxSendOrderInfoV2 END===================");
 
@@ -6070,7 +6070,7 @@ class EInvoiceController {
         }
       }
 
-      this.sendMailWT(data_send_mail,tax_code, p_language, p_crt_by);
+      this.sendMailWT(data_send_mail,"WTPTA002-2", tax_code, p_language, p_crt_by);
 
       return response.send(Utils.response(true, `ReSend order to invoice was Successfully!`, data_r));
 
@@ -12048,7 +12048,7 @@ class EInvoiceController {
     }
   }
 
-  async sendMailWT(data_send_mail, sale_id, msg_his_id, tax_code,  p_language, p_crt_by) {
+  async sendMailWT(data_send_mail, ipa_name, tax_code, p_language, p_crt_by) {
     try {
        // send mail ............
        let data_rep = [];
@@ -12124,11 +12124,6 @@ class EInvoiceController {
            }
        }
        
-       let data_response = {
-         service_id : "WTPTA002",
-         seller_tax_code : tax_code,
-         info_send_email : data_rep
-       }
        const agent = {
          Agent: {
            defaultPort: 443,
@@ -12136,21 +12131,31 @@ class EInvoiceController {
            options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
          },
        };
-       const res = await Request.post(
-         `${WETAX_API_URL}/api/wtx/v1/email-delivery-status`,
-         { 
-           service_id : "WTPTA002",
-           seller_tax_code : tax_code,
-           info_send_email : data_rep
-          },
-         {
-           agent,
-           headers: {
-             Authorization: "Basic " + WETAX_TOKEN_CALLBACK,
-           },
-         }
-       );
-       
+
+      let triesCounter = 0;
+      while(triesCounter < 3){
+            try {
+              const res = await Request.post(
+                `${WETAX_API_URL}/api/wtx/v1/email-delivery-status`,
+                { 
+                  service_id : ipa_name,
+                  seller_tax_code : tax_code,
+                  info_send_email : data_rep
+                 },
+                {
+                  agent,
+                  headers: {
+                    Authorization: "Basic " + WETAX_TOKEN_CALLBACK,
+                  },
+                }
+              );
+              break;  // 'return' would work here as well
+            } catch (err) {
+              console.log(err);
+            }
+            triesCounter ++;
+        }
+
        console.log("weTaxSendOrderInfoV2 data_response ", data_response);
        console.log("weTaxSendOrderInfoV2 res ", res.data);
     

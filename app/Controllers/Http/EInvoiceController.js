@@ -5391,8 +5391,8 @@ class EInvoiceController {
       }
 
       const { 
-        sale_id = "1",
-        msg_his_id = "1",
+        sale_id = "",
+        msg_his_id = "",
         tax_code = "",
         sale_date = "",
         store_code = "",
@@ -5403,8 +5403,8 @@ class EInvoiceController {
       } = request.all();
 
       console.log("======================weTaxSendOrderInfoV2 BEGIN===================");
-      console.log("weTaxSendOrderInfoV2 sale_id   ",sale_id  );
-      console.log("weTaxSendOrderInfoV2 msg_his_id  ",msg_his_id );
+      //console.log("weTaxSendOrderInfoV2 sale_id   ",sale_id  );
+      //console.log("weTaxSendOrderInfoV2 msg_his_id  ",msg_his_id );
       console.log("weTaxSendOrderInfoV2 tax_code  ",tax_code );
       console.log("weTaxSendOrderInfoV2 p_crt_by  ",p_crt_by );
       console.log("weTaxSendOrderInfoV2 sale_date  ",sale_date );
@@ -5609,8 +5609,8 @@ class EInvoiceController {
           //console.log("tei_wt_sale_bill_pk NOEXIT ", tei_wt_sale_bill_pk);
 
           data_rep.push({
-            sale_id : sale_id ,
-            msg_his_id: msg_his_id,
+            sale_id : invoice.sale_id ,
+            msg_his_id: invoice.msg_his_id,
             link_invoice_preview: "https://einvoicevn.com/lookup",
             security_code: "",
             status_code: "0",
@@ -5636,8 +5636,8 @@ class EInvoiceController {
         
         if (!invoice.buyer_email && !invoice.buyer_email_cc) {
           data_rep.push({
-            sale_id : sale_id ,
-            msg_his_id: msg_his_id,
+            sale_id : invoice.sale_id ,
+            msg_his_id: invoice.msg_his_id,
             link_invoice_preview: "https://einvoicevn.com/lookup",
             security_code: "",
             status_code: "0",
@@ -5661,8 +5661,8 @@ class EInvoiceController {
         } else {
            
           data_rep.push({
-            sale_id : sale_id ,
-            msg_his_id: msg_his_id,
+            sale_id : invoice.sale_id ,
+            msg_his_id: invoice.msg_his_id,
             link_invoice_preview: "https://einvoicevn.com/lookup",
             lookup_code: "1234567bac",
             status_code: "3",
@@ -5685,7 +5685,7 @@ class EInvoiceController {
         }
       }
 
-      this.sendMailWT(data_send_mail, sale_id, msg_his_id, tax_code, p_language, p_crt_by);
+      this.sendMailWT(data_send_mail, tax_code, p_language, p_crt_by);
 
       console.log("======================weTaxSendOrderInfoV2 END===================");
 
@@ -5928,8 +5928,8 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
       const { 
-        sale_id = "1",
-        msg_his_id = "2",
+        sale_id,
+        msg_his_id,
         tax_code,
         sale_date,
         store_code,
@@ -5938,8 +5938,8 @@ class EInvoiceController {
       } = request.all();
 
       console.log("weTaxReSendOrderInfoV2  BEGIN ============================= ");
-      console.log("weTaxReSendOrderInfoV2  sale_id ",sale_id);
-      console.log("weTaxReSendOrderInfoV2  msg_his_id ",msg_his_id);
+      //console.log("weTaxReSendOrderInfoV2  sale_id ",sale_id);
+      //console.log("weTaxReSendOrderInfoV2  msg_his_id ",msg_his_id);
       console.log("weTaxReSendOrderInfoV2  tax_code ",tax_code);
       console.log("weTaxReSendOrderInfoV2  sale_date ",sale_date);
       console.log("weTaxReSendOrderInfoV2  store_code ",store_code);
@@ -6062,7 +6062,7 @@ class EInvoiceController {
         }
       }
 
-      this.sendMailWT(data_send_mail, sale_id, msg_his_id, tax_code, p_language, p_crt_by);
+      this.sendMailWT(data_send_mail,tax_code, p_language, p_crt_by);
 
       return response.send(Utils.response(true, `ReSend order to invoice was Successfully!`, data_r));
 
@@ -12074,8 +12074,8 @@ class EInvoiceController {
              );
  
               data_rep.push({
-               sale_id : sale_id ,
-               msg_his_id: msg_his_id,
+               sale_id : data.invoice.sale_id ,
+               msg_his_id: data.invoice.msg_his_id,
                status_code: "1",
                status_name: "Sent Success",
                send_date: res_send_mail.data.data.date_send,
@@ -12104,8 +12104,8 @@ class EInvoiceController {
                p_crt_by
              );
              data_rep.push({
-               sale_id : sale_id ,
-               msg_his_id : msg_his_id,
+               sale_id : data.invoice.sale_id ,
+               msg_his_id : data.invoice.msg_his_id,
                status_code: "0",
                status_name: "Sent Faile",
                send_date: res_send_mail.data.data.date_send,

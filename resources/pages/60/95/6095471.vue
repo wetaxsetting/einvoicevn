@@ -304,7 +304,6 @@ export default {
           },
           alignment: "center",
           type: "text",
-          width: 120
         },
         {
           dataField: "CQT_MAGD",

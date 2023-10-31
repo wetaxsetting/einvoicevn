@@ -12151,13 +12151,14 @@ class EInvoiceController {
               );
               break;  // 'return' would work here as well
             } catch (err) {
+              Utils._sleep(5);
               console.log(err);
             }
             triesCounter ++;
         }
 
-       console.log("weTaxSendOrderInfoV2 data_response ", data_response);
-       console.log("weTaxSendOrderInfoV2 res ", res.data);
+      //  console.log("weTaxSendOrderInfoV2 data_response ", data_response);
+      //  console.log("weTaxSendOrderInfoV2 res ", res.data);
     
        
       

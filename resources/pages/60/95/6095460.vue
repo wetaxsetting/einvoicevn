@@ -63,7 +63,7 @@
                     <BaseButton btn_type="icon" :icon_type="isShowLeft ? 'skip_prev' : 'skip_next'" :btn_text="isShowLeft ? $t('hide_left') : $t('show_left')" @onclick="isShowLeft = !isShowLeft" />
                   </v-col>
                   <v-col md="3">
-                    <b style="color: red">{{ modelMaster.TMESS_CQT }}</b>
+                    <b style="color: red">{{ modelMaster.CQT_NOTI_NM }}</b>
                   </v-col>
                   <v-col md="8" class="pr-3">
                     <GwFlexBox justify="end">
@@ -71,14 +71,14 @@
                       <BaseButton icon_type="xml" :btn_text="$t('view_xml')" @onclick="onClick('viewXML')" />
                       <BaseButton icon_type="eye_on" :btn_text="$t('preview')" @onclick="onClick('preview')" />
                       <BaseButton icon_type="eye_on" :btn_text="$t('checking_result_cqt')" @onclick="onClick('CHECKCQT')" />
-                      <BaseButton icon_type="sign" :btn_text="$t('sign')" @onclick="onClick('sign')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
+                      <!-- <BaseButton icon_type="sign" :btn_text="$t('sign')" @onclick="onClick('sign')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" /> -->
                       <!-- Add -->
-                      <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')" @onclick="onClick('newMaster')"  />
+                      <!-- <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')" @onclick="onClick('newMaster')"  /> -->
                       <!-- Save -->
-                      <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClick('saveMaster')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
+                      <!-- <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClick('saveMaster')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" /> -->
                       <!-- Delete -->
-                      <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClick('deleteMaster')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
-                      <BaseButton icon_type="print" btn_type="icon" @onclick="onClick('btnPrint')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
+                      <!-- <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClick('deleteMaster')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" /> -->
+                      <!-- <BaseButton icon_type="print" btn_type="icon" @onclick="onClick('btnPrint')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" /> -->
                     </GwFlexBox>
                   </v-col>
                 </v-row>
@@ -143,16 +143,16 @@
                     <BaseButton icon_type="email" :btn_text="$t('send_mail')" @onclick="onClick('sendMail')" :disabled="invoiceStatus == 7"  />
                   </v-col>
                   <v-col md="3" class="pr-2">
-                    <BaseSelect outlined v-model="selectedTable" :lstData="tables" item-text="NAME" item-value="CODE" />
+                    <!-- <BaseSelect outlined v-model="selectedTable" :lstData="tables" item-text="NAME" item-value="CODE" /> -->
                   </v-col>
                   <v-col md="2" class="pr-2">
                     <GwFlexBox justify="end">
                       <!-- Add -->
-                      <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')" @onclick="onClick('newDetail')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
+                      <!-- <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('btn_add')" @onclick="onClick('newDetail')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" /> -->
                       <!-- Save -->
-                      <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClick('saveDetail')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
+                      <!-- <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClick('saveDetail')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" /> -->
                       <!-- Delete -->
-                      <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClick('deleteDetail')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" />
+                      <!-- <BaseButton btn_type="icon" icon_type="delete" :btn_text="$t('delete')" @onclick="onClick('deleteDetail')" :disabled="modelSearch.STATUS == 0 || modelSearch.STATUS == 1" /> -->
                     </GwFlexBox>
                   </v-col>
                 </v-row>
@@ -346,6 +346,7 @@
         TEN_CD: null,
         NTBAO: null,
         TMESS_CQT: null,
+        CQT_NOTI_NM:null,
         VOUCHER_NO: null,
         PBAN: "2.0.1",
         SLLR_POSITION: null,
@@ -613,9 +614,9 @@
           case "previewBB_Replace":
           this.OnPreviewBBR();
           break;
-          case "sign":
-           this.OnSignXml();  
-          break;
+          // case "sign":
+          //  this.OnSignXml();  
+          // break;
           case "sendMail" :
            this.onSendMail();
           break;
@@ -626,7 +627,7 @@
       {
         if (this.modelMaster.PK) {
           console.log(this.modelMaster.PK)
-              let res_url = await this.$axios.$post("/einvoice/general-pdf-template-04SS", {
+              let res_url = await this.$axios.$post("/einvoice/general-pdf-template-WT-04SS", {
                 responseType: "json",
                   data: this.modelMaster.PK,
               });
@@ -667,9 +668,9 @@
       {
         if(this.tei_einvoice_m_pk_row != "")
         {
-          let res_url = await this.$axios.$post("/einvoice/general-url-pdf-einvoice-bb", {
+          let res_url = await this.$axios.$post("/einvoice/general-url-pdf-einvoice-WT-04SS-bb", {
                 responseType: "json",
-                tei_einvoice_m_pk_row: this.tei_einvoice_m_pk_row,
+                tei_ei_note_m_pk_row: this.tei_einvoice_m_pk_row,
               });
   
           if(res_url.success)
@@ -691,9 +692,9 @@
       {
         if(this.tei_einvoice_m_pk_row != "")
         {
-          let res_url = await this.$axios.$post("/einvoice/general-url-pdf-einvoice-bb-r", {
+          let res_url = await this.$axios.$post("/einvoice/general-url-pdf-einvoice-WT-04SS-bb-r", {
                 responseType: "json",
-                tei_einvoice_m_pk_row: this.tei_einvoice_m_pk_row,
+                tei_ei_note_m_pk_row: this.tei_einvoice_m_pk_row,
               });
   
           if(res_url.success)
@@ -1404,43 +1405,6 @@
         this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
       },
   
-      async OnSignXml(){
-        if (this.modelMaster.PK !== "" ) {
-        this.onGeneralXML();
-        let data_invoice = this.onGeneralXML();
-        let res_send = await this.$axios.$post("/einvoice/invalidinvoice2xml", {
-              responseType: "json",
-              invalid_invoices: data_invoice,
-            });
-        
-        console.log("res_send  ", res_send);
-        if(res_send.success)
-          {
-            const objXml = [{
-              req_key : this.modelMaster.PK,
-              xml : JSON.stringify(res_send.data).toString().replaceAll('\"','').replaceAll("<DLTBao>","<DLTBao Id='ID1'>")
-            }];
-  
-            // console.log("objXml ", objXml);
-            jQuery.support.cors = true;
-            $.ajax({
-            url: "http://localhost:1080/issueXmlList",
-            dataType: "json",
-            method: "POST",
-            data: {
-                  crt_by: this.user.USER_ID,
-                  xml: JSON.stringify(objXml).toString()
-                },
-            error: this.onErrorissueXmlList,
-            success: this.onSuccessissueXmlList,
-            });
-          }
-  
-        }else
-        {
-          return this.showNotification("warning", this.$t("error_occurs"), "pls_select_invalid_invoices");
-        }
-      },
   
       async onErrorissueXmlList(json, textStatus, errorThrown) {
         return this.showNotification("warning", this.$t("error_occurs"), errorThrown);//   alert(" Error :" + errorThrown);

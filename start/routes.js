@@ -179,6 +179,9 @@ Route.group(() => {
     Route.post("send-mail-invalid-invoice", "EInvoiceController.sendMailInvalidInvoice")
     Route.post("send-mail-at", "EInvoiceController.sendMailAt")
     Route.post("general-pdf-template-04SS", "EInvoiceController.viewPDFTemplate_04SS")   ////VNG-304
+    Route.post("general-pdf-template-WT-04SS", "EInvoiceController.viewPDFTemplate_WT_04SS")   ////VNG-304-6095460
+    Route.post("general-url-pdf-einvoice-WT-04SS-bb", "EInvoiceController.viewPDFTemplate_WT_04SS_BB")   ////VNG-304-6095460
+    Route.post("general-url-pdf-einvoice-WT-04SS-bb-r", "EInvoiceController.viewPDFTemplate_WT_04SS_BBR")   ////VNG-304-6095460
     Route.post("general-pdf-template-WT", "EInvoiceController.viewPDF_InvoiceWT")   ////VNG-304
     Route.post("general-pdf-template-send-bill", "EInvoiceController.viewPDF_SaleBillWT")   ////VNG-304
     Route.post("send-data-pos-invoice-erp", "EInvoiceController.sendPosInvoiceErp")

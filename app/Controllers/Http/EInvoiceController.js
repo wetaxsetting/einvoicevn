@@ -12156,11 +12156,6 @@ class EInvoiceController {
             }
             triesCounter ++;
         }
-
-      //  console.log("weTaxSendOrderInfoV2 data_response ", data_response);
-      //  console.log("weTaxSendOrderInfoV2 res ", res.data);
-    
-       
       
     } catch (e) {
       Utils.Logger({

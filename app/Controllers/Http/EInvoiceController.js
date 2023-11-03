@@ -12210,7 +12210,7 @@ class EInvoiceController {
               );
               break;  // 'return' would work here as well
             } catch (err) {
-              Utils._sleep(5);
+             await Utils._sleep(5);
               console.log(err);
             }
             triesCounter ++;

@@ -2020,6 +2020,110 @@ class EInvoiceController {
     }
   }
 
+  async weTaxExtractXMLContentNotice(p_xml_content, p_language, p_crt_by) {
+    try {
+      const templateTTChung = [
+        "TBao/DLTBao",
+        {
+          PBan: "PBan",
+          MSo: "MSo",
+          Ten: "Ten",
+          Loai: "Loai",
+          So: "So",
+          NTBCCQT: "NTBCCQT",
+          TCQT: "TCQT",
+          MCQT: "MCQT",
+          MST: "MST",
+          TNNT: "TNNT",
+          DDanh: "DDanh",
+          NTBao: "NTBao",
+        },
+      ];
+      //console.log("p_xml_content  ", p_xml_content);
+
+      const jsonTTChung = await transform(p_xml_content, templateTTChung);
+      //return jsonTTChung;
+      
+      const arrTTChung = [
+        jsonTTChung[0].PBan,
+        jsonTTChung[0].MSo,
+        jsonTTChung[0].Ten,
+        jsonTTChung[0].Loai,
+        jsonTTChung[0].So,
+        jsonTTChung[0].NTBCCQT,
+        jsonTTChung[0].TCQT,
+        jsonTTChung[0].MCQT,
+        jsonTTChung[0].MST,
+        jsonTTChung[0].TNNT,
+        jsonTTChung[0].DDanh,
+        jsonTTChung[0].NTBao,
+      ];
+    
+      //console.log("arrTTChung  ", arrTTChung);
+
+      //TKhai.DLTKhai.NDTKhai.DSCTSSDung
+      const templateHDon = [
+        "TBao/DLTBao/DSHDon/HDon",
+        {
+          MCQTCap: "MCQTCap",
+          KHMSHDon: "KHMSHDon",
+          KHHDon: "KHHDon",
+          SHDon: "SHDon",
+          Ngay: "Ngay",
+          LADHDDT: "LADHDDT",
+          TCTBao: "TCTBao",
+          LDo:"LDo",
+        },
+      ];
+      const jsonHDon = await transform(p_xml_content, templateHDon);
+
+      let masterPara = arrTTChung;
+
+      //console.log("masterPara  ",masterPara)
+      const master = await DBService.callProcCursor("WT_UPD_NOTICE_M", masterPara, p_language, p_crt_by);
+      //console.log("jsonHDon", jsonHDon);
+      if (master && master[0].PK > 0) {
+
+        for (let i = 0; i < jsonHDon.length; i++) {
+          const detailPara = [
+            master[0].PK,
+            jsonHDon[i].MCQTCap,
+            jsonHDon[i].KHMSHDon,
+            jsonHDon[i].KHHDon,
+            jsonHDon[i].SHDon,
+            jsonHDon[i].Ngay,
+            jsonHDon[i].LADHDDT,
+            jsonHDon[i].TCTBao,
+            jsonHDon[i].LDo,
+          ];
+          const detail = await DBService.callProcCursor(
+            "WT_UPD_NOTICE_D",
+            detailPara,
+            p_language,
+            p_crt_by
+          );
+          //console.log("detail", detail);
+          if(detail[0].PK == -3)
+          {
+            return -3;
+          }
+        }
+        return master[0].PK;
+      } else {
+        return 0;
+      }
+    } catch (e) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "extractXMLContent_Dec",
+        CONTENT: e.message,
+      });
+      console.log("e   ", e);
+      return -2;
+    }
+  }
+
   async sendDeclarationToTaxOffice({ request, response, auth }) {
     try {
       var p_language = request.header("accept-language", "ENG");
@@ -2885,7 +2989,59 @@ class EInvoiceController {
           options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
         },
       };
-      // console.log("weTaxSendInformAdjustToTaxOffice");
+
+      //console.log("weTaxSendInformAdjustToTaxOffice  xml_signed  ", xml_signed);
+
+      const valid = this.validateNoticeXML(this.parseXmlToJson(xml_signed));
+      if (!valid.status) {
+        return response.send(Utils.response(valid.status, valid.message, null));
+      }
+
+       const matesNoticePK = await this.weTaxExtractXMLContentNotice(xml_signed, p_crt_by, p_language);
+
+       //console.log("weTaxSendInformAdjustToTaxOffice  valid  ", matesNoticePK);
+       
+       if(matesNoticePK == 0 )
+       {
+         return response.send(
+           Utils.response(false, `Notice have not details`, {
+             req_key: "",
+             xml_signed: "",
+             trade_code: "",
+             tax_code: tax_code,
+           })
+         );
+       }else if (matesNoticePK == -1 )
+       {
+         return response.send(
+           Utils.response(false, `Taxcode company not yet register! `, {
+             req_key: "",
+             xml_signed: "",
+             trade_code: "",
+             tax_code: tax_code,
+           })
+         );
+       } else if (matesNoticePK == -2 )
+       {
+         return response.send(
+           Utils.response(false, `The file xml is wrong! `, {
+             req_key: "",
+             xml_signed: "",
+             trade_code: "",
+             tax_code: tax_code,
+           })
+         );
+       }else if (matesNoticePK == -3 )
+       {
+         return response.send(
+           Utils.response(false, `The invoice registered !`, {
+             req_key: "",
+             xml_signed: "",
+             trade_code: "",
+             tax_code: tax_code,
+           })
+         );
+       }
 
       const trade_code = await Request.post(
         url,
@@ -2897,40 +3053,42 @@ class EInvoiceController {
           },
         }
       );
-      // console.log("trade_code ", trade_code);
-      if (trade_code && trade_code.data) {
-        return Utils.response(true, `Call tax office api success.`, {
-          req_key: req_key,
-          trade_code: trade_code.data.maGDich,
-        });
-        // const para_value = {
-        //     req_key: req_key,
-        //     trade_code: trade_code.data.maGDich,
-        //     xml_sign: xml_signed,
-        // };
-        // const res = await DBService.ExecuteSQLBlob(
-        //     `BEGIN EI_UP_6095280_DATA_TRADE_CODE(:req_key,:trade_code, :xml_sign,
-        //             :p_language, :p_crt_by, :p_rtn_cur); END;`,
-        //     para_value,
-        //     p_language,
-        //     p_crt_by
-        // );
+      //console.log("trade_code ", trade_code);
+      if (trade_code && trade_code.data.maGDich) {
+        
+        const para_value = {
+            req_key: matesNoticePK,
+            trade_code: trade_code.data.maGDich,
+            xml_sign: xml_signed,
+        };
+        const res = await DBService.ExecuteSQLBlob(
+            `BEGIN EI_UP_NOTICE_TRADE_CODE( :req_key,
+                                                  :trade_code, 
+                                                  :xml_sign,
+                                                  :p_language, 
+                                                  :p_crt_by, 
+                                                  :p_rtn_cur); END;`,
+            para_value,
+            p_language,
+            p_crt_by
+        );
 
-        // if (res.p_rtn_cur[0].STATUS == "OK") {
-        //     return Utils.response(true, `Call tax office api success.`, {
-        //         req_key: req_key,
-        //         trade_code: trade_code.data.maGDich,
-        //     });
-        // } else {
-        //     return response.send(
-        //         Utils.response(
-        //             false,
-        //             `Something went wrong, please try again later.
-        //   EI_UP_6095280_DATA_TRADE_CODE`,
-        //             para_value
-        //         )
-        //     );
-        // }
+        if (res.p_rtn_cur[0].STATUS == "OK") {
+            return Utils.response(true, `Call tax office api success.`, {
+                req_key: req_key,
+                trade_code: trade_code.data.maGDich,
+            });
+        } else {
+            return response.send(
+                Utils.response(
+                    false,
+                    `Something went wrong, please try again later.
+                    EI_UP_NOTICE_TRADE_CODE`,
+                    para_value
+                )
+            );
+        }
+
       } else {
         return response.send(Utils.response(false, 'No data found!', null));
       }
@@ -11200,6 +11358,158 @@ class EInvoiceController {
       status: status,
       message: resMess,
     };
+  }
+
+  validateNoticeXML(notice) {
+    let status = true;
+    let resMess = "";
+    const mess1 = "Invalid field";
+    const mess2 = "Data invalid";
+    try {
+      if (!notice.TBao) {
+        return {
+          status: false,
+          message: `${mess1} TKhai.`,
+        };
+      }
+      if (!notice.TBao.DLTBao) {
+        return {
+          status: false,
+          message: `${mess1} DLTBao.`,
+        };
+      }
+      if (!notice.TBao.DSCKS) {
+        return {
+          status: false,
+          message: `${mess1} DSCKS (unsigned).`,
+        };
+      }
+      if (!notice.TBao.DSCKS.NNT) {
+        return {
+          status: false,
+          message: `${mess1} NNT (unsigned).`,
+        };
+      }
+  
+      const errorList = {
+        DLTBao: {
+            PBan: 6,
+            MSo: 15,
+            Ten: 100,
+            Loai: 1,
+            //So: 21,
+            //NTBCCQT: 14,
+            TCQT: 100,
+            MCQT: 5,
+            MST: 14,
+            TNNT: 400,
+            DDanh: 50,
+            NTBao: 10,
+            DSHDon: {
+              HDon: {
+                MCQTCap: 34,
+                KHMSHDon: 11,
+                KHHDon: 8,
+                SHDon: 8,
+                Ngay: 10,
+                LADHDDT: 1,
+                TCTBao: 1,
+                LDo: 255,
+            }
+          },
+        },
+      };
+  
+      for (const key in errorList.DLTBao) {
+        // valid null of not null values
+        if (notice.TBao.DLTBao[key] === undefined || notice.TBao.DLTBao[key] == null) {
+          status = false;
+          resMess = `${mess2} ${key}.`;
+          return {
+            status,
+            message: resMess,
+          };
+        }
+      }
+      for (const key in errorList.DLTBao) {
+        if (String(notice.TBao.DLTBao[key]).length > errorList.DLTBao[key]) {
+          return {
+            status: false,
+            message: `${mess2} ${key}.`,
+          };
+        }
+      }
+
+
+      //     for (const key in errorList.DLTKhai.NDTKhai) {
+      //         // if(status == false){
+      //         //     return {
+      //         //         status: status,
+      //         //         message: resMess,
+      //         //     };
+      //         // }
+      //         for (const childKey in errorList.DLTKhai.NDTKhai[key]) {
+      //             if(String(notice.TKhai.DLTKhai.NDTKhai[key][childKey]).length > errorList.DLTKhai.NDTKhai[key][childKey] && childKey != 'DSCTSSDung'){
+      //                 status= false;
+      //                 resMess = `Length of ${key} ${childKey} too long.`
+      //                 return {
+      //                     status: status,
+      //                     message: resMess,
+      //                 };
+      //             }
+  
+      //           // valid data must be in valueReq
+      //           const valueReq = ["0", "1"];
+      //           if (
+      //             key == 'CMa' ||
+      //             key == 'KCMa' ||
+      //             key == 'CMTMTTien' ||
+      //             key == 'NNTDBKKhan' ||
+      //             key == 'NNTKTDNUBND' ||
+      //             key == 'CDLTTDCQT' ||
+      //             // key == 'CDLQTVAN' ||
+      //             key == 'CDDu' ||
+      //             key == 'CBTHop' ||
+      //             key == 'HDGTGT' ||
+      //             key == 'HDBHang' ||
+      //             key == 'HDBTSCong' ||
+      //             key == 'HDBHDTQGia' ||
+      //             key == 'HDKhac' ||
+      //             key == 'CTuer'
+      //           ) {
+      //             if (!valueReq.includes(String(notice.TKhai.DLTKhai.NDTKhai[key][childKey]))) {
+      //               status = false;
+      //               resMess = `${mess2}. Field ${key} ${key}.`;
+      //               return {
+      //                 status: status,
+      //                 message: resMess,
+      //             };
+      //             }
+      //           }
+      //         }
+      //         console.log(resMess);
+      //    }
+      // for (const key in errorList.DLTKhai.NDTKhai.DSCTSSDung.CTS) {
+      //     if(!notice.TKhai.DLTKhai.NDTKhai.DSCTSSDung.CTS[key]) {
+      //         status = false;
+      //         resMess = `${mess1} CTS ${key}.`;
+      //         return {
+      //             status,
+      //             message: resMess,
+      //         };
+      //     }
+      // }
+
+      
+      return {
+        status: status,
+        message: resMess,
+      };
+    } catch (error) {
+      console.log("error  ", error);
+      return error;
+    }
+    
   }
 
   async weTaxExtractPosXMLContent(

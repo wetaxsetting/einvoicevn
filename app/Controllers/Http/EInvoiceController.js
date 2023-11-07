@@ -3178,7 +3178,7 @@ class EInvoiceController {
       }
       let tenTBao = "",
         maTBao = "";
-      let ndungTBao = "";
+      let ndungTBao = [];
       for (let j = 0; j < result.data.length; j++) {
         const items = result.data[j];
         for (let k = 0; k < items.length; k++) {
@@ -3188,7 +3188,19 @@ class EInvoiceController {
           } else if (items[k].loaiTBao == "17") {
             tenTBao = items[k].tenTBao;
             maTBao = items[k].loaiTBao;
-            ndungTBao = items[k].ndungTBao;
+            
+            for (const invoice of items[k].ndungTBao.tbaoTNhanSSotDoc.dsachHDonLoi) {
+              ndungTBao.push({
+                MCCQT : invoice.MCCQT,
+                khieuMauHDon: invoice.khieuMauHDon,
+                khieuHDon: invoice.khieuHDon,
+                soHDon: invoice.soHDon,
+                ngayHDon: invoice.ngayHDon,
+                cqt_result: invoice.dsachLoi.length == 0 ? 1 : 2,
+                dsachLoi: invoice.dsachLoi,
+              });
+            }
+
           } else if (items[k].loaiTBao == "15") {
             tenTBao = items[k].tenTBao;
             maTBao = items[k].loaiTBao;

@@ -9867,7 +9867,7 @@ class EInvoiceController {
       ); */
 
       const para_inv_st = {
-        trade_code: lookupcode,
+        trade_code: lookupcode.replaceAll(" ","+"),
       };
       const rtnValue = await DBService.ExecuteSQLBlob(
         `BEGIN ei_sel_get_data_lookup_code (:trade_code,:p_language, :p_crt_by, :p_rtn_cur); END;`,

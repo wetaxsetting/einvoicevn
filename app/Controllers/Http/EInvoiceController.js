@@ -5714,6 +5714,7 @@ class EInvoiceController {
           console.log("tei_wt_sale_bill_pk OK ", tei_wt_sale_bill_pk);
           data_send_mail.push({
             tei_wt_sale_bill_pk : tei_wt_sale_bill_pk,
+            lookup_code: rtnValue.p_rtn_cur[0].LOOKUP_CODE,
             invoice : invoice
           });
           for (let j = 0; j < invoice.total_vat_list.length; j++) {
@@ -5785,7 +5786,7 @@ class EInvoiceController {
             sale_id : invoice.sale_id ,
             msg_his_id: invoice.msg_his_id,
             link_invoice_preview: "https://einvoicevn.com/lookup",
-            security_code: "",
+            lookup_code: "",
             status_code: "0",
             status_name: "Tax code has not been registered",
             seller_tax_code : invoice.seller_taxcode,
@@ -5812,7 +5813,7 @@ class EInvoiceController {
             sale_id : invoice.sale_id ,
             msg_his_id: invoice.msg_his_id,
             link_invoice_preview: "https://einvoicevn.com/lookup",
-            security_code: "",
+            lookup_code: "",
             status_code: "0",
             status_name: "Not Sent",
             seller_tax_code : invoice.seller_taxcode,
@@ -5837,7 +5838,7 @@ class EInvoiceController {
             sale_id : invoice.sale_id ,
             msg_his_id: invoice.msg_his_id,
             link_invoice_preview: "https://einvoicevn.com/lookup",
-            lookup_code: "1234567bac",
+            lookup_code: rtnValue.p_rtn_cur[0].LOOKUP_CODE,
             status_code: "3",
             status_name: "In Process",
             seller_tax_code : invoice.seller_taxcode,
@@ -8854,7 +8855,7 @@ class EInvoiceController {
     }
   }
 
-  async sendMailToCustomer(tei_wt_sale_bill_pk, data_invoice, p_language, p_crt_by) {
+  async sendMailToCustomer(tei_wt_sale_bill_pk, lookup_code, data_invoice, p_language, p_crt_by) {
     try {
       //console.log("sSSSS ", tei_wt_sale_bill_pk);
       let EiExcels = new EiPosExcelHandlerAuto();
@@ -8883,6 +8884,10 @@ class EInvoiceController {
                                             <b>${data_invoice.invoice_no}</b>
                                             <br/>- Tổng thanh toán: 
                                             <b>       ${data_invoice.total_payment}</b>
+                                            <br/>- Mã CQT của hóa đơn: 
+								                            <b> ${data_invoice.mccqt}</b>
+                                            <br/>- Link tra cứu: 
+								                            <a href='https://test.e-invoice.webcashgenuwin.com/?code=${lookup_code}'>Xem hóa đơn</a>
                                             <br />- Link download file PDF: 
                                             <a href='${url_pdf}'>Tải file PDF</a>
                                             <br />- Link download file XML: 
@@ -12436,6 +12441,7 @@ class EInvoiceController {
        for (const data of data_send_mail) {
          const { res_send_mail, subject, body } = await this.sendMailToCustomer(
              data.tei_wt_sale_bill_pk,
+             data.lookup_code,
              data.invoice,
              p_language,
              p_crt_by

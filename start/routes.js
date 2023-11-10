@@ -198,6 +198,7 @@ Route.group(() => {
 
 Route.group(() => {
     Route.post("lookup-code", "EInvoiceController.getDataEinvoiceFormLookupCode")
+    Route.get("lookup-code", "EInvoiceController.getDataEinvoiceFormLookupCode")
     Route.post("general-convert-einvoice", "EInvoiceController.generalConvertEinvoice")
 }).prefix("api/einvoice");
 

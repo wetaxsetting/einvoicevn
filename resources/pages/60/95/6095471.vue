@@ -284,6 +284,7 @@ export default {
         {
           dataField: "CRT_DT",
           caption: this.$t("time"),
+          width: 220
         },
         {
           dataField: "POS_INV_XML",
@@ -293,6 +294,7 @@ export default {
         {
           dataField: "INVOICE_QTY",
           caption: this.$t("invoice_qty"),
+          type:"number",
         },
         {
           dataField: "STATUS",

@@ -741,7 +741,7 @@ export default {
         // console.log("response", res.data);
         jQuery.support.cors = true;
         $.ajax({
-          url: "http://localhost:1080/issueXmlPOSList",
+          url: "http://localhost:1080/signXML",
           dataType: "json",
           method: "POST",
           data: {

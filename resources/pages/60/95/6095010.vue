@@ -662,7 +662,7 @@ export default {
     },
     async onGetDetailDeclaration() {
       if (this.MasterInfo.PK != "") {
-        let xml = `<TKhai>
+        /*let xml = `<TKhai>
                     <DLTKhai>
                       <TTChung>
                       </TTChung>
@@ -690,6 +690,19 @@ export default {
           data: {
             crt_by: this.user.USER_ID,
             xml: JSON.stringify(objXml).toString(),
+          },
+          error: this.onErrorGetDetailDeclaration,
+          success: this.onSuccessGetDetailDeclaration,
+        });*/
+
+        jQuery.support.cors = true;
+        $.ajax({
+          url: "http://localhost:1080/getTokenInfo",
+          dataType: "text",
+          method: "POST",
+          data: {
+            crt_by: this.user.USER_ID,
+            xml: null,
           },
           error: this.onErrorGetDetailDeclaration,
           success: this.onSuccessGetDetailDeclaration,

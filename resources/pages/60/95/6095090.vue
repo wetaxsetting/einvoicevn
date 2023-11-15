@@ -600,8 +600,9 @@ export default {
           responseType: "json",
           list_invoice: this.invoice,
         });
-  
-        console.log("this.invoice  ", this.invoice);
+        
+        // 13/11/2023 vng-199 Mr.The update signXML new
+        /*console.log("this.invoice  ", this.invoice);
         if (res.success) {
           console.log("response", res.data);
           jQuery.support.cors = true;
@@ -617,7 +618,26 @@ export default {
             success: this.onSuccessissueXmlList,
           });
 
+        }*/
+
+        console.log("this.invoice  ", this.invoice);
+        if (res.success) {
+          console.log("response", res.data);
+          jQuery.support.cors = true;
+          $.ajax({
+            url: "http://localhost:1080/signXML",
+            dataType: "json",
+            method: "POST",
+            data: {
+              crt_by: this.user.USER_ID,
+              xml: JSON.stringify(res.data),
+            },
+            error: this.onErrorissueXmlList,
+            success: this.onSuccessissueXmlList,
+          });
+
         }
+
     },
 
     async onErrorissueXmlList(json, textStatus, errorThrown) {

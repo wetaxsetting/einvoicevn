@@ -405,7 +405,7 @@ export default {
           formatFloat: 0,
           width: 150,
           alignment: "right",
-          hidden: true
+          visible: true
         },
         {
           dataField: "TEI_WT_INVOICE_P_XML_PK",
@@ -427,14 +427,14 @@ export default {
           caption: this.$t("no"),
           type: "text",
           width: 80,
-          alignment: "left",
+          alignment: "right",
         },
         {
           dataField: "INVOICE_DATE",
           caption: this.$t("invoice_date"),
           type: "text",
-          width: 80,
-          alignment: "left",
+          width: 150,
+          alignment: "center",
           format: this.curLang.DATE_FORMAT,
         },
         {
@@ -448,28 +448,28 @@ export default {
           dataField: "CUS_NM",
           caption: this.$t("cus_nm"),
           type: "text",
-          width: 120,
+          width: 320,
           alignment: "left",
         },
         {
           dataField: "CUS_FNM",
           caption: this.$t("cus_fnm"),
           type: "text",
-          width: 120,
+          width: 320,
           alignment: "left",
         },
         {
           dataField: "TAX_CODE",
           caption: this.$t("tax_code"),
           type: "text",
-          width: 80,
+          width: 150,
           alignment: "left",
         },
         {
           dataField: "BUYER_NAME",
           caption: this.$t("buyer_nm"),
           type: "text",
-          width: 120,
+          width: 320,
           alignment: "left",
         },
         {
@@ -497,15 +497,15 @@ export default {
           dataField: "TR_CCY",
           caption: this.$t("tr_ccy"),
           type: "text",
-          width: 50,
           alignment: "left",
+          hidden:  true
         },
         {
           dataField: "TR_RATE",
           caption: this.$t("tr_rate"),
           type: "text",
-          width: 50,
           alignment: "left",
+          hidden:  true
         },
         //
         {
@@ -521,9 +521,8 @@ export default {
           caption: this.$t("tot_net_bk_amt"),
           type: "number",
           formatFloat: 0,
-          width: 150,
           alignment: "right",
-          hidden: true
+          hidden:  true
         },
         {
           dataField: "TOT_VAT_TR_AMT",
@@ -538,9 +537,8 @@ export default {
           caption: this.$t("tot_vat_tr_amt"),
           type: "number",
           formatFloat: 0,
-          width: 150,
           alignment: "right",
-          hidden: true
+          hidden:  true
         },
         {
           dataField: "TOTAL_AMT",
@@ -554,45 +552,43 @@ export default {
           dataField: "REMARK",
           caption: this.$t("description"),
           type: "text",
-          width: 80,
           alignment: "left",
-          hidden: true
+          hidden:  true
         },
         {
           dataField: "REMARK2",
           caption: this.$t("local_description"),
           type: "text",
-          width: 80,
           alignment: "left",
-          hidden: true
+          hidden:  true
         },
         {
           dataField: "EI_STATUS",
           caption: this.$t("ei_status"),
           type: "text",
           width: 80,
-          alignment: "left",
+          alignment: "center",
         },
         {
           dataField: "SIGN_BY",
           caption: this.$t("sign_by"),
           type: "text",
-          width: 80,
+          width: 150,
           alignment: "left",
         },
         {
           dataField: "SIGN_DT",
           caption: this.$t("sign_dt"),
           type: "text",
-          width: 80,
-          alignment: "left",
+          width: 200,
+          alignment: "center",
         },
         {
           dataField: "INVOICE_TYPE",
           caption: this.$t("invoice_type"),
           type: "text",
-          width: 80,
-          alignment: "left",
+          width: 150,
+          alignment: "center",
         },
         {
           dataField: "MAIL",
@@ -612,28 +608,26 @@ export default {
           dataField: "DIRECTLY_YN",
           caption: this.$t("directly_yn"),
           type: "text",
-          width: 80,
           alignment: "left",
-          hidden: true
+          hidden:  true
         },
         {
           dataField: "CQT_MAGD",
           caption: this.$t("cqt_magd"),
-          width: 150,
+          width: 350,
         },
         {
           dataField: "REPORT_CODE",
           caption: this.$t("report_code"),
           type: "text",
-          width: 80,
           alignment: "left",
-          hidden: true
+          visible: true
         },
         {
           dataField: "CQT_MCCQT_ID",
           caption: this.$t("cqt_mccqt_id"),
           type: "text",
-          width: 100,
+          width: 200,
           alignment: "left",
         },
         {
@@ -641,33 +635,35 @@ export default {
           caption: this.$t("etax_status"),
           width: 150,
           allowEditing: true,
+          alignment: "center",
         },
         {
           dataField: "ETAX_RESULT",
           caption: this.$t("etax_result"),
           width: 150,
           allowEditing: true,
+          alignment: "center",
 
         },
         {
           dataField: "CQT_ERROR_CODE",
           caption: this.$t("cqt_err_code"),
           type: "text",
-          width: 80,
+          visible: true,
           alignment: "left",
         },
         {
           dataField: "CQT_NOTIFICATION",
           caption: this.$t("cqt_noti"),
           type: "text",
-          width: 80,
+          width: 300,
           alignment: "left",
         },
         {
           dataField: "TAX_RATE_MULTI",
           caption: this.$t("tax_rate_multi"),
-          alignment: "left",
-          hidden: true
+          alignment: "center",
+          visible: true
         },
       ];
 
@@ -717,26 +713,27 @@ export default {
     async InvoiceSign() {
       const grdSelectedRow = this.$refs.gridview.getSelectedRows();
       this.invoice = []
-
       // console.log("grdSelectedRow  ", grdSelectedRow.length);
-
       // console.log("grdSelectedRow  ", grdSelectedRow);
       for (let i = 0; i < grdSelectedRow.length; i++) {
         this.invoice.push({
-          PK: grdSelectedRow[i].PK,
-          USER_ID: this.user.USER_ID,
+          pk: grdSelectedRow[i].PK,
+          user_id: this.user.USER_ID,
+          inform_code : "",
+          inform_name : "",
+          etax_result : "10",
+          form_no : "",
+          serial_no : "",
+          invoice_no : ""
         })
-
       }
-      //console.log("invoice  ",this.invoice);
 
       let res = await this.$axios.$post("/einvoice/general-pos-invoice-xml", {
         responseType: "json",
         list_invoice: this.invoice,
+
       });
-
       //console.log("res  ", res);
-
       if (res.success) {
         // console.log("response", res.data);
         jQuery.support.cors = true;
@@ -746,22 +743,20 @@ export default {
           method: "POST",
           data: {
             crt_by: this.user.USER_ID,
-            xml: JSON.stringify(res.data.xml_converted),
+            xml: JSON.stringify(res.data),
           },
           error: this.onErrorissueXmlList,
           success: this.onSuccessissueXmlList,
         });
-
       }
     },
 
     async onErrorissueXmlList(json, textStatus, errorThrown) {
-      alert(" Error :" + errorThrown);
+      this.showNotification("danger", "Application token is error !!");
     },
 
     async onSuccessissueXmlList(data) {
       //let obj_token = $.parseJSON(data);
-      return;
       console.log(data);
       this.txtXMl_T = data.result[0].xml;
       this.txtSerial_Number = data.serial_number;
@@ -770,7 +765,7 @@ export default {
       this.txtRAWDATA = data.raw_data;
       this.txtISSUER = data.issuer;
       this.txtISSUEBY = data.issue_by;
-      this.txtISSUETO = data.issue_to;
+      this.txtISSUETO = data.issuer;
       this.txtDN_NAME = data.dn_name;
       this.txtDN_MST = data.dn_mst;
 
@@ -792,16 +787,11 @@ export default {
 
       //console.log("check_serial_no_result  ", check_serial_no_result);
 
-      if (check_serial_no_result[0].STATUS == "1") {
-
-
+      if (check_serial_no_result[0].STATUS == "1") 
+      {
         let data_invoice = {
           tax_serial_number: this.txtSerial_Number,
           seller_tax_code: this.txtDN_MST,
-          sale_date: "",
-          store_code: "",
-          store_name: "",
-          pos_no: "",
           sign_by: this.txtDN_MST,
           invoice_xml_signed: this.txtXMl_T,
           list_invoice: this.invoice,
@@ -816,9 +806,6 @@ export default {
         if (res_send.success) {
           this.funcSearch();
           this.showNotification("success", "Send invoice to Tax Office was Successfully!", "");
-
-
-
 
         }
         else {

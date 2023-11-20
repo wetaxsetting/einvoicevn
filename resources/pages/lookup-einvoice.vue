@@ -161,6 +161,17 @@ export default {
     inputName: ""
   }),
 
+  async created() {
+    //  trade_code
+    const params = {
+      trade_code: ""
+    }
+    const { data, message, success } = await this.$axios.$get('/einvoice/lookup-code', { params: params });
+    if(success && data.length) {
+
+    }
+  },
+
   async mounted() {
     await this._handleGenerateCaptcha();
   },

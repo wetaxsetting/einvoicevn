@@ -10,6 +10,14 @@ const SSO_KEY = Env.get("SSO_KEY");
 const UserRepo = use("UserRepo");
 const CryptoJS = use("crypto-js");
 const AppName = Env.get("APP_NAME");
+const svgCaptcha = use("svg-captcha");
+const REDIS_CONNECTION = Env.get("REDIS_CONNECTION", "NO_REDIS")
+let Redis = false
+if (REDIS_CONNECTION != "NO_REDIS") {
+  Redis = use('Redis')
+} else {
+  Redis = false
+}
 
 var hexcase = 0; /* hex output format. 0 - lowercase; 1 - uppercase        */
 var b64pad = ""; /* base-64 pad character. "=" for strict RFC compliance   */
@@ -23,6 +31,29 @@ class UserController {
       return response.send(Utils.response(true, "test", s));
     } catch (e) {
       return response.send(Utils.response(false, "fail", e.message));
+    }
+  }
+
+  async captchar({ request, response }) {
+    try {
+      const { req_sessionid } = request.all();
+      const option = {
+        size: 4, // size of random string
+        ignoreChars: "0oOIl1i", // filter out some characters like 0o1i
+        noise: 2, // number of noise lines
+        color: false, // characters will have distinct colors instead of grey, true if background option is set
+        // background: "#BCDFFE", // background color of the svg image
+        // height: '55px', // height of the svg
+      };
+      const captcha = svgCaptcha.create(option);
+      //session.put("captcha", captcha.text);
+      const sessionid = new Date().getTime();
+      if (Redis) {
+        await Redis.set(sessionid, captcha.text, "EX", 60 * 1000); //1 minute
+      }
+      return response.send({ sessionid, captcha: captcha.data });
+    } catch (e) {
+      return response.send(Utils.response(false, "get_captcha_failed", e.message));
     }
   }
 

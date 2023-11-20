@@ -3155,12 +3155,12 @@ class EInvoiceController {
           options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
         },
       };
-      // const authUserName = "GENUWIN";
-      // const authPassword = "e_GX4v@";
-      // const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
-      const authUserName = "GENUWIN"; // "GENUWIN";
-      const authPassword = "genuwin123"; // "e_GX4v@";
-      let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+       const authUserName = "GENUWIN";
+       const authPassword = "e_GX4v@";
+       const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+      //const authUserName = "GENUWIN"; // "GENUWIN";
+      //const authPassword = "genuwin123"; // "e_GX4v@";
+      //let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
 
       const {  tax_code, trade_code_list } = request.all();
 

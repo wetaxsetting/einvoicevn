@@ -3215,32 +3215,32 @@ class EInvoiceController {
                   }
                 }
 
-                const data_d_tbss = {
-                    macqt : invoice.MCCQT,
-                    form_no : invoice.khieuMauHDon,
-                    serial_no : invoice.khieuHDon,
-                    invoice_dt : invoice.ngayHDon,
-                    invoice_no : invoice.soHDon,
-                    cqt_result : cqt_result,
-                    cqt_status : cqt_status
-                };
+                // const data_d_tbss = {
+                //     macqt : invoice.MCCQT,
+                //     form_no : invoice.khieuMauHDon,
+                //     serial_no : invoice.khieuHDon,
+                //     invoice_dt : invoice.ngayHDon,
+                //     invoice_no : invoice.soHDon,
+                //     cqt_result : cqt_result,
+                //     cqt_status : cqt_status
+                // };
 
-                await DBService.ExecuteSQLBlob(
-                  `BEGIN wt_upd_hd04ss_d(
-                                    :p_mccqt, 
-                                    :p_form_no, 
-                                    :p_serial_no,
-                                    :p_invoice_no,
-                                    :p_cqt_result,
-                                    :p_cqt_status,
-                                    :p_language, 
-                                    :p_crt_by, 
-                                    :p_rtn_cur
-                                ); END;`,
-                                data_d_tbss,
-                  p_language,
-                  p_crt_by
-                );
+                // await DBService.ExecuteSQLBlob(
+                //   `BEGIN wt_upd_hd04ss_d(
+                //                     :p_mccqt, 
+                //                     :p_form_no, 
+                //                     :p_serial_no,
+                //                     :p_invoice_no,
+                //                     :p_cqt_result,
+                //                     :p_cqt_status,
+                //                     :p_language, 
+                //                     :p_crt_by, 
+                //                     :p_rtn_cur
+                //                 ); END;`,
+                //                 data_d_tbss,
+                //   p_language,
+                //   p_crt_by
+                // );
               }
 
             } else if (items[k].loaiTBao == "15") {
@@ -3254,26 +3254,26 @@ class EInvoiceController {
           }
         }
 
-        let para_value_m = {
-          p_req_key: inv.trade_code,
-          p_xml_sign: base64XML,
-          p_messCQT: tenTBao,
-          p_status: "1",
-        };
-        await DBService.ExecuteSQLBlob(
-          `BEGIN wt_upd_hd04ss_m(
-                            :p_req_key, 
-                            :p_xml_sign, 
-                            :p_messCQT, 
-                            :p_status,
-                            :p_language, 
-                            :p_crt_by, 
-                            :p_rtn_cur
-                        ); END;`,
-          para_value_m,
-          p_language,
-          p_crt_by
-        );
+        // let para_value_m = {
+        //   p_req_key: inv.trade_code,
+        //   p_xml_sign: base64XML,
+        //   p_messCQT: tenTBao,
+        //   p_status: "1",
+        // };
+        // await DBService.ExecuteSQLBlob(
+        //   `BEGIN wt_upd_hd04ss_m(
+        //                     :p_req_key, 
+        //                     :p_xml_sign, 
+        //                     :p_messCQT, 
+        //                     :p_status,
+        //                     :p_language, 
+        //                     :p_crt_by, 
+        //                     :p_rtn_cur
+        //                 ); END;`,
+        //   para_value_m,
+        //   p_language,
+        //   p_crt_by
+        // );
 
         rtnValue.push({
             trade_code: inv.trade_code,
@@ -3284,7 +3284,7 @@ class EInvoiceController {
             result_content: ndungTBao,
         });
 
-        this.sendMailTBSSToCustomer(inv.trade_code, p_language, p_crt_by);
+        //this.sendMailTBSSToCustomer(inv.trade_code, p_language, p_crt_by);
 
       }
 

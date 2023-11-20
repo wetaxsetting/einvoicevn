@@ -161,7 +161,7 @@ export default {
     inputName: ""
   }),
 
-  async created() {
+  /* async created() {
     //  trade_code
     const params = {
       trade_code: ""
@@ -170,9 +170,9 @@ export default {
     if(success && data.length) {
 
     }
-  },
+  }, */
 
-  async mounted() {
+  async mounted() {    
     await this._handleGenerateCaptcha();
   },
 
@@ -213,6 +213,11 @@ export default {
     },
 
     async search() {
+      // console.log("route:", this.$route)
+      if(!this.$route?.query?.trade_code) {
+        console.log("trade_code not found!");
+        return;
+      }
       if (this.invoiceNo === "" || this.invoiceNo === undefined) {
         this.$refs.invoiceNo.focus();
         return;

@@ -161,7 +161,18 @@ export default {
     inputName: ""
   }),
 
-  async mounted() {
+  /* async created() {
+    //  trade_code
+    const params = {
+      trade_code: ""
+    }
+    const { data, message, success } = await this.$axios.$get('/einvoice/lookup-code', { params: params });
+    if(success && data.length) {
+
+    }
+  }, */
+
+  async mounted() {    
     await this._handleGenerateCaptcha();
   },
 
@@ -202,6 +213,11 @@ export default {
     },
 
     async search() {
+      // console.log("route:", this.$route)
+      if(!this.$route?.query?.trade_code) {
+        console.log("trade_code not found!");
+        return;
+      }
       if (this.invoiceNo === "" || this.invoiceNo === undefined) {
         this.$refs.invoiceNo.focus();
         return;

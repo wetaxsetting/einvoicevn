@@ -2685,7 +2685,7 @@ class EInvoiceController {
     }
   }
 
-   makeid(length) {
+  makeid(length) {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     const charactersLength = characters.length;
@@ -3155,12 +3155,12 @@ class EInvoiceController {
           options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
         },
       };
-      const authUserName = "GENUWIN";
-      const authPassword = "e_GX4v@";
-      const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
-      // const authUserName = "GENUWIN"; // "GENUWIN";
-      // const authPassword = "genuwin123"; // "e_GX4v@";
-      // let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+      // const authUserName = "GENUWIN";
+      // const authPassword = "e_GX4v@";
+      // const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+      const authUserName = "GENUWIN"; // "GENUWIN";
+      const authPassword = "genuwin123"; // "e_GX4v@";
+      let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
 
       const {  tax_code, trade_code_list } = request.all();
 
@@ -3179,7 +3179,7 @@ class EInvoiceController {
         if (!result.data.length) {
           return response.send(Utils.response(false, 'Checking Tax Status Failure. No data found.',null));
         }
-        let tenTBao = "", maTBao = "";
+        let tenTBao = "", maTBao = "",cqt_result = "", cqt_status = "", base64XML = "" ;
         let ndungTBao = [];
         for (let j = 0; j < result.data.length; j++) {
           const items = result.data[j];
@@ -3187,23 +3187,62 @@ class EInvoiceController {
             if (items[k].loaiTBao == "0") {
               tenTBao = items[k].tenTBao;
               maTBao = items[k].loaiTBao;
+             
+            } else if (items[k].loaiTBao == "1") {
+                base64XML = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
             } else if (items[k].loaiTBao == "17") {
               tenTBao = items[k].tenTBao;
               maTBao = items[k].loaiTBao;
               
               for (const invoice of items[k].ndungTBao.tbaoTNhanSSotDoc.dsachHDonLoi) {
                 ndungTBao.push({
-                 
                   MCCQT : invoice.MCCQT,
                   khieuMauHDon: invoice.khieuMauHDon,
                   khieuHDon: invoice.khieuHDon,
                   soHDon: invoice.soHDon,
                   ngayHDon: invoice.ngayHDon,
-                  cqt_result: invoice.dsachLoi.length == 0 ? 1 : 2,
+                  cqt_result: invoice.tthaiTNCQT,//   invoice.dsachLoi.length == 0 ? 1 : 2,
                   dsachLoi: invoice.dsachLoi,
                 });
+                
+                if (invoice.dsachLoi.length == 0) {
+                  cqt_result = "Thành công";
+                  cqt_status = invoice.tthaiTNCQT;
+                } else {
+                  for (const error of invoice.dsachLoi) {
+                    cqt_result += error.MaLoi + " - " + error.MTaLoi;
+                    cqt_status = invoice.tthaiTNCQT;
+                  }
+                }
+
+                const data_d_tbss = {
+                    macqt : invoice.MCCQT,
+                    form_no : invoice.khieuMauHDon,
+                    serial_no : invoice.khieuHDon,
+                    invoice_dt : invoice.ngayHDon,
+                    invoice_no : invoice.soHDon,
+                    cqt_result : cqt_result,
+                    cqt_status : cqt_status
+                };
+
+                await DBService.ExecuteSQLBlob(
+                  `BEGIN wt_upd_hd04ss_d(
+                                    :p_mccqt, 
+                                    :p_form_no, 
+                                    :p_serial_no,
+                                    :p_invoice_no,
+                                    :p_cqt_result,
+                                    :p_cqt_status,
+                                    :p_language, 
+                                    :p_crt_by, 
+                                    :p_rtn_cur
+                                ); END;`,
+                                data_d_tbss,
+                  p_language,
+                  p_crt_by
+                );
               }
-  
+
             } else if (items[k].loaiTBao == "15") {
               tenTBao = items[k].tenTBao;
               maTBao = items[k].loaiTBao;
@@ -3215,6 +3254,27 @@ class EInvoiceController {
           }
         }
 
+        let para_value_m = {
+          p_req_key: inv.trade_code,
+          p_xml_sign: base64XML,
+          p_messCQT: tenTBao,
+          p_status: "1",
+        };
+        await DBService.ExecuteSQLBlob(
+          `BEGIN wt_upd_hd04ss_m(
+                            :p_req_key, 
+                            :p_xml_sign, 
+                            :p_messCQT, 
+                            :p_status,
+                            :p_language, 
+                            :p_crt_by, 
+                            :p_rtn_cur
+                        ); END;`,
+          para_value_m,
+          p_language,
+          p_crt_by
+        );
+
         rtnValue.push({
             trade_code: inv.trade_code,
             req_key: inv.req_key,
@@ -3224,8 +3284,9 @@ class EInvoiceController {
             result_content: ndungTBao,
         });
 
-      }
+        this.sendMailTBSSToCustomer(inv.trade_code, p_language, p_crt_by);
 
+      }
 
       return response.send(Utils.response(true, `checking_success`, rtnValue));
     } catch (e) {
@@ -6327,7 +6388,7 @@ class EInvoiceController {
       
       //if (preview == "N") {
 
-      const file_url_img = `/einvoices_logo/${seller_comp_taxcode}`;
+      const file_url_img = `einvoices_logo/${seller_comp_taxcode}`;
       const file_url_excel = `/resources/report/60/95/einvoices_template/${seller_comp_taxcode}`;
       let logo_width = 0, logo_height = 0;
       let file_path_logo = "", file_path_bg = "";
@@ -7108,7 +7169,7 @@ class EInvoiceController {
   } catch (error) {
       console.log('===> callback WeTax CheckStatusinvoice error ', error)
     }
-}
+  }
  
   async weTaxSendInvoiceToTaxOffice({ request, response, auth }) {
     try {
@@ -7527,7 +7588,6 @@ class EInvoiceController {
       return response.send(Utils.response(false, e.message, null));
     }
   }
-
   // end weTAX
 
   // e -invoice
@@ -8923,6 +8983,150 @@ class EInvoiceController {
     }
   }
 
+  async sendMailTBSSToCustomer(trade_code_code, p_language, p_crt_by) {
+    try {
+
+      let para_value_mail = {
+        p_tei_einvoice_m_pk: para.req_key, //"4090",// 
+        p_tco_company_pk: para.tei_company_pk,
+      };
+      let data_mail = await DBService.ExecuteSQLBlob(
+        `BEGIN ei_sel_data_send_mail(
+                          :p_tei_einvoice_m_pk, 
+                          :p_tco_company_pk, 
+                          :p_language, 
+                          :p_crt_by, 
+                          :p_rtn_cur
+                      ); END;`,
+        para_value_mail,
+        p_language,
+        p_crt_by
+      );
+      console.log(data_mail);
+
+      if (data_mail.p_rtn_cur.length > 0) {
+        for (const mail of data_mail.p_rtn_cur) {
+          let invoice_data = {
+            subject: mail.SUBJECT,
+            body: mail.BODY_1_MAIL,
+            buyer_email: mail.EMAIL_ADDRESS,
+            buyer_email_cc: mail.EMAIL_ADDRESS_CC,
+            pk: mail.PK,
+            filename1: mail.FILENAME1,
+            filename2: mail.FILENAME2,
+          }
+
+          const { res_send_mail } = await this.sendMailToCustomerWhenCancelEinvoice(
+            invoice_data,
+            p_language,
+            p_crt_by
+          );
+        }
+      }
+
+
+
+
+
+      let EiExcels = new EiPosExcelHandlerAuto();
+      let url_pdf = await EiExcels.getEinvoice(tei_wt_sale_bill_pk, p_language, p_crt_by);
+      console.log("base64PDf  ", url_pdf);
+
+      let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + tei_wt_sale_bill_pk + "&proc=" + "EI_SEL_XML_POS_EINVOICE" + "&token="); //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
+      let url_xml = re_url_xml.data;
+      console.log("base64XXML  ", url_xml);
+
+      let subject = `${data_invoice.seller_comp_name}[Thông báo phát hành HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
+      let body = `<html>
+                            <body>
+                                <div id="page">
+                                    <div id="d2">
+                                        <p>Dear: ${data_invoice.buyer_comp_name}
+                                            <br />
+                                            <br />${data_invoice.seller_comp_name}.
+                                            <br />            Trân trọng cảm ơn Quý khách hàng đã sử dụng sản phẩm của chúng tôi.
+                                            <br/> Chúng tôi đã 
+                                            <b>PHÁT HÀNH </b> hóa đơn điện tử với các thông tin như sau:
+                                            <br/>- Mẫu số: ${data_invoice.form_no}
+                                            <br/>- Ký hiệu: 
+                                            <b>${data_invoice.serial_no}</b>
+                                            <br/>- Số hóa đơn: 
+                                            <b>${data_invoice.invoice_no}</b>
+                                            <br/>- Tổng thanh toán: 
+                                            <b>       ${data_invoice.total_payment.toLocaleString('it-IT', {style : 'currency', currency : 'VND'}).replaceAll('VND','')}</b>
+                                            <br/>- Mã CQT của hóa đơn: 
+								                            <b> ${data_invoice.mccqt}</b>
+                                            <br/>- Link tra cứu: 
+								                            <a href='https://test.e-invoice.webcashgenuwin.com/?code=${lookup_code}'>Xem hóa đơn</a>
+                                            <br />- Link download file PDF: 
+                                            <a href='${url_pdf}'>Tải file PDF</a>
+                                            <br />- Link download file XML: 
+                                            <a href='${url_xml}'>Tải file XML</a>
+                                            <br />
+                                        </div>
+                                        <br/>
+                                        <div id="d6">
+                                            <p>
+                                                <i>* Xin lưu ý: Đây là email gửi tự động từ hệ thống, vui lòng không trả lời về địa chỉ email này</i>
+                                                <br />
+                                                <i>Cám ơn sự hợp tác. </i>
+                                                <br />
+                                        --------------------------------------------------------------------------
+                                    
+                                            </p>
+                                        </div>
+                                        <div id="d7"> Would like to send you our warmest greetings and most sincere thanks for choosing our product. 
+                                            <br/> We 
+                                            <b>issued </b> your e-invoice with the information as below: 
+                                            <br/>- Form No: 
+                                            <b>${data_invoice.form_no}</b>
+                                            <br/>- Serial: 
+                                            <b>${data_invoice.serial_no}</b>
+                                            <br/>- Invoice No:  
+                                            <b>${data_invoice.invoice_no}</b>
+                                            <br/>- Total amount :  
+                                            <b>       ${data_invoice.total_payment.toLocaleString('it-IT', {style : 'currency', currency : 'VND'}).replaceAll('VND','')}</b>
+                                            <br/>- CQT code of e-invoice: 
+								                            <b> ${data_invoice.mccqt}</b>
+                                            <br/>- Link lookup: 
+								                            <a href='https://test.e-invoice.webcashgenuwin.com/?code=${lookup_code}'>View e-invoice</a>
+                                            <br />- Download file PDF link:  
+                                            <a href='${url_pdf}'>Download file PDF</a>
+                                            <br />- Download file XML link:  
+                                            <a href='${url_xml}'>Download file XML</a>
+                                            <br />
+                                        </p>
+                                    </div>
+                                    <div id="d8">
+                                        <p>
+                                            <br/>* Note: This is an automatic email. Please do not feedback to this email.
+                                            <br/>
+                                        Thank you for your corporation!
+                                        
+                                        </p>
+                                    </div>
+                                </body>
+                            </html>
+                            `;
+
+
+      const res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {
+        mail_to: data_invoice.buyer_email,
+        cc_to: data_invoice.buyer_email_cc,
+        subject: subject,
+        body: body,
+        attachfile1: url_xml,
+        attachfile2: url_pdf,
+        filename1: data_invoice.mccqt + ".xml",
+        filename2: data_invoice.mccqt + ".pdf",
+      });
+      //console.log("res_send_mail  ", res_send_mail);
+      return { res_send_mail, subject, body };
+    } catch (error) {
+      //console.log("res_send_mail error  ", error);
+    }
+  }
+
   async sendMailToCustomer(tei_wt_sale_bill_pk, lookup_code, data_invoice, p_language, p_crt_by) {
     try {
       //console.log("sSSSS ", tei_wt_sale_bill_pk);
@@ -9470,7 +9674,6 @@ class EInvoiceController {
     }
   }
 
-
   async sendPosInvoiceErp({ request, response, auth }) {
     try {
       var p_language = request.header("accept-language", "ENG");
@@ -9616,9 +9819,6 @@ class EInvoiceController {
   }
 
   // end e - invoce
-
-
-
 
   // public get data search ma tra cuu
   async getDataEinvoiceFormLookupCode({ request, response, auth }) {
@@ -12457,7 +12657,6 @@ class EInvoiceController {
       return response.send(Utils.response(false, "error", e.message));
     }
   }
-
   
 }
 

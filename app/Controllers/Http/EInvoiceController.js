@@ -763,7 +763,7 @@ class EInvoiceController {
       let jsonInvalidInvoices = {
         TBao: {
           DLTBao: {
-            PBan: "v2.0.0",
+            PBan: "2.0.1",
             MSo: "04/SS-HĐĐT",
             Ten: "Thông báo hóa đơn điện tử có sai sót",
             Loai: 1,
@@ -798,11 +798,12 @@ class EInvoiceController {
       if (invalid_invoices && !invalid_invoices.hasOwnProperty("tax_office_name")) {
         return response.send(Utils.response(false, `Invalid json format.`, invalid_invoices));
       }
-      jsonInvalidInvoices.TBao.DLTBao.TCQT = this.convertHtmlCode(invalid_invoices.tax_office_name);
+      jsonInvalidInvoices.TBao.DLTBao.PBan = invalid_invoices.version;
+      jsonInvalidInvoices.TBao.DLTBao.TCQT = invalid_invoices.tax_office_name;
       jsonInvalidInvoices.TBao.DLTBao.MCQT = invalid_invoices.tax_office_code;
       jsonInvalidInvoices.TBao.DLTBao.MST = invalid_invoices.seller_taxcode;
-      jsonInvalidInvoices.TBao.DLTBao.TNNT = this.convertHtmlCode(invalid_invoices.seller_company_name);
-      jsonInvalidInvoices.TBao.DLTBao.DDanh = this.convertHtmlCode(invalid_invoices.location_name);
+      jsonInvalidInvoices.TBao.DLTBao.TNNT = invalid_invoices.seller_company_name;
+      jsonInvalidInvoices.TBao.DLTBao.DDanh = invalid_invoices.location_name;
       jsonInvalidInvoices.TBao.DLTBao.NTBao = invalid_invoices.inform_date;
 
       for (let i = 0; i < invalid_invoices.invoices.length; i++) {
@@ -1368,7 +1369,7 @@ class EInvoiceController {
       Utils.Logger({
         LVL: "error",
         MODULE: "EInvoiceController",
-        FUNC: "sendInvoiceToTaxOfficeFromClient",
+        FUNC: "checkInvoiceStatusFromClient",
         CONTENT: e.message,
       });
       return response.send(Utils.response(false, "error", e.message));
@@ -3317,12 +3318,12 @@ class EInvoiceController {
         },
       };
 
-      // const authUserName = "GENUWIN"; // "GENUWIN";
-      // const authPassword = "genuwin123"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
-      // let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
-      const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
-      const authUserName = "GENUWIN"; // "GENUWIN";
-      const authPassword = "e_GX4v@";// "genuwin123";// "e_GX4v@";
+       const authUserName = "GENUWIN"; // "GENUWIN";
+       const authPassword = "genuwin123"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+       let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+      //const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+      //const authUserName = "GENUWIN"; // "GENUWIN";
+      //const authPassword = "e_GX4v@";// "genuwin123";// "e_GX4v@";
       const { proc, para } = request.all();
 
       console.log("para", para);
@@ -3356,7 +3357,7 @@ class EInvoiceController {
           const items = result.data[j];
           //console.log("items", items);
           for (let k = 0; k < items.length; k++) {
-            console.log("items[k].loaiTBao " + items[k].loaiTBao);
+            //console.log("items[k].loaiTBao " + items[k].loaiTBao);
             if (items[k].loaiTBao == "0") {
               tenTBao = items[k].tenTBao;
               maTBao = items[k].loaiTBao;
@@ -3367,13 +3368,13 @@ class EInvoiceController {
               tenTBao = items[k].tenTBao;
               maTBao = items[k].loaiTBao;
               for (const invoice of items[k].ndungTBao.tbaoTNhanSSotDoc.dsachHDonLoi) {
-
+                cqt_result = "",cqt_status = "";
                 if (invoice.dsachLoi.length == 0) {
                   cqt_result = "Thành công";
                   cqt_status = invoice.tthaiTNCQT;
                 } else {
                   for (const error of invoice.dsachLoi) {
-                    cqt_result += error.MaLoi + " - " + error.MTaLoi;
+                    cqt_result += error.maLoi + " - " + error.mtaLoi;
                     cqt_status = invoice.tthaiTNCQT;
                   }
                 }
@@ -3443,7 +3444,7 @@ class EInvoiceController {
                 p_language,
                 p_crt_by
               );
-              console.log(data_mail);
+              console.log("data_mail   ",   data_mail);
 
               if (data_mail.p_rtn_cur.length > 0) {
                 for (const mail of data_mail.p_rtn_cur) {
@@ -3989,7 +3990,7 @@ class EInvoiceController {
         };
         console.log("EINVOICE_URL_API_VIEW_PDF ", EINVOICE_URL_API_VIEW_PDF);
         const res = await Request.post(EINVOICE_URL_API_VIEW_PDF, { para: para }, config);
-        console.log("checkInvoiceStatusFromClient", res.data);
+        console.log("viewPDFFromClient", res.data);
         return response.send(res.data);
       } else {
         console.error("Failed to get api token");
@@ -4000,7 +4001,7 @@ class EInvoiceController {
       Utils.Logger({
         LVL: "error",
         MODULE: "EInvoiceController",
-        FUNC: "sendInvoiceToTaxOfficeFromClient",
+        FUNC: "viewPDFFromClient",
         CONTENT: e.message,
       });
       return response.send(Utils.response(false, "error", e.message));
@@ -8768,16 +8769,16 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      // let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
-      // const authUserName = "GENUWIN"; // "GENUWIN";
-      // const authPassword = "genuwin123"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
-
-      const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+      let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
       const authUserName = "GENUWIN"; // "GENUWIN";
-      const authPassword = "e_GX4v@"; // "e_GX4v@";
+      const authPassword = "genuwin123"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+
+      // const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+      // const authUserName = "GENUWIN"; // "GENUWIN";
+      // const authPassword = "e_GX4v@"; // "e_GX4v@";
 
       const { data } = request.all();
-      // console.log("data  ", data);
+      console.log("data  ", data);
       let rtnValue = [];
       let maCQT = "",
         maTBao = "",
@@ -8823,19 +8824,27 @@ class EInvoiceController {
                     xml_sign: base64XML,
                   };
                   const result = await DBService.ExecuteSQLBlob(
-                    `BEGIN ei_upd_file_xml_v5(:trade_code,:macqt,:xml_sign,:p_language, :p_crt_by, :p_rtn_cur); END;`,
+                    `BEGIN ei_upd_file_xml_v5(:trade_code,
+                                              :macqt,
+                                              :xml_sign,
+                                              :p_language, 
+                                              :p_crt_by, 
+                                              :p_rtn_cur); END;`,
                     para_value,
                     p_language,
                     p_crt_by
                   );
+                  console.log("checkInvoiceStatus result  ", result);
                 } else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "16") {
                   maTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].maLoi;
                   tenTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].mtaLoi;
                   const result = await DBService.callProcCursor(
-                    "ei_upd_file_xml_v8",
-                    [para[i], maTBao, tenTBao],
-                    p_language,
-                    p_crt_by
+                                                    "ei_upd_file_xml_v8",
+                                                    [para[i], 
+                                                    maTBao, 
+                                                    tenTBao],
+                                                    p_language,
+                                                    p_crt_by
                   );
                 } else if (items[k].loaiTBao == "15") {
                   tenTBao = items[k].tenTBao;
@@ -9552,7 +9561,7 @@ class EInvoiceController {
       Utils.Logger({
         LVL: "error",
         MODULE: "EInvoiceController",
-        FUNC: "checkInvoiceStatusFromTaxOffice",
+        FUNC: "viewPDFTemplateEPortal",
         CONTENT: e.message,
       });
       console.log(e);
@@ -9580,7 +9589,7 @@ class EInvoiceController {
       Utils.Logger({
         LVL: "error",
         MODULE: "EInvoiceController",
-        FUNC: "checkInvoiceStatusFromTaxOffice",
+        FUNC: "viewPDFTemplate_WT_04SS_BB",
         CONTENT: e.message,
       });
       console.log(e);
@@ -9608,7 +9617,7 @@ class EInvoiceController {
       Utils.Logger({
         LVL: "error",
         MODULE: "EInvoiceController",
-        FUNC: "checkInvoiceStatusFromTaxOffice",
+        FUNC: "viewPDFTemplate_WT_04SS_BBR",
         CONTENT: e.message,
       });
       console.log(e);
@@ -9637,7 +9646,7 @@ class EInvoiceController {
       Utils.Logger({
         LVL: "error",
         MODULE: "EInvoiceController",
-        FUNC: "checkInvoiceStatusFromTaxOffice",
+        FUNC: "viewPDFEinvoiceBBEPortal",
         CONTENT: e.message,
       });
       console.log(e);
@@ -9666,7 +9675,7 @@ class EInvoiceController {
       Utils.Logger({
         LVL: "error",
         MODULE: "EInvoiceController",
-        FUNC: "checkInvoiceStatusFromTaxOffice",
+        FUNC: "viewPDFEinvoiceBBReplaceEPortal",
         CONTENT: e.message,
       });
       console.log(e);
@@ -12560,7 +12569,7 @@ class EInvoiceController {
       Utils.Logger({
         LVL: "error",
         MODULE: "EInvoiceController",
-        FUNC: "checkInvoiceStatusFromTaxOffice",
+        FUNC: "viewPDFTemplate_04SS",
         CONTENT: e.message,
       });
       console.log(e);
@@ -12590,7 +12599,7 @@ class EInvoiceController {
       Utils.Logger({
         LVL: "error",
         MODULE: "EInvoiceController",
-        FUNC: "checkInvoiceStatusFromTaxOffice",
+        FUNC: "viewPDFTemplate_WT_04SS",
         CONTENT: e.message,
       });
       console.log(e);
@@ -12620,7 +12629,7 @@ class EInvoiceController {
       Utils.Logger({
         LVL: "error",
         MODULE: "EInvoiceController",
-        FUNC: "checkInvoiceStatusFromTaxOffice",
+        FUNC: "viewPDF_InvoiceWT",
         CONTENT: e.message,
       });
       console.log(e);
@@ -12650,7 +12659,7 @@ class EInvoiceController {
       Utils.Logger({
         LVL: "error",
         MODULE: "EInvoiceController",
-        FUNC: "checkInvoiceStatusFromTaxOffice",
+        FUNC: "viewPDF_SaleBillWT",
         CONTENT: e.message,
       });
       console.log(e);

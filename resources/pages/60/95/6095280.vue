@@ -431,16 +431,18 @@ export default {
     },
     "modelSearch.COMPANY_PK"(val) {
       if (val) {
-        console.log("val  " , val);
         this.modelMaster.TEI_COMPANY_PK = val;
-        this.dataMasterList.companyInfoList.forEach((item) => {
-          if (item.TEI_COMPANY_PK == val) {
-            this.modelMaster.TNNT = item.NAME;
-            this.modelMaster.MST = item.TAX_CODE;
-            this.modelMaster.DDANH = item.DDANH;
-            this.modelMaster.MCQT = item.MCQTQLY;
-          }
-        });
+        setTimeout(()=>{
+          this.dataMasterList.companyInfoList.forEach((item) => {
+            if (item.TEI_COMPANY_PK == val) {
+              this.modelMaster.TNNT = item.NAME;
+              this.modelMaster.MST = item.TAX_CODE;
+              this.modelMaster.DDANH = item.DDANH;
+              this.modelMaster.MCQT = item.MCQTQLY;
+            }
+          });
+        },2000);  
+        
       }
       this.getListCodes("form_no");
       this.getListCodes("serial_no");
@@ -921,6 +923,7 @@ export default {
           caption: this.$t("status"),
           allowEditing: false,
           width: 80,
+          alignment: "center"
         },
         {
           dataField: "KQUA",
@@ -1170,19 +1173,25 @@ export default {
       return true;
     },
 
-    onGeneralXML() {
-      // if (!this.modelMaster() || !this.modelMaster.PK) {
-      //   return false;
-      // }
-      //this.initobjInvoice_M();
+    formatDate(date)
+    {
+      var year = date.substring(0, 4);
+      var month = date.substring(4, 6);
+      var day = date.substring(6, 8);
+
+      return year + '-' + month + '-' + day;
+    },
+
+    async onGeneralXML() {
 
       this.objInvoiceM.invalid_invoices = {
+        version: this.modelMaster.PBAN,
         tax_office_name: this.modelMaster.TCQT,
         tax_office_code: this.modelMaster.MCQT,
         seller_taxcode: this.modelMaster.MST,
         seller_company_name: this.modelMaster.TNNT,
         location_name: this.modelMaster.DDANH,
-        inform_date: this.modelMaster.NTBAO,
+        inform_date:  await this.formatDate(this.modelMaster.NTBAO),
       };
 
       this.objInvoiceM.invalid_invoices.invoices = [];
@@ -1222,15 +1231,15 @@ export default {
           responseType: "json",
           para: {
             req_key: this.modelMaster.PK,
-            //trade_code: [tempTradeCode.TRADE_CODE],
-            tei_company_pk : this.modelMaster,TEI_COMPANY_PK,
-            trade_code: ["V01041285654CE1CD6D4B5D46DD92634808B649F41C"],
+            trade_code: [tempTradeCode.TRADE_CODE],
+            tei_company_pk : this.modelMaster.TEI_COMPANY_PK,
+            //trade_code: ["V01041285654CE1CD6D4B5D46DD92634808B649F41C"],
             
           },
         });
         console.log("checkinformadjustinvoice " + JSON.stringify(res));
         if (res.success) {
-          this.$refs.grdLeft.loadData();
+          this.$refs.grdDetail.loadData();
           this.showNotification("success", this.$t(res.message), "");
         } else {
           this.showNotification("danger", this.$t(res.message), "");
@@ -1278,7 +1287,7 @@ export default {
       this.isProcessing = true;
 
       if (!this.modelMaster.CQT_MAGD) {
-        let data_xml = this.onGeneralXML();
+        let data_xml = await this.onGeneralXML();
 
         console.log("data_xml  ", data_xml);
         let resConvertXML = await this.$axios.$post("/einvoice/invalidinvoice2xml", {
@@ -1430,8 +1439,8 @@ export default {
 
     async OnSignXml(){
       if (this.modelMaster.PK !== "" ) {
-      this.onGeneralXML();
-      let data_invoice = this.onGeneralXML();
+      let data_invoice = await this.onGeneralXML();
+      console.log("data_invoice   ", data_invoice);
       let res_send = await this.$axios.$post("/einvoice/invalidinvoice2xml", {
             responseType: "json",
             invalid_invoices: data_invoice,
@@ -1442,21 +1451,24 @@ export default {
         {
           const objXml = [{
             req_key : this.modelMaster.PK,
-            xml : JSON.stringify(res_send.data).toString().replaceAll('\"','').replaceAll("<DLTBao>","<DLTBao Id='ID1'>")
+            xml : JSON.stringify(res_send.data).toString().replaceAll('\"','').replaceAll("<DLTBao>","<DLTBao Id='ID1'>"),
+            id_signing: "ID1",
+            url_signning: "TBao/DSCKS/NNT"
           }];
 
-          // console.log("objXml ", objXml);
+          console.log("objXml  ", objXml);
+       
           jQuery.support.cors = true;
           $.ajax({
-          url: "http://localhost:1080/issueXmlList",
-          dataType: "json",
-          method: "POST",
-          data: {
-                crt_by: this.user.USER_ID,
-                xml: JSON.stringify(objXml).toString()
-              },
-          error: this.onErrorissueXmlList,
-          success: this.onSuccessissueXmlList,
+            url: "http://localhost:1080/signXML",
+            dataType: "json",
+            method: "POST",
+            data: {
+              crt_by: this.user.USER_ID,
+              xml: JSON.stringify(objXml).toString(),
+            },
+            error: this.onErrorissueXmlList,
+            success: this.onSuccessissueXmlList,
           });
         }
 

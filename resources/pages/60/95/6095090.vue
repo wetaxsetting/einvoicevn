@@ -293,43 +293,43 @@ export default {
           caption: this.$t("no"),
           type: "text",
           width: 80,
-          alignment: "left",
+          alignment: "right",
         },
         {
           dataField: "INVOICE_DATE",
           caption: this.$t("invoice_date"),
           type: "text",
-          width: 80,
-          alignment: "left",
+          width: 120,
+          alignment: "center",
           format: this.curLang.DATE_FORMAT,
         },
         {
           dataField: "CUS_CD",
           caption: this.$t("cus_id"),
           type: "text",
-          width: 100,
+          width: 120,
           alignment: "left",
         },
         {
           dataField: "CUS_NM",
           caption: this.$t("cus_nm"),
           type: "text",
-          width: 120,
+          width: 420,
           alignment: "left",
         },
         {
           dataField: "CUS_FNM",
           caption: this.$t("cus_fnm"),
           type: "text",
-          width: 120,
+          width: 420,
           alignment: "left",
         },
         {
           dataField: "TAX_CODE",
           caption: this.$t("tax_code"),
           type: "text",
-          width: 80,
-          alignment: "left",
+          width: 150,
+          alignment: "center",
         },
         {
           dataField: "BUYER_NAME",
@@ -357,21 +357,21 @@ export default {
           caption: this.$t("invoice_no"),
           type: "text",
           width: 80,
-          alignment: "left",
+          alignment: "right",
         },
         {
           dataField: "TR_CCY",
           caption: this.$t("tr_ccy"),
           type: "text",
           width: 50,
-          alignment: "left",
+          alignment: "center",
         },
         {
           dataField: "TR_RATE",
           caption: this.$t("tr_rate"),
-          type: "text",
+          type: "number",
           width: 50,
-          alignment: "left",
+          alignment: "right",
         },
         //
         {
@@ -437,28 +437,28 @@ export default {
           caption: this.$t("ei_status"),
           type: "text",
           width: 80,
-          alignment: "left",
+          alignment: "center",
         },
         {
           dataField: "SIGN_BY",
           caption: this.$t("sign_by"),
           type: "text",
-          width: 80,
+          width: 280,
           alignment: "left",
         },
         {
           dataField: "SIGN_DT",
           caption: this.$t("sign_dt"),
           type: "text",
-          width: 80,
-          alignment: "left",
+          width: 180,
+          alignment: "center",
         },
         {
           dataField: "INVOICE_TYPE",
           caption: this.$t("invoice_type"),
           type: "text",
-          width: 80,
-          alignment: "left",
+          width: 120,
+          alignment: "center",
         },
         {
           dataField: "MAIL",
@@ -485,26 +485,15 @@ export default {
         {
           dataField: "CQT_MAGD",
           caption: this.$t("cqt_magd"),
-          width: 150,
-        },
-        {
-          dataField: "REPORT_CODE",
-          caption: this.$t("report_code"),
-          type: "text",
-          width: 80,
-          alignment: "left",
-          hidden: true
+          width: 400,
         },
         {
           dataField: "CQT_MCCQT_ID",
           caption: this.$t("cqt_mccqt_id"),
           type: "text",
-          width: 100,
-          alignment: "left",
+          width: 300,
+          alignment: "center",
         },
-
-
-
         {
           dataField: "ETAX_STATUS",
           caption: this.$t("etax_status"),
@@ -570,7 +559,7 @@ export default {
         
       }
 
-      let res_check = await this.$axios.$post("/einvoice/check-status-invoice", {
+      let res_check = await this.$axios.$post("/einvoice/check-status-invoice-at", {
           responseType: "json",
           data: this.invoice,
         });

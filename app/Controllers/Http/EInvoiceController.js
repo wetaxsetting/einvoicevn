@@ -6858,7 +6858,7 @@ class EInvoiceController {
         return response.send(Utils.response(false, `Send invoice to Tax Office was failure!`, null));
       }else if (check_data.STATUS == 'EXIT' )
       {
-        return response.send(Utils.response(false, `The sign xml was send Tax Offiec`, null));
+        return response.send(Utils.response(false, `The sign xml was send Tax Office!`, null));
       }else if (check_data.STATUS == 'NOEXIT' )
       {
         return response.send(Utils.response(false, `Compay not yet register`, null));

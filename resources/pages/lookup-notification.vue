@@ -1,0 +1,289 @@
+<template>
+  <div>
+    <v-card flat tile :color="!breakpoint.isDesktop ? 'primary-radial-gradient' : 'transparent'" :height="windowHeight">
+      <v-img 
+        contain 
+        :aspect-ratio="16/9" :height="windowHeight" :width="windowWidth" :src="imgBg" 
+        style="position: absolute; top: 0; left: 0;"
+        v-if="breakpoint.isDesktop"
+      ></v-img>
+      <v-container fluid class="fill-height">
+        <v-row align="center" justify="center">
+          <v-col cols="12">
+            <v-card shaped class="pa-4 mx-auto" :width="_calculateHeight(windowWidth, (breakpoint.isDesktop ? 60 : 90))">
+              <v-container>
+                <v-row dense align="center" justify="center">
+                  <v-col cols="12" class="text-center">
+                    <div class="font-weight-bold text-uppercase" :class="!breakpoint.isMobile ? 'text-h4' : 'text-h6'">Tra cứu biên bản điện tử</div>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field 
+                      ref="invoiceNo"
+                      outlined
+                      single-line
+                      validate-on-blur                    
+                      label="Nhập mã tra cứu hóa đơn"
+                      :color="currentTheme"
+                      :dense="!breakpoint.isDesktop"
+                      :disabled="isProcessing"
+                      :rules="inputRule"
+                      v-model="invoiceNo"
+                      @keypress.enter="search"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="7">
+                    <v-text-field
+                      ref="captcha"
+                      outlined
+                      single-line
+                      hide-details
+                      label="Captcha"
+                      :append-icon="!isProcessing ? 'mdi-refresh' : ''"
+                      :color="currentTheme"
+                      :dense="!breakpoint.isDesktop"
+                      :disabled="isProcessing"             
+                      v-model="captcha"
+                      @click:append="_handleGenerateCaptcha"
+                      @keypress.enter="search"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="5">
+                    <div v-html="captchaSvg" v-if="captchaSvg"></div>
+                  </v-col>
+                  <v-col cols="auto">
+                    <v-btn block depressed :color="currentTheme" :class="currentTextColor"  :disabled="isProcessing" :loading="isProcessing" @click="search">Search</v-btn>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-card>
+
+    <v-dialog eager :persistent="isProcessing" :max-width="Math.floor(windowWidth*0.75)" v-model="dialogIsShow">
+      <v-card>
+        <v-card-title class="headline primary-gradient white--text py-2">
+          <span>Thông tin hóa đơn</span>
+          <v-spacer></v-spacer>
+          <v-icon dark @click="dialogIsShow = false">mdi-close-thick</v-icon>
+        </v-card-title>
+        <v-container fluid>
+          <v-row no-gutters>
+            <v-col lg="8" cols="12">
+              <v-card flat tile :height="dialogHeight" v-if="invoiceInfo && invoiceInfo.url_pdf">
+                <iframe :src="invoiceInfo.url_pdf" height="100%" width="100%" ></iframe>
+              </v-card>
+            </v-col>
+            <v-col lg="4" cols="12">
+              <v-card flat tile>
+                <v-container fluid>
+                  <v-row dense>
+                    <v-col cols="12">
+                      <div class="text-h5 font-weight-bold pb-2">Thông tin hóa đơn</div>
+                      <v-divider></v-divider>
+                    </v-col>
+                    <v-col cols="12 pt-2">
+                      <v-sheet tile color="transparent" class="d-flex align-center justify-space-between" width="100%">
+                        <span class="mr-auto">Số hóa đơn:</span>
+                        <span class="font-weight-bold">{{ invoiceInfo.serial_no }}</span>
+                      </v-sheet>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-sheet tile color="transparent" class="d-flex align-center justify-space-between" width="100%">
+                        <span class="mr-auto">Tổng tiền thanh toán:</span>
+                        <span class="font-weight-bold">{{ invoiceInfo.total_payment }}</span>
+                      </v-sheet>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-btn dark depressed small color="#AD0B00" @click="onDownloadPDF">
+                        <v-icon left>mdi-file-pdf-box</v-icon>
+                        <span class="ml-2">Tải về định dạng PDF</span>
+                      </v-btn>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-btn dark depressed small color="#EA7700" target="_blank" :href="invoiceInfo.url_xml">
+                        <v-icon left>mdi-file-xml-box</v-icon>
+                        <span class="ml-2">Tải về định dạng XML</span>
+                      </v-btn>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-btn dark depressed small :color="currentTheme" @click="dialog2IsShow = true">
+                        <v-icon left>mdi-file-document-arrow-right</v-icon>
+                        <span class="ml-2">Chuyển thành hóa đơn giấy</span>
+                      </v-btn>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog eager :persistent="isProcessing" :width="Math.floor(windowWidth*0.25)" v-model="dialog2IsShow">
+      <v-card>
+        <v-card-title class="text-h5 d-flex align-center justify-center">CHUYỂN THÀNH HÓA ĐƠN GIẤY</v-card-title>
+        <v-card-text class="pb-0">
+          <v-form
+            lazy-validation
+            ref="form"
+          >
+            <v-text-field dense outlined validate-on-blur ref="converterInputRefs" label="Họ tên người chuyển đổi" :color="currentTheme" :disabled="isProcessing" :rules="inputRule" v-model="inputName"></v-text-field>
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn depressed :color="currentTheme" :class="currentTextColor"  :disabled="isProcessing" :loading="isProcessing" @click="convert">Tiếp tục</v-btn>
+          <v-btn outlined color="grey darken-2" :disabled="isProcessing" @click="dialog2IsShow = false">Hủy bỏ</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
+</template>
+
+<script>
+export default {
+  layout: "monitoring",
+
+  data: () => ({
+    imgBg: require("@/assets/images/lookup_einvoice.jpg"),
+    invoiceNo: "",
+    captcha: "",
+    captchaSvg: "",
+    sessionID: "",
+    isProcessing: false,
+    inputRule: [(v) => !!v || "Please fill in this field!"],
+    dialogIsShow: false,
+    invoiceInfo: "",
+    dialog2IsShow: false,
+    inputName: ""
+  }),
+
+  /* async created() {
+    //  trade_code
+    const params = {
+      trade_code: ""
+    }
+    const { data, message, success } = await this.$axios.$get('/einvoice/lookup-code', { params: params });
+    if(success && data.length) {
+
+    }
+  }, */
+
+  async mounted() {    
+    await this._handleGenerateCaptcha();
+  },
+
+  computed: {
+    dialogHeight() {
+      return Math.floor(this._calculateHeight(this.windowHeight, (this.breakpoint.isDesktop ? 90 : 50)) - 48 - 24);
+    }
+  },
+
+  watch: {
+    async dialogIsShow(val) {
+      if(!val) {
+        await this._handleGenerateCaptcha();
+      }
+    },
+    dialog2IsShow(val) {
+      if(val) {
+        this.$refs.form.resetValidation()
+      }
+    }
+  },
+
+  methods: {
+    async _handleGenerateCaptcha() {
+      try {
+        if(this.isProcessing) return;      
+        // console.log("_handleGenerateCaptcha")
+        const { sessionid, captcha } = await this.$axios.$post("user/captchar", { req_sessionid: this.sessionID });
+
+        this.$nextTick(() => {
+          this.sessionID = sessionid;
+          this.captchaSvg = captcha;
+          this.captcha = "";
+        });
+      } catch (error) {
+        console.log("_handleGenerateCaptcha-catch exception:", error.message)       
+      }      
+    },
+
+    async search() {
+      // console.log("route:", this.$route)
+      if(!this.$route?.query?.trade_code) {
+        console.log("trade_code not found!");
+        return;
+      }
+      if (this.invoiceNo === "" || this.invoiceNo === undefined) {
+        this.$refs.invoiceNo.focus();
+        return;
+      } else if ((this.captcha === "" || this.captcha === undefined)) {
+        this.$refs.captcha.focus();
+        return;
+      }
+      try {
+        this.isProcessing = true; 
+        const { success, data, message } = await this.$axios.$post("/einvoice/lookup-code", { captcha: this.captcha, sessionid: this.sessionID, lookupcode: this.invoiceNo })
+        if(success) {
+          console.log("data:", data)
+          this.invoiceInfo = data;
+          this.isProcessing = false;
+          this.dialogIsShow = true;
+        } else {
+          this.isProcessing = false;
+          this.showNotification("danger", message, "", 3000);
+          await this._handleGenerateCaptcha();
+        }
+      } catch (error) {
+        this.isProcessing = false;
+        console.log("search-catch exception:", error.message);
+        this.showNotification("danger", "Error Occurs!", error.message, "", 3000);
+        await this._handleGenerateCaptcha();
+      }
+    },
+
+    onDownloadPDF() {
+      try {
+        var link = document.createElement('a');
+        link.href = this.invoiceInfo.url_pdf;
+        link.download = `${this.invoiceInfo.serial_no}.pdf`;
+        link.dispatchEvent(new MouseEvent('click'));
+      } catch (error) {
+        console.log("onDownload-catch exception:", error.message)
+      }
+    },
+
+    async convert() {
+      if (this.inputName === "" || this.inputName === undefined) {
+        this.$refs.converterInputRefs.focus();
+        return;
+      }
+      try {
+        this.isProcessing = true;
+        const { success, data, message } = await this.$axios.$post("/einvoice/general-convert-einvoice", {
+          converter: this.inputName,
+          lookupcode: this.invoiceNo
+        })
+        if(success) {
+          console.log("data:", data);
+          this.showNotification("success", message, "", 3000);
+
+          this.isProcessing = false;
+          this.dialog2IsShow = false;
+          this.$refs.converterInputRefs.reset();
+        } else {
+          this.isProcessing = false;
+          this.showNotification("danger", message, "", 3000);
+        }
+      } catch (error) {
+        console.log("convert-catch exception:", error.message);
+        this.isProcessing = false;
+      }
+    }
+  }
+}
+</script>

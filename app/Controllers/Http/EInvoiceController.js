@@ -9280,7 +9280,8 @@ class EInvoiceController {
       }
       const { data } = request.all();
 
-      // console.log(data);
+      
+      console.log(data);
 
       let para_value_mail = {
         p_tei_einvoice_m_pk: data.req_key, //"4090",// 

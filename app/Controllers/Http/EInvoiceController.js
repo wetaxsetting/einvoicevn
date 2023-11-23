@@ -3252,7 +3252,7 @@ class EInvoiceController {
               
               for (const invoice of items[k].ndungTBao.dsachHDonSSot) {
                 ndungTBao.push({
-                  //MCCQT : invoice.MCCQT,
+                  MCCQT : "",// invoice.MCCQT,
                   khieuMauHDon: invoice.khieuMauHDon,
                   khieuHDon: invoice.khieuHDon,
                   soHDon: invoice.soHDon,
@@ -3265,13 +3265,12 @@ class EInvoiceController {
                
 
                 const data_d_tbss = {
-                    macqt : "",
-                    form_no : invoice.khieuMauHDon,
-                    serial_no : invoice.khieuHDon,
-                    invoice_dt : invoice.ngayHDon,
-                    invoice_no : invoice.soHDon,
-                    cqt_result : cqt_result,
-                    cqt_status : cqt_status
+                  p_mccqt : "",
+                  p_form_no : invoice.khieuMauHDon,
+                  p_serial_no : invoice.khieuHDon,
+                  p_invoice_no : invoice.soHDon,
+                  p_cqt_result : cqt_result,
+                  p_cqt_status : cqt_status
                 };
 
                 console.log("data_d_tbss  ", data_d_tbss)

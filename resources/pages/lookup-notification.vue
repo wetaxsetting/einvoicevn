@@ -71,9 +71,9 @@
         <v-container fluid>
           <v-row no-gutters>
             <v-col lg="8" cols="12">
-              <v-card flat tile :height="dialogHeight" v-if="invoiceInfo && invoiceInfo.url_pdf">
+              <!-- <v-card flat tile :height="dialogHeight" v-if="invoiceInfo && invoiceInfo.url_pdf">
                 <iframe :src="invoiceInfo.url_pdf" height="100%" width="100%" ></iframe>
-              </v-card>
+              </v-card> -->
             </v-col>
             <v-col lg="4" cols="12">
               <v-card flat tile>
@@ -85,15 +85,46 @@
                     </v-col>
                     <v-col cols="12 pt-2">
                       <v-sheet tile color="transparent" class="d-flex align-center justify-space-between" width="100%">
-                        <span class="mr-auto">Số hóa đơn:</span>
-                        <span class="font-weight-bold">{{ invoiceInfo.serial_no }}</span>
+                        <span class="mr-auto">Mã khách hàng:</span>
+                        <span class="font-weight-bold">{{ invoiceInfo.buyer_code }}</span>
                       </v-sheet>
                     </v-col>
                     <v-col cols="12">
                       <v-sheet tile color="transparent" class="d-flex align-center justify-space-between" width="100%">
-                        <span class="mr-auto">Tổng tiền thanh toán:</span>
-                        <span class="font-weight-bold">{{ invoiceInfo.total_payment }}</span>
+                        <span class="mr-auto">Tên khách hàng:</span>
+                        <span class="font-weight-bold">{{ invoiceInfo.buyer_name }}</span>
                       </v-sheet>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-sheet tile color="transparent" class="d-flex align-center justify-space-between" width="100%">
+                        <span class="mr-auto">Mã số thuế:</span>
+                        <span class="font-weight-bold">{{ invoiceInfo.buyer_taxcode }}</span>
+                      </v-sheet>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-sheet tile color="transparent" class="d-flex align-center justify-space-between" width="100%">
+                        <span class="mr-auto">Thông tin hóa đơn sai sót:</span>
+                        <span class="font-weight-bold">{{ invoiceInfo.info_inv }}</span>
+                      </v-sheet>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-sheet tile color="transparent" class="d-flex align-center justify-space-between" width="100%">
+                        <span class="mr-auto">Trạng thái biên bản:</span>
+                        <span class="font-weight-bold">{{ invoiceInfo.seller_status }}</span>
+                      </v-sheet>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-sheet tile color="transparent" class="d-flex align-center justify-space-between" width="100%">
+                        <span class="mr-auto">Ngày lập biên bản:</span>
+                        <span class="font-weight-bold">{{ invoiceInfo.seller_inv_dt }}</span>
+                      </v-sheet>
+                    </v-col>
+                    
+                    <v-col cols="12">
+                      <v-btn dark depressed small color="#00FFFF" @click="onSignXML">
+                        <v-icon left>mdi-file-pdf-box</v-icon>
+                        <span class="ml-2">Ký biên bản</span>
+                      </v-btn>
                     </v-col>
                     <v-col cols="12">
                       <v-btn dark depressed small color="#AD0B00" @click="onDownloadPDF">
@@ -227,7 +258,7 @@ export default {
       }
       try {
         this.isProcessing = true; 
-        const { success, data, message } = await this.$axios.$post("/einvoice/lookup-code", { captcha: this.captcha, sessionid: this.sessionID, lookupcode: this.invoiceNo })
+        const { success, data, message } = await this.$axios.$post("/einvoice/lookup-minutes", { captcha: this.captcha, sessionid: this.sessionID, lookupcode: this.invoiceNo })
         if(success) {
           console.log("data:", data)
           this.invoiceInfo = data;
@@ -255,6 +286,85 @@ export default {
       } catch (error) {
         console.log("onDownload-catch exception:", error.message)
       }
+    },
+
+    async onSignXML()
+    {
+      if(this.invoiceInfo.seller_sign_xml)
+      {
+        let objXml = [
+          {
+            req_key: this.invoiceInfo.req_key,
+            xml: this.invoiceInfo.seller_sign_xml,
+            id_signing: "ID1",
+            url_signning: "BBan/DSCKS/NMua"
+          }
+        ]
+        console.log("objXml  ", objXml);
+       
+          jQuery.support.cors = true;
+          $.ajax({
+            url: "http://localhost:1080/signXML",
+            dataType: "json",
+            method: "POST",
+            data: {
+              crt_by: this.invoiceInfo.buyer_name,
+              xml: JSON.stringify(objXml).toString(),
+            },
+            error: this.onErrorissueXmlList,
+            success: this.onSuccessissueXmlList,
+          });
+      }
+      
+    },
+
+    async onErrorissueXmlList(json, textStatus, errorThrown) {
+      return this.showNotification("warning", this.$t("error_occurs"), errorThrown);//   alert(" Error :" + errorThrown);
+    },
+
+    async onSuccessissueXmlList(data) {
+      console.log("data  ", data);
+      
+      return;
+      const jsonSendData = {
+        req_key : this.modelMaster.PK,
+        xml_signed : data.result[0]["xml"].toString()  
+      }
+
+      const dso_process_check_serialno = {
+        type: "list",
+        selpro: "EI_PRO_6095280_SERIAL_CHECK",
+        para: [ this.modelMaster.TEI_COMPANY_PK, 
+                data.serial_number, 
+                data.not_before, 
+                data.not_after],
+      };
+
+      const check_serial_no_result = await this._dsoCall(
+        dso_process_check_serialno,
+        "select",
+        false
+      );
+      if (check_serial_no_result[0].STATUS =="OK")
+      {
+        let res = await this.$axios.$post("/einvoice/sendinformadjustinvoice", {
+          responseType: "json",
+          para: jsonSendData
+        });
+
+          console.log("res",res);
+        if (res.success) {
+          this.showNotification("success", res.message, "" );  
+              this.$refs.grdSearch.loadData(); 
+          
+        } else {
+          this.showNotification("danger", res.message, "");
+        }
+      }else
+      {
+        this.showNotification("danger", "Token not suitable !!!", "");
+      }
+
     },
 
     async convert() {

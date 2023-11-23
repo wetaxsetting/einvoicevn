@@ -149,6 +149,7 @@ Route.group(() => {
     Route.post("check-status-declare", "EInvoiceController.weTaxCheckingDeclarations")
     Route.post("generate-notice-cancel-adjust-replace-xml", "EInvoiceController.weTaxConvertInvalidInvoiceToXML")
     Route.post("send-notice-cancel-adjust-replace", "EInvoiceController.weTaxSendInformAdjustToTaxOffice")
+    //Route.post("check-notification-status", "EInvoiceController.weTaxCheckInformAdjustToTaxOfficeTest")
     Route.post("check-notification-status", "EInvoiceController.weTaxCheckInformAdjustToTaxOffice")
     //Route.post("send-order-info", "EInvoiceController.weTaxSendOrderInfo")
     Route.post("send-order-info", "EInvoiceController.weTaxSendOrderInfoV2")
@@ -198,8 +199,9 @@ Route.group(() => {
 
 Route.group(() => {
     Route.post("lookup-code", "EInvoiceController.getDataEinvoiceFormLookupCode")
-    //Route.get("lookup-code", "EInvoiceController.getDataEinvoiceFormLookupCode")
     Route.post("general-convert-einvoice", "EInvoiceController.generalConvertEinvoice")
+    Route.post("lookup-minutes", "EInvoiceController.getDataEinvoiceFormLookupMinutesCode")
+
 }).prefix("api/einvoice");
 
 Route.group(() => {

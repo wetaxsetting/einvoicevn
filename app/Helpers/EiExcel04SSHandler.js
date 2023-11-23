@@ -42,9 +42,9 @@ class EiExcelHandler {
       let backgroundRow = 0;
 
       const einvoiceMasterData = await DBService.callProcCursor("AC_SEL_EINVOICE_M_04SS", [pk], p_language, p_crt_by, _db2);
-      console.log("file: EiExcel04SSHandler.js:59 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceMasterData:", einvoiceMasterData);
+      //console.log("file: EiExcel04SSHandler.js:59 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceMasterData:", einvoiceMasterData);
       const einvoiceDetailData = await DBService.callProcCursor("AC_SEL_EINVOICE_D_04SS", [pk], p_language, p_crt_by, _db2);
-      console.log("file: EiExcel04SSHandler.js:66 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceDetailData:", einvoiceDetailData);
+      //console.log("file: EiExcel04SSHandler.js:66 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceDetailData:", einvoiceDetailData);
 
       // const einvoiceMasterParam = await DBService.callProcCursor(
       //   "ac_sel_einvoice_m_param", [tradecode, einvoiceMasterData[0].FORM_NO , einvoiceMasterData[0].SERIAL_NO,''],

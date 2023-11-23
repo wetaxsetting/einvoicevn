@@ -7090,7 +7090,7 @@ class EInvoiceController {
       let tenTBao = "";
       let xml_tax_signed = "";
       let rtnValue = {};
-
+      let data_error = [];
       const res = await Request.post(
         url,
         { base64XML: Buffer.from(invoice_xml_signed).toString("base64") },
@@ -7140,14 +7140,17 @@ class EInvoiceController {
                   xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
                 }else if (items[k].loaiTBao == "8") {
                   maCQT = items[k].ndungTBao.maCQT;
-                 
                   maTBao = items[k].loaiTBao;
                   tenTBao = items[k].tenTBao;
                 } else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "7") {
+                  maTBao =  items[k].loaiTBao;
+                  tenTBao =  items[k].tenTBao;
                   for(let invoice of items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu)
                   {
-                     maTBao = invoice.maLoi;
-                     tenTBao = invoice.mtaLoi;
+                    data_error.push({
+                      maLoi: invoice.maLoi,
+                      mtaLoi: invoice.mtaLoi
+                    });
                   }
                  
                 } 
@@ -7163,9 +7166,10 @@ class EInvoiceController {
             store_name: store_name,
             tax_serial_number: tax_serial_number,
             pos_no: pos_no,
+            data_error: data_error,
             inform_code: maTBao,
             inform_name: tenTBao,
-            mccqt: maCQT,
+            //mccqt: maCQT,
             xml_tax_signed: xml_tax_signed,
           };
         });

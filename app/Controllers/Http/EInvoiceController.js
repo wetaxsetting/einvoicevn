@@ -3274,6 +3274,7 @@ class EInvoiceController {
                     cqt_status : cqt_status
                 };
 
+                console.log("data_d_tbss  ", data_d_tbss)
                 await DBService.ExecuteSQLBlob(
                   `BEGIN wt_upd_hd04ss_d(
                                     :p_mccqt, 
@@ -3310,6 +3311,7 @@ class EInvoiceController {
           p_messCQT: tenTBao,
           p_status: "1",
         };
+        console.log("para_value_m  ", para_value_m);
         await DBService.ExecuteSQLBlob(
           `BEGIN wt_upd_hd04ss_m(
                             :p_req_key, 
@@ -3346,6 +3348,7 @@ class EInvoiceController {
         FUNC: "weTaxCheckInformAdjustToTaxOfficeTest",
         CONTENT: e.message,
       });
+      console.log("error ", e);
       return response.send(Utils.response(false, e.message, null));
     }
   }
@@ -7142,13 +7145,12 @@ class EInvoiceController {
                   maTBao = items[k].loaiTBao;
                   tenTBao = items[k].tenTBao;
                 } else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "7") {
-                  for(let invoice of items[k].ndungTBao.dsachLoiKTraDLieu)
+                  for(let invoice of items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu)
                   {
-                    
+                     maTBao = invoice.maLoi;
+                     tenTBao = invoice.mtaLoi;
                   }
-
-                  maTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].maLoi;
-                  tenTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].mtaLoi;
+                 
                 } 
               }
             }

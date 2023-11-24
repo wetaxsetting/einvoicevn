@@ -119,29 +119,10 @@
                         <span class="font-weight-bold">{{ invoiceInfo.seller_inv_dt }}</span>
                       </v-sheet>
                     </v-col>
-                    
                     <v-col cols="12">
-                      <v-btn dark depressed small color="#00FFFF" @click="onSignXML">
+                      <v-btn dark depressed small :color="currentTheme" @click="onSignXML">
                         <v-icon left>mdi-file-pdf-box</v-icon>
                         <span class="ml-2">Ký biên bản</span>
-                      </v-btn>
-                    </v-col>
-                    <v-col cols="12">
-                      <v-btn dark depressed small color="#AD0B00" @click="onDownloadPDF">
-                        <v-icon left>mdi-file-pdf-box</v-icon>
-                        <span class="ml-2">Tải về định dạng PDF</span>
-                      </v-btn>
-                    </v-col>
-                    <v-col cols="12">
-                      <v-btn dark depressed small color="#EA7700" target="_blank" :href="invoiceInfo.url_xml">
-                        <v-icon left>mdi-file-xml-box</v-icon>
-                        <span class="ml-2">Tải về định dạng XML</span>
-                      </v-btn>
-                    </v-col>
-                    <v-col cols="12">
-                      <v-btn dark depressed small :color="currentTheme" @click="dialog2IsShow = true">
-                        <v-icon left>mdi-file-document-arrow-right</v-icon>
-                        <span class="ml-2">Chuyển thành hóa đơn giấy</span>
                       </v-btn>
                     </v-col>
                   </v-row>
@@ -192,16 +173,12 @@ export default {
     inputName: ""
   }),
 
-  /* async created() {
-    //  trade_code
-    const params = {
-      trade_code: ""
-    }
-    const { data, message, success } = await this.$axios.$get('/einvoice/lookup-code', { params: params });
-    if(success && data.length) {
-
-    }
-  }, */
+   async created() {
+    console.log("this.$route?.query?.trade_code ",this.$route?.query?.trade_code)
+    if(this.$route?.query?.trade_code) {
+        this.invoiceNo = this.$route?.query?.trade_code;
+      }
+  }, 
 
   async mounted() {    
     await this._handleGenerateCaptcha();
@@ -244,7 +221,7 @@ export default {
     },
 
     async search() {
-      // console.log("route:", this.$route)
+       console.log("route:", this.$route)
       if(!this.$route?.query?.trade_code) {
         console.log("trade_code not found!");
         return;
@@ -277,17 +254,6 @@ export default {
       }
     },
 
-    onDownloadPDF() {
-      try {
-        var link = document.createElement('a');
-        link.href = this.invoiceInfo.url_pdf;
-        link.download = `${this.invoiceInfo.serial_no}.pdf`;
-        link.dispatchEvent(new MouseEvent('click'));
-      } catch (error) {
-        console.log("onDownload-catch exception:", error.message)
-      }
-    },
-
     async onSignXML()
     {
       if(this.invoiceInfo.seller_sign_xml)
@@ -302,18 +268,18 @@ export default {
         ]
         console.log("objXml  ", objXml);
        
-          jQuery.support.cors = true;
-          $.ajax({
-            url: "http://localhost:1080/signXML",
-            dataType: "json",
-            method: "POST",
-            data: {
-              crt_by: this.invoiceInfo.buyer_name,
-              xml: JSON.stringify(objXml).toString(),
-            },
-            error: this.onErrorissueXmlList,
-            success: this.onSuccessissueXmlList,
-          });
+        jQuery.support.cors = true;
+        $.ajax({
+          url: "http://localhost:1080/signXML",
+          dataType: "json",
+          method: "POST",
+          data: {
+            crt_by: this.invoiceInfo.buyer_name,
+            xml: JSON.stringify(objXml).toString(),
+          },
+          error: this.onErrorissueXmlList,
+          success: this.onSuccessissueXmlList,
+        });
       }
       
     },
@@ -323,8 +289,37 @@ export default {
     },
 
     async onSuccessissueXmlList(data) {
-      console.log("data  ", data);
+      //console.log("data  ", data);
       
+      // if(this.invoiceInfo.buyer_taxcode != data.dn_mst)
+      // {
+      //   this.showNotification("warning", "Notification", "mst_is_wrong");
+      //   return;
+      // }
+
+      var date_token = new Date(data.not_after);
+      var date_current = new Date();
+     
+      if(date_token < date_current)
+      {
+        this.showNotification("warning", "Notification", "token_is_exptdate");
+        return;
+      }
+
+      let res = await this.$axios.$post("/einvoice/sendinformadjustinvoice", {
+          responseType: "json",
+          para: jsonSendData
+        });
+
+          console.log("res",res);
+        if (res.success) {
+          this.showNotification("success", res.message, "" );  
+              this.$refs.grdSearch.loadData(); 
+          
+        } else {
+          this.showNotification("danger", res.message, "");
+        }
+
       return;
       const jsonSendData = {
         req_key : this.modelMaster.PK,

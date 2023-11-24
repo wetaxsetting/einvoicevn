@@ -6861,7 +6861,9 @@ class EInvoiceController {
       let maCQT = "",
         maTBao = "",
         tenTBao = "",
-        base64XMLCQT = "";
+        base64XMLCQT = "",
+        data_error = [];
+
       for (let i = 0; i < data.length; i++) {
         //console.log("SSS ", url + data[i].trade_code);
 
@@ -6907,23 +6909,29 @@ class EInvoiceController {
                   //     p_language,
                   //     p_crt_by
                   // );
-                } else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "16") {
-                  maTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].maLoi;
-                  tenTBao = items[k].ndungTBao.dsachLoiKTraDLieu[0].mtaLoi;
+                } else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "16" || items[k].loaiTBao == "15") {
+                  maTBao = items[k].loaiTBao;
+                  tenTBao = items[k].tenTBao;
+                  data_error.push(
+                    {
+                      maLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].maLoi,
+                      mtaLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].mtaLoi
+                    }
+                  )
                   // const result = await DBService.callProcCursor(
                   //     "ei_upd_file_xml_v8", [para[i], maTBao, tenTBao],
                   //     p_language,
                   //     p_crt_by
                   // );
-                } else if (items[k].loaiTBao == "15") {
-                  tenTBao = items[k].tenTBao;
-                  maTBao = items[k].loaiTBao;
+                } //else if (items[k].loaiTBao == "15") {
+                  //tenTBao = items[k].tenTBao;
+                  //maTBao = items[k].loaiTBao;
                   // const result = await DBService.callProcCursor(
                   //     "ei_upd_file_xml_v9", [para[i], tenTBao],
                   //     p_language,
                   //     p_crt_by
                   // );
-                }
+                //}
               }
             }
           })
@@ -6940,6 +6948,7 @@ class EInvoiceController {
           xml_tax_signed: base64XMLCQT,
           tax_code: data[i].tax_code,
           req_key: data[i].req_key,
+          data_error: data_error
         });
       }
 
@@ -7508,6 +7517,7 @@ class EInvoiceController {
           let tenTBao = "";
           let maCQT = "";
           let xml_tax_signed = "";
+          let data_error = [];
 
         if(tr_code.trade_code)
         {
@@ -7540,14 +7550,16 @@ class EInvoiceController {
                     xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
 
                   }*/
-                   else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "16") {
+                   else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "16" || items[k].loaiTBao == "15")  {
 
-                    maTBao = items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].maLoi;
-                    tenTBao = items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].mtaLoi;
-
-                  } else if (items[k].loaiTBao == "15") {
-                    tenTBao = items[k].tenTBao;
                     maTBao = items[k].loaiTBao;
+                    tenTBao = items[k].tenTBao;
+                    data_error.push(
+                      {
+                        maLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].maLoi,
+                        mtaLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].mtaLoi
+                      }
+                    )
                   }
                 }
               }
@@ -7581,6 +7593,7 @@ class EInvoiceController {
             inform_name: tenTBao,
             xml_tax_signed: xml_tax_signed,
             mcct: maCQT,
+            data_error: data_error
           });
       
       }
@@ -10184,7 +10197,6 @@ class EInvoiceController {
       //let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + rtnValue.p_rtn_cur[0].CQT_MAGD + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token=");
       //let url_xml = re_url_xml.data;
       // console.log("base64XML:", url_xml);
-      // vng-199 2023-11-22 cần update thêm 1 số trường trong procedure này ei_sel_get_data_lookup_code, mà bị dí quá k update kịp để làm sau 
       const rep_data = {
         info_inv: rtnValue.p_rtn_cur[0].INFO_INV,
         ma_gd: rtnValue.p_rtn_cur[0].CQT_MAGD,
@@ -10192,10 +10204,12 @@ class EInvoiceController {
         buyer_code: rtnValue.p_rtn_cur[0].CUS_CD,
         buyer_taxcode: rtnValue.p_rtn_cur[0].TAX_CODE,
         buyer_sign_yn: rtnValue.p_rtn_cur[0].USER_SIGN_YN,
+        buyer_sign_xml: rtnValue.p_rtn_cur[0].BUYER_SIGN_XML,
         voucher_no: rtnValue.p_rtn_cur[0].VOUCHER_NO,
         seller_status: rtnValue.p_rtn_cur[0].SELLER_STATUS,
         seller_sign_xml : rtnValue.p_rtn_cur[0].SELLER_SIGN_XML,
         url_pdf: url_pdf,
+        url_xml: "",
         seller_inv_dt: rtnValue.p_rtn_cur[0].NTBAO,
         req_key: rtnValue.p_rtn_cur[0].TEI_EINVOICE_SS_D_PK,
       }
@@ -10212,6 +10226,79 @@ class EInvoiceController {
       return response.send(Utils.response(false, "error", e.message));
     }
   }
+
+  async getUpdateXmlBuyerSign({ request, response, auth }) {
+    try {
+      var p_language = request.header("accept-language", "ENG");
+      var p_crt_by = "";
+
+      const { xml_signed, buyer_sign_by, buyer_sign_dt, req_key, lookupcode } = request.all();
+   
+      let data_split = lookupcode.split("|");
+      const trade_code = data_split[0];
+      const voucher_no = data_split[1];
+       
+      if (DB_CONNECTION == "oracle") {
+        oracledb.fetchAsBuffer = [oracledb.BLOB];
+        oracledb.fetchAsString = [oracledb.CLOB];
+      }
+      const para_inv_st = {
+        trade_code: trade_code,
+        voucher_no: voucher_no,
+        req_key: req_key,
+        buyer_sign_dt: buyer_sign_dt,
+        buyer_sign_by: buyer_sign_by,
+        xml_signed: xml_signed
+      };
+      const rtnValue = await DBService.ExecuteSQLBlob(
+        `BEGIN ei_up_lookup_minutes_code (:trade_code,
+                                           :voucher_no,
+                                           :p_language, 
+                                           :p_crt_by, 
+                                           :p_rtn_cur); END;`,
+        para_inv_st,
+        p_language,
+        p_crt_by
+      );
+      
+      console.log("rtnValue  ", rtnValue);
+      let EiExcels = new EiExcel04SS2Handler(); //CQT_MAGD
+      let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].TEI_EINVOICE_M_PK, p_language, p_crt_by);
+      console.log("base64PDf: ", url_pdf);
+
+      let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + rtnValue.p_rtn_cur[0].TEI_EINVOICE_SS_D_PK + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token=");
+      let url_xml = re_url_xml.data;
+      // console.log("base64XML:", url_xml);
+
+      const rep_data = {
+        info_inv: rtnValue.p_rtn_cur[0].INFO_INV,
+        ma_gd: rtnValue.p_rtn_cur[0].CQT_MAGD,
+        buyer_name: rtnValue.p_rtn_cur[0].CUS_NM,
+        buyer_code: rtnValue.p_rtn_cur[0].CUS_CD,
+        buyer_taxcode: rtnValue.p_rtn_cur[0].TAX_CODE,
+        buyer_sign_yn: rtnValue.p_rtn_cur[0].USER_SIGN_YN,
+        voucher_no: rtnValue.p_rtn_cur[0].VOUCHER_NO,
+        seller_status: rtnValue.p_rtn_cur[0].SELLER_STATUS,
+        seller_sign_xml : rtnValue.p_rtn_cur[0].SELLER_SIGN_XML,
+        url_pdf: url_pdf,
+        url_xml: url_xml,
+        seller_inv_dt: rtnValue.p_rtn_cur[0].NTBAO,
+        req_key: rtnValue.p_rtn_cur[0].TEI_EINVOICE_SS_D_PK,
+      }
+
+      return response.send(Utils.response(true, "Research data invocie was success", rep_data));
+    } catch (e) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "getDataEinvoiceFormLookupMinutesCode",
+        CONTENT: e.message,
+      });
+      console.log(e);
+      return response.send(Utils.response(false, "error", e.message));
+    }
+  }
+
   async generalConvertEinvoice({ request, response, auth }) {
     try {
       var p_language = request.header("accept-language", "ENG");

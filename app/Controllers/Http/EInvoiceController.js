@@ -7778,7 +7778,7 @@ class EInvoiceController {
             THHDVu: invoices[i].detail_invoice[j].item_name || "",
             DVTinh: invoices[i].detail_invoice[j].unit || "",
             SLuong: invoices[i].detail_invoice[j].quantity || "",
-            DGia: invoices[i].detail_invoice[j].unit_price || "",
+            DGia: invoices[i].detail_invoice[j].uprice || "",
             TLCKhau: invoices[i].detail_invoice[j].dc_rate || "",
             STCKhau: invoices[i].detail_invoice[j].dc_amt || "",
             ThTien: invoices[i].detail_invoice[j].amount || "",

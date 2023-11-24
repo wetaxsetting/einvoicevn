@@ -80,7 +80,7 @@
                 <v-container fluid>
                   <v-row dense>
                     <v-col cols="12">
-                      <div class="text-h5 font-weight-bold pb-2">Thông tin hóa đơn</div>
+                      <div class="text-h5 font-weight-bold pb-2">Thông tin biên bản</div>
                       <v-divider></v-divider>
                     </v-col>
                     <v-col cols="12 pt-2">
@@ -285,7 +285,7 @@ export default {
       try {
         var link = document.createElement('a');
         link.href = this.invoiceInfo.url_pdf;
-        link.download = `${this.invoiceInfo.serial_no}.pdf`;
+        link.download = `${this.invoiceInfo.voucher_no}.pdf`;
         link.dispatchEvent(new MouseEvent('click'));
       } catch (error) {
         console.log("onDownload-catch exception:", error.message)
@@ -351,7 +351,7 @@ export default {
       let res = await this.$axios.$post("/einvoice/lookup-minutes-update", {
           responseType: "json",
           xml_signed : data.result[0].xml,
-          buyer_sign_by: data.result[0].dn_name, 
+          buyer_sign_by: data.dn_name, 
           buyer_sign_dt: SigningTime, 
           req_key: data.result[0].req_key,
           lookupcode: this.invoiceNo
@@ -359,52 +359,13 @@ export default {
 
           console.log("res",res);
         if (res.success) {
-          this.showNotification("success", res.message, "" );  
-              this.$refs.grdSearch.loadData(); 
+          this.showNotification("success", res.message, "" ); 
+          this.invoiceInfo = data;
+              //this.$refs.grdSearch.loadData(); 
           
         } else {
           this.showNotification("danger", res.message, "");
         }
-
-      return;
-      const jsonSendData = {
-        req_key : this.modelMaster.PK,
-        xml_signed : data.result[0]["xml"].toString()  
-      }
-
-      const dso_process_check_serialno = {
-        type: "list",
-        selpro: "EI_PRO_6095280_SERIAL_CHECK",
-        para: [ this.modelMaster.TEI_COMPANY_PK, 
-                data.serial_number, 
-                data.not_before, 
-                data.not_after],
-      };
-
-      const check_serial_no_result = await this._dsoCall(
-        dso_process_check_serialno,
-        "select",
-        false
-      );
-      if (check_serial_no_result[0].STATUS =="OK")
-      {
-        let res = await this.$axios.$post("/einvoice/sendinformadjustinvoice", {
-          responseType: "json",
-          para: jsonSendData
-        });
-
-          console.log("res",res);
-        if (res.success) {
-          this.showNotification("success", res.message, "" );  
-              this.$refs.grdSearch.loadData(); 
-          
-        } else {
-          this.showNotification("danger", res.message, "");
-        }
-      }else
-      {
-        this.showNotification("danger", "Token not suitable !!!", "");
-      }
 
     },
 

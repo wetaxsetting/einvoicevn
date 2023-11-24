@@ -118,9 +118,10 @@ class EiExcelHandler {
         { Cell: `B32`, Info: [`REASON`], Type: 1 },
 
         { Cell: `D41`, Info: [`COMPANY_SIGN`], Type: 1 },
-        { Cell: `D42`, Info: [`COMPANY_SIGN_DT`], Type: 1 },
+        { Cell: `D42`, Info: [`COMPANY_SIGN_DT`], Type: 1 },  
 
-        
+        { Cell: `H41`, Info: [`USER_SIGN_NM`], Type: 1 },
+        { Cell: `H42`, Info: [`USER_SIGN_DT`], Type: 1 },  
 
       )  
 

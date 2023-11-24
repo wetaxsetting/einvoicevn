@@ -253,27 +253,26 @@ class EiExcelConverterAuto {
 		//this part insert Signed image if the einvoice is signed.
 		//"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
 		//"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
-		// if (einvoiceMasterData[0]["SIGN_YN"] == "Y") {
-		// 	try {
-		// 		console.log("SIGN_YN  ++===>  ", signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
-		// 		worksheet.unMergeCells(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox))
-		// 		worksheet.unMergeCells(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 1))
-		// 		worksheet.unMergeCells(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 2))
-		// 		try {
-		// 			worksheet.addImage(await exceljs.insertPathImage(signPath), {
-		// 				tl: { col: signCell.start, row: totalRows + _sourceRow_3 + countFromEndDetailToSignBox - 1 },
-		// 				ext: { width: 100, height: 65 }
-		// 			});
-		// 		} catch (error) {
-		// 			console.log(error)
-		// 		}
-		// 		worksheet.mergeCells(totalRows + _sourceRow_3 + countFromEndDetailToSignBox, signByCell.start, totalRows + _sourceRow_3 + countFromEndDetailToSignBox, signByCell.end)//re-merge the cell to fill signed by, signed date
-		// 		worksheet.mergeCells(totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 1, signByCell.start, totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 1, signByCell.end)//re-merge the cell to fill signed by, signed date
-		// 		worksheet.mergeCells(totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 2, signByCell.start, totalRows + _sourceRow_3 + + countFromEndDetailToSignBox + 2, signByCell.end)//re-merge the cell to fill signed by, signed date
-		// 	} catch (error) {
-		// 		console.log(error)
-		// 	}
-		// }
+		try {
+			worksheet.addImage(await exceljs.insertPathImage(signPath), {
+				tl: { col: 4, row: 40 },
+				ext: { width: 50, height: 50 }
+			});
+		} catch (error) {
+			console.log(error)
+		}
+		
+		if (einvoiceMasterData[0]["USER_SIGN_YN"] == "Y") {
+			try {
+				worksheet.addImage(await exceljs.insertPathImage(signPath), {
+					tl: { col: 8, row: 40 },
+					ext: { width: 50, height: 50 }
+				});
+			} catch (error) {
+				console.log(error)
+			}
+			
+		}
 		
 		// //END-this part insert Signed image if the einvoice is signed.
 

@@ -10164,12 +10164,12 @@ class EInvoiceController {
       //   }
       // }
 
-      console.log("lookupcode:", lookupcode);
+      //console.log("lookupcode:", lookupcode);
       let data_split = lookupcode.split("|");
       const trade_code = data_split[0];
       const voucher_no = data_split[1];
        
-      console.log("data_split ", data_split , "trade_code ", trade_code, "voucher_no  ", voucher_no)
+      //console.log("data_split ", data_split , "trade_code ", trade_code, "voucher_no  ", voucher_no)
       if (DB_CONNECTION == "oracle") {
         oracledb.fetchAsBuffer = [oracledb.BLOB];
         oracledb.fetchAsString = [oracledb.CLOB];
@@ -10189,7 +10189,7 @@ class EInvoiceController {
         p_crt_by
       );
       
-      console.log("rtnValue  ", rtnValue);
+      //console.log("rtnValue  ", rtnValue);
       let EiExcels = new EiExcel04SS2Handler(); //CQT_MAGD
       let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].TEI_EINVOICE_M_PK, p_language, p_crt_by);
       console.log("base64PDf: ", url_pdf);
@@ -10265,14 +10265,15 @@ class EInvoiceController {
         p_crt_by
       );
       
-      console.log("rtnValue  ", rtnValue);
+      //console.log("rtnValue  ", rtnValue);
       let EiExcels = new EiExcel04SS2Handler(); //CQT_MAGD
       let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].TEI_EINVOICE_M_PK, p_language, p_crt_by);
-      console.log("base64PDf: ", url_pdf);
+      //console.log("base64PDf: ", url_pdf);
 
-      let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + rtnValue.p_rtn_cur[0].TEI_EINVOICE_SS_D_PK + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token=");
-      let url_xml = re_url_xml.data;
-       console.log("base64XML:", url_xml);
+      let url_xml = "";
+      //let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + rtnValue.p_rtn_cur[0].TEI_EINVOICE_SS_D_PK + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token=");
+      //let url_xml = re_url_xml.data;
+      //console.log("base64XML:", url_xml);
 
       const rep_data = {
         info_inv: rtnValue.p_rtn_cur[0].INFO_INV,

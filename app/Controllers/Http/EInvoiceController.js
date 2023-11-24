@@ -5644,6 +5644,7 @@ class EInvoiceController {
           }
 
           for (let j = 0; j < invoice.detail_invoice.length; j++) {
+            console.log("invoice.detail_invoice   ", invoice.detail_invoice);
             const para_prod_details = {
               tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
               feature: invoice.detail_invoice[j].feature,

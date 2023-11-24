@@ -201,7 +201,7 @@ Route.group(() => {
     Route.post("lookup-code", "EInvoiceController.getDataEinvoiceFormLookupCode")
     Route.post("general-convert-einvoice", "EInvoiceController.generalConvertEinvoice")
     Route.post("lookup-minutes", "EInvoiceController.getDataEinvoiceFormLookupMinutesCode")
-    Route.post("lookup-minutes-update", "EInvoiceController.getDataEinvoiceFormLookupMinutesCode")
+    Route.post("lookup-minutes-update", "EInvoiceController.getUpdateXmlBuyerSign")
 
 }).prefix("api/einvoice");
 

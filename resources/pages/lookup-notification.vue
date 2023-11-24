@@ -120,9 +120,21 @@
                       </v-sheet>
                     </v-col>
                     <v-col cols="12">
-                      <v-btn dark depressed small :color="currentTheme" @click="onSignXML">
+                      <v-btn dark depressed small :color="currentTheme" @click="onSignXML" :disabled="invoiceInfo.buyer_sign_yn=='Y'" >
                         <v-icon left>mdi-file-pdf-box</v-icon>
                         <span class="ml-2">Ký biên bản</span>
+                      </v-btn>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-btn dark depressed small color="#EA7700" target="_blank" @click="onDownloadXML">
+                        <v-icon left>mdi-file-xml-box</v-icon>
+                        <span class="ml-2">Tải về định dạng XML</span>
+                      </v-btn>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-btn dark depressed small color="#AD0B00" @click="onDownloadPDF">
+                        <v-icon left>mdi-file-pdf-box</v-icon>
+                        <span class="ml-2">Tải về định dạng PDF</span>
                       </v-btn>
                     </v-col>
                   </v-row>
@@ -154,7 +166,6 @@
     </v-dialog>
   </div>
 </template>
-
 <script>
 export default {
   layout: "monitoring",
@@ -254,6 +265,33 @@ export default {
       }
     },
 
+    onDownloadXML()
+    {
+      let _blob = new Blob([this.invoiceInfo.buyer_sign_xml], {
+                type: "application/xml",
+            });
+            let _url = window.URL.createObjectURL(_blob);
+            var tag_a = document.createElement("a");
+            document.body.appendChild(tag_a);
+            tag_a.style = "display: none";
+            tag_a.href = _url;
+            tag_a.download = this.invoiceInfo.voucher_no; 
+            tag_a.click();
+            window.URL.revokeObjectURL(_url);
+            tag_a.remove();
+    },
+
+    onDownloadPDF() {
+      try {
+        var link = document.createElement('a');
+        link.href = this.invoiceInfo.url_pdf;
+        link.download = `${this.invoiceInfo.serial_no}.pdf`;
+        link.dispatchEvent(new MouseEvent('click'));
+      } catch (error) {
+        console.log("onDownload-catch exception:", error.message)
+      }
+    },
+
     async onSignXML()
     {
       if(this.invoiceInfo.seller_sign_xml)
@@ -305,10 +343,18 @@ export default {
         this.showNotification("warning", "Notification", "token_is_exptdate");
         return;
       }
-
-      let res = await this.$axios.$post("/einvoice/sendinformadjustinvoice", {
+      var parseXML = require('xml-parse-from-string')
+      var doc = parseXML(data.result[0].xml)
+      var SigningTime = doc.getElementsByTagName('SigningTime')[1].innerHTML;
+      
+      
+      let res = await this.$axios.$post("/einvoice/lookup-minutes-update", {
           responseType: "json",
-          para: jsonSendData
+          xml_signed : data.result[0].xml,
+          buyer_sign_by: data.result[0].dn_name, 
+          buyer_sign_dt: SigningTime, 
+          req_key: data.result[0].req_key,
+          lookupcode: this.invoiceNo
         });
 
           console.log("res",res);

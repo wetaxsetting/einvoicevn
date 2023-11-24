@@ -10251,8 +10251,12 @@ class EInvoiceController {
         xml_signed: xml_signed
       };
       const rtnValue = await DBService.ExecuteSQLBlob(
-        `BEGIN ei_up_lookup_minutes_code (:trade_code,
+        `BEGIN ei_upd_lookup_minutes_code (:trade_code,
                                            :voucher_no,
+                                           :req_key,
+                                           :buyer_sign_dt,
+                                           :buyer_sign_by,
+                                           :xml_signed,
                                            :p_language, 
                                            :p_crt_by, 
                                            :p_rtn_cur); END;`,
@@ -10268,7 +10272,7 @@ class EInvoiceController {
 
       let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + rtnValue.p_rtn_cur[0].TEI_EINVOICE_SS_D_PK + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token=");
       let url_xml = re_url_xml.data;
-      // console.log("base64XML:", url_xml);
+       console.log("base64XML:", url_xml);
 
       const rep_data = {
         info_inv: rtnValue.p_rtn_cur[0].INFO_INV,

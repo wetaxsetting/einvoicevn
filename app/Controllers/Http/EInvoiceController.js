@@ -7416,9 +7416,10 @@ class EInvoiceController {
 
       let rtnValue = [];
       let rtnValueTradecode = [];
+      let masterInvoicePK;
       for (let i = 0; i < invoices.length; i++) {
         
-                const masterInvoicePK = await this.weTaxExtractXMLContent(
+                 masterInvoicePK = await this.weTaxExtractXMLContent(
                     invoices[i].xml_signed,
                     invoices[i].mail_to || '',
                     invoices[i].mail_cc || '',

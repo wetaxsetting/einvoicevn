@@ -10157,12 +10157,12 @@ class EInvoiceController {
       const { captcha, sessionid, lookupcode } = request.all();
       // console.log("captcha:", captcha);
       // console.log("sessionid:", sessionid);
-      // if (Redis) {
-      //   const valueCache = await Redis.get(sessionid)
-      //   if (!valueCache || valueCache != captcha) {
-      //     return response.send(Utils.response(false, "invalid_captchar", null));
-      //   }
-      // }
+      if (Redis) {
+        const valueCache = await Redis.get(sessionid)
+        if (!valueCache || valueCache != captcha) {
+          return response.send(Utils.response(false, "invalid_captchar", null));
+        }
+      }
 
       //console.log("lookupcode:", lookupcode);
       let data_split = lookupcode.split("|");

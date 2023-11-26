@@ -242,6 +242,7 @@ export default {
         return;
       } else if ((this.captcha === "" || this.captcha === undefined)) {
         this.$refs.captcha.focus();
+        this.showNotification("warning", "Notification", "captcha_is_exptdate");
         return;
       }
       try {

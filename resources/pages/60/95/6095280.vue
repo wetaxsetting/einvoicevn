@@ -1051,9 +1051,14 @@ export default {
         this.dataMasterList.companyInfoList = companyInfo;
       }
 
+      const taxInfo = await this._callProcedure("AC_SEL_6095460_TAXOF");
+        if (taxInfo.length > 0) {
+          this.dataMasterList.taxOfficeList = taxInfo;
+        }
+        
       const results = await this._getCommonCode2(["ACEI0010", "ACEI0120", "ACEI0190", "ACEI0170", "ACEI0180", "ACEIS310", "ACEI0210", "ACEI0220"], this.user.TCO_COMPANY_PK);
       this.dataSearchList.statusList = results[0];
-      this.dataMasterList.taxOfficeList = results[1];
+      //this.dataMasterList.taxOfficeList = results[1];
       this.dataMasterList.fromNoList = results[2].filter((x) => x.VAL1 == "6095280");
       this.dataMasterList.fromNoList.forEach((e) => {
         if (e.DEF_YN == "Y") {

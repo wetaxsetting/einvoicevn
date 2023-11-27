@@ -3221,7 +3221,7 @@ class EInvoiceController {
                 }
 
                 const data_d_tbss = {
-                  p_mccqt : "",
+                  p_mccqt : invoice.MCCQT,
                   p_form_no : invoice.khieuMauHDon,
                   p_serial_no : invoice.khieuHDon,
                   p_invoice_no : invoice.soHDon,
@@ -3255,7 +3255,7 @@ class EInvoiceController {
               
               for (const invoice of items[k].ndungTBao.dsachHDonSSot) {
                 ndungTBao.push({
-                  MCCQT : "",// invoice.MCCQT,
+                  MCCQT : invoice.MCCQT,
                   khieuMauHDon: invoice.khieuMauHDon,
                   khieuHDon: invoice.khieuHDon,
                   soHDon: invoice.soHDon,

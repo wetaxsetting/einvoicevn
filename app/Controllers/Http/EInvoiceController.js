@@ -778,7 +778,7 @@ class EInvoiceController {
             DSHDon: {
               HDon: [
                 /*{
-                                                                                MCQTCap: 1234,
+                                                                                MCCQT: 1234,
                                                                                 KHMSHDon: 4,
                                                                                 KHHDon: "C21TYY",
                                                                                 SHDon: 411,
@@ -808,7 +808,7 @@ class EInvoiceController {
 
       for (let i = 0; i < invalid_invoices.invoices.length; i++) {
         jsonInvalidInvoices.TBao.DLTBao.DSHDon.HDon.push({
-          MCQTCap: invalid_invoices.invoices[i].tax_confirmation_code,
+          MCCQT: invalid_invoices.invoices[i].tax_confirmation_code,
           KHMSHDon: invalid_invoices.invoices[i].form_no,
           KHHDon: invalid_invoices.invoices[i].serial_no,
           SHDon: invalid_invoices.invoices[i].invoice_no,
@@ -892,7 +892,7 @@ class EInvoiceController {
             DSHDon: {
               HDon: [
                 /*{
-                                                                                MCQTCap: 1234,
+                                                                                MCCQT: 1234,
                                                                                 KHMSHDon: 4,
                                                                                 KHHDon: "C21TYY",
                                                                                 SHDon: 411,
@@ -923,7 +923,7 @@ class EInvoiceController {
 
       for (let i = 0; i < invoices.length; i++) {
         jsonInvalidInvoices.TBao.DLTBao.DSHDon.HDon.push({
-          MCQTCap: invoices[i].tax_confirmation_code,
+          MCCQT: invoices[i].tax_confirmation_code,
           KHMSHDon: invoices[i].form_no,
           KHHDon: invoices[i].serial_no,
           SHDon: invoices[i].invoice_no,
@@ -2067,7 +2067,7 @@ class EInvoiceController {
       const templateHDon = [
         "TBao/DLTBao/DSHDon/HDon",
         {
-          MCQTCap: "MCQTCap",
+          MCCQT: "MCCQT",
           KHMSHDon: "KHMSHDon",
           KHHDon: "KHHDon",
           SHDon: "SHDon",
@@ -2089,7 +2089,7 @@ class EInvoiceController {
         for (let i = 0; i < jsonHDon.length; i++) {
           const detailPara = [
             master[0].PK,
-            jsonHDon[i].MCQTCap,
+            jsonHDon[i].MCCQT,
             jsonHDon[i].KHMSHDon,
             jsonHDon[i].KHHDon,
             jsonHDon[i].SHDon,
@@ -3217,32 +3217,32 @@ class EInvoiceController {
                   }
                 }
 
-                // const data_d_tbss = {
-                //     macqt : invoice.MCCQT,
-                //     form_no : invoice.khieuMauHDon,
-                //     serial_no : invoice.khieuHDon,
-                //     invoice_dt : invoice.ngayHDon,
-                //     invoice_no : invoice.soHDon,
-                //     cqt_result : cqt_result,
-                //     cqt_status : cqt_status
-                // };
+                const data_d_tbss = {
+                  p_mccqt : "",
+                  p_form_no : invoice.khieuMauHDon,
+                  p_serial_no : invoice.khieuHDon,
+                  p_invoice_no : invoice.soHDon,
+                  p_cqt_result : cqt_result,
+                  p_cqt_status : cqt_status
+                };
 
-                // await DBService.ExecuteSQLBlob(
-                //   `BEGIN wt_upd_hd04ss_d(
-                //                     :p_mccqt, 
-                //                     :p_form_no, 
-                //                     :p_serial_no,
-                //                     :p_invoice_no,
-                //                     :p_cqt_result,
-                //                     :p_cqt_status,
-                //                     :p_language, 
-                //                     :p_crt_by, 
-                //                     :p_rtn_cur
-                //                 ); END;`,
-                //                 data_d_tbss,
-                //   p_language,
-                //   p_crt_by
-                // );
+                console.log("data_d_tbss  ", data_d_tbss)
+                await DBService.ExecuteSQLBlob(
+                  `BEGIN wt_upd_hd04ss_d(
+                                    :p_mccqt, 
+                                    :p_form_no, 
+                                    :p_serial_no,
+                                    :p_invoice_no,
+                                    :p_cqt_result,
+                                    :p_cqt_status,
+                                    :p_language, 
+                                    :p_crt_by, 
+                                    :p_rtn_cur
+                                ); END;`,
+                                data_d_tbss,
+                  p_language,
+                  p_crt_by
+                );
               }
 
 
@@ -11802,7 +11802,7 @@ class EInvoiceController {
             NTBao: 10,
             DSHDon: {
               HDon: {
-                MCQTCap: 34,
+                MCCQT: 34,
                 KHMSHDon: 11,
                 KHHDon: 8,
                 SHDon: 8,

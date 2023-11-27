@@ -3207,12 +3207,14 @@ class EInvoiceController {
                   dsachLoi: invoice.dsachLoi,
                 });
                 
+                console.log("invoice.dsachLoi  ", invoice.dsachLoi)
+
                 if (invoice.dsachLoi.length == 0) {
                   cqt_result = "Thành công";
                   cqt_status = invoice.tthaiTNCQT;
                 } else {
                   for (const error of invoice.dsachLoi) {
-                    cqt_result += error.MaLoi + " - " + error.MTaLoi;
+                    cqt_result += error.maLoi + " - " + error.mtaLoi;
                     cqt_status = invoice.tthaiTNCQT;
                   }
                 }

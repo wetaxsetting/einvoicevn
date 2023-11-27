@@ -185,7 +185,7 @@ export default {
   }),
 
    async created() {
-    console.log("this.$route?.query?.trade_code ",this.$route?.query?.trade_code)
+    //console.log("this.$route?.query?.trade_code ",this.$route?.query?.trade_code)
     if(this.$route?.query?.trade_code) {
         this.invoiceNo = this.$route?.query?.trade_code;
       }
@@ -232,9 +232,10 @@ export default {
     },
 
     async search() {
-       console.log("route:", this.$route)
+       //console.log("route:", this.$route)
       if(!this.$route?.query?.trade_code) {
-        console.log("trade_code not found!");
+        //console.log("trade_code not found!");
+        this.showNotification("warning", "Notification", "trade_code not found!");
         return;
       }
       if (this.invoiceNo === "" || this.invoiceNo === undefined) {
@@ -249,19 +250,19 @@ export default {
         this.isProcessing = true; 
         const { success, data, message } = await this.$axios.$post("/einvoice/lookup-minutes", { captcha: this.captcha, sessionid: this.sessionID, lookupcode: this.invoiceNo })
         if(success) {
-          console.log("data:", data)
+          //console.log("data:", data)
           this.invoiceInfo = data;
           this.isProcessing = false;
           this.dialogIsShow = true;
         } else {
           this.isProcessing = false;
-          this.showNotification("danger", message, "", 3000);
+          this.showNotification("warning", message, "", 3000);
           await this._handleGenerateCaptcha();
         }
       } catch (error) {
         this.isProcessing = false;
-        console.log("search-catch exception:", error.message);
-        this.showNotification("danger", "Error Occurs!", error.message, "", 3000);
+        //console.log("search-catch exception:", error.message);
+        this.showNotification("warning", "Error Occurs!", error.message, "", 3000);
         await this._handleGenerateCaptcha();
       }
     },
@@ -289,6 +290,7 @@ export default {
         link.download = `${this.invoiceInfo.voucher_no}.pdf`;
         link.dispatchEvent(new MouseEvent('click'));
       } catch (error) {
+        this.showNotification("danger", "onDownload-catch exception:", error.message, "", 3000);
         console.log("onDownload-catch exception:", error.message)
       }
     },
@@ -297,10 +299,13 @@ export default {
     {
       if(this.invoiceInfo.seller_sign_xml)
       {
-        var parseXML = require('xml-parse-from-string')
-        var doc = parseXML(this.invoiceInfo.seller_sign_xml)
-        var id_signing = doc.getElementsByTagName('DLieu')[0].id;
-        
+        var DOMParser = new (require('xmldom')).DOMParser;
+        var document = DOMParser.parseFromString(this.invoiceInfo.seller_sign_xml);
+        var nodesByName = document.getElementsByTagName('DLieu');
+        // console.log("nodesByName  ", nodesByName);
+        // console.log("nodesByName  ", nodesByName[0]);
+        // console.log("nodesByName  ", nodesByName[0].attributes[0].value);
+        var id_signing = nodesByName[0].attributes[0].value;
         let objXml = [
           {
             req_key: this.invoiceInfo.req_key,
@@ -309,7 +314,7 @@ export default {
             url_signning: "BBan/DSCKS/NMua"
           }
         ]
-        console.log("objXml  ", objXml);
+        //console.log("objXml  ", objXml);
        
         jQuery.support.cors = true;
         $.ajax({
@@ -362,7 +367,7 @@ export default {
           lookupcode: this.invoiceNo
         });
 
-          console.log("res",res);
+          //console.log("res",res);
         if (res.success) {
           this.showNotification("success", res.message, "" ); 
           this.invoiceInfo = data;
@@ -386,7 +391,7 @@ export default {
           lookupcode: this.invoiceNo
         })
         if(success) {
-          console.log("data:", data);
+          //console.log("data:", data);
           this.showNotification("success", message, "", 3000);
 
           this.isProcessing = false;
@@ -397,7 +402,7 @@ export default {
           this.showNotification("danger", message, "", 3000);
         }
       } catch (error) {
-        console.log("convert-catch exception:", error.message);
+        //console.log("convert-catch exception:", error.message);
         this.isProcessing = false;
       }
     }

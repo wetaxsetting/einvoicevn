@@ -10408,6 +10408,7 @@ class EInvoiceController {
         buyer_code: rtnValue.p_rtn_cur[0].CUS_CD,
         buyer_taxcode: rtnValue.p_rtn_cur[0].TAX_CODE,
         buyer_sign_yn: rtnValue.p_rtn_cur[0].USER_SIGN_YN,
+        buyer_sign_xml: rtnValue.p_rtn_cur[0].BUYER_SIGN_XML,
         voucher_no: rtnValue.p_rtn_cur[0].VOUCHER_NO,
         seller_status: rtnValue.p_rtn_cur[0].SELLER_STATUS,
         seller_sign_xml : rtnValue.p_rtn_cur[0].SELLER_SIGN_XML,

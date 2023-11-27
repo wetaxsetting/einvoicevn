@@ -369,9 +369,11 @@ export default {
 
           //console.log("res",res);
         if (res.success) {
+          this.invoiceInfo = "";
           this.showNotification("success", res.message, "" ); 
-          this.invoiceInfo = data;
-              //this.$refs.grdSearch.loadData(); 
+          this.invoiceInfo = res.data;
+          this.isProcessing = false;
+          this.dialogIsShow = true;
           
         } else {
           this.showNotification("danger", res.message, "");

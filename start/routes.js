@@ -167,6 +167,7 @@ Route.group(() => {
 
 
     // e-invoice
+    Route.post("general-records-xml", "EInvoiceController.generalRecordsXml")
     Route.post("general-pos-invoice-xml-view", "EInvoiceController.generalXmlPosInvoiceView")
     Route.post("general-pos-invoice-xml", "EInvoiceController.generalXmlPosInvoice")
     Route.post("general-invoice-xml", "EInvoiceController.generalXmlInvoice")

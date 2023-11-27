@@ -184,6 +184,7 @@
                       'BUYER_POSITION',
                       'BUYER_REPRESENT',
                     ]" 
+                    @callSaveResult="afterSave"
                     @cellClick="onCellClickDetail"/>
                 </v-col>
               </v-row>
@@ -379,6 +380,7 @@ export default {
     objInvoiceM:{},
     tei_einvoice_ss_m_pk_row:"",
     tei_einvoice_m_pk_row:"",
+    tei_einvoice_ss_d_pk:"",
     pdfUrl:"",
     manualIsMinimized: false,
     manualIsMinimizedPDF: false,
@@ -665,6 +667,11 @@ export default {
           }
     },
 
+    afterSave(data)
+    {
+
+    }
+    ,
     async OnPreviewBB()
     {
       if(this.tei_einvoice_m_pk_row != "")
@@ -1055,7 +1062,7 @@ export default {
         if (taxInfo.length > 0) {
           this.dataMasterList.taxOfficeList = taxInfo;
         }
-        
+
       const results = await this._getCommonCode2(["ACEI0010", "ACEI0120", "ACEI0190", "ACEI0170", "ACEI0180", "ACEIS310", "ACEI0210", "ACEI0220"], this.user.TCO_COMPANY_PK);
       this.dataSearchList.statusList = results[0];
       //this.dataMasterList.taxOfficeList = results[1];
@@ -1250,39 +1257,6 @@ export default {
           this.showNotification("danger", this.$t(res.message), "");
         }
       }
-
-
-      // var count = 1;
-      // if (confirm("Bạn muốn kiểm tra tờ khai này?")) {
-      //   jQuery.support.cors = true;
-      //   $.ajax({
-      //     url: "http://genuclouding.com/wseinvoice/BSService.asmx/CheckingDeclationCQT_v3",
-      //     dataType: 'text',
-      //     method: 'POST',
-      //     data: {
-      //       tei_einvoice_issuse_cqt_pk: modelMaster.TEI_COMPANY_PK.value,
-      //       tei_company_pk: dataMasterList.companyList.value,
-      //       tradecode: txtTrade_Code_CQT.value,
-      //       ctr_by: txtUserName.value
-      //     },
-      //     error: function (response, json, textStatus, errorThrown) {
-      //       alert(' Error :' + errorThrown);
-      //     },
-      //     success: function (response) {
-
-      //       var xmlDoc = $.parseXML(response);
-      //       var xml = $(xmlDoc);
-      //       //alert(xml.text());
-      //       let obj = $.parseJSON(xml.text());
-      //       if (obj.msg == "OK") {
-      //         alert("Checking Ma CQT is OK !!");
-      //         //dso_steafrstea010003_s_01.Call('SELECT');
-      //         //txtXMl_T.value = obj.result;
-
-      //       }
-      //     }
-      //   });
-      // }
     },
 
     async onPreviewXML() {
@@ -1405,6 +1379,7 @@ export default {
     async onCellClickDetail({ column, data, rowIndex, rowType }) {
       console.log("tei_einvoice_ss_m_pk_row  ", data)
       this.tei_einvoice_m_pk_row = data.TEI_EINVOICE_M_PK;
+      this.tei_einvoice_ss_d_pk = data.PK;
       this.invoiceType = data.TCTBAO;
       // this.maGD = data.CQT_MAGD;
       // this.xml_signed = data.SIGN_XML;
@@ -1532,7 +1507,31 @@ export default {
     async onSendMail(){
       if(this.tei_einvoice_m_pk_row != "")
       {
-        let res_url = await this.$axios.$post("/einvoice/send-mail-invalid-invoice", {
+        let res_xml = await this.$axios.$post("/einvoice/general-records-xml", {
+              responseType: "json",
+              tei_einvoice_ss_d_pk: this.tei_einvoice_ss_d_pk 
+            });
+
+        if(res_xml.success)
+        {
+          jQuery.support.cors = true;
+          $.ajax({
+            url: "http://localhost:1080/signXML",
+            dataType: "json",
+            method: "POST",
+            data: {
+              crt_by: this.user.USER_ID,
+              xml: JSON.stringify(res_xml.data).toString(),
+            },
+            error: this.onError,
+            success: this.onSuccess,
+          });
+
+            return;
+
+
+          //this.showNotification("success", this.$t(`${res_url.success}`), '');
+          let res_url = await this.$axios.$post("/einvoice/send-mail-invalid-invoice", {
               responseType: "json",
               data: {
                 req_key : this.tei_einvoice_m_pk_row,
@@ -1540,18 +1539,49 @@ export default {
               }
             });
 
-        if(res_url.success)
-        {
-          this.showNotification("success", this.$t(`${res_url.success}`), '');
+            if(res_url.success)
+            {
+              this.showNotification("success", this.$t(`${res_url.success}`), '');
+            }else
+            {
+              this.showNotification("warning", this.$t(`${res_url.success}`), '');
+            }
         }else
         {
-          this.showNotification("warning", this.$t(`${res_url.success}`), '');
+          this.showNotification("warning", this.$t(`${res_xml.success}`), '');
         }
+
+        
       }else
       {
         this.showNotification("warning", this.$t("no_row_selected"), '');
       }
+    },
+
+    onError(son, textStatus, errorThrown){
+      return this.showNotification("warning", this.$t("error_occurs"), errorThrown);//   alert(" Error :" + errorThrown);
+    },
+
+    async onSuccess(data){
+      let res_url = await this.$axios.$post("/einvoice/send-mail-invalid-invoice", {
+              responseType: "json",
+              data: {
+                xml_signed: data.result[0]["xml"].toString()  ,
+                req_key : this.tei_einvoice_m_pk_row,
+                req_d_key: data.result[0]["req_key"].toString(),
+                tei_company_pk: this.modelMaster.TEI_COMPANY_PK
+              }
+            });
+
+            if(res_url.success)
+            {
+              this.showNotification("success", this.$t(`${res_url.success}`), '');
+            }else
+            {
+              this.showNotification("warning", this.$t(`${res_url.success}`), '');
+            }
     }
+
   }
 }
 </script>

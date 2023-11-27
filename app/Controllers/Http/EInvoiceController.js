@@ -7831,6 +7831,122 @@ class EInvoiceController {
   // end weTAX
 
   // e -invoice
+   async generalRecordsXml({ request, response, auth }) {
+    try {
+      var p_language = request.header("accept-language", "ENG");
+      var p_crt_by = "";
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+
+      const { tei_einvoice_ss_d_pk } = request.all();
+
+      console.log("tei_einvoice_ss_d_pk ", tei_einvoice_ss_d_pk);
+
+      let rtnXML = [];
+      let objInvoice = {
+        BBan:{
+          DLieu:{
+            PBan:"",
+            MSo:"",
+            NTBao:"",
+            NBan:{
+              Ten:"",
+              MST:"",
+              DChi:"",
+              NDDien:"",
+              CVu:""
+            },
+            NMua:{
+              Ten:"",
+              MST:"",
+              DChi:"",
+              DDanh:"",
+              NDDien:"",
+              CVu:""  
+            },
+            HDon:{
+              KHMSHDon:"",
+              KHHDon:"",
+              SHDon:"",
+              NLap:""
+            },
+            LDo:""
+          },
+          DSCKS:{
+            NBan:"",
+            NMua:""
+          }
+        }
+      };
+
+        const para_value = {
+          p_tei_einvoice_m_pk: tei_einvoice_ss_d_pk,
+        };
+        // console.log("para_value  ", para_value);
+
+        const rtnValueMaster = await DBService.ExecuteSQLBlob(
+          `BEGIN EI_SEL_04SSHDDT_BB ( :p_tei_einvoice_m_pk,
+                                      :p_language, 
+                                      :p_crt_by, 
+                                      :p_rtn_cur); END;`,
+          para_value,
+          p_language,
+          p_crt_by
+        );
+        
+        const invoiceM = rtnValueMaster.p_rtn_cur[0];
+        
+        objInvoice.BBan.DLieu.PBan = invoiceM.PBAN;
+        objInvoice.BBan.DLieu.MSo  = invoiceM.MSO;
+        objInvoice.BBan.DLieu.NTBao  = invoiceM.NTBAO;
+
+        objInvoice.BBan.DLieu.NBan.Ten = invoiceM.NBAN_TEN;
+        objInvoice.BBan.DLieu.NBan.MST = invoiceM.NBAN_MST;
+        objInvoice.BBan.DLieu.NBan.DChi = invoiceM.NBAN_DCHI;
+        objInvoice.BBan.DLieu.NBan.NDDien = invoiceM.COM_REPRESENT;
+        objInvoice.BBan.DLieu.NBan.CVu = invoiceM.COM_POSITION;
+
+        objInvoice.BBan.DLieu.NMua.Ten = invoiceM.NMUA_TEN;
+        objInvoice.BBan.DLieu.NMua.MST = invoiceM.NMUA_MST; 
+        objInvoice.BBan.DLieu.NMua.DChi = invoiceM.NMUA_DCHI; 
+        objInvoice.BBan.DLieu.NMua.DDanh = invoiceM.NMUA_DCTDTU; 
+        objInvoice.BBan.DLieu.NMua.NDDien = invoiceM.CUS_REPRESENT; 
+        objInvoice.BBan.DLieu.NMua.CVu = invoiceM.CUS_POSITION; 
+
+        objInvoice.BBan.DLieu.HDon.KHMSHDon = invoiceM.FORM_NO; 
+        objInvoice.BBan.DLieu.HDon.KHHDon = invoiceM.SERIAL_NO;
+        objInvoice.BBan.DLieu.HDon.SHDon = invoiceM.INVOICE_NO;
+        objInvoice.BBan.DLieu.HDon.NLap = invoiceM.NTBAO;
+
+        objInvoice.BBan.DLieu.LDo = invoiceM.REASON;
+  
+
+      const id = uuid.v4();
+      const xml = this.OBJtoXML(objInvoice);
+      const xmlId = xml.toString().replace("<DLieu>", `<DLieu Id=\'${id}\'>`);
+      const xmlRemoveLine = xmlId.toString().replace(/\n/g, "");
+      rtnXML = [{
+        req_key: tei_einvoice_ss_d_pk,
+        id_signing: id,
+        url_signning: "BBan/DSCKS/NBan",
+        xml: xmlRemoveLine,
+      }];
+
+      return response.send(Utils.response(true, `Convert json to xml was successful. `, rtnXML));
+    } catch (e) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "convertInvoiceToXML",
+        CONTENT: e.message,
+      });
+      console.log(e);
+      return response.send(Utils.response(false, e.message, null));
+    }
+  }
+
   async generalXmlPosInvoiceView({ request, response, auth }) {
     try {
       var p_language = request.header("accept-language", "ENG");
@@ -9525,11 +9641,15 @@ class EInvoiceController {
       let para_value_mail = {
         p_tei_einvoice_m_pk: data.req_key, //"4090",// 
         p_tco_company_pk: data.tei_company_pk,
+        p_xml_sign: data.xml_signed,
+        p_req_d_key: data.req_d_key
       };
       let data_mail = await DBService.ExecuteSQLBlob(
         `BEGIN ei_sel_data_send_mail_2(
                           :p_tei_einvoice_m_pk, 
                           :p_tco_company_pk, 
+                          :p_xml_sign,
+                          :p_req_d_key,
                           :p_language, 
                           :p_crt_by, 
                           :p_rtn_cur

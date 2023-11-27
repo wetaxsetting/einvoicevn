@@ -297,11 +297,15 @@ export default {
     {
       if(this.invoiceInfo.seller_sign_xml)
       {
+        var parseXML = require('xml-parse-from-string')
+        var doc = parseXML(this.invoiceInfo.seller_sign_xml)
+        var id_signing = doc.getElementsByTagName('DLieu')[0].id;
+        
         let objXml = [
           {
             req_key: this.invoiceInfo.req_key,
             xml: this.invoiceInfo.seller_sign_xml,
-            id_signing: "ID1",
+            id_signing: id_signing,
             url_signning: "BBan/DSCKS/NMua"
           }
         ]

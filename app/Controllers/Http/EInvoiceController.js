@@ -7566,6 +7566,9 @@ class EInvoiceController {
             }
           });
         }
+        // !!!========================== tao sample maCQT
+        maCQT = uuid.v4();
+        // !!!========================== tao sample maCQT
         const para_status = {
           req_wt_key : masterInvoicePK.PK,
           maCQT : maCQT,

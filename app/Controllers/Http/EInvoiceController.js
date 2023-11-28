@@ -3690,7 +3690,7 @@ class EInvoiceController {
         });
       }
 
-      return response.send(Utils.response(true, `checking_invalid_invoices_was_success`, rtnValue));
+      return response.send(Utils.response(true, `checking_notification_records_was_success`, rtnValue));
     } catch (e) {
       Utils.Logger({
         LVL: "error",

@@ -512,7 +512,7 @@ export default {
             break;
           } else {
             this.dsoMaster("update");
-            this.onClick("saveDetail");
+            // this.onClick("saveDetail");
             // this.onClick("search");
           }
           break;

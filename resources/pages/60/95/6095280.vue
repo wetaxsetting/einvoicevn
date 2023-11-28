@@ -421,7 +421,7 @@ export default {
     //   return await this.initHeaderList();
     // }
   },
-  watch: {
+   watch: {
     "modelMaster.LTEN"(val) {
       if (val) {
         this.dataMasterList.declarationNameList.forEach((item) => {
@@ -434,13 +434,14 @@ export default {
     "modelSearch.COMPANY_PK"(val) {
       if (val) {
         this.modelMaster.TEI_COMPANY_PK = val;
-        setTimeout(()=>{
+         setTimeout(()=>{
           this.dataMasterList.companyInfoList.forEach((item) => {
-            if (item.TEI_COMPANY_PK == val) {
+            if (val == item.TEI_COMPANY_PK) {
               this.modelMaster.TNNT = item.NAME;
               this.modelMaster.MST = item.TAX_CODE;
               this.modelMaster.DDANH = item.DDANH;
               this.modelMaster.MCQT = item.MCQTQLY;
+              console.log("item  ", item);
             }
           });
         },2000);  
@@ -453,10 +454,10 @@ export default {
       if (val) {
       }
     },
-    "modelMaster.NTBAO"(val) {
-      if (val) {
-      }
-    },
+    // "modelMaster.NTBAO"(val) {
+    //   if (val) {
+    //   }
+    // },
     form_no_pop(val) {
       this.getListCodes("serial_no");
     },
@@ -1081,7 +1082,7 @@ export default {
       // if (this.serial_no_list.length > 0) {
       //   this.selected_serial_no = this.serial_no_list[0].selected_serial_no;
       // };
-      console.log("this.modelSearch.COMPANY_PK  ", this.modelSearch.COMPANY_PK);
+      //console.log("this.modelSearch.COMPANY_PK  ", this.modelSearch.COMPANY_PK);
       setTimeout(async () => {
         await this.dataMasterList.companyInfoList.forEach((item) => {
           if (item.TEI_COMPANY_PK == this.modelSearch.COMPANY_PK) {
@@ -1143,6 +1144,7 @@ export default {
           }
         });
       }, 1000);
+      // console.log("this.modelMaster  ", this.modelMaster);
       // this.modelMaster.TNNT = await this.dataMasterList.companyList.find(item => item.TEI_COMPANY_PK == this.modelSearch.COMPANY_PK).NAME;
       // this.modelMaster.MST = await this.dataMasterList.companyList.find(item => item.TEI_COMPANY_PK == this.modelSearch.COMPANY_PK).TAX_CODE;
       // this.modelMaster.DDANH = await this.dataMasterList.companyInfoList.find(item => item.TEI_COMPANY_PK == this.modelSearch.COMPANY_PK).DDANH;
@@ -1153,7 +1155,7 @@ export default {
       this.modelMaster.LOAI = "1";
       this.modelMaster.TEN = "";
       this.modelMaster.LTEN = "4";
-      this.modelMaster.NTBAO = new Date().toISOString().substr(0, 10);
+      //this.modelMaster.NTBAO = new Date().toISOString().substr(0, 10);
       this.modelMaster.VOUCHER_NO = null;
       this.modelMaster.PBAN = "2.0.1";
       this.modelMaster.SELLER_REPRESENT = "";

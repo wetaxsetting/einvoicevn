@@ -1197,15 +1197,19 @@ export default {
     },
 
     async onGeneralXML() {
-
       this.objInvoiceM.invalid_invoices = {
         version: this.modelMaster.PBAN,
+        form_no: this.modelMaster.MSO,
         tax_office_name: this.modelMaster.TCQT,
         tax_office_code: this.modelMaster.MCQT,
         seller_taxcode: this.modelMaster.MST,
         seller_company_name: this.modelMaster.TNNT,
+        seller_addr: this.modelMaster.SELLER_ADDR,
         location_name: this.modelMaster.DDANH,
         inform_date:  await this.formatDate(this.modelMaster.NTBAO),
+        seller_represent: this.modelMaster.SELLER_REPRESENT,
+        seller_position: this.modelMaster.SELLER_POSITION,
+        req_key: this.modelMaster.PK
       };
 
       this.objInvoiceM.invalid_invoices.invoices = [];
@@ -1220,6 +1224,13 @@ export default {
           invoice_type: this.$refs.grdDetail.getDataSource()[j].LADHDDT,
           inform_type: this.$refs.grdDetail.getDataSource()[j].TCTBAO,
           reason: this.$refs.grdDetail.getDataSource()[j].LDO,
+          req_d_key: this.$refs.grdDetail.getDataSource()[j].PK,
+          voucher_no: this.$refs.grdDetail.getDataSource()[j].VOUCHER_NO,
+          cus_represent: this.$refs.grdDetail.getDataSource()[j].BUYER_REPRESENT,
+          cus_position: this.$refs.grdDetail.getDataSource()[j].BUYER_POSITION,
+          cus_name: this.$refs.grdDetail.getDataSource()[j].CUSTOMER_NM,
+          cus_addr: this.$refs.grdDetail.getDataSource()[j].CUSTOMER_ADDR, 
+          cus_taxcode: this.$refs.grdDetail.getDataSource()[j].CUSTOMER_TAXCODE, 
         };
 
         this.objInvoiceM.invalid_invoices.invoices.push(objDataDetails);
@@ -1423,7 +1434,7 @@ export default {
       if (this.modelMaster.PK !== "" ) {
       let data_invoice = await this.onGeneralXML();
       console.log("data_invoice   ", data_invoice);
-      let res_send = await this.$axios.$post("/einvoice/invalidinvoice2xml", {
+      let res_send = await this.$axios.$post("/einvoice/v2/invalidinvoice2xml", {
             responseType: "json",
             invalid_invoices: data_invoice,
           });
@@ -1431,14 +1442,14 @@ export default {
       console.log("res_send  ", res_send);
       if(res_send.success)
         {
-          const objXml = [{
-            req_key : this.modelMaster.PK,
-            xml : JSON.stringify(res_send.data).toString().replaceAll('\"','').replaceAll("<DLTBao>","<DLTBao Id='ID1'>"),
-            id_signing: "ID1",
-            url_signning: "TBao/DSCKS/NNT"
-          }];
+          // const objXml = [{
+          //   req_key : this.modelMaster.PK,
+          //   xml : JSON.stringify(res_send.data).toString().replaceAll('\"','').replaceAll("<DLTBao>","<DLTBao Id='ID1'>"),
+          //   id_signing: "ID1",
+          //   url_signning: "TBao/DSCKS/NNT"
+          // }];
 
-          console.log("objXml  ", objXml);
+          // console.log("objXml  ", objXml);
        
           jQuery.support.cors = true;
           $.ajax({
@@ -1447,7 +1458,7 @@ export default {
             method: "POST",
             data: {
               crt_by: this.user.USER_ID,
-              xml: JSON.stringify(objXml).toString(),
+              xml: JSON.stringify(res_send.data).toString(),
             },
             error: this.onErrorissueXmlList,
             success: this.onSuccessissueXmlList,
@@ -1465,10 +1476,10 @@ export default {
     },
 
     async onSuccessissueXmlList(data) {
-      const jsonSendData = {
-        req_key : this.modelMaster.PK,
-        xml_signed : data.result[0]["xml"].toString()  
-      }
+      // const jsonSendData = {
+      //   req_key : this.modelMaster.PK,
+      //   xml_signed : data.result[0]["xml"].toString()  
+      // }
 
       const dso_process_check_serialno = {
         type: "list",
@@ -1486,9 +1497,9 @@ export default {
       );
       if (check_serial_no_result[0].STATUS =="OK")
       {
-        let res = await this.$axios.$post("/einvoice/sendinformadjustinvoice", {
+        let res = await this.$axios.$post("/einvoice/v2/sendinformadjustinvoice", {
           responseType: "json",
-          para: jsonSendData
+          para: data.result
         });
 
           console.log("res",res);
@@ -1509,29 +1520,6 @@ export default {
     async onSendMail(){
       if(this.tei_einvoice_m_pk_row != "")
       {
-        let res_xml = await this.$axios.$post("/einvoice/general-records-xml", {
-              responseType: "json",
-              tei_einvoice_ss_d_pk: this.tei_einvoice_ss_d_pk 
-            });
-
-        if(res_xml.success)
-        {
-          jQuery.support.cors = true;
-          $.ajax({
-            url: "http://localhost:1080/signXML",
-            dataType: "json",
-            method: "POST",
-            data: {
-              crt_by: this.user.USER_ID,
-              xml: JSON.stringify(res_xml.data).toString(),
-            },
-            error: this.onError,
-            success: this.onSuccess,
-          });
-
-            return;
-
-
           //this.showNotification("success", this.$t(`${res_url.success}`), '');
           let res_url = await this.$axios.$post("/einvoice/send-mail-invalid-invoice", {
               responseType: "json",
@@ -1548,41 +1536,12 @@ export default {
             {
               this.showNotification("warning", this.$t(`${res_url.success}`), '');
             }
-        }else
-        {
-          this.showNotification("warning", this.$t(`${res_xml.success}`), '');
-        }
-
         
       }else
       {
         this.showNotification("warning", this.$t("no_row_selected"), '');
       }
     },
-
-    onError(son, textStatus, errorThrown){
-      return this.showNotification("warning", this.$t("error_occurs"), errorThrown);//   alert(" Error :" + errorThrown);
-    },
-
-    async onSuccess(data){
-      let res_url = await this.$axios.$post("/einvoice/send-mail-invalid-invoice", {
-              responseType: "json",
-              data: {
-                xml_signed: data.result[0]["xml"].toString()  ,
-                req_key : this.tei_einvoice_m_pk_row,
-                req_d_key: data.result[0]["req_key"].toString(),
-                tei_company_pk: this.modelMaster.TEI_COMPANY_PK
-              }
-            });
-
-            if(res_url.success)
-            {
-              this.showNotification("success", this.$t(`${res_url.success}`), '');
-            }else
-            {
-              this.showNotification("warning", this.$t(`${res_url.success}`), '');
-            }
-    }
 
   }
 }

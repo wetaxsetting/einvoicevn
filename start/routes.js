@@ -189,12 +189,19 @@ Route.group(() => {
     Route.post("send-data-pos-invoice-erp", "EInvoiceController.sendPosInvoiceErp")
     Route.post("send-invoice-erp", "EInvoiceController.sendInvoiceErp")
 
+
+
 }).prefix("api/einvoice").middleware("user");
 
 
 Route.group(() => {
     // WeTax
     Route.post("send-pos-invoice", "EInvoiceController.weTaxSendPosInvoiceToTaxOffice2")
+
+    //e-invoice  
+    Route.post("invalidinvoice2xml", "EInvoiceController.convertInvaliInvoiceToXML2")
+    Route.post("sendinformadjustinvoice", "EInvoiceController.sendInformAdjustToTaxOffice2")
+
 
 }).prefix("api/einvoice/v2").middleware("user");
 

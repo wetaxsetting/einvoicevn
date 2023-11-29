@@ -3403,11 +3403,11 @@ class EInvoiceController {
               
               for (const invoice of items[k].ndungTBao.tbaoTNhanSSotDoc.dsachHDonLoi) {
                 ndungTBao.push({
-                  MCCQT : invoice.MCCQT,
-                  khieuMauHDon: invoice.khieuMauHDon,
-                  khieuHDon: invoice.khieuHDon,
-                  soHDon: invoice.soHDon,
-                  ngayHDon: invoice.ngayHDon,
+                  tax_auth_cd : invoice.MCCQT,
+                  form_no: invoice.khieuMauHDon,
+                  serial_no: invoice.khieuHDon,
+                  invoice_no: invoice.soHDon,
+                  invoice_date: invoice.ngayHDon,
                   cqt_result: invoice.tthaiTNCQT,//   invoice.dsachLoi.length == 0 ? 1 : 2,
                   dsachLoi: invoice.dsachLoi,
                 });
@@ -3457,18 +3457,42 @@ class EInvoiceController {
               tenTBao = items[k].tenTBao;
               maTBao = items[k].loaiTBao;
               
+              const param_d = 
+              {
+                trade_code : inv.trade_code
+              }
+              const data_d = await await DBService.ExecuteSQLBlob(
+                                                                  `BEGIN wt_sel_hd04ss_d(
+                                                                                    :trade_code, 
+                                                                                    :p_language, 
+                                                                                    :p_crt_by, 
+                                                                                    :p_rtn_cur
+                                                                                ); END;`,
+                                                                                param_d,
+                                                                  p_language,
+                                                                  p_crt_by
+                                                                );
+               // console.log("data_d  ", data_d);                                                
               for (const invoice of items[k].ndungTBao.dsachHDonSSot) {
+                cqt_result = "Thành công";
+                cqt_status = "1";
+
+                const found = data_d.p_rtn_cur.find((element) => element.FORM_NO == invoice.khieuMauHDon 
+                                                      && element.SERIAL_NO == invoice.khieuHDon 
+                                                      && element.INVOICE_NO == invoice.soHDon);
+
+                //console.log("found  ", found);                                                
+
                 ndungTBao.push({
-                  MCCQT : invoice.MCCQT,
-                  khieuMauHDon: invoice.khieuMauHDon,
-                  khieuHDon: invoice.khieuHDon,
-                  soHDon: invoice.soHDon,
-                  ngayHDon: invoice.ngayHDon,
+                  tax_auth_cd : found.MCCQT,
+                  form_no: invoice.khieuMauHDon,
+                  serial_no: invoice.khieuHDon,
+                  invoice_no: invoice.soHDon,
+                  invoice_date: invoice.ngayHDon,
                   cqt_result:   "1",//   invoice.dsachLoi.length == 0 ? 1 : 2,
                   dsachLoi: [],
                 });
-                  cqt_result = "Thành công";
-                  cqt_status = "1";
+                 
                
 
                 const data_d_tbss = {
@@ -12251,7 +12275,7 @@ class EInvoiceController {
     let result_extra = {};
     try {
       
-           const template =
+          const template =
             ["//HDon", { 
                          DLHDon: {
                           TTChung : {
@@ -12329,10 +12353,10 @@ class EInvoiceController {
                           ],
                           MCCQT: "MCCQT"
                          },
-            ]
-           ;
-        const jsonInvoice = await transform(xml_content, template);
-
+            ];
+          const jsonInvoice = await transform(xml_content, template);
+          
+          let data_inv =[];
         // console.log('===> jsonInvoice ', jsonInvoice);
 
         const templateSignTime = {
@@ -12371,7 +12395,6 @@ class EInvoiceController {
           );
 
           // console.log("rtnValuePos  ", rtnValuePos);
-
           if(rtnValuePos.p_rtn_cur[0].STATUS == "OK")
           {
             console.log("jsonInvoice  ", jsonInvoice);
@@ -12412,6 +12435,7 @@ class EInvoiceController {
                   
               } 
 
+            
               const rtnValueMaster = await DBService.ExecuteSQLBlob(
                   `BEGIN ei_upd_sale_bill (          
                                                   :pban,
@@ -12451,6 +12475,18 @@ class EInvoiceController {
                   p_crt_by
               );
               console.log("rtnValueMaster  ", rtnValueMaster);
+              // tao json hd va trann thai các kiểu để sau này trả về cho WeTax dễ update
+              data_inv.push(
+                {
+                  tax_code : invoice.DLHDon.NDHDon.NBan.MST,
+                  form_no: "",
+                  serial_no: "",
+                  invoice_no: "",
+                  inform_code: "10",
+                  inform_name: ""
+
+                }
+              );
               if(rtnValueMaster.p_rtn_cur[0].STATUS == "OK")
               {
                 const invoice_detail = invoice.DLHDon.NDHDon.DSHHDVu.HHDVu;

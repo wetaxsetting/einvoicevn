@@ -8030,7 +8030,7 @@ class EInvoiceController {
             DGia: invoices[i].detail_invoice[j].uprice || "",
             TLCKhau: invoices[i].detail_invoice[j].dc_rate || "",
             STCKhau: invoices[i].detail_invoice[j].dc_amt || "",
-            ThTien: invoices[i].detail_invoice[j].amount || "",
+            ThTien: invoices[i].detail_invoice[j].amt || "",
             TSuat: invoices[i].detail_invoice[j].vat_rate || "",
           });
         }
@@ -12623,7 +12623,7 @@ class EInvoiceController {
         },
       ];
       const jsonTTChung = await transform(p_xml_content, templateTTChung);
-      // console.log("jsonTTChung", jsonTTChung)
+      console.log("jsonTTChung", jsonTTChung)
       const templateTTKhac = [
         "HDon/DLHDon/TTChung/TTKhac/TTin",
         {

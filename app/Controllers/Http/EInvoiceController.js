@@ -7783,7 +7783,7 @@ class EInvoiceController {
                   }*/
                    else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "16" || items[k].loaiTBao == "15")  {
                       // !!!========================== tao sample maCQT
-                        maCQT = makeid(34);
+                        maCQT = await this.makeid(34);
                         maTBao = "10";
                         tenTBao = "Thông báo hóa đơn được CQT cấp mã";
                         data_error = []

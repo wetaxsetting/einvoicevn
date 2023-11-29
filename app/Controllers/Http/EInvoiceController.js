@@ -7788,15 +7788,16 @@ class EInvoiceController {
                         tenTBao = "Thông báo hóa đơn được CQT cấp mã";
                         data_error = []
                       // !!!========================== tao sample maCQT
+                      
                     // tam thời đóng vì k cung cấp MST 
-                   /* maTBao = items[k].loaiTBao;
-                    tenTBao = items[k].tenTBao;
-                    data_error.push(
-                      {
-                        maLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].maLoi,
-                        mtaLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].mtaLoi
-                      }
-                    )*/
+                        /* maTBao = items[k].loaiTBao;
+                          tenTBao = items[k].tenTBao;
+                          data_error.push(
+                            {
+                              maLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].maLoi,
+                              mtaLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].mtaLoi
+                            }
+                          )*/
                     // end / tam thời đóng vì k cung cấp MST 
 
 
@@ -8034,7 +8035,7 @@ class EInvoiceController {
             STT: invoices[i].detail_invoice[j].seq || "",
             MHHDVu: invoices[i].detail_invoice[j].item_code || "",
             THHDVu: invoices[i].detail_invoice[j].item_name || "",
-            DVTinh: invoices[i].detail_invoice[j].unit || "",
+            DVTinh: invoices[i].detail_invoice[j].item_uom || "",
             SLuong: invoices[i].detail_invoice[j].quantity || "",
             DGia: invoices[i].detail_invoice[j].uprice || "",
             TLCKhau: invoices[i].detail_invoice[j].dc_rate || "",

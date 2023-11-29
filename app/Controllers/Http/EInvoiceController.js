@@ -778,15 +778,15 @@ class EInvoiceController {
             DSHDon: {
               HDon: [
                 /*{
-                                                                                MCCQT: 1234,
-                                                                                KHMSHDon: 4,
-                                                                                KHHDon: "C21TYY",
-                                                                                SHDon: 411,
-                                                                                Ngay: "2021-10-07",
-                                                                                LADHDDT: 1,
-                                                                                TCTBao: 2,
-                                                                                LDo: "Điều chỉnh tên người bán cho hóa đơn Mẫu số 6 ký hiệu C21TYY số 61 ngày 29 tháng 09 năm 2021"
-                                                                            },*/
+                    MCCQT: 1234,
+                    KHMSHDon: 4,
+                    KHHDon: "C21TYY",
+                    SHDon: 411,
+                    Ngay: "2021-10-07",
+                    LADHDDT: 1,
+                    TCTBao: 2,
+                    LDo: "Điều chỉnh tên người bán cho hóa đơn Mẫu số 6 ký hiệu C21TYY số 61 ngày 29 tháng 09 năm 2021"
+                },*/
               ],
             },
           },
@@ -7782,15 +7782,24 @@ class EInvoiceController {
 
                   }*/
                    else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "16" || items[k].loaiTBao == "15")  {
-
-                    maTBao = items[k].loaiTBao;
+                      // !!!========================== tao sample maCQT
+                        maCQT = makeid(34);
+                        maTBao = "10";
+                        tenTBao = "Thông báo hóa đơn được CQT cấp mã";
+                        data_error = []
+                      // !!!========================== tao sample maCQT
+                    // tam thời đóng vì k cung cấp MST 
+                   /* maTBao = items[k].loaiTBao;
                     tenTBao = items[k].tenTBao;
                     data_error.push(
                       {
                         maLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].maLoi,
                         mtaLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].mtaLoi
                       }
-                    )
+                    )*/
+                    // end / tam thời đóng vì k cung cấp MST 
+
+
                   }
                 }
               }
@@ -7798,9 +7807,9 @@ class EInvoiceController {
           });
         }
         // !!!========================== tao sample maCQT
-        if(maTBao == '10'){
-          maCQT = uuid.v4().substring(0, 34);
-        }
+        //if(maTBao == '10'){
+        //  maCQT = uuid.v4().substring(0, 34);
+        //}
         // !!!========================== tao sample maCQT
         const para_status = {
           req_wt_key : masterInvoicePK.PK,
@@ -12986,7 +12995,6 @@ class EInvoiceController {
       const urlCheck = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
       const { invoices } = request.all();
 
-      // console.log("weTaxSendInvoiceToTaxOffice  invoices  ",invoices);
       const agent = {
         Agent: {
           defaultPort: 443,

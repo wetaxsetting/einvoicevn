@@ -7777,10 +7777,10 @@ class EInvoiceController {
                     maTBao = items[k].loaiTBao;
                     tenTBao = items[k].tenTBao;
 
-                  } /*else if (items[k].loaiTBao == "1") {
+                  } else if (items[k].loaiTBao == "1") {
                     xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
 
-                  }*/
+                  }
                    else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "16" || items[k].loaiTBao == "15")  {
                       // !!!========================== tao sample maCQT
                         maCQT = await this.makeid(34);
@@ -12633,7 +12633,7 @@ class EInvoiceController {
         },
       ];
       const jsonTTChung = await transform(p_xml_content, templateTTChung);
-      console.log("jsonTTChung", jsonTTChung)
+      //console.log("jsonTTChung", jsonTTChung)
       const templateTTKhac = [
         "HDon/DLHDon/TTChung/TTKhac/TTin",
         {

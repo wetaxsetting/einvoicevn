@@ -7742,6 +7742,7 @@ class EInvoiceController {
           lookup_code: lookup_code,
           buyer_email: invoices[i].mail_to,
           buyer_email_cc: invoices[i].mail_cc,
+          mccqt:"",
 
         });
       }  
@@ -7791,6 +7792,12 @@ class EInvoiceController {
                         maTBao = "10";
                         tenTBao = "Thông báo hóa đơn được CQT cấp mã";
                         data_error = []
+                        
+                        rtnValueTradecode.forEach((element, index) => {
+                          if(element.trade_code === tr_code.trade_code) {
+                            rtnValueTradecode[index].mccqt = maCQT;
+                          }
+                      });
                       // !!!========================== tao sample maCQT
                       
                     // tam thời đóng vì k cung cấp MST 
@@ -7855,7 +7862,7 @@ class EInvoiceController {
       //   trade_code: trade_code.data.maGDich,
       //   msg_his_id: invoices[i].msg_his_id
       // });
-
+      console.log("rtnValueTradecode ", rtnValueTradecode);
       this.sendMailNormailWT(rtnValueTradecode, 'WTPTA003N', p_language, p_crt_by)
 
       return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
@@ -13305,119 +13312,120 @@ class EInvoiceController {
 
   async sendMailNormailWT(data_send_mail, ipa_name, p_language, p_crt_by) {
     try {
-      // sendMailNormalEinvoiceToCustomer
-      // rtnValueTradecode.push({
-      //   req_key: invoices[i].req_key,
-      //   req_wt_key: masterInvoicePK.PK,
-      //   trade_code: trade_code.data.maGDich,
-      //   msg_his_id: invoices[i].msg_his_id
-      // });
-
        // send mail ............
        let data_rep = [];
        let tax_code = "";
        for (const data of data_send_mail) {
-        const data_param = {
-          rep_key : data.req_ep_key
+          if(data.mccqt)
+          {
+            if(data.buyer_email)
+            {
+              const data_param = {
+                rep_key : data.req_ep_key
+              }
+              const rtnValue_inv = await DBService.ExecuteSQLBlob(
+                `BEGIN wt_sel_nor_inv_mail (          
+                                                                  :rep_key,
+                                                                  :p_language, 
+                                                                  :p_crt_by, 
+                                                                  :p_rtn_cur); END;`,
+                                                                  data_param,
+                p_language,
+                p_crt_by
+              );
+              
+              
+                // if (rtnValue_inv?.p_rtn_cur?.[0]?.STATUS == "OK") {}
+              const invoice = {
+                buyer_comp_name: rtnValue_inv.p_rtn_cur[0].BUYER_COMP_NAME,
+                seller_comp_name: rtnValue_inv.p_rtn_cur[0].SLLR_COMP_NM,
+                form_no: rtnValue_inv.p_rtn_cur[0].FORM_NO,
+                serial_no: rtnValue_inv.p_rtn_cur[0].SERIAL_NO,
+                invoice_no: rtnValue_inv.p_rtn_cur[0].INVOICE_NO,
+                total_payment: rtnValue_inv.p_rtn_cur[0].TOT_NET_TR_AMT,
+                mccqt: rtnValue_inv.p_rtn_cur[0].CQT_MCCQT,
+                buyer_email: data.buyer_email,
+                buyer_email_cc: data.buyer_email_cc,
+            }
+    
+            tax_code = rtnValue_inv.p_rtn_cur[0].SLLR_TAXCODE;
+            
+             const { res_send_mail, subject, body } = await this.sendMailNormalEinvoiceToCustomer(
+                 data.req_ep_key,
+                 rtnValue_inv.p_rtn_cur[0].LOOKUP_CD,
+                 invoice,
+                 p_language,
+                 p_crt_by
+               );
+     
+               if (res_send_mail.data.success) {
+                 const para_inv_st = {
+                   tei_wt_sale_bill_pk: data.req_ep_key,
+                   status: "Y",
+                 };
+                 // const rtnValueSendMail = 
+                 await DBService.ExecuteSQLBlob(
+                   `BEGIN wt_upd_invoice_status (          
+                                                                   :tei_wt_sale_bill_pk,
+                                                                   :status,
+                                                                   :p_language, 
+                                                                   :p_crt_by, 
+                                                                   :p_rtn_cur); END;`,
+                   para_inv_st,
+                   p_language,
+                   p_crt_by
+                 );
+     
+                  data_rep.push({
+                   sale_id : data.req_key ,
+                   msg_his_id: data.msg_his_id,
+                   status_code: "1",
+                   status_name: "Sent Success",
+                   send_date: res_send_mail.data.data.date_send,
+                   send_time: res_send_mail.data.data.time_send,
+                   mail_form: res_send_mail.data.data.mail_from,
+                   mail_to: res_send_mail.data.data.mail_to,
+                   mail_to_cc: res_send_mail.data.data.mail_to_cc,
+                   title:  subject,
+                   content: body,
+                 });
+               } else {
+                 const para_inv_st = {
+                   tei_wt_sale_bill_pk: data.req_ep_key,
+                   status: "N",
+                 };
+                 // const rtnValueSendMail = 
+                 await DBService.ExecuteSQLBlob(
+                   `BEGIN wt_upd_invoice_status (          
+                                                                   :tei_wt_sale_bill_pk,
+                                                                   :status,
+                                                                   :p_language, 
+                                                                   :p_crt_by, 
+                                                                   :p_rtn_cur); END;`,
+                   para_inv_st,
+                   p_language,
+                   p_crt_by
+                 );
+                 data_rep.push({
+                   sale_id : data.req_key ,
+                   msg_his_id: data.msg_his_id,
+                   status_code: "0",
+                   status_name: "Sent Faile",
+                   send_date: res_send_mail.data.data.date_send,
+                   send_time: res_send_mail.data.data.time_send,
+                   mail_form: res_send_mail.data.data.mail_from,
+                   mail_to: res_send_mail.data.data.mail_to,
+                   mail_to_cc: res_send_mail.data.data.mail_to_cc,
+                   title: subject,
+                   content: body,
+                 });
+               
+              }  
+            }
+          } 
         }
-        const rtnValue_inv = await DBService.ExecuteSQLBlob(
-          `BEGIN wt_sel_nor_inv_mail (          
-                                                            :rep_key,
-                                                            :p_language, 
-                                                            :p_crt_by, 
-                                                            :p_rtn_cur); END;`,
-                                                            data_param,
-          p_language,
-          p_crt_by
-        );
-        
-        // if (rtnValue_inv?.p_rtn_cur?.[0]?.STATUS == "OK") {}
-        const invoice = {
-            buyer_comp_name: rtnValue_inv.p_rtn_cur[0].BUYER_COMP_NAME,
-            seller_comp_name: rtnValue_inv.p_rtn_cur[0].SLLR_COMP_NM,
-            form_no: rtnValue_inv.p_rtn_cur[0].FORM_NO,
-            serial_no: rtnValue_inv.p_rtn_cur[0].SERIAL_NO,
-            invoice_no: rtnValue_inv.p_rtn_cur[0].INVOICE_NO,
-            total_payment: rtnValue_inv.p_rtn_cur[0].TOT_NET_TR_AMT,
-            mccqt: rtnValue_inv.p_rtn_cur[0].CQT_MCCQT,
-            buyer_email: data.buyer_email,
-            buyer_email_cc: data.buyer_email_cc,
-        }
-
-        tax_code = rtnValue_inv.p_rtn_cur[0].SLLR_TAXCODE;
-        
-         const { res_send_mail, subject, body } = await this.sendMailNormalEinvoiceToCustomer(
-             data.req_ep_key,
-             rtnValue_inv.p_rtn_cur[0].LOOKUP_CD,
-             invoice,
-             p_language,
-             p_crt_by
-           );
- 
-           if (res_send_mail.data.success) {
-             const para_inv_st = {
-               tei_wt_sale_bill_pk: data.req_ep_key,
-               status: "Y",
-             };
-             // const rtnValueSendMail = 
-             await DBService.ExecuteSQLBlob(
-               `BEGIN wt_upd_invoice_status (          
-                                                               :tei_wt_sale_bill_pk,
-                                                               :status,
-                                                               :p_language, 
-                                                               :p_crt_by, 
-                                                               :p_rtn_cur); END;`,
-               para_inv_st,
-               p_language,
-               p_crt_by
-             );
- 
-              data_rep.push({
-               sale_id : data.req_key ,
-               msg_his_id: data.msg_his_id,
-               status_code: "1",
-               status_name: "Sent Success",
-               send_date: res_send_mail.data.data.date_send,
-               send_time: res_send_mail.data.data.time_send,
-               mail_form: res_send_mail.data.data.mail_from,
-               mail_to: res_send_mail.data.data.mail_to,
-               mail_to_cc: res_send_mail.data.data.mail_to_cc,
-               title:  subject,
-               content: body,
-             });
-           } else {
-             const para_inv_st = {
-               tei_wt_sale_bill_pk: data.req_ep_key,
-               status: "N",
-             };
-             // const rtnValueSendMail = 
-             await DBService.ExecuteSQLBlob(
-               `BEGIN wt_upd_invoice_status (          
-                                                               :tei_wt_sale_bill_pk,
-                                                               :status,
-                                                               :p_language, 
-                                                               :p_crt_by, 
-                                                               :p_rtn_cur); END;`,
-               para_inv_st,
-               p_language,
-               p_crt_by
-             );
-             data_rep.push({
-               sale_id : data.req_key ,
-               msg_his_id: data.msg_his_id,
-               status_code: "0",
-               status_name: "Sent Faile",
-               send_date: res_send_mail.data.data.date_send,
-               send_time: res_send_mail.data.data.time_send,
-               mail_form: res_send_mail.data.data.mail_from,
-               mail_to: res_send_mail.data.data.mail_to,
-               mail_to_cc: res_send_mail.data.data.mail_to_cc,
-               title: subject,
-               content: body,
-             });
-           }
-       }
        
+       console.log("data_rep   ", data_rep)
        const agent = {
          Agent: {
            defaultPort: 443,

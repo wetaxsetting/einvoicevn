@@ -66,6 +66,7 @@ const EINVOICE_ESIGN_XML = "http://genuclouding.com/wseinvoice/BSService.asmx/Si
 const EINVOICE_API_SEND_MAIL = "http://sendmail.genuwinsolution.com/api/user/sendmail";
 const moment = require('moment');
 const { jar } = require("request");
+const { lookup } = require("dns");
 
 // real site
 const TAX_CHECK_TRADE_CODE = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
@@ -7713,14 +7714,14 @@ class EInvoiceController {
         );
 
         const para_trade_code = {
-              req_wt_key : masterInvoicePK.PK,
+              req_ep_key : masterInvoicePK.PK,
               trade_code : trade_code.data.maGDich
         };
-        console.log("para_trade_code  ", para_trade_code);
+        //console.log("para_trade_code  ", para_trade_code);
 
-        await DBService.ExecuteSQLBlob(
-                  `BEGIN EI_UPD_TEI_WT_INVOICE_TRADECODE(
-                                  :req_wt_key, 
+        const data_r_tradecode =  await DBService.ExecuteSQLBlob(
+                  `BEGIN WT_UPD_TEI_INV_TRADECODE(
+                                  :req_ep_key, 
                                   :trade_code,
                                   :p_language, 
                                   :p_crt_by, 
@@ -7732,11 +7733,16 @@ class EInvoiceController {
           );
 
        // console.log("res_op  ", res_op);
-
+        const lookup_code = data_r_tradecode.p_rtn_cur[0].LOOKUP_CODE;
         rtnValueTradecode.push({
-          req_key : invoices[i].req_key,
-          req_wt_key : masterInvoicePK.PK,
-          trade_code : trade_code.data.maGDich
+          req_key: invoices[i].req_key,
+          req_ep_key: masterInvoicePK.PK,
+          trade_code: trade_code.data.maGDich,
+          msg_his_id: invoices[i].msg_his_id,
+          lookup_code: lookup_code,
+          buyer_email: invoices[i].mail_to,
+          buyer_email_cc: invoices[i].mail_cc,
+
         });
       }  
 
@@ -7773,13 +7779,11 @@ class EInvoiceController {
                     xml_tax_signed ='<?xml version="1.0" encoding="UTF-8"?>'+ xml_draft[1].replace('</DLieu></TDiep>','');
                     maCQT = items[k].ndungTBao.maCQT;
 
-                    //xml_tax_signed = 
                     maTBao = items[k].loaiTBao;
                     tenTBao = items[k].tenTBao;
 
                   } else if (items[k].loaiTBao == "1") {
                     xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
-
                   }
                    else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "16" || items[k].loaiTBao == "15")  {
                       // !!!========================== tao sample maCQT
@@ -7813,14 +7817,14 @@ class EInvoiceController {
         //}
         // !!!========================== tao sample maCQT
         const para_status = {
-          req_wt_key : masterInvoicePK.PK,
+          req_ep_key : masterInvoicePK.PK,
           maCQT : maCQT,
           xml_tax_signed : xml_tax_signed
           };
 
           const res_op = await DBService.ExecuteSQLBlob(
                     `BEGIN ET_UPD_TEI_WT_INVOICE_UP(
-                                    :req_wt_key, 
+                                    :req_ep_key, 
                                     :maCQT,
                                     :xml_tax_signed,
                                     :p_language, 
@@ -7839,10 +7843,20 @@ class EInvoiceController {
             inform_name: tenTBao,
             xml_tax_signed: xml_tax_signed,
             mcct: maCQT,
+            lookup_code: tr_code.lookup_code,
             data_error: data_error
           });
       
       }
+
+      // rtnValueTradecode.push({
+      //   req_key: invoices[i].req_key,
+      //   req_ep_key: masterInvoicePK.PK,
+      //   trade_code: trade_code.data.maGDich,
+      //   msg_his_id: invoices[i].msg_his_id
+      // });
+
+      this.sendMailNormailWT(rtnValueTradecode, 'WTPTA003N', p_language, p_crt_by)
 
       return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
     } catch (e) {
@@ -9728,6 +9742,109 @@ class EInvoiceController {
       return { res_send_mail, subject, body };
     } catch (error) {
       //console.log("res_send_mail error  ", error);
+    }
+  }
+
+  async sendMailNormalEinvoiceToCustomer(tei_wt_sale_bill_pk, lookup_code, data_invoice, p_language, p_crt_by) {
+    try {
+      //console.log("sSSSS ", tei_wt_sale_bill_pk);
+      let EiExcels = new EiWTExcelHandlerAuto();
+      let url_pdf = await EiExcels.getEinvoice(tei_wt_sale_bill_pk, p_language, p_crt_by);
+      console.log("base64PDf  ", url_pdf);
+
+      let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + tei_wt_sale_bill_pk + "&proc=" + "WT_SEL_XML_NOR_EINVOICE" + "&token="); //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
+      let url_xml = re_url_xml.data;
+      console.log("base64XXML  ", url_xml);
+
+      let subject = `${data_invoice.seller_comp_name}[Thông báo phát hành HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
+      let body = `<html>
+                            <body>
+                                <div id="page">
+                                    <div id="d2">
+                                        <p>Dear: ${data_invoice.buyer_comp_name}
+                                            <br />
+                                            <br />${data_invoice.seller_comp_name}.
+                                            <br />            Trân trọng cảm ơn Quý khách hàng đã sử dụng sản phẩm của chúng tôi.
+                                            <br/> Chúng tôi đã 
+                                            <b>PHÁT HÀNH </b> hóa đơn điện tử với các thông tin như sau:
+                                            <br/>- Mẫu số: ${data_invoice.form_no}
+                                            <br/>- Ký hiệu: 
+                                            <b>${data_invoice.serial_no}</b>
+                                            <br/>- Số hóa đơn: 
+                                            <b>${data_invoice.invoice_no}</b>
+                                            <br/>- Tổng thanh toán: 
+                                            <b>       ${data_invoice.total_payment.toLocaleString('it-IT', {style : 'currency', currency : 'VND'}).replaceAll('VND','')}</b>
+                                            <br/>- Mã CQT của hóa đơn: 
+								                            <b> ${data_invoice.mccqt}</b>
+                                            <br/>- Link tra cứu: 
+								                            <a href='https://test.e-invoice.webcashgenuwin.com/?code=${lookup_code}'>Xem hóa đơn</a>
+                                            <br />- Link download file PDF: 
+                                            <a href='${url_pdf}'>Tải file PDF</a>
+                                            <br />- Link download file XML: 
+                                            <a href='${url_xml}'>Tải file XML</a>
+                                            <br />
+                                        </div>
+                                        <br/>
+                                        <div id="d6">
+                                            <p>
+                                                <i>* Xin lưu ý: Đây là email gửi tự động từ hệ thống, vui lòng không trả lời về địa chỉ email này</i>
+                                                <br />
+                                                <i>Cám ơn sự hợp tác. </i>
+                                                <br />
+                                        --------------------------------------------------------------------------
+                                    
+                                            </p>
+                                        </div>
+                                        <div id="d7"> Would like to send you our warmest greetings and most sincere thanks for choosing our product. 
+                                            <br/> We 
+                                            <b>issued </b> your e-invoice with the information as below: 
+                                            <br/>- Form No: 
+                                            <b>${data_invoice.form_no}</b>
+                                            <br/>- Serial: 
+                                            <b>${data_invoice.serial_no}</b>
+                                            <br/>- Invoice No:  
+                                            <b>${data_invoice.invoice_no}</b>
+                                            <br/>- Total amount :  
+                                            <b>       ${data_invoice.total_payment.toLocaleString('it-IT', {style : 'currency', currency : 'VND'}).replaceAll('VND','')}</b>
+                                            <br/>- CQT code of e-invoice: 
+								                            <b> ${data_invoice.mccqt}</b>
+                                            <br/>- Link lookup: 
+								                            <a href='https://test.e-invoice.webcashgenuwin.com/?code=${lookup_code}'>View e-invoice</a>
+                                            <br />- Download file PDF link:  
+                                            <a href='${url_pdf}'>Download file PDF</a>
+                                            <br />- Download file XML link:  
+                                            <a href='${url_xml}'>Download file XML</a>
+                                            <br />
+                                        </p>
+                                    </div>
+                                    <div id="d8">
+                                        <p>
+                                            <br/>* Note: This is an automatic email. Please do not feedback to this email.
+                                            <br/>
+                                        Thank you for your corporation!
+                                        
+                                        </p>
+                                    </div>
+                                </body>
+                            </html>
+                            `;
+
+      console.log("sSSSS4 ", tei_wt_sale_bill_pk);
+
+      const res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {
+        mail_to: data_invoice.buyer_email,
+        cc_to: data_invoice.buyer_email_cc,
+        subject: subject,
+        body: body,
+        attachfile1: url_xml,
+        attachfile2: url_pdf,
+        filename1: data_invoice.mccqt + ".xml",
+        filename2: data_invoice.mccqt + ".pdf",
+      });
+      //console.log("res_send_mail  ", res_send_mail);
+      return { res_send_mail, subject, body };
+    } catch (error) {
+      console.log("sendMailNormalEinvoiceToCustomer error  ", error);
     }
   }
 
@@ -13183,6 +13300,166 @@ class EInvoiceController {
       });
       console.log("e  ", e);
       return response.send(Utils.response(false, e.message));
+    }
+  }
+
+  async sendMailNormailWT(data_send_mail, ipa_name, p_language, p_crt_by) {
+    try {
+      // sendMailNormalEinvoiceToCustomer
+      // rtnValueTradecode.push({
+      //   req_key: invoices[i].req_key,
+      //   req_wt_key: masterInvoicePK.PK,
+      //   trade_code: trade_code.data.maGDich,
+      //   msg_his_id: invoices[i].msg_his_id
+      // });
+
+       // send mail ............
+       let data_rep = [];
+       let tax_code = "";
+       for (const data of data_send_mail) {
+        const data_param = {
+          rep_key : data.req_ep_key
+        }
+        const rtnValue_inv = await DBService.ExecuteSQLBlob(
+          `BEGIN wt_sel_nor_inv_mail (          
+                                                            :rep_key,
+                                                            :p_language, 
+                                                            :p_crt_by, 
+                                                            :p_rtn_cur); END;`,
+                                                            data_param,
+          p_language,
+          p_crt_by
+        );
+        
+        // if (rtnValue_inv?.p_rtn_cur?.[0]?.STATUS == "OK") {}
+        const invoice = {
+            buyer_comp_name: rtnValue_inv.p_rtn_cur[0].BUYER_COMP_NAME,
+            seller_comp_name: rtnValue_inv.p_rtn_cur[0].SLLR_COMP_NM,
+            form_no: rtnValue_inv.p_rtn_cur[0].FORM_NO,
+            serial_no: rtnValue_inv.p_rtn_cur[0].SERIAL_NO,
+            invoice_no: rtnValue_inv.p_rtn_cur[0].INVOICE_NO,
+            total_payment: rtnValue_inv.p_rtn_cur[0].TOT_NET_TR_AMT,
+            mccqt: rtnValue_inv.p_rtn_cur[0].CQT_MCCQT,
+            buyer_email: data.buyer_email,
+            buyer_email_cc: data.buyer_email_cc,
+        }
+
+        tax_code = rtnValue_inv.p_rtn_cur[0].SLLR_TAXCODE;
+        
+         const { res_send_mail, subject, body } = await this.sendMailNormalEinvoiceToCustomer(
+             data.req_ep_key,
+             rtnValue_inv.p_rtn_cur[0].LOOKUP_CD,
+             invoice,
+             p_language,
+             p_crt_by
+           );
+ 
+           if (res_send_mail.data.success) {
+             const para_inv_st = {
+               tei_wt_sale_bill_pk: data.req_ep_key,
+               status: "Y",
+             };
+             // const rtnValueSendMail = 
+             await DBService.ExecuteSQLBlob(
+               `BEGIN wt_upd_invoice_status (          
+                                                               :tei_wt_sale_bill_pk,
+                                                               :status,
+                                                               :p_language, 
+                                                               :p_crt_by, 
+                                                               :p_rtn_cur); END;`,
+               para_inv_st,
+               p_language,
+               p_crt_by
+             );
+ 
+              data_rep.push({
+               sale_id : data.req_key ,
+               msg_his_id: data.msg_his_id,
+               status_code: "1",
+               status_name: "Sent Success",
+               send_date: res_send_mail.data.data.date_send,
+               send_time: res_send_mail.data.data.time_send,
+               mail_form: res_send_mail.data.data.mail_from,
+               mail_to: res_send_mail.data.data.mail_to,
+               mail_to_cc: res_send_mail.data.data.mail_to_cc,
+               title:  subject,
+               content: body,
+             });
+           } else {
+             const para_inv_st = {
+               tei_wt_sale_bill_pk: data.req_ep_key,
+               status: "N",
+             };
+             // const rtnValueSendMail = 
+             await DBService.ExecuteSQLBlob(
+               `BEGIN wt_upd_invoice_status (          
+                                                               :tei_wt_sale_bill_pk,
+                                                               :status,
+                                                               :p_language, 
+                                                               :p_crt_by, 
+                                                               :p_rtn_cur); END;`,
+               para_inv_st,
+               p_language,
+               p_crt_by
+             );
+             data_rep.push({
+               sale_id : data.req_key ,
+               msg_his_id: data.msg_his_id,
+               status_code: "0",
+               status_name: "Sent Faile",
+               send_date: res_send_mail.data.data.date_send,
+               send_time: res_send_mail.data.data.time_send,
+               mail_form: res_send_mail.data.data.mail_from,
+               mail_to: res_send_mail.data.data.mail_to,
+               mail_to_cc: res_send_mail.data.data.mail_to_cc,
+               title: subject,
+               content: body,
+             });
+           }
+       }
+       
+       const agent = {
+         Agent: {
+           defaultPort: 443,
+           protocol: "https:",
+           options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
+         },
+       };
+
+      let triesCounter = 0;
+      while(triesCounter < 3){
+            try {
+              const res = await Request.post(
+                `${WETAX_API_URL}/api/wtx/v1/email-delivery-status`,
+                { 
+                  service_id : ipa_name,
+                  seller_tax_code : tax_code,
+                  info_send_email : data_rep
+                 },
+                {
+                  agent,
+                  headers: {
+                    Authorization: "Basic " + WETAX_TOKEN_CALLBACK,
+                  },
+                }
+              );
+              break;  // 'return' would work here as well
+            } catch (err) {
+             await Utils._sleep(5);
+              console.log(err);
+            }
+            triesCounter ++;
+        }
+      
+    } catch (e) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "sendMailWT",
+        CONTENT: e.message,
+      });
+      console.log("e  ", e);
+      //return response.send(Utils.response(false, e.message));
     }
   }
 

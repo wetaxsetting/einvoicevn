@@ -517,7 +517,7 @@ export default {
         case "form_no":
           const dso_form_list = {
             type: "list",
-            selpro: "AC_SEL_6095450_FORM_NO",
+            selpro: "AC_SEL_6095470_FORM_NO",
             para: [this.sellerName, this.form_date, this.to_date],
           };
           this.dataSearchList.formNoList = await this._dsoCall(dso_form_list, "select", false);
@@ -528,7 +528,7 @@ export default {
         case "serial_no":
           const dso_serial_list = {
             type: "list",
-            selpro: "AC_SEL_6095450_SERIAL_NO",
+            selpro: "AC_SEL_6095470_SERIAL_NO",
             para: [this.sellerName, this.form_No, this.form_date, this.to_date],
           };
           this.dataSearchList.serialNoList = await this._dsoCall(dso_serial_list, "select", false);

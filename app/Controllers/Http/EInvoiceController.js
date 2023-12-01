@@ -6746,7 +6746,7 @@ class EInvoiceController {
             form_no: invoice.form_no,
             serial_no: invoice.serial_no,
             invoice_no: invoice.invoice_no,
-            status_code: "D",
+            status_code: "0",
             status_name: "Order einvoice not exit/ Taxcode not yet register",
             customer_name: "",
             send_date: "",
@@ -7352,7 +7352,7 @@ class EInvoiceController {
 
       // let json =  this.parseXmlToJson(invoice_xml_signed);
 
-      const {check_data, data_inv } =  await this.weTaxExtractPosXMLContent(invoice_xml_signed,
+      const { check_data, data_inv } =  await this.weTaxExtractPosXMLContent(invoice_xml_signed,
                                                       seller_tax_code,
                                                       sale_date,
                                                       tax_serial_number,
@@ -7366,7 +7366,7 @@ class EInvoiceController {
       //console.log("json  ", json);
       //  
       // console.log("json.TDiep.DLieu.HDon  ", json.TDiep.DLieu.HDon);
-
+      //console.log("check_data   ", check_data , "data_inv  ", data_inv);
       if(check_data.STATUS == 'FAILE')
       {
         return response.send(Utils.response(false, `Send invoice to Tax Office was failure!`, null));
@@ -7456,8 +7456,8 @@ class EInvoiceController {
                     const chars = invoice.mtaLoi.split(';');
                     data_inv.forEach((element, index) => {
                       if(element.form_no === chars[0] && element.serial_no === chars[1] && element.invoice_no === chars[2]) {
-                        rtnValueTradecode[index].inform_code = "1";
-                        rtnValueTradecode[index].inform_name = "invoice.maLoi" + " - " + invoice.mtaLoi;
+                        data_inv[index].inform_code = "1";
+                        data_inv[index].inform_name = "invoice.maLoi" + " - " + invoice.mtaLoi;
                       }
                      });
                   }
@@ -7476,6 +7476,7 @@ class EInvoiceController {
             tax_serial_number: tax_serial_number,
             pos_no: pos_no,
             data_error: data_error,
+            data_inv: data_inv,
             inform_code: maTBao,
             inform_name: tenTBao,
             //mccqt: maCQT,
@@ -7492,7 +7493,7 @@ class EInvoiceController {
         FUNC: "sendInvoiceToTaxOffice",
         CONTENT: e.message,
       });
-      // console.log("e ", e);
+       console.log("sendInvoiceToTaxOffice ", e);
       return response.send(Utils.response(false, e.message, null));
     }
   }
@@ -12476,7 +12477,7 @@ class EInvoiceController {
     p_language,
     p_crt_by
 ) {
-    let result_extra = {};
+    let check_data = {};
     let data_inv = [];
     try {
       
@@ -12598,10 +12599,11 @@ class EInvoiceController {
             p_crt_by
           );
 
-          // console.log("rtnValuePos  ", rtnValuePos);
+          //console.log("rtnValuePos  ", rtnValuePos);
+
           if(rtnValuePos.p_rtn_cur[0].STATUS == "OK")
           {
-            console.log("jsonInvoice  ", jsonInvoice);
+            //console.log("jsonInvoice  ", jsonInvoice);
             for(const invoice of jsonInvoice)
             {
                 const paraMaster = {
@@ -12683,6 +12685,7 @@ class EInvoiceController {
               // tao json hd va trann thai các kiểu để sau này trả về cho WeTax dễ update
               data_inv.push(
                 {
+                  mccqt : invoice.MCCQT,
                   tax_code : invoice.DLHDon.NDHDon.NBan.MST,
                   form_no: invoice.DLHDon.TTChung.KHMSHDon,
                   serial_no: invoice.DLHDon.TTChung.KHHDon,
@@ -12770,12 +12773,12 @@ class EInvoiceController {
            
           }
 
-          return ( {
-                      PK: rtnValuePos.p_rtn_cur[0].PK,
-                      STATUS:  rtnValuePos.p_rtn_cur[0].STATUS,
-                    },  
-                    data_inv
-                  ); 
+          check_data = {
+            PK: rtnValuePos.p_rtn_cur[0].PK,
+            STATUS:  rtnValuePos.p_rtn_cur[0].STATUS,
+          }
+          
+          return { check_data, data_inv }; 
           
         }
     } catch (e) {
@@ -12786,7 +12789,7 @@ class EInvoiceController {
             CONTENT: e.message,
         });
         console.log('===> extractXMLContent ',e.message);
-        return (result_extra = {
+        return (check_data = {
             PK: -2,
             STATUS: "FAILE",
         }); //master[0].PK;;

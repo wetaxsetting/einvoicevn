@@ -192,7 +192,7 @@ class EiExcelConverterAuto {
 			// }
 		// }
 		
-		read_price = einvoiceMasterData[0]["TOTALAMOUNTINWORD"] == null ? null : einvoiceMasterData[0]["NETAMOUNT_DISPLAY"].toString();
+		read_price = einvoiceMasterData[0]["TOTALAMOUNTINWORD"] == null ? null : einvoiceMasterData[0]["TOTALAMOUNTINWORD"].toString();
 		// console.log("file: EiWTExcelConverterAuto.js:192 [vng-304] ExcelBuilder [vng-304] read_price:", read_price)
 		//read_priceV=NumberToTextVN(parseFloat(einvoiceMasterData[0]["TOTALAMOUNTINWORD"] == null ? null : einvoiceMasterData[0]["TOTALAMOUNTINWORD"].toString()));
 		//read_priceU=Num2VNText(einvoiceMasterData[0]["TOTALAMOUNTINWORD"].toString(), "USD");

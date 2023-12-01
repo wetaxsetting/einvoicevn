@@ -8108,9 +8108,9 @@ class EInvoiceController {
           });
         }
 
-        objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTCThue = invoices[i].total_amt_no_vat || "0";
-        objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTThue = invoices[i].total_amt_vat || "0";
-        objInvoice_M.HDon.DLHDon.NDHDon.TToan.TTCKTMai = invoices[i].total_amt_dc || "0";
+        objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTCThue = invoices[i].total_amt || "0";
+        objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTThue = invoices[i].total_vat_amt || "0";
+        objInvoice_M.HDon.DLHDon.NDHDon.TToan.TTCKTMai = invoices[i].total_dc_amt || "0";
         objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = invoices[i].total_payment || "0";
         objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText(
           invoices[i].total_payment.toString() || "0",

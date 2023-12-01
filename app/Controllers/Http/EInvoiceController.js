@@ -8142,7 +8142,7 @@ class EInvoiceController {
         const xml = this.OBJtoXML(objInvoice_M);
         const xmlStr = xml.toString().replace("<DLHDon>", `<DLHDon Id=\'${id}\'>`);
 
-        //console.log("xmlStr", xmlStr)
+        console.log("xmlStr", xmlStr)
         rtnXML.push({ req_key: invoices[i].master_pk, xml_data: xmlStr, sign_id: id });
       }
 

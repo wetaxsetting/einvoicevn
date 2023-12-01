@@ -7963,7 +7963,7 @@ class EInvoiceController {
         tax_code,
         order_date
       } = request.all();
-        console.log("weTaxConvertInvoiceToXML invoices  ", invoices.toString());
+        console.log("weTaxConvertInvoiceToXML invoices  ", invoices);
       //invoices = JSON.parse(invoices);
       let rtnXML = [];
       let count_inv = 0;

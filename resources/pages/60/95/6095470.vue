@@ -382,6 +382,7 @@ export default {
         {
           dataField: "TRADE_CODE",
           caption: this.$t("trade_code"),
+          allowEditing: true,
         },
       ];
     },

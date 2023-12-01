@@ -7783,6 +7783,12 @@ class EInvoiceController {
                     maTBao = items[k].loaiTBao;
                     tenTBao = items[k].tenTBao;
 
+                    rtnValueTradecode.forEach((element, index) => {
+                      if(element.trade_code === tr_code.trade_code) {
+                        rtnValueTradecode[index].mccqt = maCQT;
+                      }
+                  });
+                  
                   } else if (items[k].loaiTBao == "1") {
                     xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
                   }
@@ -12407,6 +12413,7 @@ class EInvoiceController {
     p_crt_by
 ) {
     let result_extra = {};
+    let data_inv = [];
     try {
       
           const template =
@@ -12490,7 +12497,6 @@ class EInvoiceController {
             ];
           const jsonInvoice = await transform(xml_content, template);
           
-          let data_inv =[];
         // console.log('===> jsonInvoice ', jsonInvoice);
 
         const templateSignTime = {
@@ -12609,16 +12615,16 @@ class EInvoiceController {
                   p_crt_by
               );
               console.log("rtnValueMaster  ", rtnValueMaster);
+
               // tao json hd va trann thai các kiểu để sau này trả về cho WeTax dễ update
               data_inv.push(
                 {
                   tax_code : invoice.DLHDon.NDHDon.NBan.MST,
-                  form_no: "",
-                  serial_no: "",
-                  invoice_no: "",
+                  form_no: invoice.DLHDon.TTChung.KHMSHDon,
+                  serial_no: invoice.DLHDon.TTChung.KHHDon,
+                  invoice_no: invoice.DLHDon.TTChung.SHDon,
                   inform_code: "10",
-                  inform_name: ""
-
+                  inform_name: "Thông báo dữ liệu hóa đơn hợp lệ",
                 }
               );
               if(rtnValueMaster.p_rtn_cur[0].STATUS == "OK")
@@ -12700,10 +12706,12 @@ class EInvoiceController {
            
           }
 
-          return (result_extra = {
-              PK: rtnValuePos.p_rtn_cur[0].PK,
-              STATUS:  rtnValuePos.p_rtn_cur[0].STATUS,
-          }); 
+          return ( {
+                      PK: rtnValuePos.p_rtn_cur[0].PK,
+                      STATUS:  rtnValuePos.p_rtn_cur[0].STATUS,
+                    },  
+                    data_inv
+                  ); 
           
         }
     } catch (e) {
@@ -13316,7 +13324,7 @@ class EInvoiceController {
        let data_rep = [];
        let tax_code = "";
        for (const data of data_send_mail) {
-          if(data.mccqt)
+          if(data.mccqt || data.msg_his_id)
           {
             if(data.buyer_email)
             {

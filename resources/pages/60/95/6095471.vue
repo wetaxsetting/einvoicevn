@@ -311,6 +311,7 @@ export default {
           dataField: "CQT_MAGD",
           caption: this.$t("cqt_magd"),
           width: 300,
+          allowEditing: true,
         },
         // {
         //   dataField: "SLLR_TAXCODE",

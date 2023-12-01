@@ -7079,13 +7079,13 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      // let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
-      // const authUserName = "GENUWIN"; // "GENUWIN";
-      // const authPassword = "genuwin123"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
-
-      const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+      let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
       const authUserName = "GENUWIN"; // "GENUWIN";
-      const authPassword = "e_GX4v@"; // "e_GX4v@";
+      const authPassword = "genuwin123"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+
+      // const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+      // const authUserName = "GENUWIN"; // "GENUWIN";
+      // const authPassword = "e_GX4v@"; // "e_GX4v@";
 
       const { data } = request.all();
       // console.log("data  ", data);
@@ -7094,7 +7094,10 @@ class EInvoiceController {
         maTBao = "",
         tenTBao = "",
         base64XMLCQT = "",
-        data_error = [];
+        data_error = [],
+        data_inv = [],
+        xml_tax_signed =""
+        ;
 
       for (let i = 0; i < data.length; i++) {
         //console.log("SSS ", url + data[i].trade_code);
@@ -7135,21 +7138,52 @@ class EInvoiceController {
                     macqt: maCQT,
                     xml_sign: base64XML,
                   };
+
+                  data_inv.push({
+                    req_key: data[i].req_key,
+                    trade_code: data[i].trade_code,
+                    msg_his_id: data[i].msg_his_id,
+                    buyer_email: data[i].mail_to,
+                    buyer_email_cc: data[i].mail_cc,
+                    mccqt: maCQT
+                  }); 
+
                   // const result = await DBService.ExecuteSQLBlob(
                   //     `BEGIN ei_upd_file_xml_v5(:trade_code,:macqt,:xml_sign,:p_language, :p_crt_by, :p_rtn_cur); END;`,
                   //     para_value,
                   //     p_language,
                   //     p_crt_by
                   // );
+                }else if (items[k].loaiTBao == "1") {
+                    xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
+                 
                 } else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "16" || items[k].loaiTBao == "15") {
-                  maTBao = items[k].loaiTBao;
+                 /* maTBao = items[k].loaiTBao;
                   tenTBao = items[k].tenTBao;
                   data_error.push(
                     {
                       maLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].maLoi,
                       mtaLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].mtaLoi
                     }
-                  )
+                  )*/
+
+                  // !!!========================== tao sample maCQT
+                  maCQT = await this.makeid(34);
+                  maTBao = "10";
+                  tenTBao = "Thông báo hóa đơn được CQT cấp mã";
+                  data_error = []
+                  
+                // !!!========================== tao sample maCQT
+
+                  data_inv.push({
+                    req_key: data[i].req_key,
+                    trade_code: data[i].trade_code,
+                    msg_his_id: data[i].msg_his_id,
+                    buyer_email: data[i].mail_to,
+                    buyer_email_cc: data[i].mail_cc,
+                    mccqt: maCQT
+                  }); 
+
                   // const result = await DBService.callProcCursor(
                   //     "ei_upd_file_xml_v8", [para[i], maTBao, tenTBao],
                   //     p_language,
@@ -7172,6 +7206,27 @@ class EInvoiceController {
             return response.send(Utils.response(false, error.message, null));
           });
 
+          const para_status = {
+            trade_code : data[i].trade_code,
+            maCQT : maCQT,
+            xml_tax_signed : xml_tax_signed
+            };
+  
+            const res_op = await DBService.ExecuteSQLBlob(
+                      `BEGIN ET_UPD_TEI_WT_INVOICE_UP(
+                                      :trade_code, 
+                                      :maCQT,
+                                      :xml_tax_signed,
+                                      :p_language, 
+                                      :p_crt_by, 
+                                      :p_rtn_cur); 
+                      END;`,
+                      para_status,
+                      p_language,
+                      p_crt_by
+              );
+          
+
         rtnValue.push({
           trade_code: data[i].trade_code,
           mccqt: maCQT,
@@ -7182,8 +7237,10 @@ class EInvoiceController {
           req_key: data[i].req_key,
           data_error: data_error
         });
-      }
 
+      }
+      console.log("data_inv  ", data_inv)
+      this.sendMailNormailWT(data_inv, 'WTPTA003-1', p_language, p_crt_by) 
       return response.send(
         Utils.response(true, `${data.length} invoices was update status from tax office.`, rtnValue)
       );
@@ -7295,7 +7352,7 @@ class EInvoiceController {
 
       // let json =  this.parseXmlToJson(invoice_xml_signed);
 
-      const check_data =  await this.weTaxExtractPosXMLContent(invoice_xml_signed,
+      const {check_data, data_inv } =  await this.weTaxExtractPosXMLContent(invoice_xml_signed,
                                                       seller_tax_code,
                                                       sale_date,
                                                       tax_serial_number,
@@ -7386,6 +7443,7 @@ class EInvoiceController {
                   maCQT = items[k].ndungTBao.maCQT;
                   maTBao = items[k].loaiTBao;
                   tenTBao = items[k].tenTBao;
+
                 } else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "7") {
                   maTBao =  items[k].loaiTBao;
                   tenTBao =  items[k].tenTBao;
@@ -7395,6 +7453,13 @@ class EInvoiceController {
                       maLoi: invoice.maLoi,
                       mtaLoi: invoice.mtaLoi
                     });
+                    const chars = invoice.mtaLoi.split(';');
+                    data_inv.forEach((element, index) => {
+                      if(element.form_no === chars[0] && element.serial_no === chars[1] && element.invoice_no === chars[2]) {
+                        rtnValueTradecode[index].inform_code = "1";
+                        rtnValueTradecode[index].inform_name = "invoice.maLoi" + " - " + invoice.mtaLoi;
+                      }
+                     });
                   }
                  
                 } 
@@ -7743,7 +7808,6 @@ class EInvoiceController {
           buyer_email: invoices[i].mail_to,
           buyer_email_cc: invoices[i].mail_cc,
           mccqt:"",
-
         });
       }  
 
@@ -7788,7 +7852,7 @@ class EInvoiceController {
                         rtnValueTradecode[index].mccqt = maCQT;
                       }
                   });
-                  
+
                   } else if (items[k].loaiTBao == "1") {
                     xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
                   }
@@ -7830,7 +7894,7 @@ class EInvoiceController {
         //}
         // !!!========================== tao sample maCQT
         const para_status = {
-          req_ep_key : masterInvoicePK.PK,
+          req_ep_key : tr_code.trade_code,
           maCQT : maCQT,
           xml_tax_signed : xml_tax_signed
           };
@@ -13324,12 +13388,11 @@ class EInvoiceController {
        let data_rep = [];
        let tax_code = "";
        for (const data of data_send_mail) {
-          if(data.mccqt || data.msg_his_id)
+          if(data.mccqt && data.msg_his_id && data.buyer_email)
           {
-            if(data.buyer_email)
-            {
+            
               const data_param = {
-                rep_key : data.req_ep_key
+                rep_key : data.trade_code
               }
               const rtnValue_inv = await DBService.ExecuteSQLBlob(
                 `BEGIN wt_sel_nor_inv_mail (          
@@ -13342,7 +13405,7 @@ class EInvoiceController {
                 p_crt_by
               );
               
-              
+              console.log("rtnValue_inv  ", rtnValue_inv);
                 // if (rtnValue_inv?.p_rtn_cur?.[0]?.STATUS == "OK") {}
               const invoice = {
                 buyer_comp_name: rtnValue_inv.p_rtn_cur[0].BUYER_COMP_NAME,
@@ -13429,7 +13492,7 @@ class EInvoiceController {
                  });
                
               }  
-            }
+            
           } 
         }
        

@@ -253,6 +253,7 @@ class EiExcelConverterAuto {
 							case "read_price":
 								// console.log("read_price;;;;aaaaaa", e ,  read_price)
 								worksheet.getCell( `${e.Cell}`).value = read_price != null ? read_price : '';
+								worksheet.getCell(`${e.Cell}`).style.border = { right: { style: 'thin' } };
 								// console.log(e.Cell+"+"+e.Info)
 								break;
 							// case "read_priceV":

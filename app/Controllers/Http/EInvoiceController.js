@@ -9916,8 +9916,8 @@ class EInvoiceController {
         body: body,
         attachfile1: url_xml,
         attachfile2: url_pdf,
-        filename1: data_invoice.mccqt + ".xml",
-        filename2: data_invoice.mccqt + ".pdf",
+        filename1: data_invoice.form_no + data_invoice.serial_no + "_" + data_invoice.invoice_no + ".xml",
+        filename2: data_invoice.form_no + data_invoice.serial_no + "_" + data_invoice.invoice_no + ".pdf",
       });
       //console.log("res_send_mail  ", res_send_mail);
       return { res_send_mail, subject, body };

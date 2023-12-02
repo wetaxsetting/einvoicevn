@@ -6776,6 +6776,174 @@ class EInvoiceController {
     }
   }
 
+  async weTaxReSendNormalInvoice({ request, response, auth }) {
+    try {
+      var p_language = request.header("accept-language", "ENG");
+      var p_crt_by = "";
+      let data_send_mail = [];
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const { 
+        sale_id,
+        msg_his_id,
+        tax_code,
+        sale_date,
+        store_code,
+        store_name,
+        infor_send_mail
+      } = request.all();
+
+      console.log("weTaxReSendNormalInvoice  BEGIN ============================= ");
+      //console.log("weTaxReSendNormalInvoice  sale_id ",sale_id);
+      //console.log("weTaxReSendNormalInvoice  msg_his_id ",msg_his_id);
+      console.log("weTaxReSendNormalInvoice  tax_code ",tax_code);
+      console.log("weTaxReSendNormalInvoice  sale_date ",sale_date);
+      console.log("weTaxReSendNormalInvoice  store_code ",store_code);
+      console.log("weTaxReSendNormalInvoice  store_name ",store_name);
+      console.log("weTaxReSendNormalInvoice  infor_send_mail ",infor_send_mail);
+      console.log("weTaxReSendNormalInvoice  END =============================== ");
+
+      let tei_wt_sale_bill_pk = 0;
+      let data_r = [];
+      //const data_xml = await this.createXMLByOne(data.data_invoice);
+      for (const invoice of infor_send_mail) {
+        const para_value = {
+          tax_code: tax_code,
+          sale_date: sale_date,
+          store_code: store_code,
+          store_name: store_name,
+          form_no: invoice.form_no,
+          serial_no: invoice.serial_no,
+          invoice_no: invoice.invoice_no,
+        };
+
+        console.log("para_value  ", para_value)
+
+        const rtnValue = await DBService.ExecuteSQLBlob(
+          `BEGIN wt_sel_nor_invoice_info (                :tax_code,
+                                                          :sale_date,
+                                                          :store_code,
+                                                          :store_name,
+                                                          :form_no,
+                                                          :serial_no,
+                                                          :invoice_no,
+                                                          :p_language, 
+                                                          :p_crt_by, 
+                                                          :p_rtn_cur); END;`,
+          para_value,
+          p_language,
+          p_crt_by
+        );
+
+        console.log("rtnValue  ", rtnValue)
+
+        if (rtnValue?.p_rtn_cur?.[0]?.STATUS == "OK") {
+          tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
+          data_send_mail.push({
+            tei_wt_sale_bill_pk : tei_wt_sale_bill_pk,
+            invoice : {
+              buyer_comp_name: rtnValue.p_rtn_cur[0].BUYER_COMP_NAME,
+              seller_comp_name: rtnValue.p_rtn_cur[0].SELLER_COMP_NAME,
+              form_no: rtnValue.p_rtn_cur[0].FORM_NO,
+              serial_no: rtnValue.p_rtn_cur[0].SERIAL_NO,
+              invoice_no: rtnValue.p_rtn_cur[0].INVOICE_NO,
+              total_payment: rtnValue.p_rtn_cur[0].TOTAL_PAYMENT,
+              mccqt: rtnValue.p_rtn_cur[0].MCCQT,
+              buyer_email: invoice.buyer_email,
+              buyer_email_cc: invoice.buyer_email_cc,
+              sale_id : invoice.sale_id ,
+              msg_his_id: invoice.msg_his_id,
+            }
+          });
+
+          if (!invoice.buyer_email && !invoice.buyer_email_cc && !rtnValue.p_rtn_cur[0].BUYER_EMAIL && !rtnValue.p_rtn_cur[0].BUYER_EMAIL_CC) {
+            data_r.push({
+              sale_id : invoice.sale_id ,
+              msg_his_id: invoice.msg_his_id,
+              link_invoice_preview: "https://einvoicevn.com/lookup",
+              lookup_code: rtnValue?.p_rtn_cur?.[0]?.LOOKUP_CD,
+              seller_taxcode: tax_code,
+              form_no: invoice.form_no,
+              serial_no: invoice.serial_no,
+              invoice_no: invoice.invoice_no,
+              status_code: "0",
+              status_name: "Buyer mail and buyer maill cc are null",
+              customer_name: "",
+              send_date: "",
+              send_time: "",
+              mail_form: "",
+              mail_to: "",
+              mail_to_cc: "",
+              title: "",
+              content: "",
+            });
+            continue;
+          } 
+
+          data_r.push({
+            sale_id : invoice.sale_id ,
+            msg_his_id: invoice.msg_his_id,
+            link_invoice_preview: "https://einvoicevn.com/lookup",
+            lookup_code: rtnValue?.p_rtn_cur?.[0]?.LOOKUP_CD,
+            seller_taxcode: tax_code,
+            form_no: invoice.form_no,
+            serial_no: invoice.serial_no,
+            invoice_no: invoice.invoice_no,
+            status_code: "3",
+            status_name: "In Process",
+            customer_name: "",
+            send_date: "",
+            send_time: "",
+            mail_form: "",
+            mail_to: "",
+            mail_to_cc: "",
+            title: "",
+            content: "",
+          });
+        }
+        else {
+          //return response.send(Utils.response(false, 'Order einvoice not exit'));
+          data_r.push({
+            sale_id : invoice.sale_id ,
+            msg_his_id: invoice.msg_his_id,
+            link_invoice_preview: "https://einvoicevn.com/lookup",
+            lookup_code: "",
+            seller_taxcode: tax_code,
+            form_no: invoice.form_no,
+            serial_no: invoice.serial_no,
+            invoice_no: invoice.invoice_no,
+            status_code: "0",
+            status_name: "Order einvoice not exit/ Taxcode not yet register",
+            customer_name: "",
+            send_date: "",
+            send_time: "",
+            mail_form: "",
+            mail_to: "",
+            mail_to_cc: "",
+            title: "",
+            content: "",
+          });
+        }
+      }
+
+      this.sendMailNormailWT(data_send_mail,"WTPTA002N-2", tax_code, p_language, p_crt_by);
+
+      return response.send(Utils.response(true, `ReSend order to invoice was Successfully!`, data_r));
+
+    } catch (error) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "weTaxReSendOrderInfo",
+        CONTENT: error.message,
+      });
+      console.log(error);
+      return response.send(Utils.response(false, error.message, null));
+    }
+  }
+  
   async weTaxSendCompanyTemplate({ request, response, auth }) {
     try {
 

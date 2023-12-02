@@ -8117,6 +8117,7 @@ class EInvoiceController {
                     p_crt_by
             );
         
+            console.log("res_op   ", res_op);
           rtnValue.push({
             req_key: tr_code.req_key,
             trade_code: tr_code.trade_code,

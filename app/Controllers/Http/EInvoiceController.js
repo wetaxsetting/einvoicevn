@@ -8264,7 +8264,8 @@ class EInvoiceController {
         objInvoice_M.HDon.DLHDon.TTChung.MSTTCGP = "1201496252"; //webcashgenuwin.com taxcode
 
         objInvoice_M.HDon.DLHDon.TTChung.TTHDLQuan = [];
-        if (invoices[i].invoice_feature !== "0") {
+        console.log("invoices[i].invoice_feature  " ,invoices[i].invoice_feature)
+        if (invoices[i].invoice_feature) { // !== "0"
           objInvoice_M.HDon.DLHDon.TTChung.TTHDLQuan.push({
             TCHDon: invoices[i].feature || "0",
             LHDCLQuan: invoices[i].invoice_type_relative || "0",

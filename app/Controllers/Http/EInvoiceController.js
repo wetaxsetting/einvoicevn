@@ -7383,7 +7383,7 @@ class EInvoiceController {
             };
   
             const res_op = await DBService.ExecuteSQLBlob(
-                      `BEGIN ET_UPD_TEI_WT_INVOICE_UP(
+                      `BEGIN WT_UPD_TEI_WT_INVOICE_UP(
                                       :trade_code, 
                                       :maCQT,
                                       :xml_tax_signed,
@@ -7636,6 +7636,38 @@ class EInvoiceController {
               }
             }
           }
+
+          // data_inv insert data ==> tei_einvoice_m
+
+          for (const inv of data_inv)
+          {
+            const param_m = {
+                mccqt : inv.mccqt,
+                tax_code : inv.tax_code,
+                form_no: inv.form_no,
+                serial_no: inv.serial_no,
+                invoice_no: inv.invoice_no,
+                inform_code: inv.inform_code,
+            }
+
+            await DBService.ExecuteSQLBlob(
+              `BEGIN WT_UPD_TEI_WT_INVOICE_POS(
+                              :mccqt,
+                              :tax_code,
+                              :form_no,
+                              :serial_no,
+                              :invoice_no,
+                              :inform_code,
+                              :p_language, 
+                              :p_crt_by, 
+                              :p_rtn_cur); 
+              END;`,
+              param_m,
+              p_language,
+              p_crt_by
+             );
+          }
+
 
           rtnValue = {
             trade_code: trade_code,
@@ -8072,7 +8104,7 @@ class EInvoiceController {
           };
 
           const res_op = await DBService.ExecuteSQLBlob(
-                    `BEGIN ET_UPD_TEI_WT_INVOICE_UP(
+                    `BEGIN WT_UPD_TEI_WT_INVOICE_UP(
                                     :req_ep_key, 
                                     :maCQT,
                                     :xml_tax_signed,

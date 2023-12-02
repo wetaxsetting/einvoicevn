@@ -6851,7 +6851,7 @@ class EInvoiceController {
               mccqt: rtnValue.p_rtn_cur[0].CQT_MCCQT,
               buyer_email: invoice.buyer_email,
               buyer_email_cc: invoice.buyer_email_cc,
-              sale_id : invoice.req_key ,
+              sale_id : invoice.sale_id ,
               msg_his_id: invoice.msg_his_id,
               send_mail_yn: "Y",
               trade_code: rtnValue.p_rtn_cur[0].MA_TRACUU,

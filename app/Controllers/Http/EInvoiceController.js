@@ -6819,7 +6819,7 @@ class EInvoiceController {
           invoice_no: invoice.invoice_no,
         };
 
-        console.log("para_value  ", para_value)
+        //console.log("para_value  ", para_value)
 
         const rtnValue = await DBService.ExecuteSQLBlob(
           `BEGIN wt_sel_nor_invoice_info (                :tax_code,
@@ -6837,25 +6837,25 @@ class EInvoiceController {
           p_crt_by
         );
 
-        console.log("rtnValue  ", rtnValue)
+        //console.log("rtnValue  ", rtnValue)
 
         if (rtnValue?.p_rtn_cur?.[0]?.STATUS == "OK") {
           tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
           data_send_mail.push({
-            tei_wt_sale_bill_pk : tei_wt_sale_bill_pk,
-            invoice : {
-              buyer_comp_name: rtnValue.p_rtn_cur[0].BUYER_COMP_NAME,
-              seller_comp_name: rtnValue.p_rtn_cur[0].SELLER_COMP_NAME,
+              buyer_comp_name: rtnValue.p_rtn_cur[0].BUYER_COMP_NM,
+              seller_comp_name: rtnValue.p_rtn_cur[0].SLLR_COMP_NM,
               form_no: rtnValue.p_rtn_cur[0].FORM_NO,
               serial_no: rtnValue.p_rtn_cur[0].SERIAL_NO,
               invoice_no: rtnValue.p_rtn_cur[0].INVOICE_NO,
-              total_payment: rtnValue.p_rtn_cur[0].TOTAL_PAYMENT,
-              mccqt: rtnValue.p_rtn_cur[0].MCCQT,
+              total_payment: rtnValue.p_rtn_cur[0].TOT_TR_AMT,
+              mccqt: rtnValue.p_rtn_cur[0].CQT_MCCQT,
               buyer_email: invoice.buyer_email,
               buyer_email_cc: invoice.buyer_email_cc,
-              sale_id : invoice.sale_id ,
+              sale_id : invoice.req_key ,
               msg_his_id: invoice.msg_his_id,
-            }
+              send_mail_yn: "Y",
+              trade_code: rtnValue.p_rtn_cur[0].MA_TRACUU,
+           
           });
 
           if (!invoice.buyer_email && !invoice.buyer_email_cc && !rtnValue.p_rtn_cur[0].BUYER_EMAIL && !rtnValue.p_rtn_cur[0].BUYER_EMAIL_CC) {
@@ -6928,9 +6928,9 @@ class EInvoiceController {
         }
       }
 
-      this.sendMailNormailWT(data_send_mail,"WTPTA002N-2", tax_code, p_language, p_crt_by);
+      this.sendMailNormailWT(data_send_mail,"WTPTA002N-2", p_language, p_crt_by);
 
-      return response.send(Utils.response(true, `ReSend order to invoice was Successfully!`, data_r));
+      return response.send(Utils.response(true, `ReSend invoice was Successfully!`, data_r));
 
     } catch (error) {
       Utils.Logger({
@@ -7313,7 +7313,8 @@ class EInvoiceController {
                     msg_his_id: data[i].msg_his_id,
                     buyer_email: data[i].mail_to,
                     buyer_email_cc: data[i].mail_cc,
-                    mccqt: maCQT
+                    mccqt: maCQT,
+                    send_mail_yn: "N"
                   }); 
 
                   // const result = await DBService.ExecuteSQLBlob(
@@ -7349,7 +7350,8 @@ class EInvoiceController {
                     msg_his_id: data[i].msg_his_id,
                     buyer_email: data[i].mail_to,
                     buyer_email_cc: data[i].mail_cc,
-                    mccqt: maCQT
+                    mccqt: maCQT,
+                    send_mail_yn: "N"
                   }); 
 
                   // const result = await DBService.callProcCursor(
@@ -7977,6 +7979,7 @@ class EInvoiceController {
           buyer_email: invoices[i].mail_to,
           buyer_email_cc: invoices[i].mail_cc,
           mccqt:"",
+          send_mail_yn:"N"
         });
       }  
 
@@ -13558,16 +13561,19 @@ class EInvoiceController {
        // send mail ............
        let data_rep = [];
        let tax_code = "";
+       console.log("data_send_mail", data_send_mail);
        for (const data of data_send_mail) {
           if(data.mccqt && data.msg_his_id && data.buyer_email)
           {
             
               const data_param = {
-                rep_key : data.trade_code
+                rep_key : data.trade_code,
+                send_mail_yn: data.send_mail_yn
               }
               const rtnValue_inv = await DBService.ExecuteSQLBlob(
                 `BEGIN wt_sel_nor_inv_mail (          
                                                                   :rep_key,
+                                                                  :send_mail_yn,
                                                                   :p_language, 
                                                                   :p_crt_by, 
                                                                   :p_rtn_cur); END;`,
@@ -13664,14 +13670,12 @@ class EInvoiceController {
                  
                 }  
               }
-             
-            
           } 
         }
-       
-       console.log("data_rep   ", data_rep)
-       if(data_rep)
+ 
+       if(data_rep && data_rep.length > 0)
        {
+        //console.log("data_rep ", data_rep)
           const agent = {
             Agent: {
               defaultPort: 443,
@@ -13706,7 +13710,6 @@ class EInvoiceController {
           }
        }
        
-      
     } catch (e) {
       Utils.Logger({
         LVL: "error",

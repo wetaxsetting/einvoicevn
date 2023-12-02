@@ -8265,15 +8265,15 @@ class EInvoiceController {
 
         objInvoice_M.HDon.DLHDon.TTChung.TTHDLQuan = [];
         console.log("invoices[i].invoice_feature  " ,invoices[i].invoice_feature)
-        if (invoices[i].invoice_feature) { // !== "0"
+        if (invoices[i].invoice_feature !== 0) { // 
           objInvoice_M.HDon.DLHDon.TTChung.TTHDLQuan.push({
-            TCHDon: invoices[i].feature || "0",
-            LHDCLQuan: invoices[i].invoice_type_relative || "0",
-            KHMSHDCLQuan: invoices[i].form_no_relative || "",
-            KHHDCLQuan: invoices[i].serial_no_relative || "",
-            SHDCLQuan: invoices[i].invoice_no_relative || "",
-            NLHDCLQuan: invoices[i].invoice_date_relative || "",
-            GChu: invoices[i].description_relative || "",
+            TCHDon: invoices[i].feature ,
+            LHDCLQuan: invoices[i].invoice_type_relative ,
+            KHMSHDCLQuan: invoices[i].form_no_relative ,
+            KHHDCLQuan: invoices[i].serial_no_relative ,
+            SHDCLQuan: invoices[i].invoice_no_relative ,
+            NLHDCLQuan: invoices[i].invoice_date_relative ,
+            GChu: invoices[i].description_relative ,
           });
         }
 

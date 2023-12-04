@@ -676,12 +676,12 @@ class Utils {
         }
 
         if (ccy == "VND") {
-            rtnf += " Đồng";
+            rtnf += " Đồng.";
         }
 
         rtnf = minus + rtnf; //process minus case  
 
-        return rtnf;
+        return rtnf.substring(0, 2) + rtnf.substring( 2, rtnf.length -1).toLocaleLowerCase() + ".";
     }
 
     Num2EngText(s_r, ccy) {

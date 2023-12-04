@@ -13388,7 +13388,7 @@ class EInvoiceController {
         jsonTToan[0].TgTTTBSo,
         jsonTToan[0].TgTTTBChu,
       ];
-      let v_vn_amount = Utils.Num2VNText(jsonTToan[0].TgTTTBSo.toString(), jsonTTChung[0].DVTTe);
+      let v_vn_amount = await Utils.Num2VNText(jsonTToan[0].TgTTTBSo.toString(), jsonTTChung[0].DVTTe);
       // console.log("  v_vn_amount ", v_vn_amount);
       /*const templateMCCQT = ['HDon', {
                                   MCCQT: 'MCCQT'

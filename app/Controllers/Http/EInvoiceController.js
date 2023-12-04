@@ -8180,6 +8180,10 @@ class EInvoiceController {
                 for (let k = 0; k < items.length; k++) {
                   // console.log("items[k].loaiTBao " + items[k].loaiTBao);
                   //console.log("items  ", items[k]);
+                  // if (items[k].loaiTBao == "1") {
+                  //   xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
+                  // }
+                  // else 
                   if (items[k].loaiTBao == "10") {
 
                     let xml_draft = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8").split('</TTChung><DLieu>');
@@ -8195,9 +8199,7 @@ class EInvoiceController {
                       }
                   });
 
-                  } else if (items[k].loaiTBao == "1") {
-                    xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
-                  }
+                  }  
                    else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "16" || items[k].loaiTBao == "15")  {
                       // !!!========================== tao sample maCQT
                         maCQT = await this.makeid(34);

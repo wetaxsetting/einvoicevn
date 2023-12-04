@@ -3311,6 +3311,148 @@ class EInvoiceController {
     }
   }
 
+  async weTaxSendInformAdjustToTaxOffice2({ request, response, auth }) {
+    try {
+      var p_language = request.header("accept-language", "ENG");
+      var p_crt_by = "";
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const authUserName = "GENUWIN"; // "GENUWIN";
+      const authPassword = "genuwin123"; // "e_GX4v@";
+      //const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
+      //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
+      const url = "";//  "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/mttien/tbaossot";
+      const { xml_signed, req_key, smbl_kind = "M" } = request.all();
+      const agent = {
+        Agent: {
+          defaultPort: 443,
+          protocol: "https:",
+          options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
+        },
+      };
+
+      if(smbl_kind == "M")
+      {
+        url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/mttien/tbaossot";
+      }else
+      {
+        url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
+      }
+      //console.log("weTaxSendInformAdjustToTaxOffice  xml_signed  ", xml_signed);
+
+      const valid = this.validateNoticeXML(this.parseXmlToJson(xml_signed));
+      if (!valid.status) {
+        return response.send(Utils.response(valid.status, valid.message, null));
+      }
+
+       const matesNoticePK = await this.weTaxExtractXMLContentNotice(xml_signed, p_crt_by, p_language);
+
+       //console.log("weTaxSendInformAdjustToTaxOffice  valid  ", matesNoticePK);
+       
+       if(matesNoticePK == 0 )
+       {
+         return response.send(
+           Utils.response(false, `Notice have not details`, {
+             req_key: "",
+             xml_signed: "",
+             trade_code: "",
+             tax_code: tax_code,
+           })
+         );
+       }else if (matesNoticePK == -1 )
+       {
+         return response.send(
+           Utils.response(false, `Taxcode company not yet register! `, {
+             req_key: "",
+             xml_signed: "",
+             trade_code: "",
+             tax_code: tax_code,
+           })
+         );
+       } else if (matesNoticePK == -2 )
+       {
+         return response.send(
+           Utils.response(false, `The file xml is wrong! `, {
+             req_key: "",
+             xml_signed: "",
+             trade_code: "",
+             tax_code: tax_code,
+           })
+         );
+       }else if (matesNoticePK == -3 )
+       {
+         return response.send(
+           Utils.response(false, `The invoice registered !`, {
+             req_key: "",
+             xml_signed: "",
+             trade_code: "",
+             tax_code: tax_code,
+           })
+         );
+       }
+
+      const trade_code = await Request.post(
+        url,
+        { base64XML: Buffer.from(xml_signed).toString("base64") },
+        {
+          agent,
+          headers: {
+            Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
+          },
+        }
+      );
+      //console.log("trade_code ", trade_code);
+      if (trade_code && trade_code.data.maGDich) {
+        
+        const para_value = {
+            req_key: matesNoticePK,
+            trade_code: trade_code.data.maGDich,
+            xml_sign: xml_signed,
+        };
+        const res = await DBService.ExecuteSQLBlob(
+            `BEGIN EI_UP_NOTICE_TRADE_CODE( :req_key,
+                                                  :trade_code, 
+                                                  :xml_sign,
+                                                  :p_language, 
+                                                  :p_crt_by, 
+                                                  :p_rtn_cur); END;`,
+            para_value,
+            p_language,
+            p_crt_by
+        );
+
+        if (res.p_rtn_cur[0].STATUS == "OK") {
+            return Utils.response(true, `Call tax office api success.`, {
+                req_key: req_key,
+                trade_code: trade_code.data.maGDich,
+            });
+        } else {
+            return response.send(
+                Utils.response(
+                    false,
+                    `Something went wrong, please try again later.
+                    EI_UP_NOTICE_TRADE_CODE`,
+                    para_value
+                )
+            );
+        }
+
+      } else {
+        return response.send(Utils.response(false, 'No data found!', null));
+      }
+    } catch (e) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "sendInvoiceToTaxOffice",
+        CONTENT: e.message,
+      });
+      return response.send(Utils.response(false, e.message, null));
+    }
+  }
+
   async sendInformAdjustToTaxOfficeFromClient({ request, response, auth }) {
     try {
       var p_language = request.header("accept-language", "ENG");

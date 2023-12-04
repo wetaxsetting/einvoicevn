@@ -7402,9 +7402,8 @@ class EInvoiceController {
         base64XMLCQT = "",
         data_error = [],
         data_inv = [],
-        xml_tax_signed =""
-        ;
-
+        xml_tax_signed ="";
+      let xml_length = 0;
       for (let i = 0; i < data.length; i++) {
         //console.log("SSS ", url + data[i].trade_code);
 
@@ -7432,11 +7431,13 @@ class EInvoiceController {
               const items = res.data[j];
               for (let k = 0; k < items.length; k++) {
                 // console.log("items[k].loaiTBao " + items[k].loaiTBao);
+                var getLength = require("utf8-byte-length")
                 if (items[k].loaiTBao == "10") {
                   maCQT = items[k].ndungTBao.maCQT;
                   base64XMLCQT = items[k].ndungTBao.base64XML;
-                  const base64XML = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
-
+                  xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
+                  xml_length = getLength(xml_tax_signed);
+                  
                   maTBao = items[k].loaiTBao;
                   tenTBao = items[k].tenTBao;
                   const para_value = {
@@ -7463,6 +7464,7 @@ class EInvoiceController {
                   // );
                 }else if (items[k].loaiTBao == "1") {
                     xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
+                    xml_length = getLength(base64XML);
                  
                 } else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "16" || items[k].loaiTBao == "15") {
                  /* maTBao = items[k].loaiTBao;
@@ -7517,7 +7519,8 @@ class EInvoiceController {
           const para_status = {
             trade_code : data[i].trade_code,
             maCQT : maCQT,
-            xml_tax_signed : xml_tax_signed
+            xml_tax_signed : xml_tax_signed,
+            xml_length: xml_length
             };
   
             const res_op = await DBService.ExecuteSQLBlob(
@@ -7525,6 +7528,7 @@ class EInvoiceController {
                                       :trade_code, 
                                       :maCQT,
                                       :xml_tax_signed,
+                                      :xml_length,
                                       :p_language, 
                                       :p_crt_by, 
                                       :p_rtn_cur); 
@@ -8161,6 +8165,7 @@ class EInvoiceController {
           let tenTBao = "";
           let maCQT = "";
           let xml_tax_signed = "";
+          let xml_length = 0;
           let data_error = [];
 
         if(tr_code.trade_code)
@@ -8188,6 +8193,10 @@ class EInvoiceController {
 
                     let xml_draft = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8").split('</TTChung><DLieu>');
                     xml_tax_signed ='<?xml version="1.0" encoding="UTF-8"?>'+ xml_draft[1].replace('</DLieu></TDiep>','');
+                    var getLength = require("utf8-byte-length")
+                    xml_length = getLength(xml_tax_signed);
+                    //console.log(" count_length   ", count_length);
+
                     maCQT = items[k].ndungTBao.maCQT;
 
                     maTBao = items[k].loaiTBao;
@@ -8240,7 +8249,8 @@ class EInvoiceController {
         const para_status = {
           req_ep_key : tr_code.trade_code,
           maCQT : maCQT,
-          xml_tax_signed : xml_tax_signed
+          xml_tax_signed : xml_tax_signed,
+          xml_length: xml_length
           };
 
           const res_op = await DBService.ExecuteSQLBlob(
@@ -8248,6 +8258,7 @@ class EInvoiceController {
                                     :req_ep_key, 
                                     :maCQT,
                                     :xml_tax_signed,
+                                    :xml_length,
                                     :p_language, 
                                     :p_crt_by, 
                                     :p_rtn_cur); 

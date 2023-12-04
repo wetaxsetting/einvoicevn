@@ -6786,8 +6786,6 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
       const { 
-        sale_id,
-        msg_his_id,
         tax_code,
         sale_date,
         store_code,
@@ -6796,8 +6794,6 @@ class EInvoiceController {
       } = request.all();
 
       console.log("weTaxReSendNormalInvoice  BEGIN ============================= ");
-      //console.log("weTaxReSendNormalInvoice  sale_id ",sale_id);
-      //console.log("weTaxReSendNormalInvoice  msg_his_id ",msg_his_id);
       console.log("weTaxReSendNormalInvoice  tax_code ",tax_code);
       console.log("weTaxReSendNormalInvoice  sale_date ",sale_date);
       console.log("weTaxReSendNormalInvoice  store_code ",store_code);
@@ -7308,7 +7304,7 @@ class EInvoiceController {
                   };
 
                   data_inv.push({
-                    req_key: data[i].req_key,
+                    sale_id: data[i].req_key,
                     trade_code: data[i].trade_code,
                     msg_his_id: data[i].msg_his_id,
                     buyer_email: data[i].mail_to,
@@ -7345,7 +7341,7 @@ class EInvoiceController {
                 // !!!========================== tao sample maCQT
 
                   data_inv.push({
-                    req_key: data[i].req_key,
+                    sale_id: data[i].req_key,
                     trade_code: data[i].trade_code,
                     msg_his_id: data[i].msg_his_id,
                     buyer_email: data[i].mail_to,
@@ -8003,7 +7999,7 @@ class EInvoiceController {
        // console.log("res_op  ", res_op);
         const lookup_code = data_r_tradecode.p_rtn_cur[0].LOOKUP_CODE;
         rtnValueTradecode.push({
-          req_key: invoices[i].req_key,
+          sale_id: invoices[i].req_key,
           req_ep_key: masterInvoicePK.PK,
           trade_code: trade_code.data.maGDich,
           msg_his_id: invoices[i].msg_his_id,
@@ -13659,7 +13655,7 @@ class EInvoiceController {
                    );
        
                     data_rep.push({
-                     sale_id : data.req_key ,
+                     sale_id : data.sale_id ,
                      msg_his_id: data.msg_his_id,
                      status_code: "1",
                      status_name: "Sent Success",
@@ -13689,7 +13685,7 @@ class EInvoiceController {
                      p_crt_by
                    );
                    data_rep.push({
-                     sale_id : data.req_key ,
+                     sale_id : data.sale_id ,
                      msg_his_id: data.msg_his_id,
                      status_code: "0",
                      status_name: "Sent Faile",

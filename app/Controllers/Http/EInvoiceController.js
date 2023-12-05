@@ -3553,7 +3553,7 @@ class EInvoiceController {
                   invoice_no: invoice.soHDon,
                   invoice_date: invoice.ngayHDon,
                   cqt_result: invoice.tthaiTNCQT,//   invoice.dsachLoi.length == 0 ? 1 : 2,
-                  dsachLoi: invoice.dsachLoi,
+                  error_list: invoice.dsachLoi,
                 });
                 
                 console.log("invoice.dsachLoi  ", invoice.dsachLoi)
@@ -3601,7 +3601,17 @@ class EInvoiceController {
 
               tenTBao = items[k].tenTBao;
               maTBao = items[k].loaiTBao;
-              
+              let error_list = [];
+
+              for(const error of items[k].ndungTBao.tbaoKTraDLieu.dsachLoiGoiDLieuKhac )
+              {
+                error_list.push({
+                  error_cd: error.maLoi,
+                  error_nm: error.mtaLoi
+                });
+                cqt_result = error.maLoi + " - " + error.mtaLoi + "\n";
+              }
+
               const param_d = 
               {
                 trade_code : inv.trade_code
@@ -3619,8 +3629,8 @@ class EInvoiceController {
                                                                 );
                // console.log("data_d  ", data_d);                                                
               for (const invoice of items[k].ndungTBao.dsachHDonSSot) {
-                cqt_result = "Thành công";
-                cqt_status = "1";
+                //cqt_result = "Thành công";
+                cqt_status = "0";
 
                 const found = data_d.p_rtn_cur.find((element) => element.FORM_NO == invoice.khieuMauHDon 
                                                       && element.SERIAL_NO == invoice.khieuHDon 
@@ -3634,12 +3644,12 @@ class EInvoiceController {
                   serial_no: invoice.khieuHDon,
                   invoice_no: invoice.soHDon,
                   invoice_date: invoice.ngayHDon,
-                  cqt_result:   "1",//   invoice.dsachLoi.length == 0 ? 1 : 2,
-                  dsachLoi: [],
+                  cqt_result:   "0",//   invoice.dsachLoi.length == 0 ? 1 : 2,
+                  error_list: error_list
                 });
                  
                 const data_d_tbss = {
-                  p_mccqt : "",
+                  p_mccqt : found.MCCQT,
                   p_form_no : invoice.khieuMauHDon,
                   p_serial_no : invoice.khieuHDon,
                   p_invoice_no : invoice.soHDon,
@@ -3665,16 +3675,7 @@ class EInvoiceController {
                   p_crt_by
                 );
               }
-
-
-            } /*else if (items[k].loaiTBao == "15") {
-              tenTBao = items[k].tenTBao;
-              maTBao = items[k].loaiTBao;
-              ndungTBao = items[k].ndungTBao;
-            } else {
-              maTBao = items[k].loaiTBao;
-              tenTBao = items[k].tenTBao || items[k].message;
-            }*/
+            } 
           }
         }
 

@@ -170,7 +170,7 @@
                       :height="limitHeightGridDetails"
                       :update_paras="[
                         'PK',
-                        'TEI_EINVOICE_M_PK',
+                        'TEI_WT_INVOICE_M_PK',
                         'MCCQT',
                         'KHMSHDON',
                         'KHHDON',
@@ -542,7 +542,7 @@
                 _rowstatus: "i",
                 NO: "",
                 PK: "",
-                TEI_EINVOICE_M_PK: this.modelMaster.TEI_COMPANY_PK,
+                TEI_WT_INVOICE_M_PK: this.modelMaster.TEI_COMPANY_PK,
                 MCCQT: "",
                 KHMSHDON: "",
                 KHHDON: "",
@@ -612,7 +612,7 @@
             this.OnPreviewEinvoice();
             break;
           case "previewBB_Replace":
-          this.OnPreviewBBR();
+            this.OnPreviewBBR();
           break;
           // case "sign":
           //  this.OnSignXml();  
@@ -647,9 +647,9 @@
       async OnPreviewEinvoice()
       {
         if (this.tei_einvoice_m_pk_row) {
-              let res_url = await this.$axios.$post("/einvoice/general-url-pdf", {
+              let res_url = await this.$axios.$post("/einvoice/general-pdf-template-WT", {
                 responseType: "json",
-                tei_wt_sale_bill_pk: this.tei_einvoice_m_pk_row,
+                data: this.tei_einvoice_m_pk_row,
               });
               if (res_url.success) {
                 this.pdfUrl = res_url.data;
@@ -788,7 +788,7 @@
             _rowstatus: "i",
             NO: selectedData[i].NO,
             PK: selectedData[i].PK,
-            TEI_EINVOICE_M_PK: selectedData[i].TEI_EINVOICE_M_PK,
+            TEI_WT_INVOICE_M_PK: selectedData[i].TEI_WT_INVOICE_M_PK,
             MCCQT: selectedData[i].CQT_MCCQT_ID,
             KHMSHDON: selectedData[i].FORM_NO,
             KHHDON: selectedData[i].SERIAL_NO,
@@ -1375,7 +1375,7 @@
   
       async onCellClickDetail({ column, data, rowIndex, rowType }) {
         console.log("tei_einvoice_ss_m_pk_row  ", data)
-        this.tei_einvoice_m_pk_row = data.TEI_EINVOICE_M_PK;
+        this.tei_einvoice_m_pk_row = data.TEI_WT_INVOICE_M_PK;
         this.invoiceType = data.TCTBAO;
       },
   

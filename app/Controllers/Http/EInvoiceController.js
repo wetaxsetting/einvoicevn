@@ -3556,7 +3556,7 @@ class EInvoiceController {
                   dsachLoi: invoice.dsachLoi,
                 });
                 
-                console.log("invoice.dsachLoi  ", invoice.dsachLoi)
+                //console.log("invoice.dsachLoi  ", invoice.dsachLoi)
 
                 if (invoice.dsachLoi.length == 0) {
                   cqt_result = "Thành công";
@@ -3657,7 +3657,7 @@ class EInvoiceController {
                   p_cqt_status : cqt_status
                 };
 
-                console.log("data_d_tbss  ", data_d_tbss)
+                //console.log("data_d_tbss  ", data_d_tbss)
                 await DBService.ExecuteSQLBlob(
                   `BEGIN wt_upd_hd04ss_d(
                                     :p_mccqt, 

@@ -3187,8 +3187,8 @@ class EInvoiceController {
       const authUserName = "GENUWIN"; // "GENUWIN";
       const authPassword = "genuwin123"; // "e_GX4v@";
       //const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
-      const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
-      //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/mttien/tbaossot";
+      //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
+      const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/mttien/tbaossot";
       const { xml_signed, req_key } = request.all();
       const agent = {
         Agent: {
@@ -3540,7 +3540,7 @@ class EInvoiceController {
              
             } else if (items[k].loaiTBao == "1") {
                 base64XML = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
-            } else if (items[k].loaiTBao == "17") {
+            } else if (items[k].loaiTBao == "17" || items[k].loaiTBao == "15") {
               
               tenTBao = items[k].tenTBao;
               maTBao = items[k].loaiTBao;
@@ -3598,6 +3598,7 @@ class EInvoiceController {
 
 
             } else if (items[k].loaiTBao == "16") {  
+
               tenTBao = items[k].tenTBao;
               maTBao = items[k].loaiTBao;
               
@@ -3637,8 +3638,6 @@ class EInvoiceController {
                   dsachLoi: [],
                 });
                  
-               
-
                 const data_d_tbss = {
                   p_mccqt : "",
                   p_form_no : invoice.khieuMauHDon,
@@ -3668,14 +3667,14 @@ class EInvoiceController {
               }
 
 
-            } else if (items[k].loaiTBao == "15") {
+            } /*else if (items[k].loaiTBao == "15") {
               tenTBao = items[k].tenTBao;
               maTBao = items[k].loaiTBao;
               ndungTBao = items[k].ndungTBao;
             } else {
               maTBao = items[k].loaiTBao;
               tenTBao = items[k].tenTBao || items[k].message;
-            }
+            }*/
           }
         }
 

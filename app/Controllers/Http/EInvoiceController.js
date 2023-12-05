@@ -3630,7 +3630,7 @@ class EInvoiceController {
                // console.log("data_d  ", data_d);                                                
               for (const invoice of items[k].ndungTBao.dsachHDonSSot) {
                 //cqt_result = "Thành công";
-                cqt_status = "0";
+                cqt_status = "2";
 
                 const found = data_d.p_rtn_cur.find((element) => element.FORM_NO == invoice.khieuMauHDon 
                                                       && element.SERIAL_NO == invoice.khieuHDon 
@@ -3644,7 +3644,7 @@ class EInvoiceController {
                   serial_no: invoice.khieuHDon,
                   invoice_no: invoice.soHDon,
                   invoice_date: invoice.ngayHDon,
-                  cqt_result:   "0",//   invoice.dsachLoi.length == 0 ? 1 : 2,
+                  cqt_result:   "2",//   invoice.dsachLoi.length == 0 ? 1 : 2,
                   dsachLoi: error_list 
                 });
                  

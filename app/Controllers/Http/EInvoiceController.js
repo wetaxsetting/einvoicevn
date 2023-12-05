@@ -3198,7 +3198,7 @@ class EInvoiceController {
         },
       };
 
-      //console.log("weTaxSendInformAdjustToTaxOffice  xml_signed  ", xml_signed);
+      console.log("weTaxSendInformAdjustToTaxOffice  xml_signed  ", xml_signed);
 
       const valid = this.validateNoticeXML(this.parseXmlToJson(xml_signed));
       if (!valid.status) {
@@ -3271,11 +3271,11 @@ class EInvoiceController {
         };
         const res = await DBService.ExecuteSQLBlob(
             `BEGIN EI_UP_NOTICE_TRADE_CODE( :req_key,
-                                                  :trade_code, 
-                                                  :xml_sign,
-                                                  :p_language, 
-                                                  :p_crt_by, 
-                                                  :p_rtn_cur); END;`,
+                                            :trade_code, 
+                                            :xml_sign,
+                                            :p_language, 
+                                            :p_crt_by, 
+                                            :p_rtn_cur); END;`,
             para_value,
             p_language,
             p_crt_by
@@ -3541,6 +3541,7 @@ class EInvoiceController {
             } else if (items[k].loaiTBao == "1") {
                 base64XML = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
             } else if (items[k].loaiTBao == "17") {
+              
               tenTBao = items[k].tenTBao;
               maTBao = items[k].loaiTBao;
               

@@ -72,9 +72,9 @@ class EiExcelHandler {
      
     //console.log(einvoiceDetailData)
     if (einvoiceMasterData.length <= 0) {
-      return that.showNotification(
+      return this.showNotification(
         "warning",
-        that.$t("This Einvoice Doesn't Exist"),
+        this.$t("This Einvoice Doesn't Exist"),
         "",
         5000
       );

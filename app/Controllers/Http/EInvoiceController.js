@@ -3645,7 +3645,7 @@ class EInvoiceController {
                   invoice_no: invoice.soHDon,
                   invoice_date: invoice.ngayHDon,
                   cqt_result:   "0",//   invoice.dsachLoi.length == 0 ? 1 : 2,
-                  dsachLoi: error_list
+                  dsachLoi: error_list 
                 });
                  
                 const data_d_tbss = {

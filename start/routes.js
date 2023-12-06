@@ -166,10 +166,12 @@ Route.group(() => {
     Route.post("re-send-order-info", "EInvoiceController.weTaxReSendOrderInfoV2")
     Route.post("re-send-normal-invoice", "EInvoiceController.weTaxReSendNormalInvoice")
     Route.post("send-company-template", "EInvoiceController.weTaxSendCompanyTemplate")
+    Route.post("general-records-xml", "EInvoiceController.weTaxGeneralRecordsXml")
+
 
 
     // e-invoice
-    Route.post("general-records-xml", "EInvoiceController.generalRecordsXml")
+    Route.post("general-records-xml-at", "EInvoiceController.generalRecordsXml")
     Route.post("general-pos-invoice-xml-view", "EInvoiceController.generalXmlPosInvoiceView")
     Route.post("general-pos-invoice-xml", "EInvoiceController.generalXmlPosInvoice")
     Route.post("general-invoice-xml", "EInvoiceController.generalXmlInvoice")

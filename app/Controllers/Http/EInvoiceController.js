@@ -928,7 +928,7 @@ class EInvoiceController {
           req_key : invalid_invoices.req_key,
           xml : xmlRemoveLine,
           id_signing: id,
-          url_signning: "TBao/DSCKS/NNT"
+          url_signing: "TBao/DSCKS/NNT"
       })
 
       return response.send(
@@ -8517,6 +8517,159 @@ class EInvoiceController {
       return response.send(Utils.response(false, e.message, null));
     }
   }
+
+  async weTaxGeneralRecordsXml({ request, response, auth }) {
+    try {
+      var p_language = request.header("accept-language", "ENG");
+      var p_crt_by = "";
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+
+      const { 
+              form_no,
+              inform_date,
+              version,
+              seller_company_name,
+              seller_taxcode,
+              seller_address,
+              seller_position,
+              seller_representative,
+              noti_list  
+            } = request.all();
+
+      if(!form_no)
+      {
+        return response.send(Utils.response(false, `form no is not null`, null));
+      }
+
+      if(!inform_date)
+      {
+        return response.send(Utils.response(false, `inform_date is not null`, null));
+      }
+
+      if(!version)
+      {
+        return response.send(Utils.response(false, `version is not null`, null));
+      }
+
+      if(!seller_company_name)
+      {
+        return response.send(Utils.response(false, `seller_company_name is not null`, null));
+      }
+
+      if(!seller_taxcode)
+      {
+        return response.send(Utils.response(false, `seller_taxcode is not null`, null));
+      }
+
+      if(!seller_address)
+      {
+        return response.send(Utils.response(false, `seller_address is not null`, null));
+      }
+
+      console.log("weTaxGeneralRecordsXml noti_list ", noti_list);
+
+      let rtnXML = [];
+      let objInvoice = {
+        BBan:{
+          DLieu:{
+            PBan:"",
+            MSo:"",
+            NTBao:"",
+            NBan:{
+              Ten:"",
+              MST:"",
+              DChi:"",
+              NDDien:"",
+              CVu:""
+            },
+            NMua:{
+              Ten:"",
+              MST:"",
+              DChi:"",
+              DDanh:"",
+              NDDien:"",
+              CVu:""  
+            },
+            HDon:{
+              KHMSHDon:"",
+              KHHDon:"",
+              SHDon:"",
+              NLap:""
+            },
+            LDo:""
+          },
+          DSCKS:{
+            NBan:"",
+            NMua:""
+          }
+        }
+      };
+
+      for(const noti of noti_list)
+      {
+        if(!noti.buyer_company_name)
+        {
+          return response.send(Utils.response(false, `buyer_company_name is not null`, null));
+        }
+
+        if(!noti.form_no || !noti.serial_no || !noti.invoice_no || !noti.invoice_dt || !noti.reason)
+        {
+          return response.send(Utils.response(false, `information invoice is not null`, null));
+        }
+
+        objInvoice.BBan.DLieu.PBan = version;
+        objInvoice.BBan.DLieu.MSo  = form_no;
+        objInvoice.BBan.DLieu.NTBao  = inform_date;
+
+        objInvoice.BBan.DLieu.NBan.Ten = seller_company_name;
+        objInvoice.BBan.DLieu.NBan.MST = seller_taxcode;
+        objInvoice.BBan.DLieu.NBan.DChi = seller_address;
+        objInvoice.BBan.DLieu.NBan.NDDien = seller_position;
+        objInvoice.BBan.DLieu.NBan.CVu = seller_representative;
+
+        objInvoice.BBan.DLieu.NMua.Ten = noti.buyer_company_name;
+        objInvoice.BBan.DLieu.NMua.MST = noti.buyer_taxcode; 
+        objInvoice.BBan.DLieu.NMua.DChi = noti.buyer_address; 
+        objInvoice.BBan.DLieu.NMua.NDDien = noti.buyer_position; 
+        objInvoice.BBan.DLieu.NMua.CVu = noti.buyer_representative; 
+
+        objInvoice.BBan.DLieu.HDon.KHMSHDon = noti.form_no; 
+        objInvoice.BBan.DLieu.HDon.KHHDon = noti.serial_no;
+        objInvoice.BBan.DLieu.HDon.SHDon = noti.invoice_no;
+        objInvoice.BBan.DLieu.HDon.NLap = noti.invoice_dt;
+
+        objInvoice.BBan.DLieu.LDo = noti.reason;
+    
+
+        const id = "ID1";//uuid.v4();
+        const xml = this.OBJtoXML(objInvoice);
+        const xmlId = xml.toString().replace("<DLieu>", `<DLieu Id=\'${id}\'>`);
+        const xmlRemoveLine = xmlId.toString().replace(/\n/g, "");
+        rtnXML.push({
+          req_key: noti.req_key,
+          id_signing: id,
+          url_signing: "BBan/DSCKS/NBan",
+          xml: xmlRemoveLine,
+        });
+      }
+
+        
+
+      return response.send(Utils.response(true, `Convert json to xml was successful. `, rtnXML));
+    } catch (e) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "generalRecordsXml",
+        CONTENT: e.message,
+      });
+      console.log(e);
+      return response.send(Utils.response(false, e.message, null));
+    }
+  }
   // end weTAX
 
   // e -invoice
@@ -8619,7 +8772,7 @@ class EInvoiceController {
       rtnXML = [{
         req_key: tei_einvoice_ss_d_pk,
         id_signing: id,
-        url_signning: "BBan/DSCKS/NBan",
+        url_signing: "BBan/DSCKS/NBan",
         xml: xmlRemoveLine,
       }];
 
@@ -8628,7 +8781,7 @@ class EInvoiceController {
       Utils.Logger({
         LVL: "error",
         MODULE: "EInvoiceController",
-        FUNC: "convertInvoiceToXML",
+        FUNC: "generalRecordsXml",
         CONTENT: e.message,
       });
       console.log(e);
@@ -9195,7 +9348,7 @@ class EInvoiceController {
         req_key: "",
         id_signing: id,
         xml: xmlRemoveLine,
-        url_signning: "TDiep/CKSNNT"
+        url_signing: "TDiep/CKSNNT"
       }];
 
       return response.send(Utils.response(true, `Convert json to xml was successful. `, rtnXML));
@@ -9463,7 +9616,7 @@ class EInvoiceController {
           req_key: list_invoice[i].PK,
           xml: xmlRemoveLine,
           id_signing: id,
-          url_signning: "//DSCKS/NBan"
+          url_signing: "//DSCKS/NBan"
         });
         // rtnXML = {
         //     //tax_code: data.tax_code,
@@ -14104,7 +14257,7 @@ class EInvoiceController {
         rtnXML.push({
           req_key: inv.req_d_key,
           id_signing: id,
-          url_signning: "BBan/DSCKS/NBan",
+          url_signing: "BBan/DSCKS/NBan",
           xml: xmlRemoveLine,
         });
 

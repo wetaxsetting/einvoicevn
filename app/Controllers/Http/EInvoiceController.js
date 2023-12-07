@@ -3326,7 +3326,7 @@ class EInvoiceController {
       const authPassword = "genuwin123"; // "e_GX4v@";
       //const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
       //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
-      const url = "";//  "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/mttien/tbaossot";
+      let url = "";//  "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/mttien/tbaossot";
       const { xml_signed, req_key, smbl_kind  } = request.all();
       const agent = {
         Agent: {
@@ -3336,6 +3336,7 @@ class EInvoiceController {
         },
       };
 
+      //console.log("smbl_kind ", smbl_kind);
       if(smbl_kind == "M")
       {
         url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/mttien/tbaossot";

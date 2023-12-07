@@ -167,6 +167,8 @@ Route.group(() => {
     Route.post("re-send-normal-invoice", "EInvoiceController.weTaxReSendNormalInvoice")
     Route.post("send-company-template", "EInvoiceController.weTaxSendCompanyTemplate")
     Route.post("general-records-xml", "EInvoiceController.weTaxGeneralRecordsXml")
+    Route.post("send-records", "EInvoiceController.weTaxSendRecords")
+
 
 
 

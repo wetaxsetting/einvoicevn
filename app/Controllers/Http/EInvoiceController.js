@@ -3529,18 +3529,19 @@ class EInvoiceController {
         if (!result.data.length) {
           return response.send(Utils.response(false, 'Checking Tax Status Failure. No data found.',null));
         }
-        let tenTBao = "", maTBao = "",cqt_result = "", cqt_status = "", base64XML = "" ;
+        let tenTBao = "", maTBao = "",p_cqt_result = "", p_cqt_status = "", base64XML = "" ;
         let ndungTBao = [];
         for (let j = 0; j < result.data.length; j++) {
           const items = result.data[j];
           for (let k = 0; k < items.length; k++) {
-            if (items[k].loaiTBao == "0") {
+            /*if (items[k].loaiTBao == "0") {
               tenTBao = items[k].tenTBao;
               maTBao = items[k].loaiTBao;
              
             } else if (items[k].loaiTBao == "1") {
                 base64XML = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
-            } else if (items[k].loaiTBao == "17" || items[k].loaiTBao == "15") {
+            } else */
+            if (items[k].loaiTBao == "17" || items[k].loaiTBao == "15") {
               
               tenTBao = items[k].tenTBao;
               maTBao = items[k].loaiTBao;
@@ -3559,12 +3560,13 @@ class EInvoiceController {
                 //console.log("invoice.dsachLoi  ", invoice.dsachLoi)
 
                 if (invoice.dsachLoi.length == 0) {
-                  cqt_result = "Thành công";
-                  cqt_status = invoice.tthaiTNCQT;
+                  p_cqt_result = "Thành công";
+                  p_cqt_status = invoice.tthaiTNCQT;
                 } else {
+                  p_cqt_result = "";
                   for (const error of invoice.dsachLoi) {
-                    cqt_result += error.maLoi + " - " + error.mtaLoi;
-                    cqt_status = invoice.tthaiTNCQT;
+                    p_cqt_result += error.maLoi + " - " + error.mtaLoi;
+                    p_cqt_status = invoice.tthaiTNCQT;
                   }
                 }
 
@@ -3573,8 +3575,8 @@ class EInvoiceController {
                   p_form_no : invoice.khieuMauHDon,
                   p_serial_no : invoice.khieuHDon,
                   p_invoice_no : invoice.soHDon,
-                  p_cqt_result : cqt_result,
-                  p_cqt_status : cqt_status
+                  p_cqt_result : p_cqt_result,
+                  p_cqt_status : p_cqt_status
                 };
 
                 console.log("data_d_tbss  ", data_d_tbss)
@@ -3596,9 +3598,7 @@ class EInvoiceController {
                 );
               }
 
-
             } else if (items[k].loaiTBao == "16") {  
-
               tenTBao = items[k].tenTBao;
               maTBao = items[k].loaiTBao;
               let error_list = [];
@@ -3606,10 +3606,10 @@ class EInvoiceController {
               for(const error of items[k].ndungTBao.tbaoKTraDLieu.dsachLoiGoiDLieuKhac )
               {
                 error_list.push({
-                  error_cd: error.maLoi,
-                  error_nm: error.mtaLoi
+                  maLoi: error.maLoi,
+                  mtaLoi: error.mtaLoi
                 });
-                cqt_result = error.maLoi + " - " + error.mtaLoi + "\n";
+                p_cqt_result = error.maLoi + " - " + error.mtaLoi + "\n";
               }
 
               const param_d = 
@@ -3629,8 +3629,8 @@ class EInvoiceController {
                                                                 );
                // console.log("data_d  ", data_d);                                                
               for (const invoice of items[k].ndungTBao.dsachHDonSSot) {
-                //cqt_result = "Thành công";
-                cqt_status = "2";
+                //p_cqt_result = "Thành công";
+                p_cqt_status = "2";
 
                 const found = data_d.p_rtn_cur.find((element) => element.FORM_NO == invoice.khieuMauHDon 
                                                       && element.SERIAL_NO == invoice.khieuHDon 
@@ -3653,8 +3653,8 @@ class EInvoiceController {
                   p_form_no : invoice.khieuMauHDon,
                   p_serial_no : invoice.khieuHDon,
                   p_invoice_no : invoice.soHDon,
-                  p_cqt_result : cqt_result,
-                  p_cqt_status : cqt_status
+                  p_cqt_result : p_cqt_result,
+                  p_cqt_status : p_cqt_status
                 };
 
                 //console.log("data_d_tbss  ", data_d_tbss)
@@ -8657,6 +8657,35 @@ class EInvoiceController {
       }
 
         
+
+      return response.send(Utils.response(true, `Convert json to xml was successful. `, rtnXML));
+    } catch (e) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "generalRecordsXml",
+        CONTENT: e.message,
+      });
+      console.log(e);
+      return response.send(Utils.response(false, e.message, null));
+    }
+  }
+
+  async weTaxSendRecords({ request, response, auth }) {
+    try {
+      var p_language = request.header("accept-language", "ENG");
+      var p_crt_by = "";
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+
+      const { 
+        seller_taxcode,
+        noti_list
+        } = request.all();
+
+  
 
       return response.send(Utils.response(true, `Convert json to xml was successful. `, rtnXML));
     } catch (e) {

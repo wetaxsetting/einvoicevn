@@ -3327,7 +3327,7 @@ class EInvoiceController {
       //const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
       //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
       const url = "";//  "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/mttien/tbaossot";
-      const { xml_signed, req_key, smbl_kind = "M" } = request.all();
+      const { xml_signed, req_key, smbl_kind = "T" } = request.all();
       const agent = {
         Agent: {
           defaultPort: 443,

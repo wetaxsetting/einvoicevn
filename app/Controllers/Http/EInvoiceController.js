@@ -2149,10 +2149,12 @@ class EInvoiceController {
           NTBao: "NTBao",
         },
       ];
+
       //console.log("p_xml_content  ", p_xml_content);
 
       const jsonTTChung = await transform(p_xml_content, templateTTChung);
-      //return jsonTTChung;
+      //console.log("jsonTTChung  ", jsonTTChung);
+
       
       const arrTTChung = [
         jsonTTChung[0].PBan,
@@ -2190,6 +2192,7 @@ class EInvoiceController {
       let masterPara = arrTTChung;
 
       //console.log("masterPara  ",masterPara)
+      //return  masterPara;
       const master = await DBService.callProcCursor("WT_UPD_NOTICE_M", masterPara, p_language, p_crt_by);
       //console.log("jsonHDon", jsonHDon);
       if (master && master[0].PK > 0) {
@@ -3198,55 +3201,55 @@ class EInvoiceController {
         },
       };
 
-      console.log("weTaxSendInformAdjustToTaxOffice  xml_signed  ", xml_signed);
+      //console.log("weTaxSendInformAdjustToTaxOffice  xml_signed  ", xml_signed);
 
-      const valid = this.validateNoticeXML(this.parseXmlToJson(xml_signed));
+      const valid = await this.validateNoticeXML(this.parseXmlToJson(xml_signed));
       if (!valid.status) {
         return response.send(Utils.response(valid.status, valid.message, null));
       }
 
        const matesNoticePK = await this.weTaxExtractXMLContentNotice(xml_signed, p_crt_by, p_language);
 
-       //console.log("weTaxSendInformAdjustToTaxOffice  valid  ", matesNoticePK);
+       console.log("weTaxSendInformAdjustToTaxOffice  valid  ", matesNoticePK);
        
        if(matesNoticePK == 0 )
        {
          return response.send(
            Utils.response(false, `Notice have not details`, {
-             req_key: "",
+             req_key: req_key,
              xml_signed: "",
              trade_code: "",
-             tax_code: tax_code,
+             tax_code: "",
            })
          );
        }else if (matesNoticePK == -1 )
        {
          return response.send(
            Utils.response(false, `Taxcode company not yet register! `, {
-             req_key: "",
+             req_key: req_key,
              xml_signed: "",
              trade_code: "",
-             tax_code: tax_code,
+             tax_code: "",
            })
          );
        } else if (matesNoticePK == -2 )
        {
          return response.send(
            Utils.response(false, `The file xml is wrong! `, {
-             req_key: "",
+             req_key: req_key,
              xml_signed: "",
              trade_code: "",
-             tax_code: tax_code,
+             tax_code: "",
            })
          );
        }else if (matesNoticePK == -3 )
        {
          return response.send(
            Utils.response(false, `The invoice registered !`, {
-             req_key: "",
+             req_key: req_key,
              xml_signed: "",
              trade_code: "",
-             tax_code: tax_code,
+             tax_code: "",
            })
          );
        }
@@ -3340,9 +3343,9 @@ class EInvoiceController {
       {
         url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
       }
-      //console.log("weTaxSendInformAdjustToTaxOffice  xml_signed  ", xml_signed);
+      console.log("weTaxSendInformAdjustToTaxOffice  xml_signed  ", xml_signed);
 
-      const valid = this.validateNoticeXML(this.parseXmlToJson(xml_signed));
+      const valid = await this.validateNoticeXML(this.parseXmlToJson(xml_signed));
       if (!valid.status) {
         return response.send(Utils.response(valid.status, valid.message, null));
       }

@@ -3336,7 +3336,7 @@ class EInvoiceController {
         },
       };
 
-      //console.log("smbl_kind ", smbl_kind);
+      //console.log("smbl_kind ", smbl_type);
       if(smbl_type  == "M")
       {
         url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/mttien/tbaossot";
@@ -3353,46 +3353,46 @@ class EInvoiceController {
 
        const matesNoticePK = await this.weTaxExtractXMLContentNotice(xml_signed, p_crt_by, p_language);
 
-       //console.log("weTaxSendInformAdjustToTaxOffice  valid  ", matesNoticePK);
+       console.log("weTaxSendInformAdjustToTaxOffice  valid  ", matesNoticePK);
        
        if(matesNoticePK == 0 )
        {
          return response.send(
            Utils.response(false, `Notice have not details`, {
-             req_key: "",
+             req_key: req_key,
              xml_signed: "",
              trade_code: "",
-             tax_code: tax_code,
+             tax_code: "",
            })
          );
        }else if (matesNoticePK == -1 )
        {
          return response.send(
            Utils.response(false, `Taxcode company not yet register! `, {
-             req_key: "",
+             req_key: req_key,
              xml_signed: "",
              trade_code: "",
-             tax_code: tax_code,
+             tax_code: "",
            })
          );
        } else if (matesNoticePK == -2 )
        {
          return response.send(
            Utils.response(false, `The file xml is wrong! `, {
-             req_key: "",
+             req_key: req_key,
              xml_signed: "",
              trade_code: "",
-             tax_code: tax_code,
+             tax_code: "",
            })
          );
        }else if (matesNoticePK == -3 )
        {
          return response.send(
            Utils.response(false, `The invoice registered !`, {
-             req_key: "",
+             req_key: req_key,
              xml_signed: "",
              trade_code: "",
-             tax_code: tax_code,
+             tax_code: "",
            })
          );
        }
@@ -8644,6 +8644,7 @@ class EInvoiceController {
         objInvoice.BBan.DLieu.HDon.KHHDon = noti.serial_no;
         objInvoice.BBan.DLieu.HDon.SHDon = noti.invoice_no;
         objInvoice.BBan.DLieu.HDon.NLap = noti.invoice_dt;
+        objInvoice.BBan.DLieu.HDon.MCCQT = noti.mccqt;
 
         objInvoice.BBan.DLieu.LDo = noti.reason;
     
@@ -8692,7 +8693,9 @@ class EInvoiceController {
         // console.log()
         for(const noti of noti_list)
         {
+          console.log("noti  ", noti);
           const res = await this.weTaxExtractRecordXMLContent(noti.xml_signed, p_language, p_crt_by)
+          return response.send(Utils.response(true, `Convert json to xml was successful. `, res));
         }
         
 
@@ -8799,6 +8802,7 @@ class EInvoiceController {
         objInvoice.BBan.DLieu.HDon.KHHDon = invoiceM.SERIAL_NO;
         objInvoice.BBan.DLieu.HDon.SHDon = invoiceM.INVOICE_NO;
         objInvoice.BBan.DLieu.HDon.NLap = invoiceM.NTBAO;
+        objInvoice.BBan.DLieu.HDon.MCCQT = invoiceM.MCCQT;
 
         objInvoice.BBan.DLieu.LDo = invoiceM.REASON;
   
@@ -13352,35 +13356,35 @@ class EInvoiceController {
     let check_data = {};
     let data_inv = [];
     try {
-      
+         
           const template =
-          [
-            "BBan",{
+          ["BBan",{
               DLieu:{
-                PBan:"PBan",
-                MSo:"MSo",
-                NTBao:"NTBao",
+                PBan:"DLieu/PBan",
+                MSo:"DLieu/MSo",
+                NTBao:"DLieu/NTBao",
                 NBan:{
-                  Ten:"NBan/Ten",
-                  MST:"NBan/MST",
-                  DChi:"NBan/DChi",
-                  NDDien:"NBan/NDDien",
-                  CVu:"NBan/CVu",
+                  Ten:"DLieu/NBan/Ten",
+                  MST:"DLieu/NBan/MST",
+                  DChi:"DLieu/NBan/DChi",
+                  NDDien:"DLieu/NBan/NDDien",
+                  CVu:"DLieu/NBan/CVu",
                 },
                 NMua:{
-                  Ten:"NMua/Ten",
-                  MST:"NMua/MST",
-                  DChi:"NMua/DChi",
-                  NDDien:"NMua/NDDien",
-                  CVu:"NMua/CVu",
+                  Ten:"DLieu/NMua/Ten",
+                  MST:"DLieu/NMua/MST",
+                  DChi:"DLieu/NMua/DChi",
+                  NDDien:"DLieu/NMua/NDDien",
+                  CVu:"DLieu/NMua/CVu",
                 },
                 HDon:{
-                  KHMSHDon:"HDon/KHMSHDon",
-                  KHHDon:"HDon/KHHDon",
-                  SHDon:"HDon/SHDon",
-                  NLap:"HDon/NLap",
+                  KHMSHDon:"DLieu/HDon/KHMSHDon",
+                  KHHDon:"DLieu/HDon/KHHDon",
+                  SHDon:"DLieu/HDon/SHDon",
+                  NLap:"DLieu/HDon/NLap",
+                  MCCQT:"DLieu/HDon/MCCQT",
                 },
-                LDo:"LDo"
+                LDo:"DLieu/LDo"
               },
               DSCKS:{
                 NBan:"NBan",
@@ -13389,8 +13393,45 @@ class EInvoiceController {
             }
           ];
           const jsonInvoice = await transform(xml_content, template);
-          
-         console.log('===> jsonInvoice ', jsonInvoice);
+          console.log('===> jsonInvoice ', jsonInvoice);
+
+          const templateSignTime = {
+            SigningTime : "BBan/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty/SigningTime"
+          }
+          const signingTime = await transform(xml_content, templateSignTime);
+  
+          const template_sign = ""; 
+
+          const para_noti = {
+            seller_tax_code: jsonInvoice.DLieu.NBan.MST,
+            seller_comp_name: jsonInvoice.DLieu.NBan.Ten,
+            form_no:  jsonInvoice.DLieu.NBan.KHMSHDon,
+            serial_no: jsonInvoice.DLieu.NBan.KHHDon,
+            invoice_no: jsonInvoice.DLieu.NBan.SHDon,
+            mccqt:jsonInvoice.DLieu.NBan.MCCQT,
+            sign_time: signingTime.SigningTime,
+            xml_content : xml_content
+          }
+
+        const rtnValuePos = await DBService.ExecuteSQLBlob(
+          `BEGIN wt_upd_noti_xml_d (          
+                                          :invoice_date,
+                                          :seller_tax_code,
+                                          :tax_serial_number,
+                                          :pos_xml,
+                                          :req_key,
+                                          :signing_time,
+                                          :qty,
+                                          :p_language, 
+                                          :p_crt_by, 
+                                          :p_rtn_cur); END;`,
+                                          para_noti,
+                                          p_language,
+                                          p_crt_by
+                                        );
+
+          return jsonInvoice;
+        
 
     } catch (e) {
         Utils.Logger({

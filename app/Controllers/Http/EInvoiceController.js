@@ -3632,14 +3632,14 @@ class EInvoiceController {
                 //p_cqt_result = "Thành công";
                 p_cqt_status = "2";
 
-                const found = data_d.p_rtn_cur.find((element) => element.FORM_NO == invoice.khieuMauHDon 
+                const found = data_d.p_rtn_cur?.find((element) => element.FORM_NO == invoice.khieuMauHDon 
                                                       && element.SERIAL_NO == invoice.khieuHDon 
                                                       && element.INVOICE_NO == invoice.soHDon);
 
                 //console.log("found  ", found);                                                
 
                 ndungTBao.push({
-                  tax_auth_cd : found.MCCQT,
+                  tax_auth_cd : found?.MCCQT,
                   form_no: invoice.khieuMauHDon,
                   serial_no: invoice.khieuHDon,
                   invoice_no: invoice.soHDon,
@@ -3649,7 +3649,7 @@ class EInvoiceController {
                 });
                  
                 const data_d_tbss = {
-                  p_mccqt : found.MCCQT,
+                  p_mccqt : found?.MCCQT,
                   p_form_no : invoice.khieuMauHDon,
                   p_serial_no : invoice.khieuHDon,
                   p_invoice_no : invoice.soHDon,
@@ -8684,10 +8684,15 @@ class EInvoiceController {
         seller_taxcode,
         noti_list
         } = request.all();
+      
+        // console.log()
+        for(const noti of noti_list)
+        {
+          const res = await this.weTaxExtractRecordXMLContent(noti.xml_signed, p_language, p_crt_by)
+        }
+        
 
-  
-
-      return response.send(Utils.response(true, `Convert json to xml was successful. `, rtnXML));
+      return response.send(Utils.response(true, `Convert json to xml was successful. `, ));
     } catch (e) {
       Utils.Logger({
         LVL: "error",
@@ -13320,6 +13325,69 @@ class EInvoiceController {
           return { check_data, data_inv }; 
           
         }
+    } catch (e) {
+        Utils.Logger({
+            LVL: "error",
+            MODULE: "EInvoiceController",
+            FUNC: "extractXMLContent",
+            CONTENT: e.message,
+        });
+        console.log('===> extractXMLContent ',e.message);
+        return (check_data = {
+            PK: -2,
+            STATUS: "FAILE",
+        }); //master[0].PK;;
+    }
+  }
+
+  async weTaxExtractRecordXMLContent(
+    xml_content,
+    p_language,
+    p_crt_by
+) {
+    let check_data = {};
+    let data_inv = [];
+    try {
+      
+          const template =
+          [
+            "BBan",{
+              DLieu:{
+                PBan:"PBan",
+                MSo:"MSo",
+                NTBao:"NTBao",
+                NBan:{
+                  Ten:"NBan/Ten",
+                  MST:"NBan/MST",
+                  DChi:"NBan/DChi",
+                  NDDien:"NBan/NDDien",
+                  CVu:"NBan/CVu",
+                },
+                NMua:{
+                  Ten:"NMua/Ten",
+                  MST:"NMua/MST",
+                  DChi:"NMua/DChi",
+                  NDDien:"NMua/NDDien",
+                  CVu:"NMua/CVu",
+                },
+                HDon:{
+                  KHMSHDon:"HDon/KHMSHDon",
+                  KHHDon:"HDon/KHHDon",
+                  SHDon:"HDon/SHDon",
+                  NLap:"HDon/NLap",
+                },
+                LDo:"LDo"
+              },
+              DSCKS:{
+                NBan:"NBan",
+                NMua:"NMua"
+              }
+            }
+          ];
+          const jsonInvoice = await transform(xml_content, template);
+          
+         console.log('===> jsonInvoice ', jsonInvoice);
+
     } catch (e) {
         Utils.Logger({
             LVL: "error",

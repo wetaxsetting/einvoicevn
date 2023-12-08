@@ -8684,7 +8684,7 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-
+      let r_data_noti = [];
       const { 
         seller_taxcode,
         noti_list
@@ -8695,11 +8695,46 @@ class EInvoiceController {
         {
           console.log("noti  ", noti);
           const res = await this.weTaxExtractRecordXMLContent(noti.xml_signed, p_language, p_crt_by)
-          return response.send(Utils.response(true, `Convert json to xml was successful. `, res));
+
+          if(res.STATUS == "OK")
+          {
+            const data_mail = await this.weTaxSendMailRecords(res.TEI_EINVOICE_M_PK, res.TEI_COMPANY_PK, p_language, p_crt_by);
+           
+            r_data_noti.push({
+              sale_id : noti.req_key ,
+              msg_his_id: noti.msg_his_id,
+              status_code: "1",
+              status_name: "Sent Sucess",
+              send_date: data_mail.send_date,
+              send_time: data_mail.send_time,
+              mail_form: data_mail.mail_form,
+              mail_to: data_mail.mail_to,
+              mail_to_cc: data_mail.mail_to_cc,
+              title: data_mail.subject,
+              content: data_mail.body,
+            });
+
+            r_data_noti.push(data_mail);
+          }else
+          {
+            r_data_noti.push({
+              sale_id : data.req_key ,
+              msg_his_id: data.msg_his_id,
+              status_code: "0",
+              status_name: "Sent Faile",
+              send_date: "",
+              send_time: "",
+              mail_form: "",
+              mail_to: "",
+              mail_to_cc: "",
+              title: "",
+              content: "",
+            });
+          }
         }
         
+        return response.send(Utils.response(true, `Sending records was successful. `,r_data_noti ));
 
-      return response.send(Utils.response(true, `Convert json to xml was successful. `, ));
     } catch (e) {
       Utils.Logger({
         LVL: "error",
@@ -13393,35 +13428,37 @@ class EInvoiceController {
             }
           ];
           const jsonInvoice = await transform(xml_content, template);
-          console.log('===> jsonInvoice ', jsonInvoice);
+          console.log('===> jsonInvoice ', jsonInvoice[0].DLieu.HDon);
+          console.log('===> jsonInvoice ', jsonInvoice[0].DLieu.NBan);
 
           const templateSignTime = {
             SigningTime : "BBan/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty/SigningTime"
           }
           const signingTime = await transform(xml_content, templateSignTime);
   
-          const template_sign = ""; 
-
+          console.log("signingTime  ", signingTime)
           const para_noti = {
-            seller_tax_code: jsonInvoice.DLieu.NBan.MST,
-            seller_comp_name: jsonInvoice.DLieu.NBan.Ten,
-            form_no:  jsonInvoice.DLieu.NBan.KHMSHDon,
-            serial_no: jsonInvoice.DLieu.NBan.KHHDon,
-            invoice_no: jsonInvoice.DLieu.NBan.SHDon,
-            mccqt:jsonInvoice.DLieu.NBan.MCCQT,
+            seller_tax_code: jsonInvoice[0].DLieu.NBan.MST,
+            seller_comp_name: jsonInvoice[0].DLieu.NBan.Ten,
+            form_no:  jsonInvoice[0].DLieu.HDon.KHMSHDon,
+            serial_no: jsonInvoice[0].DLieu.HDon.KHHDon,
+            invoice_no: jsonInvoice[0].DLieu.HDon.SHDon,
+            mccqt: jsonInvoice[0].DLieu.HDon.MCCQT,
             sign_time: signingTime.SigningTime,
             xml_content : xml_content
           }
 
-        const rtnValuePos = await DBService.ExecuteSQLBlob(
+          console.log("para_noti  ", para_noti );
+        const rtnValueNoti = await DBService.ExecuteSQLBlob(
           `BEGIN wt_upd_noti_xml_d (          
-                                          :invoice_date,
                                           :seller_tax_code,
-                                          :tax_serial_number,
-                                          :pos_xml,
-                                          :req_key,
-                                          :signing_time,
-                                          :qty,
+                                          :seller_comp_name,
+                                          :form_no,
+                                          :serial_no,
+                                          :invoice_no,
+                                          :mccqt,
+                                          :sign_time,
+                                          :xml_content,
                                           :p_language, 
                                           :p_crt_by, 
                                           :p_rtn_cur); END;`,
@@ -13429,9 +13466,7 @@ class EInvoiceController {
                                           p_language,
                                           p_crt_by
                                         );
-
-          return jsonInvoice;
-        
+          return rtnValueNoti?.p_rtn_cur[0];        
 
     } catch (e) {
         Utils.Logger({
@@ -14389,6 +14424,7 @@ class EInvoiceController {
         objInvoice.BBan.DLieu.HDon.KHHDon = inv.serial_no;
         objInvoice.BBan.DLieu.HDon.SHDon = inv.invoice_no;
         objInvoice.BBan.DLieu.HDon.NLap = inv.invoice_date;
+        objInvoice.BBan.DLieu.HDon.MCCQT = inv.tax_confirmation_code;
 
         objInvoice.BBan.DLieu.LDo = inv.reason;
   
@@ -14455,6 +14491,70 @@ class EInvoiceController {
     }
   }
   
+  async weTaxSendMailRecords(p_tei_einvoice_m_pk, p_tei_company_pk, p_language, p_crt_by) {
+    try {
+       
+      let para_value_mail = {
+        p_tei_einvoice_m_pk: p_tei_einvoice_m_pk, //"4090",// 
+        p_tco_company_pk: p_tei_company_pk,
+      };
+      let data_mail = await DBService.ExecuteSQLBlob(
+        `BEGIN ei_sel_data_send_mail_2(
+                          :p_tei_einvoice_m_pk, 
+                          :p_tco_company_pk, 
+                          :p_language, 
+                          :p_crt_by, 
+                          :p_rtn_cur
+                      ); END;`,
+        para_value_mail,
+        p_language,
+        p_crt_by
+      );
+      // console.log(data_mail.p_rtn_cur);
+      // console.log(data_mail.p_rtn_cur.length);
+
+      if (data_mail.p_rtn_cur.length > 0) {
+
+          let EiExcels1 = new EiExcel04SS2Handler();
+          let url_pdf2 = await EiExcels1.getEinvoice(data.req_key, p_language, p_crt_by);
+          console.log("url_pdf2  ", url_pdf2);
+
+
+          const res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {
+            mail_to: data_mail.p_rtn_cur[0].EMAIL_ADDRESS,
+            cc_to: data_mail.p_rtn_cur[0].EMAIL_ADDRESS_CC,
+            subject: data_mail.p_rtn_cur[0].SUBJECT,
+            body: data_mail.p_rtn_cur[0].BODY_1_MAIL,
+            attachfile1: url_pdf2,
+            //attachfile2: url_pdf2,
+            filename1: data_mail.p_rtn_cur[0].FILENAME1,
+            //filename2: data_mail.p_rtn_cur[0].FILENAME1,
+          });
+          //console.log("res_send_mail  ", res_send_mail);
+
+          if (res_send_mail.data.success) {
+            let rtnValue = {
+              send_date: res_send_mail.data.data.date_send,
+              send_time: res_send_mail.data.data.time_send,
+              mail_form: res_send_mail.data.data.mail_from,
+              mail_to: res_send_mail.data.data.mail_to,
+              mail_to_cc: res_send_mail.data.data.mail_to_cc,
+              title: data_mail.p_rtn_cur[0].SUBJECT,
+              content: data_mail.p_rtn_cur[0].BODY_1_MAIL,
+            };
+
+            return rtnValue;
+          }
+          else {
+            return [];
+          }
+        }
+
+    } catch (error) {
+      console.log("res_send_mail error  ", error);
+    }
+  }
+
   ///vng-304
   async viewPDFTemplate_04SS({ request, response, auth }) {
     try {

@@ -8712,7 +8712,7 @@ class EInvoiceController {
                             :p_crt_by, 
                             :p_rtn_cur); 
             END;`,
-            para_status,
+            param_noti,
             p_language,
             p_crt_by
           );

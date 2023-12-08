@@ -311,7 +311,7 @@ export default {
             req_key: this.invoiceInfo.req_key,
             xml: this.invoiceInfo.seller_sign_xml,
             id_signing: id_signing,
-            url_signning: "BBan/DSCKS/NMua"
+            url_signing: "BBan/DSCKS/NMua"
           }
         ]
         //console.log("objXml  ", objXml);

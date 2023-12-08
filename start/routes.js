@@ -170,7 +170,7 @@ Route.group(() => {
     Route.post("general-records-xml", "EInvoiceController.weTaxGeneralRecordsXml")
     Route.post("send-records", "EInvoiceController.weTaxSendRecords")
     Route.post("re-send-mail-records", "EInvoiceController.weTaxReSendRecords")
-
+    Route.post("view-records", "EInvoiceController.weTaxViewRecords")
 
 
 

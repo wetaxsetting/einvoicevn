@@ -8675,6 +8675,78 @@ class EInvoiceController {
       return response.send(Utils.response(false, e.message, null));
     }
   }
+  
+  async weTaxViewRecords({ request, response, auth }) {
+    try {
+      var p_language = request.header("accept-language", "ENG");
+      var p_crt_by = "";
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      let r_data_noti = [];
+      const { 
+        seller_taxcode,
+        noti_list
+        } = request.all();
+      
+        // console.log()
+        for(const noti of noti_list)
+        {
+          console.log("noti  ", noti);
+          const param_noti = 
+          {
+            form_no:  noti.form_no,
+            serial_no:  noti.serial_no,
+            invoice_no: noti.invoice_no,
+            mccqt:  noti.mccqt
+          }
+
+          const res = await DBService.ExecuteSQLBlob(
+            `BEGIN wt_sel_data_mail(
+                            :form_no, 
+                            :serial_no,
+                            :invoice_no,
+                            :mccqt,
+                            :p_language, 
+                            :p_crt_by, 
+                            :p_rtn_cur); 
+            END;`,
+            param_noti,
+            p_language,
+            p_crt_by
+          );
+          //const res = await this.weTaxExtractRecordXMLContent(noti.xml_signed, p_language, p_crt_by)
+
+          if(res?.p_rtn_cur?.[0]?.STATUS == "OK")
+          {
+            r_data_noti.push({
+              req_key: noti.req_key,
+              url_view: res?.p_rtn_cur?.[0]?.LINK,
+            });
+            
+          }else
+          {
+            r_data_noti.push({
+              req_key: noti.req_key,
+              url_view: "",
+            });
+          }
+        }
+        
+        return response.send(Utils.response(true, `Getting records was successful. `,r_data_noti ));
+
+    } catch (e) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "generalRecordsXml",
+        CONTENT: e.message,
+      });
+      console.log(e);
+      return response.send(Utils.response(false, e.message, null));
+    }
+  }
 
   async weTaxReSendRecords({ request, response, auth }) {
     try {

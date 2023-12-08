@@ -8718,8 +8718,8 @@ class EInvoiceController {
           }else
           {
             r_data_noti.push({
-              sale_id : data.req_key ,
-              msg_his_id: data.msg_his_id,
+              sale_id : noti.req_key ,
+              msg_his_id: noti.msg_his_id,
               status_code: "0",
               status_name: "Sent Faile",
               send_date: "",
@@ -14493,13 +14493,13 @@ class EInvoiceController {
   
   async weTaxSendMailRecords(p_tei_einvoice_m_pk, p_tei_company_pk, p_language, p_crt_by) {
     try {
-       
+       console.log("p_tei_einvoice_m_pk  ", p_tei_einvoice_m_pk, " p_tei_company_pk ", p_tei_company_pk)
       let para_value_mail = {
         p_tei_einvoice_m_pk: p_tei_einvoice_m_pk, //"4090",// 
         p_tco_company_pk: p_tei_company_pk,
       };
       let data_mail = await DBService.ExecuteSQLBlob(
-        `BEGIN ei_sel_data_send_mail_2(
+        `BEGIN wt_sel_data_send_mail(
                           :p_tei_einvoice_m_pk, 
                           :p_tco_company_pk, 
                           :p_language, 
@@ -14515,9 +14515,9 @@ class EInvoiceController {
 
       if (data_mail.p_rtn_cur.length > 0) {
 
-          let EiExcels1 = new EiExcel04SS2Handler();
-          let url_pdf2 = await EiExcels1.getEinvoice(data.req_key, p_language, p_crt_by);
-          console.log("url_pdf2  ", url_pdf2);
+          let EiExcels = new EiExcel04SS2Handler();
+          let url_pdf = await EiExcels.getEinvoice(p_tei_einvoice_m_pk, p_language, p_crt_by);
+          console.log("url_pdf2  ", url_pdf);
 
 
           const res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {
@@ -14525,10 +14525,8 @@ class EInvoiceController {
             cc_to: data_mail.p_rtn_cur[0].EMAIL_ADDRESS_CC,
             subject: data_mail.p_rtn_cur[0].SUBJECT,
             body: data_mail.p_rtn_cur[0].BODY_1_MAIL,
-            attachfile1: url_pdf2,
-            //attachfile2: url_pdf2,
+            attachfile1: url_pdf,
             filename1: data_mail.p_rtn_cur[0].FILENAME1,
-            //filename2: data_mail.p_rtn_cur[0].FILENAME1,
           });
           //console.log("res_send_mail  ", res_send_mail);
 

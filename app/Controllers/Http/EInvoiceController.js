@@ -8713,8 +8713,7 @@ class EInvoiceController {
               title: data_mail.subject,
               content: data_mail.body,
             });
-
-            r_data_noti.push(data_mail);
+            
           }else
           {
             r_data_noti.push({

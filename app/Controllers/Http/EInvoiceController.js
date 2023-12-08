@@ -8676,6 +8676,98 @@ class EInvoiceController {
     }
   }
 
+  async weTaxReSendRecords({ request, response, auth }) {
+    try {
+      var p_language = request.header("accept-language", "ENG");
+      var p_crt_by = "";
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      let r_data_noti = [];
+      const { 
+        seller_taxcode,
+        noti_list
+        } = request.all();
+      
+        // console.log()
+        for(const noti of noti_list)
+        {
+          console.log("noti  ", noti);
+          const param_noti = 
+          {
+            form_no:  noti.form_no,
+            serial_no:  noti.serial_no,
+            invoice_no: noti.invoice_no,
+            mccqt:  noti.mccqt
+          }
+
+          const res = await DBService.ExecuteSQLBlob(
+            `BEGIN wt_sel_data_mail(
+                            :form_no, 
+                            :serial_no,
+                            :invoice_no,
+                            :mccqt,
+                            :p_language, 
+                            :p_crt_by, 
+                            :p_rtn_cur); 
+            END;`,
+            para_status,
+            p_language,
+            p_crt_by
+          );
+          //const res = await this.weTaxExtractRecordXMLContent(noti.xml_signed, p_language, p_crt_by)
+
+          if(res?.p_rtn_cur?.[0]?.STATUS == "OK")
+          {
+            const data_mail = await this.weTaxSendMailRecords(res?.p_rtn_cur?.[0]?.TEI_EINVOICE_M_PK, res?.p_rtn_cur?.[0]?.TEI_COMPANY_PK, p_language, p_crt_by);
+           
+            r_data_noti.push({
+              sale_id : noti.req_key ,
+              msg_his_id: noti.msg_his_id,
+              status_code: "1",
+              status_name: "Sent Sucess",
+              send_date: data_mail.send_date,
+              send_time: data_mail.send_time,
+              mail_form: data_mail.mail_form,
+              mail_to: data_mail.mail_to,
+              mail_to_cc: data_mail.mail_to_cc,
+              title: data_mail.title,
+              content: data_mail.content,
+            });
+            
+          }else
+          {
+            r_data_noti.push({
+              sale_id : noti.req_key ,
+              msg_his_id: noti.msg_his_id,
+              status_code: "0",
+              status_name: "Sent Faile",
+              send_date: "",
+              send_time: "",
+              mail_form: "",
+              mail_to: "",
+              mail_to_cc: "",
+              title: "",
+              content: "",
+            });
+          }
+        }
+        
+        return response.send(Utils.response(true, `Sending records was successful. `,r_data_noti ));
+
+    } catch (e) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "generalRecordsXml",
+        CONTENT: e.message,
+      });
+      console.log(e);
+      return response.send(Utils.response(false, e.message, null));
+    }
+  }
+
   async weTaxSendRecords({ request, response, auth }) {
     try {
       var p_language = request.header("accept-language", "ENG");

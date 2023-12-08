@@ -169,6 +169,7 @@ Route.group(() => {
     Route.post("send-company-template", "EInvoiceController.weTaxSendCompanyTemplate")
     Route.post("general-records-xml", "EInvoiceController.weTaxGeneralRecordsXml")
     Route.post("send-records", "EInvoiceController.weTaxSendRecords")
+    Route.post("re-send-invoice-erp", "EInvoiceController.weTaxReSendRecords")
 
 
 
@@ -195,7 +196,6 @@ Route.group(() => {
     Route.post("general-pdf-template-send-bill", "EInvoiceController.viewPDF_SaleBillWT")   ////VNG-304
     Route.post("send-data-pos-invoice-erp", "EInvoiceController.sendPosInvoiceErp")
     Route.post("send-invoice-erp", "EInvoiceController.sendInvoiceErp")
-
 
 
 }).prefix("api/einvoice").middleware("user");

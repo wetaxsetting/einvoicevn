@@ -8710,8 +8710,8 @@ class EInvoiceController {
               mail_form: data_mail.mail_form,
               mail_to: data_mail.mail_to,
               mail_to_cc: data_mail.mail_to_cc,
-              title: data_mail.subject,
-              content: data_mail.body,
+              title: data_mail.title,
+              content: data_mail.content,
             });
             
           }else

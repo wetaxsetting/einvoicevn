@@ -1,5 +1,6 @@
 "use strict";
 const Utils = use("Utils");
+const CryptoJS = use('crypto-js')
 const Env = use("Env");
 const AES = use("AES");
 const APP_KEY = Env.get("APP_KEY");
@@ -3519,7 +3520,7 @@ class EInvoiceController {
       const {  tax_code, trade_code_list } = request.all();
 
       let rtnValue = [];
-
+      let ndungTBao = [];
       for(const inv of trade_code_list)
       {
         const result = await Request.get(url + inv.trade_code, {
@@ -3531,10 +3532,49 @@ class EInvoiceController {
         // console.log("result", JSON.stringify(result.data));
   
         if (!result.data.length) {
-          return response.send(Utils.response(false, 'Checking Tax Status Failure. No data found.',null));
+          const param_d = 
+              {
+                trade_code : inv.trade_code
+              }
+              const data_d = await await DBService.ExecuteSQLBlob(
+                                                                  `BEGIN wt_sel_hd04ss_d(
+                                                                                    :trade_code, 
+                                                                                    :p_language, 
+                                                                                    :p_crt_by, 
+                                                                                    :p_rtn_cur
+                                                                                ); END;`,
+                                                                                param_d,
+                                                                  p_language,
+                                                                  p_crt_by
+                                                                );
+
+           for ( const data of data_d.p_rtn_cur)
+           {
+              ndungTBao.push({
+                tax_auth_cd : data.MCCQT,
+                form_no: data.FORM_NO,
+                serial_no: data.SERIAL_NO,
+                invoice_no: data.INVOICE_NO,
+                invoice_date: data.INVOICE_DT,
+                cqt_result:   "1",//   invoice.dsachLoi.length == 0 ? 1 : 2,
+                dsachLoi: [] 
+              });  
+           } 
+           
+           rtnValue.push({
+            trade_code: inv.trade_code,
+            req_key: inv.req_key,
+            inform_code: "16",
+            inform_desc: "Thông báo có thông báo mới của CQT",
+            tax_code: tax_code,
+            result_content: ndungTBao,
+        });
+        return response.send(Utils.response(true, `checking_success`, rtnValue));
+        // tạm thời đóng đoạn này vì bên CQT k trả kết quả.
+          //return response.send(Utils.response(false, 'Checking Tax Status Failure. No data found.',null));
         }
         let tenTBao = "", maTBao = "",p_cqt_result = "", p_cqt_status = "", base64XML = "" ;
-        let ndungTBao = [];
+       
         for (let j = 0; j < result.data.length; j++) {
           const items = result.data[j];
           for (let k = 0; k < items.length; k++) {
@@ -8716,6 +8756,25 @@ class EInvoiceController {
             p_language,
             p_crt_by
           );
+
+          const zlib = require('zlib');
+
+          // Chuỗi string cần thu gọn
+          const originalString = res?.p_rtn_cur?.[0]?.CQT_MAGD; // Đặt giá trị thực tế của chuỗi của bạn ở đây
+
+          // Nén chuỗi sử dụng gzip
+          const compressedString = zlib.gzipSync(originalString).toString('base64');
+          
+          console.log('Chuỗi ban đầu: createSHA256',  CryptoJS.AES.encrypt(originalString, "createSHA256", { outputLength: 8} ).toString());
+          console.log('Chuỗi ban đầu: CryptoJS.SHA3',            CryptoJS.SHA3("Message", { outputLength: 8 }));
+
+          // AES.encrypt(originalString,"asdasdsasd", {outputLength: 6}));
+          console.log('Chuỗi ban đầu:', originalString);
+          console.log('Chuỗi sau khi nén:', compressedString);
+          // Giải nén chuỗi
+          const decompressedString = zlib.gunzipSync(Buffer.from(compressedString, 'base64')).toString();
+
+          console.log('Chuỗi sau khi giải nén:', decompressedString);
           //const res = await this.weTaxExtractRecordXMLContent(noti.xml_signed, p_language, p_crt_by)
 
           if(res?.p_rtn_cur?.[0]?.STATUS == "OK")

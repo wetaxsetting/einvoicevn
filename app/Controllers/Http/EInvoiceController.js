@@ -10672,7 +10672,7 @@ class EInvoiceController {
                                             <br/>- Mã CQT của hóa đơn: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link tra cứu: 
-								                            <a href='https://test.e-invoice.webcashgenuwin.com/?lookup-einvoice=${lookup_code}'>Xem hóa đơn</a>
+								                            <a href='https://test.e-invoice.webcashvietnam.com/?lookup-einvoice=${lookup_code}'>Xem hóa đơn</a>
                                             <br />- Link download file PDF: 
                                             <a href='${url_pdf}'>Tải file PDF</a>
                                             <br />- Link download file XML: 

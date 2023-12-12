@@ -8470,7 +8470,7 @@ class EInvoiceController {
 
         objInvoice_M.HDon.DLHDon.TTChung.TTHDLQuan = [];
         console.log("invoices[i].invoice_feature  " ,invoices[i].invoice_feature)
-        if (invoices[i].invoice_feature !== 0 && invoices[i].invoice_feature !== null) { // 
+        if (invoices[i].invoice_feature != 0 && invoices[i].invoice_feature != null) { // 
           objInvoice_M.HDon.DLHDon.TTChung.TTHDLQuan.push({
             TCHDon: invoices[i].feature ,
             LHDCLQuan: invoices[i].invoice_type_relative ,

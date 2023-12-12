@@ -2680,11 +2680,11 @@ class EInvoiceController {
       }
 
       const authUserName = "GENUWIN"; // "GENUWIN";
-      const authPassword = "e_GX4v@"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+      const authPassword = "genuwin123"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
       // const authPassword = "genuwin123"; // "e_GX4v@";
 
-      const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
-      // let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+      //const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+      let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
 
       const { para } = request.all();
       // console.log("para +++===> ", para);
@@ -2736,15 +2736,14 @@ class EInvoiceController {
       };
       let para_value;
       for (let parent of para.trade_code) {
-        console.log("checkingDeclarations parent " + JSON.stringify(parent));
-        // den day
+          
         const res = await Request.get(url + parent, {
           agent,
           headers: {
             Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
           },
         });
-        // dung o day: "Request failed with status code 401"
+       
 
         let tenTBao = "",
           status = "",
@@ -2759,11 +2758,20 @@ class EInvoiceController {
         }
         for (let item of res.data) {
           for (let child of item) {
-            if (child.loaiTBao == "1") {
+            if(child.loaiTBao == "0") //999
+            {
+
+            }else if(child.loaiTBao == "1")  //999 + 102 + 103 lần đầu có thể lấy trong XML
+            {
               base64XML = Buffer.from(child.ndungTBao.base64XML, "base64").toString("utf8");
-            } else if (child.loaiTBao == "3") {
+              
+
+
+            } else if(child.loaiTBao == "3") // 102 có thể lấy trong XML
+            {
               status = "0";
-            } else {
+            } else if(child.loaiTBao == "5")
+            {
               status = "1";
             }
             tenTBao = child.tenTBao;
@@ -14323,7 +14331,7 @@ class EInvoiceController {
               console.log("rtnValue_inv  ", rtnValue_inv);
               if (rtnValue_inv?.p_rtn_cur?.[0]?.STATUS == "OK") {
                 const invoice = {
-                  buyer_comp_name: rtnValue_inv.p_rtn_cur[0].BUYER_COMP_NAME,
+                  buyer_comp_name: rtnValue_inv.p_rtn_cur[0].BUYER_COMP_NM,
                   seller_comp_name: rtnValue_inv.p_rtn_cur[0].SLLR_COMP_NM,
                   form_no: rtnValue_inv.p_rtn_cur[0].FORM_NO,
                   serial_no: rtnValue_inv.p_rtn_cur[0].SERIAL_NO,

@@ -66,8 +66,8 @@
             <v-col cols="12" align="center">
               <v-label class="" align="center">
                 <span class="formBottom" align="center">
-                  Copyright (c) 2021, Genuwin. All rights Reserved.
-                  <br />Design by Genuwin Solution.
+                  Copyright (c) 2020, Webcash Vietnam JSC. All rights Reserved.
+                  <br />Design by Webcash Vietnam JSC.
                 </span>
               </v-label>
             </v-col>

@@ -8352,7 +8352,7 @@ class EInvoiceController {
       Utils.Logger({
         LVL: "error",
         MODULE: "EInvoiceController",
-        FUNC: "sendInvoiceToTaxOffice",
+        FUNC: "weTaxSendInvoiceToTaxOffice",
         CONTENT: e.message,
       });
       console.log("e  ", e);
@@ -14004,6 +14004,11 @@ class EInvoiceController {
         masterPara = masterPara.concat(["", "", "", "", "", "", ""]);
       }
 
+      const templateSignTime = {
+        SigningTime : "HDon/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty/SigningTime"
+      }
+      const p_signingTime = await transform(xml_content, templateSignTime);
+
       masterPara = masterPara.concat([
         customField1,
         customField2,
@@ -14023,11 +14028,12 @@ class EInvoiceController {
         p_tax_serial_number,
         p_tac_crca_pk,
         p_invoice_form_symbol,
+        p_signingTime
       ]);
 
       // console.log("masterPara", masterPara)
       //const master = await callAPI(_jwtToken, { proc: 'ei_upd_tei_einvoice_cloud', para: masterPara });
-      const master = await DBService.callProcCursor("ei_upd_tei_wt_invoice_m", masterPara, p_language, p_crt_by);
+      const master = await DBService.callProcCursor("EI_UPD_TEI_WT_INVOICE_M", masterPara, p_language, p_crt_by);
       // console.log("master", master);
 
       if (master && master[0].PK > 0) {

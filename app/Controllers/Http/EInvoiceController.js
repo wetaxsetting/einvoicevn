@@ -7607,7 +7607,7 @@ class EInvoiceController {
         });
 
       }
-      console.log("data_inv  ", data_inv)
+      //console.log("data_inv  ", data_inv)
       this.sendMailNormailWT(data_inv, 'WTPTA003-1', p_language, p_crt_by) 
       return response.send(
         Utils.response(true, `${data.length} invoices was update status from tax office.`, rtnValue)
@@ -8324,7 +8324,7 @@ class EInvoiceController {
                     p_crt_by
             );
         
-            console.log("res_op   ", res_op);
+          //  console.log("res_op   ", res_op);
           rtnValue.push({
             req_key: tr_code.sale_id,
             trade_code: tr_code.trade_code,
@@ -8344,7 +8344,7 @@ class EInvoiceController {
       //   trade_code: trade_code.data.maGDich,
       //   msg_his_id: invoices[i].msg_his_id
       // });
-      console.log("rtnValueTradecode ", rtnValueTradecode);
+      //console.log("rtnValueTradecode ", rtnValueTradecode);
       this.sendMailNormailWT(rtnValueTradecode, 'WTPTA003N', p_language, p_crt_by)
 
       return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
@@ -14312,7 +14312,7 @@ class EInvoiceController {
        // send mail ............
        let data_rep = [];
        let tax_code = "";
-       console.log("data_send_mail", data_send_mail);
+       //console.log("data_send_mail", data_send_mail);
        for (const data of data_send_mail) {
           if(data.mccqt && data.msg_his_id && data.buyer_email)
           {
@@ -14333,7 +14333,7 @@ class EInvoiceController {
                 p_crt_by
               );
               
-              console.log("rtnValue_inv  ", rtnValue_inv);
+              //console.log("rtnValue_inv  ", rtnValue_inv);
               if (rtnValue_inv?.p_rtn_cur?.[0]?.STATUS == "OK") {
                 const invoice = {
                   buyer_comp_name: rtnValue_inv.p_rtn_cur[0].BUYER_COMP_NM,

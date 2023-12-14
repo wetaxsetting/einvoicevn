@@ -14031,7 +14031,7 @@ class EInvoiceController {
         signingTime.SigningTime
       ]);
 
-      // console.log("masterPara", masterPara)
+      console.log("masterPara", masterPara)
       //const master = await callAPI(_jwtToken, { proc: 'ei_upd_tei_einvoice_cloud', para: masterPara });
       const master = await DBService.callProcCursor("EI_UPD_TEI_WT_INVOICE_M", masterPara, p_language, p_crt_by);
       // console.log("master", master);

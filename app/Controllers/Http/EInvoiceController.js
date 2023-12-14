@@ -14007,7 +14007,7 @@ class EInvoiceController {
       const templateSignTime = {
         SigningTime : "HDon/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty/SigningTime"
       }
-      const p_signingTime = await transform(xml_content, templateSignTime);
+      const p_signingTime = await transform(p_xml_content, templateSignTime);
 
       masterPara = masterPara.concat([
         customField1,

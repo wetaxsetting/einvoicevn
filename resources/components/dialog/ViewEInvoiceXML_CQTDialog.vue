@@ -112,7 +112,6 @@ export default {
       this.currentRow = document.getElementById("tempPK").value;
 
       const ds = this.$refs.grdKQCQT.getDataSource();
-      console.log("file: ViewEInvoiceXML_CQTDialog.vue:115 [vng-304] previewCellFile [vng-304] ds:", ds)
         this.xmlUrl = ds[0].CQT_DATA_RESULT;
         this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
       // if (ds.length) {

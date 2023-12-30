@@ -32,11 +32,11 @@
               <BaseGridView
                 ref="grdCompany"
                 :auto_load="false"
-                sel_procedure="AC_SEL_6095710_SEARCH_NC"
+                sel_procedure="AC_SEL_6095720_SEARCH_NC"
                 select_mode="Single"
                 :max_height="limitHeight"
                 :header="headerGridLeft"
-                :filter_paras="[this.sellerTaxcode, this.form_date, this.to_date, this.symbols]"
+                :filter_paras="[this.sellerName, this.form_date, this.to_date, this.symbols]"
               />
             </v-col>
           </v-row>
@@ -68,6 +68,7 @@
 import ViewEInvoiceXMLDialog from "@/components/dialog/ViewEInvoiceXMLDialog.vue";
 import ViewEInvoiceXML_CQTDialog from "@/components/dialog/ViewEInvoiceXML_CQTDialog.vue";
 import ViewEInvoice_TransactionDetailsDailog from "@/components/dialog/ViewEInvoice_TransactionDetailsDailog.vue";
+
 export default {
   layout: "default",
   middleware: "user",
@@ -171,9 +172,8 @@ export default {
   methods: {
     previewCellFile() {
       this.currentRow = document.getElementById("tempPK").value;
-
       const ds = this.$refs.grdCompany.getDataSource();
-
+      console.log("this.currentRow  previewCellFile", this.currentRow);
       if (ds.length) {
         const found = ds.find((item) => item.PK == this.currentRow);
         console.log("found", found);
@@ -185,7 +185,7 @@ export default {
     },
     previewCellFile1() {
       this.currentRow = document.getElementById("tempPK1").value;
-
+      console.log("this.currentRow  previewCellFile1", this.currentRow);
       const ds = this.$refs.grdCompany.getDataSource();
 
       if (ds.length) {
@@ -200,7 +200,7 @@ export default {
 
     previewCellFile2() {
       this.currentRow = document.getElementById("tempPK2").value;
-
+      console.log("this.currentRow  previewCellFile2", this.currentRow);
       const ds = this.$refs.grdCompany.getDataSource();
 
       if (ds.length) {

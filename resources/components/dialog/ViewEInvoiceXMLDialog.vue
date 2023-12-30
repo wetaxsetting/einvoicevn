@@ -42,7 +42,7 @@ export default {
         transition: "dialog-transition",
     }),
     created() {
-        console.clear();
+        //console.clear();
         // this.getMachineTags()
 
     },

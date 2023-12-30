@@ -51,15 +51,13 @@ export default {
     origin: "center center",
     transition: "dialog-transition",
     pk: null,
-
-    
     xmlUrl: "",
     xmlFileNm: "",
     currentRow: "",
   }),
   created() {
-    console.clear();
-    this.onSearch();
+    //console.clear();
+    // this.onSearch();
   },
   computed: {
     limitHeight() { 

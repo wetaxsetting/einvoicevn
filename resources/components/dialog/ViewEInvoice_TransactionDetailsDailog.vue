@@ -13,7 +13,7 @@
         </v-btn>
         <v-row no-gutters>
           <BaseGridView
-            ref="grdKQCQT"
+            ref="grdKQCQT_D"
             :auto_load="true"
             sel_procedure="EI_SEL_6095720_KQCQT_D_NC"
             select_mode="Single"
@@ -32,8 +32,8 @@
       @minimizeDialog="manualIsMinimized = true"
       @closeManualDialog="manualIsMinimized = false"
     ></view-einvoice-xml-dialog>
-    <button type="button" v-show="false" :id="`btnPrviewHD`" @click="previewCellFile"></button>
-    <input type="textbox" id="tempPK_HD" v-show="false" />
+    <button type="button" v-show="false" :id="`btnPrviewHDD`" @click="previewCellFileD"></button>
+    <input type="textbox" id="tempPK_HDD" v-show="false" />
 
   </v-dialog>
 </template>
@@ -51,15 +51,13 @@ export default {
     origin: "center center",
     transition: "dialog-transition",
     pk: null,
-
-    
     xmlUrl: "",
     xmlFileNm: "",
     currentRow: "",
   }),
   created() {
-    console.clear();
-    this.onSearch();
+    //console.clear();
+    //this.onSearch();
   },
   computed: {
     limitHeight() { 
@@ -109,13 +107,11 @@ export default {
   },
 
   methods: {
-    previewCellFile() {
-      this.currentRow = document.getElementById("tempPK_HD").value;
-
-      const ds = this.$refs.grdKQCQT.getDataSource();
-      // console.log("file: ViewEInvoiceXML_CQTDialog.vue:115 [vng-304] previewCellFile [vng-304] ds:", ds , " this.currentRow  ", this.currentRow)
-      //   this.xmlUrl = ds[0].CQT_DATA_RESULT;
-      //   this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
+    previewCellFileD() {
+      console.log("this.currentRow  previewCellFileD 22222");
+      this.currentRow = document.getElementById("tempPK_HDD").value;
+      console.log("this.currentRow  previewCellFileD ", this.currentRow);
+      const ds = this.$refs.grdKQCQT_D.getDataSource();
       if (ds.length) {
         const found = ds.find((item) => item.PK == this.currentRow);
         console.log("found", found);
@@ -126,11 +122,11 @@ export default {
       }
     },
     myCellHTML(row, column, value, cellhtml) {
-      let gridC = this.$refs.grdKQCQT.getControl();
+      let gridC = this.$refs.grdKQCQT_D.getControl();
       let rowData = gridC.getrowdata(row);
-      let previewXML = `document.getElementById('btnPrviewHD').click()`;
+      let previewXML = `document.getElementById('btnPrviewHDD').click()`;
 
-      let html = `<button class="v-icon mdi mdi-eye light-blue--text px-16" onclick="document.getElementById('tempPK_HD').value = '${rowData.PK}';${previewXML}"></button>`;
+      let html = `<button class="v-icon mdi mdi-eye light-blue--text px-16" onclick="document.getElementById('tempPK_HDD').value = '${rowData.PK}';${previewXML}"></button>`;
       return html;
     },
 
@@ -142,7 +138,7 @@ export default {
             }, 500); 
         },
     async onSearch() {
-      await  this.$refs.grdKQCQT.loadData();
+      await  this.$refs.grdKQCQT_D.loadData();
     },
     minimizeDialog() {
       this.origin = "right bottom";

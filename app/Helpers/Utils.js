@@ -457,6 +457,14 @@ class Utils {
         };
     }
 
+    responseByRule({success = false, message = "Sometime wrong!", data = null}) {
+        return {
+            success,
+            message,
+            data
+        };
+    }
+
     CurrentDate(separater = "") {
         const date = new Date();
         const yyyy = date.getFullYear();

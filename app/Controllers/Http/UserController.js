@@ -93,7 +93,8 @@ class UserController {
       if (user) {
         if (user.STATUS === "OK") {
           const token = await auth.generate(user);
-          return response.send(Utils.response(true, "Log In Successfully!", { user: user, token: token.token, token_type: 'Bearer', expires_in: 86400 }));
+          // return response.send(Utils.response(true, "Log In Successfully!", { user: user, token: token.token, token_type: 'Bearer', expires_in: 86400 }));
+          return response.send(Utils.responseByRule({success : true, message : "Log In Successfully!", data: { user: user, token: token.token, token_type: 'Bearer', expires_in: 86400 }}));
         }
         Utils.Logger({ LVL: "info", MODULE: "UserController", FUNC: "logIn", CONTENT: `Login ERROR. IP:${ip}`, CRT_BY: user_id });
         // return response.send(Utils.response(false, user.STATUS, null));

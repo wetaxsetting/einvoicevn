@@ -683,7 +683,7 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       // return response.send(Utils.response(false, e.message));
-      return response.status(400).json(Utils.responseByRule({success : false, message : e.message}));
+      return response.status(409).json(Utils.responseByRule({success : false, message : e.message}));
 
     }
   }
@@ -984,7 +984,8 @@ class EInvoiceController {
         inform_date,
         invoices});
       if (!valid.status) {
-        return response.send(Utils.response(valid.status, valid.message, null));
+        // return response.send(Utils.response(valid.status, valid.message, null));
+        return response.status(404).json(Utils.responseByRule({success : false, message : valid.message}));
       }
 
       let jsonInvalidInvoices = {
@@ -1051,12 +1052,14 @@ class EInvoiceController {
       const xmlId = xml.toString().replace("<DLTBao>", `<DLTBao Id=\'${id}\'>`);
       const xmlRemoveLine = xmlId.toString().replace(/\n/g, "");
 
-      return response.send(
-        Utils.response(true, `Convert invalid invoices to xml was successful.`, {
-          xml_data: xmlRemoveLine,
-          sign_id: id,
-        })
-      );
+      // return response.send(
+      //   Utils.response(true, `Convert invalid invoices to xml was successful.`, {
+      //     xml_data: xmlRemoveLine,
+      //     sign_id: id,
+      //   })
+      // );
+      return response.status(200).json(Utils.responseByRule({success : true, message : "Generate announcement successfully.", data: { xml_data: xmlRemoveLine, sign_id: id }}));
+
     } catch (e) {
       Utils.Logger({
         LVL: "error",
@@ -1064,7 +1067,8 @@ class EInvoiceController {
         FUNC: "weTaxConvertInvalidInvoiceToXML",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, e.message, null));
+      // return response.send(Utils.response(false, e.message, null));
+      return response.status(409).json(Utils.responseByRule({success : false, message : e.message}));
     }
   }
 
@@ -2462,7 +2466,7 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       // return response.send(Utils.response(false, e.message, null));
-      return response.status(400).json(Utils.responseByRule({success : false, message : e.message}));
+      return response.status(409).json(Utils.responseByRule({success : false, message : e.message}));
 
     }
   }
@@ -2650,7 +2654,7 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       // return response.send(Utils.response(false, e.message, null));
-      return response.status(400).json(Utils.responseByRule({success : false, message : e.message}));
+      return response.status(409).json(Utils.responseByRule({success : false, message : e.message}));
     }
   }
 
@@ -2876,26 +2880,44 @@ class EInvoiceController {
         p_language,
         p_crt_by
       );
-        console.log("re_data  ", re_data);
+        // console.log("re_data  ", re_data);
         cr_pos_key = re_data.p_rtn_cur[0].POS_KEY;
       //// === tam thoi dong de tao pos key
-      return response.send(
-        Utils.response(true, `checking_declare_success`, {
-          tax_code: tax_code,
-          req_key: req_key,
-          inform_desc: "Thông báo về việc chấp nhận đăng ký/thay đổi thông tin",
-          inform_code: "5",
-          content: {
-                      soTBao: "177998/TB-CTHN-KDT",
-                      mauTBao: "01/TB-ĐKĐT",
-                      tenTBao: "Thông báo về việc chấp nhận thay đổi thông tin sử dụng hóa đơn điện tử",
-                      ngayTBao: "2023-08-10T08:08:44",
-                      ngayCQTKy: "2023-08-10T08:09:34",
-                      tthaiXNhanCQT: 1
-                  },
-          pos_key: cr_pos_key,
-        })
-      );
+      // return response.send(
+      //   Utils.response(true, `checking_declare_success`, {
+      //     tax_code: tax_code,
+      //     req_key: req_key,
+      //     inform_desc: "Thông báo về việc chấp nhận đăng ký/thay đổi thông tin",
+      //     inform_code: "5",
+      //     content: {
+      //                 soTBao: "177998/TB-CTHN-KDT",
+      //                 mauTBao: "01/TB-ĐKĐT",
+      //                 tenTBao: "Thông báo về việc chấp nhận thay đổi thông tin sử dụng hóa đơn điện tử",
+      //                 ngayTBao: "2023-08-10T08:08:44",
+      //                 ngayCQTKy: "2023-08-10T08:09:34",
+      //                 tthaiXNhanCQT: 1
+      //             },
+      //     pos_key: cr_pos_key,
+      //   })
+      // );
+
+      return response.status(200).json(Utils.responseByRule({success : true, message : "Check status successfully.", 
+      data: { 
+        tax_code: tax_code, 
+        req_key: req_key, 
+        inform_desc: "Thông báo về việc chấp nhận đăng ký/thay đổi thông tin",
+        inform_code: "5",
+        pos_key: cr_pos_key,
+        content: {
+          soTBao: "177998/TB-CTHN-KDT",
+          mauTBao: "01/TB-ĐKĐT",
+          tenTBao: "Thông báo về việc chấp nhận thay đổi thông tin sử dụng hóa đơn điện tử",
+          ngayTBao: "2023-08-10T08:08:44",
+          ngayCQTKy: "2023-08-10T08:09:34",
+          tthaiXNhanCQT: 1
+        }
+      }
+    }));
 
       //// === tam thoi dong de tao pos key
 
@@ -2909,7 +2931,8 @@ class EInvoiceController {
       let tenTBao;
       let loaiTBao;
       if (!res.data.length) {
-        return response.send(Utils.response(false, 'Checking Tax Status Failure. No data found.', null));
+        // return response.send(Utils.response(false, 'Checking Tax Status Failure. No data found.', null));
+        return response.status(404).json(Utils.responseByRule({success : false, message : "No data found!"}));
       }
 
       const lastNotice = res.data[res.data.length - 1];
@@ -2953,16 +2976,26 @@ class EInvoiceController {
         p_language,
         p_crt_by
       );
-      return response.send(
-        Utils.response(true, `checking_declare_success`, {
-          tax_code: taxCode,
-          req_key: req_key,
-          inform_desc: tenTBao,
-          inform_code: loaiTBao,
-          content: contentNotice,
-          pos_key: pos_key,
-        })
-      );
+      // return response.send(
+      //   Utils.response(true, `checking_declare_success`, {
+      //     tax_code: taxCode,
+      //     req_key: req_key,
+      //     inform_desc: tenTBao,
+      //     inform_code: loaiTBao,
+      //     content: contentNotice,
+      //     pos_key: pos_key,
+      //   })
+      // );
+      return response.status(200).json(Utils.responseByRule({success : true, message : "Check declare successfully.", 
+          data:{
+                tax_code: taxCode,
+                req_key: req_key,
+                inform_desc: tenTBao,
+                inform_code: loaiTBao,
+                content: contentNotice,
+                pos_key: pos_key,
+          }
+    }));
 
 
     } catch (e) {
@@ -2972,7 +3005,8 @@ class EInvoiceController {
         FUNC: "weTaxCheckingDeclarations",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, e.message,null));
+      // return response.send(Utils.response(false, e.message,null));
+      return response.status(409).json(Utils.responseByRule({success : false, message : e.message}));
     }
   }
 
@@ -3376,57 +3410,62 @@ class EInvoiceController {
       {
         url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
       }
-      console.log("weTaxSendInformAdjustToTaxOffice  xml_signed  ", xml_signed);
+      // console.log("weTaxSendInformAdjustToTaxOffice  xml_signed  ", xml_signed);
 
       const valid = await this.validateNoticeXML(this.parseXmlToJson(xml_signed));
       if (!valid.status) {
-        return response.send(Utils.response(valid.status, valid.message, null));
+        // return response.send(Utils.response(valid.status, valid.message, null));
+        return response.status(400).json(Utils.responseByRule({success : false, message : valid.message}));
       }
 
        const matesNoticePK = await this.weTaxExtractXMLContentNotice(xml_signed, p_crt_by, p_language);
 
-       console.log("weTaxSendInformAdjustToTaxOffice  valid  ", matesNoticePK);
+      //  console.log("weTaxSendInformAdjustToTaxOffice  valid  ", matesNoticePK);
        
        if(matesNoticePK == 0 )
        {
-         return response.send(
-           Utils.response(false, `Notice have not details`, {
-             req_key: req_key,
-             xml_signed: "",
-             trade_code: "",
-             tax_code: "",
-           })
-         );
+        //  return response.send(
+        //    Utils.response(false, `Notice have not details`, {
+        //      req_key: req_key,
+        //      xml_signed: "",
+        //      trade_code: "",
+        //      tax_code: "",
+        //    })
+        //  );
+        return response.status(400).json(Utils.responseByRule({success : false, message : 'Notice have no details', data: { req_key: req_key }}));
        }else if (matesNoticePK == -1 )
        {
-         return response.send(
-           Utils.response(false, `Taxcode company not yet register! `, {
-             req_key: req_key,
-             xml_signed: "",
-             trade_code: "",
-             tax_code: "",
-           })
-         );
+        //  return response.send(
+        //    Utils.response(false, `Taxcode company not yet register! `, {
+        //      req_key: req_key,
+        //      xml_signed: "",
+        //      trade_code: "",
+        //      tax_code: "",
+        //    })
+        //  );
+        return response.status(404).json(Utils.responseByRule({success : false, message : 'Company not yet register!', data: { req_key: req_key }}));
        } else if (matesNoticePK == -2 )
        {
-         return response.send(
-           Utils.response(false, `The file xml is wrong! `, {
-             req_key: req_key,
-             xml_signed: "",
-             trade_code: "",
-             tax_code: "",
-           })
-         );
+        //  return response.send(
+        //    Utils.response(false, `The file xml is wrong! `, {
+        //      req_key: req_key,
+        //      xml_signed: "",
+        //      trade_code: "",
+        //      tax_code: "",
+        //    })
+        //  );
+        return response.status(400).json(Utils.responseByRule({success : false, message : 'The file xml is wrong!', data: { req_key: req_key }}));
        }else if (matesNoticePK == -3 )
        {
-         return response.send(
-           Utils.response(false, `The invoice registered !`, {
-             req_key: req_key,
-             xml_signed: "",
-             trade_code: "",
-             tax_code: "",
-           })
-         );
+        //  return response.send(
+        //    Utils.response(false, `The invoice registered !`, {
+        //      req_key: req_key,
+        //      xml_signed: "",
+        //      trade_code: "",
+        //      tax_code: "",
+        //    })
+        //  );
+        return response.status(400).json(Utils.responseByRule({success : false, message : 'The invoice registered!', data: { req_key: req_key }}));
        }
 
       const trade_code = await Request.post(
@@ -3460,23 +3499,26 @@ class EInvoiceController {
         );
 
         if (res.p_rtn_cur[0].STATUS == "OK") {
-            return Utils.response(true, `Call tax office api success.`, {
-                req_key: req_key,
-                trade_code: trade_code.data.maGDich,
-            });
+            // return Utils.response(true, `Call tax office api success.`, {
+            //     req_key: req_key,
+            //     trade_code: trade_code.data.maGDich,
+            // });
+            return response.status(200).json(Utils.responseByRule({success : true, message : 'Send announcement successfully.', data: { req_key: req_key, trade_code: trade_code.data.maGDich }}));
         } else {
-            return response.send(
-                Utils.response(
-                    false,
-                    `Something went wrong, please try again later.
-                    EI_UP_NOTICE_TRADE_CODE`,
-                    para_value
-                )
-            );
+            // return response.send(
+            //     Utils.response(
+            //         false,
+            //         `Something went wrong, please try again later.
+            //         EI_UP_NOTICE_TRADE_CODE`,
+            //         para_value
+            //     )
+            // );
+            return response.status(409).json(Utils.responseByRule({success : false, message : 'EI_UP_NOTICE_TRADE_CODE wrong!', data: para_value}));
         }
 
       } else {
-        return response.send(Utils.response(false, 'No data found!', null));
+        // return response.send(Utils.response(false, 'No data found!', null));
+        return response.status(409).json(Utils.responseByRule({success : false, message : 'Send announcement failure!'}));
       }
     } catch (e) {
       Utils.Logger({
@@ -3485,7 +3527,8 @@ class EInvoiceController {
         FUNC: "sendInvoiceToTaxOffice",
         CONTENT: e.message,
       });
-      return response.send(Utils.response(false, e.message, null));
+      // return response.send(Utils.response(false, e.message, null));
+      return response.status(409).json(Utils.responseByRule({success : false, message : e.message}));
     }
   }
 
@@ -3655,7 +3698,7 @@ class EInvoiceController {
                     p_cqt_status : p_cqt_status
                   };
   
-                  console.log("data_d_tbss  ", data_d_tbss)
+                  // console.log("data_d_tbss  ", data_d_tbss)
                   await DBService.ExecuteSQLBlob(
                     `BEGIN wt_upd_hd04ss_d(
                                       :p_mccqt, 
@@ -3761,7 +3804,7 @@ class EInvoiceController {
             p_messCQT: tenTBao,
             p_status: "1",
           };
-          console.log("para_value_m  ", para_value_m);
+          // console.log("para_value_m  ", para_value_m);
           await DBService.ExecuteSQLBlob(
             `BEGIN wt_upd_hd04ss_m(
                               :p_req_key, 
@@ -3790,7 +3833,8 @@ class EInvoiceController {
         }
       }
 
-      return response.send(Utils.response(true, `checking_success`, rtnValue));
+      // return response.send(Utils.response(true, `checking_success`, rtnValue));
+      return response.status(200).json(Utils.responseByRule({success : true, message : 'Check Announcement successfully.', data: rtnValue}));
     } catch (e) {
       Utils.Logger({
         LVL: "error",
@@ -3798,8 +3842,9 @@ class EInvoiceController {
         FUNC: "weTaxCheckInformAdjustToTaxOfficeTest",
         CONTENT: e.message,
       });
-      console.log("error ", e);
-      return response.send(Utils.response(false, e.message, null));
+      // console.log("error ", e);
+      // return response.send(Utils.response(false, e.message, null));
+      return response.status(409).json(Utils.responseByRule({success : false, message : e.message}));
     }
   }
 
@@ -5585,7 +5630,8 @@ class EInvoiceController {
       const invoices = list_invoice;
       const valid = this.weTaxValidateJsonInvalidPosInvoiceToXML(invoices);
       if (!valid.status) {
-        return response.send(Utils.response(valid.status, valid.message, null));
+        // return response.send(Utils.response(valid.status, valid.message, null));
+        return response.status(400).json(Utils.responseByRule({success : false, message : valid.message}));
       }
       /*let invoices_sample=[
                             {master:{},detail:[{}]},
@@ -5594,7 +5640,8 @@ class EInvoiceController {
                         ];*/
       //console.log("invoices1:", invoices)
       if (invoices.length == undefined || invoices.length == 0) {
-        return response.send(Utils.response(false, `Invalid json format.`, null));
+        // return response.send(Utils.response(false, `Invalid json format.`, null));
+        return response.status(400).json(Utils.responseByRule({success : false, message : `Invalid: list_invoice`}));
       }
 
       for (let i = 0; i < invoices.length; i++) {
@@ -5755,7 +5802,9 @@ class EInvoiceController {
         req_key: req_key,
       };
 
-      return response.send(Utils.response(true, `Convert json to xml was successful.`, rtnXML));
+      // return response.send(Utils.response(true, `Convert json to xml was successful.`, rtnXML));
+      return response.status(200).json(Utils.responseByRule({success : true, message : `Generate POS invoice xml format successfully.`, data: rtnXML}));
+
     } catch (e) {
       Utils.Logger({
         LVL: "error",
@@ -5763,8 +5812,9 @@ class EInvoiceController {
         FUNC: "weTaxConvertPosInvoiceToXML",
         CONTENT: e.message,
       });
-      console.log("error ", e);
-      return response.send(Utils.response(false, e.message, null));
+      // console.log("error ", e);
+      // return response.send(Utils.response(false, e.message, null));
+      return response.status(409).json(Utils.responseByRule({success : false, message : e.message}));
     }
   }
 
@@ -6344,7 +6394,7 @@ class EInvoiceController {
         const data_xml = await this.createXMLByOne(invoice);
         var getLength = require("utf8-byte-length")
         const count_length = getLength(data_xml);
-        console.log(" count_length   ", count_length);
+        // console.log(" count_length   ", count_length);
         const xml_type = "application/xhtml+xml; charset=utf-8";
 
         if (!invoice.form_no || !invoice.serial_no || !invoice.invoice_no) {
@@ -6445,12 +6495,12 @@ class EInvoiceController {
 
 
         tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
-        console.log("tei_wt_sale_bill_pk  ", tei_wt_sale_bill_pk);
+        // console.log("tei_wt_sale_bill_pk  ", tei_wt_sale_bill_pk);
         //console.log("para_value   ", para_value);
-        console.log("rtnValue   ", rtnValue);
+        // console.log("rtnValue   ", rtnValue);
 
         if (rtnValue.p_rtn_cur[0].STATUS == "OK") {
-          console.log("tei_wt_sale_bill_pk OK ", tei_wt_sale_bill_pk);
+          // console.log("tei_wt_sale_bill_pk OK ", tei_wt_sale_bill_pk);
           data_send_mail.push({
             tei_wt_sale_bill_pk : tei_wt_sale_bill_pk,
             lookup_code: rtnValue.p_rtn_cur[0].LOOKUP_CODE,
@@ -6479,7 +6529,7 @@ class EInvoiceController {
           }
 
           for (let j = 0; j < invoice.detail_invoice.length; j++) {
-            console.log("invoice.detail_invoice   ", invoice.detail_invoice);
+            // console.log("invoice.detail_invoice   ", invoice.detail_invoice);
             const para_prod_details = {
               tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
               feature: invoice.detail_invoice[j].feature,
@@ -6533,16 +6583,16 @@ class EInvoiceController {
             form_no : invoice.form_no,
             serial_no : invoice.serial_no,
             invoice_no :invoice.invoice_no,
-            user_name: '',
-            send_date: '',
-            send_time: '',
-            mail_form: '',
-            mail_to: '',
-            mail_to_cc: '',
+            // user_name: '',
+            // send_date: '',
+            // send_time: '',
+            // mail_form: '',
+            // mail_to: '',
+            // mail_to_cc: '',
             etax_result: "",
-            etax_status: "",
-            title: '',
-            content: '',
+            // etax_status: "",
+            // title: '',
+            // content: '',
           });
           continue;
         } 
@@ -6560,16 +6610,16 @@ class EInvoiceController {
             form_no : invoice.form_no,
             serial_no : invoice.serial_no,
             invoice_no :invoice.invoice_no,
-            user_name: '',
-            send_date: '',
-            send_time: '',
-            mail_form: '',
-            mail_to: '',
-            mail_to_cc: '',
+            // user_name: '',
+            // send_date: '',
+            // send_time: '',
+            // mail_form: '',
+            // mail_to: '',
+            // mail_to_cc: '',
             etax_result: "0",
-            etax_status: "",
-            title: '',
-            content: '',
+            // etax_status: "",
+            // title: '',
+            // content: '',
           });
 
         } else {
@@ -6585,16 +6635,16 @@ class EInvoiceController {
             form_no : invoice.form_no,
             serial_no : invoice.serial_no,
             invoice_no :invoice.invoice_no,
-            customer_name: invoice.buyer_comp_name,
-            send_date: "",
-            send_time: "",
-            mail_form: "",
-            mail_to: "",
-            mail_to_cc: "",
+            // customer_name: invoice.buyer_comp_name,
+            // send_date: "",
+            // send_time: "",
+            // mail_form: "",
+            // mail_to: "",
+            // mail_to_cc: "",
             etax_result: "0",
-            etax_status: "",
-            title: "",
-            content: "",
+            // etax_status: "",
+            // title: "",
+            // content: "",
           });
         }
       }
@@ -6853,15 +6903,15 @@ class EInvoiceController {
         infor_send_mail
       } = request.all();
 
-      console.log("weTaxReSendOrderInfoV2  BEGIN ============================= ");
-      //console.log("weTaxReSendOrderInfoV2  sale_id ",sale_id);
-      //console.log("weTaxReSendOrderInfoV2  msg_his_id ",msg_his_id);
-      console.log("weTaxReSendOrderInfoV2  tax_code ",tax_code);
-      console.log("weTaxReSendOrderInfoV2  sale_date ",sale_date);
-      console.log("weTaxReSendOrderInfoV2  store_code ",store_code);
-      console.log("weTaxReSendOrderInfoV2  store_name ",store_name);
-      console.log("weTaxReSendOrderInfoV2  infor_send_mail ",infor_send_mail);
-      console.log("weTaxReSendOrderInfoV2  END =============================== ");
+      // console.log("weTaxReSendOrderInfoV2  BEGIN ============================= ");
+      // //console.log("weTaxReSendOrderInfoV2  sale_id ",sale_id);
+      // //console.log("weTaxReSendOrderInfoV2  msg_his_id ",msg_his_id);
+      // console.log("weTaxReSendOrderInfoV2  tax_code ",tax_code);
+      // console.log("weTaxReSendOrderInfoV2  sale_date ",sale_date);
+      // console.log("weTaxReSendOrderInfoV2  store_code ",store_code);
+      // console.log("weTaxReSendOrderInfoV2  store_name ",store_name);
+      // console.log("weTaxReSendOrderInfoV2  infor_send_mail ",infor_send_mail);
+      // console.log("weTaxReSendOrderInfoV2  END =============================== ");
 
       let tei_wt_sale_bill_pk = 0;
       let data_r = [];
@@ -6877,7 +6927,7 @@ class EInvoiceController {
           invoice_no: invoice.invoice_no,
         };
 
-        console.log("para_value  ", para_value)
+        // console.log("para_value  ", para_value)
 
         const rtnValue = await DBService.ExecuteSQLBlob(
           `BEGIN ei_sel_re_order_info (                   :tax_code,
@@ -6895,7 +6945,7 @@ class EInvoiceController {
           p_crt_by
         );
 
-        console.log("rtnValue  ", rtnValue)
+        // console.log("rtnValue  ", rtnValue)
 
         if (rtnValue?.p_rtn_cur?.[0]?.STATUS == "OK") {
           tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
@@ -6928,14 +6978,15 @@ class EInvoiceController {
               invoice_no: invoice.invoice_no,
               status_code: "0",
               status_name: "Buyer mail and buyer maill cc are null",
-              customer_name: "",
-              send_date: "",
-              send_time: "",
-              mail_form: "",
-              mail_to: "",
-              mail_to_cc: "",
-              title: "",
-              content: "",
+              etax_result: ""
+              // customer_name: "",
+              // send_date: "",
+              // send_time: "",
+              // mail_form: "",
+              // mail_to: "",
+              // mail_to_cc: "",
+              // title: "",
+              // content: "",
             });
             continue;
           } 
@@ -6951,14 +7002,15 @@ class EInvoiceController {
             invoice_no: invoice.invoice_no,
             status_code: "3",
             status_name: "In Process",
-            customer_name: "",
-            send_date: "",
-            send_time: "",
-            mail_form: "",
-            mail_to: "",
-            mail_to_cc: "",
-            title: "",
-            content: "",
+            etax_result: ""
+            // customer_name: "",
+            // send_date: "",
+            // send_time: "",
+            // mail_form: "",
+            // mail_to: "",
+            // mail_to_cc: "",
+            // title: "",
+            // content: "",
           });
         }
         else {
@@ -6974,22 +7026,23 @@ class EInvoiceController {
             invoice_no: invoice.invoice_no,
             status_code: "0",
             status_name: "Order einvoice not exit/ Taxcode not yet register",
-            customer_name: "",
-            send_date: "",
-            send_time: "",
-            mail_form: "",
-            mail_to: "",
-            mail_to_cc: "",
-            title: "",
-            content: "",
+            etax_result: ""
+            // customer_name: "",
+            // send_date: "",
+            // send_time: "",
+            // mail_form: "",
+            // mail_to: "",
+            // mail_to_cc: "",
+            // title: "",
+            // content: "",
           });
         }
       }
 
       this.sendMailWT(data_send_mail,"WTPTA002-2", tax_code, p_language, p_crt_by);
 
-      return response.send(Utils.response(true, `ReSend order to invoice was Successfully!`, data_r));
-
+      // return response.send(Utils.response(true, `ReSend order to invoice was Successfully!`, data_r));
+      return response.status(200).json(Utils.responseByRule({success : true, message : "ReSend order successfully.", data: data_r}));
     } catch (error) {
       Utils.Logger({
         LVL: "error",
@@ -6997,8 +7050,9 @@ class EInvoiceController {
         FUNC: "weTaxReSendOrderInfo",
         CONTENT: error.message,
       });
-      console.log(error);
-      return response.send(Utils.response(false, error.message, null));
+      // console.log(error);
+      // return response.send(Utils.response(false, error.message, null));
+      return response.status(400).json(Utils.responseByRule({success : false, message : error.message}));
     }
   }
 
@@ -7019,13 +7073,13 @@ class EInvoiceController {
         infor_send_mail
       } = request.all();
 
-      console.log("weTaxReSendNormalInvoice  BEGIN ============================= ");
-      console.log("weTaxReSendNormalInvoice  tax_code ",tax_code);
-      console.log("weTaxReSendNormalInvoice  sale_date ",sale_date);
-      console.log("weTaxReSendNormalInvoice  store_code ",store_code);
-      console.log("weTaxReSendNormalInvoice  store_name ",store_name);
-      console.log("weTaxReSendNormalInvoice  infor_send_mail ",infor_send_mail);
-      console.log("weTaxReSendNormalInvoice  END =============================== ");
+      // console.log("weTaxReSendNormalInvoice  BEGIN ============================= ");
+      // console.log("weTaxReSendNormalInvoice  tax_code ",tax_code);
+      // console.log("weTaxReSendNormalInvoice  sale_date ",sale_date);
+      // console.log("weTaxReSendNormalInvoice  store_code ",store_code);
+      // console.log("weTaxReSendNormalInvoice  store_name ",store_name);
+      // console.log("weTaxReSendNormalInvoice  infor_send_mail ",infor_send_mail);
+      // console.log("weTaxReSendNormalInvoice  END =============================== ");
 
       let tei_wt_sale_bill_pk = 0;
       let data_r = [];
@@ -7092,14 +7146,15 @@ class EInvoiceController {
               invoice_no: invoice.invoice_no,
               status_code: "0",
               status_name: "Buyer mail and buyer maill cc are null",
-              customer_name: "",
-              send_date: "",
-              send_time: "",
-              mail_form: "",
-              mail_to: "",
-              mail_to_cc: "",
-              title: "",
-              content: "",
+              etax_result: ""
+              // customer_name: "",
+              // send_date: "",
+              // send_time: "",
+              // mail_form: "",
+              // mail_to: "",
+              // mail_to_cc: "",
+              // title: "",
+              // content: "",
             });
             continue;
           } 
@@ -7115,14 +7170,15 @@ class EInvoiceController {
             invoice_no: invoice.invoice_no,
             status_code: "3",
             status_name: "In Process",
-            customer_name: "",
-            send_date: "",
-            send_time: "",
-            mail_form: "",
-            mail_to: "",
-            mail_to_cc: "",
-            title: "",
-            content: "",
+            etax_result: ""
+            // customer_name: "",
+            // send_date: "",
+            // send_time: "",
+            // mail_form: "",
+            // mail_to: "",
+            // mail_to_cc: "",
+            // title: "",
+            // content: "",
           });
         }
         else {
@@ -7138,22 +7194,23 @@ class EInvoiceController {
             invoice_no: invoice.invoice_no,
             status_code: "0",
             status_name: "Order einvoice not exit/ Taxcode not yet register",
-            customer_name: "",
-            send_date: "",
-            send_time: "",
-            mail_form: "",
-            mail_to: "",
-            mail_to_cc: "",
-            title: "",
-            content: "",
+            etax_result: ""
+            // customer_name: "",
+            // send_date: "",
+            // send_time: "",
+            // mail_form: "",
+            // mail_to: "",
+            // mail_to_cc: "",
+            // title: "",
+            // content: "",
           });
         }
       }
 
       this.sendMailNormailWT(data_send_mail,"WTPTA002N-2", p_language, p_crt_by);
 
-      return response.send(Utils.response(true, `ReSend invoice was Successfully!`, data_r));
-
+      // return response.send(Utils.response(true, `ReSend invoice was Successfully!`, data_r));
+      return response.status(200).json(Utils.responseByRule({success : true, message : "Resend order normal invoice successfully.", data: data_r}));
     } catch (error) {
       Utils.Logger({
         LVL: "error",
@@ -7161,8 +7218,10 @@ class EInvoiceController {
         FUNC: "weTaxReSendOrderInfo",
         CONTENT: error.message,
       });
-      console.log(error);
-      return response.send(Utils.response(false, error.message, null));
+      // console.log(error);
+      // return response.send(Utils.response(false, error.message, null));
+      return response.status(400).json(Utils.responseByRule({success : true, message : error.message}));
+
     }
   }
   
@@ -7418,7 +7477,7 @@ class EInvoiceController {
       });
       // console.log(e);
       // return response.send(Utils.response(false, e.message, null));
-      return response.status(400).json(Utils.responseByRule({success : false, message : e.message}));
+      return response.status(409).json(Utils.responseByRule({success : false, message : e.message}));
     }
   }
 
@@ -7450,18 +7509,20 @@ class EInvoiceController {
       );
       let data_resutl = await this.convertKeysToLowerCase(rtnValue_status.p_rtn_cur);
 
-      console.log("data_resutl  ", data_resutl);
+      // console.log("data_resutl  ", data_resutl);
 
-      return response.send(Utils.response(true, `Successfully!`, data_resutl));
+      // return response.send(Utils.response(true, `Successfully!`, data_resutl));
+      return response.status(200).json(Utils.responseByRule({success : true, message : "Get send mail status successfully.", data: data_resutl}));
     } catch (error) {
       Utils.Logger({
         LVL: "error",
         MODULE: "EInvoiceController",
-        FUNC: "weTaxUpdateSendOrderInfo",
+        FUNC: "weTaxCheckStausSendMail",
         CONTENT: e.message,
       });
-      console.log(e);
-      return response.send(Utils.response(false, e.message, null));
+      // console.log(e);
+      // return response.send(Utils.response(false, e.message, null));
+      return response.status(409).json(Utils.responseByRule({success : false, message : e.message}));
     }
   }
 
@@ -7513,7 +7574,8 @@ class EInvoiceController {
             // console.log("res  ++===> ", res.data);
 
             if (!res.data.length) {
-              return response.send(Utils.response(false, `No data found.`, null));
+              // return response.send(Utils.response(false, `No data found.`, null));
+              return response.status(404).json(Utils.responseByRule({success : false, message : 'No data found.'}));
             }
             for (let j = 0; j < res.data.length; j++) {
               const items = res.data[j];
@@ -7600,8 +7662,9 @@ class EInvoiceController {
             }
           })
           .catch((error) => {
-            console.log(error);
-            return response.send(Utils.response(false, error.message, null));
+            // console.log(error);
+            // return response.send(Utils.response(false, error.message, null));
+            return response.status(409).json(Utils.responseByRule({success : false, message : error.message}));
           });
 
           const para_status = {
@@ -7641,9 +7704,10 @@ class EInvoiceController {
       }
       //console.log("data_inv  ", data_inv)
       this.sendMailNormailWT(data_inv, 'WTPTA003-1', p_language, p_crt_by) 
-      return response.send(
-        Utils.response(true, `${data.length} invoices was update status from tax office.`, rtnValue)
-      );
+      // return response.send(
+      //   Utils.response(true, `${data.length} invoices was update status from tax office.`, rtnValue)
+      // );
+      return response.status(200).json(Utils.responseByRule({success : true, message : `${data.length} invoices was update status from tax office.`}));
 
       // rtnValue.push({
       //     trade_code: para.trade_code[i],
@@ -7666,8 +7730,9 @@ class EInvoiceController {
         FUNC: "weTaxCheckInvoiceStatusFromTaxOffice",
         CONTENT: e.message,
       });
-      console.log(e);
-      return response.send(Utils.response(false, e.message, null));
+      // console.log(e);
+      // return response.send(Utils.response(false, e.message, null));
+      return response.status(409).json(Utils.responseByRule({success : false, message : e.message}));
     }
   }
 
@@ -7740,15 +7805,15 @@ class EInvoiceController {
         invoice_xml_signed,
         req_key,
       } = request.all();
-      console.log("weTaxSendPosInvoiceToTaxOffice   =========================== BEGIN =======================", )
-      console.log("weTaxSendPosInvoiceToTaxOffice   tax_serial_number ", tax_serial_number )
-      console.log("weTaxSendPosInvoiceToTaxOffice   seller_tax_code ",seller_tax_code )
-      console.log("weTaxSendPosInvoiceToTaxOffice   sale_date ", sale_date )
-      console.log("weTaxSendPosInvoiceToTaxOffice   store_code ", store_code )
-      console.log("weTaxSendPosInvoiceToTaxOffice   pos_no ", pos_no )
-      console.log("weTaxSendPosInvoiceToTaxOffice   invoice_xml_signed ", invoice_xml_signed)
-      console.log("weTaxSendPosInvoiceToTaxOffice   req_key ", req_key)
-      console.log("weTaxSendPosInvoiceToTaxOffice   =========================== END =======================", )
+      // console.log("weTaxSendPosInvoiceToTaxOffice   =========================== BEGIN =======================", )
+      // console.log("weTaxSendPosInvoiceToTaxOffice   tax_serial_number ", tax_serial_number )
+      // console.log("weTaxSendPosInvoiceToTaxOffice   seller_tax_code ",seller_tax_code )
+      // console.log("weTaxSendPosInvoiceToTaxOffice   sale_date ", sale_date )
+      // console.log("weTaxSendPosInvoiceToTaxOffice   store_code ", store_code )
+      // console.log("weTaxSendPosInvoiceToTaxOffice   pos_no ", pos_no )
+      // console.log("weTaxSendPosInvoiceToTaxOffice   invoice_xml_signed ", invoice_xml_signed)
+      // console.log("weTaxSendPosInvoiceToTaxOffice   req_key ", req_key)
+      // console.log("weTaxSendPosInvoiceToTaxOffice   =========================== END =======================", )
 
       // let json =  this.parseXmlToJson(invoice_xml_signed);
 
@@ -7769,13 +7834,17 @@ class EInvoiceController {
       //console.log("check_data   ", check_data , "data_inv  ", data_inv);
       if(check_data.STATUS == 'FAILE')
       {
-        return response.send(Utils.response(false, `Send invoice to Tax Office was failure!`, null));
+        // return response.send(Utils.response(false, `Send invoice to Tax Office was failure!`, null));
+        return response.status(409).json(Utils.responseByRule({success : false, message : "Send invoice to Tax Office failure!"}));
       }else if (check_data.STATUS == 'EXIT' )
       {
-        return response.send(Utils.response(false, `The sign xml was send Tax Office!`, null));
+        // return response.send(Utils.response(false, `The sign xml was send Tax Office!`, null));
+        return response.status(409).json(Utils.responseByRule({success : false, message : "This invoice has been sent for Tax Office!"}));
       }else if (check_data.STATUS == 'NOEXIT' )
       {
-        return response.send(Utils.response(false, `Compay not yet register`, null));
+        // return response.send(Utils.response(false, `Compay not yet register`, null));
+        return response.status(404).json(Utils.responseByRule({success : false, message : "Compay not yet register!"}));
+
       }
 
       const agent = {
@@ -7832,7 +7901,7 @@ class EInvoiceController {
             Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
           },
         }).then(async (res) => {
-          console.log(" res  ", res.data);
+          // console.log(" res  ", res.data);
           if (res.data.length) {
             for (let j = 0; j < res.data.length; j++) {
               const items = res.data[j];
@@ -7915,9 +7984,9 @@ class EInvoiceController {
             xml_tax_signed: xml_tax_signed,
           };
         });
-        console.log("rtnValue  ", rtnValue);
-      return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
-
+        // console.log("rtnValue  ", rtnValue);
+      // return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
+      return response.status(200).json(Utils.responseByRule({success : true, message : "Sent POS invoice successfully.", data: rtnValue}));
     } catch (e) {
       Utils.Logger({
         LVL: "error",
@@ -7925,8 +7994,9 @@ class EInvoiceController {
         FUNC: "sendInvoiceToTaxOffice",
         CONTENT: e.message,
       });
-       console.log("sendInvoiceToTaxOffice ", e);
-      return response.send(Utils.response(false, e.message, null));
+      //  console.log("sendInvoiceToTaxOffice ", e);
+      // return response.send(Utils.response(false, e.message, null));
+      return response.status(409).json(Utils.responseByRule({success : false, message : e.message}));
     }
   }
 
@@ -8147,7 +8217,7 @@ class EInvoiceController {
       const urlCheck = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
       const { invoices } = request.all();
 
-      console.log("weTaxSendInvoiceToTaxOffice  invoices  ",invoices);
+      // console.log("weTaxSendInvoiceToTaxOffice  invoices  ",invoices);
       const agent = {
         Agent: {
           defaultPort: 443,
@@ -8189,7 +8259,7 @@ class EInvoiceController {
                     });
                     continue;
                 } else if (masterInvoicePK.PK < -1) {
-                    console.log(`invalid xml format [${invoices[i].req_key}]`, invoices[i].xml_signed);
+                    // console.log(`invalid xml format [${invoices[i].req_key}]`, invoices[i].xml_signed);
                     rtnValue.push({
                         req_key: invoices[i].req_key,
                         trade_code: "",
@@ -8379,7 +8449,9 @@ class EInvoiceController {
       //console.log("rtnValueTradecode ", rtnValueTradecode);
       this.sendMailNormailWT(rtnValueTradecode, 'WTPTA003N', p_language, p_crt_by)
 
-      return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
+      // return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
+      return response.status(200).json(Utils.responseByRule({success : true, message : "Sent Normal invoice successfully.", data: rtnValue}));
+
     } catch (e) {
       Utils.Logger({
         LVL: "error",
@@ -8387,8 +8459,9 @@ class EInvoiceController {
         FUNC: "weTaxSendInvoiceToTaxOffice",
         CONTENT: e.message,
       });
-      console.log("e  ", e);
-      return response.send(Utils.response(false, e.message, null));
+      // console.log("e  ", e);
+      // return response.send(Utils.response(false, e.message, null));
+      return response.status(409).json(Utils.responseByRule({success : true, message : e.message}));
     }
   }
 
@@ -8406,7 +8479,7 @@ class EInvoiceController {
         tax_code,
         order_date
       } = request.all();
-        console.log("weTaxConvertInvoiceToXML invoices  ", invoices);
+        // console.log("weTaxConvertInvoiceToXML invoices  ", invoices);
       //invoices = JSON.parse(invoices);
       let rtnXML = [];
       let count_inv = 0;
@@ -8472,7 +8545,8 @@ class EInvoiceController {
         },
       };
       if (invoices.length == undefined || invoices.length == 0) {
-        return response.send(Utils.response(false, `Invalid json format!`,null));
+        // return response.send(Utils.response(false, `Invalid json format!`,null));
+        return response.status(400).json(Utils.responseByRule({success : false, message : "Invalid json format!"}));
       }
 
       for (let i = 0; i < invoices.length; i++) {
@@ -8504,7 +8578,7 @@ class EInvoiceController {
         objInvoice_M.HDon.DLHDon.TTChung.MSTTCGP = "1201496252"; //webcashgenuwin.com taxcode
 
         objInvoice_M.HDon.DLHDon.TTChung.TTHDLQuan = [];
-        console.log("invoices[i].invoice_feature  " ,invoices[i].invoice_feature)
+        // console.log("invoices[i].invoice_feature  " ,invoices[i].invoice_feature)
         if (invoices[i].invoice_feature != 0 && invoices[i].invoice_feature != null) { // 
           objInvoice_M.HDon.DLHDon.TTChung.TTHDLQuan.push({
             TCHDon: invoices[i].feature ,
@@ -8586,13 +8660,15 @@ class EInvoiceController {
         const xml = this.OBJtoXML(objInvoice_M);
         const xmlStr = xml.toString().replace("<DLHDon>", `<DLHDon Id=\'${id}\'>`);
 
-        console.log("xmlStr", xmlStr)
+        // console.log("xmlStr", xmlStr)
         rtnXML.push({ req_key: invoices[i].master_pk, xml_data: xmlStr, sign_id: id });
       }
 
-      return response.send(
-        Utils.response(true, `Convert json to xml was successful. ${count_inv}/${invoices.length} `, rtnXML)
-      );
+      // return response.send(
+      //   Utils.response(true, `Convert json to xml was successful. ${count_inv}/${invoices.length} `, rtnXML)
+      // );
+      return response.status(200).json(Utils.responseByRule({success : true, message : `Convert json to xml was successful. ${count_inv}/${invoices.length}`, data: rtnXML}));
+
     } catch (e) {
       Utils.Logger({
         LVL: "error",
@@ -8600,12 +8676,13 @@ class EInvoiceController {
         FUNC: "weTaxConvertInvoiceToXML",
         CONTENT: e.message,
       });
-      console.log(e);
-      return response.send(Utils.response(false, e.message, null));
+      // console.log(e);
+      // return response.send(Utils.response(false, e.message, null));
+      return response.status(409).json(Utils.responseByRule({success : false, message : e.message}));
     }
   }
 
-  async weTaxGeneralRecordsXml({ request, response, auth }) {
+  async weTaxGenerateRecordsXml({ request, response, auth }) {
     try {
       var p_language = request.header("accept-language", "ENG");
       var p_crt_by = "";
@@ -8628,35 +8705,41 @@ class EInvoiceController {
 
       if(!form_no)
       {
-        return response.send(Utils.response(false, `form no is not null`, null));
+        // return response.send(Utils.response(false, `form no is not null`, null));
+        return response.status(400).json(Utils.responseByRule({success : false, message : "Invalid: form_no"}));
       }
 
       if(!inform_date)
       {
-        return response.send(Utils.response(false, `inform_date is not null`, null));
+        // return response.send(Utils.response(false, `inform_date is not null`, null));
+        return response.status(400).json(Utils.responseByRule({success : false, message : "Invalid: inform_date"}));
       }
 
       if(!version)
       {
-        return response.send(Utils.response(false, `version is not null`, null));
+        // return response.send(Utils.response(false, `version is not null`, null));
+        return response.status(400).json(Utils.responseByRule({success : false, message : "Invalid: version"}));
       }
 
       if(!seller_company_name)
       {
-        return response.send(Utils.response(false, `seller_company_name is not null`, null));
+        // return response.send(Utils.response(false, `seller_company_name is not null`, null));
+        return response.status(400).json(Utils.responseByRule({success : false, message : "Invalid: seller_company_name"}));
       }
 
       if(!seller_taxcode)
       {
-        return response.send(Utils.response(false, `seller_taxcode is not null`, null));
+        // return response.send(Utils.response(false, `seller_taxcode is not null`, null));
+        return response.status(400).json(Utils.responseByRule({success : false, message : "Invalid: seller_taxcode"}));
       }
 
       if(!seller_address)
       {
-        return response.send(Utils.response(false, `seller_address is not null`, null));
+        // return response.send(Utils.response(false, `seller_address is not null`, null));
+        return response.status(400).json(Utils.responseByRule({success : false, message : "Invalid: seller_address"}));
       }
 
-      console.log("weTaxGeneralRecordsXml noti_list ", noti_list);
+      // console.log("weTaxGeneralRecordsXml noti_list ", noti_list);
 
       let rtnXML = [];
       let objInvoice = {
@@ -8697,14 +8780,16 @@ class EInvoiceController {
 
       for(const noti of noti_list)
       {
-        if(!noti.buyer_company_name)
-        {
-          return response.send(Utils.response(false, `buyer_company_name is not null`, null));
-        }
+        // if(!noti.buyer_company_name)
+        // {
+        //   // return response.send(Utils.response(false, `buyer_company_name is not null`, null));
+        //   return response.status(400).json(Utils.responseByRule({success : false, message : "Invalid: buyer_company_name"}));
+        // }
 
-        if(!noti.form_no || !noti.serial_no || !noti.invoice_no || !noti.invoice_dt || !noti.reason)
+        if(!noti.buyer_company_name || !noti.form_no || !noti.serial_no || !noti.invoice_no || !noti.invoice_dt || !noti.reason)
         {
-          return response.send(Utils.response(false, `information invoice is not null`, null));
+          // return response.send(Utils.response(false, `information invoice is not null`, null));
+          return response.status(400).json(Utils.responseByRule({success : false, message : "Invalid: noti_list"}));
         }
 
         objInvoice.BBan.DLieu.PBan = version;
@@ -8746,7 +8831,8 @@ class EInvoiceController {
 
         
 
-      return response.send(Utils.response(true, `Convert json to xml was successful. `, rtnXML));
+      // return response.send(Utils.response(true, `Convert json to xml was successful. `, rtnXML));
+      return response.status(200).json(Utils.responseByRule({success : true, message : "Generate e-Record xml successfully.", data: rtnXML}));
     } catch (e) {
       Utils.Logger({
         LVL: "error",
@@ -8754,8 +8840,9 @@ class EInvoiceController {
         FUNC: "generalRecordsXml",
         CONTENT: e.message,
       });
-      console.log(e);
-      return response.send(Utils.response(false, e.message, null));
+      // console.log(e);
+      // return response.send(Utils.response(false, e.message, null));
+      return response.status(409).json(Utils.responseByRule({success : false, message : e.message}));
     }
   }
   
@@ -8836,8 +8923,8 @@ class EInvoiceController {
           }
         }
         
-        return response.send(Utils.response(true, `Getting records was successful. `,r_data_noti ));
-
+        // return response.send(Utils.response(true, `Getting records was successful. `,r_data_noti ));
+        return response.status(200).json(Utils.responseByRule({success : false, message : 'Get records successfully.', data: r_data_noti}));
     } catch (e) {
       Utils.Logger({
         LVL: "error",
@@ -8845,8 +8932,9 @@ class EInvoiceController {
         FUNC: "generalRecordsXml",
         CONTENT: e.message,
       });
-      console.log(e);
-      return response.send(Utils.response(false, e.message, null));
+      // console.log(e);
+      // return response.send(Utils.response(false, e.message, null));
+      return response.status(409).json(Utils.responseByRule({success : false, message : e.message}));
     }
   }
 
@@ -8928,7 +9016,8 @@ class EInvoiceController {
           }
         }
         
-        return response.send(Utils.response(true, `Sending records was successful. `,r_data_noti ));
+        // return response.send(Utils.response(true, `Send e-Record successfully.`,r_data_noti ));
+        return response.status(200).json(Utils.responseByRule({success : true, message : 'Send e-Record successfully.', data: r_data_noti}));
 
     } catch (e) {
       Utils.Logger({
@@ -8937,8 +9026,9 @@ class EInvoiceController {
         FUNC: "generalRecordsXml",
         CONTENT: e.message,
       });
-      console.log(e);
-      return response.send(Utils.response(false, e.message, null));
+      return response.status(409).json(Utils.responseByRule({success : false, message : e.message}));
+      // console.log(e);
+      // return response.send(Utils.response(false, e.message, null));
     }
   }
 
@@ -8959,7 +9049,7 @@ class EInvoiceController {
         // console.log()
         for(const noti of noti_list)
         {
-          console.log("noti  ", noti);
+          // console.log("noti  ", noti);
           const res = await this.weTaxExtractRecordXMLContent(noti.xml_signed, p_language, p_crt_by)
 
           if(res.STATUS == "OK")
@@ -8998,8 +9088,8 @@ class EInvoiceController {
           }
         }
         
-        return response.send(Utils.response(true, `Sending records was successful. `,r_data_noti ));
-
+        // return response.send(Utils.response(true, `Sending records was successful. `,r_data_noti ));
+        return response.status(200).json(Utils.responseByRule({success : true, message : 'Send e-Record successfully.', data: r_data_noti}));
     } catch (e) {
       Utils.Logger({
         LVL: "error",
@@ -9007,8 +9097,9 @@ class EInvoiceController {
         FUNC: "generalRecordsXml",
         CONTENT: e.message,
       });
-      console.log(e);
-      return response.send(Utils.response(false, e.message, null));
+      // console.log(e);
+      // return response.send(Utils.response(false, e.message, null));
+      return response.status(409).json(Utils.responseByRule({success : false, message : e.message}));
     }
   }
   // end weTAX

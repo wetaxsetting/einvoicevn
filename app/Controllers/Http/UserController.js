@@ -105,7 +105,7 @@ class UserController {
     } catch (e) {
       Utils.Logger({ LVL: "error", MODULE: "UserController", FUNC: "logIn", CONTENT: `${e.message}. IP:${ip}` });
       // return response.send(Utils.response(false, e.message, null));
-      return response.status(404).json(Utils.responseByRule({success : false, message : "User not found"}));
+      return response.status(409).json(Utils.responseByRule({success : false, message : e.message}));
     }
   }
 

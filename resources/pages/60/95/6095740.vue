@@ -32,7 +32,7 @@
               <BaseGridView
                 ref="grdCompany"
                 :auto_load="false"
-                sel_procedure="AC_SEL_6095720_SEARCH_NC"
+                sel_procedure="AC_SEL_6095740_SEARCH_NC"
                 select_mode="Single"
                 :max_height="limitHeight"
                 :header="headerGridLeft"
@@ -141,19 +141,6 @@ export default {
           width: 150,
         },
         {
-          dataField: "FORM_NO",
-          caption: this.$t("form_no"),
-        },
-        {
-          dataField: "SERIAL_NO",
-          caption: this.$t("serial_no"),
-        },
-        {
-          dataField: "INVOICE_NO",
-          caption: this.$t("invoice_no"),
-          width: 100,
-        },
-        {
           dataField: "SEND_DT",
           caption: this.$t("nlap"),
           dataType: "date",
@@ -167,7 +154,7 @@ export default {
         {
           dataField: "CQT_RESULT",
           caption: this.$t("ph_cqt"),
-          width: 160,
+          width: 260,
         },
         { dataField: "TITTLE", caption: "thao_tac", type: "html", width: 150, fixed: true, cellsrenderer: this.myCellHTML },
       ];
@@ -185,6 +172,7 @@ export default {
       this.currentRow = document.getElementById("tempPK").value;
       const ds = this.$refs.grdCompany.getDataSource();
       // console.log("this.currentRow  previewCellFile", this.currentRow);
+      // console.log("ds  previewCellFile", ds);
       if (ds.length) {
         const found = ds.find((item) => item.PK == this.currentRow);
         console.log("found", found);

@@ -10692,7 +10692,7 @@ class EInvoiceController {
                                             <br/>- Mã CQT của hóa đơn: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link tra cứu: 
-								                            <a href='https://test.e-invoice.webcashvietnam.com/?code=${lookup_code}'>Xem hóa đơn</a>
+								                            <a href='https://test.e-invoice.webcashvietnam.com/lookup-einvoice?trade_code=${lookup_code}'>Xem hóa đơn</a>
                                             <br />- Link download file PDF: 
                                             <a href='${url_pdf}'>Tải file PDF</a>
                                             <br />- Link download file XML: 
@@ -10724,7 +10724,7 @@ class EInvoiceController {
                                             <br/>- CQT code of e-invoice: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link lookup: 
-								                            <a href='https://test.e-invoice.webcashvietnam.com/?code=${lookup_code}'>View e-invoice</a>
+								                            <a href='https://test.e-invoice.webcashvietnam.com/lookup-einvoice?trade_code=${lookup_code}'>View e-invoice</a>
                                             <br />- Download file PDF link:  
                                             <a href='${url_pdf}'>Download file PDF</a>
                                             <br />- Download file XML link:  
@@ -10794,7 +10794,7 @@ class EInvoiceController {
                                             <br/>- Mã CQT của hóa đơn: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link tra cứu: 
-								                            <a href='https://test.e-invoice.webcashvietnam.com/?lookup-einvoice=${lookup_code}'>Xem hóa đơn</a>
+								                            <a href='https://test.e-invoice.webcashvietnam.com/lookup-einvoice?trade_code=${lookup_code}'>Xem hóa đơn</a>
                                             <br />- Link download file PDF: 
                                             <a href='${url_pdf}'>Tải file PDF</a>
                                             <br />- Link download file XML: 
@@ -10826,7 +10826,7 @@ class EInvoiceController {
                                             <br/>- CQT code of e-invoice: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link lookup: 
-								                            <a href='https://test.e-invoice.webcashvietnam.com/?lookup-einvoice=${lookup_code}'>View e-invoice</a>
+								                            <a href='https://test.e-invoice.webcashvietnam.com/lookup-einvoice?trade_code=${lookup_code}'>View e-invoice</a>
                                             <br />- Download file PDF link:  
                                             <a href='${url_pdf}'>Download file PDF</a>
                                             <br />- Download file XML link:  
@@ -10897,7 +10897,7 @@ class EInvoiceController {
                                             <br/>- Mã CQT của hóa đơn: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link tra cứu: 
-								                            <a href='https://test.e-invoice.webcashvietnam.com/?code=${lookup_code}'>Xem hóa đơn</a>
+								                            <a href='https://test.e-invoice.webcashvietnam.com/lookup-einvoice?trade_code=${lookup_code}'>Xem hóa đơn</a>
                                             <br />- Link download file PDF: 
                                             <a href='${url_pdf}'>Tải file PDF</a>
                                             <br />- Link download file XML: 
@@ -10929,7 +10929,7 @@ class EInvoiceController {
                                             <br/>- CQT code of e-invoice: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link lookup: 
-								                            <a href='https://test.e-invoice.webcashvietnam.com/?code=${lookup_code}'>View e-invoice</a>
+								                            <a href='https://test.e-invoice.webcashvietnam.com/lookup-einvoice?trade_code=${lookup_code}'>View e-invoice</a>
                                             <br />- Download file PDF link:  
                                             <a href='${url_pdf}'>Download file PDF</a>
                                             <br />- Download file XML link:  

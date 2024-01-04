@@ -11616,9 +11616,9 @@ class EInvoiceController {
         seller_taxcode: rtnValue.p_rtn_cur[0].SELLER_TAX_CODE,
         seller_address: rtnValue.p_rtn_cur[0].SELLER_ADD,
         seller_phone: rtnValue.p_rtn_cur[0].SELLER_TEL,
-        buyer_name: rtnValue.p_rtn_cur[0].BUYER_NAME_35,
-        buyer_comp_name: rtnValue.p_rtn_cur[0].BUYERLEGALNAME,
-        buyer_taxcode: rtnValue.p_rtn_cur[0].BUYERTAXCODE,
+        buyer_name: rtnValue.p_rtn_cur[0].BUYER_NAME,
+        buyer_comp_name: rtnValue.p_rtn_cur[0].BUYER_LEGALNAME,
+        buyer_taxcode: rtnValue.p_rtn_cur[0].BUYER_TAXCODE,
         buyer_phone: rtnValue.p_rtn_cur[0].TEL_53,
         buyer_address: rtnValue.p_rtn_cur[0].SELLER_ADDRESS_1,
         url_pdf: url_pdf,
@@ -11626,9 +11626,9 @@ class EInvoiceController {
         total_amt_no_vat: rtnValue.p_rtn_cur[0].NET_TR_AMT_DIS_TR_89,
         total_amt_dc: 0,
         total_amt_vat: rtnValue.p_rtn_cur[0].VAT_TR_AMT_DIS_TR_91,
-        total_payment: rtnValue.p_rtn_cur[0].TOT_AMT_TR_94,
-        total_payment_word_vie: rtnValue.p_rtn_cur[0].AMOUNT_WORD_VIE_107,
-        mccqt: rtnValue.p_rtn_cur[0].CQT_MCCQT_ID_85
+        total_payment: rtnValue.p_rtn_cur[0].TOT_AMT,
+        total_payment_word_vie: rtnValue.p_rtn_cur[0].AMOUNT_WORD_VIE,
+        mccqt: rtnValue.p_rtn_cur[0].CQT_MCCQT_ID
       }
 
       return response.send(Utils.response(true, "Research data invocie was success", rep_data));

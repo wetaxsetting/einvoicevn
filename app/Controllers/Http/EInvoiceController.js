@@ -8369,28 +8369,28 @@ class EInvoiceController {
                   }  
                    else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "16" || items[k].loaiTBao == "15")  {
                       // !!!========================== tao sample maCQT
-                        maCQT = await this.makeid(34);
-                        maTBao = "10";
-                        tenTBao = "Thông báo hóa đơn được CQT cấp mã";
-                        data_error = []
+                      //   maCQT = await this.makeid(34);
+                      //   maTBao = "10";
+                      //   tenTBao = "Thông báo hóa đơn được CQT cấp mã";
+                      //   data_error = []
                         
-                        rtnValueTradecode.forEach((element, index) => {
-                          if(element.trade_code === tr_code.trade_code) {
-                            rtnValueTradecode[index].mccqt = maCQT;
-                          }
-                      });
+                      //   rtnValueTradecode.forEach((element, index) => {
+                      //     if(element.trade_code === tr_code.trade_code) {
+                      //       rtnValueTradecode[index].mccqt = maCQT;
+                      //     }
+                      // });
                       // !!!========================== tao sample maCQT
                       
                     // tam thời đóng vì k cung cấp MST 
-                        /* maTBao = items[k].loaiTBao;
+                         maTBao = items[k].loaiTBao;
                           tenTBao = items[k].tenTBao;
                           data_error.push(
                             {
                               maLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].maLoi,
                               mtaLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].mtaLoi
                             }
-                          )*/
-                    // end / tam thời đóng vì k cung cấp MST 
+                          )
+                      // end / tam thời đóng vì k cung cấp MST 
 
 
                   }

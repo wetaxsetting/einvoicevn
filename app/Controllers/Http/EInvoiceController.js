@@ -11623,9 +11623,9 @@ class EInvoiceController {
         buyer_address: rtnValue.p_rtn_cur[0].SELLER_ADDRESS_1,
         url_pdf: url_pdf,
         url_xml: url_xml,
-        total_amt_no_vat: rtnValue.p_rtn_cur[0].NET_TR_AMT_DIS_TR_89,
+        total_amt_no_vat: rtnValue.p_rtn_cur[0].NET_TR_AMT,
         total_amt_dc: 0,
-        total_amt_vat: rtnValue.p_rtn_cur[0].VAT_TR_AMT_DIS_TR_91,
+        total_amt_vat: rtnValue.p_rtn_cur[0].VAT_TR_AMT,
         total_payment: rtnValue.p_rtn_cur[0].TOT_AMT,
         total_payment_word_vie: rtnValue.p_rtn_cur[0].AMOUNT_WORD_VIE,
         mccqt: rtnValue.p_rtn_cur[0].CQT_MCCQT_ID

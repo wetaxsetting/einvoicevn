@@ -92,7 +92,7 @@
                     <v-col cols="12 pt-2">
                       <v-sheet tile color="transparent" class="d-flex align-center justify-space-between" width="100%">
                         <span class="mr-auto">Mã số thuế người bán:</span>
-                        <span class="font-weight-bold">{{ invoiceInfo.seller_comp_name }}</span>
+                        <span class="font-weight-bold">{{ invoiceInfo.seller_taxcode }}</span>
                       </v-sheet>
                     </v-col>
                     <v-col cols="12 pt-2">

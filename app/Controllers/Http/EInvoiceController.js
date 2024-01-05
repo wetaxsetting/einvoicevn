@@ -8588,7 +8588,7 @@ class EInvoiceController {
             KHHDCLQuan: invoices[i].serial_no_relative ,
             SHDCLQuan: invoices[i].invoice_no_relative ,
             NLHDCLQuan: invoices[i].invoice_date_relative ,
-            GChu: invoices[i].description_relative ,
+            GChu: invoices[i].description , 
           });
         }
 

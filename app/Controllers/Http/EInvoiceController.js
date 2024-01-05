@@ -8479,7 +8479,8 @@ class EInvoiceController {
         tax_code,
         order_date
       } = request.all();
-        // console.log("weTaxConvertInvoiceToXML invoices  ", invoices);
+      console.log("weTaxConvertInvoiceToXML BEGIN  ", invoices);
+      console.log("weTaxConvertInvoiceToXML BEGIN  ", invoices);
       //invoices = JSON.parse(invoices);
       let rtnXML = [];
       let count_inv = 0;
@@ -8581,7 +8582,7 @@ class EInvoiceController {
         // console.log("invoices[i].invoice_feature  " ,invoices[i].invoice_feature)
         if (invoices[i].invoice_feature != 0 && invoices[i].invoice_feature != null) { // 
           objInvoice_M.HDon.DLHDon.TTChung.TTHDLQuan.push({
-            TCHDon: invoices[i].feature ,
+            TCHDon: invoices[i].invoice_feature ,
             LHDCLQuan: invoices[i].invoice_type_relative ,
             KHMSHDCLQuan: invoices[i].form_no_relative ,
             KHHDCLQuan: invoices[i].serial_no_relative ,
@@ -8660,7 +8661,8 @@ class EInvoiceController {
         const xml = this.OBJtoXML(objInvoice_M);
         const xmlStr = xml.toString().replace("<DLHDon>", `<DLHDon Id=\'${id}\'>`);
 
-        // console.log("xmlStr", xmlStr)
+        console.log("xmlStr", xmlStr)
+        console.log("weTaxConvertInvoiceToXML END");
         rtnXML.push({ req_key: invoices[i].master_pk, xml_data: xmlStr, sign_id: id });
       }
 

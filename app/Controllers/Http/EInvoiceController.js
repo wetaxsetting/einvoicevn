@@ -8641,6 +8641,7 @@ class EInvoiceController {
         objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu = [];
 
         for (let j = 0; j < invoices[i].detail_invoice.length; j++) {
+          console.log("invoices[i].detail_invoice  ", invoices[i].detail_invoice);
           objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
             TChat: invoices[i].detail_invoice[j].feature || "",
             STT: invoices[i].detail_invoice[j].seq || "",

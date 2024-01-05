@@ -17,7 +17,7 @@
               <BaseSelect outlined v-model="sellerName" :lstData="dataSearchList.sellerNameList" item-value="CODE" item-text="NAME" :label="$t('seller_name')"></BaseSelect>
             </v-col>
             <v-col lg="2">
-              <BaseInput outlined v-model="symbols" :label="$t('symbols')"></BaseInput>
+              <BaseInput outlined v-model="symbols" :label="$t('trade_code')"></BaseInput>
             </v-col>
 
             <v-col lg="2" class="text-right">

@@ -17,7 +17,7 @@
               <BaseSelect outlined v-model="sellerName" :lstData="dataSearchList.sellerNameList" item-value="CODE" item-text="NAME" :label="$t('seller_name')"></BaseSelect>
             </v-col>
             <v-col lg="2">
-              <BaseInput outlined v-model="symbols" :label="$t('symbols')"></BaseInput>
+              <BaseInput outlined v-model="trade_code" :label="$t('trade_code')"></BaseInput>
             </v-col>
 
             <v-col lg="2" class="text-right">
@@ -36,7 +36,7 @@
                 select_mode="Single"
                 :max_height="limitHeight"
                 :header="headerGridLeft"
-                :filter_paras="[this.sellerTaxcode, this.form_date, this.to_date, this.symbols]"
+                :filter_paras="[this.sellerTaxcode, this.form_date, this.to_date, this.trade_code]"
               />
             </v-col>
           </v-row>
@@ -85,7 +85,7 @@ export default {
       sellerNameList: [],
     },
     sellerName: "",
-    symbols: "",
+    trade_code: "",
 
     xmlUrl: "",
     xmlFileNm: "",

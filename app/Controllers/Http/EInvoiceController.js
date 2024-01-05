@@ -8987,19 +8987,22 @@ class EInvoiceController {
           {
             const data_mail = await this.weTaxSendMailRecords(res?.p_rtn_cur?.[0]?.TEI_EINVOICE_M_PK, res?.p_rtn_cur?.[0]?.TEI_COMPANY_PK, noti.buyer_email, noti.buyer_email_cc , p_language, p_crt_by);
            
-            r_data_noti.push({
-              sale_id : noti.req_key ,
-              msg_his_id: noti.msg_his_id,
-              status_code: "1",
-              status_name: "Sent Sucess",
-              send_date: data_mail.send_date,
-              send_time: data_mail.send_time,
-              mail_form: data_mail.mail_form,
-              mail_to: data_mail.mail_to,
-              mail_to_cc: data_mail.mail_to_cc,
-              title: data_mail.title,
-              content: data_mail.content,
-            });
+            if(data_mail)
+            {
+              r_data_noti.push({
+                sale_id : noti.req_key ,
+                msg_his_id: noti.msg_his_id,
+                status_code: "1",
+                status_name: "Sent Sucess",
+                send_date: data_mail.send_date,
+                send_time: data_mail.send_time,
+                mail_form: data_mail.mail_form,
+                mail_to: data_mail.mail_to,
+                mail_to_cc: data_mail.mail_to_cc,
+                title: data_mail.title,
+                content: data_mail.content,
+              });
+            }
             
           }else
           {

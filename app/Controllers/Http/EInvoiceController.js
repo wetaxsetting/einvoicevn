@@ -9058,6 +9058,7 @@ class EInvoiceController {
           {
             const data_mail = await this.weTaxSendMailRecords(res.TEI_EINVOICE_M_PK, res.TEI_COMPANY_PK, noti.buyer_email, noti.buyer_email_cc ,  p_language, p_crt_by);
            
+            
             r_data_noti.push({
               sale_id : noti.req_key ,
               msg_his_id: noti.msg_his_id,

@@ -7259,31 +7259,47 @@ class EInvoiceController {
       //console.log("weTaxSendCompanyTemplate seller_comp_taxcode :",seller_comp_taxcode);
 
       if (!seller_comp_taxcode) {
-        return response.send(Utils.response(false, "seller_comp_taxcode can't null",null));
+        //return response.send(Utils.response(false, "seller_comp_taxcode can't null",null));
+        return response.status(301).json(Utils.responseByRule({success : false, message : "seller_comp_taxcode can't null"}));
       }
 
       if (!form_no) {
-        return response.send(Utils.response(false, "form_no can't null",null));
+        //return response.send(Utils.response(false, "form_no can't null",null));
+        return response.status(301).json(Utils.responseByRule({success : false, message : "form_no can't null"}));
+
       }if(form_no.length !== 1) {
-        return response.send(Utils.response(false, "length form_no is 1 ",null));
+        // return response.send(Utils.response(false, "length form_no is 1 ",null));
+        return response.status(301).json(Utils.responseByRule({success : false, message : "length form_no is 1 "}));
+
       }
       if (!serial_no) {
-        return response.send(Utils.response(false, "serial_no can't null",null));
+        // return response.send(Utils.response(false, "serial_no can't null",null));
+        return response.status(301).json(Utils.responseByRule({success : false, message : "serial_no can't null"}));
+
       }else if(serial_no.length !== 6) {
-        return response.send(Utils.response(false, "length serial_no is 6 ",null));
+        //return response.send(Utils.response(false, "length serial_no is 6 ",null));
+        return response.status(301).json(Utils.responseByRule({success : false, message : "length serial_no is 6 "}));
+
       }
       if (!template_id) {
-        return response.send(Utils.response(false, "template_id can't null",null));
+        // return response.send(Utils.response(false, "template_id can't null",null));
+        return response.status(301).json(Utils.responseByRule({success : false, message : "template_id can't null"}));
+
       } if(template_id.length !== 10) {
-        return response.send(Utils.response(false, "length template_id is 10 ",null));
+        // return response.send(Utils.response(false, "length template_id is 10 ",null));
+        return response.status(301).json(Utils.responseByRule({success : false, message : "length template_id is 10 "}));
+
       }
       if (!start_date) {
-        return response.send(Utils.response(false, "start_date can't null",null));
+        // return response.send(Utils.response(false, "start_date can't null",null));
+        return response.status(301).json(Utils.responseByRule({success : false, message : "start_date can't null"} ));
+
       }
       if (!logo_image) {
-        return response.send(Utils.response(false, "logo_image can't null",null));
+        //return response.send(Utils.response(false, "logo_image can't null",null));
+        return response.status(301).json(Utils.responseByRule({success : false, message : "logo_image can't null"} ));
+
       }
-      
       //if (preview == "N") {
 
       const file_url_img = `einvoices_logo/${seller_comp_taxcode}`;
@@ -7372,7 +7388,9 @@ class EInvoiceController {
           template: url_pdf
         }
 
-        return response.send(Utils.response(true, "Send Company template was Successfully", req_value));
+        //return response.send(Utils.response(true, "Send Company template was Successfully", req_value));
+        return response.status(200).json(Utils.responseByRule({success : true, message : "Send Company template was Successfully", data: req_value}));
+
       
       }else
       {
@@ -7383,7 +7401,9 @@ class EInvoiceController {
           status_code: "001",
           status_name: rtnValue.p_rtn_cur[0].ERRCODE
         }
-        return response.send(Utils.response(false, "Send Company template was Faile", req_value));
+        //return response.send(Utils.response(false, "Send Company template was Faile", req_value));
+        return response.status(400).json(Utils.responseByRule({success : false, message : "Send Company template was Faile.", data: req_value}));
+
       }
 
 

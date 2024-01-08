@@ -7414,7 +7414,6 @@ class EInvoiceController {
       } = request.all();
      
       let req_value = [];
-      let count = 0;
       // console.log("weTaxSendCompanyTemplate logo_image : ", logo_image);
       //console.log("weTaxSendCompanyTemplate background_image :",background_image);
       // console.log("weTaxSendCompanyTemplate form_no :",form_no);
@@ -7432,9 +7431,9 @@ class EInvoiceController {
 
       for(const data of obj_template)
       {
-        const template_excel = request.file(`template_excel_${count}`);
-        const logo_image = request.file(`logo_image_${count}`);
-        const background_image = request.file(`background_image_${count}`);
+        const template_excel = request.file(`template_excel_${data.req_key}`);
+        const logo_image = request.file(`logo_image_${data.req_key}`);
+        const background_image = request.file(`background_image_${data.req_key}`);
 
         //console.log("logo_image  ", logo_image);
 
@@ -7511,17 +7510,17 @@ class EInvoiceController {
           continue;
           //return response.send(Utils.response(false, "start_date can't null",null));
         }
-        // if (!data.logo_image) {
-        //   req_value.push({
-        //     seller_comp_taxcode: seller_comp_taxcode,
-        //     req_key: "",
-        //     template: "",
-        //     status_code: "001",
-        //     status_name: "logo_image can't null"
-        //   });
-        //   continue;
-        //   //return response.send(Utils.response(false, "logo_image can't null",null));
-        // }
+        if (logo_image) {
+          req_value.push({
+            seller_comp_taxcode: seller_comp_taxcode,
+            req_key: "",
+            template: "",
+            status_code: "001",
+            status_name: "logo_image can't null"
+          });
+          continue;
+          //return response.send(Utils.response(false, "logo_image can't null",null));
+        }
 
 
         const file_url_img = `einvoices_logo/${seller_comp_taxcode}`;
@@ -7620,8 +7619,6 @@ class EInvoiceController {
               status_name: rtnValue.p_rtn_cur[0].ERRCODE
             });
           }
-
-          count++;
       }
   
       return response.status(200).json(Utils.responseByRule({success : true, message : "Send Company template was Faile.", data: req_value}));

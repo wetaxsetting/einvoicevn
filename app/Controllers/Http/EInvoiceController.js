@@ -7248,15 +7248,15 @@ class EInvoiceController {
       const logo_image = request.file("logo_image");
       const background_image = request.file("background_image");
 
-      console.log("weTaxSendCompanyTemplate logo_image : ", logo_image);
+      //console.log("weTaxSendCompanyTemplate logo_image : ", logo_image);
       //console.log("weTaxSendCompanyTemplate background_image :",background_image);
-      console.log("weTaxSendCompanyTemplate form_no :",form_no);
-      console.log("weTaxSendCompanyTemplate serial_no :",serial_no);
-      console.log("weTaxSendCompanyTemplate symbol_type : ", symbol_type);
-      console.log("weTaxSendCompanyTemplate template_id :",template_id);
-      console.log("weTaxSendCompanyTemplate start_number :",start_number);
-      console.log("weTaxSendCompanyTemplate start_date : ", start_date);
-      console.log("weTaxSendCompanyTemplate seller_comp_taxcode :",seller_comp_taxcode);
+      //console.log("weTaxSendCompanyTemplate form_no :",form_no);
+      //console.log("weTaxSendCompanyTemplate serial_no :",serial_no);
+      //console.log("weTaxSendCompanyTemplate symbol_type : ", symbol_type);
+      //console.log("weTaxSendCompanyTemplate template_id :",template_id);
+      //console.log("weTaxSendCompanyTemplate start_number :",start_number);
+      //console.log("weTaxSendCompanyTemplate start_date : ", start_date);
+      //console.log("weTaxSendCompanyTemplate seller_comp_taxcode :",seller_comp_taxcode);
 
       if (!seller_comp_taxcode) {
         return response.send(Utils.response(false, "seller_comp_taxcode can't null",null));
@@ -7397,6 +7397,244 @@ class EInvoiceController {
       });
       console.log(error);
       return response.send(Utils.response(false, error.message, null));
+    }
+  }
+
+  async weTaxSendCompanyTemplate2({ request, response, auth }) {
+    try {
+
+      var p_language = request.header("accept-language", "ENG");
+      var p_crt_by = "";
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const { seller_comp_taxcode,
+              data_template
+      } = request.all();
+     
+      let req_value = [];
+      let count = 0;
+      // console.log("weTaxSendCompanyTemplate logo_image : ", logo_image);
+      //console.log("weTaxSendCompanyTemplate background_image :",background_image);
+      // console.log("weTaxSendCompanyTemplate form_no :",form_no);
+      // console.log("weTaxSendCompanyTemplate serial_no :",serial_no);
+      // console.log("weTaxSendCompanyTemplate symbol_type : ", symbol_type);
+      // console.log("weTaxSendCompanyTemplate template_id :",template_id);
+      // console.log("weTaxSendCompanyTemplate start_number :",start_number);
+      console.log("weTaxSendCompanyTemplate data_template : ", data_template);
+      console.log("weTaxSendCompanyTemplate seller_comp_taxcode :",seller_comp_taxcode);
+
+      if (!seller_comp_taxcode) {
+        return response.status(400).json(Utils.responseByRule({success : false, message : "seller_comp_taxcode can't null"}));
+      }
+      const obj_template = JSON.parse(data_template);
+
+      for(const data of obj_template)
+      {
+        const template_excel = request.file(`template_excel_${count}`);
+        const logo_image = request.file(`logo_image_${count}`);
+        const background_image = request.file(`background_image_${count}`);
+
+        //console.log("logo_image  ", logo_image);
+
+        if (!data.form_no) {
+          req_value.push({
+            seller_comp_taxcode: seller_comp_taxcode,
+            req_key: "",
+            template: "",
+            status_code: "001",
+            status_name: "form_no can't null"
+          });
+          continue;
+        }if(data.form_no.length !== 1) {
+          req_value.push({
+            seller_comp_taxcode: seller_comp_taxcode,
+            req_key: "",
+            template: "",
+            status_code: "001",
+            status_name: "length form_no is 1 "
+          });
+          continue;
+          //return response.send(Utils.response(false, "length form_no is 1 ",null));
+        }
+        if (!data.serial_no) {
+          req_value.push({
+            seller_comp_taxcode: seller_comp_taxcode,
+            req_key: "",
+            template: "",
+            status_code: "001",
+            status_name: "serial_no can't null"
+          });
+          continue;
+          //return response.send(Utils.response(false, "serial_no can't null",null));
+        }else if(data.serial_no.length !== 6) {
+          req_value.push({
+            seller_comp_taxcode: seller_comp_taxcode,
+            req_key: "",
+            template: "",
+            status_code: "001",
+            status_name: "length serial_no is 6"
+          });
+          continue;
+          //return response.send(Utils.response(false, "length serial_no is 6 ",null));
+        }
+        if (!data.template_id) {
+          req_value.push({
+            seller_comp_taxcode: seller_comp_taxcode,
+            req_key: "",
+            template: "",
+            status_code: "001",
+            status_name: "template_id can't null"
+          });
+          continue;
+          //return response.send(Utils.response(false, "template_id can't null",null));
+        } if(data.template_id.length !== 10) {
+          req_value.push({
+            seller_comp_taxcode: seller_comp_taxcode,
+            req_key: "",
+            template: "",
+            status_code: "001",
+            status_name: "length template_id is 10 "
+          });
+          continue;
+          //return response.send(Utils.response(false, "length template_id is 10 ",null));
+        }
+        if (!data.start_date) {
+          req_value.push({
+            seller_comp_taxcode: seller_comp_taxcode,
+            req_key: "",
+            template: "",
+            status_code: "001",
+            status_name: "start_date can't null"
+          });
+          continue;
+          //return response.send(Utils.response(false, "start_date can't null",null));
+        }
+        // if (!data.logo_image) {
+        //   req_value.push({
+        //     seller_comp_taxcode: seller_comp_taxcode,
+        //     req_key: "",
+        //     template: "",
+        //     status_code: "001",
+        //     status_name: "logo_image can't null"
+        //   });
+        //   continue;
+        //   //return response.send(Utils.response(false, "logo_image can't null",null));
+        // }
+
+
+        const file_url_img = `einvoices_logo/${seller_comp_taxcode}`;
+        const file_url_excel = `/resources/report/60/95/einvoices_template/${seller_comp_taxcode}`;
+        let logo_width = 0, logo_height = 0;
+        let file_path_logo = "", file_path_bg = "";
+
+        if (data.logo_image) {
+          file_path_logo = await Utils.putFileRandomNameRootPathOut(data.logo_image, file_url_img, "WETAXT");
+          //file_path_bg = await Utils.putExcelRootPath(logo_image, file_url_img, "WETAXT");
+
+          let savePath = await Helpers.appRoot(`resources${file_path_logo}`);
+          const imagePath = savePath.replaceAll("\\","/");  //`${logo_image.tmpPath}`;
+
+          // Use sharp to read the image and get its metadata (width and height)
+          await sharp(imagePath)
+            .metadata()
+            .then((metadata) => {
+              const { width, height } = metadata;
+              logo_width = width;
+              logo_height = height;
+            })
+            .catch((error) => {
+              console.error('Error:', error);
+            });
+
+
+          if (logo_width > logo_height && logo_width > 100) {
+            logo_width = 100;
+            logo_height = 100 * logo_width / logo_height;
+          }
+          if (logo_height > logo_width && logo_height > 100) {
+            logo_height = 100;
+            logo_width = 100 * logo_height / logo_width;
+          }
+
+        }
+
+        const para_value = {
+          p_seller_comp_seller: seller_comp_taxcode,
+          p_serial_no2: data.symbol_type,
+          p_form_no: data.form_no,
+          p_serial_no: data.serial_no,
+          p_from_dt: data.start_date,
+          p_end_dt: data.end_date || '',
+          p_start_num: data.start_number,
+          p_template_cd: data.template_id,
+          p_url_img_logo: file_path_logo.replace("/assets", "assets"),
+          p_url_img_bg: "",//file_path_bg,
+          p_logo_width: data.logo_width,
+          p_logo_height: data.logo_height,
+          p_logo_start_col: "0.5",
+          p_logo_start_row: "1.7",
+        };
+  
+        const rtnValue = await DBService.ExecuteSQLBlob(
+          `BEGIN ei_upd_template_comp (                     :p_seller_comp_seller,
+                                                            :p_serial_no2,
+                                                            :p_form_no,
+                                                            :p_serial_no,
+                                                            :p_from_dt,
+                                                            :p_end_dt,
+                                                            :p_start_num,
+                                                            :p_template_cd,
+                                                            :p_url_img_logo,
+                                                            :p_url_img_bg,
+                                                            :p_logo_width,
+                                                            :p_logo_height,
+                                                            :p_logo_start_row,
+                                                            :p_logo_start_col,
+                                                            :p_language, 
+                                                            :p_crt_by, 
+                                                            :p_rtn_cur); END;`,
+          para_value,
+          p_language,
+          p_crt_by
+        );
+
+          if(rtnValue.p_rtn_cur[0].STATUS == "OK"){
+            let EiExcels = new EiExcelTemplateHandler();
+            let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].PK, p_language, p_crt_by);
+            //console.log("base64PDf  ", url_pdf);
+            req_value.push({
+              seller_comp_taxcode: seller_comp_taxcode,
+              req_key: rtnValue.p_rtn_cur[0].PK,
+              template: url_pdf
+            });
+          
+          }else
+          {
+            req_value.push({
+              seller_comp_taxcode: seller_comp_taxcode,
+              req_key: "",
+              template: "",
+              status_code: "001",
+              status_name: rtnValue.p_rtn_cur[0].ERRCODE
+            });
+          }
+
+          count++;
+      }
+  
+      return response.status(200).json(Utils.responseByRule({success : true, message : "Send Company template was Faile.", data: req_value}));
+      
+    } catch (error) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "weTaxSendCompanyTemplate",
+        CONTENT: error.message,
+      });
+      console.log(error);
+      return response.status(400).json(Utils.responseByRule({success : false, message : e.message}));
     }
   }
 

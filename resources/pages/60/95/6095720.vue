@@ -10,22 +10,22 @@
             <v-col lg="1">
               <BaseDatePicker outlined today :label="$t('to_date')" v-model="to_date" />
             </v-col>
-            <v-col lg="2">
+            <v-col lg="1">
               <BaseInput outlined readonly v-model="sellerTaxcode" :label="$t('seller_taxcode')"></BaseInput>
             </v-col>
-            <v-col lg="4" class="pl-2">
+            <v-col lg="2" class="pl-2">
               <BaseSelect outlined v-model="sellerName" :lstData="dataSearchList.sellerNameList" item-value="CODE" item-text="NAME" :label="$t('seller_name')"></BaseSelect>
             </v-col>
             <v-col lg="2">
               <BaseInput outlined v-model="trade_codde" :label="$t('trade_codde')"></BaseInput>
             </v-col>
-            <v-col lg="2">
+            <v-col lg="1">
               <BaseInput outlined v-model="invoice_no" :label="$t('invoice_no')"></BaseInput>
             </v-col>
-            <v-col lg="2">
+            <v-col lg="1">
               <BaseInput outlined v-model="serial_no" :label="$t('serial_no')"></BaseInput>
             </v-col>
-            <v-col lg="2">
+            <v-col lg="1">
               <BaseInput outlined v-model="form_no" :label="$t('form_no')"></BaseInput>
             </v-col>
 

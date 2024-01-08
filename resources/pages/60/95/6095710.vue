@@ -17,7 +17,7 @@
               <BaseSelect outlined v-model="sellerName" :lstData="dataSearchList.sellerNameList" item-value="CODE" item-text="NAME" :label="$t('seller_name')"></BaseSelect>
             </v-col>
             <v-col lg="2">
-              <BaseInput outlined v-model="trade_code" :label="$t('trade_code')"></BaseInput>
+              <BaseInput outlined v-model="symbols" :label="$t('trade_code')"></BaseInput>
             </v-col>
 
             <v-col lg="2" class="text-right">
@@ -36,7 +36,7 @@
                 select_mode="Single"
                 :max_height="limitHeight"
                 :header="headerGridLeft"
-                :filter_paras="[this.sellerTaxcode, this.form_date, this.to_date, this.trade_code]"
+                :filter_paras="[this.sellerName, this.form_date, this.to_date, this.symbols]"
               />
             </v-col>
           </v-row>
@@ -68,6 +68,7 @@
 import ViewEInvoiceXMLDialog from "@/components/dialog/ViewEInvoiceXMLDialog.vue";
 import ViewEInvoiceXML_CQTDialog from "@/components/dialog/ViewEInvoiceXML_CQTDialog.vue";
 import ViewEInvoice_TransactionDetailsDailog from "@/components/dialog/ViewEInvoice_TransactionDetailsDailog.vue";
+
 export default {
   layout: "default",
   middleware: "user",
@@ -85,7 +86,7 @@ export default {
       sellerNameList: [],
     },
     sellerName: "",
-    trade_code: "",
+    symbols: "",
 
     xmlUrl: "",
     xmlFileNm: "",
@@ -114,33 +115,30 @@ export default {
           caption: this.$t("stt"),
         },
         {
-          dataField: "SLLR_COMP_NM",
+          dataField: "DONVI",
           caption: this.$t("don_vi"),
-          width: 200,
+          width: 300,
         },
         {
-          dataField: "SLLR_TAXCD",
-          caption: this.$t("MST"),
-          type: "number",
-          width: 100,
+          dataField: "DONVIMST",
+          caption: this.$t("dvi_mst"),
+          width: 150,
         },
         {
           dataField: "TRADE_CODE",
           caption: this.$t("ma_giao_dich"),
-          width: 250,
+          width: 300,
         },
         {
-          dataField: "FORM_NO",
-          caption: this.$t("form_no"),
+          dataField: "SLLR_COMP_NM",
+          caption: this.$t("tennnt"),
+          width: 300,
         },
         {
-          dataField: "SERIAL_NO",
-          caption: this.$t("serial_no"),
-        },
-        {
-          dataField: "INVOICE_NO",
-          caption: this.$t("invoice_no"),
-          width: 100,
+          dataField: "SLLR_TAXCD",
+          caption: this.$t("mst"),
+          type: "number",
+          width: 150,
         },
         {
           dataField: "SEND_DT",
@@ -156,6 +154,7 @@ export default {
         {
           dataField: "CQT_RESULT",
           caption: this.$t("ph_cqt"),
+          width: 260,
         },
         { dataField: "TITTLE", caption: "thao_tac", type: "html", width: 150, fixed: true, cellsrenderer: this.myCellHTML },
       ];
@@ -171,9 +170,9 @@ export default {
   methods: {
     previewCellFile() {
       this.currentRow = document.getElementById("tempPK").value;
-
       const ds = this.$refs.grdCompany.getDataSource();
-
+      // console.log("this.currentRow  previewCellFile", this.currentRow);
+      // console.log("ds  previewCellFile", ds);
       if (ds.length) {
         const found = ds.find((item) => item.PK == this.currentRow);
         console.log("found", found);
@@ -185,12 +184,12 @@ export default {
     },
     previewCellFile1() {
       this.currentRow = document.getElementById("tempPK1").value;
-
+      // console.log("this.currentRow  previewCellFile1", this.currentRow);
       const ds = this.$refs.grdCompany.getDataSource();
 
       if (ds.length) {
         const found = ds.find((item) => item.PK == this.currentRow);
-        console.log("found", found);
+        // console.log("found", found);
         if (found) {
           this.$refs.ViewEIXMLCQTDialog.pk = found.PK;
           this.$refs.ViewEIXMLCQTDialog.dialogIsShow = true;
@@ -200,14 +199,14 @@ export default {
 
     previewCellFile2() {
       this.currentRow = document.getElementById("tempPK2").value;
-
+      // console.log("this.currentRow  previewCellFile2", this.currentRow);
       const ds = this.$refs.grdCompany.getDataSource();
 
       if (ds.length) {
         const found = ds.find((item) => item.PK == this.currentRow);
-        console.log("found", found);
+        // console.log("found", found);
         if (found) {
-          this.xmlUrl = found.CQT_DATA_RESULT;
+          this.$refs.ViewTransaction.pk = found.PK;
           this.$refs.ViewTransaction.dialogIsShow = true;
         }
       }

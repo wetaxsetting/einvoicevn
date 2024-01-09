@@ -7798,7 +7798,7 @@ class EInvoiceController {
       // const authPassword = "e_GX4v@"; // "e_GX4v@";
 
       const { data } = request.all();
-      // console.log("data  ", data);
+      console.log("data  ", data);
       let rtnValue = [];
       let maCQT = "",
         maTBao = "",
@@ -7869,7 +7869,7 @@ class EInvoiceController {
                   // );
                 }else if (items[k].loaiTBao == "1") {
                     xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
-                    xml_length = getLength(base64XML);
+                    xml_length = getLength(xml_tax_signed);
                  
                 } else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "16" || items[k].loaiTBao == "15") {
                  /* maTBao = items[k].loaiTBao;
@@ -7917,7 +7917,7 @@ class EInvoiceController {
             }
           })
           .catch((error) => {
-            // console.log(error);
+             console.log(error);
             // return response.send(Utils.response(false, error.message, null));
             return response.status(409).json(Utils.responseByRule({success : false, message : error.message}));
           });
@@ -7985,7 +7985,7 @@ class EInvoiceController {
         FUNC: "weTaxCheckInvoiceStatusFromTaxOffice",
         CONTENT: e.message,
       });
-      // console.log(e);
+       console.log(e);
       // return response.send(Utils.response(false, e.message, null));
       return response.status(409).json(Utils.responseByRule({success : false, message : e.message}));
     }

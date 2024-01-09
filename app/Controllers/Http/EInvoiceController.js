@@ -7962,7 +7962,7 @@ class EInvoiceController {
       // return response.send(
       //   Utils.response(true, `${data.length} invoices was update status from tax office.`, rtnValue)
       // );
-      return response.status(200).json(Utils.responseByRule({success : true, message : `${data.length} invoices was update status from tax office.`}));
+      return response.status(200).json(Utils.responseByRule({success : true, message : `${data.length} invoices was update status from tax office.`, data: rtnValue}));
 
       // rtnValue.push({
       //     trade_code: para.trade_code[i],

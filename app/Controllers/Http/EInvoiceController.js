@@ -7387,11 +7387,8 @@ class EInvoiceController {
           req_key: rtnValue.p_rtn_cur[0].PK,
           template: url_pdf
         }
-
         //return response.send(Utils.response(true, "Send Company template was Successfully", req_value));
-        return response.status(200).json(Utils.responseByRule({success : true, message : "Send Company template was Successfully", data: req_value}));
-
-      
+        return response.status(200).json(Utils.responseByRule({success : true, message : "Send Company template was Successfully", data: req_value})); 
       }else
       {
         let req_value = {
@@ -8132,12 +8129,14 @@ class EInvoiceController {
       if (trade_code) {
         const para_value = {
             tei_einvoice_ar_pk: check_data.PK,
+            tei_history_m_pk: check_data.TEI_HISTORY_M_PK,
             trade_code: trade_code
         };
 
         await DBService.ExecuteSQLBlob(
             `BEGIN ei_upd_tradecode_p_xml(
                             :tei_einvoice_ar_pk,
+                            :tei_history_m_pk,
                             :trade_code,
                             :p_language, 
                             :p_crt_by, 
@@ -14012,6 +14011,7 @@ class EInvoiceController {
 
           check_data = {
             PK: rtnValuePos.p_rtn_cur[0].PK,
+            TEI_HISTORY_M_PK: rtnValuePos.p_rtn_cur[0].TEI_HISTORY_M_PK,
             STATUS:  rtnValuePos.p_rtn_cur[0].STATUS,
           }
           

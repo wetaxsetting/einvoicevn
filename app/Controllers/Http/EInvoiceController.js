@@ -7545,7 +7545,7 @@ class EInvoiceController {
         let logo_width = 0, logo_height = 0;
         let file_path_logo = "", file_path_bg = "";
 
-        if (data.logo_image) {
+        if (logo_image) {
           file_path_logo = await Utils.putFileRandomNameRootPathOut(data.logo_image, file_url_img, "WETAXT");
           //file_path_bg = await Utils.putExcelRootPath(logo_image, file_url_img, "WETAXT");
 
@@ -8162,6 +8162,7 @@ class EInvoiceController {
               for (let k = 0; k < items.length; k++) {
                 if(items[k].loaiTBao == "1"){
                   xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
+                  
                 }else if (items[k].loaiTBao == "8") {
                   maCQT = items[k].ndungTBao.maCQT;
                   maTBao = items[k].loaiTBao;

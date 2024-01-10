@@ -1,6 +1,8 @@
 'use strict'
 const DBService = use("DBService");
 const EiExcelConverter = use("App/Helpers/EiExcelConverterAuto");
+const fs = use("fs");
+
 class EiExcelHandler {
 
   constructor() {
@@ -128,19 +130,48 @@ class EiExcelHandler {
           bgPath = "";
         }
 
-        if(einvoiceMasterData[0].URL_IMG_LOGO != "" && einvoiceMasterData[0].URL_IMG_LOGO != null)
-        {
-          logos = [
-            { start: einvoiceMasterData[0].LOGO_START_COL, 
-              width: einvoiceMasterData[0].LOGO_WIDTH,//   0.99 * dpi, 
-              height:einvoiceMasterData[0].LOGO_HEIGHT,// 0.99 * dpi, 
-              logoStartCount: einvoiceMasterData[0].LOGO_START_ROW, 
-              logoPath: `${einvoiceMasterData[0].URL_IMG_LOGO}` },
-          ];
-        }
-        else{
+        try {
+          let savePath = await Helpers.appRoot(`resources/${einvoiceMasterData[0].URL_IMG_LOGO}`);
+            if (fs.existsSync(savePath)) {
+              logos = [
+                { 
+                 //logo_start_col : einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_START_COL ? einvoiceMasterData[0].LOGO_START_COL:1,
+                 //logo_start_row : einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_START_ROW ? einvoiceMasterData[0].LOGO_START_ROW:1,
+                 //logo_width     : einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_WIDTH ? einvoiceMasterData[0].LOGO_WIDTH:1,
+                 //logo_height    : einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_HEIGHT ? einvoiceMasterData[0].LOGO_HEIGHT:1,
+                 //logoPath       : `${einvoiceMasterData[0] &&einvoiceMasterData[0].URL_IMG_LOGO ? einvoiceMasterData[0].URL_IMG_LOGO: "assets/images/no_image.png"}`   ///assets/images/einvoices_logo/abc/
+
+                  start: einvoiceMasterData[0].LOGO_START_COL, 
+                  width: einvoiceMasterData[0].LOGO_WIDTH,//   0.99 * dpi, 
+                  height:einvoiceMasterData[0].LOGO_HEIGHT,// 0.99 * dpi, 
+                  logoStartCount: einvoiceMasterData[0].LOGO_START_ROW, 
+                  logoPath: `${einvoiceMasterData[0].URL_IMG_LOGO}` 
+                }  
+             ]
+            } else {
+              logos = []
+            }
+        } catch (error) {
           logos = [];
-        }
+          console.log("error  require url ", error);
+        }  
+
+        // if(einvoiceMasterData[0].URL_IMG_LOGO != "" && einvoiceMasterData[0].URL_IMG_LOGO != null)
+        // {
+        //   logos = [
+        //     {
+        //       start: einvoiceMasterData[0].LOGO_START_COL, 
+        //       width: einvoiceMasterData[0].LOGO_WIDTH,//   0.99 * dpi, 
+        //       height:einvoiceMasterData[0].LOGO_HEIGHT,// 0.99 * dpi, 
+        //       logoStartCount: einvoiceMasterData[0].LOGO_START_ROW, 
+        //       logoPath: `${einvoiceMasterData[0].URL_IMG_LOGO}` 
+            
+        //     },
+        //   ];
+        // }
+        // else{
+        //   logos = [];
+        // }
          
         // console.log("bgPath  ", bgPath);
         // console.log("logos   ", logos);

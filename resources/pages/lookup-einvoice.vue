@@ -85,8 +85,26 @@
                     </v-col>
                     <v-col cols="12 pt-2">
                       <v-sheet tile color="transparent" class="d-flex align-center justify-space-between" width="100%">
+                        <span class="mr-auto">Tên người bán:</span>
+                        <span class="font-weight-bold">{{ invoiceInfo.seller_comp_name }}</span>
+                      </v-sheet>
+                    </v-col>
+                    <v-col cols="12 pt-2">
+                      <v-sheet tile color="transparent" class="d-flex align-center justify-space-between" width="100%">
+                        <span class="mr-auto">Mã số thuế người bán:</span>
+                        <span class="font-weight-bold">{{ invoiceInfo.seller_taxcode }}</span>
+                      </v-sheet>
+                    </v-col>
+                    <v-col cols="12 pt-2">
+                      <v-sheet tile color="transparent" class="d-flex align-center justify-space-between" width="100%">
+                        <span class="mr-auto">Ký hiệu hóa đơn:</span>
+                        <span class="font-weight-bold">{{ invoiceInfo.form_no }}{{ invoiceInfo.serial_no }}</span>
+                      </v-sheet>
+                    </v-col>
+                    <v-col cols="12 pt-2">
+                      <v-sheet tile color="transparent" class="d-flex align-center justify-space-between" width="100%">
                         <span class="mr-auto">Số hóa đơn:</span>
-                        <span class="font-weight-bold">{{ invoiceInfo.serial_no }}</span>
+                        <span class="font-weight-bold">{{ invoiceInfo.invoice_no }}</span>
                       </v-sheet>
                     </v-col>
                     <v-col cols="12">
@@ -161,16 +179,19 @@ export default {
     inputName: ""
   }),
 
-  /* async created() {
+   async created() {
+    if(this.$route?.query?.trade_code) {
+        this.invoiceNo = this.$route?.query?.trade_code;
+      }
     //  trade_code
-    const params = {
-      trade_code: ""
-    }
-    const { data, message, success } = await this.$axios.$get('/einvoice/lookup-code', { params: params });
-    if(success && data.length) {
+    // const params = {
+    //   trade_code: this.$route?.query?.trade_code
+    // }
+    // const { data, message, success } = await this.$axios.$get('/einvoice/lookup-code', { params: params });
+    // if(success && data.length) {
 
-    }
-  }, */
+    // }
+  }, 
 
   async mounted() {    
     await this._handleGenerateCaptcha();
@@ -215,7 +236,13 @@ export default {
     async search() {
       // console.log("route:", this.$route)
       if(!this.$route?.query?.trade_code) {
-        console.log("trade_code not found!");
+         this.showNotification(
+        "warning",
+        that.$t("trade_code not found!"),
+        "",
+        5000
+      );
+        //console.log("trade_code not found!");
         return;
       }
       if (this.invoiceNo === "" || this.invoiceNo === undefined) {

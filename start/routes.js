@@ -205,6 +205,7 @@ Route.group(() => {
     // WeTax
     Route.post("send-pos-invoice", "EInvoiceController.weTaxSendPosInvoiceToTaxOffice2")
     Route.post("generate-notification-records-xml", "EInvoiceController.sendInformAdjustToTaxOffice2")
+    Route.post("send-company-template", "EInvoiceController.weTaxSendCompanyTemplate2")
 
 
     //e-invoice  

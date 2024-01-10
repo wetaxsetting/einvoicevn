@@ -7527,7 +7527,7 @@ class EInvoiceController {
           continue;
           //return response.send(Utils.response(false, "start_date can't null",null));
         }
-        if (logo_image) {
+        if (!logo_image) {
           req_value.push({
             seller_comp_taxcode: seller_comp_taxcode,
             req_key: "",

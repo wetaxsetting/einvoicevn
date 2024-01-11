@@ -7546,7 +7546,7 @@ class EInvoiceController {
         let file_path_logo = "", file_path_bg = "";
 
         if (logo_image) {
-          file_path_logo = await Utils.putFileRandomNameRootPathOut(data.logo_image, file_url_img, "WETAXT");
+          file_path_logo = await Utils.putFileRandomNameRootPathOut(logo_image, file_url_img, "WETAXT");
           //file_path_bg = await Utils.putExcelRootPath(logo_image, file_url_img, "WETAXT");
 
           let savePath = await Helpers.appRoot(`resources${file_path_logo}`);

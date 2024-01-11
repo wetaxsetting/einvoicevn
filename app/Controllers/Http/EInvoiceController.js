@@ -8112,7 +8112,7 @@ class EInvoiceController {
       let xml_tax_signed = "";
       let rtnValue = {};
       let data_error = [];
-      let mLTDiep = "",ngayTBao = "",ngayCQTKy = "", maGDichDTu = "", tenGDDTu = "", ord = "";
+      let mLTDiep = "",ngayTBao = "",ngayCQTKy = "", maGDichDTu = "", tenGDDTu = "", ord = "", soTBao = "";
       const res = await Request.post(
         url,
         { base64XML: Buffer.from(invoice_xml_signed).toString("base64") },
@@ -8172,7 +8172,7 @@ class EInvoiceController {
                   maGDichDTu = items[k].ndungTBao.maGDichDTu;
                   if(mLTDiep == "204")
                   {
-                    tenGDDTu = "Thông báo dữ liệu hóa đơn hợp lệ";
+                    tenGDDTu = "Thông báo về việc kết quả kiểm tra dữ liệu hóa đơn điện tử";
                     ord = "3";
                   }else if(mLTDiep == "999")
                   {
@@ -8216,8 +8216,9 @@ class EInvoiceController {
                   maCQT = items[k].ndungTBao.maCQT;
                   maTBao = items[k].loaiTBao;
                   tenTBao = items[k].tenTBao;
+                  soTBao = items[k].ndungTBao.tbaoKTraDLieu.soTBao;
 
-
+                
 
                 } else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "7") {
                   maTBao =  items[k].loaiTBao;
@@ -8231,7 +8232,7 @@ class EInvoiceController {
                     const chars = invoice.mtaLoi.split(';');
                     data_inv.forEach((element, index) => {
                     if(element.form_no === chars[0] && element.serial_no === chars[1] && element.invoice_no === chars[2]) {
-                        data_inv[index].inform_code = "1";
+                        data_inv[index].inform_code = items[k].loaiTBao;
                         data_inv[index].inform_name = invoice.maLoi + " - " + invoice.mtaLoi;
                       }
                     });
@@ -13977,8 +13978,8 @@ class EInvoiceController {
                   form_no: invoice.DLHDon.TTChung.KHMSHDon,
                   serial_no: invoice.DLHDon.TTChung.KHHDon,
                   invoice_no: invoice.DLHDon.TTChung.SHDon,
-                  inform_code: "10",
-                  inform_name: "Thông báo dữ liệu hóa đơn hợp lệ",
+                  inform_code: "8",
+                  inform_name: "Dữ liệu hóa đơn hợp lệ",
                 }
               );
               if(rtnValueMaster.p_rtn_cur[0].STATUS == "OK")

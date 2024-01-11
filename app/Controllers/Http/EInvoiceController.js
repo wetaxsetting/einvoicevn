@@ -8112,7 +8112,7 @@ class EInvoiceController {
       let xml_tax_signed = "";
       let rtnValue = {};
       let data_error = [];
-      let mLTDiep = "",ngayTBao = "",ngayCQTKy = "";
+      let mLTDiep = "",ngayTBao = "",ngayCQTKy = "", maGDichDTu = "", tenGDDTu = "", ord = "";
       const res = await Request.post(
         url,
         { base64XML: Buffer.from(invoice_xml_signed).toString("base64") },
@@ -8169,12 +8169,55 @@ class EInvoiceController {
                   mLTDiep = await transform(xml_tax_signed, templateMLTDiep);
                   ngayTBao = items[k].ndungTBao.ngayTBao;
                   ngayCQTKy = items[k].ndungTBao.ngayCQTKy;
+                  maGDichDTu = items[k].ndungTBao.maGDichDTu;
+                  if(mLTDiep == "204")
+                  {
+                    tenGDDTu = "Thông báo dữ liệu hóa đơn hợp lệ";
+                    ord = "3";
+                  }else if(mLTDiep == "999")
+                  {
+                    tenGDDTu = "Thông báo gói tin hợp lệ.";
+                    ord = "2";
+                  }
+                  const param_m = {
+                    p_CQT_Code  : trade_code,
+                    p_xml_sign  : xml_tax_signed,
+                    p_maTDiep   : mLTDiep,
+                    p_maGdDTu   : maGDichDTu,
+                    p_tenGdDTu  : tenGDDTu,
+                    p_ngayTaoTB : ngayCQTKy,
+                    p_ord       :  ord 
+                  }
+      
+                  await DBService.ExecuteSQLBlob(
+                    `BEGIN WT_UPD_HISTORY_D_POS(
+                                    :p_CQT_Code,
+                                    :p_xml_sign,
+                                    :p_maTDiep,
+                                    :p_maGdDTu,
+                                    :p_tenGdDTu,
+                                    :p_ngayTaoTB,
+                                    :p_ord,
+                                    :p_language, 
+                                    :p_crt_by, 
+                                    :p_rtn_cur); 
+                    END;`,
+                    param_m,
+                    p_language,
+                    p_crt_by
+                  );
 
+                  mLTDiep = "";
+                  ngayTBao = "";
+                  ngayCQTKy = "";
+                  maGDichDTu = "";
 
                 }else if (items[k].loaiTBao == "8") {
                   maCQT = items[k].ndungTBao.maCQT;
                   maTBao = items[k].loaiTBao;
                   tenTBao = items[k].tenTBao;
+
+
 
                 } else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "7") {
                   maTBao =  items[k].loaiTBao;
@@ -8631,27 +8674,27 @@ class EInvoiceController {
                   }  
                    else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "16" || items[k].loaiTBao == "15")  {
                       // !!!========================== tao sample maCQT
-                        maCQT = await this.makeid(34);
-                        maTBao = "10";
-                        tenTBao = "Thông báo hóa đơn được CQT cấp mã";
-                        data_error = []
+                      //   maCQT = await this.makeid(34);
+                      //   maTBao = "10";
+                      //   tenTBao = "Thông báo hóa đơn được CQT cấp mã";
+                      //   data_error = []
                         
-                        rtnValueTradecode.forEach((element, index) => {
-                          if(element.trade_code === tr_code.trade_code) {
-                            rtnValueTradecode[index].mccqt = maCQT;
-                          }
-                      });
+                      //   rtnValueTradecode.forEach((element, index) => {
+                      //     if(element.trade_code === tr_code.trade_code) {
+                      //       rtnValueTradecode[index].mccqt = maCQT;
+                      //     }
+                      // });
                       // !!!========================== tao sample maCQT
                       
                     // tam thời đóng vì k cung cấp MST 
-                        //  maTBao = items[k].loaiTBao;
-                        //   tenTBao = items[k].tenTBao;
-                        //   data_error.push(
-                        //     {
-                        //       maLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].maLoi,
-                        //       mtaLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].mtaLoi
-                        //     }
-                        //   )
+                         maTBao = items[k].loaiTBao;
+                          tenTBao = items[k].tenTBao;
+                          data_error.push(
+                            {
+                              maLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].maLoi,
+                              mtaLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].mtaLoi
+                            }
+                          )
                       // end / tam thời đóng vì k cung cấp MST 
 
 

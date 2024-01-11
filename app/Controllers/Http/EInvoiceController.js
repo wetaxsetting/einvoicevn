@@ -7648,7 +7648,7 @@ class EInvoiceController {
         CONTENT: error.message,
       });
       console.log(error);
-      return response.status(400).json(Utils.responseByRule({success : false, message : e.message}));
+      return response.status(400).json(Utils.responseByRule({success : false, message : error.message}));
     }
   }
 
@@ -8096,7 +8096,6 @@ class EInvoiceController {
       {
         // return response.send(Utils.response(false, `Compay not yet register`, null));
         return response.status(404).json(Utils.responseByRule({success : false, message : "Compay not yet register!"}));
-
       }
 
       const agent = {
@@ -8113,6 +8112,7 @@ class EInvoiceController {
       let xml_tax_signed = "";
       let rtnValue = {};
       let data_error = [];
+      let mLTDiep = "",ngayTBao = "",ngayCQTKy = "";
       const res = await Request.post(
         url,
         { base64XML: Buffer.from(invoice_xml_signed).toString("base64") },
@@ -8163,6 +8163,14 @@ class EInvoiceController {
                 if(items[k].loaiTBao == "1"){
                   xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
                   
+                  const templateMLTDiep = {
+                    SigningTime : "TDiep/TTChung/MLTDiep"
+                  }
+                  mLTDiep = await transform(xml_tax_signed, templateMLTDiep);
+                  ngayTBao = items[k].ndungTBao.ngayTBao;
+                  ngayCQTKy = items[k].ndungTBao.ngayCQTKy;
+
+
                 }else if (items[k].loaiTBao == "8") {
                   maCQT = items[k].ndungTBao.maCQT;
                   maTBao = items[k].loaiTBao;
@@ -8179,13 +8187,12 @@ class EInvoiceController {
                     });
                     const chars = invoice.mtaLoi.split(';');
                     data_inv.forEach((element, index) => {
-                      if(element.form_no === chars[0] && element.serial_no === chars[1] && element.invoice_no === chars[2]) {
+                    if(element.form_no === chars[0] && element.serial_no === chars[1] && element.invoice_no === chars[2]) {
                         data_inv[index].inform_code = "1";
-                        data_inv[index].inform_name = "invoice.maLoi" + " - " + invoice.mtaLoi;
+                        data_inv[index].inform_name = invoice.maLoi + " - " + invoice.mtaLoi;
                       }
-                     });
+                    });
                   }
-                 
                 } 
               }
             }

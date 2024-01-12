@@ -8303,7 +8303,7 @@ class EInvoiceController {
         FUNC: "sendInvoiceToTaxOffice",
         CONTENT: e.message,
       });
-      //  console.log("sendInvoiceToTaxOffice ", e);
+      console.log("weTaxSendPosInvoiceToTaxOffice ERROR ", e);
       // return response.send(Utils.response(false, e.message, null));
       return response.status(409).json(Utils.responseByRule({success : false, message : e.message}));
     }

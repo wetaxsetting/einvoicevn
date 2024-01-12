@@ -152,19 +152,6 @@ export default {
           width: 150,
         },
         {
-          dataField: "FORM_NO",
-          caption: this.$t("form_no"),
-        },
-        {
-          dataField: "SERIAL_NO",
-          caption: this.$t("serial_no"),
-        },
-        {
-          dataField: "INVOICE_NO",
-          caption: this.$t("invoice_no"),
-          width: 100,
-        },
-        {
           dataField: "SEND_DT",
           caption: this.$t("nlap"),
           dataType: "date",
@@ -179,6 +166,12 @@ export default {
           dataField: "CQT_RESULT",
           caption: this.$t("ph_cqt"),
           width: 160,
+        },
+        {
+          dataField: "INV_QTY",
+          caption: this.$t("qty"),
+          type: "number",
+          width: 150,
         },
         { dataField: "TITTLE", caption: "thao_tac", type: "html", width: 150, fixed: true, cellsrenderer: this.myCellHTML },
       ];

@@ -8125,7 +8125,7 @@ class EInvoiceController {
       );
 
       trade_code = res.data.maGDich;
-      console.log("trade_code   ", trade_code);
+      console.log("weTaxSendPosInvoiceToTaxOffice trade_code   ", trade_code);
       if (trade_code) {
         const para_value = {
             tei_einvoice_ar_pk: check_data.PK,
@@ -8155,7 +8155,7 @@ class EInvoiceController {
             Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
           },
         }).then(async (res) => {
-          // console.log(" res  ", res.data);
+          console.log("weTaxSendPosInvoiceToTaxOffice res  ", res.data);
           if (res.data.length) {
             for (let j = 0; j < res.data.length; j++) {
               const items = res.data[j];
@@ -8243,6 +8243,7 @@ class EInvoiceController {
           }
 
           // data_inv insert data ==> tei_einvoice_m
+          console.log("weTaxSendPosInvoiceToTaxOffice data_inv  ", data_inv);
 
           for (const inv of data_inv)
           {
@@ -8290,7 +8291,7 @@ class EInvoiceController {
             xml_tax_signed: xml_tax_signed,
           };
         });
-        // console.log("rtnValue  ", rtnValue);
+         console.log("weTaxSendPosInvoiceToTaxOffice rtnValue  ", rtnValue);
       // return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
       return response.status(200).json(Utils.responseByRule({success : true, message : "Sent POS invoice successfully.", data: rtnValue}));
     } catch (e) {

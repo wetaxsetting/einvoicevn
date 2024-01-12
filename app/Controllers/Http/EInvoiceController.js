@@ -8180,7 +8180,7 @@ class EInvoiceController {
                     tenGDDTu = "Thông báo gói tin hợp lệ.";
                     ord = "2";
                   }
-                  const param_m = {
+                  const param_pos = {
                     p_CQT_Code  : trade_code,
                     p_xml_sign  : xml_tax_signed,
                     p_maTDiep   : mLTDiep,
@@ -8189,7 +8189,7 @@ class EInvoiceController {
                     p_ngayTaoTB : ngayCQTKy,
                     p_ord       :  ord 
                   }
-      
+                  console.log("weTaxSendPosInvoiceToTaxOffice param_pos  ", param_pos);
                   await DBService.ExecuteSQLBlob(
                     `BEGIN WT_UPD_HISTORY_D_POS(
                                     :p_CQT_Code,
@@ -8203,7 +8203,7 @@ class EInvoiceController {
                                     :p_crt_by, 
                                     :p_rtn_cur); 
                     END;`,
-                    param_m,
+                    param_pos,
                     p_language,
                     p_crt_by
                   );

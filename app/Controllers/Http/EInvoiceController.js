@@ -8068,6 +8068,7 @@ class EInvoiceController {
       // console.log("weTaxSendPosInvoiceToTaxOffice   =========================== END =======================", )
 
       // let json =  this.parseXmlToJson(invoice_xml_signed);
+      console.log("weTaxSendPosInvoiceToTaxOffice BEGIN ================================   ");
 
       const { check_data, data_inv } =  await this.weTaxExtractPosXMLContent(invoice_xml_signed,
                                                       seller_tax_code,
@@ -8292,6 +8293,7 @@ class EInvoiceController {
           };
         });
          console.log("weTaxSendPosInvoiceToTaxOffice rtnValue  ", rtnValue);
+         console.log("weTaxSendPosInvoiceToTaxOffice END ========================  ");
       // return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
       return response.status(200).json(Utils.responseByRule({success : true, message : "Sent POS invoice successfully.", data: rtnValue}));
     } catch (e) {

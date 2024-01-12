@@ -8167,7 +8167,8 @@ class EInvoiceController {
                   const templateMLTDiep = {
                     SigningTime : "TDiep/TTChung/MLTDiep"
                   }
-                  mLTDiep = await transform(xml_tax_signed, templateMLTDiep);
+                  var jsonD = await transform(xml_tax_signed, templateMLTDiep);
+                  mLTDiep = jsonD.SigningTime;
                   ngayTBao = items[k].ndungTBao.ngayTBao;
                   ngayCQTKy = items[k].ndungTBao.ngayCQTKy;
                   maGDichDTu = items[k].ndungTBao.maGDichDTu;

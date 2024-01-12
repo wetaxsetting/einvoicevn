@@ -7638,7 +7638,7 @@ class EInvoiceController {
           }
       }
   
-      return response.status(200).json(Utils.responseByRule({success : true, message : "Send Company template was Faile.", data: req_value}));
+      return response.status(200).json(Utils.responseByRule({success : true, message : "Send Company template was Success.", data: req_value}));
       
     } catch (error) {
       Utils.Logger({

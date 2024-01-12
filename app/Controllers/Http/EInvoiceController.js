@@ -7622,7 +7622,7 @@ class EInvoiceController {
             //console.log("base64PDf  ", url_pdf);
             req_value.push({
               seller_comp_taxcode: seller_comp_taxcode,
-              req_key: rtnValue.p_rtn_cur[0].PK,
+              req_key: data.req_key,//rtnValue.p_rtn_cur[0].PK,
               template: url_pdf
             });
           

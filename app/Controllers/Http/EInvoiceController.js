@@ -8126,7 +8126,7 @@ class EInvoiceController {
       );
 
       trade_code = res.data.maGDich;
-      console.log("weTaxSendPosInvoiceToTaxOffice trade_code   ", trade_code);
+      //console.log("weTaxSendPosInvoiceToTaxOffice trade_code   ", trade_code);
       if (trade_code) {
         const para_value = {
             tei_einvoice_ar_pk: check_data.PK,
@@ -8156,7 +8156,7 @@ class EInvoiceController {
             Authorization: "Basic " + Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
           },
         }).then(async (res) => {
-          console.log("weTaxSendPosInvoiceToTaxOffice res  ", res.data);
+          //console.log("weTaxSendPosInvoiceToTaxOffice res  ", res.data);
           if (res.data.length) {
             for (let j = 0; j < res.data.length; j++) {
               const items = res.data[j];
@@ -8190,7 +8190,7 @@ class EInvoiceController {
                     p_ngayTaoTB : ngayCQTKy,
                     p_ord       :  ord 
                   }
-                  console.log("weTaxSendPosInvoiceToTaxOffice param_pos  ", param_pos);
+                  //console.log("weTaxSendPosInvoiceToTaxOffice param_pos  ", param_pos);
                   await DBService.ExecuteSQLBlob(
                     `BEGIN WT_UPD_HISTORY_D_POS(
                                     :p_CQT_Code,
@@ -8215,16 +8215,66 @@ class EInvoiceController {
                   maGDichDTu = "";
 
                 }else if (items[k].loaiTBao == "8") {
-                  maCQT = items[k].ndungTBao.maCQT;
+                  trade_code = items[k].ndungTBao.maGDichTChieu;
                   maTBao = items[k].loaiTBao;
                   tenTBao = items[k].tenTBao;
                   soTBao = items[k].ndungTBao.tbaoKTraDLieu.soTBao;
+                  ngayCQTKy = items[k].ndungTBao.tbaoKTraDLieu.ngayCQTKy;
 
+                  const param_ltb_8 = {
+                    p_CQT_Code  : trade_code,
+                    p_soTBao  : soTBao,
+                    p_maTBao : maTBao,
+                    p_tenTBao : tenTBao,
+                    p_ngayCQTKy : ngayCQTKy
+                  }
+                  await DBService.ExecuteSQLBlob(
+                    `BEGIN WT_UPD_HISTORY_D_POS_TB8(
+                                    :p_CQT_Code,
+                                    :p_soTBao,
+                                    :p_maTBao,
+                                    :p_tenTBao,
+                                    :p_ngayCQTKy,
+                                    :p_language, 
+                                    :p_crt_by, 
+                                    :p_rtn_cur); 
+                    END;`,
+                    param_ltb_8,
+                    p_language,
+                    p_crt_by
+                  );
                 
 
                 } else if (items[k].loaiTBao == "9" || items[k].loaiTBao == "7") {
-                  maTBao =  items[k].loaiTBao;
-                  tenTBao =  items[k].tenTBao;
+                  trade_code = items[k].ndungTBao.maGDichTChieu;
+                  maTBao = items[k].loaiTBao;
+                  tenTBao = items[k].tenTBao;
+                  soTBao = items[k].ndungTBao.tbaoKTraDLieu.soTBao;
+                  ngayCQTKy = items[k].ndungTBao.tbaoKTraDLieu.ngayCQTKy;
+
+                  const param_ltb_8 = {
+                    p_CQT_Code  : trade_code,
+                    p_soTBao  : soTBao,
+                    p_maTBao : maTBao,
+                    p_tenTBao : tenTBao,
+                    p_ngayCQTKy : ngayCQTKy
+                  }
+                  await DBService.ExecuteSQLBlob(
+                    `BEGIN WT_UPD_HISTORY_D_POS_TB8(
+                                    :p_CQT_Code,
+                                    :p_soTBao,
+                                    :p_maTBao,
+                                    :p_tenTBao,
+                                    :p_ngayCQTKy,
+                                    :p_language, 
+                                    :p_crt_by, 
+                                    :p_rtn_cur); 
+                    END;`,
+                    param_ltb_8,
+                    p_language,
+                    p_crt_by
+                  );
+
                   for(let invoice of items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu)
                   {
                     data_error.push({

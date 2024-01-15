@@ -12209,7 +12209,7 @@ class EInvoiceController {
                     inv_date : rtnValue.p_rtn_cur[0].SHDON,		
                     inv_no : rtnValue.p_rtn_cur[0].NGAY,		
                     cus_xml_mins : rtnValue.p_rtn_cur[0].BUYER_SIGN_XML,		
-                    cus_sign_by	: rtnValue.p_rtn_cur[0].CUS_NM	
+                    cus_sign_by	: rtnValue.p_rtn_cur[0].USER_SIGN_NM	
                   },
                   {
                     agent,

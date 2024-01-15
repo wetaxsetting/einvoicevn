@@ -12187,38 +12187,39 @@ class EInvoiceController {
       let data_re = {};
       if ( rtnValue.p_rtn_cur && rtnValue.p_rtn_cur[0].STATUS_EXIT == "EXIT")
       {
-        const agent = {
-          Agent: {
-            defaultPort: 443,
-            protocol: "https:",
-            options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
-          },
-        };
+        
+        // const agent = {
+        //   Agent: {
+        //     defaultPort: 443,
+        //     protocol: "https:",
+        //     options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
+        //   },
+        // };
 
-        let triesCounter = 0;
-        while(triesCounter < 3){
-              try {
-                const res = await Request.post(
-                  `${WETAX_API_URL}/api/wtx/ca/v1/sales/e-record/status`,
-                  { 
-                    service_id : ipa_name,
-                    seller_tax_code : tax_code,
-                    info_send_email : data_rep
-                    },
-                  {
-                    agent,
-                    headers: {
-                      Authorization: "Basic " + WETAX_TOKEN_CALLBACK,
-                    },
-                  }
-                );
-                break;  // 'return' would work here as well
-              } catch (err) {
-                await Utils._sleep(5);
-                console.log(err);
-              }
-              triesCounter ++;
-          }
+        // let triesCounter = 0;
+        // while(triesCounter < 3){
+        //       try {
+        //         const res = await Request.post(
+        //           `${WETAX_API_URL}/api/wtx/ca/v1/sales/e-record/status`,
+        //           { 
+        //             service_id : ipa_name,
+        //             seller_tax_code : tax_code,
+        //             info_send_email : data_rep
+        //             },
+        //           {
+        //             agent,
+        //             headers: {
+        //               Authorization: "Basic " + WETAX_TOKEN_CALLBACK,
+        //             },
+        //           }
+        //         );
+        //         break;  // 'return' would work here as well
+        //       } catch (err) {
+        //         await Utils._sleep(5);
+        //         console.log(err);
+        //       }
+        //       triesCounter ++;
+        //   }
       }
 
       
@@ -14203,6 +14204,7 @@ class EInvoiceController {
                 PBan:"DLieu/PBan",
                 MSo:"DLieu/MSo",
                 NTBao:"DLieu/NTBao",
+                SBBan:"DLieu/SBBan",
                 NBan:{
                   Ten:"DLieu/NBan/Ten",
                   MST:"DLieu/NBan/MST",
@@ -14251,7 +14253,8 @@ class EInvoiceController {
             mccqt: jsonInvoice[0].DLieu.HDon.MCCQT,
             sign_time: signingTime.SigningTime,
             xml_content : xml_content,
-            req_key : p_rep_key
+            req_key : p_rep_key,
+            voucher_no : jsonInvoice[0].DLieu.SBBan
           }
 
           console.log("para_noti  ", para_noti );
@@ -14266,6 +14269,7 @@ class EInvoiceController {
                                           :sign_time,
                                           :xml_content,
                                           :req_key,
+                                          :voucher_no,
                                           :p_language, 
                                           :p_crt_by, 
                                           :p_rtn_cur); END;`,

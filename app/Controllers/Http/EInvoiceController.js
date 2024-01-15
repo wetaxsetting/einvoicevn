@@ -9113,7 +9113,7 @@ class EInvoiceController {
             PBan:"",
             MSo:"",
             NTBao:"",
-            SCTu:"",
+            SBBan:"",
             NBan:{
               Ten:"",
               MST:"",
@@ -9161,7 +9161,7 @@ class EInvoiceController {
         objInvoice.BBan.DLieu.PBan = version;
         objInvoice.BBan.DLieu.MSo  = form_no;
         objInvoice.BBan.DLieu.NTBao  = inform_date;
-        objInvoice.BBan.DLieu.SCTu  = noti.voucher_no;
+        objInvoice.BBan.DLieu.SBBan  = noti.voucher_no;
         
         objInvoice.BBan.DLieu.NBan.Ten = seller_company_name;
         objInvoice.BBan.DLieu.NBan.MST = seller_taxcode;

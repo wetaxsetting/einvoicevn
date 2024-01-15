@@ -9066,6 +9066,8 @@ class EInvoiceController {
               noti_list  
             } = request.all();
 
+      console.log("weTaxGenerateRecordsXml  BEGIN ============================");
+      console.log("weTaxGenerateRecordsXml noti_list ", noti_list)      
       if(!form_no)
       {
         // return response.send(Utils.response(false, `form no is not null`, null));
@@ -9193,6 +9195,8 @@ class EInvoiceController {
       }
 
         
+      console.log("weTaxGenerateRecordsXml rtnXML ", rtnXML);      
+      console.log("weTaxGenerateRecordsXml END ====================================");      
 
       // return response.send(Utils.response(true, `Convert json to xml was successful. `, rtnXML));
       return response.status(200).json(Utils.responseByRule({success : true, message : "Generate e-Record xml successfully.", data: rtnXML}));

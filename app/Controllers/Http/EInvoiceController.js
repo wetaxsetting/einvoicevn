@@ -9429,17 +9429,20 @@ class EInvoiceController {
         seller_taxcode,
         noti_list
         } = request.all();
-      
-        // console.log()
+        console.log("weTaxSendRecords   BEGIN =================================");
+        console.log("weTaxSendRecords   ", noti_list);
         for(const noti of noti_list)
         {
           // console.log("noti  ", noti);
-          const res = await this.weTaxExtractRecordXMLContent(noti.xml_signed, p_language, p_crt_by)
+          const res = await this.weTaxExtractRecordXMLContent(noti.xml_signed, p_language, p_crt_by);
+
+          console.log("weTaxSendRecords   details res", res);
 
           if(res.STATUS == "OK")
           {
             const data_mail = await this.weTaxSendMailRecords(res.TEI_EINVOICE_M_PK, res.TEI_COMPANY_PK, noti.buyer_email, noti.buyer_email_cc ,  p_language, p_crt_by);
-           
+            
+            console.log("weTaxSendRecords   data_mail ", data_mail);
             if(data_mail && data_mail.length > 0)
             {
               r_data_noti.push({
@@ -9491,6 +9494,8 @@ class EInvoiceController {
           }
         }
         
+        console.log("weTaxSendRecords   END =================================");
+
         // return response.send(Utils.response(true, `Sending records was successful. `,r_data_noti ));
         return response.status(200).json(Utils.responseByRule({success : true, message : 'Send e-Record successfully.', data: r_data_noti}));
     } catch (e) {
@@ -9500,7 +9505,7 @@ class EInvoiceController {
         FUNC: "generalRecordsXml",
         CONTENT: e.message,
       });
-      // console.log(e);
+      console.log(e);
       // return response.send(Utils.response(false, e.message, null));
       return response.status(409).json(Utils.responseByRule({success : false, message : e.message}));
     }

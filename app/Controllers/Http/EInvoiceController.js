@@ -9113,6 +9113,7 @@ class EInvoiceController {
             PBan:"",
             MSo:"",
             NTBao:"",
+            SCTu:"",
             NBan:{
               Ten:"",
               MST:"",
@@ -9160,7 +9161,8 @@ class EInvoiceController {
         objInvoice.BBan.DLieu.PBan = version;
         objInvoice.BBan.DLieu.MSo  = form_no;
         objInvoice.BBan.DLieu.NTBao  = inform_date;
-
+        objInvoice.BBan.DLieu.SCTu  = noti.voucher_no;
+        
         objInvoice.BBan.DLieu.NBan.Ten = seller_company_name;
         objInvoice.BBan.DLieu.NBan.MST = seller_taxcode;
         objInvoice.BBan.DLieu.NBan.DChi = seller_address;
@@ -9438,7 +9440,7 @@ class EInvoiceController {
         for(const noti of noti_list)
         {
           // console.log("noti  ", noti);
-          const res = await this.weTaxExtractRecordXMLContent(noti.xml_signed, p_language, p_crt_by);
+          const res = await this.weTaxExtractRecordXMLContent(noti.xml_signed, noti.req_key, p_language, p_crt_by);
 
           console.log("weTaxSendRecords   details res", res);
 
@@ -12182,7 +12184,44 @@ class EInvoiceController {
       //let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + rtnValue.p_rtn_cur[0].TEI_EINVOICE_SS_D_PK + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token=");
       //let url_xml = re_url_xml.data;
       //console.log("base64XML:", url_xml);
+      let data_re = {};
+      if ( rtnValue.p_rtn_cur && rtnValue.p_rtn_cur[0].STATUS_EXIT == "EXIT")
+      {
+        const agent = {
+          Agent: {
+            defaultPort: 443,
+            protocol: "https:",
+            options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
+          },
+        };
 
+        let triesCounter = 0;
+        while(triesCounter < 3){
+              try {
+                const res = await Request.post(
+                  `${WETAX_API_URL}/api/wtx/ca/v1/sales/e-record/status`,
+                  { 
+                    service_id : ipa_name,
+                    seller_tax_code : tax_code,
+                    info_send_email : data_rep
+                    },
+                  {
+                    agent,
+                    headers: {
+                      Authorization: "Basic " + WETAX_TOKEN_CALLBACK,
+                    },
+                  }
+                );
+                break;  // 'return' would work here as well
+              } catch (err) {
+                await Utils._sleep(5);
+                console.log(err);
+              }
+              triesCounter ++;
+          }
+      }
+
+      
       const rep_data = {
         info_inv: rtnValue.p_rtn_cur[0].INFO_INV,
         ma_gd: rtnValue.p_rtn_cur[0].CQT_MAGD,
@@ -14150,6 +14189,7 @@ class EInvoiceController {
 
   async weTaxExtractRecordXMLContent(
     xml_content,
+    p_rep_key,
     p_language,
     p_crt_by
 ) {
@@ -14210,7 +14250,8 @@ class EInvoiceController {
             invoice_no: jsonInvoice[0].DLieu.HDon.SHDon,
             mccqt: jsonInvoice[0].DLieu.HDon.MCCQT,
             sign_time: signingTime.SigningTime,
-            xml_content : xml_content
+            xml_content : xml_content,
+            req_key : p_rep_key
           }
 
           console.log("para_noti  ", para_noti );
@@ -14224,6 +14265,7 @@ class EInvoiceController {
                                           :mccqt,
                                           :sign_time,
                                           :xml_content,
+                                          :req_key,
                                           :p_language, 
                                           :p_crt_by, 
                                           :p_rtn_cur); END;`,

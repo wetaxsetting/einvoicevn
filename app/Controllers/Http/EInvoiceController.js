@@ -12187,39 +12187,44 @@ class EInvoiceController {
       let data_re = {};
       if ( rtnValue.p_rtn_cur && rtnValue.p_rtn_cur[0].STATUS_EXIT == "EXIT")
       {
-        
-        // const agent = {
-        //   Agent: {
-        //     defaultPort: 443,
-        //     protocol: "https:",
-        //     options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
-        //   },
-        // };
 
-        // let triesCounter = 0;
-        // while(triesCounter < 3){
-        //       try {
-        //         const res = await Request.post(
-        //           `${WETAX_API_URL}/api/wtx/ca/v1/sales/e-record/status`,
-        //           { 
-        //             service_id : ipa_name,
-        //             seller_tax_code : tax_code,
-        //             info_send_email : data_rep
-        //             },
-        //           {
-        //             agent,
-        //             headers: {
-        //               Authorization: "Basic " + WETAX_TOKEN_CALLBACK,
-        //             },
-        //           }
-        //         );
-        //         break;  // 'return' would work here as well
-        //       } catch (err) {
-        //         await Utils._sleep(5);
-        //         console.log(err);
-        //       }
-        //       triesCounter ++;
-        //   }
+        const agent = {
+          Agent: {
+            defaultPort: 443,
+            protocol: "https:",
+            options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
+          },
+        };
+
+        let triesCounter = 0;
+        while(triesCounter < 3){
+              try {
+                const res = await Request.post(
+                  `${WETAX_API_URL}/api/wtx/ca/v1/sales/e-record/status`,
+                  { 
+                    sid	: rtnValue.p_rtn_cur[0].REQ_KEY,	
+                    tax_auth_cd	: rtnValue.p_rtn_cur[0].MCQTCAP,	
+                    form_no	: rtnValue.p_rtn_cur[0].KHMSHDON,	
+                    serial_no	: rtnValue.p_rtn_cur[0].KHHDON,	
+                    inv_date : rtnValue.p_rtn_cur[0].SHDON,		
+                    inv_no : rtnValue.p_rtn_cur[0].NGAY,		
+                    cus_xml_mins : rtnValue.p_rtn_cur[0].BUYER_SIGN_XML,		
+                    cus_sign_by	: rtnValue.p_rtn_cur[0].CUS_NM	
+                  },
+                  {
+                    agent,
+                    headers: {
+                      Authorization: "Basic " + WETAX_TOKEN_CALLBACK,
+                    },
+                  }
+                );
+                break;  // 'return' would work here as well
+              } catch (err) {
+                await Utils._sleep(5);
+                console.log(err);
+              }
+              triesCounter ++;
+          }
       }
 
       

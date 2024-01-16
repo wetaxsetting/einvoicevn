@@ -12022,7 +12022,7 @@ class EInvoiceController {
       }else
       {
          EiExcels = new EiPosExcelHandlerAuto();
-         url_pdf = await EiExcels.getEinvoice(data, p_language, p_crt_by);
+         url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].TEI_WT_SALE_BILL_PK, p_language, p_crt_by);
 
          re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + rtnValue.p_rtn_cur[0].TEI_WT_SALE_BILL_PK + "&proc=" + "EI_SEL_XML_POS_EINVOICE" + "&token="); //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
          url_xml = re_url_xml.data;

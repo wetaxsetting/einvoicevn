@@ -12009,14 +12009,32 @@ class EInvoiceController {
         p_language,
         p_crt_by
       );
+      let EiExcels = null, re_url_xml = null;
+      let url_pdf= "", url_xml = "" ;
+      if (rtnValue.p_rtn_cur[0].TYPE = "EP" )
+      {
+         EiExcels = new EiExcelHandlerAuto(); //CQT_MAGD
+         url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].CQT_MAGD, p_language, p_crt_by);
+        // console.log("base64PDf: ", url_pdf);
 
-      let EiExcels = new EiExcelHandlerAuto(); //CQT_MAGD
-      let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].CQT_MAGD, p_language, p_crt_by);
-      // console.log("base64PDf: ", url_pdf);
+         re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + rtnValue.p_rtn_cur[0].CQT_MAGD + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token=");
+         url_xml = re_url_xml.data;
+      }else
+      {
+         EiExcels = new EiPosExcelHandlerAuto();
+         url_pdf = await EiExcels.getEinvoice(data, p_language, p_crt_by);
 
-      let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + rtnValue.p_rtn_cur[0].CQT_MAGD + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token=");
-      let url_xml = re_url_xml.data;
-      // console.log("base64XML:", url_xml);
+         re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + rtnValue.p_rtn_cur[0].TEI_WT_SALE_BILL_PK + "&proc=" + "EI_SEL_XML_POS_EINVOICE" + "&token="); //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
+         url_xml = re_url_xml.data;
+
+      }
+      
+
+
+
+     
+
+
       // vng-199 2023-11-22 cần update thêm 1 số trường trong procedure này ei_sel_get_data_lookup_code, mà bị dí quá k update kịp để làm sau 
       const rep_data = {
         form_no: rtnValue.p_rtn_cur[0].FORM_NO,

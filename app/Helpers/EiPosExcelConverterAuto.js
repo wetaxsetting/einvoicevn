@@ -258,10 +258,10 @@ class EiExcelConverterAuto {
 
                 // console.log(e.Cell+"+"+e.Info)
                 break;
-              // case "read_priceV":
-              // 	worksheet.getCell( `${e.Cell}`).value = read_priceV != null ? read_priceV.substr(0, 2) + read_priceV.substr(2, read_priceV.length - 2).toLowerCase() + '.' : '';
-              // 	//console.log(e.Cell+"+"+e.Info)
-              // 	break;
+              case "read_price":
+                worksheet.getCell(`${e.Cell}`).value = read_price != null ? read_price : "";
+                worksheet.getCell(`${e.Cell}`).style.border = { right: { style: "thin" } };
+              	break;
               // case "read_priceU":
               // 	worksheet.getCell( `${e.Cell}`).value = read_priceU != null ? read_priceU.substr(0, 2) + read_priceU.substr(2, read_priceU.length - 2).toLowerCase() + '.' : '';
               // 	//console.log(e.Cell+"+"+e.Info)

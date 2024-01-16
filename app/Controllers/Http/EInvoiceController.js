@@ -8709,14 +8709,11 @@ class EInvoiceController {
                   // else 
                   if (items[k].loaiTBao == "10") {
 
-                    let xml_draft = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8").split('</TTChung><DLieu>');
-                    xml_tax_signed ='<?xml version="1.0" encoding="UTF-8"?>'+ xml_draft[1].replace('</DLieu></TDiep>','');
+                    let xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
                     var getLength = require("utf8-byte-length")
                     xml_length = getLength(xml_tax_signed);
-                    //console.log(" count_length   ", count_length);
-
+                    console.log("weTaxSendInvoiceToTaxOffice count_length   ", count_length);
                     maCQT = items[k].ndungTBao.maCQT;
-
                     maTBao = items[k].loaiTBao;
                     tenTBao = items[k].tenTBao;
 

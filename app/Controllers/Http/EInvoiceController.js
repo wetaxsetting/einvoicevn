@@ -8712,7 +8712,7 @@ class EInvoiceController {
                     let xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
                     var getLength = require("utf8-byte-length")
                     xml_length = getLength(xml_tax_signed);
-                    console.log("weTaxSendInvoiceToTaxOffice count_length   ", count_length);
+                    console.log("weTaxSendInvoiceToTaxOffice xml_length   ", xml_length);
                     maCQT = items[k].ndungTBao.maCQT;
                     maTBao = items[k].loaiTBao;
                     tenTBao = items[k].tenTBao;

@@ -12011,7 +12011,7 @@ class EInvoiceController {
       );
       let EiExcels = null, re_url_xml = null;
       let url_pdf= "", url_xml = "" ;
-      if (rtnValue.p_rtn_cur[0].TYPE = "EP" )
+      if (rtnValue.p_rtn_cur[0].TYPE == "EP" )
       {
          EiExcels = new EiExcelHandlerAuto(); //CQT_MAGD
          url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].CQT_MAGD, p_language, p_crt_by);

@@ -8769,6 +8769,7 @@ class EInvoiceController {
           xml_length: xml_length
           };
 
+          console.log("para_status  ", para_status);
           const res_op = await DBService.ExecuteSQLBlob(
                     `BEGIN WT_UPD_TEI_WT_INVOICE_UP(
                                     :req_ep_key, 

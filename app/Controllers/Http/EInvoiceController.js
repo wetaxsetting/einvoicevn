@@ -8709,11 +8709,12 @@ class EInvoiceController {
                   // else 
                   if (items[k].loaiTBao == "10") {
 
-                    let xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
+                    let xml_draft = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8").split('</TTChung><DLieu>');
+                    xml_tax_signed ='<?xml version="1.0" encoding="UTF-8"?>'+ xml_draft[1].replace('</DLieu></TDiep>','');
                     var getLength = require("utf8-byte-length")
                     xml_length = getLength(xml_tax_signed);
-                    console.log("weTaxSendInvoiceToTaxOffice xml_length   ", xml_length);
-                    console.log("weTaxSendInvoiceToTaxOffice xml_tax_signed   ", xml_tax_signed);
+                    //console.log(" count_length   ", count_length);
+
                     maCQT = items[k].ndungTBao.maCQT;
                     maTBao = items[k].loaiTBao;
                     tenTBao = items[k].tenTBao;
@@ -8769,7 +8770,6 @@ class EInvoiceController {
           xml_length: xml_length
           };
 
-          console.log("para_status  ", para_status);
           const res_op = await DBService.ExecuteSQLBlob(
                     `BEGIN WT_UPD_TEI_WT_INVOICE_UP(
                                     :req_ep_key, 

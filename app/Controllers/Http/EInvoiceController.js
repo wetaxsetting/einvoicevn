@@ -12014,7 +12014,7 @@ class EInvoiceController {
       if (rtnValue.p_rtn_cur[0].TYPE == "EP" )
       {
          EiExcels = new EiExcelHandlerAuto(); //CQT_MAGD
-         url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].CQT_MAGD, p_language, p_crt_by);
+         url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].TEI_EINVOICE_M_PK, p_language, p_crt_by);
         // console.log("base64PDf: ", url_pdf);
 
          re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + rtnValue.p_rtn_cur[0].CQT_MAGD + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token=");

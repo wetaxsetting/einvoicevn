@@ -12029,12 +12029,6 @@ class EInvoiceController {
 
       }
       
-
-
-
-     
-
-
       // vng-199 2023-11-22 cần update thêm 1 số trường trong procedure này ei_sel_get_data_lookup_code, mà bị dí quá k update kịp để làm sau 
       const rep_data = {
         form_no: rtnValue.p_rtn_cur[0].FORM_NO,
@@ -12052,7 +12046,7 @@ class EInvoiceController {
         buyer_comp_name: rtnValue.p_rtn_cur[0].BUYER_LEGALNAME,
         buyer_taxcode: rtnValue.p_rtn_cur[0].BUYER_TAXCODE,
         buyer_phone: rtnValue.p_rtn_cur[0].TEL_53,
-        buyer_address: rtnValue.p_rtn_cur[0].SELLER_ADDRESS_1,
+        buyer_address: rtnValue.p_rtn_cur[0].BUYER_ADDRESS,
         url_pdf: url_pdf,
         url_xml: url_xml,
         total_amt_no_vat: rtnValue.p_rtn_cur[0].NET_TR_AMT,

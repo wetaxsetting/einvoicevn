@@ -8577,7 +8577,8 @@ class EInvoiceController {
       const urlCheck = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
       const { invoices } = request.all();
 
-      // console.log("weTaxSendInvoiceToTaxOffice  invoices  ",invoices);
+      console.log("weTaxSendInvoiceToTaxOffice  BEGIN ================================= ");
+      console.log("weTaxSendInvoiceToTaxOffice  invoices  ",invoices);
       const agent = {
         Agent: {
           defaultPort: 443,
@@ -8798,6 +8799,8 @@ class EInvoiceController {
           });
       
       }
+      console.log("weTaxSendInvoiceToTaxOffice  rtnValue", rtnValue);
+      console.log("weTaxSendInvoiceToTaxOffice  END ================================= ");
 
       // rtnValueTradecode.push({
       //   req_key: invoices[i].req_key,
@@ -14632,7 +14635,6 @@ class EInvoiceController {
           TEI_EINVOICE_M_PK: master[0].TEI_EINVOICE_M_PK,
         });
       } else {
-        console.log();
         return (result_extra = {
           PK: master[0].PK,
           TEI_EINVOICE_M_PK: master[0].TEI_EINVOICE_M_PK,

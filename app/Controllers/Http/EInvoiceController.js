@@ -8821,7 +8821,7 @@ class EInvoiceController {
         FUNC: "weTaxSendInvoiceToTaxOffice",
         CONTENT: e.message,
       });
-      // console.log("e  ", e);
+      console.log("weTaxSendInvoiceToTaxOffice error  ", e);
       // return response.send(Utils.response(false, e.message, null));
       return response.status(409).json(Utils.responseByRule({success : true, message : e.message}));
     }

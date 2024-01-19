@@ -9174,14 +9174,14 @@ class EInvoiceController {
         objInvoice.BBan.DLieu.NBan.Ten = seller_company_name;
         objInvoice.BBan.DLieu.NBan.MST = seller_taxcode;
         objInvoice.BBan.DLieu.NBan.DChi = seller_address;
-        objInvoice.BBan.DLieu.NBan.NDDien = seller_position;
-        objInvoice.BBan.DLieu.NBan.CVu = seller_representative;
+        objInvoice.BBan.DLieu.NBan.NDDien = seller_representative;
+        objInvoice.BBan.DLieu.NBan.CVu = seller_position;
 
         objInvoice.BBan.DLieu.NMua.Ten = noti.buyer_company_name;
         objInvoice.BBan.DLieu.NMua.MST = noti.buyer_taxcode; 
         objInvoice.BBan.DLieu.NMua.DChi = noti.buyer_address; 
-        objInvoice.BBan.DLieu.NMua.NDDien = noti.buyer_position; 
-        objInvoice.BBan.DLieu.NMua.CVu = noti.buyer_representative; 
+        objInvoice.BBan.DLieu.NMua.NDDien = noti.buyer_representative; 
+        objInvoice.BBan.DLieu.NMua.CVu = noti.buyer_position; 
 
         objInvoice.BBan.DLieu.HDon.KHMSHDon = noti.form_no; 
         objInvoice.BBan.DLieu.HDon.KHHDon = noti.serial_no;

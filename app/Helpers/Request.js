@@ -11,6 +11,10 @@ class Request {
     return axios.post(url, data, config)
   }
 
+  patch (url, data, config) {
+    return axios.patch(url, data, config)
+  }
+
   all (...functions) {
     return Promise.all([...functions])
   }

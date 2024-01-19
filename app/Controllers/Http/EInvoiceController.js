@@ -15379,7 +15379,7 @@ class EInvoiceController {
       let triesCounter = 0;
       while(triesCounter < 3){
             try {
-              const res = await Request.post(
+              const res = await Request.patch(
                 `${WETAX_API_URL}/api/wtx/ca/v1/sales/e-record/status`,
                 { 
                   sid	: data.REQ_KEY,	

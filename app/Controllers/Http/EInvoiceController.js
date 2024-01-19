@@ -2168,7 +2168,8 @@ class EInvoiceController {
         SigningTime : "TBao/DSCKS/NNT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime"
       }
       const signingTime = await transform(p_xml_content, templateSignTime);
-      
+      console.log("signingTime  ", signingTime);
+
       const arrTTChung = [
         jsonTTChung[0].PBan,
         jsonTTChung[0].MSo,
@@ -2185,7 +2186,7 @@ class EInvoiceController {
         signingTime.signingTime,
       ];
     
-      //console.log("arrTTChung  ", arrTTChung);
+      console.log("arrTTChung  ", arrTTChung);
       
 
       //TKhai.DLTKhai.NDTKhai.DSCTSSDung

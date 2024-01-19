@@ -2183,7 +2183,7 @@ class EInvoiceController {
         jsonTTChung[0].TNNT,
         jsonTTChung[0].DDanh,
         jsonTTChung[0].NTBao,
-        signingTime.signingTime,
+        signingTime.SigningTime,
       ];
     
       console.log("arrTTChung  ", arrTTChung);

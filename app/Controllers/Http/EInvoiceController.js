@@ -2164,7 +2164,10 @@ class EInvoiceController {
 
       const jsonTTChung = await transform(p_xml_content, templateTTChung);
       //console.log("jsonTTChung  ", jsonTTChung);
-
+      const templateSignTime = {
+        SigningTime : "TBao/DSCKS/NNT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime"
+      }
+      const signingTime = await transform(xml_content, templateSignTime);
       
       const arrTTChung = [
         jsonTTChung[0].PBan,
@@ -2179,9 +2182,11 @@ class EInvoiceController {
         jsonTTChung[0].TNNT,
         jsonTTChung[0].DDanh,
         jsonTTChung[0].NTBao,
+        signingTime.signingTime,
       ];
     
       //console.log("arrTTChung  ", arrTTChung);
+      
 
       //TKhai.DLTKhai.NDTKhai.DSCTSSDung
       const templateHDon = [

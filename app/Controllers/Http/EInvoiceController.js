@@ -2167,7 +2167,7 @@ class EInvoiceController {
       const templateSignTime = {
         SigningTime : "TBao/DSCKS/NNT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime"
       }
-      const signingTime = await transform(xml_content, templateSignTime);
+      const signingTime = await transform(p_xml_content, templateSignTime);
       
       const arrTTChung = [
         jsonTTChung[0].PBan,

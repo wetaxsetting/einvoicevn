@@ -14229,6 +14229,10 @@ class EInvoiceController {
           const para_noti = {
             seller_tax_code: jsonInvoice[0].DLieu.NBan.MST,
             seller_comp_name: jsonInvoice[0].DLieu.NBan.Ten,
+            seller_position: jsonInvoice[0].DLieu.NBan.CVu,
+            seller_represent: jsonInvoice[0].DLieu.NBan.NDDien,
+            buyer_position: jsonInvoice[0].DLieu.NMua.CVu,
+            buyer_represent: jsonInvoice[0].DLieu.NMua.NDDien,
             form_no:  jsonInvoice[0].DLieu.HDon.KHMSHDon,
             serial_no: jsonInvoice[0].DLieu.HDon.KHHDon,
             invoice_no: jsonInvoice[0].DLieu.HDon.SHDon,
@@ -14244,6 +14248,10 @@ class EInvoiceController {
           `BEGIN wt_upd_noti_xml_d (          
                                           :seller_tax_code,
                                           :seller_comp_name,
+                                          :seller_position,
+                                          :seller_represent,
+                                          :buyer_position,
+                                          :buyer_represent,
                                           :form_no,
                                           :serial_no,
                                           :invoice_no,

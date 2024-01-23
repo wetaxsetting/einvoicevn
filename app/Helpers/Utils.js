@@ -22,6 +22,35 @@ class Utils {
         this.Drive = use("Drive");
         this.Redis = use("Redis");
     }
+
+    encodeHtmlEntities(str) {
+        const symbols = {
+            '&': '&amp;',
+          }
+          for (const symbol in symbols) {
+            if (str.indexOf(symbol) >= 0) {
+              const newStr = str.replaceAll(symbol, symbols[symbol])
+              return newStr
+            }
+          }
+        return str;
+    };
+
+    decodeHtmlEntities(str) {
+        const symbols = {
+            '&amp;': '&',
+            // '&lt;': '<',
+            // '&gt;': '>',
+          }
+          for (const symbol in symbols) {
+            if (str.indexOf(symbol) >= 0) {
+              const newStr = str.replaceAll(symbol, symbols[symbol])
+              return newStr
+            }
+          }
+        return str;
+    };
+
     async setPdfPassword(options) {
         const isWin = process.platform === "win32";
         const args = ['--encrypt', options.password, options.password, options.keyLength, '--print=none', '--', options.input, options.output];

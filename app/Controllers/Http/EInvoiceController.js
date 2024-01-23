@@ -2411,9 +2411,11 @@ class EInvoiceController {
         p_language,
         p_crt_by
       );
-      //console.log(res);
+      // console.log(res);
+      // console.log(tokens);
       let req_key = res.p_rtn_cur[0].TEI_COMPANY_PK;
       if (res.p_rtn_cur[0].STATUS_CD == "000" && tokens?.length) {
+       
         for (let i = 0; i < tokens.length; i++) {
           //const caName = tokens[i].issuer.split('CN=');
 
@@ -2433,29 +2435,62 @@ class EInvoiceController {
             company_id: seller_taxcode,
             tei_company_pk : res.p_rtn_cur[0].TEI_COMPANY_PK,
           };
-          const result = await DBService.ExecuteSQLBlob(
-            `BEGIN WETAX_PRO_TOKEN_INFO(
-                            :company_id,
-                            :serial_number,
-                            :tax_institute,
-                            :from_dt,
-                            :to_dt,
-                            :issuer,
-                            :issue_by,
-                            :issue_to,
-                            :ca_name,
-                            :dn_name,
-                            :dn_mst,
-                            :raw_data,
-                            :status,
-                            :tei_company_pk,
-                            :p_language, :p_crt_by, :p_rtn_cur); END;`,
-            para_token_list,
-            p_language,
-            p_crt_by
-          );
-            
-          //console.log("result  ", result);
+
+          if(tokens[i].token_type == '2'){ // 1: usb, 2: hsm
+            para_token_list.username = tokens[i].username || "";
+            para_token_list.password = tokens[i].password || "";
+            para_token_list.pin = tokens[i].pin  || "";
+            para_token_list.token_type = tokens[i].token_type  || "1";
+
+            const result = await DBService.ExecuteSQLBlob(
+              `BEGIN WETAX_PRO_TOKEN_INFO_V2(
+                              :company_id,
+                              :serial_number,
+                              :tax_institute,
+                              :from_dt,
+                              :to_dt,
+                              :issuer,
+                              :issue_by,
+                              :issue_to,
+                              :ca_name,
+                              :dn_name,
+                              :dn_mst,
+                              :raw_data,
+                              :status,
+                              :tei_company_pk,
+                              :username,
+                              :password,
+                              :pin,
+                              :token_type,
+                              :p_language, :p_crt_by, :p_rtn_cur); END;`,
+              para_token_list,
+              p_language,
+              p_crt_by
+            );
+
+          }else{
+            const result = await DBService.ExecuteSQLBlob(
+              `BEGIN WETAX_PRO_TOKEN_INFO(
+                              :company_id,
+                              :serial_number,
+                              :tax_institute,
+                              :from_dt,
+                              :to_dt,
+                              :issuer,
+                              :issue_by,
+                              :issue_to,
+                              :ca_name,
+                              :dn_name,
+                              :dn_mst,
+                              :raw_data,
+                              :status,
+                              :tei_company_pk,
+                              :p_language, :p_crt_by, :p_rtn_cur); END;`,
+                para_token_list,
+                p_language,
+                p_crt_by
+              );
+            }
 
         }
       }

@@ -2436,11 +2436,11 @@ class EInvoiceController {
             tei_company_pk : res.p_rtn_cur[0].TEI_COMPANY_PK,
           };
 
-          if(tokens[i].token_type == '2'){ // 1: usb, 2: hsm
+          if(tokens[i].certificate_type == '2'){ // 1: usb, 2: hsm
             para_token_list.username = tokens[i].username || "";
             para_token_list.password = tokens[i].password || "";
             para_token_list.pin = tokens[i].pin  || "";
-            para_token_list.token_type = tokens[i].token_type  || "1";
+            para_token_list.certificate_type = tokens[i].certificate_type  || "1";
 
             const result = await DBService.ExecuteSQLBlob(
               `BEGIN WETAX_PRO_TOKEN_INFO_V2(
@@ -2461,7 +2461,7 @@ class EInvoiceController {
                               :username,
                               :password,
                               :pin,
-                              :token_type,
+                              :certificate_type,
                               :p_language, :p_crt_by, :p_rtn_cur); END;`,
               para_token_list,
               p_language,

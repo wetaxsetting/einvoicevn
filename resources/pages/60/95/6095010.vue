@@ -134,6 +134,7 @@
                 <v-col md="12">
                   <GwFlexBox justify="end">
                     <BaseButton icon_type="import" :btn_text="$t('import_token')" @onclick="onGetDetailDeclaration()" />
+                    <BaseButton icon_type="add_new" :btn_text="$t('add_token_manual')" :disabled="isProcessing"  @onclick="addTokenManual()" />
                     <!-- Save -->
                     <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClickButton('saveDetail')" />
                     <!-- Delete -->
@@ -148,7 +149,7 @@
                     upd_procedure="AC_UPD_6095010_02"
                     :headertype="1"
                     :filter_paras="[this.MasterInfo.PK]"
-                    :update_paras="['PK', 'TEI_COMPANY_PK', 'CA_NAME', 'DN_NAME', 'DN_MST', 'SERIAL_NUMBER', 'NOTAFTER', 'NOTBEFORE', 'TOKEN_TYPE', 'STATUS', 'D_CERTIFICATE_TYPE']"
+                    :update_paras="['PK', 'TEI_COMPANY_PK', 'CA_NAME', 'DN_NAME', 'DN_MST', 'SERIAL_NUMBER', 'NOTAFTER', 'NOTBEFORE', 'TOKEN_TYPE', 'STATUS', 'D_CERTIFICATE_TYPE', 'USERNAME', 'PASSWORD', 'PIN']"
                     :max_height="limitHeightGridDetails"
                   />
                 </v-col>
@@ -478,11 +479,52 @@ export default {
             dataSource: this.d_certificate_type_list,
           },
         },
+        {
+          dataField: "USERNAME",
+          caption: this.$t("user_name"),
+          width: 150,
+          allowEditing: true,
+        },
+        {
+          dataField: "PASSWORD",
+          caption: this.$t("password"),
+          width: 100,
+          dataType: "password",
+          allowEditing: true,
+        },
+        {
+          dataField: "PIN",
+          caption: this.$t("pin"),
+          width: 100,
+          dataType: "password",
+          allowEditing: true,
+        },
       ];
     }
   },
 
   methods: {
+    addTokenManual() {
+      this.$refs.grdDetail.addRowStruct({
+                          PK : '',
+                          TEI_COMPANY_PK: this.MasterInfo.PK,
+                          CA_NAME: '',
+                          DN_NAME: '',
+                          DN_MST: '',
+                          SERIAL_NUMBER: '',
+                          NOTAFTER: '',
+                          NOTBEFORE: '',
+                          TOKEN_TYPE: '1',
+                          STATUS: '',
+                          D_CERTIFICATE_TYPE: '2',
+                          USERNAME: '',
+                          PASSWORD: '',
+                          PIN: '',
+                        },
+                        0
+                    );
+    },
+
     onScroll() {
       this.scrollInvoked++;
     },

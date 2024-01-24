@@ -5284,7 +5284,7 @@ class EInvoiceController {
     }
   }
 
-  async SignXml({ request, response, auth }) {
+  async HsmSign({ request, response, auth }) {
     try {
       var p_language = request.header("accept-language", "ENG");
       var p_crt_by = "";
@@ -5294,28 +5294,22 @@ class EInvoiceController {
       }
 
       const { para, otp } = request.all();
-      console.log("para ", JSON.stringify(para));
 
-      await Request.post(EINVOICE_ESIGN_XML, { xmlContent: JSON.stringify(para) })
-        .then((res) => {
-          // console.log("res  ++===> ",res.data.d);
-          let json = JSON.parse(res.data.d);
-          //console.log("json ", json);
-          return response.send(Utils.response(true, `e-Signing XML is finish !!`, res.data.d));
-        })
-        .catch((error) => {
-          console.log(error);
-          return response.send(Utils.response(false, `e-Signing XML is faile !!`, error));
-        });
+     const res = await Request.post(EINVOICE_ESIGN_XML, { xmlContent: JSON.stringify(para) })
+    //  console.log(res.data.d);
+    // const json = JSON.parse(res.data.d);
+
+      return response.status(200).json(Utils.responseByRule({success : true, message : "success.", data: res.data.d} ))
     } catch (err) {
-      console.log("err", err);
-      return null;
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "HsmSign",
+        CONTENT: e.message,
+      });
+      return response.status(409).json(Utils.responseByRule({success : false, message : e.message}));
     }
-
-    return;
-    const { trade_codes } = request.all();
   }
-
   // async createSignedInfo() {
   //     try {
   //         return createxml({ version: '1.0' })
@@ -9336,7 +9330,7 @@ class EInvoiceController {
         }
         
         // return response.send(Utils.response(true, `Getting records was successful. `,r_data_noti ));
-        return response.status(200).json(Utils.responseByRule({success : false, message : 'Get records successfully.', data: r_data_noti}));
+        return response.status(200).json(Utils.responseByRule({success : true, message : 'Get records successfully.', data: r_data_noti}));
     } catch (e) {
       Utils.Logger({
         LVL: "error",

@@ -14014,16 +14014,16 @@ class EInvoiceController {
 
           const rtnValuePos = await DBService.ExecuteSQLBlob(
             `BEGIN ei_upd_pos_xml_box (          
-                                            :invoice_date,
-                                            :seller_tax_code,
-                                            :tax_serial_number,
-                                            :pos_xml,
-                                            :req_key,
-                                            :signing_time,
-                                            :qty,
-                                            :p_language, 
-                                            :p_crt_by, 
-                                            :p_rtn_cur); END;`,
+                                        :invoice_date,
+                                        :seller_tax_code,
+                                        :tax_serial_number,
+                                        :pos_xml,
+                                        :req_key,
+                                        :signing_time,
+                                        :qty,
+                                        :p_language, 
+                                        :p_crt_by, 
+                                        :p_rtn_cur); END;`,
             paraPos,
             p_language,
             p_crt_by

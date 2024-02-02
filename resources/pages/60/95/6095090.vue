@@ -321,7 +321,7 @@ export default {
           dataField: "CUS_FNM",
           caption: this.$t("cus_fnm"),
           type: "text",
-          width: 420,
+          width: 150,
           alignment: "left",
         },
         {
@@ -461,10 +461,10 @@ export default {
           alignment: "center",
         },
         {
-          dataField: "MAIL",
-          caption: this.$t("mail"),
+          dataField: "EMAIL_ADDRESS",
+          caption: this.$t("email_address"),
           type: "text",
-          width: 80,
+          width: 150,
           alignment: "left",
         },
         {

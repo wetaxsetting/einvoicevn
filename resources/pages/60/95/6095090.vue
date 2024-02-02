@@ -461,10 +461,10 @@ export default {
           alignment: "center",
         },
         {
-          dataField: "MAIL",
-          caption: this.$t("mail"),
+          dataField: "EMAIL_ADDRESS",
+          caption: this.$t("email_address"),
           type: "text",
-          width: 80,
+          width: 150,
           alignment: "left",
         },
         {

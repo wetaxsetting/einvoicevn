@@ -15458,6 +15458,7 @@ class EInvoiceController {
         }
   }
   ///vng-304
+  
   async viewPDFTemplate_04SS({ request, response, auth }) {
     try {
       var p_language = request.header("accept-language", "ENG");
@@ -15578,6 +15579,150 @@ class EInvoiceController {
     }
   }
   
+  // iPOS
+  async iPosGetPartner({ request, response, auth }) {
+    try {
+          var p_language = request.header("accept-language", "ENG");
+          var p_crt_by = "";
+          const user = await auth.getUser();
+          if (user) {
+            p_crt_by = user.USER_ID;
+          }
+          const url_api = "https://api.foodbook.vn/ipos/ws/xpartner/pos_parents?access_token=JHTHWPCE6OCZBW0PBH9XRRBC6JTR1UWQ";
+          const res_get = await Request.get(url_api);
+          
+          if (res_get.data.data != null ) {
+            //result_res = res_get.data;
+            //console.log(partner.id)
+            for (const partner of res_get.data.data)
+            {
+              console.log(partner.id)
+              const para_value = {
+                p_id : partner.id,
+                p_name : partner.name,
+                p_is_send_sms : partner.is_send_sms,
+                p_logo_img : partner.Logo_Image,
+                p_number_total_pos :partner.Number_Total_Pos,
+              };
+              // console.log("para_value  ", para_value);
+      
+              const rtnValueMaster = await DBService.ExecuteSQLBlob(
+                `BEGIN EI_UPD_IPOS_SHOP    (  :p_id,
+                                              :p_name,
+                                              :p_is_send_sms,
+                                              :p_logo_img,
+                                              :p_number_total_pos,
+                                              :p_language, 
+                                              :p_crt_by, 
+                                              :p_rtn_cur); END;`,
+                para_value,
+                p_language,
+                p_crt_by
+              );
+            }
+
+          } else {
+            //result_res = res_get.data.data;
+          }
+
+          return response.status(200).json(Utils.responseByRule({success : true, message : "Data sussces!"}));
+    } catch (e) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "viewPDF_SaleBillWT",
+        CONTENT: e.message,
+      });
+      console.log(e);
+      return response.status(400).json(Utils.responseByRule({success : false, message : "Data faile!"}));
+    }
+  }
+
+  async iPosGetProduct({ request, response, auth }) {
+    try {
+          var p_language = request.header("accept-language", "ENG");
+          var p_crt_by = "";
+          const user = await auth.getUser();
+          if (user) {
+            p_crt_by = user.USER_ID;
+          }
+          const url_api = "https://api.foodbook.vn/ipos/ws/xpartner/v2/items?access_token=JHTHWPCE6OCZBW0PBH9XRRBC6JTR1UWQ&pos_parent=SAOBANG&pos_id=3160&menu_type=DELI";
+          const res_get = await Request.get(url_api);
+          
+          //console.log(res_get)
+          if (res_get.data.data.items != null ) {
+            //result_res = res_get.data;
+            //console.log(partner.id)
+            for (const product of res_get.data.data.items)
+            {
+              console.log(product.id)
+              const para_value = {
+
+                p_id: product.id,
+                p_name: product.name,
+                p_ta_price: product.ta_price,
+                p_ots_price: product.ots_price,
+                p_sort: product.sort,
+                p_store_id: product.store_id,
+                p_store_item_id: product.store_item_id,
+                p_type_id: product.type_id,
+                p_description: product.description,
+                p_status: product.status,
+                p_is_featured: product.is_featured,
+                p_allow_take_away: product.allow_take_away,
+                p_allow_self_order: product.allow_self_order,
+                p_update_at: product.update_at,
+                p_is_eat_with: product.is_eat_with,
+                p_time_sale_date_week: product.time_sale_date_week,
+                p_time_sale_hour_day: product.time_sale_hour_day,
+
+              };
+              // console.log("para_value  ", para_value);
+      
+              const rtnValueMaster = await DBService.ExecuteSQLBlob(
+                `BEGIN EI_UPD_IPOS_ITEM    (  :p_id, 
+                                              :p_name, 
+                                              :p_ta_price, 
+                                              :p_ots_price, 
+                                              :p_sort, 
+                                              :p_store_id, 
+                                              :p_store_item_id, 
+                                              :p_type_id, 
+                                              :p_description, 
+                                              :p_status, 
+                                              :p_is_featured, 
+                                              :p_allow_take_away, 
+                                              :p_allow_self_order, 
+                                              :p_update_at, 
+                                              :p_is_eat_with, 
+                                              :p_time_sale_date_week, 
+                                              :p_time_sale_hour_day,
+                                              :p_language, 
+                                              :p_crt_by, 
+                                              :p_rtn_cur); END;`,
+                para_value,
+                p_language,
+                p_crt_by
+              );
+            }
+
+          } else {
+            //result_res = res_get.data.data;
+          }
+
+          return response.status(200).json(Utils.responseByRule({success : true, message : "Data sussces!"}));
+    } catch (e) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "viewPDF_SaleBillWT",
+        CONTENT: e.message,
+      });
+      console.log(e);
+      return response.status(400).json(Utils.responseByRule({success : false, message : "Data faile!"}));
+
+    }
+  }
 }
 
 module.exports = EInvoiceController;

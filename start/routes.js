@@ -173,6 +173,9 @@ Route.group(() => {
     Route.post("view-records", "EInvoiceController.weTaxViewRecords")
 
 
+    //iPOS
+    Route.get("ipos-get-partner", "EInvoiceController.iPosGetPartner")
+    Route.get("ipos-get-product", "EInvoiceController.iPosGetProduct")
 
     // e-invoice
     Route.post("general-records-xml-at", "EInvoiceController.generalRecordsXml")

@@ -321,7 +321,7 @@ export default {
           dataField: "CUS_FNM",
           caption: this.$t("cus_fnm"),
           type: "text",
-          width: 420,
+          width: 150,
           alignment: "left",
         },
         {

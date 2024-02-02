@@ -109,6 +109,58 @@ class UserController {
     }
   }
 
+  async cloneWeTaxlogIn({ request, response, auth }) {
+    let ip = request.header("x-real-ip");
+    try {
+      if (ip == undefined) {
+        ip = request.ip();
+      }
+      const { user_id, password } = request.all();
+      let user = await UserRepo.findBy({ USER_ID: user_id, DEL_IF: 0 });
+      if (!user) {
+        return response.status(404).json(Utils.weTaxResponse({code: 404, message : "User not found"}));
+      }
+      // const verify = await Hash.verify(password, user.USER_PW)
+      const md5_64 = this.b64_md5(password);
+      let verify = md5_64 == user.USER_PW;
+      if (!verify) {
+        verify = await Hash.verify(password, user.USER_PW);
+      }
+      let result;
+      if (!verify) {
+        result = await DBService.callProcCursor("sys_login_auth", [user_id, "invalid_userid_or_password", ip], "ENG", user_id);
+        user = result[0];
+        if (user) {
+          // return response.send(Utils.response(false, user.STATUS, null));
+          return response.status(400).json(Utils.weTaxResponse({code : 400, message : "User or Password incorrect"}));
+        }
+        // return response.send(Utils.response(false, "user_not_found", null));
+        return response.status(404).json(Utils.weTaxResponse({code : 404, message : "User not found"}));
+      }
+
+      result = await DBService.callProcCursor("sys_login_auth", [user_id, user.USER_PW, ip], "ENG", user_id);
+      user = result[0];
+
+      //console.log(user)
+      if (user) {
+        if (user.STATUS === "OK") {
+          const token = await auth.generate(user);
+          // return response.send(Utils.response(true, "Log In Successfully!", { user: user, token: token.token, token_type: 'Bearer', expires_in: 86400 }));
+          return response.send(Utils.weTaxResponse({code : 200, message : "Log In Successfully!", data: { access_token: token.token, token_type: 'Bearer', expires_in: 7200 }}));
+        }
+        Utils.Logger({ LVL: "info", MODULE: "UserController", FUNC: "logIn", CONTENT: `Login ERROR. IP:${ip}`, CRT_BY: user_id });
+        // return response.send(Utils.response(false, user.STATUS, null));
+        return response.status(403).json(Utils.weTaxResponse({code : 403, message : user.STATUS}));
+      }
+      // return response.send(Utils.response(false, "User not found!", null));
+      return response.status(404).json(Utils.weTaxResponse({code : 404, message : "User not found"}));
+    } catch (e) {
+      Utils.Logger({ LVL: "error", MODULE: "UserController", FUNC: "logIn", CONTENT: `${e.message}. IP:${ip}` });
+      // return response.send(Utils.response(false, e.message, null));
+      return response.status(409).json(Utils.weTaxResponse({code : 409, message : e.message}));
+    }
+  }
+
   async ssoLogin({ request, response, auth }) {
     let ip = request.header("x-real-ip");
     if (ip == undefined) {

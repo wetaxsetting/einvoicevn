@@ -15646,7 +15646,7 @@ class EInvoiceController {
           if (user) {
             p_crt_by = user.USER_ID;
           }
-          const url_api = "https://api.foodbook.vn/ipos/ws/xpartner/v2/items?access_token=JHTHWPCE6OCZBW0PBH9XRRBC6JTR1UWQ&pos_parent=SAOBANG&pos_id=3160&menu_type=DELI";
+          const url_api = "https://api.foodbook.vn/ipos/ws/xpartner/v2/items?access_token=JHTHWPCE6OCZBW0PBH9XRRBC6JTR1UWQ&pos_parent=SAOBANG&pos_id=3160&menu_type=ACTIVE";
           const res_get = await Request.get(url_api);
           
           //console.log(res_get)

@@ -131,6 +131,12 @@
       @minimizeDialog="manualIsMinimized = true"
       @closeManualDialog="manualIsMinimized = false"
     ></view-einvoice-xml-dialog>
+
+    <methor-sign-x-m-l-dialog
+      ref="MethorSignXML"
+      :src_pdfUrl="pdfUrl"
+    ></methor-sign-x-m-l-dialog>
+
     <div class="squareBox" v-if="false">
       <v-tooltip bottom>
         <template v-slot:activator="{ on }">
@@ -152,13 +158,15 @@
         <v-icon>mdi-window-restore</v-icon>
       </v-btn>
     </v-scale-transition>
+
+  
   </v-container>
 </template>
 
 <script>
 import ViewEInvoicePDFDialog from "@/components/dialog/ViewEInvoicePDFDialog.vue";
 import ViewEInvoiceXMLDialog from "@/components/dialog/ViewEInvoiceXMLDialog.vue";
-
+import MethorSignXML from "@/components/dialog/MethorSignXML.vue";
 export default {
   layout: "default",
   middleware: "user",
@@ -167,6 +175,7 @@ export default {
     DatePicker: () => import("@/components/control/DatePicker"),
     "view-einvoice-xml-dialog": ViewEInvoiceXMLDialog,
     "view-einvoice-pdf-dialog": ViewEInvoicePDFDialog,
+    "methor-sign-x-m-l-dialog": MethorSignXML,
   },
   data: () => ({
     company_list: [],
@@ -573,6 +582,10 @@ export default {
     },
 
     async InvoiceSign() {
+
+      this.$refs.MethorSignXML.dialogIsShow = true;
+      return;
+
       const grdSelectedRow = this.$refs.gridview.getSelectedRows();
       this.invoice = [];
 
@@ -746,9 +759,16 @@ export default {
     async onPreview() {
       if(this.tei_einvoice_m_pk_row != "")
       {
-        let res_url = await this.$axios.$post("/einvoice/general-url-pdf", {
+        // this.pdfUrl = `http://genuclouding.com/wseinvoice/BSService.asmx/Download_File_PDF_Nodejs?p_trade_code=${this.tei_einvoice_m_pk_row}&p_key=dasdad&p_type=C`;
+
+        // this.$nextTick(() => {
+        //   this.isProcessing = false
+        //   this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+        // });
+        let res_url = await this.$axios.$post("/einvoice/view-pdf", {
               responseType: "json",
-              tei_wt_sale_bill_pk: this.tei_einvoice_m_pk_row,
+              rep_key: this.tei_einvoice_m_pk_row,
+              type: "C"
             });
         if(res_url.success)
         {

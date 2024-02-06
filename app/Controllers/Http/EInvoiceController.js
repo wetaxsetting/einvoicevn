@@ -8850,7 +8850,7 @@ class EInvoiceController {
             inform_code: maTBao,
             inform_name: tenTBao,
             xml_tax_signed: xml_tax_signed,
-            mcct: maCQT,
+            mccqt: maCQT,
             lookup_code: tr_code.lookup_code,
             data_error: data_error
           });
@@ -11709,6 +11709,75 @@ class EInvoiceController {
       return "";
     } catch (error) {
       console.log("error  ", error);
+    }
+  }
+
+  async viewPDFInvoice({ request, response, auth }) {
+    try {
+      var p_language = request.header("accept-language", "ENG");
+      var p_crt_by = "";
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const { rep_key, type } = request.all();
+
+      console.log("rep_key ", rep_key, "  type ", type);
+      const screte_key = 'RVNJbjib65jkGKJB789'
+      const key = Utils.md5(rep_key + screte_key)
+
+      //const url = `http://genuclouding.com/wseinvoice/BSService.asmx/Download_File_PDF_Nodejs?p_trade_code=${rep_key}&p_key=${key}&p_type=${type}`;
+
+       const url = `http://genuclouding.com/wseinvoice/BSService.asmx/Download_File_PDF_Nodejs`;
+       const res = await Request.post(url, { p_trade_code: rep_key, p_key: key,  p_type: type });
+       console.log("res  ", res.data);
+
+      //const url1 = `http://genuclouding.com/wseinvoice/BSService.asmx/Download_File_PDF_Nodejs?p_trade_code=${rep_key}&p_key=${key}&p_type=${type}`;
+      //const res1 = await Request.get(url1);
+      //console.log("res1  ", res1);
+      //data = res.data.d;
+      //let EiExcels = new EiExcelHandlerAuto();
+      //let url_pdf = await EiExcels.getEinvoice(tei_wt_sale_bill_pk, p_language, p_crt_by);
+      //console.log("base64PDf  ", url_pdf);
+
+        let rtnFile = res.data;
+        const current = new Date();
+        const year = current.getFullYear();
+        let month = current.getMonth() + 1;
+        let day = current.getDate()
+        if (day < 10) {
+            day = "0" + day
+        }
+        if (month < 10) {
+            month = "0" + month
+        }
+       
+        const dir = ROOT_DIR_FILES + '/pdf/' + year + '/' + month
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true }, err => { console.log(err) })
+        }
+        
+        const unixtime = Date.now();
+        const rtnFile2 = rtnFile.replace(/\\/g, '/');
+        const fileName = '/pdf/' + year + '/' + month + "/rpt-" + unixtime + "-" + (rtnFile2.split("/").pop());
+        const destinationFile = dir + "/rpt-" + unixtime + "-" + (rtnFile2.split("/").pop());
+        await Utils.copyFile(rtnFile, destinationFile);
+        let token = AES.encrypt(fileName + "|" + year + month + day, APP_KEY);
+        token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
+
+    
+       
+
+      return response.send(Utils.response(true, "general url pdf success",APP_URL_LOCAL + "/api/dso/getfiletoken?file_name=" + fileName + "&token=" + token));
+    } catch (e) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "EInvoiceController",
+        FUNC: "checkInvoiceStatusFromTaxOffice",
+        CONTENT: e.message,
+      });
+      console.log(e);
+      return response.send(Utils.response(false, "error", e.message));
     }
   }
 
@@ -14917,7 +14986,7 @@ class EInvoiceController {
             inform_code: maTBao,
             inform_name: tenTBao,
             xml_tax_signed: xml_tax_signed,
-            mcct: maCQT,
+            mccqt: maCQT,
           });
       
       }

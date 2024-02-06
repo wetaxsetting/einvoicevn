@@ -4,15 +4,15 @@
       <v-col md="5" :class="isShowLeft ? null : 'd-none'" class="pt-2">
         <v-card>
           <v-row dense class="pt-2">
-            <v-col lg="5" cols="12" class="pl-2">
+            <v-col lg="8" cols="12" class="pl-2">
               <v-text-field outlined clearable dense hide-details v-model="txtCompanyName" :label="$t('company')"></v-text-field>
             </v-col>
-            <v-col lg="2" cols="12">
+            <v-col lg="1" cols="12">
               <v-badge offset-x="55" color="green" :content="$t('use_yn')" style="font-size: 0.35rem">
                 <v-checkbox v-model="blUseYN" color="red darken-3" true-value="Y" false-value="N" hide-details class="my-0 py-0"></v-checkbox>
               </v-badge>
             </v-col>
-            <v-col lg="5" cols="12" class="text-right">
+            <v-col lg="3" cols="12" class="text-right">
               <div class="d-flex justify-end">
                 <BaseButton icon_type="search" :btn_text="$t('search')" :disabled="isProcessing" @onclick="onClickButton('SEARCH')" />
               </div>
@@ -133,8 +133,8 @@
               <v-col class="my-0 py-0">
                 <v-col md="12">
                   <GwFlexBox justify="end">
-                    <BaseButton icon_type="import" :btn_text="$t('import_token')" @onclick="onGetDetailDeclaration()" />
-                    <BaseButton icon_type="add_new" :btn_text="$t('add_token_manual')" :disabled="isProcessing"  @onclick="addTokenManual()" />
+                    <BaseButton icon_type="import" :btn_text="$t('import_token')" @onclick="onClickButton('addDetailToken')"  />
+                    <BaseButton btn_type="icon" icon_type="add_new" :btn_text="$t('add_token_manual')" :disabled="isProcessing" @onclick="onClickButton('addDetail')" />
                     <!-- Save -->
                     <BaseButton btn_type="icon" icon_type="save" :btn_text="$t('save')" @onclick="onClickButton('saveDetail')" />
                     <!-- Delete -->
@@ -256,7 +256,7 @@ export default {
     },
     limitHeight() {
       if (this.$vuetify.breakpoint.smAndUp) {
-        return 500;
+        return this.windowHeight * 0.8;
       }
     }, // this.windowHeight },
     limitHeightGridDetails() {
@@ -647,6 +647,12 @@ export default {
           this.objClick = "btnDelete";
           this.$refs.confirmDialog.showConfirm(this.$t("do_you_want_delete"), "warning");
           break;
+        case "addDetailToken":
+          this.onGetDetailDeclaration();
+          break;
+        case "addDetail":
+          this.addTokenManual();
+          break;
         case "saveDetail":
         let data = this.$refs.grdDetail.getData();
           for (let i = 0; i < data.length; i++) {
@@ -704,39 +710,6 @@ export default {
     },
     async onGetDetailDeclaration() {
       if (this.MasterInfo.PK != "") {
-        /*let xml = `<TKhai>
-                    <DLTKhai>
-                      <TTChung>
-                      </TTChung>
-                      <NDTKhai>
-                      </NDTKhai>
-                    </DLTKhai>
-                    <DSCKS>
-                      <NNT>
-                      </NNT>
-                    </DSCKS>
-                  </TKhai>`;
-
-        const objXml = [
-          {
-            master_pk: this.MasterInfo.PK,
-            xml: JSON.stringify(xml).toString().replaceAll('"', "").replaceAll("<DLTKhai>", "<DLTKhai Id='ID1'>"),
-          },
-        ];
-
-        jQuery.support.cors = true;
-        $.ajax({
-          url: "http://localhost:1080/getDeclarationData",
-          dataType: "text",
-          method: "POST",
-          data: {
-            crt_by: this.user.USER_ID,
-            xml: JSON.stringify(objXml).toString(),
-          },
-          error: this.onErrorGetDetailDeclaration,
-          success: this.onSuccessGetDetailDeclaration,
-        });*/
-
         jQuery.support.cors = true;
         $.ajax({
           url: "http://localhost:1080/getTokenInfo",
@@ -758,7 +731,7 @@ export default {
 
     async onSuccessGetDetailDeclaration(data) {
       let obj_token = $.parseJSON(data);
-      console.log("file: 6095010.vue:706 [vng-304] onSuccessGetDetailDeclaration [vng-304] obj_token:", obj_token)
+      //console.log("file: 6095010.vue:706 [vng-304] onSuccessGetDetailDeclaration [vng-304] obj_token:", obj_token)
       this.$refs.grdDetail.addRowStruct({
         _rowstatus: "i",
         NO: this.$refs.grdDetail.getDataSource().length + 1,

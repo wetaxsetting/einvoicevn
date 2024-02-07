@@ -11737,13 +11737,6 @@ class EInvoiceController {
       const fs = use("fs");
       const url = `http://genuclouding.com/wseinvoice/BSService.asmx/Download_File_PDF_Nodejs?p_trade_code=${rep_key}&p_key=${key}&p_type=${type}`;
 
-      //  const url = `http://genuclouding.com/wseinvoice/BSService.asmx/Download_File_PDF_Nodejs`;
-      //  const res = await Request.post(url, { p_trade_code: rep_key, p_key: key,  p_type: type });
-      //  console.log("res  ", res.data);
-      //const blob = new Blob([res.data]);
-      //let rtnFile = this.blobToFile(blob,"sss.pdf");//  blobToFile(myBlob, "my-image.png");
-      //console.log("file  ", file)
-
       const current = new Date();
       const year = current.getFullYear()
       let month = current.getMonth() + 1
@@ -11766,7 +11759,7 @@ class EInvoiceController {
       const fileName = '/pdf/' + year + '/' + month + "/rpt-" + unixtime + "-" + rep_key + ".pdf";
       let token = AES.encrypt(fileName + "|" + year + month + day, APP_KEY)
       token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l')
-       
+
       axios({
         method: 'get',
         url: url,
@@ -11774,7 +11767,6 @@ class EInvoiceController {
         })
         .then( async (res) => {
           res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES + fileName));
-        
         })
         .catch((error) => {
             console.error(error);

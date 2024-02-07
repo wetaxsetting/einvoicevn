@@ -11751,7 +11751,6 @@ class EInvoiceController {
       if (!fs.existsSync(dir)) {
           fs.mkdirSync(dir, { recursive: true }, err => { console.log(err) })
       }
-
       console.log("dir ", dir);
       
       const unixtime = Date.now()
@@ -11767,11 +11766,11 @@ class EInvoiceController {
         })
         .then( async (res) => {
           await res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES.replace("/","") + fileName));
+
         })
         .catch((error) => {
             console.error(error);
         });
-
 
       return response.send(Utils.response(true, "general url pdf success",APP_URL_LOCAL + "/api/dso/getfiletoken2?file_name=" + fileName + "&token=" + token));
     } catch (e) {

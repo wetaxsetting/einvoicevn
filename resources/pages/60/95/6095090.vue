@@ -117,6 +117,20 @@
         </v-col>
       </v-row>
     </v-card>
+    <v-dialog v-model="showPDF" max-width="800">
+      <v-container fluid>
+        <v-row no-gutters>
+          <v-col cols="12">
+            <v-card outlined :height="limitHeight1" :max-height="limitHeight1" style="overflow-y: scroll" v-resize="onResize">
+              <v-overlay :value="showLoading" :absolute="true" opacity="0.3">
+                <v-progress-circular indeterminate size="50"></v-progress-circular>
+              </v-overlay>
+              <iframe :src="urlPDF" height="100%" width="100%"></iframe>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-dialog>
     <view-einvoice-pdf-dialog
       ref="ViewEInvoicePDFDialog"
       :src_pdfUrl="pdfUrl"
@@ -240,7 +254,8 @@ export default {
     txtDN_MST: "",
     maGD:"",
     xml_signed : "",
-  
+    showPDF: false,
+    urlPDF:""
 
   }),
 
@@ -764,14 +779,21 @@ export default {
               rep_key: this.tei_einvoice_m_pk_row,
               type: "C"
             });
-        if(res_url.success)
-        {
-          this.pdfUrl = res_url.data;
-          this.$nextTick(() => {
-            this.isProcessing = false
-            this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
-          });
-        }
+        this.urlPDF = null;
+        if (res_url.success) {
+          this.urlPDF = res_url.data;
+          this.showLoading = false;
+          this.showPDF = true;
+        }    
+
+        // if(res_url.success)
+        // {
+        //   this.pdfUrl = res_url.data;
+        //   this.$nextTick(() => {
+        //     this.isProcessing = false
+        //     this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+        //   });
+        // }
       }else
       {
         this.showNotification("warning", this.$t("no_row_selected"), '');

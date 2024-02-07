@@ -11774,7 +11774,7 @@ class EInvoiceController {
         });
 
 
-      return response.send(Utils.response(true, "general url pdf success",APP_URL_LOCAL + "/api/dso/getfiletoken?file_name=" + fileName + "&token=" + token));
+      return response.send(Utils.response(true, "general url pdf success",APP_URL_LOCAL + "/api/dso/getfiletoken2?file_name=" + fileName + "&token=" + token));
     } catch (e) {
       Utils.Logger({
         LVL: "error",

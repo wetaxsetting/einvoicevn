@@ -105,6 +105,7 @@ Route.group(() => {
 Route.group(() => {
     Route.get("readattachfile", "DsoController.readAttachFile")
     Route.get("getfiletoken", "DsoController.getFileToken")
+    Route.get("getfiletoken2", "DsoController.getFileToken2")
     Route.get("getfiledbtoken", "DsoController.DownloadFileDBToken")
     Route.get("getlogo", "DsoController.getLogo")
     Route.post("sendmailhr", "SendMailController.sendMailHR");

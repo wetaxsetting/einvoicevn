@@ -11752,14 +11752,15 @@ class EInvoiceController {
           fs.mkdirSync(dir, { recursive: true }, err => { console.log(err) })
       }
 
-      //console.log("dir ", dir);
-      //console.log(" ROOT_DIR_FILES + fileName  ", ROOT_DIR_FILES + fileName)
+      console.log("dir ", dir);
+      
 
       const unixtime = Date.now()
       const fileName = '/pdf/' + year + '/' + month + "/rpt-" + unixtime + "-" + rep_key + ".pdf";
       let token = AES.encrypt(fileName + "|" + year + month + day, APP_KEY)
       token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l')
-
+      
+      console.log(" ROOT_DIR_FILES + fileName  ", ROOT_DIR_FILES + fileName)
       axios({
         method: 'get',
         url: url,

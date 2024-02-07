@@ -11747,7 +11747,7 @@ class EInvoiceController {
       if (month < 10) {
           month = "0" + month
       }
-      const dir = ROOT_DIR_FILES2 + '/pdf/' + year + '/' + month
+      const dir = ROOT_DIR_FILES.replace("/","") + '/pdf/' + year + '/' + month
       if (!fs.existsSync(dir)) {
           fs.mkdirSync(dir, { recursive: true }, err => { console.log(err) })
       }
@@ -11760,14 +11760,14 @@ class EInvoiceController {
       let token = AES.encrypt(fileName + "|" + year + month + day, APP_KEY)
       token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l')
       
-      console.log(" ROOT_DIR_FILES2 + fileName  ", ROOT_DIR_FILES2 + fileName)
+      console.log(" ROOT_DIR_FILES2 + fileName  ", ROOT_DIR_FILES.replace("/","") + fileName)
       axios({
         method: 'get',
         url: url,
         responseType: 'stream',
         })
         .then( async (res) => {
-          res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES2 + fileName));
+          res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES.replace("/","") + fileName));
         })
         .catch((error) => {
             console.error(error);

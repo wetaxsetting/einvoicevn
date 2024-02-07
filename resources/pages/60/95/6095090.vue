@@ -765,20 +765,20 @@ export default {
         //   this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
         // });
         
-        // let res_url = await this.$axios.$post("/einvoice/view-pdf", {
-        //       responseType: "json",
-        //       rep_key: this.tei_einvoice_m_pk_row,
-        //       type: "C"
-        //     });
-        // if(res_url.success)
-        // {
-        //   this.pdfUrl = res_url.data;
+        let res_url = await this.$axios.$post("/einvoice/view-pdf", {
+              responseType: "json",
+              rep_key: this.tei_einvoice_m_pk_row,
+              type: "C"
+            });
+        if(res_url.success)
+        {
+          this.pdfUrl = res_url.data;
 
-        //   this.$nextTick(() => {
-        //     this.isProcessing = false
-        //     this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
-        //   });
-        // }
+          this.$nextTick(() => {
+            this.isProcessing = false
+            this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+          });
+        }
       }else
       {
         this.showNotification("warning", this.$t("no_row_selected"), '');

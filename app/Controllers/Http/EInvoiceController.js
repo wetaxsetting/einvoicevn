@@ -11759,20 +11759,14 @@ class EInvoiceController {
           fs.mkdirSync(dir, { recursive: true }, err => { console.log(err) })
       }
 
-      console.log("dir ", dir);
-
-
+      //console.log("dir ", dir);
+      //console.log(" ROOT_DIR_FILES + fileName  ", ROOT_DIR_FILES + fileName)
 
       const unixtime = Date.now()
-      //const rtnFile2 = rtnFile.replace(/\\/g, '/')
       const fileName = '/pdf/' + year + '/' + month + "/rpt-" + unixtime + "-" + rep_key + ".pdf";
-      //const destinationFile = dir + "/rpt-" + unixtime + "-" + (rtnFile2.split("/").pop())
-      //await Utils.copyFile(rtnFile, destinationFile)
       let token = AES.encrypt(fileName + "|" + year + month + day, APP_KEY)
       token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l')
-      //return response.send(APP_URL_LOCAL + "/api/dso/getfiletoken?file_name=" + fileName + "&token=" + token)
-
-      console.log(" ROOT_DIR_FILES + fileName  ", ROOT_DIR_FILES + fileName)
+       
       axios({
         method: 'get',
         url: url,

@@ -11754,7 +11754,6 @@ class EInvoiceController {
 
       console.log("dir ", dir);
       
-
       const unixtime = Date.now()
       const fileName = '/pdf/' + year + '/' + month + "/rpt-" + unixtime + "-" + rep_key + ".pdf";
       let token = AES.encrypt(fileName + "|" + year + month + day, APP_KEY)
@@ -11767,7 +11766,7 @@ class EInvoiceController {
         responseType: 'stream',
         })
         .then( async (res) => {
-          res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES.replace("/","") + fileName));
+          await res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES.replace("/","") + fileName));
         })
         .catch((error) => {
             console.error(error);

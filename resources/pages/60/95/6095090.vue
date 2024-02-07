@@ -759,12 +759,6 @@ export default {
     async onPreview() {
       if(this.tei_einvoice_m_pk_row != "")
       {
-        // this.pdfUrl = `http://genuclouding.com/wseinvoice/BSService.asmx/Download_File_PDF_Nodejs?p_trade_code=${this.tei_einvoice_m_pk_row}&p_key=dasdad&p_type=C`;
-        // this.$nextTick(() => {
-        //   this.isProcessing = false
-        //   this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
-        // });
-        
         let res_url = await this.$axios.$post("/einvoice/view-pdf", {
               responseType: "json",
               rep_key: this.tei_einvoice_m_pk_row,
@@ -773,7 +767,6 @@ export default {
         if(res_url.success)
         {
           this.pdfUrl = res_url.data;
-
           this.$nextTick(() => {
             this.isProcessing = false
             this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;

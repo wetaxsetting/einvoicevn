@@ -11758,6 +11758,11 @@ class EInvoiceController {
       if (!fs.existsSync(dir)) {
           fs.mkdirSync(dir, { recursive: true }, err => { console.log(err) })
       }
+
+      console.log("dir ", dir);
+
+
+
       const unixtime = Date.now()
       //const rtnFile2 = rtnFile.replace(/\\/g, '/')
       const fileName = '/pdf/' + year + '/' + month + "/rpt-" + unixtime + "-" + rep_key + ".pdf";
@@ -11767,13 +11772,14 @@ class EInvoiceController {
       token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l')
       //return response.send(APP_URL_LOCAL + "/api/dso/getfiletoken?file_name=" + fileName + "&token=" + token)
 
+      console.log(" ROOT_DIR_FILES + fileName  ", ROOT_DIR_FILES + fileName)
       axios({
         method: 'get',
         url: url,
         responseType: 'stream',
         })
         .then( async (res) => {
-          res.data.pipe(fs.createWriteStream(fileName));
+          res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES + fileName));
         
         })
         .catch((error) => {

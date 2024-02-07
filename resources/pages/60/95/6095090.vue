@@ -779,31 +779,24 @@ export default {
         // this.showLoading = false;
         // this.showPDF = true;
 
-        this.pdfUrl = "https://test.e-invoice.webcashvietnam.com/api/dso/getfiletoken2?file_name=/pdf/2024/02/rpt-1707294949216-460823.pdf&token=U2FsdGVkX19mQKsB0ZAIpSwUp1L2u3Ss1L2a3S4hcCrTYs1L2a3S4hOr8qgjnYDfEVVFWOI3ZasJ6bip1L2u3SRRTlNZArYN0ys1L2a3S4hFcwpmOFXeraQmU9s1L2a3S4hTP97BuBMkyP9WNMBUrCEe1Q2u3A4l";
-          this.$nextTick(() => {
-            this.isProcessing = false
-            this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
-          });
-        // let res_url = await this.$axios.$post("/einvoice/view-pdf", {
-        //       responseType: "json",
-        //       rep_key: this.tei_einvoice_m_pk_row,
-        //       type: "C"
-        //     });
-        // this.urlPDF = null;
-        // if (res_url.success) {
-        //   this.urlPDF = res_url.data;
-        //   this.showLoading = false;
-        //   this.showPDF = true;
-        // }    
-
-        // if(res_url.success)
-        // {
-        //   this.pdfUrl = res_url.data;
+        // this.pdfUrl = "https://test.e-invoice.webcashvietnam.com/api/dso/getfiletoken2?file_name=/pdf/2024/02/rpt-1707294949216-460823.pdf&token=U2FsdGVkX19mQKsB0ZAIpSwUp1L2u3Ss1L2a3S4hcCrTYs1L2a3S4hOr8qgjnYDfEVVFWOI3ZasJ6bip1L2u3SRRTlNZArYN0ys1L2a3S4hFcwpmOFXeraQmU9s1L2a3S4hTP97BuBMkyP9WNMBUrCEe1Q2u3A4l";
         //   this.$nextTick(() => {
         //     this.isProcessing = false
         //     this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
         //   });
-        // }
+        let res_url = await this.$axios.$post("/einvoice/view-pdf", {
+              responseType: "json",
+              rep_key: this.tei_einvoice_m_pk_row,
+              type: "C"
+            });
+        if(res_url.success)
+        {
+          this.pdfUrl = res_url.data;
+          this.$nextTick(() => {
+            this.isProcessing = false
+            this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+          });
+        }
       }else
       {
         this.showNotification("warning", this.$t("no_row_selected"), '');

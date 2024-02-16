@@ -11765,7 +11765,13 @@ class EInvoiceController {
         responseType: 'stream',
         })
         .then( async (res) => {
-          await res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES.replace("/","") + fileName));
+          //await res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES.replace("/","") + fileName));
+          console.log(Date.now.toString())
+          await new Promise(function (resolve, reject) {
+            console.log(Date.now.toString())
+            res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES.replace("/","") + fileName));
+            console.log(Date.now.toString())
+        });
 
         })
         .catch((error) => {

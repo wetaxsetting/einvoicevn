@@ -11729,7 +11729,7 @@ class EInvoiceController {
       }
       const { rep_key, type } = request.all();
 
-      console.log("rep_key ", rep_key, "  type ", type);
+      //console.log("rep_key ", rep_key, "  type ", type);
       const screte_key = 'RVNJbjib65jkGKJB789'
       const key = Utils.md5(rep_key + screte_key)
       let database64 = "";
@@ -11751,14 +11751,14 @@ class EInvoiceController {
       if (!fs.existsSync(dir)) {
           fs.mkdirSync(dir, { recursive: true }, err => { console.log(err) })
       }
-      console.log("dir ", dir);
+      //console.log("dir ", dir);
       
       const unixtime = Date.now()
       const fileName = '/pdf/' + year + '/' + month + "/rpt-" + unixtime + "-" + rep_key + ".pdf";
       let token = AES.encrypt(fileName + "|" + year + month + day, APP_KEY)
       token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l')
       
-      console.log(" ROOT_DIR_FILES2 + fileName  ", ROOT_DIR_FILES.replace("/","") + fileName)
+      //console.log(" ROOT_DIR_FILES2 + fileName  ", ROOT_DIR_FILES.replace("/","") + fileName)
       await axios({
         method: 'get',
         url: url,
@@ -11766,13 +11766,6 @@ class EInvoiceController {
         })
         .then( async (res) => {
           await res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES.replace("/","") + fileName));
-          // console.log(Date.now.toString())
-          // await new Promise(function (resolve, reject) {
-          //   console.log(Date.now.toString())
-          //   res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES.replace("/","") + fileName));
-          //   console.log(Date.now.toString())
-          //});
-
         })
         .catch((error) => {
             console.error(error);

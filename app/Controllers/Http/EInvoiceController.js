@@ -11759,7 +11759,7 @@ class EInvoiceController {
       token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l')
       
       console.log(" ROOT_DIR_FILES2 + fileName  ", ROOT_DIR_FILES.replace("/","") + fileName)
-      axios({
+      await axios({
         method: 'get',
         url: url,
         responseType: 'stream',

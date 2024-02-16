@@ -34,6 +34,7 @@ class WeTaxController {
           fax_no: shops[i].fax_no,
           tel_no: shops[i].tel_no,
           email: shops[i].email,
+          logo: shops[i].logo,
         };
 
         await DBService.ExecuteSQLBlob(
@@ -44,6 +45,7 @@ class WeTaxController {
                                         :fax_no,
                                         :tel_no,
                                         :email,
+                                        :logo,
                                         :p_language, 
                                         :p_crt_by, 
                                         :p_rtn_cur); 

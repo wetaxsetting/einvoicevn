@@ -494,6 +494,16 @@ class Utils {
         };
     }
 
+    weTaxResponse({code = 401, message = "Sometime wrong!", data = null}) {
+        return {
+            status: {
+                code: code,
+                message: message
+            },
+            data
+        };
+    }
+
     CurrentDate(separater = "") {
         const date = new Date();
         const yyyy = date.getFullYear();

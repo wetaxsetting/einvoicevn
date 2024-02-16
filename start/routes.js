@@ -236,10 +236,11 @@ Route.group(() => {
     Route.post("login", "UserController.cloneWeTaxlogIn");
   }).prefix("api/wtx/pa/v1/auth");
   
-  Route.group(() => {
+Route.group(() => {
     Route.post("shops", "WeTaxController.createShopByPos");
     Route.delete("shops/:shop_id", "WeTaxController.deleteShopByPos");
     Route.post("invoices", "WeTaxController.createInvoicesByPos");
-  }).prefix("api/wtx/pa/v1/pos");
+}).prefix("api/wtx/pa/v1/pos");
 // Frontend
+
 Route.any("*", "NuxtController.render");

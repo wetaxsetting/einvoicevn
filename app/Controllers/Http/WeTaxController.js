@@ -3,6 +3,96 @@ const Utils = use("Utils");
 const DBService = use("DBService");
 
 class WeTaxController {
+  async requestEinvoiceInfo({ request, response, auth }) {
+    try {
+      var p_language = request.header("accept-language", "ENG");
+      var p_crt_by = "";
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+
+      const { bills } = request.all();
+
+      if (!bills?.length) {
+        return response
+          .status(400)
+          .json(
+            Utils.weTaxResponse({ code: 400, message: "Invalid: parameter" })
+          );
+      }
+
+      for (let i = 0; i < bills.length; i++) {
+        if (
+          // !bills[i].ref_id ||
+          // !bills[i].tax_id ||
+          // !bills[i].tax_company_name ||
+          // !bills[i].tax_address ||
+          // !bills[i].tax_buyer_name ||
+          // !bills[i].receiver_email ||
+          // !bills[i].receiver_email_cc ||
+          !bills[i].order_date ||
+          !bills[i].store_code ||
+          !bills[i].pos_number ||
+          !bills[i].order_id
+        ) {
+          continue;
+        }
+
+        const params = {
+          ref_id: bills[i].ref_id,
+          tax_id: bills[i].tax_id,
+          tax_company_name: bills[i].tax_company_name,
+          tax_address: bills[i].tax_address,
+          tax_buyer_name: bills[i].tax_buyer_name,
+          receiver_email: bills[i].receiver_email,
+          receiver_email_cc: bills[i].receiver_email_cc,
+          order_date: bills[i].order_date,
+          store_code: bills[i].store_code,
+          pos_number: bills[i].pos_number,
+          order_id: bills[i].order_id,
+        };
+
+        const res = await DBService.ExecuteSQLBlob(
+          `BEGIN WETAX_upd_cus_to_bill(
+                                        :ref_id,
+                                        :tax_id,
+                                        :tax_company_name,
+                                        :tax_address,
+                                        :tax_buyer_name,
+                                        :receiver_email,
+                                        :receiver_email_cc,
+                                        :order_date,
+                                        :store_code,
+                                        :pos_number,
+                                        :order_id,
+                                        :p_language, 
+                                        :p_crt_by, 
+                                        :p_rtn_cur); 
+                                        END;`,
+          params,
+          p_language,
+          p_crt_by
+        );
+      }
+
+      return response
+        .status(200)
+        .json(Utils.weTaxResponse({ code: 200, message: "success" }));
+    } catch (e) {
+      Utils.Logger({
+        LVL: "error",
+        MODULE: "WeTaxController",
+        FUNC: "requestEinvoiceInfo",
+        CONTENT: e.message,
+      });
+      // console.log("e ", e);
+      return response
+        .status(409)
+        .json(Utils.weTaxResponse({ code: 409, message: e.message }));
+    }
+  }
+
   async sendOrderInfo({ request, response, auth }) {
     try {
       var p_language = request.header("accept-language", "ENG");

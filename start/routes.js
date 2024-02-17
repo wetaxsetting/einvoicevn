@@ -241,6 +241,7 @@ Route.group(() => {
     Route.delete("shops/:shop_id", "WeTaxController.deleteShopByPos");
     Route.post("invoices", "WeTaxController.createInvoicesByPos");
     Route.post("sendOrderInfo", "WeTaxController.sendOrderInfo");
+    Route.post("requestEinvoiceInfo", "WeTaxController.requestEinvoiceInfo");
 }).prefix("api/wtx/pa/v1/pos");
 // Frontend
 

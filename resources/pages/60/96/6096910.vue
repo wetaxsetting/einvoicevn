@@ -46,9 +46,11 @@ export default {
     user() {
       return this.$store.getters["auth/user"];
     },
-    limitHeight() {
-      return this._calculateHeight(this.formContainerHeight, 90);
-    },
+    limitHeight() { return this.windowHeight - 260},
+  },
+
+  mounted() {
+    this.$refs.grdShop.loadData();
   },
 
   methods: {

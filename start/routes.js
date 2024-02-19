@@ -234,7 +234,16 @@ Route.group(() => {
 // ======== fake WeTax
 Route.group(() => {
     Route.post("login", "UserController.cloneWeTaxlogIn");
-  }).prefix("api/wtx/pa/v1/auth");
+}).prefix("api/wtx/pa/v1/auth");
+
+Route.group(() => {
+    Route.post("loginZalo", "WeTaxController.loginZalo");
+}).prefix("api/wtx/pa/v1/service").middleware("user");
+
+// callback 
+Route.group(() => {
+    Route.post("zl-auth", "WeTaxController.zaloAuth");
+}).prefix("api/wtx/pa/v1/service/callback");
   
 Route.group(() => {
     Route.post("shops", "WeTaxController.createShopByPos");
@@ -242,7 +251,7 @@ Route.group(() => {
     Route.post("invoices", "WeTaxController.createInvoicesByPos");
     Route.post("sendOrderInfo", "WeTaxController.sendOrderInfo");
     Route.post("requestEinvoiceInfo", "WeTaxController.requestEinvoiceInfo");
-}).prefix("api/wtx/pa/v1/pos");
+}).prefix("api/wtx/pa/v1/pos").middleware("user");
 // Frontend
 
 Route.any("*", "NuxtController.render");

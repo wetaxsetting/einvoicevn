@@ -13,6 +13,9 @@ const nodemailer = require('nodemailer')
 const libre = require('libreoffice-convert');
 libre.convertAsync = require('util').promisify(libre.convert);
 //const qpdf = require("node-qpdf");
+
+const crypto = require('crypto'); 
+
 class Utils {
     constructor() {
         this.Env = use('Env')
@@ -23,6 +26,21 @@ class Utils {
         this.Redis = use("Redis");
     }
 
+    genCodeVerifier() {
+        const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let nonce = '';
+        for (let i = 0; i < 43; i++) {
+            nonce += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return nonce;
+    };
+
+    genCodeChallenge(codeVerifier) {
+        const hash = crypto.createHash('sha256').update(codeVerifier).digest();
+        const b64Hash = hash.toString('base64');
+        const code = b64Hash.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        return code;
+    }
     encodeHtmlEntities(str) {
         const symbols = {
             '&': '&amp;',

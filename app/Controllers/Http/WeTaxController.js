@@ -3,40 +3,6 @@ const Utils = use("Utils");
 const DBService = use("DBService");
 
 class WeTaxController {
-  async zaloAuth({ request, response, auth }) {
-    try {
-      var p_language = request.header("accept-language", "ENG");
-      var p_crt_by = "";
-      const user = await auth.getUser();
-      if (user) {
-        p_crt_by = user.USER_ID;
-      }
-
-      const { bills } = request.all();
-
-      console.log(request.all());
-
-      return response
-        .status(200)
-        .json(
-          Utils.weTaxResponse({
-            code: 200,
-            message: "success",
-          })
-        );
-    } catch (e) {
-      Utils.Logger({
-        LVL: "error",
-        MODULE: "WeTaxController",
-        FUNC: "zaloAuth",
-        CONTENT: e.message,
-      });
-      // console.log("e ", e);
-      return response
-        .status(409)
-        .json(Utils.weTaxResponse({ code: 409, message: e.message }));
-    }
-  }
 
   async loginZalo({ request, response, auth }) {
     try {

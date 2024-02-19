@@ -239,11 +239,6 @@ Route.group(() => {
 Route.group(() => {
     Route.post("loginZalo", "WeTaxController.loginZalo");
 }).prefix("api/wtx/pa/v1/service").middleware("user");
-
-// callback 
-Route.group(() => {
-    Route.post("zl-auth", "WeTaxController.zaloAuth");
-}).prefix("api/wtx/pa/v1/service/callback");
   
 Route.group(() => {
     Route.post("shops", "WeTaxController.createShopByPos");

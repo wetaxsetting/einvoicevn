@@ -2,7 +2,7 @@
   <v-container fluid class="pa-0">
     <v-row dense>
       <v-col lg="6" cols="12">
-        <BaseInput outlined :label="$t('data_search')" v-model="data_search" />
+        <BaseInput outlined :label="$t('data_search')" @keyPressEnter="onSearch" v-model="data_search" />
       </v-col>
       <v-col lg="6" cols="12" class="text-right d-flex justify-end">
         <BaseButton icon_type="search" :btn_text="$t('search')" :disabled="isProcessing"
@@ -11,7 +11,7 @@
       <v-col cols="12">
         <BaseGridView column-resizing-mode="widget" ref="grdCompany" :auto_load="false" select_mode="Single"
           :max_height="limitHeight" :header="headerGrid" :onCellPrepared="onCellPrepared" @row-updated="checkUpdatedItem"
-          sel_procedure="IPOS_SEL_6095910_SHOP_NC"
+          sel_procedure="IPOS_SEL_6095910_PARTNER_NC"
           :filter_paras="[this.data_search]" />
       </v-col>
     </v-row>
@@ -41,7 +41,8 @@ export default {
     lstStatus: "",
     statusGroup: [],
     customer_name: "",
-    tax_code: ""
+    tax_code: "",
+    data_search:""
   }),
 
   created() {

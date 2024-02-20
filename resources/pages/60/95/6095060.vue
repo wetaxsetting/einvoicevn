@@ -9,10 +9,10 @@
         <v-text-field clearable dense hide-details outlined :label="$t('customer_name')"
           v-model="customer_name"></v-text-field>
       </v-col>
-      <v-col lg="1" cols="12">
+      <v-col lg="2" cols="12">
         <BaseInput outlined :label="$t('tax_code')" v-model="tax_code" />
       </v-col>
-      <v-col lg="6" cols="12" class="text-right d-flex justify-end">
+      <v-col lg="5" cols="12" class="text-right d-flex justify-end">
         <BaseButton icon_type="search" :btn_text="$t('search')" :disabled="isProcessing"
           @onclick="onClickButton('SEARCH')" />
       </v-col>

@@ -305,9 +305,6 @@ export default {
 
       this.dynamicHeader = this.BuildDynamicHeader();
       this.$refs.refDynamicDialog.dialogIsShow = true;
-
-
-
       this.$refs.refDynamicDialog.instance.selectAll();
     },
     openAccountDialog() {
@@ -334,6 +331,7 @@ export default {
           allowEditing: false,
           dataType: "string",
           alignment: "left",
+          width:"300"
         },
         {
           dataField: "PARTNER_FNAME",
@@ -347,11 +345,13 @@ export default {
           dataField: "EMAIL_ADDRESS",
           caption: this.$t("email"),
           allowEditing: true,
+          width:"250"
         },
         {
           dataField: "EMAIL_ADDRESS_CC",
           caption: this.$t("email_cc"),
           allowEditing: true,
+          width:"250"
         },
         {
           dataField: "TAX_CODE",
@@ -362,14 +362,14 @@ export default {
         {
           dataField: "VALID_FROM",
           caption: this.$t("valid_from"),
-          allowEditing: false,
-          dataType: "string",
+          allowEditing: true,
+          dataType: "date",
         },
         {
           dataField: "VALID_TO",
           caption: this.$t("valid_to"),
-          allowEditing: false,
-          dataType: "string",
+          allowEditing: true,
+          dataType: "date",
         },
         {
           dataField: "USE_YN",
@@ -381,7 +381,7 @@ export default {
         {
           dataField: "DESCRIPTION",
           caption: this.$t("description"),
-          allowEditing: false,
+          allowEditing: true,
           dataType: "string",
         },
         {
@@ -389,12 +389,14 @@ export default {
           caption: this.$t("crt_date"),
           allowEditing: false,
           dataType: "string",
+          width:"200"
         },
         {
           dataField: "MOD_DT",
-          caption: this.$t("mode_date"),
+          caption: this.$t("mod_date"),
           allowEditing: false,
           dataType: "string",
+          width:"200"
         },
         {
           dataField: "TEI_CUSTOMER_PK",

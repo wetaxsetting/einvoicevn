@@ -16,65 +16,78 @@
                   <v-container fluid>
                     <v-row dense align="center" justify="space-between">
                       <v-col lg="2" sm="5" cols="12">
-                        <v-select
+                        <!-- <BaseSelect
                           dense
                           hide-details
                           item-value="PK"
                           item-text="TEXT"
                           :label="$t('company')"
-                          :items="companyList"
+                          :lstData="companyList"
                           v-model="selectedCompany"
                           @change="onSearch"
-                        ></v-select>
+                        ></BaseSelect> -->
+                        <BaseSelect outlined :label="$t('company')" v-model="selectedCompany" :lstData="companyList" item-text="TEXT" item-value="PK" @change="onSearch" />
+
                       </v-col>
                       <v-col lg="2" sm="5" cols="12" v-if="from_date">
-                        <datePicker
+                        <BaseDatePicker
                           :label="$t('from')"
                           :inputValue="from_date"
                           @returnValue="from_date = $event"
-                        ></datePicker>
+                        ></BaseDatePicker>
                       </v-col>
                       <v-col lg="2" sm="5" cols="12" v-if="from_date">
-                        <datePicker
+                        <BaseDatePicker
                           :label="$t('to')"
                           @returnValue="to_date = $event"
-                        ></datePicker>
+                        ></BaseDatePicker>
                       </v-col>
                       <v-col lg="2" sm="5" cols="12" v-if="listLabel">
-                        <v-select
+                        <!-- <BaseSelect
                           dense
                           clearable
                           hide-details
                           item-value="PK"
                           item-text="TEXT"
                           :label="$t(listLabel)"
-                          :items="listData"
+                          :lstData="listData"
                           v-model="selectedListData"
-                        ></v-select>
+                        ></BaseSelect> -->
+
+                        <BaseSelect outlined :label="$t('company')" v-model="selectedListData" :lstData="listData" item-text="TEXT" item-value="PK"  />
+
                       </v-col>
 
                       <v-col lg="2" sm="3" cols="12">
-                        <v-text-field
+                        <!-- <BaseInput
                           clearable
                           dense
                           hide-details
                           :label="codeLabel"
                           @keypress.enter="onSearch"
                           v-model="txtCode"
-                        ></v-text-field>
+                        ></BaseInput> -->
+                        <BaseInput outlined @keypress.enter="onSearch" :label="codeLabel" v-model="txtCode" />
+
                       </v-col>
                       <v-col lg="2" sm="3" cols="10">
-                        <v-text-field
+                        <!-- <BaseInput
                           clearable
                           dense
                           hide-details
                           :label="nameLabel"
                           @keypress.enter="onSearch"
                           v-model="txtName"
-                        ></v-text-field>
+                        ></BaseInput> -->
+
+                        <BaseInput outlined @keypress.enter="onSearch" :label="nameLabel" v-model="txtName" />
+
                       </v-col>
-                      <v-col lg="2" sm="3" cols="3" class="text-right">
-                        <div class="d-flex">
+                      <v-col lg="2" sm="3" cols="3" class="d-flex justify-end">
+                        <BaseButton icon_type="search" :btn_text="$t('search')" :disabled="isProcessing" @onclick="onSearch" />
+                        <BaseButton icon_type="select" :btn_text="$t('select')" :disabled="isProcessing" @onclick="onSelectMultiple" />
+
+                        <!-- <div class="d-flex">
                           <v-tooltip bottom>
                             <template v-slot:activator="{ on }">
                               <v-btn
@@ -107,7 +120,8 @@
                               <span>{{ $t("select") }}</span>
                             </v-tooltip>
                           </div>
-                        </div>
+                        </div> -->
+
                       </v-col>
                     </v-row>
                   </v-container>

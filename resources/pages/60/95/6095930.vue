@@ -2,10 +2,10 @@
   <v-container fluid class="pa-0">
     <v-row dense>
       <v-col lg="3" cols="12">
-        <BaseInput outlined :label="$t('store_id')" @keyPressEnter="onSearch" v-model="store_id" />
+        <BaseInput outlined :label="$t('store_id')" v-model="store_id" />
       </v-col>
       <v-col lg="3" cols="12">
-        <!-- <BaseSelect outlined :label="$t('type')" :lstData="typeList" v-model="type" item-value="VAL" item-text="NAME"/> -->
+        <BaseSelect outlined :label="$t('type')" :lstData="typeList" v-model="type" item-value="VAL" item-text="NAME"/>
       </v-col>
       <v-col lg="6" cols="12" class="text-right d-flex justify-end">
         <BaseButton icon_type="search" :btn_text="$t('search')" :disabled="isProcessing"
@@ -14,8 +14,8 @@
       <v-col cols="12">
         <BaseGridView column-resizing-mode="widget" ref="grdCompany" :auto_load="false" select_mode="Single"
           :max_height="limitHeight" :header="headerGrid" :onCellPrepared="onCellPrepared" @row-updated="checkUpdatedItem"
-          sel_procedure="IPOS_SEL_6095920_SHOP_NC"
-          :filter_paras="[this.store_id]" />
+          sel_procedure="IPOS_SEL_6095930_ITEM_NC"
+          :filter_paras="[this.store_id, this.type ]" />
       </v-col>
     </v-row>
     <confirm-dialog ref="confirmDialog" @onConfirm="onClickButton('OPTION')"></confirm-dialog>
@@ -187,58 +187,101 @@ export default {
           caption: this.$t('id'),
         },
         {
-          dataField: "PHONE_NUMBER",
-          caption: this.$t('phone_number'),
+          dataField: "NAME",
+          caption: this.$t('name'),
           width: 200,
         },
         {
-          dataField: "POS_NAME",
-          caption: this.$t('pos_name'),
+          dataField: "TA_PRICE",
+          caption: this.$t('ta_price'),
           width: 200,
-        },
-        {
-          dataField: "POS_LONGITUDE",
-          caption: this.$t('pos_longitude'),
-          width: 100,
           dataType: 'number',
-          formatFloat: 6
+          formatFloat: 0
         },
         {
-          dataField: "POS_LATITUDE",
-          caption: this.$t('pos_latitude'),
-          width: 100,
+          dataField: "OTS_PRICE",
+          caption: this.$t('ots_price'),
+          width: 200,
           dataType: 'number',
-          formatFloat: 6
+          formatFloat: 0
         },
         {
-          dataField: "POS_ADDRESS",
-          caption: this.$t('pos_address'),
-          width: 200,
+          dataField: "SORT",
+          caption: this.$t('sort'),
+          width: 100,
         },
         {
-          dataField: "IMAGE_PATH",
-          caption: this.$t('image_path'),
-          width: 200,
-        },
-        {
-          dataField: "IMAGE_PATH_THUMB",
+          dataField: "STORE_ID",
           caption: this.$t('store_id'),
           
+          width: 100,
+        },
+        {
+          dataField: "STORE_ITEM_ID",
+          caption: this.$t('store_item_id'),
+          width: 100,
+        },
+        {
+          dataField: "TYPE_ID",
+          caption: this.$t('type_id'),
+          width: 100,
+        },
+        {
+          dataField: "DESCRIPTION",
+          caption: this.$t('description'),
           width: 200,
         },
         {
-          dataField: "ACTIVE",
-          caption: this.$t('active'),
+          dataField: "STATUS",
+          caption: this.$t('status'),
+          width: 100,
+        },
+        {
+          dataField: "IS_FEATURED",
+          caption: this.$t('is_featured'),
           cssClass: "cell-align-center",
           dataType: "checkbox",
           width: 100,
         },
         {
-          dataField: "PARTNER_REGISTER_STATUS",
-          caption: this.$t('partner_register_status'),
+          dataField: "ALLOW_TAKE_AWAY",
+          caption: this.$t('allow_take_away'),
           cssClass: "cell-align-center",
           dataType: "checkbox",
-          width: 200,
+          width: 100,
+        },
+        {
+          dataField: "ALLOW_SELF_ORDER",
+          caption: this.$t('allow_self_order'),
+          cssClass: "cell-align-center",
+          dataType: "checkbox",
+          width: 100,
+        },
+        {
+          dataField: "UPDATE_AT",
+          caption: this.$t('update_at'),
+          width: 150,
+        },
+        {
+          dataField: "IS_EAT_WITH",
+          caption: this.$t('is_eat_with'),
+          cssClass: "cell-align-center",
+          dataType: "checkbox",
+          width: 100,
+        },
+        {
+          dataField: "TIME_SALE_DATE_WEEK",
+          caption: this.$t('time_sale_date_week'),
+          width: 100,
+          dataType: 'number',
+          formatFloat: 0
+        },
+        {
+          dataField: "TIME_SALE_HOUR_DAY",
+          caption: this.$t('time_sale_hour_day'),
+          width: 100,
+          dataType: 'number',
+          formatFloat: 0
         }
       ]
     },

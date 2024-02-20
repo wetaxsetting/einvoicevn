@@ -2,7 +2,7 @@
   <v-dialog id="employee-dialog" max-width="1000" v-model="dialogIsShow">
     <v-card>
       <v-card-title class="headline primary-gradient white--text py-2">
-        <span>{{ $t("account_list", "acnt") }}</span>
+        <span>{{ $t("account_list") }}</span>
         <v-spacer></v-spacer>
         <v-icon dark @click="dialogIsShow = false">mdi-close-thick</v-icon>
       </v-card-title>
@@ -16,15 +16,15 @@
                   <v-container fluid>
                     <v-row dense align="center" justify="space-between">
                       <v-col cols="4">
-                        <v-text-field
+                        <BaseInput
                           clearable
                           dense
                           hide-details
                           outlined
-                          :label="$t('account_code', 'acnt')"
+                          :label="$t('account_code')"
                           @keypress.enter="onSearch"
                           v-model="txtAccountCode"
-                        ></v-text-field>
+                        ></BaseInput>
                       </v-col>
                       <v-col cols="2">
                         <v-menu
@@ -38,16 +38,16 @@
                           min-width="290px"
                         >
                           <template v-slot:activator="{ on, attrs }">
-                            <v-text-field
+                            <BaseInput
                               v-model="month"
-                              :label="$t('month', 'common')"
+                              :label="$t('month')"
                               readonly
                               outlined
                               hide-details
                               dense
                               v-bind="attrs"
                               v-on="on"
-                            ></v-text-field>
+                            ></BaseInput>
                           </template>
                           <v-date-picker
                             v-model="month"
@@ -91,26 +91,26 @@
                     </v-row>
                     <v-row dense align="center" justify="space-between">
                       <v-col cols="4">
-                        <v-text-field
+                        <BaseInput
                           clearable
                           dense
                           hide-details
                           outlined
-                          :label="$t('account_name', 'acnt')"
+                          :label="$t('account_name')"
                           @keypress.enter="onSearch"
                           v-model="txtAccountName"
-                        ></v-text-field>
+                        ></BaseInput>
                       </v-col>
                       <v-col cols="4">
-                        <v-text-field
+                        <BaseInput
                           clearable
                           dense
                           hide-details
                           outlined
-                          :label="$t('account_upper_name', 'acnt')"
+                          :label="$t('account_upper_name')"
                           @keypress.enter="onSearch"
                           v-model="txtAccountUpperName"
-                        ></v-text-field>
+                        ></BaseInput>
                       </v-col>
                       <v-col cols="4">
                         <v-select
@@ -120,7 +120,7 @@
                           outlined
                           item-value="PK"
                           item-text="TEXT"
-                          :label="$t('account_type', 'acnt')"
+                          :label="$t('account_type')"
                           :items="accountTypeList"
                           v-model="selectedAccountType"
                         ></v-select>

@@ -173,11 +173,6 @@ Route.group(() => {
     Route.post("re-send-mail-records", "EInvoiceController.weTaxReSendRecords")
     Route.post("view-records", "EInvoiceController.weTaxViewRecords")
 
-
-    //iPOS
-    Route.get("ipos-get-partner", "EInvoiceController.iPosGetPartner")
-    Route.get("ipos-get-product", "EInvoiceController.iPosGetProduct")
-
     // e-invoice
     Route.post("general-records-xml-at", "EInvoiceController.generalRecordsXml")
     Route.post("general-pos-invoice-xml-view", "EInvoiceController.generalXmlPosInvoiceView")
@@ -204,6 +199,15 @@ Route.group(() => {
 
 
 }).prefix("api/einvoice").middleware("user");
+
+Route.group(() => {
+    //iPOS
+    Route.get("ipos-get-partner", "IPosController.iPosGetPartner")
+    Route.get("ipos-get-shop_list", "IPosController.iPosGetShopList")
+    Route.get("ipos-get-product", "IPosController.iPosGetProduct")
+    Route.get("ipos-get-invoice", "IPosController.iPosGetInvoice")
+
+}).prefix("api/ipos").middleware("user");
 
 
 Route.group(() => {

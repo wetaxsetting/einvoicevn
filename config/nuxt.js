@@ -30,6 +30,7 @@ module.exports = {
     // },
     meta: [
       { charset: "utf-8" },
+      { name: "zalo-platform-site-verification", content: "UeEQ0_Y1B1Kvl9a2xRyB6ZgngZ_MntXfD3Ku" }, // zalo-platform-site-verification
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       {
         hid: "description",

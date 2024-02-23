@@ -136,6 +136,7 @@ Route.group(() => {
     Route.post("checkinformadjustinvoice", "EInvoiceController.checkInformAdjustToTaxOffice")
     Route.post("checkinformadjustinvoicefromclient", "EInvoiceController.checkInformAdjustToTaxOfficeFromClient")
     Route.post("hsm-sign", "EInvoiceController.HsmSign")
+    Route.post("hsm-generate-qr", "EInvoiceController.HSMGeneralQRCode")
     Route.post("checkingstatuseinvoice", "EInvoiceController.checkingStatusEInvoice")
     Route.get("downloadxml", "EInvoiceController.DownloadXML")
     Route.get("downloadpdf", "EInvoiceController.DownloadPDF")

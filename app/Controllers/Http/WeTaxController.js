@@ -4,7 +4,7 @@ const DBService = use("DBService");
 
 class WeTaxController {
 
-  async loginZalo({ request, response, auth }) {
+  async iposSysnc({ request, response, auth }) {
     try {
       var p_language = request.header("accept-language", "ENG");
       var p_crt_by = "";
@@ -13,27 +13,62 @@ class WeTaxController {
         p_crt_by = user.USER_ID;
       }
 
-      const { bills } = request.all();
+      const { data } = request.all();
 
-      const codeVerifier = Utils.genCodeVerifier();
-      const codeChanllenge = await Utils.genCodeChallenge(codeVerifier);
-      console.log("codeVerifier ", codeVerifier);
-      console.log("codeChanllenge ", codeChanllenge);
+      if (!data?.length) {
+        return response
+          .status(400)
+          .json(
+            Utils.weTaxResponse({ code: 400, message: "Invalid: parameter" })
+          );
+      }
+
+      for (let i = 0; i < data.length; i++) {
+        // const params = {
+        //   ref_id: bills[i].ref_id,
+        //   tax_id: bills[i].tax_id,
+        //   tax_company_name: bills[i].tax_company_name,
+        //   tax_address: bills[i].tax_address,
+        //   tax_buyer_name: bills[i].tax_buyer_name,
+        //   receiver_email: bills[i].receiver_email,
+        //   receiver_email_cc: bills[i].receiver_email_cc,
+        //   order_date: bills[i].order_date,
+        //   store_code: bills[i].store_code,
+        //   pos_number: bills[i].pos_number,
+        //   order_id: bills[i].order_id,
+        // };
+
+        // const res = await DBService.ExecuteSQLBlob(
+        //   `BEGIN WETAX_PRO_IPOS_SYNC_SALE(
+        //                                 :ref_id,
+        //                                 :tax_id,
+        //                                 :tax_company_name,
+        //                                 :tax_address,
+        //                                 :tax_buyer_name,
+        //                                 :receiver_email,
+        //                                 :receiver_email_cc,
+        //                                 :order_date,
+        //                                 :store_code,
+        //                                 :pos_number,
+        //                                 :order_id,
+        //                                 :p_language, 
+        //                                 :p_crt_by, 
+        //                                 :p_rtn_cur); 
+        //                                 END;`,
+        //   params,
+        //   p_language,
+        //   p_crt_by
+        // );
+      }
 
       return response
         .status(200)
-        .json(
-          Utils.weTaxResponse({
-            code: 200,
-            message: "success",
-            data: codeChanllenge,
-          })
-        );
+        .json(Utils.weTaxResponse({ code: 200, message: "success" }));
     } catch (e) {
       Utils.Logger({
         LVL: "error",
         MODULE: "WeTaxController",
-        FUNC: "loginZalo",
+        FUNC: "iposSysnc",
         CONTENT: e.message,
       });
       // console.log("e ", e);

@@ -203,6 +203,11 @@ Route.group(() => {
 
 Route.group(() => {
     //iPOS
+   
+}).prefix("api/hsm").middleware("user");
+
+Route.group(() => {
+    //iPOS
     Route.get("ipos-get-partner", "IPosController.iPosGetPartner")
     Route.get("ipos-get-shop_list", "IPosController.iPosGetShopList")
     Route.get("ipos-get-product", "IPosController.iPosGetProduct")
@@ -210,6 +215,11 @@ Route.group(() => {
 
 }).prefix("api/ipos").middleware("user");
 
+Route.group(() => {
+    //iPOS
+    Route.post("hsm-generate-qr", "HSMController.HSMGeneralQRCode")
+    Route.post("hsm-sign-pdf", "HSMController.signPdf")
+}).prefix("api/hsm").middleware("user");
 
 Route.group(() => {
     // WeTax

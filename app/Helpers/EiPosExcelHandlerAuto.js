@@ -125,6 +125,7 @@ class EiExcelHandler {
         bgPath = "";
       }
       let checkYN = "N";
+      console.log("EiPosExcelHandlerAuto ==> einvoiceMasterData[0].URL_IMG_LOGO  line 128", einvoiceMasterData[0].URL_IMG_LOGO)
       try {
         checkYN = "Y";
         let savePath = await Helpers.appRoot(`resources/${einvoiceMasterData[0].URL_IMG_LOGO}`);

@@ -1280,17 +1280,12 @@ class Utils {
             let savePath = `${this.ROOT_DIR_FILES}/${folder}/${year}/${month}`;
             let fileName = `${current.getTime()}.${imageExt.toLowerCase()}`;
             const timeName = new Date().getTime();
-            try {
-                await file.move(savePath, {
-                    name: timeName+ '_' +fileName
-                });
-            } catch (ex) {
-                console.error(ex)
-                return ex.message
-            }
+            await file.move(savePath, { name: timeName+ '_' +fileName});
+           
             return `${savePath}/${timeName+ '_' + fileName}`;
         } catch (error) {
             console.log("Ultls putFileRandomNameRootPathOut  error: ", error)
+            return ex.message
         }
         
     }

@@ -1262,32 +1262,37 @@ class Utils {
     }
 
     async putFileRandomNameRootPathOut(file, folder, type_insert) {
-        const type = typeof file;
-        const imageExt =
-            type === "string" ?
-                file
-                    .split("?")[0]
-                    .split(".")
-                    .pop() :
-                file.extname;
-        let current = new Date();
-        let year = current.getFullYear();
-        let month = current.getMonth() + 1;
-        if (month < 10) {
-            month = "0" + month;
-        }
-        let savePath = `${this.ROOT_DIR_FILES}/${folder}/${year}/${month}`;
-        let fileName = `${current.getTime()}.${imageExt.toLowerCase()}`;
-        const timeName = new Date().getTime();
         try {
-            await file.move(savePath, {
-                name: timeName+ '_' +fileName
-            });
-        } catch (ex) {
-            console.error(ex)
-            return ex.message
+            const type = typeof file;
+            const imageExt =
+                type === "string" ?
+                    file
+                        .split("?")[0]
+                        .split(".")
+                        .pop() :
+                    file.extname;
+            let current = new Date();
+            let year = current.getFullYear();
+            let month = current.getMonth() + 1;
+            if (month < 10) {
+                month = "0" + month;
+            }
+            let savePath = `${this.ROOT_DIR_FILES}/${folder}/${year}/${month}`;
+            let fileName = `${current.getTime()}.${imageExt.toLowerCase()}`;
+            const timeName = new Date().getTime();
+            try {
+                await file.move(savePath, {
+                    name: timeName+ '_' +fileName
+                });
+            } catch (ex) {
+                console.error(ex)
+                return ex.message
+            }
+            return `${savePath}/${timeName+ '_' + fileName}`;
+        } catch (error) {
+            console.log("Ultls putFileRandomNameRootPathOut  error: ", error)
         }
-        return `${savePath}/${timeName+ '_' + fileName}`;
+        
     }
 
 

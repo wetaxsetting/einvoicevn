@@ -605,13 +605,23 @@ export default {
       }
     },
     renderImg(imgUrl) {
+      console.log("renderImg  ", imgUrl); 
       if (!imgUrl) {
         return require("@/assets/images/no_image.png");
       } else {
         if (imgUrl.includes("base64")) {
           return imgUrl;
         }
-        return require("@/assets/images/" + imgUrl.replace("assets/images/", ""));
+        var image ;
+        try {
+          image =  require("@/../data/einvoices_logo/" + imgUrl.replace("data/einvoices_logo/", "")); 
+          //image =  require("@/../data/einvoices_logo/0104128565-999/2024/02/1709109756801_1709109756801.png"); 
+          console.log("image ", image); 
+        } catch (error) {
+          console.log("error ", error); 
+          image = require("@/assets/images/no_image.png");
+        }
+        return image;
       }
     },
     async onUploadImgFolder(file, folder, _type) {
@@ -937,22 +947,22 @@ export default {
               this.imageLOGO = imgLOGO;
               let imgBG = this.MasterInfo.URL_IMG_BG;
               this.imageBG = imgBG;
-              console.log('imgLOGO', imgLOGO);
-              console.log('this.MasterInfo', this.MasterInfo);
-              try {
-                this.showLoading = true;
-                let res_url = await this.$axios.$post("/einvoice/general-url-pdf-template", {
-                  responseType: "json",
-                  data: this.issue_pk,
-                });
-                this.urlPDF = null;
-                if (res_url.success) {
-                  this.urlPDF = res_url.data;
-                  this.showLoading = false;
-                }
-              } catch (e) {
-                this.showNotification("danger", this.$t("fail_to_url", "Error"), e.message);
-              }
+              //console.log('imgLOGO', imgLOGO);
+              //console.log('this.MasterInfo', this.MasterInfo);
+              // try {
+              //   this.showLoading = true;
+              //   let res_url = await this.$axios.$post("/einvoice/general-url-pdf-template", {
+              //     responseType: "json",
+              //     data: this.issue_pk,
+              //   });
+              //   this.urlPDF = null;
+              //   if (res_url.success) {
+              //     this.urlPDF = res_url.data;
+              //     this.showLoading = false;
+              //   }
+              // } catch (e) {
+              //   this.showNotification("danger", this.$t("fail_to_url", "Error"), e.message);
+              // }
               break;
             case "update":
               switch (this.MasterInfo._rowstatus) {

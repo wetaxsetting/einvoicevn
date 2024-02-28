@@ -1539,7 +1539,9 @@ class DsoController {
       if (!folder) {
         return response.send(Utils.response(false, "missing_folder_parameter", null));
       } 
-      let file_path = await Utils.putExcelRootPath(file, folder, 'IMG'); 
+      //let file_path = await Utils.putExcelRootPath(file, folder, 'IMG'); 
+      let file_path = await Utils.putFileRandomNameRootPathOut(file, folder, 'WETAXT'); 
+      
       if (file_path != "") {  
           file_path = file_path.replace("/resources/", ""); 
       }

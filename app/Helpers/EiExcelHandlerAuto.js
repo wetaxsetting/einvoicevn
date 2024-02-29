@@ -1,5 +1,7 @@
 'use strict'
 const DBService = use("DBService");
+const Helpers = use('Helpers');
+const fs = require('fs');
 const EiExcelConverter = use("App/Helpers/EiExcelConverterAuto");
 const fs = use("fs");
 
@@ -131,21 +133,15 @@ class EiExcelHandler {
         }
 
         try {
-          let savePath = await Helpers.appRoot(`resources/${einvoiceMasterData[0].URL_IMG_LOGO}`);
+          let savePath = await Helpers.appRoot(`${einvoiceMasterData[0].URL_IMG_LOGO}`);
             if (fs.existsSync(savePath)) {
               logos = [
                 { 
-                 //logo_start_col : einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_START_COL ? einvoiceMasterData[0].LOGO_START_COL:1,
-                 //logo_start_row : einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_START_ROW ? einvoiceMasterData[0].LOGO_START_ROW:1,
-                 //logo_width     : einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_WIDTH ? einvoiceMasterData[0].LOGO_WIDTH:1,
-                 //logo_height    : einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_HEIGHT ? einvoiceMasterData[0].LOGO_HEIGHT:1,
-                 //logoPath       : `${einvoiceMasterData[0] &&einvoiceMasterData[0].URL_IMG_LOGO ? einvoiceMasterData[0].URL_IMG_LOGO: "assets/images/no_image.png"}`   ///assets/images/einvoices_logo/abc/
-
                   start: einvoiceMasterData[0].LOGO_START_COL, 
                   width: einvoiceMasterData[0].LOGO_WIDTH,//   0.99 * dpi, 
                   height:einvoiceMasterData[0].LOGO_HEIGHT,// 0.99 * dpi, 
                   logoStartCount: einvoiceMasterData[0].LOGO_START_ROW, 
-                  logoPath: `${einvoiceMasterData[0].URL_IMG_LOGO}` 
+                  logoPath: "/../" + `${einvoiceMasterData[0].URL_IMG_LOGO}` 
                 }  
              ]
             } else {
@@ -155,26 +151,6 @@ class EiExcelHandler {
           logos = [];
           console.log("error  require url ", error);
         }  
-
-        // if(einvoiceMasterData[0].URL_IMG_LOGO != "" && einvoiceMasterData[0].URL_IMG_LOGO != null)
-        // {
-        //   logos = [
-        //     {
-        //       start: einvoiceMasterData[0].LOGO_START_COL, 
-        //       width: einvoiceMasterData[0].LOGO_WIDTH,//   0.99 * dpi, 
-        //       height:einvoiceMasterData[0].LOGO_HEIGHT,// 0.99 * dpi, 
-        //       logoStartCount: einvoiceMasterData[0].LOGO_START_ROW, 
-        //       logoPath: `${einvoiceMasterData[0].URL_IMG_LOGO}` 
-            
-        //     },
-        //   ];
-        // }
-        // else{
-        //   logos = [];
-        // }
-         
-        // console.log("bgPath  ", bgPath);
-        // console.log("logos   ", logos);
 
 
         for(let i = 0; i < einvoiceDetailsParam.length; i++)
@@ -196,7 +172,6 @@ class EiExcelHandler {
         // detailCellFormat = [
         //   { startCell: 1, endCell: 2, cellType: 2, cellBorder: "dotted", field: "STT" },//từ cell bắt đầu tới cell kết thúc, type 2: cell đầu tiên
         //   { startCell: 3, endCell: 9, cellType: 3, cellBorder: "dotted", field: "ITEM_NAME" },//từ cell bắt đầu tới cell kết thúc, type 3: cell kế tiếp cell đầu tiên,
-          
         //   { startCell: 10, endCell: 10, cellType: 1, cellBorder: "dotted", field: "ITEM_UOM" },//type 1: còn lại
         //   { startCell: 11, endCell: 13, cellType: 1, cellBorder: "dotted", field: "QTY" },//type 1: còn lại
         //   //{ startCell: 13, endCell: 14, cellType: 1, cellBorder: "dotted", field: "BLANK" },//type 1: còn lại

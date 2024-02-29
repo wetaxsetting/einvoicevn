@@ -732,11 +732,12 @@ export default {
       this.$refs.fileLOGO.click();
     },
     async cellClickCell(cell) {
-      console.log("file: 6095055.vue:757 [vng-304] cellClickCell [vng-304] cell:", cell);
+      //console.log("file: 6095055.vue:757 [vng-304] cellClickCell [vng-304] cell:", cell);
       if (cell.data.PK != this.issue_pk) {
         this.issue_pk = cell.data.PK;
         this.dataIssued = cell.data;
         this.MasterInfo.TT = cell.data.SERIAL_NO;
+        this.folder = cell.data.TAX_CODE;
         if (cell.data._rowstatus == "i") {
           this.MasterInfo.USE_YN = cell.data.USE_YN;
         } else {

@@ -128,7 +128,9 @@ class EiExcelHandler {
       console.log("EiPosExcelHandlerAuto ==> einvoiceMasterData[0].URL_IMG_LOGO  line 128", einvoiceMasterData[0].URL_IMG_LOGO)
       try {
         checkYN = "Y";
-        let savePath = await Helpers.appRoot(`resources/${einvoiceMasterData[0].URL_IMG_LOGO}`);
+        //let savePath = await Helpers.appRoot(`resources/${einvoiceMasterData[0].URL_IMG_LOGO}`);
+        let savePath = await Helpers.appRoot(`${einvoiceMasterData[0].URL_IMG_LOGO}`);
+
           if (fs.existsSync(savePath)) {
             console.log('file exists'); 
             checkYN = "Y";

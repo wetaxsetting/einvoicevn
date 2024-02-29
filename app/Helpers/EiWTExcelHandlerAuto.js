@@ -1,5 +1,6 @@
 'use strict'
 const DBService = use("DBService");
+const Helpers = use('Helpers');
 const EiExcelConverter = use("App/Helpers/EiWTExcelConverterAuto");
 class EiExcelHandler {
 

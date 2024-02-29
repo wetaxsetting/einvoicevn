@@ -664,6 +664,7 @@ class EInvoiceController {
       }
       // const id = uuid.v4();
       const id = 'ID1';
+      const signature_path = "TKhai/DSCKS/NNT";
       const xml = this.OBJtoXML(jsonDeclare);
       const xmlId = xml.toString().replace("<DLTKhai>", `<DLTKhai Id=\'${id}\'>`);
       const xmlRemoveLine = xmlId.toString().replace(/\n/g, "");
@@ -674,7 +675,7 @@ class EInvoiceController {
       //     sign_id: id,
       //   })
       // );
-      return response.status(200).json(Utils.responseByRule({success : true, message : "Generate Declaration xml format succesfully.", data: {xml_data: xmlRemoveLine,  sign_id: id}}));
+      return response.status(200).json(Utils.responseByRule({success : true, message : "Generate Declaration xml format succesfully.", data: {xml_data: xmlRemoveLine,  sign_id: id, signature_path : signature_path}}));
     } catch (e) {
       Utils.Logger({
         LVL: "error",
@@ -1048,6 +1049,7 @@ class EInvoiceController {
         });
       }
       const id = "ID1";// uuid.v4();
+      const signature_path = "TBao/DSCKS/NNT";
       const xml = this.OBJtoXML(jsonInvalidInvoices);
       const xmlId = xml.toString().replace("<DLTBao>", `<DLTBao Id=\'${id}\'>`);
       const xmlRemoveLine = xmlId.toString().replace(/\n/g, "");
@@ -1058,7 +1060,7 @@ class EInvoiceController {
       //     sign_id: id,
       //   })
       // );
-      return response.status(200).json(Utils.responseByRule({success : true, message : "Generate announcement successfully.", data: { xml_data: xmlRemoveLine, sign_id: id }}));
+      return response.status(200).json(Utils.responseByRule({success : true, message : "Generate announcement successfully.", data: { xml_data: xmlRemoveLine, sign_id: id, signature_path : signature_path  }}));
 
     } catch (e) {
       Utils.Logger({
@@ -5891,6 +5893,7 @@ class EInvoiceController {
       }
 
       const id = "ID1";//uuid.v4();
+      const signature_path = "TDiep/CKSNNT";
       const xml = this.OBJtoXML(objData);
       const xmlId = xml.toString().replace("<DLieu>", `<DLieu Id=\'${id}\'>`);
       const xmlRemoveLine = xmlId.toString().replace(/\n/g, "").replaceAll("\"","\'");
@@ -5900,6 +5903,7 @@ class EInvoiceController {
         store_name: store_name,
         count_invoice_convert: invoices.length,
         sign_id: id,
+        signature_path : signature_path,
         xml_data: xmlRemoveLine,
         req_key: req_key,
       };
@@ -9124,12 +9128,13 @@ class EInvoiceController {
         count_inv++;
         //const id = uuid.v4();
         const id = "ID1";
+        const signature_path = "HDon/DSCKS/NBan";
         const xml = this.OBJtoXML(objInvoice_M);
         const xmlStr = xml.toString().replace("<DLHDon>", `<DLHDon Id=\'${id}\'>`);
 
         console.log("xmlStr", xmlStr)
         console.log("weTaxConvertInvoiceToXML END");
-        rtnXML.push({ req_key: invoices[i].master_pk, xml_data: xmlStr, sign_id: id });
+        rtnXML.push({ req_key: invoices[i].master_pk, xml_data: xmlStr, sign_id: id, signature_path : signature_path });
       }
 
       // return response.send(

@@ -5664,7 +5664,8 @@ class EInvoiceController {
         list_invoice
       } = request.all();
 
-      // console.log(" data  ", data);
+       console.log(" weTaxConvertPosInvoiceToXML  BEGIN ==================================================");
+       console.log(" weTaxConvertPosInvoiceToXML  list_invoice   ", list_invoice);
 
       //invoices = JSON.parse(invoices);
       let rtnXML = [];
@@ -5734,7 +5735,6 @@ class EInvoiceController {
       const invoices = list_invoice;
       const valid = this.weTaxValidateJsonInvalidPosInvoiceToXML(invoices);
       if (!valid.status) {
-        // return response.send(Utils.response(valid.status, valid.message, null));
         return response.status(400).json(Utils.responseByRule({success : false, message : valid.message}));
       }
       /*let invoices_sample=[
@@ -5744,14 +5744,12 @@ class EInvoiceController {
                         ];*/
       //console.log("invoices1:", invoices)
       if (invoices.length == undefined || invoices.length == 0) {
-        // return response.send(Utils.response(false, `Invalid json format.`, null));
         return response.status(400).json(Utils.responseByRule({success : false, message : `Invalid: list_invoice`}));
       }
 
       for (let i = 0; i < invoices.length; i++) {
-        //console.log("invoices:", invoices[i])
-        req_key.push(invoices[i].req_key);
 
+        req_key.push(invoices[i].req_key);
         if (invoices[i].form_no == 1) {
           objInvoice.DLHDon.TTChung.THDon = "Hóa đơn giá trị gia tăng khởi tạo từ máy tính tiền";
         } else if (invoices[i].form_no == 2) {
@@ -5908,7 +5906,8 @@ class EInvoiceController {
         req_key: req_key,
       };
 
-      // return response.send(Utils.response(true, `Convert json to xml was successful.`, rtnXML));
+      console.log(" weTaxConvertPosInvoiceToXML  END ==================================================");
+
       return response.status(200).json(Utils.responseByRule({success : true, message : `Generate POS invoice xml format successfully.`, data: rtnXML}));
 
     } catch (e) {

@@ -120,7 +120,7 @@ class EiExcelHandler {
         this.masterDataArray.push({ Cell: einvoiceMasterParam[i].CELL_CODE, Info: [einvoiceMasterParam[i].DATA_MAPPING], Type: einvoiceMasterParam[i].TYPE },)
       }
       if (einvoiceMasterData.length && einvoiceMasterData[0].URL_IMG_BG) {
-        bgPath = `${einvoiceMasterData[0].URL_IMG_BG}`;
+        bgPath = "/../" + `${einvoiceMasterData[0].URL_IMG_BG}`;
       } else {
         bgPath = "";
       }
@@ -150,7 +150,7 @@ class EiExcelHandler {
             width: 0.99 * dpi,
             height: 0.99 * dpi,
             logoStartCount: einvoiceMasterData[0].LOGO_START_COL,
-            logoPath: `${einvoiceMasterData[0].URL_IMG_LOGO}`
+            logoPath:  "/../" + `${einvoiceMasterData[0].URL_IMG_LOGO}`
           },
         ];
       }

@@ -124,21 +124,40 @@ class EiExcelHandler {
         bgPath = "";
       }
 
-      // if (einvoiceMasterData.length && einvoiceMasterData[0].URL_IMG_LOGO) {
-      //   logos = [
-      //     {
-      //       start: einvoiceMasterData[0].LOGO_START_ROW,
-      //       width: 0.99 * dpi,
-      //       height: 0.99 * dpi,
-      //       logoStartCount: einvoiceMasterData[0].LOGO_START_COL,
-      //       logoPath: `${einvoiceMasterData[0].URL_IMG_LOGO}`
-      //     },
-      //   ];
-      // }
-      // else {
-      //   logos = [];
-      // }
+      let checkYN = "N";
+      //console.log("EiPosExcelHandlerAuto ==> einvoiceMasterData[0].URL_IMG_LOGO  line 128", einvoiceMasterData[0].URL_IMG_LOGO)
+      try {
+        checkYN = "Y";
+        //let savePath = await Helpers.appRoot(`resources/${einvoiceMasterData[0].URL_IMG_LOGO}`);
+        let savePath = await Helpers.appRoot(`${einvoiceMasterData[0].URL_IMG_LOGO}`);
 
+          if (fs.existsSync(savePath)) {
+            console.log('file exists'); 
+            checkYN = "Y";
+          } else {
+            console.log('file not found!');
+            checkYN = "N";
+          }
+      } catch (error) {
+        checkYN = "N";
+        console.log("error  require url ", error);
+      }
+       
+      if (einvoiceMasterData.length && einvoiceMasterData[0].URL_IMG_LOGO && checkYN == "Y") {
+        logos = [
+          {
+            start: einvoiceMasterData[0].LOGO_START_ROW,
+            width: 0.99 * dpi,
+            height: 0.99 * dpi,
+            logoStartCount: einvoiceMasterData[0].LOGO_START_COL,
+            logoPath:  "/../" + `${einvoiceMasterData[0].URL_IMG_LOGO}`
+          },
+        ];
+      }
+      else {
+        logos = [];
+      }
+      
       // console.log(" bgPath  ", bgPath, "logos  ", logos);
 
       for (let i = 0; i < einvoiceDetailsParam.length; i++) {

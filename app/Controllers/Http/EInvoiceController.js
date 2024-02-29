@@ -14114,7 +14114,7 @@ class EInvoiceController {
             ];
           const jsonInvoice = await transform(xml_content, template);
           
-        // console.log('===> jsonInvoice ', jsonInvoice);
+        console.log('weTaxExtractPosXMLContent ===> line 14117 jsonInvoice ', jsonInvoice);
 
         const templateSignTime = {
           SigningTime : "TDiep/CKSNNT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime"
@@ -14190,7 +14190,6 @@ class EInvoiceController {
                   pos_no: pos_no,
                   signing_time: signingTime.SigningTime,
                   tei_wt_invoice_pos_pk: rtnValuePos.p_rtn_cur[0].PK,
-                  
               } 
 
             

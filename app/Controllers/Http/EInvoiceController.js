@@ -14114,7 +14114,7 @@ class EInvoiceController {
             ];
           const jsonInvoice = await transform(xml_content, template);
           
-        console.log('weTaxExtractPosXMLContent ===> line 14117 jsonInvoice ', jsonInvoice);
+        console.log('weTaxExtractPosXMLContent BEGIN ===> line 14117 jsonInvoice ', jsonInvoice);
 
         const templateSignTime = {
           SigningTime : "TDiep/CKSNNT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime"
@@ -14133,6 +14133,7 @@ class EInvoiceController {
               signing_time : signingTime.SigningTime,
               qty:jsonInvoice.length
           }
+          console.log('weTaxExtractPosXMLContent box param ===> ', paraPos);
 
           const rtnValuePos = await DBService.ExecuteSQLBlob(
             `BEGIN ei_upd_pos_xml_box (          
@@ -14158,6 +14159,8 @@ class EInvoiceController {
             //console.log("jsonInvoice  ", jsonInvoice);
             for(const invoice of jsonInvoice)
             {
+              console.log('weTaxExtractPosXMLContent m invoice ===> ', invoice);
+
                 const paraMaster = {
                   pban: invoice.DLHDon.TTChung.PBan,
                   thdon: invoice.DLHDon.TTChung.THDon,
@@ -14192,7 +14195,8 @@ class EInvoiceController {
                   tei_wt_invoice_pos_pk: rtnValuePos.p_rtn_cur[0].PK,
               } 
 
-            
+              console.log('weTaxExtractPosXMLContent m param ===> ', paraMaster);
+
               const rtnValueMaster = await DBService.ExecuteSQLBlob(
                   `BEGIN ei_upd_sale_bill (          
                                                   :pban,
@@ -14265,6 +14269,9 @@ class EInvoiceController {
                     thtien	: inv_d.ThTien,
                     tsuat	: inv_d.TSuat,
                 } 
+
+                console.log('weTaxExtractPosXMLContent d param ===> ', paraDetails);
+
                  const rtnValueDetail =  await DBService.ExecuteSQLBlob(
                     `BEGIN ei_upd_sale_bill_d (          
                                                     :tei_wt_invoice_m_pk,
@@ -14287,18 +14294,22 @@ class EInvoiceController {
                     p_crt_by
                   );
 
-                  console.log(" rtnValueDetail  ", rtnValueDetail);
+                  //console.log(" rtnValueDetail  ", rtnValueDetail);
                 }
               
                 const invoice_detail_vat = invoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat;
                 for(const inv_d_vat of invoice_detail_vat)
                 {
+                  console.log(" inv_d_vat  ", inv_d_vat);
                   const para_amt_vat = {
                     tei_wt_sale_bill_pk: rtnValueMaster.p_rtn_cur[0].PK,
                     sub_amt: inv_d_vat.ThTien,
                     sub_vat_rate: inv_d_vat.TSuat,
                     sub_vat_amt: inv_d_vat.TThue,
                   };
+
+                  console.log('weTaxExtractPosXMLContent d vat param  ===> ',para_amt_vat);
+
                   const rtnValue_VAT = await DBService.ExecuteSQLBlob(
                     `BEGIN ei_upd_sale_bill_d_vat (          
                                                                       :tei_wt_sale_bill_pk,
@@ -14313,7 +14324,7 @@ class EInvoiceController {
                     p_crt_by
                   );
 
-                  console.log(" invoice_detail_vat  ", rtnValue_VAT);
+                  //console.log(" invoice_detail_vat  ", rtnValue_VAT);
                 }
                
               }//else
@@ -14330,6 +14341,8 @@ class EInvoiceController {
             STATUS:  rtnValuePos.p_rtn_cur[0].STATUS,
           }
           
+          console.log('weTaxExtractPosXMLContent END ===> ');
+
           return { check_data, data_inv }; 
           
         }

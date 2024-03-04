@@ -49,21 +49,22 @@ class WeTaxController {
 
       const mstPk = resMst.p_rtn_cur[0].PK;
 
-      for (let i = 0; i < data.sale_detail.length; j++) {
+      for (let i = 0; i < data.sale_detail.length; i++) {
         const element = data.sale_detail[i];
         const paramsDtl = {
           mst_pk: mstPk,
           vat_rate: element.tax,
           amt: element.amount,
           prod_cd: element.item_id,
-          sale_qty: element.quanity,
+          sale_qty: element.quantity,
           unit_prc: element.price_org,
           sale_prc: element.price_sale,
           vat_amt: element.tax_amount,
           prod_nm: element.description,
           pos_sale_dtl_id: element.sale_detail_id,
-          svc_amt: element.amount_service_charge,
+          svc_amt: '',
           dc_amt: element.distribute_discount_extra2,
+          sale_dt: element.sale_date,
         }
         // ko can await
         DBService.ExecuteSQLBlob(
@@ -80,6 +81,7 @@ class WeTaxController {
                                         :pos_sale_dtl_id,
                                         :svc_amt,
                                         :dc_amt,
+                                        :sale_dt,
                                         :p_language, 
                                         :p_crt_by, 
                                         :p_rtn_cur); 

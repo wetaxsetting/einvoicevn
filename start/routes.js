@@ -260,6 +260,10 @@ Route.group(() => {
     Route.post("requestEinvoiceInfo", "WeTaxController.requestEinvoiceInfo");
     Route.post("iposSysnc", "WeTaxController.iposSysnc");
 }).prefix("api/wtx/pa/v1/pos").middleware("user");
+
+Route.group(() => {
+    Route.post("sysnc", "WeTaxController.iposSysnc");
+}).prefix("api/wtx/pa/v1/ipos").middleware("user");
 // Frontend
 
 Route.any("*", "NuxtController.render");

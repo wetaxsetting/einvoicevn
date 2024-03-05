@@ -203,11 +203,6 @@ Route.group(() => {
 
 Route.group(() => {
     //iPOS
-   
-}).prefix("api/hsm").middleware("user");
-
-Route.group(() => {
-    //iPOS
     Route.get("ipos-get-partner", "IPosController.iPosGetPartner")
     Route.get("ipos-get-shop_list", "IPosController.iPosGetShopList")
     Route.get("ipos-get-product", "IPosController.iPosGetProduct")
@@ -260,6 +255,10 @@ Route.group(() => {
     Route.post("requestEinvoiceInfo", "WeTaxController.requestEinvoiceInfo");
     Route.post("iposSysnc", "WeTaxController.iposSysnc");
 }).prefix("api/wtx/pa/v1/pos").middleware("user");
+
+Route.group(() => {
+    Route.post("sysnc", "WeTaxController.iposSysnc");
+}).prefix("api/wtx/pa/v1/ipos").middleware("user");
 // Frontend
 
 Route.any("*", "NuxtController.render");

@@ -3,7 +3,6 @@ const Utils = use("Utils");
 const DBService = use("DBService");
 
 class WeTaxController {
-
   async iposSysnc({ request, response, auth }) {
     try {
       var p_language = request.header("accept-language", "ENG");
@@ -15,51 +14,84 @@ class WeTaxController {
 
       const { data } = request.all();
 
-      if (!data?.length) {
-        return response
-          .status(400)
-          .json(
-            Utils.weTaxResponse({ code: 400, message: "Invalid: parameter" })
-          );
+      const paramsMst = {
+        bill_no: data.sale.sale_id,
+        sale_dt: data.sale.tran_date,
+        tot_amt: data.amount_org,
+        tot_aft_dc_amt: data.amount,
+        tot_dc_amt: data.amount_discount_extra,
+        svc_amt: data.amount_service_charge,
+        tot_vat_amt: data.amount_vat,
+        company_id: data.company_id,
+        shop_cd: data.sale.store_id,
+        shop_name: data.sale.store_name,
+      };
+      const resMst = await DBService.ExecuteSQLBlob(
+        `BEGIN WETAX_PRO_IPOS_SYNC_SALE(
+                                        :bill_no,
+                                        :sale_dt,
+                                        :tot_amt,
+                                        :tot_aft_dc_amt,
+                                        :tot_dc_amt,
+                                        :svc_amt,
+                                        :tot_vat_amt,
+                                        :company_id,
+                                        :shop_cd,
+                                        :shop_name,
+                                        :p_language, 
+                                        :p_crt_by, 
+                                        :p_rtn_cur); 
+                                        END;`,
+        paramsMst,
+        p_language,
+        p_crt_by
+      );
+
+      const mstPk = resMst.p_rtn_cur[0].PK;
+
+      for (let i = 0; i < data.sale_detail.length; i++) {
+        const element = data.sale_detail[i];
+        const paramsDtl = {
+          mst_pk: mstPk,
+          vat_rate: element.tax,
+          amt: element.amount,
+          prod_cd: element.item_id,
+          sale_qty: element.quantity,
+          unit_prc: element.price_org,
+          sale_prc: element.price_sale,
+          vat_amt: element.tax_amount,
+          prod_nm: element.description,
+          pos_sale_dtl_id: element.sale_detail_id,
+          svc_amt: '',
+          dc_amt: element.distribute_discount_extra2,
+          sale_dt: element.sale_date,
+        }
+        // ko can await
+        DBService.ExecuteSQLBlob(
+          `BEGIN WETAX_PRO_IPOS_SYNC_SALE_DTL(
+                                        :mst_pk,
+                                        :vat_rate,
+                                        :amt,
+                                        :prod_cd,
+                                        :sale_qty,
+                                        :unit_prc,
+                                        :sale_prc,
+                                        :vat_amt,
+                                        :prod_nm,
+                                        :pos_sale_dtl_id,
+                                        :svc_amt,
+                                        :dc_amt,
+                                        :sale_dt,
+                                        :p_language, 
+                                        :p_crt_by, 
+                                        :p_rtn_cur); 
+                                        END;`,
+          paramsDtl,
+          p_language,
+          p_crt_by
+        );
       }
 
-      for (let i = 0; i < data.length; i++) {
-        // const params = {
-        //   ref_id: bills[i].ref_id,
-        //   tax_id: bills[i].tax_id,
-        //   tax_company_name: bills[i].tax_company_name,
-        //   tax_address: bills[i].tax_address,
-        //   tax_buyer_name: bills[i].tax_buyer_name,
-        //   receiver_email: bills[i].receiver_email,
-        //   receiver_email_cc: bills[i].receiver_email_cc,
-        //   order_date: bills[i].order_date,
-        //   store_code: bills[i].store_code,
-        //   pos_number: bills[i].pos_number,
-        //   order_id: bills[i].order_id,
-        // };
-
-        // const res = await DBService.ExecuteSQLBlob(
-        //   `BEGIN WETAX_PRO_IPOS_SYNC_SALE(
-        //                                 :ref_id,
-        //                                 :tax_id,
-        //                                 :tax_company_name,
-        //                                 :tax_address,
-        //                                 :tax_buyer_name,
-        //                                 :receiver_email,
-        //                                 :receiver_email_cc,
-        //                                 :order_date,
-        //                                 :store_code,
-        //                                 :pos_number,
-        //                                 :order_id,
-        //                                 :p_language, 
-        //                                 :p_crt_by, 
-        //                                 :p_rtn_cur); 
-        //                                 END;`,
-        //   params,
-        //   p_language,
-        //   p_crt_by
-        // );
-      }
 
       return response
         .status(200)

@@ -121,9 +121,9 @@ class HSMController2 {
         p_crt_by = user.USER_ID;
       }
 
-      const {user_name, password, serial_no, pin, organization} = request.all();
+      const {user_name, password,otp, serial_no, pin, organization, signing_xml} = request.all();
 
-      if (!user_name || !password || !pin || !organization || !serial_no) {
+      if (!user_name || !password || !pin || !organization || !serial_no || !signing_xml) {
         return response.status(400).json(
           Utils.responseByRule({
             success: false,
@@ -136,7 +136,7 @@ class HSMController2 {
       switch (organization) {
         case 'easysign':
           const res = await Request.post(EINVOICE_ESIGN_XML, {
-            xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization}),
+            xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization,otp, signing_xml}),
           });
           data = res.data.d;
           break;

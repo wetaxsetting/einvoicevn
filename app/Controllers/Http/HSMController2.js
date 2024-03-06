@@ -6,10 +6,10 @@ const axios = require('axios');
 const EINVOICE_ESIGN_XML = 'http://genuclouding.com/wseinvoice/BSService.asmx/SignXml';
 
 class HSMController2 {
-  async loginEasysign({username, password, rememberMe = false}) {
+  async loginEasysign({user_name, password, rememberMe = false}) {
     try {
       const res = await axios.post(easysignUrl + '/authenticate', {
-        username,
+        username: user_name,
         password,
         rememberMe,
       });
@@ -29,20 +29,20 @@ class HSMController2 {
         p_crt_by = user.USER_ID;
       }
 
-      const {username, password} = request.all();
+      const {user_name, password} = request.all();
 
-      const token = await loginEasysign({username, password});
+      const token = await this.loginEasysign({user_name, password});
 
       if (!token) {
         return response.status(404).json(
           Utils.responseByRule({
             success: false,
-            message: 'username or password invalid.',
+            message: 'user_name or password invalid.',
           }),
         );
       }
 
-      const res = await Request.get(easysignUrl + `/certificate/ownerId/${username}`, {
+      const res = await Request.get(easysignUrl + `/certificate/ownerId/${user_name}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -55,7 +55,7 @@ class HSMController2 {
           data: res,
         }),
       );
-    } catch (err) {
+    } catch (e) {
       Utils.Logger({
         LVL: 'error',
         MODULE: 'HSMController',
@@ -75,20 +75,20 @@ class HSMController2 {
         p_crt_by = user.USER_ID;
       }
 
-      const {username, password, serial, pin} = request.all();
+      const {user_name, password, serial_no, pin} = request.all();
 
-      const token = await loginEasysign({username, password});
+      const token = await this.loginEasysign({user_name, password});
 
       if (!token) {
         return response.status(404).json(
           Utils.responseByRule({
             success: false,
-            message: 'username or password invalid.',
+            message: 'user_name or password invalid.',
           }),
         );
       }
 
-      const res = await Request.get(easysignUrl + `/certificate/getQRCodeOTP?serial=${serial}&pin=${pin}`, {
+      const res = await Request.get(easysignUrl + `/certificate/getQRCodeOTP?serial=${serial_no}&pin=${pin}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -96,12 +96,12 @@ class HSMController2 {
 
       return response.status(200).json(
         Utils.responseByRule({
-          success: true,
-          message: 'success.',
+          success: res.data.status == 0 ? true : false,
+          message: res.data.msg,
           data: res.data.data,
         }),
       );
-    } catch (err) {
+    } catch (e) {
       Utils.Logger({
         LVL: 'error',
         MODULE: 'HSMController',
@@ -121,7 +121,7 @@ class HSMController2 {
         p_crt_by = user.USER_ID;
       }
 
-      const {user_name, password,otp, serial_no, pin, organization, signing_xml} = request.all();
+      const {user_name, password, otp, serial_no, pin, organization, signing_xml} = request.all();
 
       if (!user_name || !password || !pin || !organization || !serial_no || !signing_xml) {
         return response.status(400).json(
@@ -136,7 +136,7 @@ class HSMController2 {
       switch (organization) {
         case 'easysign':
           const res = await Request.post(EINVOICE_ESIGN_XML, {
-            xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization,otp, signing_xml}),
+            xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml}),
           });
           data = res.data.d;
           break;
@@ -149,8 +149,6 @@ class HSMController2 {
           );
       }
 
-      console.log(JSON.stringify({user_name, password, serial_no, pin, organization}));
-
       return response.status(200).json(
         Utils.responseByRule({
           success: true,
@@ -158,7 +156,7 @@ class HSMController2 {
           data: JSON.parse(data),
         }),
       );
-    } catch (err) {
+    } catch (e) {
       Utils.Logger({
         LVL: 'error',
         MODULE: 'HSMController',

@@ -248,7 +248,7 @@ class IPosController {
             for (const invoice of res_get.data.data)
             {
               const para_value = {
-                p_id						 :  invoice.id || '', 
+                p_id						             :  invoice.id || '', 
                 p_created_at                 :  invoice.created_at || '', 
                 p_updated_at                 :  invoice.updated_at || '', 
                 p_deleted                    :  invoice.deleted || '', 

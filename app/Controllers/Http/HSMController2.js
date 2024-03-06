@@ -32,7 +32,7 @@ class HSMController2 {
       const {user_name, password} = request.all();
 
       const token = await this.loginEasysign({user_name, password});
-
+      console.log(token);
       if (!token) {
         return response.status(404).json(
           Utils.responseByRule({
@@ -42,24 +42,27 @@ class HSMController2 {
         );
       }
 
+
+
       const res = await Request.get(easysignUrl + `/certificate/ownerId/${user_name}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+      // console.log(res);
 
       return response.status(200).json(
         Utils.responseByRule({
           success: true,
           message: 'success.',
-          data: res,
+          data: res.data,
         }),
       );
     } catch (e) {
       Utils.Logger({
         LVL: 'error',
         MODULE: 'HSMController',
-        FUNC: 'HsmSignXml',
+        FUNC: 'getCertificatesIPOS',
         CONTENT: e.message,
       });
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));

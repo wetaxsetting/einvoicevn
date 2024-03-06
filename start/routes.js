@@ -135,7 +135,7 @@ Route.group(() => {
     Route.post("sendinformadjustinvoicefromclient", "EInvoiceController.sendInformAdjustToTaxOfficeFromClient")
     Route.post("checkinformadjustinvoice", "EInvoiceController.checkInformAdjustToTaxOffice")
     Route.post("checkinformadjustinvoicefromclient", "EInvoiceController.checkInformAdjustToTaxOfficeFromClient")
-    Route.post("hsm-sign", "EInvoiceController.HsmSign")
+    
     Route.post("hsm-generate-qr", "EInvoiceController.HSMGeneralQRCode")
     Route.post("checkingstatuseinvoice", "EInvoiceController.checkingStatusEInvoice")
     Route.get("downloadxml", "EInvoiceController.DownloadXML")
@@ -214,7 +214,14 @@ Route.group(() => {
     //iPOS
     Route.post("hsm-generate-qr", "HSMController.HSMGeneralQRCode")
     Route.post("hsm-sign-pdf", "HSMController.signPdf")
+
+    Route.post("hsm-sign-xml", "HSMController2.HsmSignXml")
 }).prefix("api/hsm").middleware("user");
+
+Route.group(() => {
+    Route.post("get-certificates", "HSMController2.getCertificatesIPOS")
+    Route.post("get-qr-2fa", "HSMController2.getQr2Fa")
+}).prefix("api/hsm/ipos").middleware("user");
 
 Route.group(() => {
     // WeTax

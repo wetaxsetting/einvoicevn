@@ -63,7 +63,7 @@ const { Builder, parseString } = require("xml2js");
 const { X509Certificate, crypto } = require("crypto");
 const { create, createCB } = require("xmlbuilder2");
 const { log, Console } = require("console");
-const EINVOICE_ESIGN_XML = "http://genuclouding.com/wseinvoice/BSService.asmx/SignXml";
+
 const EINVOICE_API_SEND_MAIL = "http://sendmail.genuwinsolution.com/api/user/sendmail";
 const moment = require('moment');
 const { jar } = require("request");
@@ -5283,55 +5283,6 @@ class EInvoiceController {
       return response.send(pdf_url);
     } catch (e) {
       return response.send(Utils.response(false, e.message, null));
-    }
-  }
-
-  async HsmSign({ request, response, auth }) {
-    try {
-      var p_language = request.header("accept-language", "ENG");
-      var p_crt_by = "";
-      const user = await auth.getUser();
-      if (user) {
-        p_crt_by = user.USER_ID;
-      }
-
-      const { para } = request.all();
-
-      if(!para.user_name){
-        return response.status(400).json(Utils.responseByRule({success : false, message : "Invalid: user_name"} ))
-      }
-      if(!para.password){
-        return response.status(400).json(Utils.responseByRule({success : false, message : "Invalid: password"} ))
-      }
-      if(!para.serial_no){
-        return response.status(400).json(Utils.responseByRule({success : false, message : "Invalid: serial_no"} ))
-      }
-      if(!para.pin){
-        return response.status(400).json(Utils.responseByRule({success : false, message : "Invalid: pin"} ))
-      }
-
-      let data;
-      switch (para.organization) {
-        case "easysign":
-          const res = await Request.post(EINVOICE_ESIGN_XML, { xmlContent: JSON.stringify(para) });
-          data = res.data.d;
-          break;
-        default:
-          return response.status(404).json(Utils.responseByRule({success : false, message : "not found organization."} ))
-      }
-
-    //  console.log(res.data.d);
-    // const json = JSON.parse(res.data.d);
-
-      return response.status(200).json(Utils.responseByRule({success : true, message : "success.", data: JSON.parse(data)} ))
-    } catch (err) {
-      Utils.Logger({
-        LVL: "error",
-        MODULE: "EInvoiceController",
-        FUNC: "HsmSign",
-        CONTENT: e.message,
-      });
-      return response.status(409).json(Utils.responseByRule({success : false, message : e.message}));
     }
   }
 

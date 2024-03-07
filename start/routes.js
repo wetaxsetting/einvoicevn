@@ -221,7 +221,7 @@ Route.group(() => {
 Route.group(() => {
     Route.post("get-certificates", "HSMController2.getCertificatesIPOS")
     Route.post("get-qr-2fa", "HSMController2.getQr2Fa")
-}).prefix("api/hsm/ipos").middleware("user");
+}).prefix("api/hsm/softdream").middleware("user");
 
 Route.group(() => {
     // WeTax

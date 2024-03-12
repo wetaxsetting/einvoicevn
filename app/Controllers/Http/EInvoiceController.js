@@ -8634,7 +8634,7 @@ class EInvoiceController {
       const urlCheck = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
       const { invoices } = request.all();
 
-      //console.log("weTaxSendInvoiceToTaxOffice  BEGIN ================================= ");
+      console.log("weTaxSendInvoiceToTaxOffice  BEGIN ================================= ");
       //console.log("weTaxSendInvoiceToTaxOffice  invoices  ",invoices);
       const agent = {
         Agent: {
@@ -8856,8 +8856,8 @@ class EInvoiceController {
           });
       
       }
-      //console.log("weTaxSendInvoiceToTaxOffice  rtnValue", rtnValue);
-      //console.log("weTaxSendInvoiceToTaxOffice  END ================================= ");
+      console.log("weTaxSendInvoiceToTaxOffice  rtnValue", rtnValue);
+      console.log("weTaxSendInvoiceToTaxOffice  END ================================= ");
 
       // rtnValueTradecode.push({
       //   req_key: invoices[i].req_key,

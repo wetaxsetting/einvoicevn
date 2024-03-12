@@ -8703,7 +8703,7 @@ class EInvoiceController {
               req_ep_key : masterInvoicePK.PK,
               trade_code : trade_code.data.maGDich
         };
-        //console.log("para_trade_code  ", para_trade_code);
+        console.log("weTaxSendInvoiceToTaxOffice para_trade_code  ", para_trade_code);
 
         const data_r_tradecode =  await DBService.ExecuteSQLBlob(
                   `BEGIN WT_UPD_TEI_INV_TRADECODE(

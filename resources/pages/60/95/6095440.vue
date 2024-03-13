@@ -940,7 +940,7 @@ export default {
             if (resAPI.success) {
                 let resDB = await this.$axios.$post("/dso/apiproclob", {
                     responseType: "json",
-                    proc: "AC_SEL_6095080_u_7",
+                    proc: "EI_SEL_6095080_U_7",
                     para: [
                         resAPI.data[0].erp_declaration_m_pk,
                         resAPI.data[0].trade_code,

@@ -27,7 +27,7 @@
                 :header="headerGrid"
                 :onCellPrepared="onCellPrepared"
                 @cellClick="grdSearchClick"
-                sel_procedure="AC_SEL_6095010_LIST_COMPANY_NC"
+                sel_procedure="EI_SEL_6095010_LIST_COMP_NC"
                 upd_procedure=""
                 :filter_paras="[this.txtCompanyName, this.blUseYN, this.user.PK]"
                 :update_paras="[]"
@@ -145,8 +145,8 @@
                   <BaseGridView
                     ref="grdDetail"
                     :header="grdDetail"
-                    sel_procedure="AC_SEL_6095010_01_NC"
-                    upd_procedure="AC_UPD_6095010_02"
+                    sel_procedure="EI_SEL_6095010_01_NC"
+                    upd_procedure="EI_UPD_6095010_02"
                     :headertype="1"
                     :filter_paras="[this.MasterInfo.PK]"
                     :update_paras="['PK', 'TEI_COMPANY_PK', 'CA_NAME', 'DN_NAME', 'DN_MST', 'SERIAL_NUMBER', 'NOTAFTER', 'NOTBEFORE', 'TOKEN_TYPE', 'STATUS', 'D_CERTIFICATE_TYPE', 'USERNAME', 'PASSWORD', 'PIN']"
@@ -187,7 +187,7 @@ export default {
     txtFileName: "",
     table_name: "TEI_COMPANY",
     folder: "6095010",
-    procedure_upload: "AC_UPD_6095010_IMG_v2",
+    procedure_upload: "EI_UPD_6095010_IMG_v2",
 
     imp_MultipleTemp: true,
     cboTemplate: [],
@@ -538,8 +538,8 @@ export default {
       await this._dsoCall(
         {
           type: "control",
-          selpro: "AC_SEL_6095010_M_NC",
-          updpro: "AC_UPD_6095010_COMPANY",
+          selpro: "EI_SEL_6095010_M_NC",
+          updpro: "EI_UPD_6095010_COMPANY",
           para: [this.MasterInfo.PK],
           elname: [
             "_rowstatus",
@@ -731,7 +731,6 @@ export default {
 
     async onSuccessGetDetailDeclaration(data) {
       let obj_token = $.parseJSON(data);
-      //console.log("file: 6095010.vue:706 [vng-304] onSuccessGetDetailDeclaration [vng-304] obj_token:", obj_token)
       this.$refs.grdDetail.addRowStruct({
         _rowstatus: "i",
         NO: this.$refs.grdDetail.getDataSource().length + 1,
@@ -846,7 +845,7 @@ export default {
         ];
         const fd = new FormData();
         fd.append("file", this.txtFileName);
-        fd.append("proc", "AC_UPD_6095010_IMG");
+        fd.append("proc", "EI_UPD_6095010_IMG");
         fd.append("folder", "6095010"); //
         fd.append("para", JSON.stringify(params));
 

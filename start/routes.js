@@ -220,7 +220,7 @@ Route.group(() => {
 
 Route.group(() => {
     Route.post("get-certificates", "HSMController2.getCertificatesIPOS")
-    Route.post("verify-pin", "HSMController2.verifyPin")
+    Route.post("verify-certificate", "HSMController2.verifyCertificate")
     Route.post("get-qr-2fa", "HSMController2.getQr2Fa")
 }).prefix("api/hsm/softdream").middleware("user");
 

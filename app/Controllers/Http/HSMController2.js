@@ -6,7 +6,7 @@ const axios = require('axios');
 const EINVOICE_ESIGN_XML = 'http://genuclouding.com/wseinvoice/BSService.asmx/SignXml';
 
 class HSMController2 {
-  async verifyPin({request, response, auth}) {
+  async verifyCertificate({request, response, auth}) {
     try {
       var p_language = request.header('accept-language', 'ENG');
       var p_crt_by = '';
@@ -44,7 +44,7 @@ class HSMController2 {
       Utils.Logger({
         LVL: 'error',
         MODULE: 'HSMController',
-        FUNC: 'verifyPin',
+        FUNC: 'verifyCertificate',
         CONTENT: e.message,
       });
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));

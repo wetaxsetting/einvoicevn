@@ -1,11 +1,56 @@
 'use strict';
 const Utils = use('Utils');
 const Request = use('Request');
-const easysignUrl = 'http://demosign.easyca.vn:8080/api'; //https://sign.easyca.vn
+const easysignUrl = 'http://demosign.easyca.vn:8080/api'; //https://sign.easyca.vn 540110c7d6d61b8f6474f5b993d3b979  12345678
 const axios = require('axios');
 const EINVOICE_ESIGN_XML = 'http://genuclouding.com/wseinvoice/BSService.asmx/SignXml';
 
 class HSMController2 {
+  async verifyCertificate({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const {user_name, password, pin, serial_no} = request.all();
+      const token = await this.loginEasysign({user_name, password});
+      // console.log(token);
+      if (!token) {
+        return response.status(404).json(
+          Utils.responseByRule({
+            success: false,
+            message: 'user_name or password invalid.',
+          }),
+        );
+      }
+
+      const res = await Request.get(easysignUrl + `/certificate/get?serial=${serial_no}&pin=${pin}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return response.status(200).json(
+        Utils.responseByRule({
+          success: res.data.status == 0 ? true : false,
+          // message: res.data.msg,
+          message: res.data.status == 0 ? 'Verify success' : 'Verify failed',
+          data: res.data.data,
+        }),
+      );
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'HSMController',
+        FUNC: 'verifyCertificate',
+        CONTENT: e.message,
+      });
+      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+    }
+  }
+
   async loginEasysign({user_name, password, rememberMe = false}) {
     try {
       const res = await axios.post(easysignUrl + '/authenticate', {

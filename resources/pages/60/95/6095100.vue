@@ -55,7 +55,7 @@
           this.selected_trading_type,
           this.selected_status,
           this.selected_send_limit,
-        ]" :height="gridHeight" @cellClick="onCellClick" upd_procedure="EI_UPD_6095100" :editable="true" :update_paras="[
+        ]" :height="gridHeight" @cellClick="onCellClick" upd_procedure="EI_UPD_6095100_MAIL" :editable="true" :update_paras="[
   this.PK_list,
   this.selected_company,
   this.count_send,
@@ -355,7 +355,7 @@ export default {
           this.count_send_error = 0;
           this.onBuildMail();
         } else {
-          let count = await this._callProcedure("EI_UPD_6095100", [
+          let count = await this._callProcedure("EI_UPD_6095100_MAIL", [
             this.PK_list,
             this.selected_company,
             this.count_send,
@@ -371,7 +371,7 @@ export default {
         }
       } else {
 
-        let count = await this._callProcedure("EI_UPD_6095100", [this.PK_list, this.selected_company, this.count_send, this.Email_Address_list, this.Email_Address_cc_list]);
+        let count = await this._callProcedure("EI_UPD_6095100_MAIL", [this.PK_list, this.selected_company, this.count_send, this.Email_Address_list, this.Email_Address_cc_list]);
         //console.log(count)
         if (Object.values(count[0]) == 'SENT FINISHED.') {
           this.$refs.grdSendMail.loadData();
@@ -381,7 +381,7 @@ export default {
       }
     },
     async OnErrorCallBuildMail(response) {
-      let count = await this._callProcedure("EI_UPD_6095100", [
+      let count = await this._callProcedure("EI_UPD_6095100_MAIL", [
         this.PK_list,
         this.selected_company,
         this.count_send,

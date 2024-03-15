@@ -83,7 +83,7 @@
 
   <v-row no-gutters align="center" justify="start" class="pt-3">
     <v-col cols="12">
-      <BaseGridView column-resizing-mode="widget" ref="gridview" :auto_load="false" select_mode="Single" :max_height="limitHeight" :header="this.headerGrid" sel_procedure="AC_SEL_6095170_1" :filter_paras="[
+      <BaseGridView column-resizing-mode="widget" ref="gridview" :auto_load="false" select_mode="Single" :max_height="limitHeight" :header="this.headerGrid" sel_procedure="EI_SEL_6095170_1_NC" :filter_paras="[
             this.fromDate,
             this.toDate,
             this.lstForm,
@@ -327,7 +327,7 @@ export default {
         case "company":
           const dso_company_list = {
             type: "list",
-            selpro: "AC_SEL_6095170_COM",
+            selpro: "EI_SEL_6095170_COM",
             para: [this.user.PK],
           };
           this.companyList = await this._dsoCall(
@@ -342,7 +342,7 @@ export default {
         case "form_no":
           const dso_form_list = {
             type: "list",
-            selpro: "AC_SEL_6095170_FORM_NO",
+            selpro: "EI_SEL_6095170_FORM_NO",
             para: [this.company, this.fromDate, this.toDate],
           };
           this.formList = await this._dsoCall(dso_form_list, "select", false);
@@ -354,7 +354,7 @@ export default {
         case "serial_no":
           const dso_serial_list = {
             type: "list",
-            selpro: "AC_SEL_6095170_SERIAL_NO",
+            selpro: "EI_SEL_6095170_SERIAL_NO",
             para: [this.company, this.lstForm],
           };
           this.serialList = await this._dsoCall(
@@ -377,7 +377,7 @@ export default {
           insertRange: [
             {
                range: "A1:Q7",
-                    proc: "AC_RPT_6095170_1",
+                    proc: "EI_RPT_6095170_1",
                     params: [
                       this.fromDate,
                       this.toDate,
@@ -391,7 +391,7 @@ export default {
            insertRows: [{
                   sequence: "break",
                   startRow: 11,
-                  proc: "AC_RPT_6095170_2",
+                  proc: "EI_RPT_6095170_2",
                   params: [
                     this.fromDate,
                     this.toDate,

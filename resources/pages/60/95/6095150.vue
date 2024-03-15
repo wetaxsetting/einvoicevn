@@ -624,7 +624,7 @@ export default {
             {
               sequence: "break",
               startRow: 4,
-              proc: "AC_RPT_6095150",
+              proc: "EI_RPT_6095150",
               params: [
                 this.selected_company,
                 this.selected_type_date,

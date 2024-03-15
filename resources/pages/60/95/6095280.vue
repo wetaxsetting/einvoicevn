@@ -32,7 +32,7 @@
               <BaseGridView
                 ref="grdSearch"
                 :header="headerList.grdSearch"
-                sel_procedure="AC_SEL_6095280_S_04"
+                sel_procedure="EI_SEL_6095280_S_04_NC"
                 selectionmode="singlerow"
                 :multiselect="true"
                 :height="limitHeight"
@@ -160,8 +160,8 @@
                   <BaseGridView
                     ref="grdDetail"
                     :header="headerList.grdDetail"
-                    sel_procedure="AC_SEL_6095280_6"
-                    upd_procedure="AC_UP_6095280_7"
+                    sel_procedure="EI_SEL_6095280_6"
+                    upd_procedure="EI_UP_6095280_7"
                     :multiselect="true"
                     :headertype="1"
                     selectionmode="singlecell"
@@ -238,7 +238,7 @@
                 :selectionmode="'checkbox'"
                 :headertype="1"
                 :height="limitHeightGridDetails"
-                sel_procedure="AC_SEL_6095280_DATA_POPUP"
+                sel_procedure="EI_SEL_6095280_DATA_POPUP"
                 :filter_paras="[this.modelSearch.COMPANY_PK, this.form_no_pop, this.selected_serial_no, this.invoice_no_pop, this.form_date, this.form_to]"
               />
             </v-col>
@@ -726,8 +726,8 @@ export default {
       await this._dsoCall(
         {
           type: "control",
-          selpro: "AC_SEL_6095280_2",
-          updpro: "AC_UPD_6095280_3",
+          selpro: "EI_SEL_6095280_2_NC",
+          updpro: "EI_UPD_6095280_3",
           para: [this.modelMaster.PK],
           elname: [
             "_rowstatus",
@@ -1045,7 +1045,7 @@ export default {
     },
 
     async initDataList() {
-      const company = await this._callProcedure("AC_SEL_6095280_COMPANY", [this.user.PK]);
+      const company = await this._callProcedure("EI_SEL_6095280_COMPANY", [this.user.PK]);
       if (company.length > 0) {
         this.dataSearchList.companyList = company;
         this.dataMasterList.companyList = company;
@@ -1053,12 +1053,12 @@ export default {
         this.modelSearch.COMPANY_PK = this.dataSearchList.companyList[0].CODE;
       }
 
-      const companyInfo = await this._callProcedure("AC_SEL_6095280_COMPANYINFO");
+      const companyInfo = await this._callProcedure("EI_SEL_6095280_COMPANYINFO");
       if (companyInfo.length > 0) {
         this.dataMasterList.companyInfoList = companyInfo;
       }
 
-      const taxInfo = await this._callProcedure("AC_SEL_6095460_TAXOF");
+      const taxInfo = await this._callProcedure("EI_SEL_6095460_TAXOF");
         if (taxInfo.length > 0) {
           this.dataMasterList.taxOfficeList = taxInfo;
         }
@@ -1100,7 +1100,7 @@ export default {
         case "form_no":
           const dso_form_list = {
             type: "list",
-            selpro: "AC_SEL_6095280_FORM_NO",
+            selpro: "EI_SEL_6095280_FORM_NO",
             para: [this.modelSearch.COMPANY_PK, this.form_date, this.form_to],
           };
           const checkFormNo = await this._dsoCall(dso_form_list, "select", false);
@@ -1114,7 +1114,7 @@ export default {
         case "serial_no":
           const dso_serial_no_list = {
             type: "list",
-            selpro: "AC_SEL_6095280_SERIAL_NO",
+            selpro: "EI_SEL_6095280_SERIAL_NO",
             para: [this.modelSearch.COMPANY_PK, this.form_no_pop, this.form_date, this.form_to],
           };
           const checkSerialNo = await this._dsoCall(dso_serial_no_list, "select", false);
@@ -1338,7 +1338,7 @@ export default {
           insertRange: [
             {
               range: "A1:I17",
-              proc: "AC_RPT_6095280_M",
+              proc: "EI_RPT_6095280_M",
               params: [
                 this.modelMaster.PK,
                 this.modelSearch.COMPANY_PK,
@@ -1355,7 +1355,7 @@ export default {
             {
               sequence: "break",
               startRow: 13,
-              proc: "AC_RPT_6095280_D",
+              proc: "EI_RPT_6095280_D",
               params: [this.modelMaster.PK],
               dateColumns: ["NGAY"],
             },

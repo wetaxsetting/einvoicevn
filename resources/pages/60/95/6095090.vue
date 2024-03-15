@@ -931,7 +931,7 @@ export default {
         case "form_no":
           const dso_form_list = {
             type: "list",
-            selpro: "AC_SEL_6095090_FORM_NO",
+            selpro: "EI_SEL_6095090_FORM_NO",
             para: [this.selected_company, this.dt_from, this.dt_to],
           };
           const checkFormNo = await this._dsoCall(dso_form_list, "select", false);
@@ -945,7 +945,7 @@ export default {
         case "serial_no":
           const dso_serial_no_list = {
             type: "list",
-            selpro: "AC_SEL_6095090_SERIAL_NO",
+            selpro: "EI_SEL_6095090_SERIAL_NO",
             para: [this.selected_company, this.selected_form_no, this.dt_from, this.dt_to],
           };
           const checkSerialNo = await this._dsoCall(dso_serial_no_list, "select", false);

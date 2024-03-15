@@ -133,7 +133,7 @@
               :max_height="limitHeight"
               :header="headerGrid"
               @cellClick="getCellInfo"
-              sel_procedure="AC_SEL_6095210_View"
+              sel_procedure="EI_SEL_6095210_View"
               :filter_paras="[
                 this.transDateFrom,
                 this.transDateTo,

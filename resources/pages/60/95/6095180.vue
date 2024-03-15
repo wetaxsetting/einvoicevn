@@ -41,7 +41,7 @@
     <v-row no-gutters align="center" justify="start" class="mb-2">
       <v-col cols="12">
         <BaseGridView ref="gridview" select_mode="Single" :maxheight="limitHeight" column-resizing-mode="widget"
-          sel_procedure="AC_SEL_6095180_S_01_NOCACHE" :editable="false" :header="this.headerQQ" :filter_paras="[
+          sel_procedure="EI_SEL_6095180_S_01_NC" :editable="false" :header="this.headerQQ" :filter_paras="[
             this.from_date,
             this.to_date,
             this.form_no,
@@ -147,7 +147,7 @@ export default {
         case "form_no":
           const dso_form_no_list = {
             type: "list",
-            selpro: "AC_SEL_6095180_05_FORM_NO",
+            selpro: "EI_SEL_6095180_05_FORM_NO",
             para: [this.company, this.from_date, this.to_date, this.form_no],
           };
 
@@ -159,7 +159,7 @@ export default {
         case "serial_no":
           const dso_serial_no_list = {
             type: "list",
-            selpro: "AC_SEL_6095180_6_SERIAL_NO",
+            selpro: "EI_SEL_6095180_6_SERIAL_NO",
             para: [
               this.company,
               this.form_no,
@@ -224,7 +224,7 @@ export default {
           insertRange: [
             {
               range: "A1:Q7",
-              proc: "AC_RPT_6095180_M",
+              proc: "EI_RPT_6095180_M",
               params: [
                 this.from_date,
                 this.to_date,
@@ -239,7 +239,7 @@ export default {
             {
               sequence: "break",
               startRow: 11,
-              proc: "AC_RPT_6095180",
+              proc: "EI_RPT_6095180",
               params: [
                 this.from_date,
                 this.to_date,

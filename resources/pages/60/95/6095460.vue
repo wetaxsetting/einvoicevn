@@ -33,7 +33,7 @@
                 <BaseGridView
                   ref="grdSearch"
                   :header="headerList.grdSearch"
-                  sel_procedure="AC_SEL_6095460_WT_01"
+                  sel_procedure="EI_SEL_6095460_WT_01"
                   selectionmode="singlerow"
                   :multiselect="true"
                   :height="limitHeight"
@@ -161,8 +161,8 @@
                     <BaseGridView
                       ref="grdDetail"
                       :header="headerList.grdDetail"
-                      sel_procedure="AC_SEL_6095460_WT_6"
-                      upd_procedure="AC_UPD_6095460_WT_7"
+                      sel_procedure="EI_SEL_6095460_WT_6"
+                      upd_procedure="EI_UPD_6095460_WT_7"
                       :multiselect="true"
                       :headertype="1"
                       selectionmode="singlecell"
@@ -238,7 +238,7 @@
                   :selectionmode="'checkbox'"
                   :headertype="1"
                   :height="limitHeightGridDetails"
-                  sel_procedure="AC_SEL_6095460_WT_DATA_POPUP"
+                  sel_procedure="EI_SEL_6095460_WT_DATA_POPUP"
                   :filter_paras="[this.modelSearch.COMPANY_PK, this.form_no_pop, this.selected_serial_no, this.invoice_no_pop, this.form_date, this.form_to]"
                 />
               </v-col>
@@ -722,8 +722,8 @@
         await this._dsoCall(
           {
             type: "control",
-            selpro: "AC_SEL_6095280_WT_02",
-            updpro: "AC_UPD_6095460_WT_03",
+            selpro: "EI_SEL_6095280_WT_02",
+            updpro: "EI_UPD_6095460_WT_03",
             para: [this.modelMaster.PK],
             elname: [
               "_rowstatus",
@@ -1018,7 +1018,7 @@
       },
   
       async initDataList() {
-        const company = await this._callProcedure("AC_SEL_6095460_COMPANY", [this.user.PK]);
+        const company = await this._callProcedure("EI_SEL_6095460_COMPANY", [this.user.PK]);
         if (company.length > 0) {
           this.dataSearchList.companyList = company;
           this.dataMasterList.companyList = company;
@@ -1026,12 +1026,12 @@
           this.modelSearch.COMPANY_PK = this.dataSearchList.companyList[0].CODE;
         }
   
-        const companyInfo = await this._callProcedure("AC_SEL_6095280_COMPANYINFO");
+        const companyInfo = await this._callProcedure("EI_SEL_6095280_COMPANYINFO");
         if (companyInfo.length > 0) {
           this.dataMasterList.companyInfoList = companyInfo;
         }
   
-        const taxInfo = await this._callProcedure("AC_SEL_6095460_TAXOF");
+        const taxInfo = await this._callProcedure("EI_SEL_6095460_TAXOF");
         if (taxInfo.length > 0) {
           this.dataMasterList.taxOfficeList = taxInfo;
         }
@@ -1074,7 +1074,7 @@
           case "form_no":
             const dso_form_list = {
               type: "list",
-              selpro: "AC_SEL_6095460_FORM_NO",
+              selpro: "EI_SEL_6095460_FORM_NO",
               para: [this.modelSearch.COMPANY_PK, this.form_date, this.form_to],
             };
             const checkFormNo = await this._dsoCall(dso_form_list, "select", false);
@@ -1088,7 +1088,7 @@
           case "serial_no":
             const dso_serial_no_list = {
               type: "list",
-              selpro: "AC_SEL_6095460_SERIAL_NO",
+              selpro: "EI_SEL_6095460_SERIAL_NO",
               para: [this.modelSearch.COMPANY_PK, this.form_no_pop, this.form_date, this.form_to],
             };
             const checkSerialNo = await this._dsoCall(dso_serial_no_list, "select", false);
@@ -1324,7 +1324,7 @@
             insertRange: [
               {
                 range: "A1:I17",
-                proc: "AC_RPT_6095460_M",
+                proc: "EI_RPT_6095460_M",
                 params: [
                   this.modelMaster.PK,
                   this.modelSearch.COMPANY_PK,
@@ -1341,7 +1341,7 @@
               {
                 sequence: "break",
                 startRow: 13,
-                proc: "AC_RPT_6095460_D",
+                proc: "EI_RPT_6095460_D",
                 params: [this.modelMaster.PK],
                 dateColumns: ["NGAY"],
               },

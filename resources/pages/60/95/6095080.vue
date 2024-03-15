@@ -23,7 +23,7 @@
               <BaseGridView
                 ref="grdSearch"
                 :header="headerList.grdSearch"
-                sel_procedure="AC_SEL_6095080_04"
+                sel_procedure="EI_SEL_6095080_04"
                 selectionmode="singlerow"
                 :multiselect="true"
                 :height="limitHeight"
@@ -292,8 +292,8 @@
               <BaseGridView
                 ref="grdDetail"
                 :header="headerList.grdDetail"
-                sel_procedure="AC_SEL_6095080_s_05_NC"
-                upd_procedure="AC_UPD_6095080_u_06"
+                sel_procedure="EI_SEL_6095080_s_05_NC"
+                upd_procedure="EI_UPD_6095080_u_06"
                 :headertype="1"
                 :filter_paras="[this.modelMaster.PK]"
                 :height="limitHeightGridDetails"
@@ -607,7 +607,7 @@ export default {
       this.dialogTitle = this.$t("control_item");
       this.codeLabel = this.$t("serial_number");
       this.nameLabel = this.$t("ca_name");
-      this.procedure = "AC_SEL_6095080_GET_CTRLITEM";
+      this.procedure = "EI_SEL_6095080_GET_CTRLITEM";
       this.moreParas = null;
       this.autoSearch = true;
       this.multiSelectMode = false;
@@ -690,8 +690,8 @@ export default {
       await this._dsoCall(
         {
           type: "control",
-          selpro: "AC_SEL_6095080_S_02",
-          updpro: "AC_UPD_6095080_U_03",
+          selpro: "EI_SEL_6095080_S_02",
+          updpro: "EI_UPD_6095080_U_03",
           para: [this.modelMaster.PK],
           elname: [
             "_rowstatus",
@@ -1101,7 +1101,7 @@ export default {
     },
 
     async initDataList() {
-      const companyInfo = await this._callProcedure("AC_SEL_6095080_Company", [this.user.PK]);
+      const companyInfo = await this._callProcedure("EI_SEL_6095080_Company", [this.user.PK]);
       if (companyInfo.length > 0) {
         this.dataSearchList.companyList = companyInfo;
         this.dataMasterList.companyList = companyInfo;

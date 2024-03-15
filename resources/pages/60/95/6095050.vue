@@ -58,8 +58,8 @@
                   :onCellPrepared="onCellPrepared"
                   @row-updated="checkUpdatedItem"
                   @cellClick="onClickButton('SEARCH_D')"
-                  sel_procedure="AC_SEL_6095050_MASTERS_NO_CACHE"
-                  upd_procedure="AC_UPD_6095050_MASTERS" 
+                  sel_procedure="EI_SEL_6095050_MASTERS_NO_CACHE"
+                  upd_procedure="EI_UPD_6095050_MASTERS" 
                   :filter_paras="[this.lstCompany,this.transDateFrom,this.transDateTo,this.txtSerialNo,this.lstStatus]"
                   :update_paras="['PK',
                                   'TEI_TEMPLATE_PK',
@@ -107,8 +107,8 @@
                   :onCellPrepared="onCellPrepared"
                   @row-updated="checkUpdatedItem"
                   @cellClick="onClickButton('SEARCH_DD')"
-                  sel_procedure="AC_SEL_6095050_DETAILS_NO_CACHE"
-                  upd_procedure="AC_UPD_6095050_DETAILS" 
+                  sel_procedure="EI_SEL_6095050_DETAILS_NO_CACHE"
+                  upd_procedure="EI_UPD_6095050_DETAILS" 
                   :filter_paras="[this.lstCompany,this.transDateFrom,this.transDateTo,this.txtSerialNo,this.txtMastersPK]"
                   :update_paras="['PK',
                                   'TEMPLATE_CD',

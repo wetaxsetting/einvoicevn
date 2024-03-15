@@ -28,7 +28,7 @@
           :height="limitHeight"
           :headertype="1"
           @cellClick="onCellClick"
-          sel_procedure="AC_SEL_6095040_DATA"
+          sel_procedure="EI_SEL_6095040_DATA"
           :filter_paras="[this.selected_company, this.from_date, this.to_date, this.template]"
         />
       </v-col>

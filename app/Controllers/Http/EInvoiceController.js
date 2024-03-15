@@ -3382,7 +3382,7 @@ class EInvoiceController {
             xml_sign: xml_signed,
         };
         const res = await DBService.ExecuteSQLBlob(
-            `BEGIN EI_UP_NOTICE_TRADE_CODE( :req_key,
+            `BEGIN WT_UP_NOTICE_TRADE_CODE( :req_key,
                                             :trade_code, 
                                             :xml_sign,
                                             :p_language, 
@@ -3403,7 +3403,7 @@ class EInvoiceController {
                 Utils.response(
                     false,
                     `Something went wrong, please try again later.
-                    EI_UP_NOTICE_TRADE_CODE`,
+                    WT_UP_NOTICE_TRADE_CODE`,
                     para_value
                 )
             );
@@ -3530,7 +3530,7 @@ class EInvoiceController {
             xml_sign: xml_signed,
         };
         const res = await DBService.ExecuteSQLBlob(
-            `BEGIN EI_UP_NOTICE_TRADE_CODE( :req_key,
+            `BEGIN WT_UP_NOTICE_TRADE_CODE( :req_key,
                                                   :trade_code, 
                                                   :xml_sign,
                                                   :p_language, 
@@ -3552,11 +3552,11 @@ class EInvoiceController {
             //     Utils.response(
             //         false,
             //         `Something went wrong, please try again later.
-            //         EI_UP_NOTICE_TRADE_CODE`,
+            //         WT_UP_NOTICE_TRADE_CODE`,
             //         para_value
             //     )
             // );
-            return response.status(409).json(Utils.responseByRule({success : false, message : 'EI_UP_NOTICE_TRADE_CODE wrong!', data: para_value}));
+            return response.status(409).json(Utils.responseByRule({success : false, message : 'WT_UP_NOTICE_TRADE_CODE wrong!', data: para_value}));
         }
 
       } else {
@@ -6127,7 +6127,7 @@ class EInvoiceController {
         };
  
         const rtnValue = await DBService.ExecuteSQLBlob(
-          `BEGIN ei_upd_order_info (          
+          `BEGIN wt_upd_order_info (          
                                                           :sale_date,
                                                           :store_code,
                                                           :store_name,
@@ -6187,7 +6187,7 @@ class EInvoiceController {
               sub_vat_amt: invoice.total_vat_list[j].sub_vat_amt,
             };
             const rtnValue_VAT = await DBService.ExecuteSQLBlob(
-              `BEGIN ei_upd_sale_bill_vat (          
+              `BEGIN wt_upd_sale_bill_vat (          
                                                                 :tei_wt_sale_bill_pk,
                                                                 :sub_amt,
                                                                 :sub_vat_rate,
@@ -6219,7 +6219,7 @@ class EInvoiceController {
             };
             //console.log("para_prod_details  ", para_prod_details)
             const rtnValue_VAT = await DBService.ExecuteSQLBlob(
-              `BEGIN ei_upd_sale_prod (          
+              `BEGIN wt_upd_sale_prod (          
                                                                 :tei_wt_sale_bill_pk,
                                                                 :feature,
                                                                 :seq,
@@ -6305,7 +6305,7 @@ class EInvoiceController {
             };
             // const rtnValueSendMail = 
             await DBService.ExecuteSQLBlob(
-              `BEGIN ei_upd_sale_bill_status (          
+              `BEGIN wt_upd_sale_bill_status (          
                                                               :tei_wt_sale_bill_pk,
                                                               :status,
                                                               :p_language, 
@@ -6343,7 +6343,7 @@ class EInvoiceController {
             };
             // const rtnValueSendMail = 
             await DBService.ExecuteSQLBlob(
-              `BEGIN ei_upd_sale_bill_status (          
+              `BEGIN wt_upd_sale_bill_status (          
                                                               :tei_wt_sale_bill_pk,
                                                               :status,
                                                               :p_language, 
@@ -6505,7 +6505,7 @@ class EInvoiceController {
         };
  
         const rtnValue = await DBService.ExecuteSQLBlob(
-          `BEGIN ei_upd_order_info (          
+          `BEGIN wt_upd_order_info (          
                                                           :sale_date,
                                                           :store_code,
                                                           :store_name,
@@ -6570,7 +6570,7 @@ class EInvoiceController {
               sub_vat_amt: invoice.total_vat_list[j].sub_vat_amt,
             };
             const rtnValue_VAT = await DBService.ExecuteSQLBlob(
-              `BEGIN ei_upd_sale_bill_vat (          
+              `BEGIN wt_upd_sale_bill_vat (          
                                                                 :tei_wt_sale_bill_pk,
                                                                 :sub_amt,
                                                                 :sub_vat_rate,
@@ -6602,7 +6602,7 @@ class EInvoiceController {
             };
             //console.log("para_prod_details  ", para_prod_details)
             const rtnValue_VAT = await DBService.ExecuteSQLBlob(
-              `BEGIN ei_upd_sale_prod (          
+              `BEGIN wt_upd_sale_prod (          
                                                                 :tei_wt_sale_bill_pk,
                                                                 :feature,
                                                                 :seq,
@@ -6766,7 +6766,7 @@ class EInvoiceController {
         //console.log("para_value  ", para_value)
 
         const rtnValue = await DBService.ExecuteSQLBlob(
-          `BEGIN ei_sel_re_order_info (                   :tax_code,
+          `BEGIN WT_SEL_RE_ORDER_INFO (                   :tax_code,
                                                           :sale_date,
                                                           :store_code,
                                                           :store_name,
@@ -6834,7 +6834,7 @@ class EInvoiceController {
                 status: "Sent Success",
               };
               const rtnValueSendMail = await DBService.ExecuteSQLBlob(
-                `BEGIN ei_upd_sale_bill_status (          
+                `BEGIN wt_upd_sale_bill_status (          
                                                                   :tei_wt_sale_bill_pk,
                                                                   :status,
                                                                   :p_language, 
@@ -6871,7 +6871,7 @@ class EInvoiceController {
                 status: "Sent Faile",
               };
               const rtnValueSendMail = await DBService.ExecuteSQLBlob(
-                `BEGIN ei_upd_sale_bill_status (          
+                `BEGIN wt_upd_sale_bill_status (          
                                                                   :tei_wt_sale_bill_pk,
                                                                   :status,
                                                                   :p_language, 
@@ -6986,7 +6986,7 @@ class EInvoiceController {
         // console.log("para_value  ", para_value)
 
         const rtnValue = await DBService.ExecuteSQLBlob(
-          `BEGIN ei_sel_re_order_info (                   :tax_code,
+          `BEGIN WT_SEL_RE_ORDER_INFO (                   :tax_code,
                                                           :sale_date,
                                                           :store_code,
                                                           :store_name,
@@ -7806,7 +7806,7 @@ class EInvoiceController {
         seller_taxcode: seller_taxcode,
       };
       const rtnValue_status = await DBService.ExecuteSQLBlob(
-        `BEGIN ei_sel_sendmail_inv_status (          
+        `BEGIN wt_sel_sendmail_inv_status (          
                                                         :invoice_date,
                                                         :seller_taxcode,
                                                         :p_language, 
@@ -8192,7 +8192,7 @@ class EInvoiceController {
         };
 
         await DBService.ExecuteSQLBlob(
-            `BEGIN ei_upd_tradecode_p_xml(
+            `BEGIN WT_UPD_TRADECODE_P_XML(
                             :tei_einvoice_ar_pk,
                             :tei_history_m_pk,
                             :trade_code,
@@ -8504,7 +8504,7 @@ class EInvoiceController {
             };
     
             await DBService.ExecuteSQLBlob(
-                `BEGIN ei_upd_tradecode_p_xml(
+                `BEGIN WT_UPD_TRADECODE_P_XML(
                                 :tei_einvoice_ar_pk,
                                 :trade_code,
                                 :p_language, 
@@ -14086,7 +14086,7 @@ class EInvoiceController {
           //console.log('weTaxExtractPosXMLContent box param ===> ', paraPos);
 
           const rtnValuePos = await DBService.ExecuteSQLBlob(
-            `BEGIN ei_upd_pos_xml_box (          
+            `BEGIN wt_upd_pos_xml_box (          
                                         :invoice_date,
                                         :seller_tax_code,
                                         :tax_serial_number,
@@ -14148,7 +14148,7 @@ class EInvoiceController {
               //console.log('weTaxExtractPosXMLContent m param ===> ', paraMaster);
 
               const rtnValueMaster = await DBService.ExecuteSQLBlob(
-                  `BEGIN ei_upd_sale_bill (          
+                  `BEGIN WT_UPD_SALE_BILL (          
                                                   :pban,
                                                   :thdon,
                                                   :khmshdon,
@@ -14223,7 +14223,7 @@ class EInvoiceController {
                 //console.log('weTaxExtractPosXMLContent d param ===> ', paraDetails);
 
                  const rtnValueDetail =  await DBService.ExecuteSQLBlob(
-                    `BEGIN ei_upd_sale_bill_d (          
+                    `BEGIN WT_UPD_SALE_BILL_d (          
                                                     :tei_wt_invoice_m_pk,
                                                     :tchat,
                                                     :stt,
@@ -14261,7 +14261,7 @@ class EInvoiceController {
                   //console.log('weTaxExtractPosXMLContent d vat param  ===> ',para_amt_vat);
 
                   const rtnValue_VAT = await DBService.ExecuteSQLBlob(
-                    `BEGIN ei_upd_sale_bill_d_vat (          
+                    `BEGIN WT_UPD_SALE_BILL_d_vat (          
                                                                       :tei_wt_sale_bill_pk,
                                                                       :sub_amt,
                                                                       :sub_vat_rate,
@@ -14746,7 +14746,7 @@ class EInvoiceController {
 
       //console.log("masterPara", masterPara)
       //const master = await callAPI(_jwtToken, { proc: 'ei_upd_tei_einvoice_cloud', para: masterPara });
-      const master = await DBService.callProcCursor("EI_UPD_TEI_WT_INVOICE_M", masterPara, p_language, p_crt_by);
+      const master = await DBService.callProcCursor("WT_UPD_TEI_WT_INVOICE_M", masterPara, p_language, p_crt_by);
       // console.log("master", master);
 
       if (master && master[0].PK > 0) {
@@ -14768,7 +14768,7 @@ class EInvoiceController {
             jsonDSHHDVu[i].TSuat,
             master[0].TEI_EINVOICE_M_PK,
           ];
-          const detail = await DBService.callProcCursor("EI_UPD_TEI_WT_INVOICE_D", detailPara, p_language, p_crt_by);
+          const detail = await DBService.callProcCursor("WT_UPD_TEI_WT_INVOICE_D", detailPara, p_language, p_crt_by);
           // console.log("detail", detail);
         }
 
@@ -14776,7 +14776,7 @@ class EInvoiceController {
         //   req_wt_key : ,
         // ]
         
-        const detail_vat = await DBService.callProcCursor("EI_UPD_TEI_WT_INVOICE_D_VAT", [master[0].PK], p_language, p_crt_by);
+        const detail_vat = await DBService.callProcCursor("WT_UPD_TEI_WT_INVOICE_D_VAT", [master[0].PK], p_language, p_crt_by);
 
 
         return (result_extra = {
@@ -15205,7 +15205,7 @@ class EInvoiceController {
              };
              // const rtnValueSendMail = 
              await DBService.ExecuteSQLBlob(
-               `BEGIN ei_upd_sale_bill_status (          
+               `BEGIN wt_upd_sale_bill_status (          
                                                                :tei_wt_sale_bill_pk,
                                                                :status,
                                                                :p_language, 
@@ -15236,7 +15236,7 @@ class EInvoiceController {
              };
              // const rtnValueSendMail = 
              await DBService.ExecuteSQLBlob(
-               `BEGIN ei_upd_sale_bill_status (          
+               `BEGIN wt_upd_sale_bill_status (          
                                                                :tei_wt_sale_bill_pk,
                                                                :status,
                                                                :p_language, 

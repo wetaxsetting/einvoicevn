@@ -58,7 +58,7 @@ class EiExcelHandler {
       // console.log("file: EiExcelTemplateHandler.js:56 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceMasterData:", einvoiceMasterData)
 
       const einvoiceMasterParam = await DBService.callProcCursor(
-        "AC_SEL_6095057_PARAM", [pk],
+        "EI_SEL_6095057_PARAM", [pk],
         p_language,
         p_crt_by,
         _db2

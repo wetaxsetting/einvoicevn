@@ -387,7 +387,7 @@ export default {
     },
     async getCompanyInfo() {
       const companyInfo = await this._callProcedure(
-        "AC_SEL_6095210_CompanyInfo",
+        "EI_SEL_6095210_CompanyInfo",
         [this.user.USER_ID]
       );
       if (companyInfo.length > 0) {

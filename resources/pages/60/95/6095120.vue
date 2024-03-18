@@ -52,7 +52,7 @@
     <v-row dense >
       <v-col md="12">
         <!-- :selectionmode="'checkbox'" -->
-        <BaseGridView ref="grdConvert" :header="grdHeader" sel_procedure="EI_SEL_6095120_SEL_DATA" :multiselect="true"
+        <BaseGridView ref="grdConvert" :header="grdHeader" sel_procedure="EI_SEL_6095120_DATA_NC" :multiselect="true"
           @onSelectionDataChanged="onGridSelectionChanged" :selectionmode="'checkbox'" :autocheckbox="false"
           :headertype="1" :filter_paras="[
             this.dt_from,

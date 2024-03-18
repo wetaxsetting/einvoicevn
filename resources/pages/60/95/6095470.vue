@@ -507,7 +507,7 @@ export default {
     async initDataList(pos) {
       switch (pos) {
         case "company":
-          const company = await this._callProcedure("EI_SEL_6095450_COMPANY", [this.user.PK]);
+          const company = await this._callProcedure("EI_SEL_6095470_COMPANY", [this.user.PK]);
           if (company.length > 0) {
             this.dataSearchList.sellerNameList = company;
             // this.dataSearchList.sellerTaxcodeList = company;

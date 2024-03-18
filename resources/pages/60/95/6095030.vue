@@ -45,7 +45,7 @@
               :header="headerGrid" 
               :onCellPrepared="onCellPrepared"
               @row-updated="checkUpdatedItem"
-              sel_procedure="EI_SEL_6095030_ISSUSE_NO_CACHE"
+              sel_procedure="EI_SEL_6095030_ISSUSE_NC"
               :filter_paras="[this.lstCompany,this.transDateFrom,this.transDateFrom,this.txtSerialNo,this.lstStatus]" 
               
             />

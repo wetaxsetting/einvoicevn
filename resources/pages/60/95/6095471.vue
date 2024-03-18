@@ -518,7 +518,7 @@ export default {
     async initDataList(pos) {
       switch (pos) {
         case "company":
-          const company = await this._callProcedure("EI_SEL_6095450_COMPANY", [this.user.PK]);
+          const company = await this._callProcedure("EI_SEL_6095470_COMPANY", [this.user.PK]);
           if (company.length > 0) {
             this.dataSearchList.sellerNameList = company;
             // this.dataSearchList.sellerTaxcodeList = company;
@@ -530,7 +530,7 @@ export default {
           this.form_No = "";
           const dso_form_list = {
             type: "list",
-            selpro: "EI_SEL_6095450_FORM_NO",
+            selpro: "EI_SEL_6095470_FORM_NO",
             para: [this.sellerName, this.form_date, this.to_date],
           };
           this.dataSearchList.formNoList = await this._dsoCall(dso_form_list, "select", false);
@@ -543,7 +543,7 @@ export default {
           this.serial_no = "All";
           const dso_serial_list = {
             type: "list",
-            selpro: "EI_SEL_6095450_SERIAL_NO",
+            selpro: "EI_SEL_6095470_SERIAL_NO",
             para: [this.sellerName, this.form_No, this.form_date, this.to_date],
           };
           this.dataSearchList.serialNoList = await this._dsoCall(dso_serial_list, "select", false);

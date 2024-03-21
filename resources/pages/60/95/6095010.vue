@@ -680,9 +680,14 @@ export default {
       }
     },
     async initDataList() {
+      const taxInfo = await this._callProcedure("EI_SEL_6095460_TAXOF");
+        if (taxInfo.length > 0) {
+          this.taxOfficeList = taxInfo;
+        }
+
       const results = await this._getCommonCode2(["ACEI0120", "ACJS0460", "ACEIS320"], this.txtCompanyName);
 
-      this.taxOfficeList = results[0];
+      //this.taxOfficeList = results[0];
       this.token_type_list = results[1];
       this.d_certificate_type_list = results[2];
     },

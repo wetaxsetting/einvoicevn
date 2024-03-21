@@ -12371,17 +12371,6 @@ class EInvoiceController {
 
       const { converter, lookupcode } = request.all();
 
-      /* const para_inv = {
-        lookupcode : lookupcode,
-      }; */
-      //console.log("lookupcode:", lookupcode);
-      /* const rtnValue_VAT = await DBService.ExecuteSQLBlob(
-        `BEGIN ei_sel_get_data_lookup_code (:lookupcode,:p_language,:p_crt_by,:p_rtn_cur); END;`,
-        para_inv,
-        p_language,
-        p_crt_by
-      ); */
-
       const para_inv_st = {
         trade_code: lookupcode,
         converter: converter,
@@ -12404,30 +12393,30 @@ class EInvoiceController {
       // console.log("base64XML:", url_xml);
 
       const rep_data = {
-        form_no: rtnValue.p_rtn_cur[0].TEMPLATECODE,
-        serial_no: rtnValue.p_rtn_cur[0].INVOICESERIALNO,
-        invoice_date: rtnValue.p_rtn_cur[0].INVOICE_DATE_34,
-        invoice_no: rtnValue.p_rtn_cur[0].INVOICENUMBER,
-        currency: rtnValue.p_rtn_cur[0].CURRENCYCODEUSD,
-        ex_rate: rtnValue.p_rtn_cur[0].TR_RATE_31,
-        payment_method: rtnValue.p_rtn_cur[0].PAYMENTMETHODCK,
-        seller_comp_name: rtnValue.p_rtn_cur[0].SELLER_NAME,
-        seller_taxcode: rtnValue.p_rtn_cur[0].SELLER_TAXCODE,
-        seller_address: rtnValue.p_rtn_cur[0].SELLER_ADDRESS,
+        form_no: rtnValue.p_rtn_cur[0].FORM_NO,
+        serial_no: rtnValue.p_rtn_cur[0].SERIAL_NO,
+        invoice_date: rtnValue.p_rtn_cur[0].INVOICE_DATE,
+        invoice_no: rtnValue.p_rtn_cur[0].INVOICE_NO,
+        currency: rtnValue.p_rtn_cur[0].TR_CCY,
+        ex_rate: rtnValue.p_rtn_cur[0].TR_RATE,
+        payment_method: rtnValue.p_rtn_cur[0].PAY_METHOD,
+        seller_comp_name: rtnValue.p_rtn_cur[0].SELLER_COMPANY_NM,
+        seller_taxcode: rtnValue.p_rtn_cur[0].SELLER_TAX_CODE,
+        seller_address: rtnValue.p_rtn_cur[0].SELLER_ADD,
         seller_phone: rtnValue.p_rtn_cur[0].SELLER_TEL,
-        buyer_name: rtnValue.p_rtn_cur[0].BUYER_NAME_35,
-        buyer_comp_name: rtnValue.p_rtn_cur[0].BUYERLEGALNAME,
-        buyer_taxcode: rtnValue.p_rtn_cur[0].BUYERTAXCODE,
+        buyer_name: rtnValue.p_rtn_cur[0].BUYER_NAME,
+        buyer_comp_name: rtnValue.p_rtn_cur[0].BUYER_LEGALNAME,
+        buyer_taxcode: rtnValue.p_rtn_cur[0].BUYER_TAXCODE,
         buyer_phone: rtnValue.p_rtn_cur[0].TEL_53,
-        buyer_address: rtnValue.p_rtn_cur[0].SELLER_ADDRESS_1,
+        buyer_address: rtnValue.p_rtn_cur[0].BUYER_ADDRESS,
         url_pdf: url_pdf,
         url_xml: url_xml,
-        total_amt_no_vat: rtnValue.p_rtn_cur[0].NET_TR_AMT_DIS_TR_89,
+        total_amt_no_vat: rtnValue.p_rtn_cur[0].NET_TR_AMT,
         total_amt_dc: 0,
-        total_amt_vat: rtnValue.p_rtn_cur[0].VAT_TR_AMT_DIS_TR_91,
-        total_payment: rtnValue.p_rtn_cur[0].TOT_AMT_TR_94,
-        total_payment_word_vie: rtnValue.p_rtn_cur[0].AMOUNT_WORD_VIE_107,
-        mccqt: rtnValue.p_rtn_cur[0].CQT_MCCQT_ID_85
+        total_amt_vat: rtnValue.p_rtn_cur[0].VAT_TR_AMT,
+        total_payment: rtnValue.p_rtn_cur[0].TOT_AMT,
+        total_payment_word_vie: rtnValue.p_rtn_cur[0].AMOUNT_WORD_VIE,
+        mccqt: rtnValue.p_rtn_cur[0].CQT_MCCQT_ID
       }
 
       return response.send(Utils.response(true, "Convert einvoice successful!", rep_data));

@@ -107,9 +107,9 @@ class EiExcelHandler {
           reportPath = einvoiceMasterData[0].URL_FILE_EXCEL_C_IMP;//  url_file_excel;//'report/60/95/einvoices_template/Bornga/Bornga.xlsx'
           reportSheet = "Invoice"
           this.masterDataArray.push(
-            { Cell: `G13`, Info: [`convert`], Type: 2 },
-            { Cell: `B37`, Info: [`CONVERT_NAME`], Type: 1 },
-            { Cell: `B38`, Info: [`CONVERT_DATE`], Type: 1 },
+            { Cell: `H4`, Info: [`CONVERT_TITLE`], Type: 2 },
+            { Cell: `C39`, Info: [`CONVERT_NAME`], Type: 1 },
+            { Cell: `B40`, Info: [`CONVERT_DATE`], Type: 1 },
           )
         } else {
           reportPath = einvoiceMasterData[0].URL_FILE_EXCEL_IMP;//'report/60/95/einvoices_template/Bornga/Bornga.xlsx'

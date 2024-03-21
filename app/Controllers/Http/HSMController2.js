@@ -65,7 +65,7 @@ class HSMController2 {
     }
   }
 
-  async getCertificatesIPOS({request, response, auth}) {
+  async getCertificates({request, response, auth}) {
     try {
       var p_language = request.header('accept-language', 'ENG');
       var p_crt_by = '';
@@ -105,7 +105,7 @@ class HSMController2 {
       Utils.Logger({
         LVL: 'error',
         MODULE: 'HSMController',
-        FUNC: 'getCertificatesIPOS',
+        FUNC: 'getCertificates',
         CONTENT: e.message,
       });
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));

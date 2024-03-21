@@ -238,7 +238,7 @@ export default {
       if(!this.$route?.query?.trade_code) {
          this.showNotification(
         "warning",
-        that.$t("trade_code not found!"),
+        this.$t("trade_code not found!"),
         "",
         5000
       );

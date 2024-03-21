@@ -159,7 +159,7 @@ export default {
             this.form_no = this.form_no_list[0].VAL;
           }
           break;
-        case "serial_no":
+        case "serial_no": 
           const dso_serial_no_list = {
             type: "list",
             selpro: "EI_SEL_6095160_SERIAL_NO",

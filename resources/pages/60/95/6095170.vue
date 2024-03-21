@@ -355,7 +355,7 @@ export default {
           const dso_serial_list = {
             type: "list",
             selpro: "EI_SEL_6095170_SERIAL_NO",
-            para: [this.company, this.lstForm],
+            para: [this.company, this.lstForm,this.fromDate, this.toDate],
           };
           this.serialList = await this._dsoCall(
             dso_serial_list,

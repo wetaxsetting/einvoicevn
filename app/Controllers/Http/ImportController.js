@@ -109,7 +109,7 @@ class ImportController {
             }
             const folder = `eiv-ap/${tei_company_pk}`
             let file_path = await Utils.putFileRootPath(file, folder);
-            file_path = ROOT_DIR_FILES + file_path
+            file_path = ROOT_DIR_FILES.replace("/","") + file_path
             console.log("file_path", file_path)
             if (file_path && file_path.indexOf(".xml") > 0) {
                 tei_einvoice_cloud_pk = await this.extractXMLContent(file_path, p_language, p_crt_by, file_name);

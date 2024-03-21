@@ -66,14 +66,14 @@ class EiExcelHandler {
 
 
       const einvoiceMasterParam = await DBService.callProcCursor(
-        "AC_SEL_POS_EINVOICE_M_PARAM", [pk, einvoiceMasterData[0].FORM_NO, einvoiceMasterData[0].SERIAL_NO, ''],
+        "EI_SEL_POS_EINVOICE_M_PARAM", [pk, einvoiceMasterData[0].FORM_NO, einvoiceMasterData[0].SERIAL_NO, ''],
         p_language,
         p_crt_by,
         _db2
       );
 
       const einvoiceDetailsParam = await DBService.callProcCursor(
-        "AC_SEL_POS_EINVOICE_D_PARAM", [pk, einvoiceMasterData[0].FORM_NO, einvoiceMasterData[0].SERIAL_NO, ''],
+        "EI_SEL_POS_EINVOICE_D_PARAM", [pk, einvoiceMasterData[0].FORM_NO, einvoiceMasterData[0].SERIAL_NO, ''],
         p_language,
         p_crt_by,
         _db2
@@ -111,9 +111,21 @@ class EiExcelHandler {
       //let url_file_excel = "report/60/95/einvoices_template/Bornga/Bornga.xlsx";
 
       this.masterDataArray = []
-
-      reportPath = einvoiceMasterData[0].URL_FILE_EXCEL_IMP;//'report/60/95/einvoices_template/Bornga/Bornga.xlsx'
-      reportSheet = "Invoice"
+      if (convertYn == "Y") {
+        reportPath = einvoiceMasterData[0].URL_FILE_EXCEL_C_IMP;//  url_file_excel;//'report/60/95/einvoices_template/Bornga/Bornga.xlsx'
+        reportSheet = "Invoice"
+        // this.masterDataArray.push(
+        //   { Cell: `H4`, Info: [`CONVERT_TITLE`], Type: '1' },
+        //   { Cell: `C39`, Info: [`CONVERT_NAME`], Type: '1' },
+        //   { Cell: `B40`, Info: [`CONVERT_DATE`], Type: '1' },
+        // )
+      } else {
+        reportPath = einvoiceMasterData[0].URL_FILE_EXCEL_IMP;//'report/60/95/einvoices_template/Bornga/Bornga.xlsx'
+        reportSheet = "Invoice"
+      }
+      console.log("this.masterDataArray  ", this.masterDataArray);
+      //reportPath = einvoiceMasterData[0].URL_FILE_EXCEL_IMP;//'report/60/95/einvoices_template/Bornga/Bornga.xlsx'
+      //reportSheet = "Invoice"
 
       for (let i = 0; i < einvoiceMasterParam.length; i++) {
         //console.log(" Cell: einvoiceMasterParam[i].CELL_CODE ", einvoiceMasterParam[i].CELL_CODE + " - " + einvoiceMasterParam[i].DATA_MAPPING + "  - " + einvoiceMasterParam[i].TYPE );

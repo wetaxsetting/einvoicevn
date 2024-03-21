@@ -469,9 +469,11 @@ export default {
             }
         },
         "modelMaster.MCQTQLY"(val) {
-            if (val) {
-                this.modelMaster.CQTQLY = this.dataMasterList.taxOfficeList.find(item => item.CODE == val).NAME;
-            }
+            setTimeout(() => {
+                if (val) {
+                this.modelMaster.CQTQLY = this.dataMasterList.taxOfficeList.find((item) => item.CODE == val).NAME;
+                }
+            }, 500);
         },
         "modelSearch.COMPANY_PK"(val) {
             if (val) {
@@ -1045,11 +1047,16 @@ export default {
                 this.dataSearchList.companyList = companyInfo;
                 this.dataMasterList.companyList = companyInfo;
             }
+
+            const taxInfo = await this._callProcedure("EI_SEL_6095460_TAXOF");
+            if (taxInfo.length > 0) {
+            this.dataMasterList.taxOfficeList = taxInfo;
+            }
             const results = await this._getCommonCode2(["ACEI0010", "ACEI0220", "ACEI0120", "ACEI0190", "ACEI0140", "ACEIN010", "ACJS0460"], this.user.TCO_COMPANY_PK)
             this.dataSearchList.statusList = results[0];
             this.modelSearch.STATUS = "7";
             this.dataMasterList.versionList = results[1];
-            this.dataMasterList.taxOfficeList = results[2];
+            //this.dataMasterList.taxOfficeList = results[2];
             this.dataMasterList.fromNoList = results[3];
             this.dataMasterList.declarationNameList = results[4];
             this.dataMasterList.registrationFormList = results[5];

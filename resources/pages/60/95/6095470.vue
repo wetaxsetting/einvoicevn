@@ -77,7 +77,7 @@
               <BaseGridView
                 ref="grdCompany"
                 :auto_load="false"
-                sel_procedure="AC_SEL_6095470_01_NC"
+                sel_procedure="EI_SEL_6095470_01_NC"
                 select_mode="Single"
                 :max_height="limitHeight"
                 :header="headerGrid"
@@ -127,7 +127,7 @@
                 :auto_load="false"
                 select_mode="Single"
                 :max_height="limitHeightM"
-                sel_procedure="AC_SEL_6095470_02_NC"
+                sel_procedure="EI_SEL_6095470_02_NC"
                 :header="headerProD"
                 :filter_paras="[this.masterPK]"
               />
@@ -140,7 +140,7 @@
                 :auto_load="false"
                 select_mode="Single"
                 :max_height="limitHeightGridDetails"
-                sel_procedure="AC_SEL_6095470_03_NC"
+                sel_procedure="EI_SEL_6095470_03_NC"
                 :header="headerProVAT"
                 :filter_paras="[this.masterPK]"
               />
@@ -499,7 +499,6 @@ export default {
   },
   methods: {
     async grdSearchClick(cell) {
-      console.log("file: 6095470.vue:500 [vng-304] grdSearchClick [vng-304] cell:", cell);
       this.masterPK = await cell.data.PK;
       this.xml_signed = cell.data.CQT_XML_SIGNED;
       await this.$refs.grdMaster.loadData();
@@ -508,7 +507,7 @@ export default {
     async initDataList(pos) {
       switch (pos) {
         case "company":
-          const company = await this._callProcedure("AC_SEL_6095450_COMPANY", [this.user.PK]);
+          const company = await this._callProcedure("EI_SEL_6095470_COMPANY", [this.user.PK]);
           if (company.length > 0) {
             this.dataSearchList.sellerNameList = company;
             // this.dataSearchList.sellerTaxcodeList = company;
@@ -518,7 +517,7 @@ export default {
         case "form_no":
           const dso_form_list = {
             type: "list",
-            selpro: "AC_SEL_6095470_FORM_NO",
+            selpro: "EI_SEL_6095470_FORM_NO",
             para: [this.sellerName, this.form_date, this.to_date],
           };
           this.dataSearchList.formNoList = await this._dsoCall(dso_form_list, "select", false);
@@ -529,7 +528,7 @@ export default {
         case "serial_no":
           const dso_serial_list = {
             type: "list",
-            selpro: "AC_SEL_6095470_SERIAL_NO",
+            selpro: "EI_SEL_6095470_SERIAL_NO",
             para: [this.sellerName, this.form_No, this.form_date, this.to_date],
           };
           this.dataSearchList.serialNoList = await this._dsoCall(dso_serial_list, "select", false);

@@ -44,7 +44,7 @@
     <v-row no-gutters align="center" justify="start" class="mb-2">
       <v-col cols="12">
         <BaseGridView ref="gridview" select_mode="Single" :max_height="limitHeight" column-resizing-mode="widget"
-          sel_procedure="AC_SEL_6095160_S_NOCACHE" :editable="false" :header="this.headerQQ" :filter_paras="[
+          sel_procedure="EI_SEL_6095160_NC" :editable="false" :header="this.headerQQ" :filter_paras="[
             this.from_date,
             this.to_date,
             this.form_no,
@@ -151,7 +151,7 @@ export default {
         case "form_no":
           const dso_form_no_list = {
             type: "list",
-            selpro: "AC_SEL_6095160_FORM_NO",
+            selpro: "EI_SEL_6095160_FORM_NO",
             para: [this.company, this.from_date, this.to_date],
           };
           this.form_no_list = await this._dsoCall(dso_form_no_list, "select",false);
@@ -159,10 +159,10 @@ export default {
             this.form_no = this.form_no_list[0].VAL;
           }
           break;
-        case "serial_no":
+        case "serial_no": 
           const dso_serial_no_list = {
             type: "list",
-            selpro: "AC_SEL_6095160_SERIAL_NO",
+            selpro: "EI_SEL_6095160_SERIAL_NO",
             para: [this.company, this.form_no],
           };
           this.serial_List = await this._dsoCall(dso_serial_no_list, "select",false);
@@ -186,7 +186,7 @@ export default {
           insertRange: [
             {
               range: "A1:N7",
-              proc: "ac_rpt_6095160_m",
+              proc: "EI_RPT_6095160_M",
               params: [
                 this.from_date,
                 this.to_date,
@@ -203,7 +203,7 @@ export default {
             {
               sequence: "break",
               startRow: 10,
-              proc: "AC_RPT_6095160",
+              proc: "EI_RPT_6095160",
               params: [
                 this.from_date,
                 this.to_date,

@@ -32,7 +32,7 @@
               <BaseGridView
                 ref="grdCompany"
                 :auto_load="false"
-                sel_procedure="AC_SEL_6095740_SEARCH_NC"
+                sel_procedure="EI_SEL_6095740_SEARCH_NC"
                 select_mode="Single"
                 :max_height="limitHeight"
                 :header="headerGridLeft"
@@ -227,7 +227,7 @@ export default {
     async initDataList(pos) {
       switch (pos) {
         case "company":
-          const company = await this._callProcedure("AC_SEL_6095450_COMPANY", [this.user.PK]);
+          const company = await this._callProcedure("EI_SEL_6095450_COMPANY", [this.user.PK]);
           if (company.length > 0) {
             this.dataSearchList.sellerNameList = company;
           }

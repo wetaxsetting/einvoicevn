@@ -23,7 +23,7 @@
               <BaseGridView
                 ref="grdSearch"
                 :header="headerList.grdSearch"
-                sel_procedure="AC_SEL_6095080_04"
+                sel_procedure="EI_SEL_6095080_04"
                 selectionmode="singlerow"
                 :multiselect="true"
                 :height="limitHeight"
@@ -292,8 +292,8 @@
               <BaseGridView
                 ref="grdDetail"
                 :header="headerList.grdDetail"
-                sel_procedure="AC_SEL_6095080_s_05_NC"
-                upd_procedure="AC_UPD_6095080_u_06"
+                sel_procedure="EI_SEL_6095080_s_05_NC"
+                upd_procedure="EI_UPD_6095080_u_06"
                 :headertype="1"
                 :filter_paras="[this.modelMaster.PK]"
                 :height="limitHeightGridDetails"
@@ -493,9 +493,11 @@ export default {
       }
     },
     "modelMaster.MCQTQLY"(val) {
-      if (val) {
-        this.modelMaster.CQTQLY = this.dataMasterList.taxOfficeList.find((item) => item.CODE == val).NAME;
-      }
+      setTimeout(() => {
+        if (val) {
+          this.modelMaster.CQTQLY = this.dataMasterList.taxOfficeList.find((item) => item.CODE == val).NAME;
+        }
+      }, 500);
     },
   },
   methods: {
@@ -607,7 +609,7 @@ export default {
       this.dialogTitle = this.$t("control_item");
       this.codeLabel = this.$t("serial_number");
       this.nameLabel = this.$t("ca_name");
-      this.procedure = "AC_SEL_6095080_GET_CTRLITEM";
+      this.procedure = "EI_SEL_6095080_GET_CTRLITEM";
       this.moreParas = null;
       this.autoSearch = true;
       this.multiSelectMode = false;
@@ -690,8 +692,8 @@ export default {
       await this._dsoCall(
         {
           type: "control",
-          selpro: "AC_SEL_6095080_S_02",
-          updpro: "AC_UPD_6095080_U_03",
+          selpro: "EI_SEL_6095080_S_02",
+          updpro: "EI_UPD_6095080_U_03",
           para: [this.modelMaster.PK],
           elname: [
             "_rowstatus",
@@ -1101,16 +1103,22 @@ export default {
     },
 
     async initDataList() {
-      const companyInfo = await this._callProcedure("AC_SEL_6095080_Company", [this.user.PK]);
+      const companyInfo = await this._callProcedure("EI_SEL_6095080_Company", [this.user.PK]);
       if (companyInfo.length > 0) {
         this.dataSearchList.companyList = companyInfo;
         this.dataMasterList.companyList = companyInfo;
       }
+
+      const taxInfo = await this._callProcedure("EI_SEL_6095460_TAXOF");
+        if (taxInfo.length > 0) {
+          this.dataMasterList.taxOfficeList = taxInfo;
+        }
+
       const results = await this._getCommonCode2(["ACEI0010", "ACEI0220", "ACEI0120", "ACEI0190", "ACEI0140", "ACEIN010", "ACJS0460"], this.user.TCO_COMPANY_PK);
       this.dataSearchList.statusList = results[0];
       this.modelSearch.STATUS = "7";
       this.dataMasterList.versionList = results[1];
-      this.dataMasterList.taxOfficeList = results[2];
+      //this.dataMasterList.taxOfficeList = results[2];
       // this.dataMasterList.fromNoList = results[3];
       this.dataMasterList.fromNoList = results[3].filter((x) => x.VAL1 == "6095080");
       this.dataMasterList.fromNoList.forEach((e) => {
@@ -1122,6 +1130,8 @@ export default {
       this.dataMasterList.registrationFormList = results[5];
 
       this.token_type_list = results[6];
+
+      
     },
 
     async initModel() {

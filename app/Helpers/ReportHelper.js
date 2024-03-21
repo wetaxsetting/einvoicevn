@@ -1781,7 +1781,7 @@ class ReportHelper {
             month = "0" + month
         }
        
-        const dir = ROOT_DIR_FILES + '/pdf/' + year + '/' + month
+        const dir = ROOT_DIR_FILES.replace("/","") + '/pdf/' + year + '/' + month
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir, { recursive: true }, err => { console.log(err) })
         }

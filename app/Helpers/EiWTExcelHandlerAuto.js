@@ -69,7 +69,7 @@ class EiExcelHandler {
 
 
       const einvoiceMasterParam = await DBService.callProcCursor(
-        "AC_SEL_WT_EINVOICE_M_PARAM", [pk, einvoiceMasterData[0].FORM_NO, einvoiceMasterData[0].SERIAL_NO, ''],
+        "EI_SEL_WT_EINVOICE_M_PARAM", [pk, einvoiceMasterData[0].FORM_NO, einvoiceMasterData[0].SERIAL_NO, ''],
         p_language,
         p_crt_by,
         _db2
@@ -78,7 +78,7 @@ class EiExcelHandler {
 
 
       const einvoiceDetailsParam = await DBService.callProcCursor(
-        "AC_SEL_WT_EINVOICE_D_PARAM", [pk, einvoiceMasterData[0].FORM_NO, einvoiceMasterData[0].SERIAL_NO, ''],
+        "EI_SEL_WT_EINVOICE_D_PARAM", [pk, einvoiceMasterData[0].FORM_NO, einvoiceMasterData[0].SERIAL_NO, ''],
         p_language,
         p_crt_by,
         _db2

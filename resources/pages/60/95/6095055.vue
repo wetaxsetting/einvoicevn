@@ -922,7 +922,7 @@ export default {
           switch (action) {
             case "select":
               this.MasterInfo = { ...res };
-              console.log("file: 6095055.vue:942 [vng-304] awaitthis._dsoCall [vng-304] res:", res);
+              //console.log("file: 6095055.vue:942 [vng-304] awaitthis._dsoCall [vng-304] res:", res);
               this.MasterInfo._rowstatus = "u";
               ////   Bộ data để view pdf
               this.dataTemp = {

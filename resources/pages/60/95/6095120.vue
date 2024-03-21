@@ -52,7 +52,7 @@
     <v-row dense >
       <v-col md="12">
         <!-- :selectionmode="'checkbox'" -->
-        <BaseGridView ref="grdConvert" :header="grdHeader" sel_procedure="AC_SEL_6095120_SEL_DATA" :multiselect="true"
+        <BaseGridView ref="grdConvert" :header="grdHeader" sel_procedure="EI_SEL_6095120_DATA_NC" :multiselect="true"
           @onSelectionDataChanged="onGridSelectionChanged" :selectionmode="'checkbox'" :autocheckbox="false"
           :headertype="1" :filter_paras="[
             this.dt_from,
@@ -221,20 +221,20 @@ export default {
       this.$refs.grdConvert.loadData();
     },
     async getListCodes() {
-      let company = await this._callProcedure("AC_SEL_6095120_COMPANY", [
+      let company = await this._callProcedure("EI_SEL_6095120_COMPANY", [
         this.user.PK,
       ]);
       this.company_list = company;
       this.selected_company = this.company_list[0].VAL;
       ///////////////////////////////////////////////////////////
       let tradingType = await this._callProcedure(
-        "AC_SEL_6095120_SEL_TRADING_TYPE"
+        "EI_SEL_6095120_TRADING_TYPE"
       );
       this.trading_type_list = tradingType;
       this.selected_trading_type = this.trading_type_list[0].VAL;
       /////////////////////////////////////////////////////////////////
       let convertYN = await this._callProcedure(
-        "AC_SEL_6095120_SEL_CONVERTYN"
+        "EI_SEL_6095120_SEL_CONVERTYN"
       );
       this.yn_list = convertYN;
       // this.status_list.unshift({ VAL:'', NAME:this.$t("select_all") });

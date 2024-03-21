@@ -48,7 +48,7 @@ class EiExcelHandler {
       let companyName = ""
       let backgroundRow = 0
 
-      tei_einvoice_m_pk = "470723";  // hóa đơn replace
+      //tei_einvoice_m_pk = "470723";  // hóa đơn replace
 
       const einvoiceMasterData = await DBService.callProcCursor(
         "EI_SEL_04SS_03_M", [tei_einvoice_m_pk],

@@ -50,27 +50,27 @@ class EiExcelHandler {
       let backgroundRow = 0
 
       const einvoiceMasterData = await DBService.callProcCursor(
-        "ac_sel_einvoice_m_pdf", [tradecode],
+        "ei_sel_einvoice_m_pdf", [tradecode],
         p_language,
         p_crt_by,
         _db2
       );
       const einvoiceDetailData = await DBService.callProcCursor(
-        "ac_sel_einvoice_d_pdf", [tradecode],
+        "ei_sel_einvoice_d_pdf", [tradecode],
         p_language,
         p_crt_by,
         _db2
       );
 
       const einvoiceMasterParam = await DBService.callProcCursor(
-        "ac_sel_einvoice_m_param", [tradecode, einvoiceMasterData[0].FORM_NO , einvoiceMasterData[0].SERIAL_NO,''],
+        "ei_sel_einvoice_m_param", [tradecode, einvoiceMasterData[0].FORM_NO , einvoiceMasterData[0].SERIAL_NO,''],
         p_language,
         p_crt_by,
         _db2
       );
 
       const einvoiceDetailsParam = await DBService.callProcCursor(
-        "ac_sel_einvoice_d_param", [tradecode, einvoiceMasterData[0].FORM_NO , einvoiceMasterData[0].SERIAL_NO,''],
+        "ei_sel_einvoice_d_param", [tradecode, einvoiceMasterData[0].FORM_NO , einvoiceMasterData[0].SERIAL_NO,''],
         p_language,
         p_crt_by,
         _db2
@@ -106,16 +106,17 @@ class EiExcelHandler {
         if (convertYn == "Y") {
           reportPath = einvoiceMasterData[0].URL_FILE_EXCEL_C_IMP;//  url_file_excel;//'report/60/95/einvoices_template/Bornga/Bornga.xlsx'
           reportSheet = "Invoice"
-          this.masterDataArray.push(
-            { Cell: `G13`, Info: [`convert`], Type: 2 },
-            { Cell: `B37`, Info: [`CONVERT_NAME`], Type: 1 },
-            { Cell: `B38`, Info: [`CONVERT_DATE`], Type: 1 },
-          )
+          // this.masterDataArray.push(
+          //   { Cell: `H4`, Info: [`CONVERT_TITLE`], Type: '1' },
+          //   { Cell: `C39`, Info: [`CONVERT_NAME`], Type: '1' },
+          //   { Cell: `B40`, Info: [`CONVERT_DATE`], Type: '1' },
+          // )
         } else {
           reportPath = einvoiceMasterData[0].URL_FILE_EXCEL_IMP;//'report/60/95/einvoices_template/Bornga/Bornga.xlsx'
           reportSheet = "Invoice"
         }
 
+        
         for(let i = 0; i < einvoiceMasterParam.length; i++)
         {
           //console.log(" Cell: einvoiceMasterParam[i].CELL_CODE ", einvoiceMasterParam[i].CELL_CODE + " - " + einvoiceMasterParam[i].DATA_MAPPING + "  - " + einvoiceMasterParam[i].TYPE );
@@ -178,7 +179,7 @@ class EiExcelHandler {
         //   // { startCell: 21, endCell: 22, cellType: 1, cellBorder: "dotted", field: "BLANK" },//type 1: còn lại
         // ]
         
-
+        console.log("this.masterDataArray  ", this.masterDataArray);
         backgroundCell = einvoiceMasterData[0].BG_START_ROW
         backgroundRow = einvoiceMasterData[0].BG_END_ROW
         backgroundWidth = einvoiceMasterData[0].BG_WIDTH

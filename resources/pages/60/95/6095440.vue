@@ -469,9 +469,11 @@ export default {
             }
         },
         "modelMaster.MCQTQLY"(val) {
-            if (val) {
-                this.modelMaster.CQTQLY = this.dataMasterList.taxOfficeList.find(item => item.CODE == val).NAME;
-            }
+            setTimeout(() => {
+                if (val) {
+                this.modelMaster.CQTQLY = this.dataMasterList.taxOfficeList.find((item) => item.CODE == val).NAME;
+                }
+            }, 500);
         },
         "modelSearch.COMPANY_PK"(val) {
             if (val) {

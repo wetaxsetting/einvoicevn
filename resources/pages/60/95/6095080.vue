@@ -1110,7 +1110,7 @@ export default {
       this.dataSearchList.statusList = results[0];
       this.modelSearch.STATUS = "7";
       this.dataMasterList.versionList = results[1];
-      this.dataMasterList.taxOfficeList = results[2];
+      //this.dataMasterList.taxOfficeList = results[2];
       // this.dataMasterList.fromNoList = results[3];
       this.dataMasterList.fromNoList = results[3].filter((x) => x.VAL1 == "6095080");
       this.dataMasterList.fromNoList.forEach((e) => {
@@ -1122,6 +1122,11 @@ export default {
       this.dataMasterList.registrationFormList = results[5];
 
       this.token_type_list = results[6];
+
+      const taxInfo = await this._callProcedure("EI_SEL_6095460_TAXOF");
+        if (taxInfo.length > 0) {
+          this.dataMasterList.taxOfficeList = taxInfo;
+        }
     },
 
     async initModel() {

@@ -1093,6 +1093,7 @@ export default {
         });
       }, 1000);
       
+      
     },
 
     async getListCodes(pos) {

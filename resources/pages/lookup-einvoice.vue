@@ -298,7 +298,7 @@ export default {
         if(success) {
           console.log("data:", data);
           this.showNotification("success", message, "", 3000);
-
+          this.invoiceInfo = data;
           this.isProcessing = false;
           this.dialog2IsShow = false;
           this.$refs.converterInputRefs.reset();

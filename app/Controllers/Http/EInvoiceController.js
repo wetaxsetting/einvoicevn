@@ -6127,7 +6127,7 @@ class EInvoiceController {
         };
  
         const rtnValue = await DBService.ExecuteSQLBlob(
-          `BEGIN wt_upd_order_info (          
+          `BEGIN wt_upd_send_order_info (          
                                                           :sale_date,
                                                           :store_code,
                                                           :store_name,
@@ -6505,7 +6505,7 @@ class EInvoiceController {
         };
  
         const rtnValue = await DBService.ExecuteSQLBlob(
-          `BEGIN wt_upd_order_info (          
+          `BEGIN wt_upd_send_order_info (          
                                                           :sale_date,
                                                           :store_code,
                                                           :store_name,

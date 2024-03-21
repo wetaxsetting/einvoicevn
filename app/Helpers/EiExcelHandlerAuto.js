@@ -50,27 +50,27 @@ class EiExcelHandler {
       let backgroundRow = 0
 
       const einvoiceMasterData = await DBService.callProcCursor(
-        "ac_sel_einvoice_m_pdf", [tradecode],
+        "ei_sel_einvoice_m_pdf", [tradecode],
         p_language,
         p_crt_by,
         _db2
       );
       const einvoiceDetailData = await DBService.callProcCursor(
-        "ac_sel_einvoice_d_pdf", [tradecode],
+        "ei_sel_einvoice_d_pdf", [tradecode],
         p_language,
         p_crt_by,
         _db2
       );
 
       const einvoiceMasterParam = await DBService.callProcCursor(
-        "ac_sel_einvoice_m_param", [tradecode, einvoiceMasterData[0].FORM_NO , einvoiceMasterData[0].SERIAL_NO,''],
+        "ei_sel_einvoice_m_param", [tradecode, einvoiceMasterData[0].FORM_NO , einvoiceMasterData[0].SERIAL_NO,''],
         p_language,
         p_crt_by,
         _db2
       );
 
       const einvoiceDetailsParam = await DBService.callProcCursor(
-        "ac_sel_einvoice_d_param", [tradecode, einvoiceMasterData[0].FORM_NO , einvoiceMasterData[0].SERIAL_NO,''],
+        "ei_sel_einvoice_d_param", [tradecode, einvoiceMasterData[0].FORM_NO , einvoiceMasterData[0].SERIAL_NO,''],
         p_language,
         p_crt_by,
         _db2

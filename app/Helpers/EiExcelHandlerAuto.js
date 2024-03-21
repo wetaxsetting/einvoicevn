@@ -107,16 +107,16 @@ class EiExcelHandler {
           reportPath = einvoiceMasterData[0].URL_FILE_EXCEL_C_IMP;//  url_file_excel;//'report/60/95/einvoices_template/Bornga/Bornga.xlsx'
           reportSheet = "Invoice"
           this.masterDataArray.push(
-            { Cell: `H4`, Info: [`CONVERT_TITLE`], Type: 2 },
-            { Cell: `C39`, Info: [`CONVERT_NAME`], Type: 1 },
-            { Cell: `B40`, Info: [`CONVERT_DATE`], Type: 1 },
+            { Cell: `H4`, Info: [`CONVERT_TITLE`], Type: '2' },
+            { Cell: `C39`, Info: [`CONVERT_NAME`], Type: '1' },
+            { Cell: `B40`, Info: [`CONVERT_DATE`], Type: '1' },
           )
         } else {
           reportPath = einvoiceMasterData[0].URL_FILE_EXCEL_IMP;//'report/60/95/einvoices_template/Bornga/Bornga.xlsx'
           reportSheet = "Invoice"
         }
 
-        console.log("this.masterDataArray  ", this.masterDataArray);
+        
         for(let i = 0; i < einvoiceMasterParam.length; i++)
         {
           //console.log(" Cell: einvoiceMasterParam[i].CELL_CODE ", einvoiceMasterParam[i].CELL_CODE + " - " + einvoiceMasterParam[i].DATA_MAPPING + "  - " + einvoiceMasterParam[i].TYPE );
@@ -179,7 +179,7 @@ class EiExcelHandler {
         //   // { startCell: 21, endCell: 22, cellType: 1, cellBorder: "dotted", field: "BLANK" },//type 1: còn lại
         // ]
         
-
+        console.log("this.masterDataArray  ", this.masterDataArray);
         backgroundCell = einvoiceMasterData[0].BG_START_ROW
         backgroundRow = einvoiceMasterData[0].BG_END_ROW
         backgroundWidth = einvoiceMasterData[0].BG_WIDTH

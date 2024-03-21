@@ -116,6 +116,7 @@ class EiExcelHandler {
           reportSheet = "Invoice"
         }
 
+        console.log("this.masterDataArray  ", this.masterDataArray);
         for(let i = 0; i < einvoiceMasterParam.length; i++)
         {
           //console.log(" Cell: einvoiceMasterParam[i].CELL_CODE ", einvoiceMasterParam[i].CELL_CODE + " - " + einvoiceMasterParam[i].DATA_MAPPING + "  - " + einvoiceMasterParam[i].TYPE );

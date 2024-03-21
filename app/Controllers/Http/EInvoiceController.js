@@ -12372,7 +12372,7 @@ class EInvoiceController {
       const { converter, lookupcode } = request.all();
 
       const para_inv_st = {
-        trade_code: lookupcode.replaceAll(" ","+"),,
+        trade_code: lookupcode.replaceAll(" ","+"),
         converter: converter,
       };
       const rtnValue = await DBService.ExecuteSQLBlob(

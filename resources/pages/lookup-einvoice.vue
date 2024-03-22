@@ -235,7 +235,7 @@ export default {
 
     async search() {
       // console.log("route:", this.$route)
-      if(!invoiceNo) {
+      if(!this.invoiceNo) {
          this.showNotification(
         "warning",
         this.$t("trade_code not found!"),

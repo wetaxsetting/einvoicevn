@@ -261,11 +261,10 @@ Route.group(() => {
     Route.post("invoices", "WeTaxController.createInvoicesByPos");
     Route.post("sendOrderInfo", "WeTaxController.sendOrderInfo");
     Route.post("requestEinvoiceInfo", "WeTaxController.requestEinvoiceInfo");
-    Route.post("iposSysnc", "WeTaxController.iposSysnc");
 }).prefix("api/wtx/pa/v1/pos").middleware("user");
 
 Route.group(() => {
-    Route.post("sysnc", "WeTaxController.iposSysnc");
+    Route.post("sync", "WeTaxController.iposSysnc");
 }).prefix("api/wtx/pa/v1/ipos").middleware("user");
 // Frontend
 

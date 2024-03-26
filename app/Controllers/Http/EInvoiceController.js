@@ -6707,6 +6707,7 @@ class EInvoiceController {
 
       this.sendMailWT(data_send_mail,"WTPTA002", tax_code, p_language, p_crt_by);
 
+      console.log("weTaxSendOrderInfoV2 data ", data_rep);
       console.log("======================weTaxSendOrderInfoV2 END===================");
 
       // return response.send(Utils.response(true, `Send order to invoice was successfully!`, data_rep));

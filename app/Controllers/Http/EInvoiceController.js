@@ -6959,15 +6959,15 @@ class EInvoiceController {
         infor_send_mail
       } = request.all();
 
-      // console.log("weTaxReSendOrderInfoV2  BEGIN ============================= ");
-      // //console.log("weTaxReSendOrderInfoV2  sale_id ",sale_id);
-      // //console.log("weTaxReSendOrderInfoV2  msg_his_id ",msg_his_id);
-      // console.log("weTaxReSendOrderInfoV2  tax_code ",tax_code);
-      // console.log("weTaxReSendOrderInfoV2  sale_date ",sale_date);
-      // console.log("weTaxReSendOrderInfoV2  store_code ",store_code);
-      // console.log("weTaxReSendOrderInfoV2  store_name ",store_name);
-      // console.log("weTaxReSendOrderInfoV2  infor_send_mail ",infor_send_mail);
-      // console.log("weTaxReSendOrderInfoV2  END =============================== ");
+      console.log("weTaxReSendOrderInfoV2  BEGIN ============================= ");
+      //console.log("weTaxReSendOrderInfoV2  sale_id ",sale_id);
+      //console.log("weTaxReSendOrderInfoV2  msg_his_id ",msg_his_id);
+      console.log("weTaxReSendOrderInfoV2  tax_code ",tax_code);
+      console.log("weTaxReSendOrderInfoV2  sale_date ",sale_date);
+      console.log("weTaxReSendOrderInfoV2  store_code ",store_code);
+      console.log("weTaxReSendOrderInfoV2  store_name ",store_name);
+      console.log("weTaxReSendOrderInfoV2  infor_send_mail ",infor_send_mail);
+      console.log("weTaxReSendOrderInfoV2  END =============================== ");
 
       let tei_wt_sale_bill_pk = 0;
       let data_r = [];

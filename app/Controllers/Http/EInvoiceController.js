@@ -15145,7 +15145,7 @@ class EInvoiceController {
  
        if(data_rep && data_rep.length > 0)
        {
-        //console.log("data_rep ", data_rep)
+        console.log("data_rep ", data_rep)
           const agent = {
             Agent: {
               defaultPort: 443,
@@ -15184,7 +15184,7 @@ class EInvoiceController {
       Utils.Logger({
         LVL: "error",
         MODULE: "EInvoiceController",
-        FUNC: "sendMailWT",
+        FUNC: "sendMailNormailWT",
         CONTENT: e.message,
       });
       console.log("e  ", e);
@@ -15276,6 +15276,9 @@ class EInvoiceController {
            options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
          },
        };
+       console.log("sendMailWT   service_id ",  service_id);
+       console.log("sendMailWT   seller_tax_code ",  seller_tax_code);
+       console.log("sendMailWT   info_send_email ",  info_send_email);
 
       let triesCounter = 0;
       while(triesCounter < 3){
@@ -15309,7 +15312,7 @@ class EInvoiceController {
         FUNC: "sendMailWT",
         CONTENT: e.message,
       });
-      //console.log("e  ", e);
+      console.log("e  ", e);
       //return response.send(Utils.response(false, e.message));
     }
   }

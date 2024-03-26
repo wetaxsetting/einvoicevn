@@ -15276,9 +15276,9 @@ class EInvoiceController {
            options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
          },
        };
-       console.log("sendMailWT   service_id ",  service_id);
-       console.log("sendMailWT   seller_tax_code ",  seller_tax_code);
-       console.log("sendMailWT   info_send_email ",  info_send_email);
+       console.log("sendMailWT   service_id ",  ipa_name);
+       console.log("sendMailWT   seller_tax_code ",  tax_code);
+       console.log("sendMailWT   info_send_email ",  data_rep);
 
       let triesCounter = 0;
       while(triesCounter < 3){

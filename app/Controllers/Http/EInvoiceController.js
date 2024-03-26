@@ -8365,7 +8365,7 @@ class EInvoiceController {
                 inform_code: inv.inform_code,
             }
 
-            await DBService.ExecuteSQLBlob(
+            const r_data_inv =  await DBService.ExecuteSQLBlob(
               `BEGIN WT_UPD_TEI_WT_INVOICE_POS(
                               :mccqt,
                               :tax_code,
@@ -8381,6 +8381,14 @@ class EInvoiceController {
               p_language,
               p_crt_by
              );
+             
+             data_inv.forEach((element, index) => {
+              if(element.form_no === inv.form_no && element.serial_no === inv.serial_no && element.invoice_no === inv.invoice_no) {
+                  data_inv[index].lookup_code = r_data_inv.p_rtn_cur[0].LOOKUP_CODE;
+                }
+              });    
+
+             
           }
 
 
@@ -8400,8 +8408,8 @@ class EInvoiceController {
             xml_tax_signed: xml_tax_signed,
           };
         });
-         //console.log("weTaxSendPosInvoiceToTaxOffice rtnValue  ", rtnValue);
-         //console.log("weTaxSendPosInvoiceToTaxOffice END ========================  ");
+         console.log("weTaxSendPosInvoiceToTaxOffice rtnValue  ", rtnValue);
+         console.log("weTaxSendPosInvoiceToTaxOffice END ========================  ");
       // return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
       return response.status(200).json(Utils.responseByRule({success : true, message : "Sent POS invoice successfully.", data: rtnValue}));
     } catch (e) {
@@ -14204,6 +14212,7 @@ class EInvoiceController {
                   invoice_no: invoice.DLHDon.TTChung.SHDon,
                   inform_code: "8",
                   inform_name: "Dữ liệu hóa đơn hợp lệ",
+                  lookup_code: ""
                 }
               );
               if(rtnValueMaster.p_rtn_cur[0].STATUS == "OK")

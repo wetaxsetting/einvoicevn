@@ -264,7 +264,7 @@ Route.group(() => {
 }).prefix("api/wtx/pa/v1/pos").middleware("user");
 
 Route.group(() => {
-    Route.post("sync", "WeTaxController.iposSysnc");
+    Route.post("sync", "WeTaxController.iposSync");
 }).prefix("api/wtx/pa/v1/ipos").middleware("user");
 // Frontend
 

@@ -3,7 +3,7 @@ const Utils = use("Utils");
 const DBService = use("DBService");
 
 class WeTaxController {
-  async iposSysnc({ request, response, auth }) {
+  async iposSync({ request, response, auth }) {
     try {
       var p_language = request.header("accept-language", "ENG");
       var p_crt_by = "";
@@ -102,7 +102,7 @@ class WeTaxController {
       Utils.Logger({
         LVL: "error",
         MODULE: "WeTaxController",
-        FUNC: "iposSysnc",
+        FUNC: "iposSync",
         CONTENT: e.message,
       });
       // console.log("e ", e);

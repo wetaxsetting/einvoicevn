@@ -6588,7 +6588,7 @@ class EInvoiceController {
             // console.log("invoice.detail_invoice   ", invoice.detail_invoice);
             const para_prod_details = {
               tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
-              feature: invoice.detail_invoice[j].feature,
+              feature: invoice.detail_invoice[j].feature,  
               seq: invoice.detail_invoice[j].seq,
               item_code: invoice.detail_invoice[j].item_code,
               item_name: invoice.detail_invoice[j].item_name,

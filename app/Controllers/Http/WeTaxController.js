@@ -23,6 +23,7 @@ class WeTaxController {
         svc_amt: data.amount_service_charge,
         tot_vat_amt: data.amount_vat,
         company_id: data.company_id,
+        branch_id: data.branch_id,
         shop_cd: data.sale.store_id,
         shop_name: data.sale.store_name,
       };
@@ -36,6 +37,7 @@ class WeTaxController {
                                         :svc_amt,
                                         :tot_vat_amt,
                                         :company_id,
+                                        :branch_id,
                                         :shop_cd,
                                         :shop_name,
                                         :p_language, 

@@ -3205,7 +3205,7 @@ class EInvoiceController {
 
   async sendInformAdjustToTaxOffice2({ request, response, auth }) {
     try {
-      var p_language = request.header("accept-language", "ENG");
+      var p_language = request.header("accept-language", "ENG");  
       var p_crt_by = "";
       const user = await auth.getUser();
       if (user) {

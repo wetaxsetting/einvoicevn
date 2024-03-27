@@ -3200,7 +3200,7 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
       const authUserName = "GENUWIN"; // "GENUWIN";
-      const authPassword = "genuwin123"; // "e_GX4v@";
+      const authPassword = "genuwin123"; // "e_GX4v@"; 
       //const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
       const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
       const { para } = request.all();

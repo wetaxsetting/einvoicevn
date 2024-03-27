@@ -6415,17 +6415,17 @@ class EInvoiceController {
         data_invoice = []
       } = request.all();
 
-      // console.log("======================weTaxSendOrderInfoV2 BEGIN===================");
-      // //console.log("weTaxSendOrderInfoV2 sale_id   ",sale_id  );
-      // //console.log("weTaxSendOrderInfoV2 msg_his_id  ",msg_his_id );
-      // console.log("weTaxSendOrderInfoV2 tax_code  ",tax_code );
-      // console.log("weTaxSendOrderInfoV2 p_crt_by  ",p_crt_by );
-      // console.log("weTaxSendOrderInfoV2 sale_date  ",sale_date );
-      // console.log("weTaxSendOrderInfoV2 store_code  ",store_code );
-      // console.log("weTaxSendOrderInfoV2 store_name  ",store_name );
-      // console.log("weTaxSendOrderInfoV2 pos_no  ",pos_no );
-      // console.log("weTaxSendOrderInfoV2 bill_no  ",bill_no );
-      // console.log("weTaxSendOrderInfoV2 data_invoice  ",data_invoice );
+      console.log("======================weTaxSendOrderInfoV2 BEGIN===================");
+      //console.log("weTaxSendOrderInfoV2 sale_id   ",sale_id  );
+      //console.log("weTaxSendOrderInfoV2 msg_his_id  ",msg_his_id );
+      console.log("weTaxSendOrderInfoV2 tax_code  ",tax_code );
+      console.log("weTaxSendOrderInfoV2 p_crt_by  ",p_crt_by );
+      console.log("weTaxSendOrderInfoV2 sale_date  ",sale_date );
+      console.log("weTaxSendOrderInfoV2 store_code  ",store_code );
+      console.log("weTaxSendOrderInfoV2 store_name  ",store_name );
+      console.log("weTaxSendOrderInfoV2 pos_no  ",pos_no );
+      console.log("weTaxSendOrderInfoV2 bill_no  ",bill_no );
+      console.log("weTaxSendOrderInfoV2 data_invoice  ",data_invoice );
 
       if (!data_invoice) {
         // return response.send(Utils.response(false, `Invalid data_invoice `, null)
@@ -6707,7 +6707,8 @@ class EInvoiceController {
 
       this.sendMailWT(data_send_mail,"WTPTA002", tax_code, p_language, p_crt_by);
 
-      // console.log("======================weTaxSendOrderInfoV2 END===================");
+      console.log("weTaxSendOrderInfoV2 data ", data_rep);
+      console.log("======================weTaxSendOrderInfoV2 END===================");
 
       // return response.send(Utils.response(true, `Send order to invoice was successfully!`, data_rep));
       return response.status(200).json(Utils.responseByRule({success : true, message : "Sent order information successfully.", data: data_rep}));
@@ -6959,15 +6960,15 @@ class EInvoiceController {
         infor_send_mail
       } = request.all();
 
-      // console.log("weTaxReSendOrderInfoV2  BEGIN ============================= ");
-      // //console.log("weTaxReSendOrderInfoV2  sale_id ",sale_id);
-      // //console.log("weTaxReSendOrderInfoV2  msg_his_id ",msg_his_id);
-      // console.log("weTaxReSendOrderInfoV2  tax_code ",tax_code);
-      // console.log("weTaxReSendOrderInfoV2  sale_date ",sale_date);
-      // console.log("weTaxReSendOrderInfoV2  store_code ",store_code);
-      // console.log("weTaxReSendOrderInfoV2  store_name ",store_name);
-      // console.log("weTaxReSendOrderInfoV2  infor_send_mail ",infor_send_mail);
-      // console.log("weTaxReSendOrderInfoV2  END =============================== ");
+      console.log("weTaxReSendOrderInfoV2  BEGIN ============================= ");
+      //console.log("weTaxReSendOrderInfoV2  sale_id ",sale_id);
+      //console.log("weTaxReSendOrderInfoV2  msg_his_id ",msg_his_id);
+      console.log("weTaxReSendOrderInfoV2  tax_code ",tax_code);
+      console.log("weTaxReSendOrderInfoV2  sale_date ",sale_date);
+      console.log("weTaxReSendOrderInfoV2  store_code ",store_code);
+      console.log("weTaxReSendOrderInfoV2  store_name ",store_name);
+      console.log("weTaxReSendOrderInfoV2  infor_send_mail ",infor_send_mail);
+      console.log("weTaxReSendOrderInfoV2  END =============================== ");
 
       let tei_wt_sale_bill_pk = 0;
       let data_r = [];
@@ -8365,7 +8366,7 @@ class EInvoiceController {
                 inform_code: inv.inform_code,
             }
 
-            await DBService.ExecuteSQLBlob(
+            const r_data_inv =  await DBService.ExecuteSQLBlob(
               `BEGIN WT_UPD_TEI_WT_INVOICE_POS(
                               :mccqt,
                               :tax_code,
@@ -8381,6 +8382,14 @@ class EInvoiceController {
               p_language,
               p_crt_by
              );
+             
+             data_inv.forEach((element, index) => {
+              if(element.form_no === inv.form_no && element.serial_no === inv.serial_no && element.invoice_no === inv.invoice_no) {
+                  data_inv[index].lookup_code = r_data_inv.p_rtn_cur[0].LOOKUP_CODE;
+                }
+              });    
+
+             
           }
 
 
@@ -8400,8 +8409,8 @@ class EInvoiceController {
             xml_tax_signed: xml_tax_signed,
           };
         });
-         //console.log("weTaxSendPosInvoiceToTaxOffice rtnValue  ", rtnValue);
-         //console.log("weTaxSendPosInvoiceToTaxOffice END ========================  ");
+         console.log("weTaxSendPosInvoiceToTaxOffice rtnValue  ", rtnValue);
+         console.log("weTaxSendPosInvoiceToTaxOffice END ========================  ");
       // return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
       return response.status(200).json(Utils.responseByRule({success : true, message : "Sent POS invoice successfully.", data: rtnValue}));
     } catch (e) {
@@ -14204,6 +14213,7 @@ class EInvoiceController {
                   invoice_no: invoice.DLHDon.TTChung.SHDon,
                   inform_code: "8",
                   inform_name: "Dữ liệu hóa đơn hợp lệ",
+                  lookup_code: ""
                 }
               );
               if(rtnValueMaster.p_rtn_cur[0].STATUS == "OK")
@@ -15145,7 +15155,7 @@ class EInvoiceController {
  
        if(data_rep && data_rep.length > 0)
        {
-        //console.log("data_rep ", data_rep)
+        console.log("data_rep ", data_rep)
           const agent = {
             Agent: {
               defaultPort: 443,
@@ -15184,7 +15194,7 @@ class EInvoiceController {
       Utils.Logger({
         LVL: "error",
         MODULE: "EInvoiceController",
-        FUNC: "sendMailWT",
+        FUNC: "sendMailNormailWT",
         CONTENT: e.message,
       });
       console.log("e  ", e);
@@ -15268,39 +15278,45 @@ class EInvoiceController {
              });
            }
        }
-       
-       const agent = {
-         Agent: {
-           defaultPort: 443,
-           protocol: "https:",
-           options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
-         },
-       };
-
-      let triesCounter = 0;
-      while(triesCounter < 3){
-            try {
-              const res = await Request.post(
-                `${WETAX_API_URL}/api/wtx/v1/email-delivery-status`,
-                { 
-                  service_id : ipa_name,
-                  seller_tax_code : tax_code,
-                  info_send_email : data_rep
-                 },
-                {
-                  agent,
-                  headers: {
-                    Authorization: "Basic " + WETAX_TOKEN_CALLBACK,
+       if(data_rep && data_rep.length > 0)
+       {
+        const agent = {
+          Agent: {
+            defaultPort: 443,
+            protocol: "https:",
+            options: { maxVersion: "TLSv1.2", minVersion: "TLSv1.2", path: null },
+          },
+        };
+        console.log("sendMailWT   service_id ",  ipa_name);
+        console.log("sendMailWT   seller_tax_code ",  tax_code);
+        console.log("sendMailWT   info_send_email ",  data_rep);
+ 
+       let triesCounter = 0;
+       while(triesCounter < 3){
+             try {
+               const res = await Request.post(
+                 `${WETAX_API_URL}/api/wtx/v1/email-delivery-status`,
+                 { 
+                   service_id : ipa_name,
+                   seller_tax_code : tax_code,
+                   info_send_email : data_rep
                   },
-                }
-              );
-              break;  // 'return' would work here as well
-            } catch (err) {
-             await Utils._sleep(5);
-              console.log(err);
-            }
-            triesCounter ++;
-        }
+                 {
+                   agent,
+                   headers: {
+                     Authorization: "Basic " + WETAX_TOKEN_CALLBACK,
+                   },
+                 }
+               );
+               break;  // 'return' would work here as well
+             } catch (err) {
+              await Utils._sleep(5);
+               console.log(err);
+             }
+             triesCounter ++;
+         }
+       }
+       
       
     } catch (e) {
       Utils.Logger({
@@ -15309,7 +15325,7 @@ class EInvoiceController {
         FUNC: "sendMailWT",
         CONTENT: e.message,
       });
-      //console.log("e  ", e);
+      console.log("e  ", e);
       //return response.send(Utils.response(false, e.message));
     }
   }

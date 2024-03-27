@@ -3194,7 +3194,7 @@ class EInvoiceController {
     } catch (e) {
       Utils.Logger({
         LVL: "error",
-        MODULE: "EInvoiceController",
+        MODULE: "EInvoiceController", 
         FUNC: "sendInvoiceToTaxOffice",
         CONTENT: e.message,
       });

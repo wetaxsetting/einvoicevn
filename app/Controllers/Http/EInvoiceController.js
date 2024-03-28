@@ -12448,7 +12448,7 @@ class EInvoiceController {
 
     Utils.Logger({  LVL: "debug",  MODULE: "EInvoiceController",
       FUNC: "getDataEinvoiceFormLookupCode",
-      CONTENT: rtnValue.p_rtn_cur,
+      CONTENT: JSON.stringify(rtnValue.p_rtn_cur),
     });
       if (rtnValue.p_rtn_cur[0].TYPE == "EP" )
       {
@@ -12456,6 +12456,10 @@ class EInvoiceController {
          url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].TEI_EINVOICE_M_PK, p_language, p_crt_by);
          console.log("base64PDf: ", url_pdf);
 
+         Utils.Logger({  LVL: "base64PDf",  MODULE: "EInvoiceController",
+          FUNC: "getDataEinvoiceFormLookupCode",
+          CONTENT: url_pdf,
+          });
          re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + rtnValue.p_rtn_cur[0].CQT_MAGD + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token=");
          url_xml = re_url_xml.data;
       }else

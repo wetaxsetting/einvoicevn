@@ -323,8 +323,6 @@ import moment from "moment";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import "vue-pdf-app/dist/icons/main.css";
 import VuePdfApp from "vue-pdf-app";
-//import contractSearch from '@/../data/einvoices_logo/0104128565-999/2024/03/1711592105991_1711592105991.png';
-
 // import ViewEInvoicePDFDialog from "@/components/dialog/ViewEInvoicePDFDialog.vue";
 export default {
   /*############### DEFAULT #######################*/
@@ -946,26 +944,40 @@ export default {
               this.url_template = res.URL_FILE_EXCEL;
               this.MasterInfo.TEMPLATE_NM = res.TEMPLATE_NM;
               ///  Load ra được hình ảnh////
-              let imgLOGO = this.MasterInfo.URL_IMG_LOGO;
-              this.imageLOGO = imgLOGO;
+              //let imgLOGO = this.MasterInfo.URL_IMG_LOGO;
+              //this.imageLOGO = imgLOGO;
+              try {
+                let res_url = await this.$axios.$post("/einvoice/general-base64-from-url", {
+                responseType: "json",
+                url: this.MasterInfo.URL_IMG_LOGO,
+                });
+                //console.log(res_url);
+                if (res_url.success) {
+                  this.imageLOGO = res_url.data;
+                } 
+              } catch (e) {
+                this.showNotification("danger", this.$t("fail_to_url", "Error"), e.message);
+              }  
+
+
               let imgBG = this.MasterInfo.URL_IMG_BG;
               this.imageBG = imgBG;
               //console.log('imgLOGO', imgLOGO);
               //console.log('this.MasterInfo', this.MasterInfo);
-              try {
-                this.showLoading = true;
-                let res_url = await this.$axios.$post("/einvoice/general-url-pdf-template", {
-                  responseType: "json",
-                  data: this.issue_pk,
-                });
-                this.urlPDF = null;
-                if (res_url.success) {
-                  this.urlPDF = res_url.data;
-                  this.showLoading = false;
-                }
-              } catch (e) {
-                this.showNotification("danger", this.$t("fail_to_url", "Error"), e.message);
-              }
+              // try {
+              //   this.showLoading = true;
+              //   let res_url = await this.$axios.$post("/einvoice/general-url-pdf-template", {
+              //     responseType: "json",
+              //     data: this.issue_pk,
+              //   });
+              //   this.urlPDF = null;
+              //   if (res_url.success) {
+              //     this.urlPDF = res_url.data;
+              //     this.showLoading = false;
+              //   }
+              // } catch (e) {
+              //   this.showNotification("danger", this.$t("fail_to_url", "Error"), e.message);
+              // }
               break;
             case "update":
               switch (this.MasterInfo._rowstatus) {

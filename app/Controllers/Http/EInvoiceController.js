@@ -12447,9 +12447,9 @@ class EInvoiceController {
     });
 
     Utils.Logger({  LVL: "debug",  MODULE: "EInvoiceController",
-      FUNC: "getDataEinvoiceFormLookupCode",
-      CONTENT: JSON.stringify(rtnValue.p_rtn_cur),
-    });
+        FUNC: "getDataEinvoiceFormLookupCode",
+        CONTENT: JSON.stringify(rtnValue.p_rtn_cur),
+      });
       if (rtnValue.p_rtn_cur[0].TYPE == "EP" )
       {
          EiExcels = new EiExcelHandlerAuto(); //CQT_MAGD

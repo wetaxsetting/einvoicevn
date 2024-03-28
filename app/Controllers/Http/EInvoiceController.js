@@ -12441,11 +12441,20 @@ class EInvoiceController {
       // console.log("base64XML:", url_xml);
       let EiExcels = null, re_url_xml = null;
       let url_pdf= "", url_xml = "" ;
+      Utils.Logger({  LVL: "debug",  MODULE: "EInvoiceController",
+      FUNC: "getDataEinvoiceFormLookupCode",
+      CONTENT: rtnValue.p_rtn_cur[0].TYPE,
+    });
+
+    Utils.Logger({  LVL: "debug",  MODULE: "EInvoiceController",
+      FUNC: "getDataEinvoiceFormLookupCode",
+      CONTENT: rtnValue.p_rtn_cur,
+    });
       if (rtnValue.p_rtn_cur[0].TYPE == "EP" )
       {
          EiExcels = new EiExcelHandlerAuto(); //CQT_MAGD
          url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].TEI_EINVOICE_M_PK, p_language, p_crt_by);
-        // console.log("base64PDf: ", url_pdf);
+         console.log("base64PDf: ", url_pdf);
 
          re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + rtnValue.p_rtn_cur[0].CQT_MAGD + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token=");
          url_xml = re_url_xml.data;
@@ -12487,9 +12496,7 @@ class EInvoiceController {
 
       return response.send(Utils.response(true, "Convert einvoice successful!", rep_data));
     } catch (e) {
-      Utils.Logger({
-        LVL: "error",
-        MODULE: "EInvoiceController",
+      Utils.Logger({  LVL: "error",  MODULE: "EInvoiceController",
         FUNC: "getDataEinvoiceFormLookupCode",
         CONTENT: e.message,
       });

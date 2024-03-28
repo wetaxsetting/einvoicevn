@@ -964,20 +964,20 @@ export default {
               this.imageBG = imgBG;
               //console.log('imgLOGO', imgLOGO);
               //console.log('this.MasterInfo', this.MasterInfo);
-              // try {
-              //   this.showLoading = true;
-              //   let res_url = await this.$axios.$post("/einvoice/general-url-pdf-template", {
-              //     responseType: "json",
-              //     data: this.issue_pk,
-              //   });
-              //   this.urlPDF = null;
-              //   if (res_url.success) {
-              //     this.urlPDF = res_url.data;
-              //     this.showLoading = false;
-              //   }
-              // } catch (e) {
-              //   this.showNotification("danger", this.$t("fail_to_url", "Error"), e.message);
-              // }
+              try {
+                this.showLoading = true;
+                let res_url = await this.$axios.$post("/einvoice/general-url-pdf-template", {
+                  responseType: "json",
+                  data: this.issue_pk,
+                });
+                this.urlPDF = null;
+                if (res_url.success) {
+                  this.urlPDF = res_url.data;
+                  this.showLoading = false;
+                }
+              } catch (e) {
+                this.showNotification("danger", this.$t("fail_to_url", "Error"), e.message);
+              }
               break;
             case "update":
               switch (this.MasterInfo._rowstatus) {

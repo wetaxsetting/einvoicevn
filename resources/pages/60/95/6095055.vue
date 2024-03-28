@@ -323,6 +323,8 @@ import moment from "moment";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import "vue-pdf-app/dist/icons/main.css";
 import VuePdfApp from "vue-pdf-app";
+import contractSearch from '@/../data/einvoices_logo/0104128565-999/2024/03/1711592105991_1711592105991.png';
+
 // import ViewEInvoicePDFDialog from "@/components/dialog/ViewEInvoicePDFDialog.vue";
 export default {
   /*############### DEFAULT #######################*/

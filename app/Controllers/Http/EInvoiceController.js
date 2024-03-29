@@ -70,11 +70,13 @@ const {jar} = require('request');
 const {lookup} = require('dns');
 
 // real site
-const TAX_CHECK_TRADE_CODE = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
-const TAX_USER_NAME = 'GENUWIN';
-const TAX_PASSWORD = 'e_GX4v@';
-const WETAX_TOKEN_CALLBACK = 'bad056ce571e2f1459ced4f7ff4db6d493b6472026ac8a8997bc0c03625c8667';
-const WETAX_API_URL = 'https://api.wetax.com.vn';
+const TAX_CHECK_TRADE_CODE = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+const TAX_USER_NAME = "GENUWIN";
+const TAX_PASSWORD = "e_GX4v@";
+
+const WETAX_TOKEN_CALLBACK = Env.get("WETAX_API_KEY");
+const WETAX_API_URL = Env.get("WETAX_API_URL");
+
 // test site
 // const TAX_CHECK_TRADE_CODE = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
 

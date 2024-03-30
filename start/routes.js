@@ -196,9 +196,10 @@ Route.group(() => {
     Route.post("general-pdf-template-send-bill", "EInvoiceController.viewPDF_SaleBillWT")   ////VNG-304
     Route.post("send-data-pos-invoice-erp", "EInvoiceController.sendPosInvoiceErp")
     Route.post("send-invoice-erp", "EInvoiceController.sendInvoiceErp")
-    Route.post("view-pdf", "EInvoiceController.viewPDFInvoice")
+    Route.post("view-pdf", "EInvoiceController.viewPDFInvoice") 
+    Route.post("general-base64-from-url", "EInvoiceController.getBase64ImgFromUrl")
 
-
+    
 }).prefix("api/einvoice").middleware("user");
 
 Route.group(() => {

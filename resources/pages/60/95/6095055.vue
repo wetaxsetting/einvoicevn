@@ -944,8 +944,22 @@ export default {
               this.url_template = res.URL_FILE_EXCEL;
               this.MasterInfo.TEMPLATE_NM = res.TEMPLATE_NM;
               ///  Load ra được hình ảnh////
-              let imgLOGO = this.MasterInfo.URL_IMG_LOGO;
-              this.imageLOGO = imgLOGO;
+              //let imgLOGO = this.MasterInfo.URL_IMG_LOGO;
+              //this.imageLOGO = imgLOGO;
+              try {
+                let res_url = await this.$axios.$post("/einvoice/general-base64-from-url", {
+                responseType: "json",
+                url: this.MasterInfo.URL_IMG_LOGO,
+                });
+                //console.log(res_url);
+                if (res_url.success) {
+                  this.imageLOGO = res_url.data;
+                } 
+              } catch (e) {
+                this.showNotification("danger", this.$t("fail_to_url", "Error"), e.message);
+              }  
+
+
               let imgBG = this.MasterInfo.URL_IMG_BG;
               this.imageBG = imgBG;
               //console.log('imgLOGO', imgLOGO);

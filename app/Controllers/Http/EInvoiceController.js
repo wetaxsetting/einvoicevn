@@ -7694,34 +7694,8 @@ class EInvoiceController {
                     mccqt: maCQT,
                     send_mail_yn: 'N',
                   });
-
-                  // const result = await DBService.ExecuteSQLBlob(
-                  //     `BEGIN ei_upd_file_xml_v5(:trade_code,:macqt,:xml_sign,:p_language, :p_crt_by, :p_rtn_cur); END;`,
-                  //     para_value,
-                  //     p_language,
-                  //     p_crt_by
-                  // );
-                } else if (items[k].loaiTBao == '1') {
-                  xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8');
-                  xml_length = getLength(xml_tax_signed);
                 } else if (items[k].loaiTBao == '9' || items[k].loaiTBao == '16' || items[k].loaiTBao == '15') {
-                  /* maTBao = items[k].loaiTBao;
-                  tenTBao = items[k].tenTBao;
-                  data_error.push(
-                    {
-                      maLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].maLoi,
-                      mtaLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].mtaLoi
-                    }
-                  )*/
-
-                  // !!!========================== tao sample maCQT
-                  maCQT = await this.makeid(34);
-                  maTBao = '10';
-                  tenTBao = 'Thông báo hóa đơn được CQT cấp mã';
-                  data_error = [];
-
-                  // !!!========================== tao sample maCQT
-
+                  
                   data_inv.push({
                     sale_id: data[i].req_key,
                     trade_code: data[i].trade_code,
@@ -7731,21 +7705,7 @@ class EInvoiceController {
                     mccqt: maCQT,
                     send_mail_yn: 'N',
                   });
-
-                  // const result = await DBService.callProcCursor(
-                  //     "ei_upd_file_xml_v8", [para[i], maTBao, tenTBao],
-                  //     p_language,
-                  //     p_crt_by
-                  // );
-                } //else if (items[k].loaiTBao == "15") {
-                //tenTBao = items[k].tenTBao;
-                //maTBao = items[k].loaiTBao;
-                // const result = await DBService.callProcCursor(
-                //     "ei_upd_file_xml_v9", [para[i], tenTBao],
-                //     p_language,
-                //     p_crt_by
-                // );
-                //}
+                } 
               }
             }
           })
@@ -7796,21 +7756,7 @@ class EInvoiceController {
       return response
         .status(200)
         .json(Utils.responseByRule({success: true, message: `${data.length} invoices was update status from tax office.`, data: rtnValue}));
-
-      // rtnValue.push({
-      //     trade_code: para.trade_code[i],
-      //     tax_confirmation_code: para.tei_einvoice_m_pk[i],
-      //     inform_code: maTBao,
-      //     inform_name: tenTBao,
-      // });
-      // }
-      // return response.send(
-      //     Utils.response(
-      //         true,
-      //         `${para.trade_code.length} invoices was update status from tax office.`,
-      //         rtnValue
-      //     )
-      // );
+     
     } catch (e) {
       Utils.Logger({
         LVL: 'error',
@@ -8523,12 +8469,6 @@ class EInvoiceController {
               for (let j = 0; j < res.data.length; j++) {
                 const items = res.data[j];
                 for (let k = 0; k < items.length; k++) {
-                  // console.log("items[k].loaiTBao " + items[k].loaiTBao);
-                  //console.log("items  ", items[k]);
-                  // if (items[k].loaiTBao == "1") {
-                  //   xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
-                  // }
-                  // else
                   if (items[k].loaiTBao == '10') {
                     let xml_draft = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8').split('</TTChung><DLieu>');
                     xml_tax_signed = '<?xml version="1.0" encoding="UTF-8"?>' + xml_draft[1].replace('</DLieu></TDiep>', '');
@@ -8546,18 +8486,6 @@ class EInvoiceController {
                       }
                     });
                   } else if (items[k].loaiTBao == '9' || items[k].loaiTBao == '16' || items[k].loaiTBao == '15') {
-                    // !!!========================== tao sample maCQT
-                    //   maCQT = await this.makeid(34);
-                    //   maTBao = "10";
-                    //   tenTBao = "Thông báo hóa đơn được CQT cấp mã";
-                    //   data_error = []
-
-                    //   rtnValueTradecode.forEach((element, index) => {
-                    //     if(element.trade_code === tr_code.trade_code) {
-                    //       rtnValueTradecode[index].mccqt = maCQT;
-                    //     }
-                    // });
-                    // !!!========================== tao sample maCQT
 
                     // tam thời đóng vì k cung cấp MST
                     maTBao = items[k].loaiTBao;
@@ -8573,11 +8501,7 @@ class EInvoiceController {
             }
           });
         }
-        // !!!========================== tao sample maCQT
-        //if(maTBao == '10'){
-        //  maCQT = uuid.v4().substring(0, 34);
-        //}
-        // !!!========================== tao sample maCQT
+      
         const para_status = {
           req_ep_key: tr_code.trade_code,
           maCQT: maCQT,

@@ -13671,7 +13671,7 @@ class EInvoiceController {
           //console.log("jsonInvoice  ", jsonInvoice);
           for (const invoice of jsonInvoice) {
             
-            let xml_content =   this.OBJtoXML(invoice);
+            let xml_content =  "<HDon>" + this.OBJtoXML(invoice) + "</HDon>"; 
             var getLength = require('utf8-byte-length');
             let xml_length = getLength(xml_content);
             console.log('weTaxExtractPosXMLContent m xml_content ===> ', xml_content);

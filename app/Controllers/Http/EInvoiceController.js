@@ -13670,8 +13670,9 @@ class EInvoiceController {
         if (rtnValuePos.p_rtn_cur[0].STATUS == 'OK') {
           //console.log("jsonInvoice  ", jsonInvoice);
           for (const invoice of jsonInvoice) {
-            //console.log('weTaxExtractPosXMLContent m invoice ===> ', invoice);
+            
             let xml_content =   this.OBJtoXML(invoice);
+            console.log('weTaxExtractPosXMLContent m xml_content ===> ', xml_content);
             const paraMaster = {
               pban: invoice.DLHDon.TTChung.PBan,
               thdon: invoice.DLHDon.TTChung.THDon,

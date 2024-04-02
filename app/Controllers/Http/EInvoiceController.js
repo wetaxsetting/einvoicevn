@@ -13672,6 +13672,8 @@ class EInvoiceController {
           for (const invoice of jsonInvoice) {
             
             let xml_content =   this.OBJtoXML(invoice);
+            var getLength = require('utf8-byte-length');
+            let xml_length = getLength(xml_content);
             console.log('weTaxExtractPosXMLContent m xml_content ===> ', xml_content);
             const paraMaster = {
               pban: invoice.DLHDon.TTChung.PBan,
@@ -13705,7 +13707,8 @@ class EInvoiceController {
               pos_no: pos_no,
               signing_time: signingTime.SigningTime,
               tei_wt_invoice_pos_pk: rtnValuePos.p_rtn_cur[0].PK,
-              xml_content :xml_content
+              xml_content :xml_content,
+              xml_length :xml_length
             };
 
             //console.log('weTaxExtractPosXMLContent m param ===> ', paraMaster);
@@ -13742,6 +13745,7 @@ class EInvoiceController {
                                                   :signing_time,
                                                   :tei_wt_invoice_pos_pk,
                                                   :xml_content,
+                                                  :xml_length,
                                                   :p_language, 
                                                   :p_crt_by, 
                                                   :p_rtn_cur); END;`,

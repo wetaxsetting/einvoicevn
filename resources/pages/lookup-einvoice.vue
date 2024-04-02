@@ -277,7 +277,7 @@ export default {
       try {
         var link = document.createElement('a');
         link.href = this.invoiceInfo.url_pdf;
-        link.download = `${this.invoiceInfo.serial_no}.pdf`;
+        link.download = `${this.invoiceInfo.form_no}_${this.invoiceInfo.serial_no}_${this.invoiceInfo.invoice_no}.pdf`;
         link.dispatchEvent(new MouseEvent('click'));
       } catch (error) {
         console.log("onDownload-catch exception:", error.message)

@@ -10758,7 +10758,7 @@ class EInvoiceController {
                                             <br/>- Số hóa đơn: 
                                             <b>${data_invoice.invoice_no}</b>
                                             <br/>- Tổng thanh toán: 
-                                            <b>       ${data_invoice.total_payment.toLocaleString('en-US')}</b>
+                                            <b>       ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment))}</b>
                                             <br/>- Mã CQT của hóa đơn: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link tra cứu: 
@@ -10790,7 +10790,7 @@ class EInvoiceController {
                                             <br/>- Invoice No:  
                                             <b>${data_invoice.invoice_no}</b>
                                             <br/>- Total amount :  
-                                            <b>       ${data_invoice.total_payment.toLocaleString('en-US')}</b>
+                                            <b>       ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment))}</b>
                                             <br/>- CQT code of e-invoice: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link lookup: 
@@ -10861,7 +10861,7 @@ class EInvoiceController {
                                             <br/>- Số hóa đơn: 
                                             <b>${data_invoice.invoice_no}</b>
                                             <br/>- Tổng thanh toán: 
-                                            <b>       ${data_invoice.total_payment.toLocaleString('en-US')}</b>
+                                            <b>       ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment))}</b>
                                             <br/>- Mã CQT của hóa đơn: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link tra cứu: 
@@ -10893,7 +10893,7 @@ class EInvoiceController {
                                             <br/>- Invoice No:  
                                             <b>${data_invoice.invoice_no}</b>
                                             <br/>- Total amount :  
-                                            <b>       ${data_invoice.total_payment.toLocaleString('en-US')}</b>
+                                            <b>       ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment))}</b>
                                             <br/>- CQT code of e-invoice: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link lookup: 
@@ -10966,7 +10966,7 @@ class EInvoiceController {
                                             <br/>- Số hóa đơn: 
                                             <b>${data_invoice.invoice_no}</b>
                                             <br/>- Tổng thanh toán: 
-                                            <b>       ${data_invoice.total_payment.toLocaleString('en-US')}</b>
+                                            <b>       ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment))}</b>
                                             <br/>- Mã CQT của hóa đơn: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link tra cứu: 
@@ -10998,7 +10998,7 @@ class EInvoiceController {
                                             <br/>- Invoice No:  
                                             <b>${data_invoice.invoice_no}</b>
                                             <br/>- Total amount :  
-                                            <b>       ${data_invoice.total_payment.toLocaleString('en-US')}</b>
+                                            <b>       ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment))}</b>
                                             <br/>- CQT code of e-invoice: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link lookup: 

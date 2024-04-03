@@ -5656,7 +5656,7 @@ class EInvoiceController {
 
         objInvoice.DLHDon.NDHDon.TToan.TTCKTMai = invoices[i].total_dc_amt;
         objInvoice.DLHDon.NDHDon.TToan.TgTTTBSo = invoices[i].total_payment;
-        objInvoice.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText(invoices[i].total_payment.toString(), invoices[i].currency);
+        objInvoice.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText2(invoices[i].total_payment.toString(), invoices[i].currency);
 
         objInvoice.DSCKS.NBan = '';
 
@@ -5979,7 +5979,7 @@ class EInvoiceController {
           total_amt_dc: invoice.total_dc_amt,
           total_amt_vat: invoice.total_amt_vat,
           total_payment: invoice.total_payment,
-          total_payment_word_vie: await Utils.Num2VNText(invoice.total_payment.toString(), invoice.currency), //  invoice.total_payment_word_vie,
+          total_payment_word_vie: await Utils.Num2VNText2(invoice.total_payment.toString(), invoice.currency), //  invoice.total_payment_word_vie,
           mccqt: invoice.mccqt,
           data_xml: data_xml,
           count_length: count_length,
@@ -6346,7 +6346,7 @@ class EInvoiceController {
           total_amt_dc: invoice.total_dc_amt,
           total_amt_vat: invoice.total_amt_vat,
           total_payment: invoice.total_payment,
-          total_payment_word_vie: await Utils.Num2VNText(invoice.total_payment.toString(), invoice.currency), //  invoice.total_payment_word_vie,
+          total_payment_word_vie: await Utils.Num2VNText2(invoice.total_payment.toString(), invoice.currency), //  invoice.total_payment_word_vie,
           mccqt: invoice.mccqt,
           data_xml: data_xml,
           count_length: count_length,
@@ -8724,7 +8724,7 @@ class EInvoiceController {
         objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTThue = invoices[i].total_vat_amt || '0';
         objInvoice_M.HDon.DLHDon.NDHDon.TToan.TTCKTMai = invoices[i].total_dc_amt || '0';
         objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = invoices[i].total_payment || '0';
-        objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText(invoices[i].total_payment.toString() || '0', invoices[i].currency);
+        objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText2(invoices[i].total_payment.toString() || '0', invoices[i].currency);
 
         objInvoice_M.HDon.DSCKS.NBan = '';
         objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu = {};
@@ -9526,7 +9526,7 @@ class EInvoiceController {
 
         objInvoice.HDon.DLHDon.NDHDon.TToan.TTCKTMai = invoiceM.TOTAL_DC_AMT;
         objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = invoiceM.TOTAL_PAYMENT;
-        objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText(invoiceM.TOTAL_PAYMENT.toString(), invoiceM.CURRENCY);
+        objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText2(invoiceM.TOTAL_PAYMENT.toString(), invoiceM.CURRENCY);
 
         objInvoice.HDon.DSCKS.NBan = '';
 
@@ -9812,7 +9812,7 @@ class EInvoiceController {
 
         objInvoice.DLHDon.NDHDon.TToan.TTCKTMai = invoiceM.TOTAL_DC_AMT;
         objInvoice.DLHDon.NDHDon.TToan.TgTTTBSo = invoiceM.TOTAL_PAYMENT;
-        objInvoice.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText(invoiceM.TOTAL_PAYMENT.toString(), invoiceM.CURRENCY);
+        objInvoice.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText2(invoiceM.TOTAL_PAYMENT.toString(), invoiceM.CURRENCY);
 
         objInvoice.DSCKS.NBan = '';
 
@@ -10132,7 +10132,7 @@ class EInvoiceController {
 
         objInvoice.HDon.DLHDon.NDHDon.TToan.TTCKTMai = invoiceM.TOTAL_DC_AMT;
         objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = invoiceM.TOTAL_PAYMENT;
-        objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText(invoiceM.TOTAL_PAYMENT.toString(), invoiceM.CURRENCY);
+        objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText2(invoiceM.TOTAL_PAYMENT.toString(), invoiceM.CURRENCY);
 
         objInvoice.HDon.DSCKS.NBan = '';
 
@@ -12193,7 +12193,7 @@ class EInvoiceController {
     objInvoice_M.HDon.DLHDon.NDHDon.TToan.TTCKTMai = dataObject.total_amt_dc;
     objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = dataObject.total_payment;
     if (!dataObject.total_payment_word_vie) {
-      let wordsAmt = Utils.Num2VNText(dataObject.total_payment.toString(), dataObject.ccy);
+      let wordsAmt = Utils.Num2VNText2(dataObject.total_payment.toString(), dataObject.ccy);
       objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = wordsAmt.substr(0, 2) + wordsAmt.substr(2, wordsAmt.length - 2).toLowerCase() + '.'; //  wordsAmt.substring(0,2) + wordsAmt.substring(2);  // dataObject.total_payment_word_vie;
     } else {
       objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = dataObject.total_payment_word_vie;
@@ -12896,7 +12896,7 @@ class EInvoiceController {
       const jsonTToan = await transform(p_xml_content, templateTToan);
       // console.log("jsonTToan", jsonTToan)
       const arrTToan = [jsonTToan[0].TgTCThue, jsonTToan[0].TgTThue, jsonTToan[0].TTCKTMai, jsonTToan[0].TgTTTBSo, jsonTToan[0].TgTTTBChu];
-      let v_vn_amount = Utils.Num2VNText(jsonTToan[0].TgTTTBSo.toString(), jsonTTChung[0].DVTTe);
+      let v_vn_amount = Utils.Num2VNText2(jsonTToan[0].TgTTTBSo.toString(), jsonTTChung[0].DVTTe);
       // console.log("  v_vn_amount ", v_vn_amount);
       /*const templateMCCQT = ['HDon', {
                                   MCCQT: 'MCCQT'
@@ -13192,7 +13192,7 @@ class EInvoiceController {
 
       objInvoice.HDon.DLHDon.NDHDon.TToan.TTCKTMai = invoiceM.TOTAL_DC_AMT;
       objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = invoiceM.TOTAL_PAYMENT;
-      objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText(invoiceM.TOTAL_PAYMENT.toString(), invoiceM.CURRENCY);
+      objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText2(invoiceM.TOTAL_PAYMENT.toString(), invoiceM.CURRENCY);
 
       objInvoice.HDon.DSCKS.NBan = '';
 
@@ -14223,7 +14223,7 @@ class EInvoiceController {
       const jsonTToan = await transform(p_xml_content, templateTToan);
       // console.log("jsonTToan", jsonTToan)
       const arrTToan = [jsonTToan[0].TgTCThue, jsonTToan[0].TgTThue, jsonTToan[0].TTCKTMai, jsonTToan[0].TgTTTBSo, jsonTToan[0].TgTTTBChu];
-      let v_vn_amount = await Utils.Num2VNText(jsonTToan[0].TgTTTBSo.toString(), jsonTTChung[0].DVTTe);
+      let v_vn_amount = await Utils.Num2VNText2(jsonTToan[0].TgTTTBSo.toString(), jsonTTChung[0].DVTTe);
       // console.log("  v_vn_amount ", v_vn_amount);
       /*const templateMCCQT = ['HDon', {
                                   MCCQT: 'MCCQT'

@@ -7115,7 +7115,9 @@ class EInvoiceController {
       //console.log("weTaxSendCompanyTemplate template_id :",template_id);
       //console.log("weTaxSendCompanyTemplate start_number :",start_number);
       //console.log("weTaxSendCompanyTemplate start_date : ", start_date);
-      //console.log("weTaxSendCompanyTemplate seller_comp_taxcode :",seller_comp_taxcode);
+
+      console.log("weTaxSendCompanyTemplate BEGIN ================================");
+      console.log("weTaxSendCompanyTemplate seller_comp_taxcode :",seller_comp_taxcode);
 
       if (!seller_comp_taxcode) {
         //return response.send(Utils.response(false, "seller_comp_taxcode can't null",null));
@@ -7251,6 +7253,8 @@ class EInvoiceController {
           status_code: '001',
           status_name: rtnValue.p_rtn_cur[0].ERRCODE,
         };
+        console.log("weTaxSendCompanyTemplate END =============================");
+
         //return response.send(Utils.response(false, "Send Company template was Faile", req_value));
         return response.status(409).json(Utils.responseByRule({success: false, message: 'Send Company template was Faile.', data: req_value}));
       }
@@ -7277,15 +7281,16 @@ class EInvoiceController {
       const {seller_comp_taxcode, data_template} = request.all();
 
       let req_value = [];
-      // //console.log("weTaxSendCompanyTemplate logo_image : ", logo_image);
-      ////console.log("weTaxSendCompanyTemplate background_image :",background_image);
-      // //console.log("weTaxSendCompanyTemplate form_no :",form_no);
-      // //console.log("weTaxSendCompanyTemplate serial_no :",serial_no);
-      // //console.log("weTaxSendCompanyTemplate symbol_type : ", symbol_type);
-      // //console.log("weTaxSendCompanyTemplate template_id :",template_id);
-      // //console.log("weTaxSendCompanyTemplate start_number :",start_number);
+      //console.log("weTaxSendCompanyTemplate logo_image : ", logo_image);
+      //console.log("weTaxSendCompanyTemplate background_image :",background_image);
+      //console.log("weTaxSendCompanyTemplate form_no :",form_no);
+      //console.log("weTaxSendCompanyTemplate serial_no :",serial_no);
+      //console.log("weTaxSendCompanyTemplate symbol_type : ", symbol_type);
+      //console.log("weTaxSendCompanyTemplate template_id :",template_id);
+      //console.log("weTaxSendCompanyTemplate start_number :",start_number);
       //console.log("weTaxSendCompanyTemplate data_template : ", data_template);
-      //console.log("weTaxSendCompanyTemplate seller_comp_taxcode :",seller_comp_taxcode);
+      console.log("weTaxSendCompanyTemplate2 BEGIN ============================");
+      console.log("weTaxSendCompanyTemplate2 seller_comp_taxcode :",seller_comp_taxcode);
 
       if (!seller_comp_taxcode) {
         return response.status(400).json(Utils.responseByRule({success: false, message: "seller_comp_taxcode can't null"}));
@@ -7481,13 +7486,14 @@ class EInvoiceController {
           });
         }
       }
+      console.log("weTaxSendCompanyTemplate2 END ============================");
 
       return response.status(200).json(Utils.responseByRule({success: true, message: 'Send Company template was Success.', data: req_value}));
     } catch (error) {
       Utils.Logger({
         LVL: 'error',
         MODULE: 'EInvoiceController',
-        FUNC: 'weTaxSendCompanyTemplate',
+        FUNC: 'weTaxSendCompanyTemplate2',
         CONTENT: error.message,
       });
       console.log(error);

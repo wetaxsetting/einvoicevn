@@ -7102,7 +7102,7 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      const {seller_comp_taxcode, symbol_type, form_no, serial_no, template_id, start_date, end_date, start_number, preview} = request.all();
+      const {seller_comp_taxcode, symbol_type, form_no, serial_no, template_id, start_date, end_date, start_number, preview, status} = request.all();
       const template_excel = request.file('template_excel');
       const logo_image = request.file('logo_image');
       const background_image = request.file('background_image');

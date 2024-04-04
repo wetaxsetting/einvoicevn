@@ -9132,8 +9132,8 @@ class EInvoiceController {
       }
       let r_data_noti = [];
       const {seller_taxcode, noti_list} = request.all();
-      //console.log("weTaxSendRecords   BEGIN =================================");
-      //console.log("weTaxSendRecords   ", noti_list);
+      console.log("weTaxSendRecords   BEGIN =================================");
+      console.log("weTaxSendRecords   ", noti_list);
       for (const noti of noti_list) {
         // console.log("noti  ", noti);
         const res = await this.weTaxExtractRecordXMLContent(noti.xml_signed, noti.req_key, p_language, p_crt_by);
@@ -9197,7 +9197,7 @@ class EInvoiceController {
         }
       }
 
-      //console.log("weTaxSendRecords   END =================================");
+      console.log("weTaxSendRecords   END =================================");
 
       // return response.send(Utils.response(true, `Sending records was successful. `,r_data_noti ));
       return response.status(200).json(Utils.responseByRule({success: true, message: 'Send e-Record successfully.', data: r_data_noti}));

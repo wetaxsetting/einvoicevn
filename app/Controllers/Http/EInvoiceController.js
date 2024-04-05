@@ -2072,7 +2072,7 @@ class EInvoiceController {
     }
   }
 
-  async weTaxExtractXMLContentNotice(p_xml_content, p_language, p_crt_by) {
+  async weTaxExtractXMLContentNotice(p_xml_content, p_doc_no, p_language, p_crt_by) {
     try {
       const templateTTChung = [
         'TBao/DLTBao',
@@ -2116,6 +2116,7 @@ class EInvoiceController {
         jsonTTChung[0].DDanh,
         jsonTTChung[0].NTBao,
         signingTime.SigningTime,
+        p_doc_no
       ];
 
       //console.log("arrTTChung  ", arrTTChung);
@@ -3347,7 +3348,7 @@ class EInvoiceController {
       //const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
       //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
       let url = ''; //  "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/mttien/tbaossot";
-      const {xml_signed, req_key, smbl_type} = request.all();
+      const {xml_signed, req_key, smbl_type, doc_no} = request.all();
       const agent = {
         Agent: {
           defaultPort: 443,
@@ -3370,7 +3371,7 @@ class EInvoiceController {
         return response.status(400).json(Utils.responseByRule({success: false, message: valid.message}));
       }
 
-      const matesNoticePK = await this.weTaxExtractXMLContentNotice(xml_signed, p_crt_by, p_language);
+      const matesNoticePK = await this.weTaxExtractXMLContentNotice(xml_signed, doc_no, p_crt_by, p_language);
 
       //  console.log("weTaxSendInformAdjustToTaxOffice  valid  ", matesNoticePK);
 

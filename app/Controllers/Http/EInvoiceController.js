@@ -2072,7 +2072,7 @@ class EInvoiceController {
     }
   }
 
-  async weTaxExtractXMLContentNotice(p_xml_content, p_language, p_crt_by) {
+  async weTaxExtractXMLContentNotice(p_xml_content, p_doc_no, p_language, p_crt_by) {
     try {
       const templateTTChung = [
         'TBao/DLTBao',
@@ -2116,6 +2116,7 @@ class EInvoiceController {
         jsonTTChung[0].DDanh,
         jsonTTChung[0].NTBao,
         signingTime.SigningTime,
+        p_doc_no
       ];
 
       //console.log("arrTTChung  ", arrTTChung);
@@ -3344,10 +3345,11 @@ class EInvoiceController {
       }
       const authUserName = 'GENUWIN'; // "GENUWIN";
       const authPassword = 'genuwin123'; // "e_GX4v@";
+      let url = ''; //  "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/mttien/tbaossot";
+
       //const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
       //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
-      let url = ''; //  "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/mttien/tbaossot";
-      const {xml_signed, req_key, smbl_type} = request.all();
+      const {xml_signed, req_key, smbl_type, doc_no} = request.all();
       const agent = {
         Agent: {
           defaultPort: 443,
@@ -3370,7 +3372,7 @@ class EInvoiceController {
         return response.status(400).json(Utils.responseByRule({success: false, message: valid.message}));
       }
 
-      const matesNoticePK = await this.weTaxExtractXMLContentNotice(xml_signed, p_crt_by, p_language);
+      const matesNoticePK = await this.weTaxExtractXMLContentNotice(xml_signed, doc_no, p_crt_by, p_language);
 
       //  console.log("weTaxSendInformAdjustToTaxOffice  valid  ", matesNoticePK);
 
@@ -5656,7 +5658,7 @@ class EInvoiceController {
 
         objInvoice.DLHDon.NDHDon.TToan.TTCKTMai = invoices[i].total_dc_amt;
         objInvoice.DLHDon.NDHDon.TToan.TgTTTBSo = invoices[i].total_payment;
-        objInvoice.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText(invoices[i].total_payment.toString(), invoices[i].currency);
+        objInvoice.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText2(invoices[i].total_payment.toString(), invoices[i].currency);
 
         objInvoice.DSCKS.NBan = '';
 
@@ -5979,7 +5981,7 @@ class EInvoiceController {
           total_amt_dc: invoice.total_dc_amt,
           total_amt_vat: invoice.total_amt_vat,
           total_payment: invoice.total_payment,
-          total_payment_word_vie: await Utils.Num2VNText(invoice.total_payment.toString(), invoice.currency), //  invoice.total_payment_word_vie,
+          total_payment_word_vie: await Utils.Num2VNText2(invoice.total_payment.toString(), invoice.currency), //  invoice.total_payment_word_vie,
           mccqt: invoice.mccqt,
           data_xml: data_xml,
           count_length: count_length,
@@ -6103,7 +6105,7 @@ class EInvoiceController {
         else {
           //console.log("tei_wt_sale_bill_pk NOEXIT ", tei_wt_sale_bill_pk);
           data_rep.push({
-            link_invoice_preview: 'https://dev.einvoicevn.com/lookup-einvoice?trade_code',
+            link_invoice_preview: 'https://test.einvoicevn.com/lookup-einvoice?trade_code',
             security_code: '',
             status_code: '0',
             status_name: 'Tax code has not been registered',
@@ -6127,7 +6129,7 @@ class EInvoiceController {
 
         if (!invoice.buyer_email && !invoice.buyer_email_cc) {
           data_rep.push({
-            link_invoice_preview: 'https://dev.einvoicevn.com/lookup-einvoice?trade_code',
+            link_invoice_preview: 'https://test.einvoicevn.com/lookup-einvoice?trade_code',
             security_code: '',
             status_code: '0',
             status_name: 'Not Sent',
@@ -6168,7 +6170,7 @@ class EInvoiceController {
             );
 
             data_rep.push({
-              link_invoice_preview: 'https://dev.einvoicevn.com/lookup-einvoice?trade_code',
+              link_invoice_preview: 'https://test.einvoicevn.com/lookup-einvoice?trade_code',
               lookup_code: '1234567bac',
               status_code: '1',
               status_name: 'Sent Success',
@@ -6205,7 +6207,7 @@ class EInvoiceController {
               p_crt_by,
             );
             data_rep.push({
-              link_invoice_preview: 'https://dev.einvoicevn.com/lookup-einvoice?trade_code',
+              link_invoice_preview: 'https://test.einvoicevn.com/lookup-einvoice?trade_code',
               security_code: '1234567bac',
               status_code: '0',
               status_name: 'Sent Faile',
@@ -6346,7 +6348,7 @@ class EInvoiceController {
           total_amt_dc: invoice.total_dc_amt,
           total_amt_vat: invoice.total_amt_vat,
           total_payment: invoice.total_payment,
-          total_payment_word_vie: await Utils.Num2VNText(invoice.total_payment.toString(), invoice.currency), //  invoice.total_payment_word_vie,
+          total_payment_word_vie: await Utils.Num2VNText2(invoice.total_payment.toString(), invoice.currency), //  invoice.total_payment_word_vie,
           mccqt: invoice.mccqt,
           data_xml: data_xml,
           count_length: count_length,
@@ -6478,7 +6480,7 @@ class EInvoiceController {
           data_rep.push({
             sale_id: invoice.sale_id,
             msg_his_id: invoice.msg_his_id,
-            link_invoice_preview: 'https://dev.einvoicevn.com/lookup-einvoice?trade_code',
+            link_invoice_preview: 'https://test.einvoicevn.com/lookup-einvoice?trade_code',
             lookup_code: '',
             status_code: '0',
             status_name: 'Tax code has not been registered',
@@ -6504,7 +6506,7 @@ class EInvoiceController {
           data_rep.push({
             sale_id: invoice.sale_id,
             msg_his_id: invoice.msg_his_id,
-            link_invoice_preview: 'https://dev.einvoicevn.com/lookup-einvoice?trade_code',
+            link_invoice_preview: 'https://test.einvoicevn.com/lookup-einvoice?trade_code',
             lookup_code: '',
             status_code: '0',
             status_name: 'Not Sent',
@@ -6527,7 +6529,7 @@ class EInvoiceController {
           data_rep.push({
             sale_id: invoice.sale_id,
             msg_his_id: invoice.msg_his_id,
-            link_invoice_preview: 'https://dev.einvoicevn.com/lookup-einvoice?trade_code',
+            link_invoice_preview: 'https://test.einvoicevn.com/lookup-einvoice?trade_code',
             lookup_code: rtnValue.p_rtn_cur[0].LOOKUP_CODE,
             status_code: '3',
             status_name: 'In Process',
@@ -6628,7 +6630,7 @@ class EInvoiceController {
 
           if (!invoice.buyer_email && !invoice.buyer_email_cc && !rtnValue.p_rtn_cur[0].BUYER_EMAIL && !rtnValue.p_rtn_cur[0].BUYER_EMAIL_CC) {
             data_r.push({
-              link_invoice_preview: 'https://dev.einvoicevn.com/lookup-einvoice?trade_code',
+              link_invoice_preview: 'https://test.einvoicevn.com/lookup-einvoice?trade_code',
               lookup_code: '1234567bac',
               seller_taxcode: tax_code,
               form_no: invoice.form_no,
@@ -6681,7 +6683,7 @@ class EInvoiceController {
               //console.log("rtnValueSendMail  ", rtnValueSendMail);
 
               data_r.push({
-                link_invoice_preview: 'https://dev.einvoicevn.com/lookup-einvoice?trade_code',
+                link_invoice_preview: 'https://test.einvoicevn.com/lookup-einvoice?trade_code',
                 lookup_code: '1234567bac',
                 seller_taxcode: tax_code,
                 form_no: invoice.form_no,
@@ -6716,7 +6718,7 @@ class EInvoiceController {
               );
 
               data_r.push({
-                link_invoice_preview: 'https://dev.einvoicevn.com/lookup-einvoice?trade_code',
+                link_invoice_preview: 'https://test.einvoicevn.com/lookup-einvoice?trade_code',
                 lookup_code: '1234567bac',
                 seller_taxcode: tax_code,
                 form_no: invoice.form_no,
@@ -6738,7 +6740,7 @@ class EInvoiceController {
         } else {
           //return response.send(Utils.response(false, 'Order einvoice not exit'));
           data_r.push({
-            link_invoice_preview: 'https://dev.einvoicevn.com/lookup-einvoice?trade_code',
+            link_invoice_preview: 'https://test.einvoicevn.com/lookup-einvoice?trade_code',
             lookup_code: '1234567bac',
             seller_taxcode: tax_code,
             form_no: invoice.form_no,
@@ -6849,7 +6851,7 @@ class EInvoiceController {
             data_r.push({
               sale_id: invoice.sale_id,
               msg_his_id: invoice.msg_his_id,
-              link_invoice_preview: 'https://dev.einvoicevn.com/lookup-einvoice?trade_code',
+              link_invoice_preview: 'https://test.einvoicevn.com/lookup-einvoice?trade_code',
               lookup_code: rtnValue?.p_rtn_cur?.[0]?.LOOKUP_CD,
               seller_taxcode: tax_code,
               form_no: invoice.form_no,
@@ -6873,7 +6875,7 @@ class EInvoiceController {
           data_r.push({
             sale_id: invoice.sale_id,
             msg_his_id: invoice.msg_his_id,
-            link_invoice_preview: 'https://dev.einvoicevn.com/lookup-einvoice?trade_code',
+            link_invoice_preview: 'https://test.einvoicevn.com/lookup-einvoice?trade_code',
             lookup_code: rtnValue?.p_rtn_cur?.[0]?.LOOKUP_CD,
             seller_taxcode: tax_code,
             form_no: invoice.form_no,
@@ -6896,7 +6898,7 @@ class EInvoiceController {
           data_r.push({
             sale_id: invoice.sale_id,
             msg_his_id: invoice.msg_his_id,
-            link_invoice_preview: 'https://dev.einvoicevn.com/lookup-einvoice?trade_code',
+            link_invoice_preview: 'https://test.einvoicevn.com/lookup-einvoice?trade_code',
             lookup_code: '',
             seller_taxcode: tax_code,
             form_no: invoice.form_no,
@@ -7009,7 +7011,7 @@ class EInvoiceController {
             data_r.push({
               sale_id: invoice.sale_id,
               msg_his_id: invoice.msg_his_id,
-              link_invoice_preview: 'https://dev.einvoicevn.com/lookup-einvoice?trade_code',
+              link_invoice_preview: 'https://test.einvoicevn.com/lookup-einvoice?trade_code',
               lookup_code: rtnValue?.p_rtn_cur?.[0]?.LOOKUP_CD,
               seller_taxcode: tax_code,
               form_no: invoice.form_no,
@@ -7033,7 +7035,7 @@ class EInvoiceController {
           data_r.push({
             sale_id: invoice.sale_id,
             msg_his_id: invoice.msg_his_id,
-            link_invoice_preview: 'https://dev.einvoicevn.com/lookup-einvoice?trade_code',
+            link_invoice_preview: 'https://test.einvoicevn.com/lookup-einvoice?trade_code',
             lookup_code: rtnValue?.p_rtn_cur?.[0]?.LOOKUP_CD,
             seller_taxcode: tax_code,
             form_no: invoice.form_no,
@@ -7056,7 +7058,7 @@ class EInvoiceController {
           data_r.push({
             sale_id: invoice.sale_id,
             msg_his_id: invoice.msg_his_id,
-            link_invoice_preview: 'https://dev.einvoicevn.com/lookup-einvoice?trade_code',
+            link_invoice_preview: 'https://test.einvoicevn.com/lookup-einvoice?trade_code',
             lookup_code: '',
             seller_taxcode: tax_code,
             form_no: invoice.form_no,
@@ -7102,7 +7104,7 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      const {seller_comp_taxcode, symbol_type, form_no, serial_no, template_id, start_date, end_date, start_number, preview} = request.all();
+      const {seller_comp_taxcode, symbol_type, form_no, serial_no, template_id, start_date, end_date, start_number, preview, status} = request.all();
       const template_excel = request.file('template_excel');
       const logo_image = request.file('logo_image');
       const background_image = request.file('background_image');
@@ -7115,7 +7117,9 @@ class EInvoiceController {
       //console.log("weTaxSendCompanyTemplate template_id :",template_id);
       //console.log("weTaxSendCompanyTemplate start_number :",start_number);
       //console.log("weTaxSendCompanyTemplate start_date : ", start_date);
-      //console.log("weTaxSendCompanyTemplate seller_comp_taxcode :",seller_comp_taxcode);
+
+      console.log("weTaxSendCompanyTemplate BEGIN ================================");
+      console.log("weTaxSendCompanyTemplate seller_comp_taxcode :",seller_comp_taxcode);
 
       if (!seller_comp_taxcode) {
         //return response.send(Utils.response(false, "seller_comp_taxcode can't null",null));
@@ -7251,6 +7255,8 @@ class EInvoiceController {
           status_code: '001',
           status_name: rtnValue.p_rtn_cur[0].ERRCODE,
         };
+        console.log("weTaxSendCompanyTemplate END =============================");
+
         //return response.send(Utils.response(false, "Send Company template was Faile", req_value));
         return response.status(409).json(Utils.responseByRule({success: false, message: 'Send Company template was Faile.', data: req_value}));
       }
@@ -7277,15 +7283,16 @@ class EInvoiceController {
       const {seller_comp_taxcode, data_template} = request.all();
 
       let req_value = [];
-      // //console.log("weTaxSendCompanyTemplate logo_image : ", logo_image);
-      ////console.log("weTaxSendCompanyTemplate background_image :",background_image);
-      // //console.log("weTaxSendCompanyTemplate form_no :",form_no);
-      // //console.log("weTaxSendCompanyTemplate serial_no :",serial_no);
-      // //console.log("weTaxSendCompanyTemplate symbol_type : ", symbol_type);
-      // //console.log("weTaxSendCompanyTemplate template_id :",template_id);
-      // //console.log("weTaxSendCompanyTemplate start_number :",start_number);
+      //console.log("weTaxSendCompanyTemplate logo_image : ", logo_image);
+      //console.log("weTaxSendCompanyTemplate background_image :",background_image);
+      //console.log("weTaxSendCompanyTemplate form_no :",form_no);
+      //console.log("weTaxSendCompanyTemplate serial_no :",serial_no);
+      //console.log("weTaxSendCompanyTemplate symbol_type : ", symbol_type);
+      //console.log("weTaxSendCompanyTemplate template_id :",template_id);
+      //console.log("weTaxSendCompanyTemplate start_number :",start_number);
       //console.log("weTaxSendCompanyTemplate data_template : ", data_template);
-      //console.log("weTaxSendCompanyTemplate seller_comp_taxcode :",seller_comp_taxcode);
+      console.log("weTaxSendCompanyTemplate2 BEGIN ============================");
+      console.log("weTaxSendCompanyTemplate2 seller_comp_taxcode :",seller_comp_taxcode);
 
       if (!seller_comp_taxcode) {
         return response.status(400).json(Utils.responseByRule({success: false, message: "seller_comp_taxcode can't null"}));
@@ -7481,13 +7488,14 @@ class EInvoiceController {
           });
         }
       }
+      console.log("weTaxSendCompanyTemplate2 END ============================");
 
       return response.status(200).json(Utils.responseByRule({success: true, message: 'Send Company template was Success.', data: req_value}));
     } catch (error) {
       Utils.Logger({
         LVL: 'error',
         MODULE: 'EInvoiceController',
-        FUNC: 'weTaxSendCompanyTemplate',
+        FUNC: 'weTaxSendCompanyTemplate2',
         CONTENT: error.message,
       });
       console.log(error);
@@ -7694,34 +7702,8 @@ class EInvoiceController {
                     mccqt: maCQT,
                     send_mail_yn: 'N',
                   });
-
-                  // const result = await DBService.ExecuteSQLBlob(
-                  //     `BEGIN ei_upd_file_xml_v5(:trade_code,:macqt,:xml_sign,:p_language, :p_crt_by, :p_rtn_cur); END;`,
-                  //     para_value,
-                  //     p_language,
-                  //     p_crt_by
-                  // );
-                } else if (items[k].loaiTBao == '1') {
-                  xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8');
-                  xml_length = getLength(xml_tax_signed);
                 } else if (items[k].loaiTBao == '9' || items[k].loaiTBao == '16' || items[k].loaiTBao == '15') {
-                  /* maTBao = items[k].loaiTBao;
-                  tenTBao = items[k].tenTBao;
-                  data_error.push(
-                    {
-                      maLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].maLoi,
-                      mtaLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].mtaLoi
-                    }
-                  )*/
-
-                  // !!!========================== tao sample maCQT
-                  maCQT = await this.makeid(34);
-                  maTBao = '10';
-                  tenTBao = 'Thông báo hóa đơn được CQT cấp mã';
-                  data_error = [];
-
-                  // !!!========================== tao sample maCQT
-
+                  
                   data_inv.push({
                     sale_id: data[i].req_key,
                     trade_code: data[i].trade_code,
@@ -7731,21 +7713,7 @@ class EInvoiceController {
                     mccqt: maCQT,
                     send_mail_yn: 'N',
                   });
-
-                  // const result = await DBService.callProcCursor(
-                  //     "ei_upd_file_xml_v8", [para[i], maTBao, tenTBao],
-                  //     p_language,
-                  //     p_crt_by
-                  // );
-                } //else if (items[k].loaiTBao == "15") {
-                //tenTBao = items[k].tenTBao;
-                //maTBao = items[k].loaiTBao;
-                // const result = await DBService.callProcCursor(
-                //     "ei_upd_file_xml_v9", [para[i], tenTBao],
-                //     p_language,
-                //     p_crt_by
-                // );
-                //}
+                } 
               }
             }
           })
@@ -7796,21 +7764,7 @@ class EInvoiceController {
       return response
         .status(200)
         .json(Utils.responseByRule({success: true, message: `${data.length} invoices was update status from tax office.`, data: rtnValue}));
-
-      // rtnValue.push({
-      //     trade_code: para.trade_code[i],
-      //     tax_confirmation_code: para.tei_einvoice_m_pk[i],
-      //     inform_code: maTBao,
-      //     inform_name: tenTBao,
-      // });
-      // }
-      // return response.send(
-      //     Utils.response(
-      //         true,
-      //         `${para.trade_code.length} invoices was update status from tax office.`,
-      //         rtnValue
-      //     )
-      // );
+     
     } catch (e) {
       Utils.Logger({
         LVL: 'error',
@@ -8523,12 +8477,6 @@ class EInvoiceController {
               for (let j = 0; j < res.data.length; j++) {
                 const items = res.data[j];
                 for (let k = 0; k < items.length; k++) {
-                  // console.log("items[k].loaiTBao " + items[k].loaiTBao);
-                  //console.log("items  ", items[k]);
-                  // if (items[k].loaiTBao == "1") {
-                  //   xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
-                  // }
-                  // else
                   if (items[k].loaiTBao == '10') {
                     let xml_draft = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8').split('</TTChung><DLieu>');
                     xml_tax_signed = '<?xml version="1.0" encoding="UTF-8"?>' + xml_draft[1].replace('</DLieu></TDiep>', '');
@@ -8546,6 +8494,8 @@ class EInvoiceController {
                       }
                     });
                   } else if (items[k].loaiTBao == '9' || items[k].loaiTBao == '16' || items[k].loaiTBao == '15') {
+
+                    // tam thời đóng vì k cung cấp MST
                     maTBao = items[k].loaiTBao;
                     tenTBao = items[k].tenTBao;
                     data_error.push({
@@ -8559,11 +8509,7 @@ class EInvoiceController {
             }
           });
         }
-        // !!!========================== tao sample maCQT
-        //if(maTBao == '10'){
-        //  maCQT = uuid.v4().substring(0, 34);
-        //}
-        // !!!========================== tao sample maCQT
+      
         const para_status = {
           req_ep_key: tr_code.trade_code,
           maCQT: maCQT,
@@ -8786,7 +8732,7 @@ class EInvoiceController {
         objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTThue = invoices[i].total_vat_amt || '0';
         objInvoice_M.HDon.DLHDon.NDHDon.TToan.TTCKTMai = invoices[i].total_dc_amt || '0';
         objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = invoices[i].total_payment || '0';
-        objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText(invoices[i].total_payment.toString() || '0', invoices[i].currency);
+        objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText2(invoices[i].total_payment.toString() || '0', invoices[i].currency);
 
         objInvoice_M.HDon.DSCKS.NBan = '';
         objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu = {};
@@ -9194,13 +9140,13 @@ class EInvoiceController {
       }
       let r_data_noti = [];
       const {seller_taxcode, noti_list} = request.all();
-      //console.log("weTaxSendRecords   BEGIN =================================");
-      //console.log("weTaxSendRecords   ", noti_list);
+      console.log("weTaxSendRecords   BEGIN =================================");
+      console.log("weTaxSendRecords   ", noti_list);
       for (const noti of noti_list) {
         // console.log("noti  ", noti);
         const res = await this.weTaxExtractRecordXMLContent(noti.xml_signed, noti.req_key, p_language, p_crt_by);
 
-        //console.log("weTaxSendRecords   details res", res);
+        console.log("weTaxSendRecords   details res", res);
 
         if (res.STATUS == 'OK') {
           const data_mail = await this.weTaxSendMailRecords(
@@ -9259,7 +9205,7 @@ class EInvoiceController {
         }
       }
 
-      //console.log("weTaxSendRecords   END =================================");
+      console.log("weTaxSendRecords   END =================================");
 
       // return response.send(Utils.response(true, `Sending records was successful. `,r_data_noti ));
       return response.status(200).json(Utils.responseByRule({success: true, message: 'Send e-Record successfully.', data: r_data_noti}));
@@ -9588,7 +9534,7 @@ class EInvoiceController {
 
         objInvoice.HDon.DLHDon.NDHDon.TToan.TTCKTMai = invoiceM.TOTAL_DC_AMT;
         objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = invoiceM.TOTAL_PAYMENT;
-        objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText(invoiceM.TOTAL_PAYMENT.toString(), invoiceM.CURRENCY);
+        objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText2(invoiceM.TOTAL_PAYMENT.toString(), invoiceM.CURRENCY);
 
         objInvoice.HDon.DSCKS.NBan = '';
 
@@ -9874,7 +9820,7 @@ class EInvoiceController {
 
         objInvoice.DLHDon.NDHDon.TToan.TTCKTMai = invoiceM.TOTAL_DC_AMT;
         objInvoice.DLHDon.NDHDon.TToan.TgTTTBSo = invoiceM.TOTAL_PAYMENT;
-        objInvoice.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText(invoiceM.TOTAL_PAYMENT.toString(), invoiceM.CURRENCY);
+        objInvoice.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText2(invoiceM.TOTAL_PAYMENT.toString(), invoiceM.CURRENCY);
 
         objInvoice.DSCKS.NBan = '';
 
@@ -10194,7 +10140,7 @@ class EInvoiceController {
 
         objInvoice.HDon.DLHDon.NDHDon.TToan.TTCKTMai = invoiceM.TOTAL_DC_AMT;
         objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = invoiceM.TOTAL_PAYMENT;
-        objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText(invoiceM.TOTAL_PAYMENT.toString(), invoiceM.CURRENCY);
+        objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText2(invoiceM.TOTAL_PAYMENT.toString(), invoiceM.CURRENCY);
 
         objInvoice.HDon.DSCKS.NBan = '';
 
@@ -10820,13 +10766,11 @@ class EInvoiceController {
                                             <br/>- Số hóa đơn: 
                                             <b>${data_invoice.invoice_no}</b>
                                             <br/>- Tổng thanh toán: 
-                                            <b>       ${data_invoice.total_payment
-                                              .toLocaleString('it-IT', {style: 'currency', currency: 'VND'})
-                                              .replaceAll('VND', '')}</b>
+                                            <b>       ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment))}</b>
                                             <br/>- Mã CQT của hóa đơn: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link tra cứu: 
-								                            <a href='https://dev.einvoicevn.com/lookup-einvoice?trade_code=${lookup_code}'>Xem hóa đơn</a>
+								                            <a href='https://test.einvoicevn.com/lookup-einvoice?trade_code=${lookup_code}'>Xem hóa đơn</a>
                                             <br />- Link download file PDF: 
                                             <a href='${url_pdf}'>Tải file PDF</a>
                                             <br />- Link download file XML: 
@@ -10854,13 +10798,11 @@ class EInvoiceController {
                                             <br/>- Invoice No:  
                                             <b>${data_invoice.invoice_no}</b>
                                             <br/>- Total amount :  
-                                            <b>       ${data_invoice.total_payment
-                                              .toLocaleString('it-IT', {style: 'currency', currency: 'VND'})
-                                              .replaceAll('VND', '')}</b>
+                                            <b>       ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment))}</b>
                                             <br/>- CQT code of e-invoice: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link lookup: 
-								                            <a href='https://dev.einvoicevn.com/lookup-einvoice?trade_code=${lookup_code}'>View e-invoice</a>
+								                            <a href='https://test.einvoicevn.com/lookup-einvoice?trade_code=${lookup_code}'>View e-invoice</a>
                                             <br />- Download file PDF link:  
                                             <a href='${url_pdf}'>Download file PDF</a>
                                             <br />- Download file XML link:  
@@ -10927,13 +10869,11 @@ class EInvoiceController {
                                             <br/>- Số hóa đơn: 
                                             <b>${data_invoice.invoice_no}</b>
                                             <br/>- Tổng thanh toán: 
-                                            <b>       ${data_invoice.total_payment
-                                              .toLocaleString('it-IT', {style: 'currency', currency: 'VND'})
-                                              .replaceAll('VND', '')}</b>
+                                            <b>       ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment))}</b>
                                             <br/>- Mã CQT của hóa đơn: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link tra cứu: 
-								                            <a href='https://dev.einvoicevn.com/lookup-einvoice?trade_code=${lookup_code}'>Xem hóa đơn</a>
+								                            <a href='https://test.einvoicevn.com/lookup-einvoice?trade_code=${lookup_code}'>Xem hóa đơn</a>
                                             <br />- Link download file PDF: 
                                             <a href='${url_pdf}'>Tải file PDF</a>
                                             <br />- Link download file XML: 
@@ -10961,13 +10901,11 @@ class EInvoiceController {
                                             <br/>- Invoice No:  
                                             <b>${data_invoice.invoice_no}</b>
                                             <br/>- Total amount :  
-                                            <b>       ${data_invoice.total_payment
-                                              .toLocaleString('it-IT', {style: 'currency', currency: 'VND'})
-                                              .replaceAll('VND', '')}</b>
+                                            <b>       ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment))}</b>
                                             <br/>- CQT code of e-invoice: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link lookup: 
-								                            <a href='https://dev.einvoicevn.com/lookup-einvoice?trade_code=${lookup_code}'>View e-invoice</a>
+								                            <a href='https://test.einvoicevn.com/lookup-einvoice?trade_code=${lookup_code}'>View e-invoice</a>
                                             <br />- Download file PDF link:  
                                             <a href='${url_pdf}'>Download file PDF</a>
                                             <br />- Download file XML link:  
@@ -11036,13 +10974,11 @@ class EInvoiceController {
                                             <br/>- Số hóa đơn: 
                                             <b>${data_invoice.invoice_no}</b>
                                             <br/>- Tổng thanh toán: 
-                                            <b>       ${data_invoice.total_payment
-                                              .toLocaleString('it-IT', {style: 'currency', currency: 'VND'})
-                                              .replaceAll('VND', '')}</b>
+                                            <b>       ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment))}</b>
                                             <br/>- Mã CQT của hóa đơn: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link tra cứu: 
-								                            <a href='https://dev.einvoicevn.com/lookup-einvoice?trade_code=${lookup_code}'>Xem hóa đơn</a>
+								                            <a href='https://test.einvoicevn.com/lookup-einvoice?trade_code=${lookup_code}'>Xem hóa đơn</a>
                                             <br />- Link download file PDF: 
                                             <a href='${url_pdf}'>Tải file PDF</a>
                                             <br />- Link download file XML: 
@@ -11070,13 +11006,11 @@ class EInvoiceController {
                                             <br/>- Invoice No:  
                                             <b>${data_invoice.invoice_no}</b>
                                             <br/>- Total amount :  
-                                            <b>       ${data_invoice.total_payment
-                                              .toLocaleString('it-IT', {style: 'currency', currency: 'VND'})
-                                              .replaceAll('VND', '')}</b>
+                                            <b>       ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment))}</b>
                                             <br/>- CQT code of e-invoice: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link lookup: 
-								                            <a href='https://dev.einvoicevn.com/lookup-einvoice?trade_code=${lookup_code}'>View e-invoice</a>
+								                            <a href='https://test.einvoicevn.com/lookup-einvoice?trade_code=${lookup_code}'>View e-invoice</a>
                                             <br />- Download file PDF link:  
                                             <a href='${url_pdf}'>Download file PDF</a>
                                             <br />- Download file XML link:  
@@ -12255,7 +12189,7 @@ class EInvoiceController {
     objInvoice_M.HDon.DLHDon.NDHDon.TToan.TTCKTMai = dataObject.total_amt_dc;
     objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = dataObject.total_payment;
     if (!dataObject.total_payment_word_vie) {
-      let wordsAmt = Utils.Num2VNText(dataObject.total_payment.toString(), dataObject.ccy);
+      let wordsAmt = Utils.Num2VNText2(dataObject.total_payment.toString(), dataObject.ccy);
       objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = wordsAmt.substr(0, 2) + wordsAmt.substr(2, wordsAmt.length - 2).toLowerCase() + '.'; //  wordsAmt.substring(0,2) + wordsAmt.substring(2);  // dataObject.total_payment_word_vie;
     } else {
       objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = dataObject.total_payment_word_vie;
@@ -12958,7 +12892,7 @@ class EInvoiceController {
       const jsonTToan = await transform(p_xml_content, templateTToan);
       // console.log("jsonTToan", jsonTToan)
       const arrTToan = [jsonTToan[0].TgTCThue, jsonTToan[0].TgTThue, jsonTToan[0].TTCKTMai, jsonTToan[0].TgTTTBSo, jsonTToan[0].TgTTTBChu];
-      let v_vn_amount = Utils.Num2VNText(jsonTToan[0].TgTTTBSo.toString(), jsonTTChung[0].DVTTe);
+      let v_vn_amount = Utils.Num2VNText2(jsonTToan[0].TgTTTBSo.toString(), jsonTTChung[0].DVTTe);
       // console.log("  v_vn_amount ", v_vn_amount);
       /*const templateMCCQT = ['HDon', {
                                   MCCQT: 'MCCQT'
@@ -13254,7 +13188,7 @@ class EInvoiceController {
 
       objInvoice.HDon.DLHDon.NDHDon.TToan.TTCKTMai = invoiceM.TOTAL_DC_AMT;
       objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = invoiceM.TOTAL_PAYMENT;
-      objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText(invoiceM.TOTAL_PAYMENT.toString(), invoiceM.CURRENCY);
+      objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText2(invoiceM.TOTAL_PAYMENT.toString(), invoiceM.CURRENCY);
 
       objInvoice.HDon.DSCKS.NBan = '';
 
@@ -13732,6 +13666,7 @@ class EInvoiceController {
         if (rtnValuePos.p_rtn_cur[0].STATUS == 'OK') {
           //console.log("jsonInvoice  ", jsonInvoice);
           for (const invoice of jsonInvoice) {
+            
             let xml_content =  "<HDon>" + this.OBJtoXML(invoice) + "</HDon>"; 
             var getLength = require('utf8-byte-length');
             let xml_length = getLength(xml_content);
@@ -14284,7 +14219,7 @@ class EInvoiceController {
       const jsonTToan = await transform(p_xml_content, templateTToan);
       // console.log("jsonTToan", jsonTToan)
       const arrTToan = [jsonTToan[0].TgTCThue, jsonTToan[0].TgTThue, jsonTToan[0].TTCKTMai, jsonTToan[0].TgTTTBSo, jsonTToan[0].TgTTTBChu];
-      let v_vn_amount = await Utils.Num2VNText(jsonTToan[0].TgTTTBSo.toString(), jsonTTChung[0].DVTTe);
+      let v_vn_amount = await Utils.Num2VNText2(jsonTToan[0].TgTTTBSo.toString(), jsonTTChung[0].DVTTe);
       // console.log("  v_vn_amount ", v_vn_amount);
       /*const templateMCCQT = ['HDon', {
                                   MCCQT: 'MCCQT'

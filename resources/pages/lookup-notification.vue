@@ -309,7 +309,7 @@ export default {
         let objXml = [
           {
             req_key: this.invoiceInfo.req_key,
-            xml: this.invoiceInfo.seller_sign_xml,
+            xml: this.invoiceInfo.seller_sign_xml.toString().replaceAll("\"","'"),
             id_signing: id_signing,
             url_signing: "BBan/DSCKS/NMua"
           }
@@ -339,11 +339,11 @@ export default {
     async onSuccessissueXmlList(data) {
       //console.log("data  ", data);
       
-      // if(this.invoiceInfo.buyer_taxcode != data.dn_mst)
-      // {
-      //   this.showNotification("warning", "Notification", "mst_is_wrong");
-      //   return;
-      // }
+      if(this.invoiceInfo.buyer_taxcode != data.dn_mst)
+      {
+        this.showNotification("warning", "Notification", "mst_is_wrong");
+        return;
+      }
 
       var date_token = new Date(data.not_after);
       var date_current = new Date();

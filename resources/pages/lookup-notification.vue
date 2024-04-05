@@ -309,7 +309,7 @@ export default {
         let objXml = [
           {
             req_key: this.invoiceInfo.req_key,
-            xml: this.invoiceInfo.seller_sign_xml,
+            xml: this.invoiceInfo.seller_sign_xml.toString().replaceAll("\"","'"),
             id_signing: id_signing,
             url_signing: "BBan/DSCKS/NMua"
           }

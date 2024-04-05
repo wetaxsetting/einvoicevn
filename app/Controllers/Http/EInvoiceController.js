@@ -7248,6 +7248,8 @@ class EInvoiceController {
           req_key: rtnValue.p_rtn_cur[0].PK,
           template: url_pdf,
         };
+        console.log("weTaxSendCompanyTemplate data ", req_value);
+        console.log("weTaxSendCompanyTemplate END =============================");
         //return response.send(Utils.response(true, "Send Company template was Successfully", req_value));
         return response.status(200).json(Utils.responseByRule({success: true, message: 'Send Company template was Successfully', data: req_value}));
       } else {
@@ -7258,8 +7260,7 @@ class EInvoiceController {
           status_code: '001',
           status_name: rtnValue.p_rtn_cur[0].ERRCODE,
         };
-        console.log("weTaxSendCompanyTemplate data ", req_value);
-        console.log("weTaxSendCompanyTemplate END =============================");
+        
 
         //return response.send(Utils.response(false, "Send Company template was Faile", req_value));
         return response.status(409).json(Utils.responseByRule({success: false, message: 'Send Company template was Faile.', data: req_value}));

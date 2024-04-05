@@ -7212,6 +7212,7 @@ class EInvoiceController {
         p_logo_height: logo_height,
         p_logo_start_col: '0.5',
         p_logo_start_row: '1.7',
+        p_status: status
       };
 
       const rtnValue = await DBService.ExecuteSQLBlob(
@@ -7229,6 +7230,7 @@ class EInvoiceController {
                                                           :p_logo_height,
                                                           :p_logo_start_row,
                                                           :p_logo_start_col,
+                                                          :p_status,
                                                           :p_language, 
                                                           :p_crt_by, 
                                                           :p_rtn_cur); END;`,
@@ -7256,6 +7258,7 @@ class EInvoiceController {
           status_code: '001',
           status_name: rtnValue.p_rtn_cur[0].ERRCODE,
         };
+        console.log("weTaxSendCompanyTemplate data ", req_value);
         console.log("weTaxSendCompanyTemplate END =============================");
 
         //return response.send(Utils.response(false, "Send Company template was Faile", req_value));

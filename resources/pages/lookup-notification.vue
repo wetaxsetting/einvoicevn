@@ -339,11 +339,11 @@ export default {
     async onSuccessissueXmlList(data) {
       //console.log("data  ", data);
       
-      // if(this.invoiceInfo.buyer_taxcode != data.dn_mst)
-      // {
-      //   this.showNotification("warning", "Notification", "mst_is_wrong");
-      //   return;
-      // }
+      if(this.invoiceInfo.buyer_taxcode != data.dn_mst)
+      {
+        this.showNotification("warning", "Notification", "mst_is_wrong");
+        return;
+      }
 
       var date_token = new Date(data.not_after);
       var date_current = new Date();

@@ -10897,7 +10897,7 @@ class EInvoiceController {
                                             if (data_invoice.invoice_type == "1")
                                             {
                                               
-                                              body = body + ` - Thay thế cho Số hóa đơn: <b>${data_invoice.invoice_no}</b><br />
+                                              body = body + ` - Thay thế cho Số hóa đơn: <b>${data_invoice.invoice_no_ref}</b><br />
                                               - Mẫu số: <b>${data_invoice.form_no_ref}</b><br />
                                               - Ký hiệu: <b>${data_invoice.serial_no_ref}</b><br />
                                               - Mã CQT (nếu có): <b>${data_invoice.mccqt_ref}</b><br />
@@ -10905,7 +10905,7 @@ class EInvoiceController {
                                             `;
                                             }else if(data_invoice.invoice_type == "2")
                                             {
-                                              body = body + ` - Điều chỉnh cho Số hóa đơn: <b>${data_invoice.invoice_no}</b><br />
+                                              body = body + ` - Điều chỉnh cho Số hóa đơn: <b>${data_invoice.invoice_no_ref}</b><br />
                                               - Mẫu số: <b>${data_invoice.form_no_ref}</b><br />
                                               - Ký hiệu: <b>${data_invoice.serial_no_ref}</b><br />
                                               - Mã CQT (nếu có): <b>${data_invoice.mccqt_ref}</b><br />
@@ -10947,7 +10947,7 @@ class EInvoiceController {
                                             if (data_invoice.invoice_type == "1")
                                             {
                                               
-                                              body = body + ` - Replace for Invoice No: <b>${data_invoice.invoice_no}</b> <br />
+                                              body = body + ` - Replace for Invoice No: <b>${data_invoice.invoice_no_ref}</b> <br />
                                               - Form No: <b>${data_invoice.form_no_ref}</b> <br />
                                               - Serial No: <b>${data_invoice.serial_no_ref}</b> <br />
                                               - Tax agency’s code: <b>${data_invoice.mccqt_ref}</b> <br />
@@ -10955,7 +10955,7 @@ class EInvoiceController {
                                             `;
                                             }else if(data_invoice.invoice_type == "2") 
                                             {
-                                              body = body + ` - Adjustment for Invoice No: <b>${data_invoice.invoice_no}</b> <br />
+                                              body = body + ` - Adjustment for Invoice No: <b>${data_invoice.invoice_no_ref}</b> <br />
                                               - Form No: <b>${data_invoice.form_no_ref}</b> <br />
                                               - Serial No: <b>${data_invoice.serial_no_ref}</b> <br />
                                               - Tax agency’s code: <b>${data_invoice.mccqt_ref}</b> <br />

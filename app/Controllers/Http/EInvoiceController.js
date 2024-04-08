@@ -10854,7 +10854,7 @@ class EInvoiceController {
         APP_URL_LOCAL + '/api/dso/getfiledbtoken?pk=' + tei_wt_sale_bill_pk + '&proc=' + 'WT_SEL_XML_NOR_EINVOICE' + '&token=',
       ); //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
       let url_xml = re_url_xml.data;
-      //console.log("base64XXML  ", url_xml);
+      console.log("sendMailNormalEinvoiceToCustomer data_invoice ", data_invoice);
       let subject = "",body = "";
 
       if (data_invoice.invoice_type == "0")
@@ -10863,10 +10863,10 @@ class EInvoiceController {
 
       }else if (data_invoice.invoice_type == "1")
       {
-        subject = `${data_invoice.seller_comp_name}[Thông báo vê việc thay thế HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
+        subject = `${data_invoice.seller_comp_name}[Thông báo về việc thay thế HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
       }else 
       {
-        subject = `${data_invoice.seller_comp_name}[Thông báo vê việc điều chỉnh HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
+        subject = `${data_invoice.seller_comp_name}[Thông báo về việc điều chỉnh HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
       }
 
         body = `<html>

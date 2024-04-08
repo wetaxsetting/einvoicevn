@@ -277,7 +277,7 @@ export default {
             document.body.appendChild(tag_a);
             tag_a.style = "display: none";
             tag_a.href = _url;
-            tag_a.download = this.invoiceInfo.voucher_no; 
+            tag_a.download = this.invoiceInfo.info_inv.replaceAll(" - ","_"); 
             tag_a.click();
             window.URL.revokeObjectURL(_url);
             tag_a.remove();
@@ -287,7 +287,7 @@ export default {
       try {
         var link = document.createElement('a');
         link.href = this.invoiceInfo.url_pdf;
-        link.download = `${this.invoiceInfo.voucher_no}.pdf`;
+        link.download = `${this.invoiceInfo.info_inv.replaceAll(" - ","_")}.pdf`;
         link.dispatchEvent(new MouseEvent('click'));
       } catch (error) {
         this.showNotification("danger", "onDownload-catch exception:", error.message, "", 3000);

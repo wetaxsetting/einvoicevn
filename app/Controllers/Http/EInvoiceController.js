@@ -11845,7 +11845,7 @@ class EInvoiceController {
         url_pdf: url_pdf,
         url_xml: '',
         seller_inv_dt: rtnValue.p_rtn_cur[0].NTBAO,
-        req_key: rtnValue.p_rtn_cur[0].TEI_EINVOICE_SS_D_PK,
+        req_key: rtnValue.p_rtn_cur[0].TEI_EINVOICE_SS_D_PK
       };
 
       return response.send(Utils.response(true, 'Research data invocie was success', rep_data));

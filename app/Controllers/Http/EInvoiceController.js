@@ -5499,8 +5499,8 @@ class EInvoiceController {
 
       const {tax_code, store_code, store_name, count_invoice, list_invoice} = request.all();
 
-      //console.log(" weTaxConvertPosInvoiceToXML  BEGIN ==================================================");
-      //console.log(" weTaxConvertPosInvoiceToXML  list_invoice   ", list_invoice);
+      console.log(" weTaxConvertPosInvoiceToXML  BEGIN ==================================================");
+      console.log(" weTaxConvertPosInvoiceToXML  list_invoice   ", list_invoice);
 
       //invoices = JSON.parse(invoices);
       let rtnXML = [];
@@ -5645,6 +5645,8 @@ class EInvoiceController {
         objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat = {};
         objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat = [];
 
+        console.log(" weTaxConvertPosInvoiceToXML invoices[i].total_vat_list", invoices[i].total_vat_list);
+
         for (let j = 0; j < invoices[i].total_vat_list.length; j++) {
           objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat.push({
             TSuat: invoices[i].total_vat_list[j].sub_vat_rate,
@@ -5735,8 +5737,8 @@ class EInvoiceController {
         xml_data: xmlRemoveLine,
         req_key: req_key,
       };
-
-      //console.log(" weTaxConvertPosInvoiceToXML  END ==================================================");
+      console.log(" weTaxConvertPosInvoiceToXML ", rtnXML);
+      console.log(" weTaxConvertPosInvoiceToXML  END ==================================================");
 
       return response.status(200).json(Utils.responseByRule({success: true, message: `Generate POS invoice xml format successfully.`, data: rtnXML}));
     } catch (e) {
@@ -7120,7 +7122,6 @@ class EInvoiceController {
 
       console.log("weTaxSendCompanyTemplate BEGIN ================================");
       console.log("weTaxSendCompanyTemplate seller_comp_taxcode :",seller_comp_taxcode);
-      console.log("weTaxSendCompanyTemplate status :",status);
 
       if (!seller_comp_taxcode) {
         //return response.send(Utils.response(false, "seller_comp_taxcode can't null",null));
@@ -7212,7 +7213,6 @@ class EInvoiceController {
         p_logo_height: logo_height,
         p_logo_start_col: '0.5',
         p_logo_start_row: '1.7',
-        p_status: status
       };
 
       const rtnValue = await DBService.ExecuteSQLBlob(
@@ -7230,7 +7230,6 @@ class EInvoiceController {
                                                           :p_logo_height,
                                                           :p_logo_start_row,
                                                           :p_logo_start_col,
-                                                          :p_status,
                                                           :p_language, 
                                                           :p_crt_by, 
                                                           :p_rtn_cur); END;`,
@@ -7248,8 +7247,6 @@ class EInvoiceController {
           req_key: rtnValue.p_rtn_cur[0].PK,
           template: url_pdf,
         };
-        console.log("weTaxSendCompanyTemplate data ", req_value);
-        console.log("weTaxSendCompanyTemplate END =============================");
         //return response.send(Utils.response(true, "Send Company template was Successfully", req_value));
         return response.status(200).json(Utils.responseByRule({success: true, message: 'Send Company template was Successfully', data: req_value}));
       } else {
@@ -7260,7 +7257,7 @@ class EInvoiceController {
           status_code: '001',
           status_name: rtnValue.p_rtn_cur[0].ERRCODE,
         };
-        
+        console.log("weTaxSendCompanyTemplate END =============================");
 
         //return response.send(Utils.response(false, "Send Company template was Faile", req_value));
         return response.status(409).json(Utils.responseByRule({success: false, message: 'Send Company template was Faile.', data: req_value}));
@@ -9165,7 +9162,7 @@ class EInvoiceController {
             p_crt_by,
           );
 
-          console.log("weTaxSendRecords   data_mail ", data_mail);
+          //console.log("weTaxSendRecords   data_mail ", data_mail);
           if (data_mail) {
             r_data_noti.push({
               sale_id: noti.req_key,
@@ -10857,10 +10854,21 @@ class EInvoiceController {
         APP_URL_LOCAL + '/api/dso/getfiledbtoken?pk=' + tei_wt_sale_bill_pk + '&proc=' + 'WT_SEL_XML_NOR_EINVOICE' + '&token=',
       ); //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
       let url_xml = re_url_xml.data;
-      //console.log("base64XXML  ", url_xml);
+      console.log("sendMailNormalEinvoiceToCustomer data_invoice ", data_invoice);
+      let body = "";
 
-      let subject = `${data_invoice.seller_comp_name}[Thông báo phát hành HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
-      let body = `<html>
+      
+      let  subject = `${data_invoice.seller_comp_name}[Thông báo phát hành HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
+
+      if (data_invoice.invoice_type == "1")
+      {
+        subject = `${data_invoice.seller_comp_name}[Thông báo về việc thay thế HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
+      }else if (data_invoice.invoice_type == "2")
+      {
+        subject = `${data_invoice.seller_comp_name}[Thông báo về việc điều chỉnh HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
+      }
+
+        body = `<html>
                             <body>
                                 <div id="page">
                                     <div id="d2">
@@ -10885,8 +10893,26 @@ class EInvoiceController {
                                             <a href='${url_pdf}'>Tải file PDF</a>
                                             <br />- Link download file XML: 
                                             <a href='${url_xml}'>Tải file XML</a>
-                                            <br />
-                                        </div>
+                                            <br />`;
+                                            if (data_invoice.invoice_type == "1")
+                                            {
+                                              
+                                              body = body + ` - Thay thế cho Số hóa đơn: <b>${data_invoice.invoice_no_ref}</b><br />
+                                              - Mẫu số: <b>${data_invoice.form_no_ref}</b><br />
+                                              - Ký hiệu: <b>${data_invoice.serial_no_ref}</b><br />
+                                              - Mã CQT (nếu có): <b>${data_invoice.mccqt_ref}</b><br />
+                                              - Tổng thanh toán: <b>${ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment_ref))}</b><br />
+                                            `;
+                                            }else if(data_invoice.invoice_type == "2")
+                                            {
+                                              body = body + ` - Điều chỉnh cho Số hóa đơn: <b>${data_invoice.invoice_no_ref}</b><br />
+                                              - Mẫu số: <b>${data_invoice.form_no_ref}</b><br />
+                                              - Ký hiệu: <b>${data_invoice.serial_no_ref}</b><br />
+                                              - Mã CQT (nếu có): <b>${data_invoice.mccqt_ref}</b><br />
+                                              - Tổng thanh toán: <b>${ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment_ref))}</b><br />
+                                            `;
+                                            }
+                                            body  = body + `</div>
                                         <br/>
                                         <div id="d6">
                                             <p>
@@ -10917,8 +10943,26 @@ class EInvoiceController {
                                             <a href='${url_pdf}'>Download file PDF</a>
                                             <br />- Download file XML link:  
                                             <a href='${url_xml}'>Download file XML</a>
-                                            <br />
-                                        </p>
+                                            <br />`;
+                                            if (data_invoice.invoice_type == "1")
+                                            {
+                                              
+                                              body = body + ` - Replace for Invoice No: <b>${data_invoice.invoice_no_ref}</b> <br />
+                                              - Form No: <b>${data_invoice.form_no_ref}</b> <br />
+                                              - Serial No: <b>${data_invoice.serial_no_ref}</b> <br />
+                                              - Tax agency’s code: <b>${data_invoice.mccqt_ref}</b> <br />
+                                              - Total amount: <b>${ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment_ref))}</b> <br />
+                                            `;
+                                            }else if(data_invoice.invoice_type == "2") 
+                                            {
+                                              body = body + ` - Adjustment for Invoice No: <b>${data_invoice.invoice_no_ref}</b> <br />
+                                              - Form No: <b>${data_invoice.form_no_ref}</b> <br />
+                                              - Serial No: <b>${data_invoice.serial_no_ref}</b> <br />
+                                              - Tax agency’s code: <b>${data_invoice.mccqt_ref}</b> <br />
+                                              - Total amount: <b>${ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment_ref))}</b> <br />
+                                            `;
+                                            }
+                                            body  = body + `</p>
                                     </div>
                                     <div id="d8">
                                         <p>
@@ -10931,7 +10975,7 @@ class EInvoiceController {
                                 </body>
                             </html>
                             `;
-
+      
       //console.log("sSSSS4 ", tei_wt_sale_bill_pk);
 
       const res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {
@@ -11850,7 +11894,7 @@ class EInvoiceController {
         url_pdf: url_pdf,
         url_xml: '',
         seller_inv_dt: rtnValue.p_rtn_cur[0].NTBAO,
-        req_key: rtnValue.p_rtn_cur[0].TEI_EINVOICE_SS_D_PK,
+        req_key: rtnValue.p_rtn_cur[0].TEI_EINVOICE_SS_D_PK
       };
 
       return response.send(Utils.response(true, 'Research data invocie was success', rep_data));
@@ -14595,6 +14639,12 @@ class EInvoiceController {
               mccqt: rtnValue_inv.p_rtn_cur[0].CQT_MCCQT,
               buyer_email: data.buyer_email,
               buyer_email_cc: data.buyer_email_cc,
+              invoice_type: rtnValue_inv.p_rtn_cur[0].INVOICE_TYPE,
+              form_no_ref: rtnValue_inv.p_rtn_cur[0].FORM_NO_REF,
+              serial_no_ref: rtnValue_inv.p_rtn_cur[0].SERIAL_NO_REF,
+              invoice_no_ref: rtnValue_inv.p_rtn_cur[0].INVOICE_NO_REF, 
+              mccqt_ref: rtnValue_inv.p_rtn_cur[0].CQT_MCCQT_REF,
+              total_payment_ref: rtnValue_inv.p_rtn_cur[0].TOT_NET_TR_AMT_REF,
             };
 
             tax_code = rtnValue_inv.p_rtn_cur[0].SLLR_TAXCODE;
@@ -15006,8 +15056,7 @@ class EInvoiceController {
           attachfile1: url_pdf,
           filename1: data_mail.p_rtn_cur[0].FILENAME1,
         });
-
-        console.log("weTaxSendMailRecords res_send_mail  ", res_send_mail);
+        //console.log("res_send_mail  ", res_send_mail);
 
         if (res_send_mail.data.success) {
           let rtnValue = {

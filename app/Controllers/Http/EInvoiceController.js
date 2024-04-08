@@ -10954,7 +10954,7 @@ class EInvoiceController {
                                               - Tax agency’s code: <b>${data_invoice.mccqt_ref}</b> <br />
                                               - Total amount: <b>${ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment_ref))}</b> <br />
                                             `;
-                                            }else if(data_invoice.invoice_type == "2")
+                                            }else if(data_invoice.invoice_type == "2") 
                                             {
                                               body = body + ` - Adjustment for Invoice No: <b>${data_invoice.invoice_no}</b> <br />
                                               - Form No: <b>${data_invoice.form_no_ref}</b> <br />

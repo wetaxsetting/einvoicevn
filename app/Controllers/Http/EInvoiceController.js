@@ -7449,6 +7449,7 @@ class EInvoiceController {
           p_logo_height: data.logo_height,
           p_logo_start_col: '0.5',
           p_logo_start_row: '1.7',
+          p_status: data.status
         };
 
         const rtnValue = await DBService.ExecuteSQLBlob(
@@ -7466,6 +7467,7 @@ class EInvoiceController {
                                                             :p_logo_height,
                                                             :p_logo_start_row,
                                                             :p_logo_start_col,
+                                                            :p_status,
                                                             :p_language, 
                                                             :p_crt_by, 
                                                             :p_rtn_cur); END;`,

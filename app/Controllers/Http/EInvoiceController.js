@@ -10855,16 +10855,15 @@ class EInvoiceController {
       ); //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
       let url_xml = re_url_xml.data;
       console.log("sendMailNormalEinvoiceToCustomer data_invoice ", data_invoice);
-      let subject = "",body = "";
+      let body = "";
 
-      if (data_invoice.invoice_type == "0")
-      {
-        subject = `${data_invoice.seller_comp_name}[Thông báo phát hành HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
+      
+      let  subject = `${data_invoice.seller_comp_name}[Thông báo phát hành HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
 
-      }else if (data_invoice.invoice_type == "1")
+      if (data_invoice.invoice_type == "1")
       {
         subject = `${data_invoice.seller_comp_name}[Thông báo về việc thay thế HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
-      }else 
+      }else if (data_invoice.invoice_type == "2")
       {
         subject = `${data_invoice.seller_comp_name}[Thông báo về việc điều chỉnh HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
       }

@@ -10855,9 +10855,21 @@ class EInvoiceController {
       ); //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
       let url_xml = re_url_xml.data;
       //console.log("base64XXML  ", url_xml);
+      let subject = "",body = "";
 
-      let subject = `${data_invoice.seller_comp_name}[Thông báo phát hành HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
-      let body = `<html>
+      if (data_invoice.invoice_type == "0")
+      {
+        subject = `${data_invoice.seller_comp_name}[Thông báo phát hành HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
+
+      }else if (data_invoice.invoice_type == "1")
+      {
+        subject = `${data_invoice.seller_comp_name}[Thông báo vê việc thay thế HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
+      }else 
+      {
+        subject = `${data_invoice.seller_comp_name}[Thông báo vê việc điều chỉnh HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
+      }
+
+        body = `<html>
                             <body>
                                 <div id="page">
                                     <div id="d2">
@@ -10882,8 +10894,26 @@ class EInvoiceController {
                                             <a href='${url_pdf}'>Tải file PDF</a>
                                             <br />- Link download file XML: 
                                             <a href='${url_xml}'>Tải file XML</a>
-                                            <br />
-                                        </div>
+                                            <br />`;
+                                            if (data_invoice.invoice_type == "1")
+                                            {
+                                              
+                                              body = body + ` - Thay thế cho Số hóa đơn: <b>${data_invoice.invoice_no}</b>
+                                              - Mẫu số: <b>${data_invoice.form_no_ref}</b>
+                                              - Ký hiệu: <b>${data_invoice.serial_no_ref}</b>
+                                              - Mã CQT (nếu có): <b>${data_invoice.mccqt_ref}</b>
+                                              - Tổng thanh toán: <b>${ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment_ref))}</b>
+                                            `;
+                                            }else (data_invoice.invoice_type == "2")
+                                            {
+                                              body = body + ` - Điều chỉnh cho Số hóa đơn: <b>${data_invoice.invoice_no}</b>
+                                              - Mẫu số: <b>${data_invoice.form_no_ref}</b>
+                                              - Ký hiệu: <b>${data_invoice.serial_no_ref}</b>
+                                              - Mã CQT (nếu có): <b>${data_invoice.mccqt_ref}</b>
+                                              - Tổng thanh toán: <b>${ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment_ref))}</b>
+                                            `;
+                                            }
+                                            body  = body + `</div>
                                         <br/>
                                         <div id="d6">
                                             <p>
@@ -10914,8 +10944,26 @@ class EInvoiceController {
                                             <a href='${url_pdf}'>Download file PDF</a>
                                             <br />- Download file XML link:  
                                             <a href='${url_xml}'>Download file XML</a>
-                                            <br />
-                                        </p>
+                                            <br />`;
+                                            if (data_invoice.invoice_type == "1")
+                                            {
+                                              
+                                              body = body + ` - Replace for Invoice No: <b>${data_invoice.invoice_no}</b>
+                                              - Form No: <b>${data_invoice.form_no_ref}</b>
+                                              - Serial No: <b>${data_invoice.serial_no_ref}</b>
+                                              - Tax agency’s code: <b>${data_invoice.mccqt_ref}</b>
+                                              - Total amount: <b>${ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment_ref))}</b>
+                                            `;
+                                            }else (data_invoice.invoice_type == "2")
+                                            {
+                                              body = body + ` - Adjustment for Invoice No: <b>${data_invoice.invoice_no}</b>
+                                              - Form No: <b>${data_invoice.form_no_ref}</b>
+                                              - Serial No: <b>${data_invoice.serial_no_ref}</b>
+                                              - Tax agency’s code: <b>${data_invoice.mccqt_ref}</b>
+                                              - Total amount: <b>${ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment_ref))}</b>
+                                            `;
+                                            }
+                                            body  = body + `</p>
                                     </div>
                                     <div id="d8">
                                         <p>
@@ -10928,7 +10976,7 @@ class EInvoiceController {
                                 </body>
                             </html>
                             `;
-
+      
       //console.log("sSSSS4 ", tei_wt_sale_bill_pk);
 
       const res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {
@@ -14592,6 +14640,12 @@ class EInvoiceController {
               mccqt: rtnValue_inv.p_rtn_cur[0].CQT_MCCQT,
               buyer_email: data.buyer_email,
               buyer_email_cc: data.buyer_email_cc,
+              invoice_type: rtnValue_inv.p_rtn_cur[0].INVOICE_TYPE,
+              form_no_ref: rtnValue_inv.p_rtn_cur[0].FORM_NO_REF,
+              serial_no_ref: rtnValue_inv.p_rtn_cur[0].SERIAL_NO_REF,
+              invoice_no_ref: rtnValue_inv.p_rtn_cur[0].INVOICE_NO_REF, 
+              mccqt_ref: rtnValue_inv.p_rtn_cur[0].CQT_MCCQT_REF,
+              total_payment_ref: rtnValue_inv.p_rtn_cur[0].TOT_NET_TR_AMT_REF,
             };
 
             tax_code = rtnValue_inv.p_rtn_cur[0].SLLR_TAXCODE;

@@ -5499,8 +5499,8 @@ class EInvoiceController {
 
       const {tax_code, store_code, store_name, count_invoice, list_invoice} = request.all();
 
-      //console.log(" weTaxConvertPosInvoiceToXML  BEGIN ==================================================");
-      //console.log(" weTaxConvertPosInvoiceToXML  list_invoice   ", list_invoice);
+      console.log(" weTaxConvertPosInvoiceToXML  BEGIN ==================================================");
+      console.log(" weTaxConvertPosInvoiceToXML  list_invoice   ", list_invoice);
 
       //invoices = JSON.parse(invoices);
       let rtnXML = [];
@@ -5645,6 +5645,8 @@ class EInvoiceController {
         objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat = {};
         objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat = [];
 
+        console.log(" weTaxConvertPosInvoiceToXML invoices[i].total_vat_list", invoices[i].total_vat_list);
+
         for (let j = 0; j < invoices[i].total_vat_list.length; j++) {
           objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat.push({
             TSuat: invoices[i].total_vat_list[j].sub_vat_rate,
@@ -5735,8 +5737,8 @@ class EInvoiceController {
         xml_data: xmlRemoveLine,
         req_key: req_key,
       };
-
-      //console.log(" weTaxConvertPosInvoiceToXML  END ==================================================");
+      console.log(" weTaxConvertPosInvoiceToXML ", rtnXML);
+      console.log(" weTaxConvertPosInvoiceToXML  END ==================================================");
 
       return response.status(200).json(Utils.responseByRule({success: true, message: `Generate POS invoice xml format successfully.`, data: rtnXML}));
     } catch (e) {

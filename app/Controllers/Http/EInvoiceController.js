@@ -8801,8 +8801,8 @@ class EInvoiceController {
       const {form_no, inform_date, version, seller_company_name, seller_taxcode, seller_address, seller_position, seller_representative, noti_list} =
         request.all();
 
-      //console.log("weTaxGenerateRecordsXml  BEGIN ============================");
-      //console.log("weTaxGenerateRecordsXml noti_list ", noti_list)
+      console.log("weTaxGenerateRecordsXml  BEGIN ============================");
+      console.log("weTaxGenerateRecordsXml noti_list ", noti_list)
       if (!form_no) {
         // return response.send(Utils.response(false, `form no is not null`, null));
         return response.status(400).json(Utils.responseByRule({success: false, message: 'Invalid: form_no'}));
@@ -8922,8 +8922,8 @@ class EInvoiceController {
         });
       }
 
-      //console.log("weTaxGenerateRecordsXml rtnXML ", rtnXML);
-      //console.log("weTaxGenerateRecordsXml END ====================================");
+      console.log("weTaxGenerateRecordsXml rtnXML ", rtnXML);
+      console.log("weTaxGenerateRecordsXml END ====================================");
 
       // return response.send(Utils.response(true, `Convert json to xml was successful. `, rtnXML));
       return response.status(200).json(Utils.responseByRule({success: true, message: 'Generate e-Record xml successfully.', data: rtnXML}));

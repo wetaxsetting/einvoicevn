@@ -381,6 +381,7 @@
       objInvoiceM:{},
       tei_einvoice_ss_m_pk_row:"",
       tei_wt_invoice_m_pk:"",
+      tei_wt_invoice_d_pk:"",
       tei_einvoice_m_pk:"",
       pdfUrl:"",
       manualIsMinimized: false,
@@ -671,7 +672,8 @@
         {
           let res_url = await this.$axios.$post("/einvoice/general-url-pdf-einvoice-WT-04SS-bb", {
                 responseType: "json",
-                tei_ei_note_m_pk_row: this.tei_wt_invoice_m_pk,
+                //tei_ei_note_m_pk_row: this.tei_wt_invoice_m_pk,
+                tei_ei_note_m_pk_row: this.tei_wt_invoice_d_pk,
               });
   
           if(res_url.success)
@@ -695,7 +697,8 @@
         {
           let res_url = await this.$axios.$post("/einvoice/general-url-pdf-einvoice-WT-04SS-bb-r", {
                 responseType: "json",
-                tei_ei_note_m_pk_row: this.tei_wt_invoice_m_pk,
+                //tei_ei_note_m_pk_row: this.tei_wt_invoice_m_pk,
+                tei_ei_note_m_pk_row: this.tei_wt_invoice_d_pk,
               });
   
           if(res_url.success)
@@ -1376,7 +1379,8 @@
   
       async onCellClickDetail({ column, data, rowIndex, rowType }) {
         console.log("tei_einvoice_ss_m_pk_row  ", data)
-        this.tei_wt_invoice_m_pk = data.TEI_WT_INVOICE_M_PK;
+        this.tei_wt_invoice_m_pk = data.TEI_WT_INVOICE_M_PK; 
+        this.tei_wt_invoice_d_pk = data.PK;
         this.tei_einvoice_m_pk = data.TEI_EINVOICE_M_PK;
         this.invoiceType = data.TCTBAO;
       },

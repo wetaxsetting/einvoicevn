@@ -10898,19 +10898,19 @@ class EInvoiceController {
                                             if (data_invoice.invoice_type == "1")
                                             {
                                               
-                                              body = body + ` - Thay thế cho Số hóa đơn: <b>${data_invoice.invoice_no}</b>
-                                              - Mẫu số: <b>${data_invoice.form_no_ref}</b>
-                                              - Ký hiệu: <b>${data_invoice.serial_no_ref}</b>
-                                              - Mã CQT (nếu có): <b>${data_invoice.mccqt_ref}</b>
-                                              - Tổng thanh toán: <b>${ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment_ref))}</b>
+                                              body = body + ` - Thay thế cho Số hóa đơn: <b>${data_invoice.invoice_no}</b><br />
+                                              - Mẫu số: <b>${data_invoice.form_no_ref}</b><br />
+                                              - Ký hiệu: <b>${data_invoice.serial_no_ref}</b><br />
+                                              - Mã CQT (nếu có): <b>${data_invoice.mccqt_ref}</b><br />
+                                              - Tổng thanh toán: <b>${ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment_ref))}</b><br />
                                             `;
-                                            }else (data_invoice.invoice_type == "2")
+                                            }else if(data_invoice.invoice_type == "2")
                                             {
-                                              body = body + ` - Điều chỉnh cho Số hóa đơn: <b>${data_invoice.invoice_no}</b>
-                                              - Mẫu số: <b>${data_invoice.form_no_ref}</b>
-                                              - Ký hiệu: <b>${data_invoice.serial_no_ref}</b>
-                                              - Mã CQT (nếu có): <b>${data_invoice.mccqt_ref}</b>
-                                              - Tổng thanh toán: <b>${ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment_ref))}</b>
+                                              body = body + ` - Điều chỉnh cho Số hóa đơn: <b>${data_invoice.invoice_no}</b><br />
+                                              - Mẫu số: <b>${data_invoice.form_no_ref}</b><br />
+                                              - Ký hiệu: <b>${data_invoice.serial_no_ref}</b><br />
+                                              - Mã CQT (nếu có): <b>${data_invoice.mccqt_ref}</b><br />
+                                              - Tổng thanh toán: <b>${ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment_ref))}</b><br />
                                             `;
                                             }
                                             body  = body + `</div>
@@ -10948,19 +10948,19 @@ class EInvoiceController {
                                             if (data_invoice.invoice_type == "1")
                                             {
                                               
-                                              body = body + ` - Replace for Invoice No: <b>${data_invoice.invoice_no}</b>
-                                              - Form No: <b>${data_invoice.form_no_ref}</b>
-                                              - Serial No: <b>${data_invoice.serial_no_ref}</b>
-                                              - Tax agency’s code: <b>${data_invoice.mccqt_ref}</b>
-                                              - Total amount: <b>${ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment_ref))}</b>
+                                              body = body + ` - Replace for Invoice No: <b>${data_invoice.invoice_no}</b> <br />
+                                              - Form No: <b>${data_invoice.form_no_ref}</b> <br />
+                                              - Serial No: <b>${data_invoice.serial_no_ref}</b> <br />
+                                              - Tax agency’s code: <b>${data_invoice.mccqt_ref}</b> <br />
+                                              - Total amount: <b>${ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment_ref))}</b> <br />
                                             `;
-                                            }else (data_invoice.invoice_type == "2")
+                                            }else if(data_invoice.invoice_type == "2")
                                             {
-                                              body = body + ` - Adjustment for Invoice No: <b>${data_invoice.invoice_no}</b>
-                                              - Form No: <b>${data_invoice.form_no_ref}</b>
-                                              - Serial No: <b>${data_invoice.serial_no_ref}</b>
-                                              - Tax agency’s code: <b>${data_invoice.mccqt_ref}</b>
-                                              - Total amount: <b>${ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment_ref))}</b>
+                                              body = body + ` - Adjustment for Invoice No: <b>${data_invoice.invoice_no}</b> <br />
+                                              - Form No: <b>${data_invoice.form_no_ref}</b> <br />
+                                              - Serial No: <b>${data_invoice.serial_no_ref}</b> <br />
+                                              - Tax agency’s code: <b>${data_invoice.mccqt_ref}</b> <br />
+                                              - Total amount: <b>${ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment_ref))}</b> <br />
                                             `;
                                             }
                                             body  = body + `</p>

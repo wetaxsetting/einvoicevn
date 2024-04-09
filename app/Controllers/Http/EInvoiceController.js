@@ -7454,6 +7454,8 @@ class EInvoiceController {
           p_status: data.status
         };
 
+        console.log("weTaxSendCompanyTemplate2 para_value : ",para_value);
+
         const rtnValue = await DBService.ExecuteSQLBlob(
           `BEGIN ei_upd_template_comp (                     :p_seller_comp_seller,
                                                             :p_serial_no2,

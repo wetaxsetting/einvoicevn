@@ -7259,7 +7259,7 @@ class EInvoiceController {
           status_code: '001',
           status_name: rtnValue.p_rtn_cur[0].ERRCODE,
         };
-        onsole.log("weTaxSendCompanyTemplate data 400",req_value ) ;
+        console.log("weTaxSendCompanyTemplate data 400",req_value ) ;
         console.log("weTaxSendCompanyTemplate END =============================");
 
         //return response.send(Utils.response(false, "Send Company template was Faile", req_value));

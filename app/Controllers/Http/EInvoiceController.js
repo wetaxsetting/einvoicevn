@@ -7290,6 +7290,9 @@ class EInvoiceController {
       const {seller_comp_taxcode, data_template} = request.all();
 
       let req_value = [];
+     
+      console.log("weTaxSendCompanyTemplate2 BEGIN ============================");
+      console.log("weTaxSendCompanyTemplate2 seller_comp_taxcode :",seller_comp_taxcode);
       //console.log("weTaxSendCompanyTemplate logo_image : ", logo_image);
       //console.log("weTaxSendCompanyTemplate background_image :",background_image);
       //console.log("weTaxSendCompanyTemplate form_no :",form_no);
@@ -7297,10 +7300,7 @@ class EInvoiceController {
       //console.log("weTaxSendCompanyTemplate symbol_type : ", symbol_type);
       //console.log("weTaxSendCompanyTemplate template_id :",template_id);
       //console.log("weTaxSendCompanyTemplate start_number :",start_number);
-      //console.log("weTaxSendCompanyTemplate data_template : ", data_template);
-      console.log("weTaxSendCompanyTemplate2 BEGIN ============================");
-      console.log("weTaxSendCompanyTemplate2 seller_comp_taxcode :",seller_comp_taxcode);
-
+      console.log("weTaxSendCompanyTemplate data_template : ", data_template);
       if (!seller_comp_taxcode) {
         return response.status(400).json(Utils.responseByRule({success: false, message: "seller_comp_taxcode can't null"}));
       }

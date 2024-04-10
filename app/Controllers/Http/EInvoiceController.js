@@ -13854,7 +13854,7 @@ class EInvoiceController {
         voucher_no: jsonInvoice[0].DLieu.SBBan,
       };
 
-      //console.log("para_noti  ", para_noti );
+      console.log("para_noti  ", para_noti );
       const rtnValueNoti = await DBService.ExecuteSQLBlob(
         `BEGIN wt_upd_noti_xml_d (          
                                           :seller_tax_code,

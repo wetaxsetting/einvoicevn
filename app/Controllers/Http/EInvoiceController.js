@@ -3612,9 +3612,10 @@ class EInvoiceController {
                 tenTBao = items[k].tenTBao;
                 maTBao = items[k].loaiTBao;
                
-              } else if (items[k].loaiTBao == "1") {
+              } else*/
+              if (items[k].loaiTBao == "1") {
                   base64XML = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
-              } else */
+              } else 
               if (items[k].loaiTBao == '17' || items[k].loaiTBao == '15') {
                 tenTBao = items[k].tenTBao;
                 maTBao = items[k].loaiTBao;

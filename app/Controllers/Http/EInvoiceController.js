@@ -8598,7 +8598,7 @@ class EInvoiceController {
       }
 
       const {invoices, count_invoice, tax_code, order_date} = request.all();
-      // console.log("weTaxConvertInvoiceToXML BEGIN  ", invoices);
+      console.log("weTaxConvertInvoiceToXML BEGIN  ", invoices);
       // console.log("weTaxConvertInvoiceToXML BEGIN  ", invoices);
       //invoices = JSON.parse(invoices);
       let rtnXML = [];

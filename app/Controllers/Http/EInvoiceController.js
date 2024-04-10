@@ -8598,7 +8598,7 @@ class EInvoiceController {
       }
 
       const {invoices, count_invoice, tax_code, order_date} = request.all();
-      // console.log("weTaxConvertInvoiceToXML BEGIN  ", invoices);
+      console.log("weTaxConvertInvoiceToXML BEGIN  ", invoices);
       // console.log("weTaxConvertInvoiceToXML BEGIN  ", invoices);
       //invoices = JSON.parse(invoices);
       let rtnXML = [];
@@ -9181,7 +9181,7 @@ class EInvoiceController {
             p_crt_by,
           );
 
-          console.log("weTaxSendRecords   data_mail ", data_mail);
+          //console.log("weTaxSendRecords   data_mail ", data_mail);
           if (data_mail) {
             r_data_noti.push({
               sale_id: noti.req_key,
@@ -14369,7 +14369,7 @@ class EInvoiceController {
         signingTime.SigningTime,
       ]);
 
-      //console.log("masterPara", masterPara)
+      console.log("weTaxExtractXMLContent masterPara", masterPara)
       //const master = await callAPI(_jwtToken, { proc: 'ei_upd_tei_einvoice_cloud', para: masterPara });
       const master = await DBService.callProcCursor('WT_UPD_TEI_WT_INVOICE_M', masterPara, p_language, p_crt_by);
       // console.log("master", master);

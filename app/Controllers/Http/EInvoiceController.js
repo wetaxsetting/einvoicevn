@@ -3784,7 +3784,7 @@ class EInvoiceController {
           //this.sendMailTBSSToCustomer(inv.trade_code, p_language, p_crt_by);
         }
       }
-
+      console.log("weTaxCheckInformAdjustToTaxOfficeTest  ", rtnValue);
       // return response.send(Utils.response(true, `checking_success`, rtnValue));
       return response.status(200).json(Utils.responseByRule({success: true, message: 'Check Announcement successfully.', data: rtnValue}));
     } catch (e) {

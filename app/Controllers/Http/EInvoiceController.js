@@ -7295,6 +7295,7 @@ class EInvoiceController {
       //console.log("weTaxSendCompanyTemplate data_template : ", data_template);
       console.log("weTaxSendCompanyTemplate2 BEGIN ============================");
       console.log("weTaxSendCompanyTemplate2 seller_comp_taxcode :",seller_comp_taxcode);
+      console.log("weTaxSendCompanyTemplate data_template : ", data_template);
 
       if (!seller_comp_taxcode) {
         return response.status(400).json(Utils.responseByRule({success: false, message: "seller_comp_taxcode can't null"}));

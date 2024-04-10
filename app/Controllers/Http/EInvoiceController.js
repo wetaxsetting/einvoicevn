@@ -7213,7 +7213,7 @@ class EInvoiceController {
         p_logo_height: logo_height,
         p_logo_start_col: '0.5',
         p_logo_start_row: '1.7',
-        p_status: status
+        p_status : status
       };
 
       const rtnValue = await DBService.ExecuteSQLBlob(
@@ -7250,8 +7250,6 @@ class EInvoiceController {
           template: url_pdf,
         };
         //return response.send(Utils.response(true, "Send Company template was Successfully", req_value));
-        console.log("weTaxSendCompanyTemplate data 200",req_value ) ;
-        console.log("weTaxSendCompanyTemplate END =============================");
         return response.status(200).json(Utils.responseByRule({success: true, message: 'Send Company template was Successfully', data: req_value}));
       } else {
         let req_value = {
@@ -7261,7 +7259,6 @@ class EInvoiceController {
           status_code: '001',
           status_name: rtnValue.p_rtn_cur[0].ERRCODE,
         };
-        console.log("weTaxSendCompanyTemplate data 400",req_value ) ;
         console.log("weTaxSendCompanyTemplate END =============================");
 
         //return response.send(Utils.response(false, "Send Company template was Faile", req_value));
@@ -7290,9 +7287,6 @@ class EInvoiceController {
       const {seller_comp_taxcode, data_template} = request.all();
 
       let req_value = [];
-     
-      console.log("weTaxSendCompanyTemplate2 BEGIN ============================");
-      console.log("weTaxSendCompanyTemplate2 seller_comp_taxcode :",seller_comp_taxcode);
       //console.log("weTaxSendCompanyTemplate logo_image : ", logo_image);
       //console.log("weTaxSendCompanyTemplate background_image :",background_image);
       //console.log("weTaxSendCompanyTemplate form_no :",form_no);
@@ -7300,17 +7294,22 @@ class EInvoiceController {
       //console.log("weTaxSendCompanyTemplate symbol_type : ", symbol_type);
       //console.log("weTaxSendCompanyTemplate template_id :",template_id);
       //console.log("weTaxSendCompanyTemplate start_number :",start_number);
+      //console.log("weTaxSendCompanyTemplate data_template : ", data_template);
+      console.log("weTaxSendCompanyTemplate2 BEGIN ============================");
+      console.log("weTaxSendCompanyTemplate2 seller_comp_taxcode :",seller_comp_taxcode);
       console.log("weTaxSendCompanyTemplate2 data_template : ", data_template);
+
       if (!seller_comp_taxcode) {
         return response.status(400).json(Utils.responseByRule({success: false, message: "seller_comp_taxcode can't null"}));
       }
+      console.log("weTaxSendCompanyTemplate2 data_template : ", data_template);
+
       const obj_template = JSON.parse(data_template);
       console.log("weTaxSendCompanyTemplate2 obj_template : ", obj_template);
 
       for (const data of obj_template) {
-
-        console.log("weTaxSendCompanyTemplate2 data obj_template: ", data);
-
+         
+        console.log("weTaxSendCompanyTemplate obj_template data: ", data);
         const template_excel = request.file(`template_excel_${data.req_key}`);
         const logo_image = request.file(`logo_image_${data.req_key}`);
         const background_image = request.file(`background_image_${data.req_key}`);
@@ -7392,7 +7391,10 @@ class EInvoiceController {
           continue;
           //return response.send(Utils.response(false, "start_date can't null",null));
         }
-        if (!logo_image) {
+        //tam thoi đóng vì API này chỉ dùng để xóa template thôi - quá buồn 
+        let logo_width = 0, logo_height = 0;
+        let file_path_logo = '', file_path_bg = '';
+       /* if (!logo_image) {
           req_value.push({
             seller_comp_taxcode: seller_comp_taxcode,
             req_key: '',
@@ -7438,7 +7440,7 @@ class EInvoiceController {
             logo_height = 100;
             logo_width = (100 * logo_height) / logo_width;
           }
-        }
+        }*/
 
         const para_value = {
           p_seller_comp_seller: seller_comp_taxcode,
@@ -7457,8 +7459,6 @@ class EInvoiceController {
           p_logo_start_row: '1.7',
           p_status: data.status
         };
-
-        console.log("weTaxSendCompanyTemplate2 para_value : ",para_value);
 
         const rtnValue = await DBService.ExecuteSQLBlob(
           `BEGIN ei_upd_template_comp (                     :p_seller_comp_seller,
@@ -7485,13 +7485,13 @@ class EInvoiceController {
         );
 
         if (rtnValue.p_rtn_cur[0].STATUS == 'OK') {
-          let EiExcels = new EiExcelTemplateHandler();
-          let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].PK, p_language, p_crt_by);
+          //let EiExcels = new EiExcelTemplateHandler();
+          //let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].PK, p_language, p_crt_by);
           ////console.log("base64PDf  ", url_pdf);
           req_value.push({
             seller_comp_taxcode: seller_comp_taxcode,
             req_key: data.req_key, //rtnValue.p_rtn_cur[0].PK,
-            template: url_pdf,
+            template: "",
           });
         } else {
           req_value.push({
@@ -7503,6 +7503,8 @@ class EInvoiceController {
           });
         }
       }
+      console.log("weTaxSendCompanyTemplate2 req_value: " , req_value);
+
       console.log("weTaxSendCompanyTemplate2 END ============================");
 
       return response.status(200).json(Utils.responseByRule({success: true, message: 'Send Company template was Success.', data: req_value}));
@@ -8809,11 +8811,11 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
 
-      const {form_no, inform_date, version, seller_company_name, seller_taxcode, seller_address, seller_position, seller_representative, noti_list} =
+      const {form_no, inform_date, version, seller_company_name, seller_taxcode, seller_address, seller_position, seller_representative, seller_tel, noti_list} =
         request.all();
 
-      //console.log("weTaxGenerateRecordsXml  BEGIN ============================");
-      //console.log("weTaxGenerateRecordsXml noti_list ", noti_list)
+      console.log("weTaxGenerateRecordsXml  BEGIN ============================");
+      console.log("weTaxGenerateRecordsXml noti_list ", noti_list)
       if (!form_no) {
         // return response.send(Utils.response(false, `form no is not null`, null));
         return response.status(400).json(Utils.responseByRule({success: false, message: 'Invalid: form_no'}));
@@ -8860,6 +8862,7 @@ class EInvoiceController {
               DChi: '',
               NDDien: '',
               CVu: '',
+              DTLHe:'',
             },
             NMua: {
               Ten: '',
@@ -8868,6 +8871,7 @@ class EInvoiceController {
               DDanh: '',
               NDDien: '',
               CVu: '',
+              DTLHe:'',
             },
             HDon: {
               KHMSHDon: '',
@@ -8906,12 +8910,16 @@ class EInvoiceController {
         objInvoice.BBan.DLieu.NBan.DChi = seller_address;
         objInvoice.BBan.DLieu.NBan.NDDien = seller_representative;
         objInvoice.BBan.DLieu.NBan.CVu = seller_position;
+        objInvoice.BBan.DLieu.NBan.CVu = seller_tel;
+
 
         objInvoice.BBan.DLieu.NMua.Ten = noti.buyer_company_name;
         objInvoice.BBan.DLieu.NMua.MST = noti.buyer_taxcode;
         objInvoice.BBan.DLieu.NMua.DChi = noti.buyer_address;
-        objInvoice.BBan.DLieu.NMua.NDDien = noti.buyer_representative;
+        objInvoice.BBan.DLieu.NMua.NDDien = noti.buyer_representative; 
         objInvoice.BBan.DLieu.NMua.CVu = noti.buyer_position;
+        objInvoice.BBan.DLieu.NMua.DTLHe = noti.buyer_tel;
+
 
         objInvoice.BBan.DLieu.HDon.KHMSHDon = noti.form_no;
         objInvoice.BBan.DLieu.HDon.KHHDon = noti.serial_no;
@@ -8933,8 +8941,8 @@ class EInvoiceController {
         });
       }
 
-      //console.log("weTaxGenerateRecordsXml rtnXML ", rtnXML);
-      //console.log("weTaxGenerateRecordsXml END ====================================");
+      console.log("weTaxGenerateRecordsXml rtnXML ", rtnXML);
+      console.log("weTaxGenerateRecordsXml END ====================================");
 
       // return response.send(Utils.response(true, `Convert json to xml was successful. `, rtnXML));
       return response.status(200).json(Utils.responseByRule({success: true, message: 'Generate e-Record xml successfully.', data: rtnXML}));
@@ -13948,6 +13956,7 @@ class EInvoiceController {
               DChi: 'DLieu/NBan/DChi',
               NDDien: 'DLieu/NBan/NDDien',
               CVu: 'DLieu/NBan/CVu',
+              DTLHe: 'DLieu/NBan/DTLHe',
             },
             NMua: {
               Ten: 'DLieu/NMua/Ten',
@@ -13955,6 +13964,7 @@ class EInvoiceController {
               DChi: 'DLieu/NMua/DChi',
               NDDien: 'DLieu/NMua/NDDien',
               CVu: 'DLieu/NMua/CVu',
+              DTLHe: 'DLieu/NMua/DTLHe',
             },
             HDon: {
               KHMSHDon: 'DLieu/HDon/KHMSHDon',
@@ -13988,6 +13998,10 @@ class EInvoiceController {
         seller_represent: jsonInvoice[0].DLieu.NBan.NDDien,
         buyer_position: jsonInvoice[0].DLieu.NMua.CVu,
         buyer_represent: jsonInvoice[0].DLieu.NMua.NDDien,
+        buyer_address: jsonInvoice[0].DLieu.NMua.DChi,
+        buyer_taxcode: jsonInvoice[0].DLieu.NMua.MST,
+        buyer_tel: jsonInvoice[0].DLieu.NMua.DTLHe,
+        buyer_name: jsonInvoice[0].DLieu.NMua.Ten,
         form_no: jsonInvoice[0].DLieu.HDon.KHMSHDon,
         serial_no: jsonInvoice[0].DLieu.HDon.KHHDon,
         invoice_no: jsonInvoice[0].DLieu.HDon.SHDon,
@@ -14007,6 +14021,10 @@ class EInvoiceController {
                                           :seller_represent,
                                           :buyer_position,
                                           :buyer_represent,
+                                          :buyer_address,
+                                          :buyer_taxcode,
+                                          :buyer_tel,
+                                          :buyer_name,
                                           :form_no,
                                           :serial_no,
                                           :invoice_no,

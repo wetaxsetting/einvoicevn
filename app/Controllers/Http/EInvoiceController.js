@@ -3620,6 +3620,7 @@ class EInvoiceController {
                 maTBao = items[k].loaiTBao;
 
                 for (const invoice of items[k].ndungTBao.tbaoTNhanSSotDoc.dsachHDonLoi) {
+                  console.log("weTaxCheckInformAdjustToTaxOfficeTest invoice  ", invoice);
                   ndungTBao.push({
                     tax_auth_cd: invoice.MCCQT,
                     form_no: invoice.khieuMauHDon,
@@ -3756,7 +3757,7 @@ class EInvoiceController {
             p_messCQT: tenTBao,
             p_status: '1',
           };
-          // console.log("para_value_m  ", para_value_m);
+           console.log("para_value_m  ", para_value_m);
           await DBService.ExecuteSQLBlob(
             `BEGIN wt_upd_hd04ss_m(
                               :p_req_key, 

@@ -1176,10 +1176,11 @@ class DsoController {
         ip = request.ip();
       }
       if (HOST != ip && ip != "127.0.0.1") {
-        const curDate = Utils.CurrentDate();
+        //tam thời đóng vì invoice lấy tư do k y/c thời hạn
+        /*const curDate = Utils.CurrentDate();
         if (arrToken[1].substring(0, 8) != curDate) {
           return response.send(Utils.response(false, "Token was expired", null));
-        }
+        }*/
       }
       const filePath = ROOT_DIR_FILES.replace("/","") + file_name;
       return response.download(filePath);

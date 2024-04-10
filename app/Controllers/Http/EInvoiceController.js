@@ -3523,7 +3523,7 @@ class EInvoiceController {
     }
   }
 
-  async weTaxCheckInformAdjustToTaxOfficeTest({request, response, auth}) {
+  async weTaxCheckInformAdjustToTaxOffice({request, response, auth}) {
     try {
       var p_language = request.header('accept-language', 'ENG');
       var p_crt_by = '';
@@ -3620,7 +3620,7 @@ class EInvoiceController {
                 maTBao = items[k].loaiTBao;
 
                 for (const invoice of items[k].ndungTBao.tbaoTNhanSSotDoc.dsachHDonLoi) {
-                  console.log("weTaxCheckInformAdjustToTaxOfficeTest invoice  ", invoice);
+                  console.log("weTaxCheckInformAdjustToTaxOffice invoice  ", invoice);
                   ndungTBao.push({
                     tax_auth_cd: invoice.MCCQT,
                     form_no: invoice.khieuMauHDon,
@@ -3785,14 +3785,14 @@ class EInvoiceController {
           //this.sendMailTBSSToCustomer(inv.trade_code, p_language, p_crt_by);
         }
       }
-      console.log("weTaxCheckInformAdjustToTaxOfficeTest  ", rtnValue);
+      console.log("weTaxCheckInformAdjustToTaxOffice  ", rtnValue);
       // return response.send(Utils.response(true, `checking_success`, rtnValue));
       return response.status(200).json(Utils.responseByRule({success: true, message: 'Check Announcement successfully.', data: rtnValue}));
     } catch (e) {
       Utils.Logger({
         LVL: 'error',
         MODULE: 'EInvoiceController',
-        FUNC: 'weTaxCheckInformAdjustToTaxOfficeTest',
+        FUNC: 'weTaxCheckInformAdjustToTaxOffice',
         CONTENT: e.message,
       });
       // console.log("error ", e);
@@ -3801,166 +3801,6 @@ class EInvoiceController {
     }
   }
 
-  async weTaxCheckInformAdjustToTaxOffice({request, response, auth}) {
-    try {
-      var p_language = request.header('accept-language', 'ENG');
-      var p_crt_by = '';
-      const user = await auth.getUser();
-      if (user) {
-        p_crt_by = user.USER_ID;
-      }
-      //console.log("ss",EINVOICE_URL_API)
-      const agent = {
-        Agent: {
-          defaultPort: 443,
-          protocol: 'https:',
-          options: {maxVersion: 'TLSv1.2', minVersion: 'TLSv1.2', path: null},
-        },
-      };
-      const authUserName = 'GENUWIN';
-      const authPassword = 'e_GX4v@';
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
-      //const authUserName = "GENUWIN"; // "GENUWIN";
-      //const authPassword = "genuwin123"; // "e_GX4v@";
-      //let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
-
-      const {tax_code, trade_code_list} = request.all();
-
-      let rtnValue = [];
-
-      for (const inv of trade_code_list) {
-        const result = await Request.get(url + inv.trade_code, {
-          agent,
-          headers: {
-            Authorization: 'Basic ' + Buffer.from(`${authUserName}:${authPassword}`).toString('base64'),
-          },
-        });
-        // console.log("result", JSON.stringify(result.data));
-
-        if (!result.data.length) {
-          return response.send(Utils.response(false, 'Checking Tax Status Failure. No data found.', null));
-        }
-        let tenTBao = '',
-          maTBao = '',
-          cqt_result = '',
-          cqt_status = '',
-          base64XML = '';
-        let ndungTBao = [];
-        for (let j = 0; j < result.data.length; j++) {
-          const items = result.data[j];
-          for (let k = 0; k < items.length; k++) {
-            if (items[k].loaiTBao == '0') {
-              tenTBao = items[k].tenTBao;
-              maTBao = items[k].loaiTBao;
-            } else if (items[k].loaiTBao == '1') {
-              base64XML = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8');
-            } else if (items[k].loaiTBao == '17') {
-              tenTBao = items[k].tenTBao;
-              maTBao = items[k].loaiTBao;
-
-              for (const invoice of items[k].ndungTBao.tbaoTNhanSSotDoc.dsachHDonLoi) {
-                ndungTBao.push({
-                  MCCQT: invoice.MCCQT,
-                  khieuMauHDon: invoice.khieuMauHDon,
-                  khieuHDon: invoice.khieuHDon,
-                  soHDon: invoice.soHDon,
-                  ngayHDon: invoice.ngayHDon,
-                  cqt_result: invoice.tthaiTNCQT, //   invoice.dsachLoi.length == 0 ? 1 : 2,
-                  dsachLoi: invoice.dsachLoi,
-                });
-
-                if (invoice.dsachLoi.length == 0) {
-                  cqt_result = 'Thành công';
-                  cqt_status = invoice.tthaiTNCQT;
-                } else {
-                  for (const error of invoice.dsachLoi) {
-                    cqt_result += error.MaLoi + ' - ' + error.MTaLoi;
-                    cqt_status = invoice.tthaiTNCQT;
-                  }
-                }
-
-                // const data_d_tbss = {
-                //     macqt : invoice.MCCQT,
-                //     form_no : invoice.khieuMauHDon,
-                //     serial_no : invoice.khieuHDon,
-                //     invoice_dt : invoice.ngayHDon,
-                //     invoice_no : invoice.soHDon,
-                //     cqt_result : cqt_result,
-                //     cqt_status : cqt_status
-                // };
-
-                // await DBService.ExecuteSQLBlob(
-                //   `BEGIN wt_upd_hd04ss_d(
-                //                     :p_mccqt,
-                //                     :p_form_no,
-                //                     :p_serial_no,
-                //                     :p_invoice_no,
-                //                     :p_cqt_result,
-                //                     :p_cqt_status,
-                //                     :p_language,
-                //                     :p_crt_by,
-                //                     :p_rtn_cur
-                //                 ); END;`,
-                //                 data_d_tbss,
-                //   p_language,
-                //   p_crt_by
-                // );
-              }
-            } else if (items[k].loaiTBao == '15') {
-              tenTBao = items[k].tenTBao;
-              maTBao = items[k].loaiTBao;
-              ndungTBao = items[k].ndungTBao;
-            } else {
-              maTBao = items[k].loaiTBao;
-              tenTBao = items[k].tenTBao || items[k].message;
-            }
-          }
-        }
-
-        // let para_value_m = {
-        //   p_req_key: inv.trade_code,
-        //   p_xml_sign: base64XML,
-        //   p_messCQT: tenTBao,
-        //   p_status: "1",
-        // };
-        // await DBService.ExecuteSQLBlob(
-        //   `BEGIN wt_upd_hd04ss_m(
-        //                     :p_req_key,
-        //                     :p_xml_sign,
-        //                     :p_messCQT,
-        //                     :p_status,
-        //                     :p_language,
-        //                     :p_crt_by,
-        //                     :p_rtn_cur
-        //                 ); END;`,
-        //   para_value_m,
-        //   p_language,
-        //   p_crt_by
-        // );
-
-        rtnValue.push({
-          trade_code: inv.trade_code,
-          req_key: inv.req_key,
-          inform_code: maTBao,
-          inform_desc: tenTBao,
-          tax_code: tax_code,
-          result_content: ndungTBao,
-        });
-
-        //this.sendMailTBSSToCustomer(inv.trade_code, p_language, p_crt_by);
-      }
-
-      return response.send(Utils.response(true, `checking_success`, rtnValue));
-    } catch (e) {
-      Utils.Logger({
-        LVL: 'error',
-        MODULE: 'EInvoiceController',
-        FUNC: 'weTaxCheckInformAdjustToTaxOffice',
-        CONTENT: e.message,
-      });
-      return response.send(Utils.response(false, e.message, null));
-    }
-  }
 
   async checkInformAdjustToTaxOffice({request, response, auth}) {
     try {

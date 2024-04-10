@@ -8926,7 +8926,7 @@ class EInvoiceController {
 
         if (res?.p_rtn_cur?.[0]?.STATUS == 'OK') {
           const data_mail = await this.weTaxSendMailRecords(
-            res?.p_rtn_cur?.[0]?.TEI_EINVOICE_M_PK,
+            res?.p_rtn_cur?.[0]?.TEI_EINVOICE_SS_D_PK,
             res?.p_rtn_cur?.[0]?.TEI_COMPANY_PK,
             noti.buyer_email,
             noti.buyer_email_cc,
@@ -9015,7 +9015,7 @@ class EInvoiceController {
 
         if (res.STATUS == 'OK') {
           const data_mail = await this.weTaxSendMailRecords(
-            res.TEI_EINVOICE_M_PK,
+            res.TEI_EINVOICE_SS_D_PK,
             res.TEI_COMPANY_PK,
             noti.buyer_email,
             noti.buyer_email_cc,
@@ -14892,16 +14892,16 @@ class EInvoiceController {
     }
   }
 
-  async weTaxSendMailRecords(p_tei_einvoice_m_pk, p_tei_company_pk, p_buyer_mail, p_buyer_mail_cc, p_language, p_crt_by) {
+  async weTaxSendMailRecords(p_tei_einvoice_ss_d_pk, p_tei_company_pk, p_buyer_mail, p_buyer_mail_cc, p_language, p_crt_by) {
     try {
       //console.log("p_tei_einvoice_m_pk  ", p_tei_einvoice_m_pk, " p_tei_company_pk ", p_tei_company_pk)
       let para_value_mail = {
-        p_tei_einvoice_m_pk: p_tei_einvoice_m_pk, //"4090",//
+        p_tei_einvoice_ss_d_pk: p_tei_einvoice_ss_d_pk, //"4090",//
         p_tco_company_pk: p_tei_company_pk,
       };
       let data_mail = await DBService.ExecuteSQLBlob(
         `BEGIN wt_sel_data_send_mail(
-                          :p_tei_einvoice_m_pk, 
+                          :p_tei_einvoice_ss_d_pk, 
                           :p_tco_company_pk, 
                           :p_language, 
                           :p_crt_by, 

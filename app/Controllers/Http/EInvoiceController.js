@@ -7305,8 +7305,12 @@ class EInvoiceController {
         return response.status(400).json(Utils.responseByRule({success: false, message: "seller_comp_taxcode can't null"}));
       }
       const obj_template = JSON.parse(data_template);
+      console.log("weTaxSendCompanyTemplate2 obj_template : ", obj_template);
 
       for (const data of obj_template) {
+
+        console.log("weTaxSendCompanyTemplate2 data obj_template: ", data);
+
         const template_excel = request.file(`template_excel_${data.req_key}`);
         const logo_image = request.file(`logo_image_${data.req_key}`);
         const background_image = request.file(`background_image_${data.req_key}`);

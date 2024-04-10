@@ -9181,7 +9181,7 @@ class EInvoiceController {
             p_crt_by,
           );
 
-          //console.log("weTaxSendRecords   data_mail ", data_mail);
+          console.log("weTaxSendRecords   data_mail ", data_mail);
           if (data_mail) {
             r_data_noti.push({
               sale_id: noti.req_key,

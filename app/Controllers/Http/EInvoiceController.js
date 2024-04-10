@@ -7295,15 +7295,15 @@ class EInvoiceController {
       //console.log("weTaxSendCompanyTemplate data_template : ", data_template);
       console.log("weTaxSendCompanyTemplate2 BEGIN ============================");
       console.log("weTaxSendCompanyTemplate2 seller_comp_taxcode :",seller_comp_taxcode);
-      console.log("weTaxSendCompanyTemplate data_template : ", data_template);
+      console.log("weTaxSendCompanyTemplate2 data_template : ", data_template);
 
       if (!seller_comp_taxcode) {
         return response.status(400).json(Utils.responseByRule({success: false, message: "seller_comp_taxcode can't null"}));
       }
-      console.log("weTaxSendCompanyTemplate data_template : ", data_template);
+      console.log("weTaxSendCompanyTemplate2 data_template : ", data_template);
 
       const obj_template = JSON.parse(data_template);
-      console.log("weTaxSendCompanyTemplate obj_template : ", obj_template);
+      console.log("weTaxSendCompanyTemplate2 obj_template : ", obj_template);
 
       for (const data of obj_template) {
          
@@ -7498,6 +7498,8 @@ class EInvoiceController {
           });
         }
       }
+      console.log("weTaxSendCompanyTemplate2 req_value: " , req_value);
+
       console.log("weTaxSendCompanyTemplate2 END ============================");
 
       return response.status(200).json(Utils.responseByRule({success: true, message: 'Send Company template was Success.', data: req_value}));

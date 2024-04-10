@@ -7389,7 +7389,8 @@ class EInvoiceController {
           continue;
           //return response.send(Utils.response(false, "start_date can't null",null));
         }
-        if (!logo_image) {
+        //tam thoi đóng vì API này chỉ dùng để xóa template thôi - quá buồn 
+       /* if (!logo_image) {
           req_value.push({
             seller_comp_taxcode: seller_comp_taxcode,
             req_key: '',
@@ -7399,7 +7400,7 @@ class EInvoiceController {
           });
           continue;
           //return response.send(Utils.response(false, "logo_image can't null",null));
-        }
+        }*/
 
         const file_url_img = `einvoices_logo/${seller_comp_taxcode}`;
         const file_url_excel = `/resources/report/60/95/einvoices_template/${seller_comp_taxcode}`;

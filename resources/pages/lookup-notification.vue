@@ -277,7 +277,7 @@ export default {
             document.body.appendChild(tag_a);
             tag_a.style = "display: none";
             tag_a.href = _url;
-            tag_a.download = this.invoiceInfo.voucher_no; 
+            tag_a.download = this.invoiceInfo.buyer_taxcode + "_" + this.invoiceInfo.voucher_no; 
             tag_a.click();
             window.URL.revokeObjectURL(_url);
             tag_a.remove();
@@ -287,7 +287,7 @@ export default {
       try {
         var link = document.createElement('a');
         link.href = this.invoiceInfo.url_pdf;
-        link.download = `${this.invoiceInfo.voucher_no}.pdf`;
+        link.download = `${this.invoiceInfo.buyer_taxcode + "_" + this.invoiceInfo.voucher_no}.pdf`;
         link.dispatchEvent(new MouseEvent('click'));
       } catch (error) {
         this.showNotification("danger", "onDownload-catch exception:", error.message, "", 3000);
@@ -309,7 +309,7 @@ export default {
         let objXml = [
           {
             req_key: this.invoiceInfo.req_key,
-            xml: this.invoiceInfo.seller_sign_xml,
+            xml: this.invoiceInfo.seller_sign_xml.toString().replaceAll("\"","'"),
             id_signing: id_signing,
             url_signing: "BBan/DSCKS/NMua"
           }
@@ -339,11 +339,11 @@ export default {
     async onSuccessissueXmlList(data) {
       //console.log("data  ", data);
       
-      // if(this.invoiceInfo.buyer_taxcode != data.dn_mst)
-      // {
-      //   this.showNotification("warning", "Notification", "mst_is_wrong");
-      //   return;
-      // }
+      if(this.invoiceInfo.buyer_taxcode != data.dn_mst)
+      {
+        this.showNotification("warning", "Notification", "mst_is_wrong");
+        return;
+      }
 
       var date_token = new Date(data.not_after);
       var date_current = new Date();

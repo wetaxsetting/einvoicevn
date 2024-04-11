@@ -3601,9 +3601,6 @@ class EInvoiceController {
             tax_code: tax_code,
             result_content: ndungTBao,
           });
-          //return response.send(Utils.response(true, `checking_success`, rtnValue));
-          // tạm thời đóng đoạn này vì bên CQT k trả kết quả.
-          //return response.send(Utils.response(false, 'Checking Tax Status Failure. No data found.',null));
         } else {
           for (let j = 0; j < result.data.length; j++) {
             const items = result.data[j];
@@ -14916,7 +14913,7 @@ class EInvoiceController {
 
       if (data_mail.p_rtn_cur.length > 0) {
         let EiExcels = new EiExcel04SS2Handler();
-        let url_pdf = await EiExcels.getEinvoice(p_tei_einvoice_m_pk, p_language, p_crt_by);
+        let url_pdf = await EiExcels.getEinvoice(p_tei_einvoice_ss_d_pk, p_language, p_crt_by);
         //console.log("url_pdf2  ", url_pdf);
 
         const res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {

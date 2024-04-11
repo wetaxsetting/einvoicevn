@@ -1470,13 +1470,13 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
 
-      const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'e_GX4v@'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon';
+      //const authUserName = 'GENUWIN'; // "GENUWIN";
+      //const authPassword = 'e_GX4v@'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+      //const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon';
 
-      // const authUserName = "GENUWIN"; // "GENUWIN";
-      //const authPassword = "genuwin123"; // "e_GX4v@";
-      //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon";
+      const authUserName = "GENUWIN"; // "GENUWIN";
+      const authPassword = "genuwin123"; // "e_GX4v@";
+      const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon";
 
       const {proc, para} = request.all();
 
@@ -1634,13 +1634,13 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'e_GX4v@'; // "e_GX4v@";
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      //const authUserName = 'GENUWIN'; // "GENUWIN";
+      //const authPassword = 'e_GX4v@'; // "e_GX4v@";	
+      //const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
 
-      // const authUserName = "GENUWIN"; // "GENUWIN";
-      //const authPassword = "genuwin123"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
-      //let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+      const authUserName = "GENUWIN"; // "GENUWIN";
+      const authPassword = "genuwin123"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+      let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
       const agent = {
         Agent: {
           defaultPort: 443,
@@ -2074,7 +2074,7 @@ class EInvoiceController {
     }
   }
 
-  async weTaxExtractXMLContentNotice(p_xml_content, p_language, p_crt_by) {
+  async weTaxExtractXMLContentNotice(p_xml_content, p_doc_no, p_language, p_crt_by) {
     try {
       const templateTTChung = [
         'TBao/DLTBao',
@@ -2118,6 +2118,7 @@ class EInvoiceController {
         jsonTTChung[0].DDanh,
         jsonTTChung[0].NTBao,
         signingTime.SigningTime,
+		    p_doc_no		
       ];
 
       //console.log("arrTTChung  ", arrTTChung);
@@ -2188,13 +2189,13 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
       let dataJson = [];
-      const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'e_GX4v@'; // "e_GX4v@";
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/dkyhddt/dkysdung';
+      //const authUserName = 'GENUWIN'; // "GENUWIN";
+      //const authPassword = 'e_GX4v@'; // "e_GX4v@";
+      //const url = 'https://tvan.fpt.com.vn/ftvan-hddt/dkyhddt/dkysdung';
 
-      // const authUserName = "GENUWIN"; // "GENUWIN";
-      // const authPassword = "e_GX4v@"; // "e_GX4v@";
-      //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon";
+      const authUserName = "GENUWIN"; // "GENUWIN";
+      const authPassword = "genuwin123"; // "e_GX4v@";
+      const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon";
 
       const {proc, para} = request.all();
 
@@ -2454,14 +2455,15 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
 
-      const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'e_GX4v@'; //"genuwin123"; //
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/dkyhddt/dkysdung';
-      const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      //const authUserName = 'GENUWIN'; // "GENUWIN";
+      //const authPassword = 'e_GX4v@'; //"genuwin123"; //
+      //const url = 'https://tvan.fpt.com.vn/ftvan-hddt/dkyhddt/dkysdung';
+      //const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
 
-      //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon";
-      //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/dkyhddt/dkysdung";
-      //const urlCheck = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+      const authUserName = 'GENUWIN'; // "GENUWIN";
+      const authPassword = 'genuwin123'; //"genuwin123"; //
+      const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/dkyhddt/dkysdung";
+      const urlCheck = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
 
       const {xml_signed, tax_code, req_key} = request.all();
 
@@ -2680,12 +2682,13 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
 
-      const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'e_GX4v@'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      //const authUserName = 'GENUWIN'; // "GENUWIN";
+      //const authPassword = 'e_GX4v@'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+      //const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
 
-      // const authPassword = "genuwin123"; // "e_GX4v@";
-      //let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+	    const authUserName = 'GENUWIN'; // "GENUWIN";
+      const authPassword = 'genuwin123'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+      const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
 
       const {para} = request.all();
       // console.log("para +++===> ", para);
@@ -3049,10 +3052,14 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'e_GX4v@'; // "genuwin123"; "e_GX4v@";
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
-      //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
+      //const authUserName = 'GENUWIN'; // "GENUWIN";
+      //const authPassword = 'e_GX4v@'; // "genuwin123"; "e_GX4v@";
+      //const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
+	  
+	    const authUserName = 'GENUWIN'; // "GENUWIN";
+      const authPassword = 'genuwin123'; // "genuwin123"; "e_GX4v@";
+      const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
+	  
       const {proc, para} = request.all();
       const agent = {
         Agent: {
@@ -3129,10 +3136,14 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'e_GX4v@'; //"genuwin123"; // "e_GX4v@";
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
-      //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
+      //const authUserName = 'GENUWIN'; // "GENUWIN";
+      //const authPassword = 'e_GX4v@'; //"genuwin123"; // "e_GX4v@";
+      //const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
+	  
+	  const authUserName = 'GENUWIN'; // "GENUWIN";
+      const authPassword = 'genuwin123'; //"genuwin123"; // "e_GX4v@";
+      const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
+	  
       const {para} = request.all();
       const agent = {
         Agent: {
@@ -3223,10 +3234,13 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'e_GX4v@'; //"genuwin123"; // "e_GX4v@";
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
-      //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
+      //const authUserName = 'GENUWIN'; // "GENUWIN";
+      //const authPassword = 'e_GX4v@'; //"genuwin123"; // "e_GX4v@";
+      //const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
+	  
+	  const authUserName = 'GENUWIN'; // "GENUWIN";
+      const authPassword = 'genuwin123'; //"genuwin123"; // "e_GX4v@";
+      const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
       //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/mttien/tbaossot";
       const {xml_signed, req_key} = request.all();
       const agent = {
@@ -3352,11 +3366,14 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'e_GX4v@'; //"genuwin123"; // "e_GX4v@";
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
-      //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
-      //let url = "";//  "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/mttien/tbaossot";
+		//const authUserName = 'GENUWIN'; // "GENUWIN";
+		//const authPassword = 'e_GX4v@'; //"genuwin123"; // "e_GX4v@";
+		//const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';																						
+		const authUserName = 'GENUWIN'; // "GENUWIN";
+		const authPassword = 'genuwin123'; //"genuwin123"; // "e_GX4v@";
+		let url = "";
+		//const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
+		//"https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/mttien/tbaossot";
       const {xml_signed, req_key, smbl_type} = request.all();
       const agent = {
         Agent: {
@@ -3531,7 +3548,7 @@ class EInvoiceController {
     }
   }
 
-  async weTaxCheckInformAdjustToTaxOfficeTest({request, response, auth}) {
+  async weTaxCheckInformAdjustToTaxOffice({request, response, auth}) {
     try {
       var p_language = request.header('accept-language', 'ENG');
       var p_crt_by = '';
@@ -3550,10 +3567,11 @@ class EInvoiceController {
 
       //const authUserName = "GENUWIN";
       //const authPassword = "e_GX4v@";
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      //const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+	  
       const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'e_GX4v@'; //"genuwin123"; // "e_GX4v@";
-      //let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+      const authPassword = 'genuwin123'; //"genuwin123"; // "e_GX4v@";
+      const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
 
       const {tax_code, trade_code_list} = request.all();
 
@@ -3620,9 +3638,10 @@ class EInvoiceController {
                 tenTBao = items[k].tenTBao;
                 maTBao = items[k].loaiTBao;
                
-              } else if (items[k].loaiTBao == "1") {
-                  base64XML = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
               } else */
+			  if (items[k].loaiTBao == "1") {
+                  base64XML = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
+              } else 
               if (items[k].loaiTBao == '17' || items[k].loaiTBao == '15') {
                 tenTBao = items[k].tenTBao;
                 maTBao = items[k].loaiTBao;
@@ -3799,173 +3818,12 @@ class EInvoiceController {
       Utils.Logger({
         LVL: 'error',
         MODULE: 'EInvoiceController',
-        FUNC: 'weTaxCheckInformAdjustToTaxOfficeTest',
+        FUNC: 'weTaxCheckInformAdjustToTaxOffice',
         CONTENT: e.message,
       });
       // console.log("error ", e);
       // return response.send(Utils.response(false, e.message, null));
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
-    }
-  }
-
-  async weTaxCheckInformAdjustToTaxOffice({request, response, auth}) {
-    try {
-      var p_language = request.header('accept-language', 'ENG');
-      var p_crt_by = '';
-      const user = await auth.getUser();
-      if (user) {
-        p_crt_by = user.USER_ID;
-      }
-      //console.log("ss",EINVOICE_URL_API)
-      const agent = {
-        Agent: {
-          defaultPort: 443,
-          protocol: 'https:',
-          options: {maxVersion: 'TLSv1.2', minVersion: 'TLSv1.2', path: null},
-        },
-      };
-      const authUserName = 'GENUWIN';
-      const authPassword = 'e_GX4v@';
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
-      //const authUserName = "GENUWIN"; // "GENUWIN";
-      //const authPassword = "genuwin123"; // "e_GX4v@";
-      //let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
-
-      const {tax_code, trade_code_list} = request.all();
-
-      let rtnValue = [];
-
-      for (const inv of trade_code_list) {
-        const result = await Request.get(url + inv.trade_code, {
-          agent,
-          headers: {
-            Authorization: 'Basic ' + Buffer.from(`${authUserName}:${authPassword}`).toString('base64'),
-          },
-        });
-        // console.log("result", JSON.stringify(result.data));
-
-        if (!result.data.length) {
-          return response.send(Utils.response(false, 'Checking Tax Status Failure. No data found.', null));
-        }
-        let tenTBao = '',
-          maTBao = '',
-          cqt_result = '',
-          cqt_status = '',
-          base64XML = '';
-        let ndungTBao = [];
-        for (let j = 0; j < result.data.length; j++) {
-          const items = result.data[j];
-          for (let k = 0; k < items.length; k++) {
-            if (items[k].loaiTBao == '0') {
-              tenTBao = items[k].tenTBao;
-              maTBao = items[k].loaiTBao;
-            } else if (items[k].loaiTBao == '1') {
-              base64XML = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8');
-            } else if (items[k].loaiTBao == '17') {
-              tenTBao = items[k].tenTBao;
-              maTBao = items[k].loaiTBao;
-
-              for (const invoice of items[k].ndungTBao.tbaoTNhanSSotDoc.dsachHDonLoi) {
-                ndungTBao.push({
-                  MCCQT: invoice.MCCQT,
-                  khieuMauHDon: invoice.khieuMauHDon,
-                  khieuHDon: invoice.khieuHDon,
-                  soHDon: invoice.soHDon,
-                  ngayHDon: invoice.ngayHDon,
-                  cqt_result: invoice.tthaiTNCQT, //   invoice.dsachLoi.length == 0 ? 1 : 2,
-                  dsachLoi: invoice.dsachLoi,
-                });
-
-                if (invoice.dsachLoi.length == 0) {
-                  cqt_result = 'Thành công';
-                  cqt_status = invoice.tthaiTNCQT;
-                } else {
-                  for (const error of invoice.dsachLoi) {
-                    cqt_result += error.MaLoi + ' - ' + error.MTaLoi;
-                    cqt_status = invoice.tthaiTNCQT;
-                  }
-                }
-
-                // const data_d_tbss = {
-                //     macqt : invoice.MCCQT,
-                //     form_no : invoice.khieuMauHDon,
-                //     serial_no : invoice.khieuHDon,
-                //     invoice_dt : invoice.ngayHDon,
-                //     invoice_no : invoice.soHDon,
-                //     cqt_result : cqt_result,
-                //     cqt_status : cqt_status
-                // };
-
-                // await DBService.ExecuteSQLBlob(
-                //   `BEGIN wt_upd_hd04ss_d(
-                //                     :p_mccqt,
-                //                     :p_form_no,
-                //                     :p_serial_no,
-                //                     :p_invoice_no,
-                //                     :p_cqt_result,
-                //                     :p_cqt_status,
-                //                     :p_language,
-                //                     :p_crt_by,
-                //                     :p_rtn_cur
-                //                 ); END;`,
-                //                 data_d_tbss,
-                //   p_language,
-                //   p_crt_by
-                // );
-              }
-            } else if (items[k].loaiTBao == '15') {
-              tenTBao = items[k].tenTBao;
-              maTBao = items[k].loaiTBao;
-              ndungTBao = items[k].ndungTBao;
-            } else {
-              maTBao = items[k].loaiTBao;
-              tenTBao = items[k].tenTBao || items[k].message;
-            }
-          }
-        }
-
-        // let para_value_m = {
-        //   p_req_key: inv.trade_code,
-        //   p_xml_sign: base64XML,
-        //   p_messCQT: tenTBao,
-        //   p_status: "1",
-        // };
-        // await DBService.ExecuteSQLBlob(
-        //   `BEGIN wt_upd_hd04ss_m(
-        //                     :p_req_key,
-        //                     :p_xml_sign,
-        //                     :p_messCQT,
-        //                     :p_status,
-        //                     :p_language,
-        //                     :p_crt_by,
-        //                     :p_rtn_cur
-        //                 ); END;`,
-        //   para_value_m,
-        //   p_language,
-        //   p_crt_by
-        // );
-
-        rtnValue.push({
-          trade_code: inv.trade_code,
-          req_key: inv.req_key,
-          inform_code: maTBao,
-          inform_desc: tenTBao,
-          tax_code: tax_code,
-          result_content: ndungTBao,
-        });
-
-        //this.sendMailTBSSToCustomer(inv.trade_code, p_language, p_crt_by);
-      }
-
-      return response.send(Utils.response(true, `checking_success`, rtnValue));
-    } catch (e) {
-      Utils.Logger({
-        LVL: 'error',
-        MODULE: 'EInvoiceController',
-        FUNC: 'weTaxCheckInformAdjustToTaxOffice',
-        CONTENT: e.message,
-      });
-      return response.send(Utils.response(false, e.message, null));
     }
   }
 
@@ -3986,12 +3844,14 @@ class EInvoiceController {
         },
       };
 
-      const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'e_GX4v@'; //"genuwin123"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
-      //let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
-      //const authUserName = "GENUWIN"; // "GENUWIN";
-      //const authPassword = "e_GX4v@";// "genuwin123";// "e_GX4v@";
+      //const authUserName = 'GENUWIN'; // "GENUWIN";
+      //const authPassword = 'e_GX4v@'; //"genuwin123"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+      //const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      
+	  const authUserName = "GENUWIN"; // "GENUWIN";
+      const authPassword = "genuwin123";// "genuwin123";// "e_GX4v@";
+	  let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+    
       const {proc, para} = request.all();
 
       //console.log("para", para);
@@ -5666,7 +5526,7 @@ class EInvoiceController {
 
         objInvoice.DLHDon.NDHDon.TToan.TTCKTMai = invoices[i].total_dc_amt;
         objInvoice.DLHDon.NDHDon.TToan.TgTTTBSo = invoices[i].total_payment;
-        objInvoice.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText(invoices[i].total_payment.toString(), invoices[i].currency);
+        objInvoice.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText2(invoices[i].total_payment.toString(), invoices[i].currency);
 
         objInvoice.DSCKS.NBan = '';
 
@@ -5989,7 +5849,7 @@ class EInvoiceController {
           total_amt_dc: invoice.total_dc_amt,
           total_amt_vat: invoice.total_amt_vat,
           total_payment: invoice.total_payment,
-          total_payment_word_vie: await Utils.Num2VNText(invoice.total_payment.toString(), invoice.currency), //  invoice.total_payment_word_vie,
+          total_payment_word_vie: await Utils.Num2VNText2(invoice.total_payment.toString(), invoice.currency), //  invoice.total_payment_word_vie,
           mccqt: invoice.mccqt,
           data_xml: data_xml,
           count_length: count_length,
@@ -6113,7 +5973,7 @@ class EInvoiceController {
         else {
           //console.log("tei_wt_sale_bill_pk NOEXIT ", tei_wt_sale_bill_pk);
           data_rep.push({
-            link_invoice_preview: 'https://einvoicevn.com/lookup',
+            link_invoice_preview: 'https://einvoicevn.com/lookup-einvoice?trade_code',
             security_code: '',
             status_code: '0',
             status_name: 'Tax code has not been registered',
@@ -6137,7 +5997,7 @@ class EInvoiceController {
 
         if (!invoice.buyer_email && !invoice.buyer_email_cc) {
           data_rep.push({
-            link_invoice_preview: 'https://einvoicevn.com/lookup',
+            link_invoice_preview: 'https://einvoicevn.com/lookup-einvoice?trade_code',
             security_code: '',
             status_code: '0',
             status_name: 'Not Sent',
@@ -6178,7 +6038,7 @@ class EInvoiceController {
             );
 
             data_rep.push({
-              link_invoice_preview: 'https://einvoicevn.com/lookup',
+              link_invoice_preview: 'https://einvoicevn.com/lookup-einvoice?trade_code',
               lookup_code: '1234567bac',
               status_code: '1',
               status_name: 'Sent Success',
@@ -6215,7 +6075,7 @@ class EInvoiceController {
               p_crt_by,
             );
             data_rep.push({
-              link_invoice_preview: 'https://einvoicevn.com/lookup',
+              link_invoice_preview: 'https://einvoicevn.com/lookup-einvoice?trade_code',
               security_code: '1234567bac',
               status_code: '0',
               status_name: 'Sent Faile',
@@ -6274,17 +6134,17 @@ class EInvoiceController {
         data_invoice = [],
       } = request.all();
 
-      console.log('======================weTaxSendOrderInfoV2 BEGIN===================');
+      //console.log('======================weTaxSendOrderInfoV2 BEGIN===================');
       //console.log("weTaxSendOrderInfoV2 sale_id   ",sale_id  );
       //console.log("weTaxSendOrderInfoV2 msg_his_id  ",msg_his_id );
-      console.log('weTaxSendOrderInfoV2 tax_code  ', tax_code);
-      console.log('weTaxSendOrderInfoV2 p_crt_by  ', p_crt_by);
-      console.log('weTaxSendOrderInfoV2 sale_date  ', sale_date);
-      console.log('weTaxSendOrderInfoV2 store_code  ', store_code);
-      console.log('weTaxSendOrderInfoV2 store_name  ', store_name);
-      console.log('weTaxSendOrderInfoV2 pos_no  ', pos_no);
-      console.log('weTaxSendOrderInfoV2 bill_no  ', bill_no);
-      console.log('weTaxSendOrderInfoV2 data_invoice  ', data_invoice);
+      //console.log('weTaxSendOrderInfoV2 tax_code  ', tax_code);
+      //console.log('weTaxSendOrderInfoV2 p_crt_by  ', p_crt_by);
+      //console.log('weTaxSendOrderInfoV2 sale_date  ', sale_date);
+      //console.log('weTaxSendOrderInfoV2 store_code  ', store_code);
+      //console.log('weTaxSendOrderInfoV2 store_name  ', store_name);
+      //console.log('weTaxSendOrderInfoV2 pos_no  ', pos_no);
+      //console.log('weTaxSendOrderInfoV2 bill_no  ', bill_no);
+      //console.log('weTaxSendOrderInfoV2 data_invoice  ', data_invoice);
 
       if (!data_invoice) {
         // return response.send(Utils.response(false, `Invalid data_invoice `, null)
@@ -6356,7 +6216,7 @@ class EInvoiceController {
           total_amt_dc: invoice.total_dc_amt,
           total_amt_vat: invoice.total_amt_vat,
           total_payment: invoice.total_payment,
-          total_payment_word_vie: await Utils.Num2VNText(invoice.total_payment.toString(), invoice.currency), //  invoice.total_payment_word_vie,
+          total_payment_word_vie: await Utils.Num2VNText2(invoice.total_payment.toString(), invoice.currency), //  invoice.total_payment_word_vie,
           mccqt: invoice.mccqt,
           data_xml: data_xml,
           count_length: count_length,
@@ -6488,7 +6348,7 @@ class EInvoiceController {
           data_rep.push({
             sale_id: invoice.sale_id,
             msg_his_id: invoice.msg_his_id,
-            link_invoice_preview: 'https://einvoicevn.com/lookup',
+            link_invoice_preview: 'https://einvoicevn.com/lookup-einvoice?trade_code',
             lookup_code: '',
             status_code: '0',
             status_name: 'Tax code has not been registered',
@@ -6514,7 +6374,7 @@ class EInvoiceController {
           data_rep.push({
             sale_id: invoice.sale_id,
             msg_his_id: invoice.msg_his_id,
-            link_invoice_preview: 'https://einvoicevn.com/lookup',
+            link_invoice_preview: 'https://einvoicevn.com/lookup-einvoice?trade_code',
             lookup_code: '',
             status_code: '0',
             status_name: 'Not Sent',
@@ -6537,7 +6397,7 @@ class EInvoiceController {
           data_rep.push({
             sale_id: invoice.sale_id,
             msg_his_id: invoice.msg_his_id,
-            link_invoice_preview: 'https://einvoicevn.com/lookup',
+            link_invoice_preview: 'https://einvoicevn.com/lookup-einvoice?trade_code',
             lookup_code: rtnValue.p_rtn_cur[0].LOOKUP_CODE,
             status_code: '3',
             status_name: 'In Process',
@@ -6561,8 +6421,8 @@ class EInvoiceController {
 
       this.sendMailWT(data_send_mail, 'WTPTA002', tax_code, p_language, p_crt_by);
 
-      console.log('weTaxSendOrderInfoV2 data ', data_rep);
-      console.log('======================weTaxSendOrderInfoV2 END===================');
+      //console.log('weTaxSendOrderInfoV2 data ', data_rep);
+      //console.log('======================weTaxSendOrderInfoV2 END===================');
 
       // return response.send(Utils.response(true, `Send order to invoice was successfully!`, data_rep));
       return response.status(200).json(Utils.responseByRule({success: true, message: 'Sent order information successfully.', data: data_rep}));
@@ -6638,7 +6498,7 @@ class EInvoiceController {
 
           if (!invoice.buyer_email && !invoice.buyer_email_cc && !rtnValue.p_rtn_cur[0].BUYER_EMAIL && !rtnValue.p_rtn_cur[0].BUYER_EMAIL_CC) {
             data_r.push({
-              link_invoice_preview: 'https://einvoicevn.com/lookup',
+              link_invoice_preview: 'https://einvoicevn.com/lookup-einvoice?trade_code',
               lookup_code: '1234567bac',
               seller_taxcode: tax_code,
               form_no: invoice.form_no,
@@ -6691,7 +6551,7 @@ class EInvoiceController {
               //console.log("rtnValueSendMail  ", rtnValueSendMail);
 
               data_r.push({
-                link_invoice_preview: 'https://einvoicevn.com/lookup',
+                link_invoice_preview: 'https://einvoicevn.com/lookup-einvoice?trade_code',
                 lookup_code: '1234567bac',
                 seller_taxcode: tax_code,
                 form_no: invoice.form_no,
@@ -6726,7 +6586,7 @@ class EInvoiceController {
               );
 
               data_r.push({
-                link_invoice_preview: 'https://einvoicevn.com/lookup',
+                link_invoice_preview: 'https://einvoicevn.com/lookup-einvoice?trade_code',
                 lookup_code: '1234567bac',
                 seller_taxcode: tax_code,
                 form_no: invoice.form_no,
@@ -6748,7 +6608,7 @@ class EInvoiceController {
         } else {
           //return response.send(Utils.response(false, 'Order einvoice not exit'));
           data_r.push({
-            link_invoice_preview: 'https://einvoicevn.com/lookup',
+            link_invoice_preview: 'https://einvoicevn.com/lookup-einvoice?trade_code',
             lookup_code: '1234567bac',
             seller_taxcode: tax_code,
             form_no: invoice.form_no,
@@ -6792,15 +6652,15 @@ class EInvoiceController {
       }
       const {sale_id, msg_his_id, tax_code, sale_date, store_code, store_name, infor_send_mail} = request.all();
 
-      console.log('weTaxReSendOrderInfoV2  BEGIN ============================= ');
+      //console.log('weTaxReSendOrderInfoV2  BEGIN ============================= ');
       //console.log("weTaxReSendOrderInfoV2  sale_id ",sale_id);
       //console.log("weTaxReSendOrderInfoV2  msg_his_id ",msg_his_id);
-      console.log('weTaxReSendOrderInfoV2  tax_code ', tax_code);
-      console.log('weTaxReSendOrderInfoV2  sale_date ', sale_date);
-      console.log('weTaxReSendOrderInfoV2  store_code ', store_code);
-      console.log('weTaxReSendOrderInfoV2  store_name ', store_name);
-      console.log('weTaxReSendOrderInfoV2  infor_send_mail ', infor_send_mail);
-      console.log('weTaxReSendOrderInfoV2  END =============================== ');
+      //console.log('weTaxReSendOrderInfoV2  tax_code ', tax_code);
+      //console.log('weTaxReSendOrderInfoV2  sale_date ', sale_date);
+      //console.log('weTaxReSendOrderInfoV2  store_code ', store_code);
+      //console.log('weTaxReSendOrderInfoV2  store_name ', store_name);
+      //console.log('weTaxReSendOrderInfoV2  infor_send_mail ', infor_send_mail);
+      //console.log('weTaxReSendOrderInfoV2  END =============================== ');
 
       let tei_wt_sale_bill_pk = 0;
       let data_r = [];
@@ -6859,7 +6719,7 @@ class EInvoiceController {
             data_r.push({
               sale_id: invoice.sale_id,
               msg_his_id: invoice.msg_his_id,
-              link_invoice_preview: 'https://einvoicevn.com/lookup',
+              link_invoice_preview: 'https://einvoicevn.com/lookup-einvoice?trade_code',
               lookup_code: rtnValue?.p_rtn_cur?.[0]?.LOOKUP_CD,
               seller_taxcode: tax_code,
               form_no: invoice.form_no,
@@ -6883,7 +6743,7 @@ class EInvoiceController {
           data_r.push({
             sale_id: invoice.sale_id,
             msg_his_id: invoice.msg_his_id,
-            link_invoice_preview: 'https://einvoicevn.com/lookup',
+            link_invoice_preview: 'https://einvoicevn.com/lookup-einvoice?trade_code',
             lookup_code: rtnValue?.p_rtn_cur?.[0]?.LOOKUP_CD,
             seller_taxcode: tax_code,
             form_no: invoice.form_no,
@@ -6906,7 +6766,7 @@ class EInvoiceController {
           data_r.push({
             sale_id: invoice.sale_id,
             msg_his_id: invoice.msg_his_id,
-            link_invoice_preview: 'https://einvoicevn.com/lookup',
+            link_invoice_preview: 'https://einvoicevn.com/lookup-einvoice?trade_code',
             lookup_code: '',
             seller_taxcode: tax_code,
             form_no: invoice.form_no,
@@ -7019,7 +6879,7 @@ class EInvoiceController {
             data_r.push({
               sale_id: invoice.sale_id,
               msg_his_id: invoice.msg_his_id,
-              link_invoice_preview: 'https://einvoicevn.com/lookup',
+              link_invoice_preview: 'https://einvoicevn.com/lookup-einvoice?trade_code',
               lookup_code: rtnValue?.p_rtn_cur?.[0]?.LOOKUP_CD,
               seller_taxcode: tax_code,
               form_no: invoice.form_no,
@@ -7043,7 +6903,7 @@ class EInvoiceController {
           data_r.push({
             sale_id: invoice.sale_id,
             msg_his_id: invoice.msg_his_id,
-            link_invoice_preview: 'https://einvoicevn.com/lookup',
+            link_invoice_preview: 'https://einvoicevn.com/lookup-einvoice?trade_code',
             lookup_code: rtnValue?.p_rtn_cur?.[0]?.LOOKUP_CD,
             seller_taxcode: tax_code,
             form_no: invoice.form_no,
@@ -7066,7 +6926,7 @@ class EInvoiceController {
           data_r.push({
             sale_id: invoice.sale_id,
             msg_his_id: invoice.msg_his_id,
-            link_invoice_preview: 'https://einvoicevn.com/lookup',
+            link_invoice_preview: 'https://einvoicevn.com/lookup-einvoice?trade_code',
             lookup_code: '',
             seller_taxcode: tax_code,
             form_no: invoice.form_no,
@@ -7112,7 +6972,7 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      const {seller_comp_taxcode, symbol_type, form_no, serial_no, template_id, start_date, end_date, start_number, preview} = request.all();
+      const {seller_comp_taxcode, symbol_type, form_no, serial_no, template_id, start_date, end_date, start_number, preview, status} = request.all();
       const template_excel = request.file('template_excel');
       const logo_image = request.file('logo_image');
       const background_image = request.file('background_image');
@@ -7217,6 +7077,7 @@ class EInvoiceController {
         p_logo_height: logo_height,
         p_logo_start_col: '0.5',
         p_logo_start_row: '1.7',
+		p_status : status				 
       };
 
       const rtnValue = await DBService.ExecuteSQLBlob(
@@ -7384,7 +7245,10 @@ class EInvoiceController {
           continue;
           //return response.send(Utils.response(false, "start_date can't null",null));
         }
-        if (!logo_image) {
+		//tam thoi đóng vì API này chỉ dùng để xóa template thôi - quá buồn 
+        let logo_width = 0, logo_height = 0;
+        let file_path_logo = '', file_path_bg = '';																				   											   
+        /*if (!logo_image) {
           req_value.push({
             seller_comp_taxcode: seller_comp_taxcode,
             req_key: '',
@@ -7430,7 +7294,7 @@ class EInvoiceController {
             logo_height = 100;
             logo_width = (100 * logo_height) / logo_width;
           }
-        }
+        }*/
 
         const para_value = {
           p_seller_comp_seller: seller_comp_taxcode,
@@ -7447,6 +7311,7 @@ class EInvoiceController {
           p_logo_height: data.logo_height,
           p_logo_start_col: '0.5',
           p_logo_start_row: '1.7',
+		      p_status: data.status					   
         };
 
         const rtnValue = await DBService.ExecuteSQLBlob(
@@ -7473,13 +7338,13 @@ class EInvoiceController {
         );
 
         if (rtnValue.p_rtn_cur[0].STATUS == 'OK') {
-          let EiExcels = new EiExcelTemplateHandler();
-          let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].PK, p_language, p_crt_by);
+          //let EiExcels = new EiExcelTemplateHandler();
+          //let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].PK, p_language, p_crt_by);
           ////console.log("base64PDf  ", url_pdf);
           req_value.push({
             seller_comp_taxcode: seller_comp_taxcode,
             req_key: data.req_key, //rtnValue.p_rtn_cur[0].PK,
-            template: url_pdf,
+            template: "",
           });
         } else {
           req_value.push({
@@ -7633,13 +7498,13 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      // let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
-      // const authUserName = "GENUWIN"; // "GENUWIN";
-      // const authPassword = "genuwin123"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+       let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+       const authUserName = "GENUWIN"; // "GENUWIN";
+       const authPassword = "genuwin123"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
 
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
-      const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'e_GX4v@'; // "e_GX4v@";
+      //const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      //const authUserName = 'GENUWIN'; // "GENUWIN";
+      //const authPassword = 'e_GX4v@'; // "e_GX4v@";
 
       const {data} = request.all();
       //console.log("data  ", data);
@@ -7715,23 +7580,7 @@ class EInvoiceController {
                   xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8');
                   xml_length = getLength(xml_tax_signed);
                 } else if (items[k].loaiTBao == '9' || items[k].loaiTBao == '16' || items[k].loaiTBao == '15') {
-                  /* maTBao = items[k].loaiTBao;
-                  tenTBao = items[k].tenTBao;
-                  data_error.push(
-                    {
-                      maLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].maLoi,
-                      mtaLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].mtaLoi
-                    }
-                  )*/
-
-                  // !!!========================== tao sample maCQT
-                  maCQT = await this.makeid(34);
-                  maTBao = '10';
-                  tenTBao = 'Thông báo hóa đơn được CQT cấp mã';
-                  data_error = [];
-
-                  // !!!========================== tao sample maCQT
-
+                 
                   data_inv.push({
                     sale_id: data[i].req_key,
                     trade_code: data[i].trade_code,
@@ -7741,21 +7590,7 @@ class EInvoiceController {
                     mccqt: maCQT,
                     send_mail_yn: 'N',
                   });
-
-                  // const result = await DBService.callProcCursor(
-                  //     "ei_upd_file_xml_v8", [para[i], maTBao, tenTBao],
-                  //     p_language,
-                  //     p_crt_by
-                  // );
-                } //else if (items[k].loaiTBao == "15") {
-                //tenTBao = items[k].tenTBao;
-                //maTBao = items[k].loaiTBao;
-                // const result = await DBService.callProcCursor(
-                //     "ei_upd_file_xml_v9", [para[i], tenTBao],
-                //     p_language,
-                //     p_crt_by
-                // );
-                //}
+                } 
               }
             }
           })
@@ -8214,15 +8049,15 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
 
-      // const authUserName = "GENUWIN"; // "GENUWIN";
-      // const authPassword = "genuwin123"; // "e_GX4v@";
-      // const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien";
-      // const urlCheck = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+       const authUserName = "GENUWIN"; // "GENUWIN";
+       const authPassword = "genuwin123"; // "e_GX4v@";
+       const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien";
+       const urlCheck = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
 
-      const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'e_GX4v@'; // "e_GX4v@";
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/mttien';
-      const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      //const authUserName = 'GENUWIN'; // "GENUWIN";
+      //const authPassword = 'e_GX4v@'; // "e_GX4v@";
+      //const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/mttien';
+      //const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
       const agent = {
         Agent: {
           defaultPort: 443,
@@ -8416,18 +8251,18 @@ class EInvoiceController {
       //const authPassword = "e_GX4v@"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
       //const url = "https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon";
 
-      const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'e_GX4v@'; // "e_GX4v@";
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon';
-      const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      //const authUserName = 'GENUWIN'; // "GENUWIN";
+      //const authPassword = 'e_GX4v@'; // "e_GX4v@";
+      //const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon';
+      //const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
 
-      // const authUserName = "GENUWIN"; // "GENUWIN";
-      // const authPassword = "genuwin123"; // "e_GX4v@";
-      // const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon";
-      // const urlCheck = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+       const authUserName = "GENUWIN"; // "GENUWIN";
+       const authPassword = "genuwin123"; // "e_GX4v@";
+       const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon";
+       const urlCheck = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
       const {invoices} = request.all();
 
-      console.log('weTaxSendInvoiceToTaxOffice  BEGIN ================================= ');
+      //console.log('weTaxSendInvoiceToTaxOffice  BEGIN ================================= ');
       //console.log("weTaxSendInvoiceToTaxOffice  invoices  ",invoices);
       const agent = {
         Agent: {
@@ -8636,8 +8471,8 @@ class EInvoiceController {
           data_error: data_error,
         });
       }
-      console.log('weTaxSendInvoiceToTaxOffice  rtnValue', rtnValue);
-      console.log('weTaxSendInvoiceToTaxOffice  END ================================= ');
+      //console.log('weTaxSendInvoiceToTaxOffice  rtnValue', rtnValue);
+      //console.log('weTaxSendInvoiceToTaxOffice  END ================================= ');
 
       // rtnValueTradecode.push({
       //   req_key: invoices[i].req_key,
@@ -8824,7 +8659,7 @@ class EInvoiceController {
         objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTThue = invoices[i].total_vat_amt || '0';
         objInvoice_M.HDon.DLHDon.NDHDon.TToan.TTCKTMai = invoices[i].total_dc_amt || '0';
         objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = invoices[i].total_payment || '0';
-        objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText(invoices[i].total_payment.toString() || '0', invoices[i].currency);
+        objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText2(invoices[i].total_payment.toString() || '0', invoices[i].currency);
 
         objInvoice_M.HDon.DSCKS.NBan = '';
         objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu = {};
@@ -8937,6 +8772,7 @@ class EInvoiceController {
               DChi: '',
               NDDien: '',
               CVu: '',
+			        DTLHe:'',		   
             },
             NMua: {
               Ten: '',
@@ -8945,6 +8781,7 @@ class EInvoiceController {
               DDanh: '',
               NDDien: '',
               CVu: '',
+			        DTLHe:'',		   
             },
             HDon: {
               KHMSHDon: '',
@@ -8983,12 +8820,14 @@ class EInvoiceController {
         objInvoice.BBan.DLieu.NBan.DChi = seller_address;
         objInvoice.BBan.DLieu.NBan.NDDien = seller_representative;
         objInvoice.BBan.DLieu.NBan.CVu = seller_position;
+		    objInvoice.BBan.DLieu.NBan.DTLHe = seller_tel;											
 
         objInvoice.BBan.DLieu.NMua.Ten = noti.buyer_company_name;
         objInvoice.BBan.DLieu.NMua.MST = noti.buyer_taxcode;
         objInvoice.BBan.DLieu.NMua.DChi = noti.buyer_address;
         objInvoice.BBan.DLieu.NMua.NDDien = noti.buyer_representative;
         objInvoice.BBan.DLieu.NMua.CVu = noti.buyer_position;
+		    objInvoice.BBan.DLieu.NMua.DTLHe = noti.buyer_tel;												  
 
         objInvoice.BBan.DLieu.HDon.KHMSHDon = noti.form_no;
         objInvoice.BBan.DLieu.HDon.KHHDon = noti.serial_no;
@@ -9153,7 +8992,7 @@ class EInvoiceController {
 
         if (res?.p_rtn_cur?.[0]?.STATUS == 'OK') {
           const data_mail = await this.weTaxSendMailRecords(
-            res?.p_rtn_cur?.[0]?.TEI_EINVOICE_M_PK,
+            res?.p_rtn_cur?.[0]?.TEI_EINVOICE_SS_D_PK,
             res?.p_rtn_cur?.[0]?.TEI_COMPANY_PK,
             noti.buyer_email,
             noti.buyer_email_cc,
@@ -9242,7 +9081,7 @@ class EInvoiceController {
 
         if (res.STATUS == 'OK') {
           const data_mail = await this.weTaxSendMailRecords(
-            res.TEI_EINVOICE_M_PK,
+            res.TEI_EINVOICE_SS_D_PK,
             res.TEI_COMPANY_PK,
             noti.buyer_email,
             noti.buyer_email_cc,
@@ -9626,7 +9465,7 @@ class EInvoiceController {
 
         objInvoice.HDon.DLHDon.NDHDon.TToan.TTCKTMai = invoiceM.TOTAL_DC_AMT;
         objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = invoiceM.TOTAL_PAYMENT;
-        objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText(invoiceM.TOTAL_PAYMENT.toString(), invoiceM.CURRENCY);
+        objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText2(invoiceM.TOTAL_PAYMENT.toString(), invoiceM.CURRENCY);
 
         objInvoice.HDon.DSCKS.NBan = '';
 
@@ -9912,7 +9751,7 @@ class EInvoiceController {
 
         objInvoice.DLHDon.NDHDon.TToan.TTCKTMai = invoiceM.TOTAL_DC_AMT;
         objInvoice.DLHDon.NDHDon.TToan.TgTTTBSo = invoiceM.TOTAL_PAYMENT;
-        objInvoice.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText(invoiceM.TOTAL_PAYMENT.toString(), invoiceM.CURRENCY);
+        objInvoice.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText2(invoiceM.TOTAL_PAYMENT.toString(), invoiceM.CURRENCY);
 
         objInvoice.DSCKS.NBan = '';
 
@@ -10232,7 +10071,7 @@ class EInvoiceController {
 
         objInvoice.HDon.DLHDon.NDHDon.TToan.TTCKTMai = invoiceM.TOTAL_DC_AMT;
         objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = invoiceM.TOTAL_PAYMENT;
-        objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText(invoiceM.TOTAL_PAYMENT.toString(), invoiceM.CURRENCY);
+        objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText2(invoiceM.TOTAL_PAYMENT.toString(), invoiceM.CURRENCY);
 
         objInvoice.HDon.DSCKS.NBan = '';
 
@@ -10341,13 +10180,13 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      // const authUserName = "GENUWIN"; // "GENUWIN";
-      // const authPassword = "genuwin123"; // "e_GX4v@";
-      // const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon";
+       const authUserName = "GENUWIN"; // "GENUWIN";
+       const authPassword = "genuwin123"; // "e_GX4v@";
+       const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon";
 
-      const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'e_GX4v@'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon';
+      //const authUserName = 'GENUWIN'; // "GENUWIN";
+      //const authPassword = 'e_GX4v@'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";										  
+      //const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon';
 
       const {invoices} = request.all();
 
@@ -10597,13 +10436,13 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      // let url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
-      // const authUserName = "GENUWIN"; // "GENUWIN";
-      // const authPassword = "genuwin123"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+       const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+       const authUserName = "GENUWIN"; // "GENUWIN";
+       const authPassword = "genuwin123"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
 
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
-      const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'e_GX4v@'; // "e_GX4v@";
+      //const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      //const authUserName = 'GENUWIN'; // "GENUWIN";
+      //const authPassword = 'e_GX4v@'; // "e_GX4v@";
 
       const {data} = request.all();
       //console.log("data  ", data);
@@ -10866,13 +10705,11 @@ class EInvoiceController {
                                             <br/>- Số hóa đơn: 
                                             <b>${data_invoice.invoice_no}</b>
                                             <br/>- Tổng thanh toán: 
-                                            <b>       ${data_invoice.total_payment
-                                              .toLocaleString('it-IT', {style: 'currency', currency: 'VND'})
-                                              .replaceAll('VND', '')}</b>
+                                            <b>         ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment))}</b>
                                             <br/>- Mã CQT của hóa đơn: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link tra cứu: 
-								                            <a href='https://test.e-invoice.webcashvietnam.com/lookup-einvoice?trade_code=${lookup_code}'>Xem hóa đơn</a>
+								                            <a href='https://einvoicevn.com/lookup-einvoice?trade_code=${lookup_code}'>Xem hóa đơn</a>
                                             <br />- Link download file PDF: 
                                             <a href='${url_pdf}'>Tải file PDF</a>
                                             <br />- Link download file XML: 
@@ -10900,13 +10737,11 @@ class EInvoiceController {
                                             <br/>- Invoice No:  
                                             <b>${data_invoice.invoice_no}</b>
                                             <br/>- Total amount :  
-                                            <b>       ${data_invoice.total_payment
-                                              .toLocaleString('it-IT', {style: 'currency', currency: 'VND'})
-                                              .replaceAll('VND', '')}</b>
+                                            <b>      ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment))}</b>
                                             <br/>- CQT code of e-invoice: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link lookup: 
-								                            <a href='https://test.e-invoice.webcashvietnam.com/lookup-einvoice?trade_code=${lookup_code}'>View e-invoice</a>
+								                            <a href='https://einvoicevn.com/lookup-einvoice?trade_code=${lookup_code}'>View e-invoice</a>
                                             <br />- Download file PDF link:  
                                             <a href='${url_pdf}'>Download file PDF</a>
                                             <br />- Download file XML link:  
@@ -10955,9 +10790,20 @@ class EInvoiceController {
       ); //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
       let url_xml = re_url_xml.data;
       //console.log("base64XXML  ", url_xml);
+		let body = "";
 
-      let subject = `${data_invoice.seller_comp_name}[Thông báo phát hành HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
-      let body = `<html>
+      
+      let  subject = `${data_invoice.seller_comp_name}[Thông báo phát hành HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
+
+      if (data_invoice.invoice_type == "1")
+      {
+        subject = `${data_invoice.seller_comp_name}[Thông báo về việc thay thế HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
+      }else if (data_invoice.invoice_type == "2")
+      {
+        subject = `${data_invoice.seller_comp_name}[Thông báo về việc điều chỉnh HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
+      }
+
+        body = `<html>
                             <body>
                                 <div id="page">
                                     <div id="d2">
@@ -10973,19 +10819,37 @@ class EInvoiceController {
                                             <br/>- Số hóa đơn: 
                                             <b>${data_invoice.invoice_no}</b>
                                             <br/>- Tổng thanh toán: 
-                                            <b>       ${data_invoice.total_payment
-                                              .toLocaleString('it-IT', {style: 'currency', currency: 'VND'})
-                                              .replaceAll('VND', '')}</b>
+                                            <b>       ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment))}</b>
+																											
+																		 
                                             <br/>- Mã CQT của hóa đơn: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link tra cứu: 
-								                            <a href='https://test.e-invoice.webcashvietnam.com/lookup-einvoice?trade_code=${lookup_code}'>Xem hóa đơn</a>
+								                            <a href='https://test.einvoicevn.com/lookup-einvoice?trade_code=${lookup_code}'>Xem hóa đơn</a>
                                             <br />- Link download file PDF: 
                                             <a href='${url_pdf}'>Tải file PDF</a>
                                             <br />- Link download file XML: 
                                             <a href='${url_xml}'>Tải file XML</a>
-                                            <br />
-                                        </div>
+                                            <br />`;
+                                            if (data_invoice.invoice_type == "1")
+                                            {
+                                              
+                                              body = body + ` - Thay thế cho Số hóa đơn: <b>${data_invoice.invoice_no_ref}</b><br />
+                                              - Mẫu số: <b>${data_invoice.form_no_ref}</b><br />
+                                              - Ký hiệu: <b>${data_invoice.serial_no_ref}</b><br />
+                                              - Mã CQT (nếu có): <b>${data_invoice.mccqt_ref}</b><br />
+                                              - Tổng thanh toán: <b>${ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment_ref))}</b><br />
+                                            `;
+                                            }else if(data_invoice.invoice_type == "2")
+                                            {
+                                              body = body + ` - Điều chỉnh cho Số hóa đơn: <b>${data_invoice.invoice_no_ref}</b><br />
+                                              - Mẫu số: <b>${data_invoice.form_no_ref}</b><br />
+                                              - Ký hiệu: <b>${data_invoice.serial_no_ref}</b><br />
+                                              - Mã CQT (nếu có): <b>${data_invoice.mccqt_ref}</b><br />
+                                              - Tổng thanh toán: <b>${ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment_ref))}</b><br />
+                                            `;
+                                            }
+                                            body  = body + `</div>
                                         <br/>
                                         <div id="d6">
                                             <p>
@@ -11007,19 +10871,37 @@ class EInvoiceController {
                                             <br/>- Invoice No:  
                                             <b>${data_invoice.invoice_no}</b>
                                             <br/>- Total amount :  
-                                            <b>       ${data_invoice.total_payment
-                                              .toLocaleString('it-IT', {style: 'currency', currency: 'VND'})
-                                              .replaceAll('VND', '')}</b>
+                                            <b>       ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment))}</b>
+																											
+																		 
                                             <br/>- CQT code of e-invoice: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link lookup: 
-								                            <a href='https://test.e-invoice.webcashvietnam.com/lookup-einvoice?trade_code=${lookup_code}'>View e-invoice</a>
+								                            <a href='https://test.einvoicevn.com/lookup-einvoice?trade_code=${lookup_code}'>View e-invoice</a>
                                             <br />- Download file PDF link:  
                                             <a href='${url_pdf}'>Download file PDF</a>
                                             <br />- Download file XML link:  
                                             <a href='${url_xml}'>Download file XML</a>
-                                            <br />
-                                        </p>
+                                            <br />`;
+                                            if (data_invoice.invoice_type == "1")
+                                            {
+                                              
+                                              body = body + ` - Replace for Invoice No: <b>${data_invoice.invoice_no_ref}</b> <br />
+                                              - Form No: <b>${data_invoice.form_no_ref}</b> <br />
+                                              - Serial No: <b>${data_invoice.serial_no_ref}</b> <br />
+                                              - Tax agency’s code: <b>${data_invoice.mccqt_ref}</b> <br />
+                                              - Total amount: <b>${ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment_ref))}</b> <br />
+                                            `;
+                                            }else if(data_invoice.invoice_type == "2") 
+                                            {
+                                              body = body + ` - Adjustment for Invoice No: <b>${data_invoice.invoice_no_ref}</b> <br />
+                                              - Form No: <b>${data_invoice.form_no_ref}</b> <br />
+                                              - Serial No: <b>${data_invoice.serial_no_ref}</b> <br />
+                                              - Tax agency’s code: <b>${data_invoice.mccqt_ref}</b> <br />
+                                              - Total amount: <b>${ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment_ref))}</b> <br />
+                                            `;
+                                            }
+                                            body  = body + `</p>
                                     </div>
                                     <div id="d8">
                                         <p>
@@ -11082,13 +10964,11 @@ class EInvoiceController {
                                             <br/>- Số hóa đơn: 
                                             <b>${data_invoice.invoice_no}</b>
                                             <br/>- Tổng thanh toán: 
-                                            <b>       ${data_invoice.total_payment
-                                              .toLocaleString('it-IT', {style: 'currency', currency: 'VND'})
-                                              .replaceAll('VND', '')}</b>
+                                            <b>       ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment))}</b>
                                             <br/>- Mã CQT của hóa đơn: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link tra cứu: 
-								                            <a href='https://test.e-invoice.webcashvietnam.com/lookup-einvoice?trade_code=${lookup_code}'>Xem hóa đơn</a>
+								                            <a href='https://einvoicevn.com/lookup-einvoice?trade_code=${lookup_code}'>Xem hóa đơn</a>
                                             <br />- Link download file PDF: 
                                             <a href='${url_pdf}'>Tải file PDF</a>
                                             <br />- Link download file XML: 
@@ -11116,13 +10996,11 @@ class EInvoiceController {
                                             <br/>- Invoice No:  
                                             <b>${data_invoice.invoice_no}</b>
                                             <br/>- Total amount :  
-                                            <b>       ${data_invoice.total_payment
-                                              .toLocaleString('it-IT', {style: 'currency', currency: 'VND'})
-                                              .replaceAll('VND', '')}</b>
+                                            <b>       ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment))}</b>
                                             <br/>- CQT code of e-invoice: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link lookup: 
-								                            <a href='https://test.e-invoice.webcashvietnam.com/lookup-einvoice?trade_code=${lookup_code}'>View e-invoice</a>
+								                            <a href='https://einvoicevn.com/lookup-einvoice?trade_code=${lookup_code}'>View e-invoice</a>
                                             <br />- Download file PDF link:  
                                             <a href='${url_pdf}'>Download file PDF</a>
                                             <br />- Download file XML link:  
@@ -11664,15 +11542,15 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
 
-      // const authUserName = "GENUWIN"; // "GENUWIN";
-      // const authPassword = "genuwin123"; // "e_GX4v@";
-      // const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien";
-      // const urlCheck = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+       const authUserName = "GENUWIN"; // "GENUWIN";
+       const authPassword = "genuwin123"; // "e_GX4v@";
+       const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien";
+       const urlCheck = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
 
-      const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'e_GX4v@'; // "e_GX4v@";
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/mttien';
-      const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      //const authUserName = 'GENUWIN'; // "GENUWIN";
+      //const authPassword = 'e_GX4v@'; // "e_GX4v@";
+      //const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/mttien';
+      //const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
 
       const {tax_serial_number, seller_tax_code, sale_date, store_code, store_name, pos_no, invoice_xml_signed, req_key} = request.all();
 
@@ -11940,7 +11818,7 @@ class EInvoiceController {
 
       //console.log("rtnValue  ", rtnValue);
       let EiExcels = new EiExcel04SS2Handler(); //CQT_MAGD
-      let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].TEI_EINVOICE_M_PK, p_language, p_crt_by);
+      let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].TEI_EINVOICE_SS_D_PK, p_language, p_crt_by);
       //console.log("base64PDf: ", url_pdf);
 
       //let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + rtnValue.p_rtn_cur[0].CQT_MAGD + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token=");
@@ -12016,7 +11894,7 @@ class EInvoiceController {
 
       //console.log("rtnValue  ", rtnValue);
       let EiExcels = new EiExcel04SS2Handler(); //CQT_MAGD
-      let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].TEI_EINVOICE_M_PK, p_language, p_crt_by);
+      let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].TEI_EINVOICE_SS_D_PK, p_language, p_crt_by);
       //console.log("base64PDf: ", url_pdf);
 
       let url_xml = '';
@@ -12303,7 +12181,7 @@ class EInvoiceController {
     objInvoice_M.HDon.DLHDon.NDHDon.TToan.TTCKTMai = dataObject.total_amt_dc;
     objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = dataObject.total_payment;
     if (!dataObject.total_payment_word_vie) {
-      let wordsAmt = Utils.Num2VNText(dataObject.total_payment.toString(), dataObject.ccy);
+      let wordsAmt = await Utils.Num2VNText2(dataObject.total_payment.toString(), dataObject.ccy);
       objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = wordsAmt.substr(0, 2) + wordsAmt.substr(2, wordsAmt.length - 2).toLowerCase() + '.'; //  wordsAmt.substring(0,2) + wordsAmt.substring(2);  // dataObject.total_payment_word_vie;
     } else {
       objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = dataObject.total_payment_word_vie;
@@ -13006,7 +12884,7 @@ class EInvoiceController {
       const jsonTToan = await transform(p_xml_content, templateTToan);
       // console.log("jsonTToan", jsonTToan)
       const arrTToan = [jsonTToan[0].TgTCThue, jsonTToan[0].TgTThue, jsonTToan[0].TTCKTMai, jsonTToan[0].TgTTTBSo, jsonTToan[0].TgTTTBChu];
-      let v_vn_amount = Utils.Num2VNText(jsonTToan[0].TgTTTBSo.toString(), jsonTTChung[0].DVTTe);
+      let v_vn_amount = Utils.Num2VNText2(jsonTToan[0].TgTTTBSo.toString(), jsonTTChung[0].DVTTe);
       // console.log("  v_vn_amount ", v_vn_amount);
       /*const templateMCCQT = ['HDon', {
                                   MCCQT: 'MCCQT'
@@ -13302,7 +13180,7 @@ class EInvoiceController {
 
       objInvoice.HDon.DLHDon.NDHDon.TToan.TTCKTMai = invoiceM.TOTAL_DC_AMT;
       objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = invoiceM.TOTAL_PAYMENT;
-      objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText(invoiceM.TOTAL_PAYMENT.toString(), invoiceM.CURRENCY);
+      objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = await Utils.Num2VNText2(invoiceM.TOTAL_PAYMENT.toString(), invoiceM.CURRENCY);
 
       objInvoice.HDon.DSCKS.NBan = '';
 
@@ -14059,6 +13937,9 @@ class EInvoiceController {
                                           :seller_represent,
                                           :buyer_position,
                                           :buyer_represent,
+                                          :buyer_taxcode,
+                                          :buyer_tel,
+                                          :buyer_name,		  
                                           :form_no,
                                           :serial_no,
                                           :invoice_no,
@@ -14333,7 +14214,7 @@ class EInvoiceController {
       const jsonTToan = await transform(p_xml_content, templateTToan);
       // console.log("jsonTToan", jsonTToan)
       const arrTToan = [jsonTToan[0].TgTCThue, jsonTToan[0].TgTThue, jsonTToan[0].TTCKTMai, jsonTToan[0].TgTTTBSo, jsonTToan[0].TgTTTBChu];
-      let v_vn_amount = await Utils.Num2VNText(jsonTToan[0].TgTTTBSo.toString(), jsonTTChung[0].DVTTe);
+      let v_vn_amount = await Utils.Num2VNText2(jsonTToan[0].TgTTTBSo.toString(), jsonTTChung[0].DVTTe);
       // console.log("  v_vn_amount ", v_vn_amount);
       /*const templateMCCQT = ['HDon', {
                                   MCCQT: 'MCCQT'
@@ -14480,15 +14361,15 @@ class EInvoiceController {
       //const authPassword = "e_GX4v@"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
       //const url = "https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon";
 
-      // const authUserName = "GENUWIN"; // "GENUWIN";
-      // const authPassword = "genuwin123"; // "e_GX4v@";
-      // const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon";
-      // const urlCheck = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+       const authUserName = "GENUWIN"; // "GENUWIN";
+       const authPassword = "genuwin123"; // "e_GX4v@";
+       const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon";
+       const urlCheck = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
 
-      const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'e_GX4v@'; // "e_GX4v@";
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon';
-      const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      //const authUserName = 'GENUWIN'; // "GENUWIN";
+      //const authPassword = 'e_GX4v@'; // "e_GX4v@";
+      //const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon';
+      //const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
 
       const {invoices} = request.all();
 
@@ -14708,6 +14589,12 @@ class EInvoiceController {
               mccqt: rtnValue_inv.p_rtn_cur[0].CQT_MCCQT,
               buyer_email: data.buyer_email,
               buyer_email_cc: data.buyer_email_cc,
+			  invoice_type: rtnValue_inv.p_rtn_cur[0].INVOICE_TYPE,
+              form_no_ref: rtnValue_inv.p_rtn_cur[0].FORM_NO_REF,
+              serial_no_ref: rtnValue_inv.p_rtn_cur[0].SERIAL_NO_REF,
+              invoice_no_ref: rtnValue_inv.p_rtn_cur[0].INVOICE_NO_REF, 
+              mccqt_ref: rtnValue_inv.p_rtn_cur[0].CQT_MCCQT_REF,
+              total_payment_ref: rtnValue_inv.p_rtn_cur[0].TOT_NET_TR_AMT_REF,													  
             };
 
             tax_code = rtnValue_inv.p_rtn_cur[0].SLLR_TAXCODE;
@@ -15084,16 +14971,16 @@ class EInvoiceController {
     }
   }
 
-  async weTaxSendMailRecords(p_tei_einvoice_m_pk, p_tei_company_pk, p_buyer_mail, p_buyer_mail_cc, p_language, p_crt_by) {
+  async weTaxSendMailRecords(p_tei_einvoice_ss_d_pk, p_tei_company_pk, p_buyer_mail, p_buyer_mail_cc, p_language, p_crt_by) {
     try {
       //console.log("p_tei_einvoice_m_pk  ", p_tei_einvoice_m_pk, " p_tei_company_pk ", p_tei_company_pk)
       let para_value_mail = {
-        p_tei_einvoice_m_pk: p_tei_einvoice_m_pk, //"4090",//
+        p_tei_einvoice_ss_d_pk: p_tei_einvoice_ss_d_pk, //"4090",//
         p_tco_company_pk: p_tei_company_pk,
       };
       let data_mail = await DBService.ExecuteSQLBlob(
         `BEGIN wt_sel_data_send_mail(
-                          :p_tei_einvoice_m_pk, 
+                          :p_tei_einvoice_ss_d_pk, 
                           :p_tco_company_pk, 
                           :p_language, 
                           :p_crt_by, 
@@ -15303,6 +15190,40 @@ class EInvoiceController {
       return response.send(Utils.response(false, 'error', e.message));
     }
   }
+	async getBase64ImgFromUrl({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+
+      const {url} = request.all(); //data:6030
+      if(url)
+      {
+        let savePath = await Helpers.appRoot(url);
+    
+        const contents = fs.readFileSync(savePath)
+      
+        const b64 = contents.toString('base64')
+        const type = "image/png";
+
+        const data_base64 = `data:${type};base64,${b64}`;
+        return response.send(Utils.response(true, 'general url pdf success', data_base64));
+      } 
+      
+    }catch(e){
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'viewPDF_InvoiceWT',
+        CONTENT: e.message,
+      });
+      console.log(e);
+      return response.send(Utils.response(false, 'error', e.message));
+    }
+  }														   
 }
 
 module.exports = EInvoiceController;

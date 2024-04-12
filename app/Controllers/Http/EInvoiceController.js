@@ -13556,7 +13556,7 @@ class EInvoiceController {
           p_crt_by,
         );
 
-        //console.log("rtnValuePos  ", rtnValuePos);
+        console.log("weTaxExtractPosXMLContent rtnValuePos  ", rtnValuePos);
 
         if (rtnValuePos.p_rtn_cur[0].STATUS == 'OK') {
           //console.log("jsonInvoice  ", jsonInvoice);
@@ -13602,7 +13602,7 @@ class EInvoiceController {
               xml_length :xml_length
             };
 
-            //console.log('weTaxExtractPosXMLContent m param ===> ', paraMaster);
+            console.log('weTaxExtractPosXMLContent m param ===> ', paraMaster);
 
             const rtnValueMaster = await DBService.ExecuteSQLBlob(
               `BEGIN WT_UPD_SALE_BILL (          
@@ -13644,7 +13644,7 @@ class EInvoiceController {
               p_language,
               p_crt_by,
             );
-            //console.log("rtnValueMaster  ", rtnValueMaster);
+            console.log("weTaxExtractPosXMLContent rtnValueMaster  ", rtnValueMaster);
 
             // tao json hd va trann thai các kiểu để sau này trả về cho WeTax dễ update
             data_inv.push({
@@ -13676,7 +13676,7 @@ class EInvoiceController {
                   tsuat: inv_d.TSuat,
                 };
 
-                //console.log('weTaxExtractPosXMLContent d param ===> ', paraDetails);
+                console.log('weTaxExtractPosXMLContent d param ===> ', paraDetails);
 
                 const rtnValueDetail = await DBService.ExecuteSQLBlob(
                   `BEGIN WT_UPD_SALE_BILL_d (          
@@ -13700,7 +13700,7 @@ class EInvoiceController {
                   p_crt_by,
                 );
 
-                //console.log(" rtnValueDetail  ", rtnValueDetail);
+                console.log(" weTaxExtractPosXMLContent rtnValueDetail  ", rtnValueDetail);
               }
 
               const invoice_detail_vat = invoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat;
@@ -13713,7 +13713,7 @@ class EInvoiceController {
                   sub_vat_amt: inv_d_vat.TThue,
                 };
 
-                //console.log('weTaxExtractPosXMLContent d vat param  ===> ',para_amt_vat);
+                console.log('weTaxExtractPosXMLContent d vat param  ===> ',para_amt_vat);
 
                 const rtnValue_VAT = await DBService.ExecuteSQLBlob(
                   `BEGIN WT_UPD_SALE_BILL_d_vat (          
@@ -13729,7 +13729,7 @@ class EInvoiceController {
                   p_crt_by,
                 );
 
-                //console.log(" invoice_detail_vat  ", rtnValue_VAT);
+                console.log(" weTaxExtractPosXMLContent invoice_detail_vat  ", rtnValue_VAT);
               }
             } //else
             // {

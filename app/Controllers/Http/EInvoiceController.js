@@ -1101,7 +1101,6 @@ class EInvoiceController {
                 SDThoai: '',
                 DCTDTu: '',
                 STKNHang: '',
-                NNBSTKNHang: '',
                 TNHang: '',
                 Fax: '',
                 Website: '',
@@ -1300,7 +1299,6 @@ class EInvoiceController {
         objInvoice_M.HDon.DLHDon.NDHDon.NBan.SDThoai = this.convertHtmlCode(invoices[i].master.seller_tel);
         objInvoice_M.HDon.DLHDon.NDHDon.NBan.DCTDTu = this.convertHtmlCode(invoices[i].master.seller_email);
         objInvoice_M.HDon.DLHDon.NDHDon.NBan.STKNHang = this.convertHtmlCode(invoices[i].master.seller_bank_no);
-        objInvoice_M.HDon.DLHDon.NDHDon.NBan.NNBSTKNHang = '';
         objInvoice_M.HDon.DLHDon.NDHDon.NBan.TNHang = this.convertHtmlCode(invoices[i].master.seller_bank_name);
         objInvoice_M.HDon.DLHDon.NDHDon.NBan.Fax = this.convertHtmlCode(invoices[i].master.seller_fax);
         objInvoice_M.HDon.DLHDon.NDHDon.NBan.Website = this.convertHtmlCode(invoices[i].master.seller_website);
@@ -5364,7 +5362,6 @@ class EInvoiceController {
               MST: '',
               DChi: '',
               SDThoai: '',
-              NNBSTKNHang: '',
             },
             NMua: {
               Ten: '',
@@ -5527,7 +5524,6 @@ class EInvoiceController {
                 MST: '',
                 DChi: '',
                 SDThoai: '',
-                NNBSTKNHang: '',
               },
               NMua: {
                 Ten: '',
@@ -8468,7 +8464,6 @@ class EInvoiceController {
                 SDThoai: '',
                 DCTDTu: '',
                 STKNHang: '',
-                NNBSTKNHang: '',
                 TNHang: '',
                 Fax: '',
                 Website: '',
@@ -8558,7 +8553,6 @@ class EInvoiceController {
         objInvoice_M.HDon.DLHDon.NDHDon.NBan.SDThoai = invoices[i].seller_phone || '';
         objInvoice_M.HDon.DLHDon.NDHDon.NBan.DCTDTu = invoices[i].seller_email || '';
         objInvoice_M.HDon.DLHDon.NDHDon.NBan.STKNHang = invoices[i].seller_bank_no || '';
-        objInvoice_M.HDon.DLHDon.NDHDon.NBan.NNBSTKNHang = '';
         objInvoice_M.HDon.DLHDon.NDHDon.NBan.TNHang = invoices[i].seller_bank_name || '';
         objInvoice_M.HDon.DLHDon.NDHDon.NBan.Fax = invoices[i].seller_fax || '';
         objInvoice_M.HDon.DLHDon.NDHDon.NBan.Website = invoices[i].seller_website || '';
@@ -9242,7 +9236,6 @@ class EInvoiceController {
                 MST: '',
                 DChi: '',
                 SDThoai: '',
-                NNBSTKNHang: '',
               },
               NMua: {
                 Ten: '',
@@ -9427,7 +9420,6 @@ class EInvoiceController {
         //         MST: "",
         //         DChi: "",
         //         SDThoai: "",
-        //         NNBSTKNHang: "",
         //       },
         //       NMua: {
         //         Ten: "",
@@ -9522,7 +9514,6 @@ class EInvoiceController {
               MST: '',
               DChi: '',
               SDThoai: '',
-              NNBSTKNHang: '',
             },
             NMua: {
               Ten: '',
@@ -9713,7 +9704,6 @@ class EInvoiceController {
                 MST: '',
                 DChi: '',
                 SDThoai: '',
-                NNBSTKNHang: '',
               },
               NMua: {
                 Ten: '',
@@ -9810,7 +9800,6 @@ class EInvoiceController {
                 SDThoai: '',
                 DCTDTu: '',
                 STKNHang: '',
-                NNBSTKNHang: '',
                 TNHang: '',
                 Fax: '',
                 Website: '',
@@ -9945,7 +9934,6 @@ class EInvoiceController {
         objInvoice.HDon.DLHDon.NDHDon.NBan.SDThoai = invoiceM.SELLER_TEL;
         objInvoice.HDon.DLHDon.NDHDon.NBan.DCTDTu = '';
         objInvoice.HDon.DLHDon.NDHDon.NBan.STKNHang = invoiceM.SELLER_ACCOUNTNO;
-        objInvoice.HDon.DLHDon.NDHDon.NBan.NNBSTKNHang = '';
         objInvoice.HDon.DLHDon.NDHDon.NBan.TNHang = invoiceM.SELLER_ACCOUNTNAME;
         objInvoice.HDon.DLHDon.NDHDon.NBan.Fax = invoiceM.SELLER_FAX;
         objInvoice.HDon.DLHDon.NDHDon.NBan.Website = invoiceM.SELLER_WEBSITE;
@@ -10054,7 +10042,6 @@ class EInvoiceController {
                   SDThoai: '',
                   DCTDTu: '',
                   STKNHang: '',
-                  NNBSTKNHang: '',
                   TNHang: '',
                   Fax: '',
                   Website: '',
@@ -11990,7 +11977,6 @@ class EInvoiceController {
               MST: '',
               DChi: '',
               SDThoai: '',
-              NNBSTKNHang: '',
             },
             NMua: {
               Ten: '',
@@ -12729,7 +12715,6 @@ class EInvoiceController {
           SDThoai: 'SDThoai',
           DCTDTu: 'DCTDTu',
           STKNHang: 'STKNHang',
-          NNBSTKNHang: 'NNBSTKNHang',
           TNHang: 'TNHang',
           Fax: 'Fax',
           Website: 'Website',
@@ -12744,7 +12729,6 @@ class EInvoiceController {
         jsonNBan[0].SDThoai,
         jsonNBan[0].DCTDTu,
         jsonNBan[0].STKNHang,
-        jsonNBan[0].NNBSTKNHang,
         jsonNBan[0].TNHang,
         jsonNBan[0].Fax,
         jsonNBan[0].Website,
@@ -12944,7 +12928,6 @@ class EInvoiceController {
                 MST: '',
                 DChi: '',
                 SDThoai: '',
-                NNBSTKNHang: '',
               },
               NMua: {
                 Ten: '',
@@ -14066,7 +14049,6 @@ class EInvoiceController {
           SDThoai: 'SDThoai',
           DCTDTu: 'DCTDTu',
           STKNHang: 'STKNHang',
-          NNBSTKNHang: 'NNBSTKNHang',
           TNHang: 'TNHang',
           Fax: 'Fax',
           Website: 'Website',
@@ -14081,7 +14063,6 @@ class EInvoiceController {
         jsonNBan[0].SDThoai,
         jsonNBan[0].DCTDTu,
         jsonNBan[0].STKNHang,
-        jsonNBan[0].NNBSTKNHang,
         jsonNBan[0].TNHang,
         jsonNBan[0].Fax,
         jsonNBan[0].Website,

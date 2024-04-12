@@ -13434,6 +13434,7 @@ class EInvoiceController {
   ) {
     let check_data = {};
     let data_inv = [];
+    let status = "";
     try {
       const template = [
         '//HDon',
@@ -13557,7 +13558,7 @@ class EInvoiceController {
         );
 
         console.log("weTaxExtractPosXMLContent rtnValuePos  ", rtnValuePos);
-
+        status = rtnValuePos.p_rtn_cur[0].STATUS;
         if (rtnValuePos.p_rtn_cur[0].STATUS == 'OK') {
           //console.log("jsonInvoice  ", jsonInvoice);
           for (const invoice of jsonInvoice) {
@@ -13645,7 +13646,7 @@ class EInvoiceController {
               p_crt_by,
             );
             console.log("weTaxExtractPosXMLContent rtnValueMaster  ", rtnValueMaster);
-
+            status = rtnValueMaster.p_rtn_cur[0].STATUS;
             // tao json hd va trann thai các kiểu để sau này trả về cho WeTax dễ update
             data_inv.push({
               mccqt: invoice.MCCQT,
@@ -13731,11 +13732,26 @@ class EInvoiceController {
 
                 console.log(" weTaxExtractPosXMLContent invoice_detail_vat  ", rtnValue_VAT);
               }
-            } //else
-            // {
-
-            // }
+            } else
+            {
+                check_data = {
+                  PK: null,
+                  TEI_HISTORY_M_PK: null,
+                  STATUS: "FAILE",
+                };
+      
+                return { check_data, data_inv};
+             }
           }
+        }else
+        {
+          check_data = {
+            PK: null,
+            TEI_HISTORY_M_PK: null,
+            STATUS: "FAILE",
+          };
+
+          return { check_data, data_inv};
         }
 
         check_data = {

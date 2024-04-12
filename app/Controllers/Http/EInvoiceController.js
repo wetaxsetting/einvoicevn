@@ -10823,8 +10823,6 @@ class EInvoiceController {
                                             <b>${data_invoice.invoice_no}</b>
                                             <br/>- Tổng thanh toán: 
                                             <b>       ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 9  }).format(Number(data_invoice.total_payment)).replace("₫", "") +  " " +data_invoice.currency}</b>
-																											
-																		 
                                             <br/>- Mã CQT của hóa đơn: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link tra cứu: 
@@ -10875,8 +10873,6 @@ class EInvoiceController {
                                             <b>${data_invoice.invoice_no}</b>
                                             <br/>- Total amount :  
                                             <b>       ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 9  }).format(Number(data_invoice.total_payment)).replace("₫", "") + " " + data_invoice.currency}</b>
-																											
-																		 
                                             <br/>- CQT code of e-invoice: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link lookup: 

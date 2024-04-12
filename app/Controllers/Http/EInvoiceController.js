@@ -6713,6 +6713,7 @@ class EInvoiceController {
               buyer_email_cc: invoice.buyer_email_cc,
               sale_id: invoice.sale_id,
               msg_his_id: invoice.msg_his_id,
+              currency: rtnValue.p_rtn_cur[0].CURRENCY
             },
           });
 

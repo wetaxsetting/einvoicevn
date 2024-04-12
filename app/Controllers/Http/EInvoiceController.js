@@ -6526,6 +6526,7 @@ class EInvoiceController {
               mccqt: rtnValue.p_rtn_cur[0].MCCQT,
               buyer_email: invoice.buyer_email,
               buyer_email_cc: invoice.buyer_email_cc,
+              currency: rtnValue.p_rtn_cur[0].CURRENCY
             };
             const {res_send_mail, subject, body} = await this.sendMailToCustomer(tei_wt_sale_bill_pk, invoice_data, p_language, p_crt_by);
 
@@ -10821,7 +10822,7 @@ class EInvoiceController {
                                             <br/>- Số hóa đơn: 
                                             <b>${data_invoice.invoice_no}</b>
                                             <br/>- Tổng thanh toán: 
-                                            <b>       ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment))}</b>
+                                            <b>       ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 9  }).format(Number(data_invoice.total_payment)).replace("₫", "") +  " " +data_invoice.currency}</b>
 																											
 																		 
                                             <br/>- Mã CQT của hóa đơn: 
@@ -10840,7 +10841,7 @@ class EInvoiceController {
                                               - Mẫu số: <b>${data_invoice.form_no_ref}</b><br />
                                               - Ký hiệu: <b>${data_invoice.serial_no_ref}</b><br />
                                               - Mã CQT (nếu có): <b>${data_invoice.mccqt_ref}</b><br />
-                                              - Tổng thanh toán: <b>${ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment_ref))}</b><br />
+                                              - Tổng thanh toán: <b>${ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 9  }).format(Number(data_invoice.total_payment_ref)).replace("₫", "") +  " " + data_invoice.currency }</b><br />
                                             `;
                                             }else if(data_invoice.invoice_type == "2")
                                             {
@@ -10848,7 +10849,7 @@ class EInvoiceController {
                                               - Mẫu số: <b>${data_invoice.form_no_ref}</b><br />
                                               - Ký hiệu: <b>${data_invoice.serial_no_ref}</b><br />
                                               - Mã CQT (nếu có): <b>${data_invoice.mccqt_ref}</b><br />
-                                              - Tổng thanh toán: <b>${ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment_ref))}</b><br />
+                                              - Tổng thanh toán: <b>${  new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 9  }).format(Number(data_invoice.total_payment_ref)).replace("₫", "") +  " " + data_invoice.currency}</b><br />
                                             `;
                                             }
                                             body  = body + `</div>
@@ -10873,7 +10874,7 @@ class EInvoiceController {
                                             <br/>- Invoice No:  
                                             <b>${data_invoice.invoice_no}</b>
                                             <br/>- Total amount :  
-                                            <b>       ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment))}</b>
+                                            <b>       ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 9  }).format(Number(data_invoice.total_payment)).replace("₫", "") + " " + data_invoice.currency}</b>
 																											
 																		 
                                             <br/>- CQT code of e-invoice: 
@@ -10966,7 +10967,7 @@ class EInvoiceController {
                                             <br/>- Số hóa đơn: 
                                             <b>${data_invoice.invoice_no}</b>
                                             <br/>- Tổng thanh toán: 
-                                            <b>       ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment))}</b>
+                                            <b>       ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 9  }).format(Number(data_invoice.total_payment)).replace("₫", "") + " " + data_invoice.currency }</b>
                                             <br/>- Mã CQT của hóa đơn: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link tra cứu: 
@@ -10998,7 +10999,7 @@ class EInvoiceController {
                                             <br/>- Invoice No:  
                                             <b>${data_invoice.invoice_no}</b>
                                             <br/>- Total amount :  
-                                            <b>       ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(data_invoice.total_payment))}</b>
+                                            <b>       ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 9  }).format(Number(data_invoice.total_payment)).replace("₫", "") + " " + data_invoice.currency }</b>
                                             <br/>- CQT code of e-invoice: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link lookup: 
@@ -14591,12 +14592,13 @@ class EInvoiceController {
               mccqt: rtnValue_inv.p_rtn_cur[0].CQT_MCCQT,
               buyer_email: data.buyer_email,
               buyer_email_cc: data.buyer_email_cc,
-			  invoice_type: rtnValue_inv.p_rtn_cur[0].INVOICE_TYPE,
+			        invoice_type: rtnValue_inv.p_rtn_cur[0].INVOICE_TYPE,
               form_no_ref: rtnValue_inv.p_rtn_cur[0].FORM_NO_REF,
               serial_no_ref: rtnValue_inv.p_rtn_cur[0].SERIAL_NO_REF,
               invoice_no_ref: rtnValue_inv.p_rtn_cur[0].INVOICE_NO_REF, 
               mccqt_ref: rtnValue_inv.p_rtn_cur[0].CQT_MCCQT_REF,
-              total_payment_ref: rtnValue_inv.p_rtn_cur[0].TOT_NET_TR_AMT_REF,													  
+              total_payment_ref: rtnValue_inv.p_rtn_cur[0].TOT_NET_TR_AMT_REF,		
+              currency: rtnValue_inv.p_rtn_cur[0].TR_CCY											  
             };
 
             tax_code = rtnValue_inv.p_rtn_cur[0].SLLR_TAXCODE;

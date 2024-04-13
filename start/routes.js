@@ -151,7 +151,7 @@ Route.group(() => {
     Route.post("check-status-declare", "EInvoiceController.weTaxCheckingDeclarations")
     Route.post("generate-notice-cancel-adjust-replace-xml", "EInvoiceController.weTaxConvertInvalidInvoiceToXML")
     //Route.post("send-notice-cancel-adjust-replace", "EInvoiceController.weTaxSendInformAdjustToTaxOffice")
-    Route.post("send-notice-cancel-adjust-replace", "EInvoiceController.weTaxSendInformAdjustToTaxOffice2")
+    Route.post("send-notice-cancel-adjust-replace", "EInvoiceController.weTaxSendInformAdjustToTaxOffice")
     //Route.post("send-notice-cancel-adjust-replace-2", "EInvoiceController.weTaxSendInformAdjustToTaxOffice2")
     Route.post("check-notification-status", "EInvoiceController.weTaxCheckInformAdjustToTaxOfficeTest")
     //Route.post("check-notification-status", "EInvoiceController.weTaxCheckInformAdjustToTaxOffice")

@@ -1099,7 +1099,6 @@ class EInvoiceController {
                 SDThoai: '',
                 DCTDTu: '',
                 STKNHang: '',
-                NNBSTKNHang: '',
                 TNHang: '',
                 Fax: '',
                 Website: '',
@@ -1298,7 +1297,6 @@ class EInvoiceController {
         objInvoice_M.HDon.DLHDon.NDHDon.NBan.SDThoai = this.convertHtmlCode(invoices[i].master.seller_tel);
         objInvoice_M.HDon.DLHDon.NDHDon.NBan.DCTDTu = this.convertHtmlCode(invoices[i].master.seller_email);
         objInvoice_M.HDon.DLHDon.NDHDon.NBan.STKNHang = this.convertHtmlCode(invoices[i].master.seller_bank_no);
-        objInvoice_M.HDon.DLHDon.NDHDon.NBan.NNBSTKNHang = '';
         objInvoice_M.HDon.DLHDon.NDHDon.NBan.TNHang = this.convertHtmlCode(invoices[i].master.seller_bank_name);
         objInvoice_M.HDon.DLHDon.NDHDon.NBan.Fax = this.convertHtmlCode(invoices[i].master.seller_fax);
         objInvoice_M.HDon.DLHDon.NDHDon.NBan.Website = this.convertHtmlCode(invoices[i].master.seller_website);
@@ -5393,7 +5391,6 @@ class EInvoiceController {
               MST: '',
               DChi: '',
               SDThoai: '',
-              NNBSTKNHang: '',
             },
             NMua: {
               Ten: '',
@@ -5554,7 +5551,6 @@ class EInvoiceController {
                 MST: '',
                 DChi: '',
                 SDThoai: '',
-                NNBSTKNHang: '',
               },
               NMua: {
                 Ten: '',
@@ -7079,7 +7075,7 @@ class EInvoiceController {
         p_logo_height: logo_height,
         p_logo_start_col: '0.5',
         p_logo_start_row: '1.7',
-		    p_status : status				 
+		p_status : status				 
       };
 
       const rtnValue = await DBService.ExecuteSQLBlob(
@@ -7314,7 +7310,7 @@ class EInvoiceController {
           p_logo_height: data.logo_height,
           p_logo_start_col: '0.5',
           p_logo_start_row: '1.7',
-		      p_status: data.status					   
+		  p_status: data.status					   
         };
 
         const rtnValue = await DBService.ExecuteSQLBlob(
@@ -8540,7 +8536,6 @@ class EInvoiceController {
                 SDThoai: '',
                 DCTDTu: '',
                 STKNHang: '',
-                NNBSTKNHang: '',
                 TNHang: '',
                 Fax: '',
                 Website: '',
@@ -8630,7 +8625,6 @@ class EInvoiceController {
         objInvoice_M.HDon.DLHDon.NDHDon.NBan.SDThoai = invoices[i].seller_phone || '';
         objInvoice_M.HDon.DLHDon.NDHDon.NBan.DCTDTu = invoices[i].seller_email || '';
         objInvoice_M.HDon.DLHDon.NDHDon.NBan.STKNHang = invoices[i].seller_bank_no || '';
-        objInvoice_M.HDon.DLHDon.NDHDon.NBan.NNBSTKNHang = '';
         objInvoice_M.HDon.DLHDon.NDHDon.NBan.TNHang = invoices[i].seller_bank_name || '';
         objInvoice_M.HDon.DLHDon.NDHDon.NBan.Fax = invoices[i].seller_fax || '';
         objInvoice_M.HDon.DLHDon.NDHDon.NBan.Website = invoices[i].seller_website || '';
@@ -8776,7 +8770,7 @@ class EInvoiceController {
               DChi: '',
               NDDien: '',
               CVu: '',
-			        DTLHe:'',		   
+			  DTLHe:'',		   
             },
             NMua: {
               Ten: '',
@@ -8785,7 +8779,7 @@ class EInvoiceController {
               DDanh: '',
               NDDien: '',
               CVu: '',
-			        DTLHe:'',		   
+			  DTLHe:'',		   
             },
             HDon: {
               KHMSHDon: '',
@@ -8824,14 +8818,14 @@ class EInvoiceController {
         objInvoice.BBan.DLieu.NBan.DChi = seller_address;
         objInvoice.BBan.DLieu.NBan.NDDien = seller_representative;
         objInvoice.BBan.DLieu.NBan.CVu = seller_position;
-		    objInvoice.BBan.DLieu.NBan.DTLHe = seller_tel;											
+		objInvoice.BBan.DLieu.NBan.DTLHe = seller_tel;											
 
         objInvoice.BBan.DLieu.NMua.Ten = noti.buyer_company_name;
         objInvoice.BBan.DLieu.NMua.MST = noti.buyer_taxcode;
         objInvoice.BBan.DLieu.NMua.DChi = noti.buyer_address;
         objInvoice.BBan.DLieu.NMua.NDDien = noti.buyer_representative;
         objInvoice.BBan.DLieu.NMua.CVu = noti.buyer_position;
-		    objInvoice.BBan.DLieu.NMua.DTLHe = noti.buyer_tel;												  
+		objInvoice.BBan.DLieu.NMua.DTLHe = noti.buyer_tel;												  
 
         objInvoice.BBan.DLieu.HDon.KHMSHDon = noti.form_no;
         objInvoice.BBan.DLieu.HDon.KHHDon = noti.serial_no;
@@ -9312,7 +9306,6 @@ class EInvoiceController {
                 MST: '',
                 DChi: '',
                 SDThoai: '',
-                NNBSTKNHang: '',
               },
               NMua: {
                 Ten: '',
@@ -9497,7 +9490,6 @@ class EInvoiceController {
         //         MST: "",
         //         DChi: "",
         //         SDThoai: "",
-        //         NNBSTKNHang: "",
         //       },
         //       NMua: {
         //         Ten: "",
@@ -9592,7 +9584,6 @@ class EInvoiceController {
               MST: '',
               DChi: '',
               SDThoai: '',
-              NNBSTKNHang: '',
             },
             NMua: {
               Ten: '',
@@ -9783,7 +9774,6 @@ class EInvoiceController {
                 MST: '',
                 DChi: '',
                 SDThoai: '',
-                NNBSTKNHang: '',
               },
               NMua: {
                 Ten: '',
@@ -9880,7 +9870,6 @@ class EInvoiceController {
                 SDThoai: '',
                 DCTDTu: '',
                 STKNHang: '',
-                NNBSTKNHang: '',
                 TNHang: '',
                 Fax: '',
                 Website: '',
@@ -10015,7 +10004,6 @@ class EInvoiceController {
         objInvoice.HDon.DLHDon.NDHDon.NBan.SDThoai = invoiceM.SELLER_TEL;
         objInvoice.HDon.DLHDon.NDHDon.NBan.DCTDTu = '';
         objInvoice.HDon.DLHDon.NDHDon.NBan.STKNHang = invoiceM.SELLER_ACCOUNTNO;
-        objInvoice.HDon.DLHDon.NDHDon.NBan.NNBSTKNHang = '';
         objInvoice.HDon.DLHDon.NDHDon.NBan.TNHang = invoiceM.SELLER_ACCOUNTNAME;
         objInvoice.HDon.DLHDon.NDHDon.NBan.Fax = invoiceM.SELLER_FAX;
         objInvoice.HDon.DLHDon.NDHDon.NBan.Website = invoiceM.SELLER_WEBSITE;
@@ -10124,7 +10112,6 @@ class EInvoiceController {
                   SDThoai: '',
                   DCTDTu: '',
                   STKNHang: '',
-                  NNBSTKNHang: '',
                   TNHang: '',
                   Fax: '',
                   Website: '',
@@ -11967,7 +11954,7 @@ class EInvoiceController {
         re_url_xml = null;
       let url_pdf = '',
         url_xml = '';
-      Utils.Logger({LVL: 'debug', MODULE: 'EInvoiceController', FUNC: 'getDataEinvoiceFormLookupCode', CONTENT: rtnValue.p_rtn_cur[0].TYPE});
+      //Utils.Logger({LVL: 'debug', MODULE: 'EInvoiceController', FUNC: 'getDataEinvoiceFormLookupCode', CONTENT: rtnValue.p_rtn_cur[0].TYPE});
 
       if (rtnValue.p_rtn_cur[0].TYPE == 'EP') {
         EiExcels = new EiExcelHandlerAuto(); //CQT_MAGD
@@ -12070,7 +12057,6 @@ class EInvoiceController {
               MST: '',
               DChi: '',
               SDThoai: '',
-              NNBSTKNHang: '',
             },
             NMua: {
               Ten: '',
@@ -12809,7 +12795,6 @@ class EInvoiceController {
           SDThoai: 'SDThoai',
           DCTDTu: 'DCTDTu',
           STKNHang: 'STKNHang',
-          NNBSTKNHang: 'NNBSTKNHang',
           TNHang: 'TNHang',
           Fax: 'Fax',
           Website: 'Website',
@@ -12824,7 +12809,6 @@ class EInvoiceController {
         jsonNBan[0].SDThoai,
         jsonNBan[0].DCTDTu,
         jsonNBan[0].STKNHang,
-        jsonNBan[0].NNBSTKNHang,
         jsonNBan[0].TNHang,
         jsonNBan[0].Fax,
         jsonNBan[0].Website,
@@ -13024,7 +13008,6 @@ class EInvoiceController {
                 MST: '',
                 DChi: '',
                 SDThoai: '',
-                NNBSTKNHang: '',
               },
               NMua: {
                 Ten: '',
@@ -13531,6 +13514,7 @@ class EInvoiceController {
   ) {
     let check_data = {};
     let data_inv = [];
+    let status = "";
     try {
       const template = [
         '//HDon',
@@ -13653,13 +13637,13 @@ class EInvoiceController {
           p_crt_by,
         );
 
-        //console.log("rtnValuePos  ", rtnValuePos);
-
+        console.log("weTaxExtractPosXMLContent rtnValuePos  ", rtnValuePos);
+        status = rtnValuePos.p_rtn_cur[0].STATUS;
         if (rtnValuePos.p_rtn_cur[0].STATUS == 'OK') {
           //console.log("jsonInvoice  ", jsonInvoice);
           for (const invoice of jsonInvoice) {
-            //console.log('weTaxExtractPosXMLContent m invoice ===> ', invoice);
-            let xml_content = '<HDon>' + this.OBJtoXML(invoice) + '</HDon>';
+            
+            let xml_content =  "<HDon>" + this.OBJtoXML(invoice) + "</HDon>"; 
             var getLength = require('utf8-byte-length');
             let xml_length = getLength(xml_content);
             console.log('weTaxExtractPosXMLContent m xml_content ===> ', xml_content);
@@ -13695,11 +13679,11 @@ class EInvoiceController {
               pos_no: pos_no,
               signing_time: signingTime.SigningTime,
               tei_wt_invoice_pos_pk: rtnValuePos.p_rtn_cur[0].PK,
-              xml_content: xml_content,
-              xml_length: xml_length,
+              xml_content :xml_content,
+              xml_length :xml_length
             };
 
-            //console.log('weTaxExtractPosXMLContent m param ===> ', paraMaster);
+            console.log('weTaxExtractPosXMLContent m param ===> ', paraMaster);
 
             const rtnValueMaster = await DBService.ExecuteSQLBlob(
               `BEGIN WT_UPD_SALE_BILL (          
@@ -13741,8 +13725,8 @@ class EInvoiceController {
               p_language,
               p_crt_by,
             );
-            //console.log("rtnValueMaster  ", rtnValueMaster);
-
+            //console.log("weTaxExtractPosXMLContent rtnValueMaster  ", rtnValueMaster);
+            status = rtnValueMaster.p_rtn_cur[0].STATUS;
             // tao json hd va trann thai các kiểu để sau này trả về cho WeTax dễ update
             data_inv.push({
               mccqt: invoice.MCCQT,
@@ -13797,7 +13781,7 @@ class EInvoiceController {
                   p_crt_by,
                 );
 
-                //console.log(" rtnValueDetail  ", rtnValueDetail);
+                //console.log(" weTaxExtractPosXMLContent rtnValueDetail  ", rtnValueDetail);
               }
 
               const invoice_detail_vat = invoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat;
@@ -13826,13 +13810,29 @@ class EInvoiceController {
                   p_crt_by,
                 );
 
-                //console.log(" invoice_detail_vat  ", rtnValue_VAT);
+                //console.log(" weTaxExtractPosXMLContent invoice_detail_vat  ", rtnValue_VAT);
               }
-            } //else
-            // {
-
-            // }
+            } else
+            {
+                check_data = {
+                  PK: null,
+                  TEI_HISTORY_M_PK: null,
+                  STATUS: "FAILE",
+                };
+      
+                return { check_data, data_inv};
+             }
           }
+        }else
+        {
+          check_data = {
+            PK: null,
+            TEI_HISTORY_M_PK: null,
+            STATUS: "FAILE",
+          };
+
+          return { check_data, data_inv};
+		   
         }
 
         check_data = {
@@ -14139,7 +14139,6 @@ class EInvoiceController {
           SDThoai: 'SDThoai',
           DCTDTu: 'DCTDTu',
           STKNHang: 'STKNHang',
-          NNBSTKNHang: 'NNBSTKNHang',
           TNHang: 'TNHang',
           Fax: 'Fax',
           Website: 'Website',
@@ -14154,7 +14153,6 @@ class EInvoiceController {
         jsonNBan[0].SDThoai,
         jsonNBan[0].DCTDTu,
         jsonNBan[0].STKNHang,
-        jsonNBan[0].NNBSTKNHang,
         jsonNBan[0].TNHang,
         jsonNBan[0].Fax,
         jsonNBan[0].Website,

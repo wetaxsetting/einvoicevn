@@ -8999,8 +8999,19 @@ class EInvoiceController {
       }
       let r_data_noti = [];
       const {seller_taxcode, noti_list} = request.all();
-      console.log("weTaxSendRecords   BEGIN =================================");
-      console.log("weTaxSendRecords   ", noti_list);
+      console.log("weTaxGenerateRecordsXml  BEGIN ============================");
+      console.log("weTaxGenerateRecordsXml noti_list ", noti_list)
+      console.log("weTaxGenerateRecordsXml form_no ", form_no)
+      console.log("weTaxGenerateRecordsXml inform_date ", inform_date)
+      console.log("weTaxGenerateRecordsXml version ", version)
+      console.log("weTaxGenerateRecordsXml seller_company_name ", seller_company_name)
+      console.log("weTaxGenerateRecordsXml seller_taxcode ", seller_taxcode)
+      console.log("weTaxGenerateRecordsXml seller_address ", seller_address)
+      console.log("weTaxGenerateRecordsXml seller_position ", seller_position)
+      console.log("weTaxGenerateRecordsXml seller_representative ", seller_representative)
+      console.log("weTaxGenerateRecordsXml seller_tel ", seller_tel)
+      console.log("weTaxGenerateRecordsXml  END ============================");
+      
       for (const noti of noti_list) {
         // console.log("noti  ", noti);
         const res = await this.weTaxExtractRecordXMLContent(noti.xml_signed, noti.req_key, p_language, p_crt_by);

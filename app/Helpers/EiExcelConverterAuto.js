@@ -295,9 +295,6 @@ class EiExcelConverterAuto {
 					countPerPage++
 
 				}
-
-
-
 				if (page[j] > 0 && page[j + 1] == 0) {
 					totalRows = totalRows + (pos_lv - lastPagelength)
 					extendedRows = pos_lv - lastPagelength
@@ -306,7 +303,6 @@ class EiExcelConverterAuto {
 				} else {
 					//console.log("page[j]+",page[j])
 					if (j > 0) { totalRows += headerRowCount }
-
 				}
 				totalRows += pos_lv - pageRowCount
 			}
@@ -362,8 +358,6 @@ class EiExcelConverterAuto {
 				exceljs.copyRow(_sourceRow + i, _sourceRow, 'c');
 				worksheet.getCell( `C${_sourceRow + i}`).style.border = {};
 			}
-
-			
 		}else
 		{
 			lstMerge.forEach(x => {
@@ -391,8 +385,6 @@ class EiExcelConverterAuto {
 				exceljs.copyRow(_sourceRow + i, _sourceRow, 'c');
 				worksheet.getCell( `C${_sourceRow + i}`).style.border = {};
 			}
-
-			
 		}
 		//console.log(lstMerge)
 		// //ADDING rows
@@ -409,7 +401,6 @@ class EiExcelConverterAuto {
 			} catch (ee) {
 				console.log("err", ee)
 			}
-			
 		})
 		//END-this part coppy merge information of the page before add more row.
 
@@ -435,8 +426,6 @@ class EiExcelConverterAuto {
 							console.log(totalRowCount)
 						}
 					}
-
-
 					let _count_ = 0
 
 					if (j == 0) {
@@ -487,11 +476,7 @@ class EiExcelConverterAuto {
 						} else {
 							data.push({ PAGE: "Trang tiếp theo trang trước- Trang " + (_u + 1) })
 						}
-
-
 					}
-
-
 					let _startRow = 1; let _startcol = 1;
 					let _endRow = _count_; let _endcol = detailCellFormat[detailCellFormat.length - 1].endCell + 3;
 					const _rowCount = _endRow - _startRow + 1;

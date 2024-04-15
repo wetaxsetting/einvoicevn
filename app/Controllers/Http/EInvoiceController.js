@@ -13741,7 +13741,16 @@ class EInvoiceController {
 
                 console.log(" weTaxExtractPosXMLContent invoice_detail_vat  ", rtnValue_VAT);
               }
-            } else
+            } else if (rtnValueMaster.p_rtn_cur[0].STATUS == 'OK'){
+              check_data = {
+                PK: rtnValuePos.p_rtn_cur[0].PK,
+                TEI_HISTORY_M_PK: rtnValuePos.p_rtn_cur[0].TEI_HISTORY_M_PK,
+                STATUS: "OK"// rtnValuePos.p_rtn_cur[0].STATUS,
+              };
+
+              return { check_data, data_inv};
+            } 
+            else
             {
                 check_data = {
                   PK: null,

@@ -8660,7 +8660,7 @@ class EInvoiceController {
       console.log("weTaxGenerateRecordsXml seller_position ", seller_position)
       console.log("weTaxGenerateRecordsXml seller_representative ", seller_representative)
       console.log("weTaxGenerateRecordsXml seller_tel ", seller_tel)
-      console.log("weTaxGenerateRecordsXml  END ============================");
+     
       if (!form_no) {
         // return response.send(Utils.response(false, `form no is not null`, null));
         return response.status(400).json(Utils.responseByRule({success: false, message: 'Invalid: form_no'}));
@@ -8755,7 +8755,7 @@ class EInvoiceController {
         objInvoice.BBan.DLieu.NBan.DChi = seller_address;
         objInvoice.BBan.DLieu.NBan.NDDien = seller_representative;
         objInvoice.BBan.DLieu.NBan.CVu = seller_position;
-        objInvoice.BBan.DLieu.NBan.CVu = seller_tel;
+        objInvoice.BBan.DLieu.NBan.DTLHe = seller_tel;
 
 
         objInvoice.BBan.DLieu.NMua.Ten = noti.buyer_company_name;

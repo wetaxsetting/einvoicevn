@@ -6273,7 +6273,7 @@ class EInvoiceController {
           // console.log("tei_wt_sale_bill_pk OK ", tei_wt_sale_bill_pk);
           data_send_mail.push({
             tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
-            lookup_code: rtnValue.p_rtn_cur[0].LOOKUP_CODE,
+            lookup_code: rtnValue?.p_rtn_cur[0].LOOKUP_CODE,
             invoice: invoice,
           });
           for (let j = 0; j < invoice.total_vat_list.length; j++) {
@@ -6697,6 +6697,7 @@ class EInvoiceController {
           tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
           data_send_mail.push({
             tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
+            lookup_code : rtnValue.p_rtn_cur[0].LOOKUP_CD,
             invoice: {
               buyer_comp_name: rtnValue.p_rtn_cur[0].BUYER_COMP_NAME,
               seller_comp_name: rtnValue.p_rtn_cur[0].SELLER_COMP_NAME,

@@ -5368,7 +5368,6 @@ class EInvoiceController {
               MST: '',
               DChi: '',
               SDThoai: '',
-              HVTNMHang: '',
               CCCDan: '',
             },
             DSHHDVu: {},
@@ -5454,6 +5453,8 @@ class EInvoiceController {
         objInvoice.DLHDon.NDHDon.NMua.DChi = invoices[i].buyer_address;
         objInvoice.DLHDon.NDHDon.NMua.CCCDan = invoices[i].buyer_cccd;
         objInvoice.DLHDon.NDHDon.NMua.SDThoai = invoices[i].buyer_tel;
+
+        if(invoices[i].buyer_tel)
 
         objInvoice.DLHDon.NDHDon.DSHHDVu = [];
 

@@ -3633,7 +3633,7 @@ class EInvoiceController {
               if (base64XML)
               {
                   const para_history = {
-                    p_CQT_Code : tr_code.trade_code,
+                    p_CQT_Code : inv.trade_code,
                     p_xml_sign : base64XML,
                     p_maTD : maTD,
                     p_maGDDTu : maGDDTu,

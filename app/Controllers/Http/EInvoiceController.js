@@ -8526,10 +8526,13 @@ class EInvoiceController {
 
                         const res_op = await DBService.ExecuteSQLBlob(
                           `BEGIN ei_upd_his_nor_inv(
-                                                    :req_ep_key, 
-                                                    :maCQT,
-                                                    :xml_tax_signed,
-                                                    :xml_length,
+                                                    :p_CQT_Code, 
+                                                    :p_xml_sign,
+                                                    :p_maTD,
+                                                    :p_maGDDTu,
+                                                    :p_tenGDDTu,
+                                                    :p_ngayTaoTB,
+                                                    :p_ord,
                                                     :p_language, 
                                                     :p_crt_by, 
                                                     :p_rtn_cur); 

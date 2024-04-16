@@ -3562,6 +3562,11 @@ class EInvoiceController {
           p_cqt_result = '',
           p_cqt_status = '',
           base64XML = '';
+          let maTD = "";
+        let maGDDTu = "";
+        let tenGDDTu = "";
+        let ngayTaoTB = "";
+        let ord = "";
         if (!result.data.length) {
           ndungTBao = [];
           const param_d = {
@@ -3603,13 +3608,67 @@ class EInvoiceController {
           for (let j = 0; j < result.data.length; j++) {
             const items = result.data[j];
             for (let k = 0; k < items.length; k++) {
-              /*if (items[k].loaiTBao == "0") {
-                tenTBao = items[k].tenTBao;
-                maTBao = items[k].loaiTBao;
-               
-              } else*/
               if (items[k].loaiTBao == "1") {
-                  base64XML = Buffer.from(items[k].ndungTBao.base64XML, "base64").toString("utf8");
+                base64XML = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8');
+                const temp_of_tax = {
+                  MLTDiep: 'TDiep/TTChung/MLTDiep',
+                };
+                const data_of_tax = await transform(base64XML, temp_of_tax);
+
+                maTD = data_of_tax.MLTDiep;
+                maGDDTu =  items[k].ndungTBao.maGDichTNDLieu;
+                ngayTaoTB = items[k].ngayTaoTBao;
+      
+                if (maTD == "301")
+                {
+                    tenGDDTu = "tiếp nhận thông báo sai sót";
+                    ord = "3";
+                }
+                else
+                {
+                    tenGDDTu = "gói tin hợp lệ";
+                    ord = "2";
+                }
+
+              if (base64XML)
+              {
+                  const para_history = {
+                    p_CQT_Code : tr_code.trade_code,
+                    p_xml_sign : base64XML,
+                    p_maTD : maTD,
+                    p_maGDDTu : maGDDTu,
+                    p_tenGDDTu : tenGDDTu, 
+                    p_ngayTaoTB : ngayTaoTB,
+                    p_ord : ord,
+                  };
+                  
+                  console.log("weTaxCheckInformAdjustToTaxOffice  para_history  ",para_history);
+
+                  const res_op = await DBService.ExecuteSQLBlob(
+                    `BEGIN ei_upd_his_nor_inv(
+                                              :p_CQT_Code, 
+                                              :p_xml_sign,
+                                              :p_maTD,
+                                              :p_maGDDTu,
+                                              :p_tenGDDTu,
+                                              :p_ngayTaoTB,
+                                              :p_ord,
+                                              :p_language, 
+                                              :p_crt_by, 
+                                              :p_rtn_cur); 
+                              END;`,
+                              para_history,
+                    p_language,
+                    p_crt_by,
+                  );
+
+                  base64XML = "";
+                  maTD = "";
+                  maGDDTu = "";
+                  tenGDDTu = "";
+                  ngayTaoTB = "";
+                }
+
               } else 
               if (items[k].loaiTBao == '17' || items[k].loaiTBao == '15') {
                 tenTBao = items[k].tenTBao;

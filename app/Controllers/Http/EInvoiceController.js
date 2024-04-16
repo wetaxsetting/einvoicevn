@@ -3567,6 +3567,7 @@ class EInvoiceController {
         let tenGDDTu = "";
         let ngayTaoTB = "";
         let ord = "";
+        let messCQT = "";
         if (!result.data.length) {
           ndungTBao = [];
           const param_d = {
@@ -3673,6 +3674,10 @@ class EInvoiceController {
               if (items[k].loaiTBao == '17' || items[k].loaiTBao == '15') {
                 tenTBao = items[k].tenTBao;
                 maTBao = items[k].loaiTBao;
+                soTB = items[k].ndungTBao.tbaoTNhanSSotDoc.soTBao;
+                ngayTB = items[k].ndungTBao.ngayTBao;
+                thoiGianCQTKy = items[k].ndungTBao.tbaoTNhanSSotDoc.ngayCQTKy;
+                ketQua = "CQT tiếp nhận/không tiếp nhận";
 
                 for (const invoice of items[k].ndungTBao.tbaoTNhanSSotDoc.dsachHDonLoi) {
                   console.log("weTaxCheckInformAdjustToTaxOffice invoice  ", invoice);
@@ -3726,6 +3731,38 @@ class EInvoiceController {
                     p_crt_by,
                   );
                 }
+
+                const para_his_ss_15 =  {
+                  p_trade_code: inv.trade_code,
+                  p_xml_sign: base64XML,
+                  p_messCQT: tenTBao,
+                  p_status: "1",
+                  p_soTB: soTB,
+                  p_ngayTB: ngayTB,
+                  p_thoiGianCQTKy: thoiGianCQTKy,
+                  p_ketQua: ketQua,
+                };
+
+                await DBService.ExecuteSQLBlob(
+                  `BEGIN ei_upd_noti_ss(
+                                    :p_trade_code, 
+                                    :p_xml_sign, 
+                                    :p_messCQT,
+                                    :p_status,
+                                    :p_soTB,
+                                    :p_ngayTB,
+                                    :p_thoiGianCQTKy,
+                                    :p_ketQua,
+                                    :p_language, 
+                                    :p_crt_by, 
+                                    :p_rtn_cur
+                                ); END;`,
+                                para_his_ss_15,
+                  p_language,
+                  p_crt_by,
+                );
+
+
               } else if (items[k].loaiTBao == '16') {
                 tenTBao = items[k].tenTBao;
                 maTBao = items[k].loaiTBao;

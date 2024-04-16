@@ -8473,6 +8473,7 @@ class EInvoiceController {
         let maGDDTu = "";
         let tenGDDTu = "";
         let ngayTaoTB = "";
+        let ord = "";
         if (tr_code.trade_code) {
           await Request.get(urlCheck + tr_code.trade_code, {
             agent,

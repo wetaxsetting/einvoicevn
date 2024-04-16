@@ -117,17 +117,17 @@ export default {
         {
           dataField: "DONVI",
           caption: this.$t("don_vi"),
-          width: 300,
+          width: 80,
         },
         {
           dataField: "DONVIMST",
           caption: this.$t("dvi_mst"),
-          width: 150,
+          width: 80,
         },
         {
           dataField: "TRADE_CODE",
           caption: this.$t("ma_giao_dich"),
-          width: 300,
+          width: 80,
         },
         {
           dataField: "SLLR_COMP_NM",

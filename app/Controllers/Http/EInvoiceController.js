@@ -3665,7 +3665,6 @@ class EInvoiceController {
                     p_crt_by,
                   );
 
-                  base64XML = "";
                   maTD = "";
                   maGDDTu = "";
                   tenGDDTu = "";

@@ -3679,7 +3679,6 @@ class EInvoiceController {
                 soTB = items[k].ndungTBao.tbaoTNhanSSotDoc.soTBao;
                 ngayTB = items[k].ndungTBao.ngayTBao;
                 thoiGianCQTKy = items[k].ndungTBao.tbaoTNhanSSotDoc.ngayCQTKy;
-                ketQua = "CQT tiếp nhận/không tiếp nhận";
 
                 for (const invoice of items[k].ndungTBao.tbaoTNhanSSotDoc.dsachHDonLoi) {
                   console.log("weTaxCheckInformAdjustToTaxOffice invoice  ", invoice);

@@ -8426,6 +8426,7 @@ class EInvoiceController {
         const para_trade_code = {
           req_ep_key: masterInvoicePK.PK,
           trade_code: trade_code.data.maGDich,
+          xml_signed : invoices[i].xml_signed
         };
         console.log('weTaxSendInvoiceToTaxOffice para_trade_code  ', para_trade_code);
 
@@ -8433,6 +8434,7 @@ class EInvoiceController {
           `BEGIN WT_UPD_TEI_INV_TRADECODE(
                                   :req_ep_key, 
                                   :trade_code,
+                                  :xml_signed,
                                   :p_language, 
                                   :p_crt_by, 
                                   :p_rtn_cur); 
@@ -8466,7 +8468,11 @@ class EInvoiceController {
         let xml_tax_signed = '';
         let xml_length = 0;
         let data_error = [];
-
+        let base64XML = "";
+        let maTD = "";
+        let maGDDTu = "";
+        let tenGDDTu = "";
+        let ngayTaoTB = "";
         if (tr_code.trade_code) {
           await Request.get(urlCheck + tr_code.trade_code, {
             agent,
@@ -8480,12 +8486,70 @@ class EInvoiceController {
               for (let j = 0; j < res.data.length; j++) {
                 const items = res.data[j];
                 for (let k = 0; k < items.length; k++) {
-                  if (items[k].loaiTBao == '10') {
+                  if(items[k].loaiTBao == '1')
+                  {
+                        base64XML = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8');
+                        const temp_of_tax = {
+                          MLTDiep: 'TDiep/TTChung/MLTDiep',
+                        };
+                        const data_of_tax = await transform(base64XML, temp_of_tax);
+
+                        maTD = data_of_tax.MLTDiep;
+                        maGDDTu =  items[k].ndungTBao.maGDichTNDLieu;
+                        ngayTaoTB = items[k].ngayTaoTBao;
+            
+                    if(maTD == "202")
+                    {
+                        tenGDDTu = "hóa đơn được CQT cấp mã";
+                        ord = "3";
+                    }
+                    else
+                    {
+                        tenGDDTu = "gói tin hợp lệ";
+                        ord = "2";
+                    }
+
+                    if (base64XML)
+                    {
+                        const para_history = {
+                          p_CQT_Code : tr_code.trade_code,
+                          p_xml_sign : invoices[i].xml_signed,
+                          p_maTD : xml_tax_signed,
+                          p_maGDDTu : maGDDTu,
+                          p_tenGDDTu : tenGDDTu, 
+                          p_ngayTaoTB : ngayTaoTB,
+                          p_ord : ord,
+                        };
+                        
+                        console.log("weTaxSendInvoiceToTaxOffice  para_history  ",para_history);
+
+                        const res_op = await DBService.ExecuteSQLBlob(
+                          `BEGIN ei_upd_his_nor_inv(
+                                                    :req_ep_key, 
+                                                    :maCQT,
+                                                    :xml_tax_signed,
+                                                    :xml_length,
+                                                    :p_language, 
+                                                    :p_crt_by, 
+                                                    :p_rtn_cur); 
+                                    END;`,
+                          para_status,
+                          p_language,
+                          p_crt_by,
+                        );
+
+                        base64XML = "";
+                        maTD = "";
+                        maGDDTu = "";
+                        tenGDDTu = "";
+                        ngayTaoTB = "";
+                    }
+                  }else if (items[k].loaiTBao == '10') {
+
                     let xml_draft = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8').split('</TTChung><DLieu>');
                     xml_tax_signed = '<?xml version="1.0" encoding="UTF-8"?>' + xml_draft[1].replace('</DLieu></TDiep>', '');
                     var getLength = require('utf8-byte-length');
                     xml_length = getLength(xml_tax_signed);
-                    //console.log(" count_length   ", count_length);
 
                     maCQT = items[k].ndungTBao.maCQT;
                     maTBao = items[k].loaiTBao;
@@ -8497,15 +8561,12 @@ class EInvoiceController {
                       }
                     });
                   } else if (items[k].loaiTBao == '9' || items[k].loaiTBao == '16' || items[k].loaiTBao == '15') {
-
-                    // tam thời đóng vì k cung cấp MST
                     maTBao = items[k].loaiTBao;
                     tenTBao = items[k].tenTBao;
                     data_error.push({
                       maLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].maLoi,
                       mtaLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].mtaLoi,
                     });
-                    // end / tam thời đóng vì k cung cấp MST
                   }
                 }
               }

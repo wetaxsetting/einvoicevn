@@ -8514,8 +8514,8 @@ class EInvoiceController {
                     {
                         const para_history = {
                           p_CQT_Code : tr_code.trade_code,
-                          p_xml_sign : invoices[i].xml_signed,
-                          p_maTD : xml_tax_signed,
+                          p_xml_sign : base64XML,
+                          p_maTD : maTD,
                           p_maGDDTu : maGDDTu,
                           p_tenGDDTu : tenGDDTu, 
                           p_ngayTaoTB : ngayTaoTB,

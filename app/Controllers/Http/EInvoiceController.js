@@ -3567,7 +3567,9 @@ class EInvoiceController {
         let tenGDDTu = "";
         let ngayTaoTB = "";
         let ord = "";
-        let messCQT = "";
+        let soTB = "";
+        let ngayTB = "";
+        let thoiGianCQTKy = "";
         if (!result.data.length) {
           ndungTBao = [];
           const param_d = {
@@ -3740,7 +3742,7 @@ class EInvoiceController {
                   p_soTB: soTB,
                   p_ngayTB: ngayTB,
                   p_thoiGianCQTKy: thoiGianCQTKy,
-                  p_ketQua: ketQua,
+                  p_ketQua: "CQT tiếp nhận/không tiếp nhận",
                 };
 
                 await DBService.ExecuteSQLBlob(

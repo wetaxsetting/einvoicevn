@@ -7724,15 +7724,15 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
 
-      // const authUserName = "GENUWIN"; // "GENUWIN";
-      // const authPassword = "genuwin123"; // "e_GX4v@";
-      // const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien";
-      // const urlCheck = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+      const authUserName = "GENUWIN"; // "GENUWIN";
+      const authPassword = "genuwin123"; // "e_GX4v@";
+      const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien";
+      const urlCheck = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
 
-      const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'e_GX4v@'; // "e_GX4v@";
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/mttien';
-      const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      // const authUserName = 'GENUWIN'; // "GENUWIN";
+      // const authPassword = 'e_GX4v@'; // "e_GX4v@";
+      // const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/mttien';
+      // const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
 
       const {tax_serial_number, seller_tax_code, sale_date, store_code, store_name, pos_no, invoice_xml_signed, req_key} = request.all();
       // //console.log("weTaxSendPosInvoiceToTaxOffice   =========================== BEGIN =======================", )

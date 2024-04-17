@@ -8265,6 +8265,7 @@ class EInvoiceController {
 
       //console.log('weTaxSendInvoiceToTaxOffice  BEGIN ================================= ');
       //console.log("weTaxSendInvoiceToTaxOffice  invoices  ",invoices);
+      Utils.Logger({ LVL: 'test', MODULE: 'EInvoiceController', FUNC: 'weTaxSendInvoiceToTaxOffice', CONTENT: invoices , });
       const agent = {
         Agent: {
           defaultPort: 443,
@@ -8289,6 +8290,8 @@ class EInvoiceController {
           p_language,
           p_crt_by,
         );
+        Utils.Logger({ LVL: 'test', MODULE: 'EInvoiceController', FUNC: 'weTaxSendInvoiceToTaxOffice masterInvoicePK ', CONTENT: masterInvoicePK , });
+
         if (masterInvoicePK.PK == -1) {
           console.log(`The issuer invoice has not register [${invoices[i].req_key}]`, invoices[i].xml_signed);
           rtnValue.push({
@@ -8314,7 +8317,6 @@ class EInvoiceController {
           continue;
         }
 
-        // ======================== tam thoi =========================
         const trade_code = await Request.post(
           url,
           {base64XML: Buffer.from(invoices[i].xml_signed).toString('base64')},
@@ -8330,7 +8332,8 @@ class EInvoiceController {
           req_ep_key: masterInvoicePK.PK,
           trade_code: trade_code.data.maGDich,
         };
-        console.log('weTaxSendInvoiceToTaxOffice para_trade_code  ', para_trade_code);
+        //console.log('weTaxSendInvoiceToTaxOffice para_trade_code  ', para_trade_code);
+        Utils.Logger({ LVL: 'test', MODULE: 'EInvoiceController', FUNC: 'weTaxSendInvoiceToTaxOffice para_trade_code ', CONTENT: para_trade_code , });
 
         const data_r_tradecode = await DBService.ExecuteSQLBlob(
           `BEGIN WT_UPD_TEI_INV_TRADECODE(
@@ -8406,38 +8409,19 @@ class EInvoiceController {
                       }
                     });
                   } else if (items[k].loaiTBao == '9' || items[k].loaiTBao == '16' || items[k].loaiTBao == '15') {
-                    // !!!========================== tao sample maCQT
-                    //   maCQT = await this.makeid(34);
-                    //   maTBao = "10";
-                    //   tenTBao = "Thông báo hóa đơn được CQT cấp mã";
-                    //   data_error = []
-
-                    //   rtnValueTradecode.forEach((element, index) => {
-                    //     if(element.trade_code === tr_code.trade_code) {
-                    //       rtnValueTradecode[index].mccqt = maCQT;
-                    //     }
-                    // });
-                    // !!!========================== tao sample maCQT
-
-                    // tam thời đóng vì k cung cấp MST
+                  
                     maTBao = items[k].loaiTBao;
                     tenTBao = items[k].tenTBao;
                     data_error.push({
                       maLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].maLoi,
                       mtaLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].mtaLoi,
                     });
-                    // end / tam thời đóng vì k cung cấp MST
                   }
                 }
               }
             }
           });
         }
-        // !!!========================== tao sample maCQT
-        //if(maTBao == '10'){
-        //  maCQT = uuid.v4().substring(0, 34);
-        //}
-        // !!!========================== tao sample maCQT
         const para_status = {
           req_ep_key: tr_code.trade_code,
           maCQT: maCQT,
@@ -8472,6 +8456,8 @@ class EInvoiceController {
           data_error: data_error,
         });
       }
+      Utils.Logger({ LVL: 'test', MODULE: 'EInvoiceController', FUNC: 'weTaxSendInvoiceToTaxOffice rtnValue ', CONTENT: rtnValue , });
+
       //console.log('weTaxSendInvoiceToTaxOffice  rtnValue', rtnValue);
       //console.log('weTaxSendInvoiceToTaxOffice  END ================================= ');
 

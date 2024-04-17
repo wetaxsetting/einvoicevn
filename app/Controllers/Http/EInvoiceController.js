@@ -2907,8 +2907,15 @@ class EInvoiceController {
                 MLTDiep: 'TDiep/TTChung/MLTDiep',
               };
               const data_of_tax = await transform(base64XML, temp_of_tax);
-
               maTD = data_of_tax.MLTDiep;
+
+              const temp_of_pos_key = {
+                MCCQT: 'TDiep/DLieu/TBao/DLTBao/MCCQT',
+              };
+              const data_of_pos_key = await transform(base64XML, temp_of_pos_key);
+
+              pos_key = data_of_pos_key.MCCQT;
+             
               maGDDTu =  items[k].ndungTBao.maGDichTNDLieu;
               ngayTaoTB = items[k].ngayTaoTBao;
     
@@ -2988,29 +2995,39 @@ class EInvoiceController {
               ketQua = "1-chấp nhận";
               messCQT = child.tenTBao;
               status = "1";
-              if (mtt_yn == "Y")
-              {
-                  l_cqt_company_code = FunctionPrivate.FunctionPrivate.getMCCQT(base64XML);
-              }
-              checkingRessult_YN = "Y";
+              // if (mtt_yn == "Y")
+              // {
+              //   pos_key = FunctionPrivate.FunctionPrivate.getMCCQT(base64XML);
+              // }
             }
             tenTBao = child.tenTBao;
-
-            
+          
           }
         }
         para_value = {
-          p_req_key: para.p_tei_einvoice_issuse_cqt_pk,
+          p_trade_code: trade_code,
           p_xml_sign: base64XML,
           p_messCQT: tenTBao,
           p_status: status,
+          p_pos_key: pos_key,
+          p_maTDiep: maTD,
+          p_soTB: soTB,
+          p_ngayTB: ngayTB,
+          p_thoiGianCQTKy: thoiGianCQTKy,
+          p_ketQua: ketQua,
         };
         await DBService.ExecuteSQLBlob(
           `BEGIN ei_upd_his_dec_status(
-                            :p_tei_einvoice_issuse_cqt_pk, 
-                            :xml_sign, 
-                            :p_messCQT, 
+                            :p_trade_code,
+                            :p_xml_sign,
+                            :p_messCQT,
                             :p_status,
+                            :p_pos_key,
+                            :p_maTDiep,
+                            :p_soTB,
+                            :p_ngayTB,
+                            :p_thoiGianCQTKy,
+                            :p_ketQua,
                             :p_language, 
                             :p_crt_by, 
                             :p_rtn_cur

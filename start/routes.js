@@ -151,10 +151,9 @@ Route.group(() => {
     Route.post("check-status-declare", "EInvoiceController.weTaxCheckingDeclarations")
     Route.post("generate-notice-cancel-adjust-replace-xml", "EInvoiceController.weTaxConvertInvalidInvoiceToXML")
     //Route.post("send-notice-cancel-adjust-replace", "EInvoiceController.weTaxSendInformAdjustToTaxOffice")
-    Route.post("send-notice-cancel-adjust-replace", "EInvoiceController.weTaxSendInformAdjustToTaxOffice")
+    Route.post("send-notice-cancel-adjust-replace", "EInvoiceController.weTaxSendInformAdjustToTaxOffice2")
     //Route.post("send-notice-cancel-adjust-replace-2", "EInvoiceController.weTaxSendInformAdjustToTaxOffice2")
-    Route.post("check-notification-status", "EInvoiceController.weTaxCheckInformAdjustToTaxOfficeTest")
-    //Route.post("check-notification-status", "EInvoiceController.weTaxCheckInformAdjustToTaxOffice")
+    Route.post("check-notification-status", "EInvoiceController.weTaxCheckInformAdjustToTaxOffice")
     //Route.post("send-order-info", "EInvoiceController.weTaxSendOrderInfo")
     Route.post("send-order-info", "EInvoiceController.weTaxSendOrderInfoV2")
     Route.post("send-order-info-update", "EInvoiceController.weTaxUpdateSendOrderInfo")
@@ -196,10 +195,10 @@ Route.group(() => {
     Route.post("general-pdf-template-send-bill", "EInvoiceController.viewPDF_SaleBillWT")   ////VNG-304
     Route.post("send-data-pos-invoice-erp", "EInvoiceController.sendPosInvoiceErp")
     Route.post("send-invoice-erp", "EInvoiceController.sendInvoiceErp")
-    Route.post("view-pdf", "EInvoiceController.viewPDFInvoice") 
+    Route.post("view-pdf", "EInvoiceController.viewPDFInvoice")
     Route.post("general-base64-from-url", "EInvoiceController.getBase64ImgFromUrl")
-
     
+
 }).prefix("api/einvoice").middleware("user");
 
 Route.group(() => {
@@ -262,11 +261,10 @@ Route.group(() => {
     Route.post("invoices", "WeTaxController.createInvoicesByPos");
     Route.post("sendOrderInfo", "WeTaxController.sendOrderInfo");
     Route.post("requestEinvoiceInfo", "WeTaxController.requestEinvoiceInfo");
-    Route.post("iposSysnc", "WeTaxController.iposSysnc");
 }).prefix("api/wtx/pa/v1/pos").middleware("user");
 
 Route.group(() => {
-    Route.post("sysnc", "WeTaxController.iposSysnc");
+    Route.post("sync", "WeTaxController.iposSync");
 }).prefix("api/wtx/pa/v1/ipos").middleware("user");
 // Frontend
 

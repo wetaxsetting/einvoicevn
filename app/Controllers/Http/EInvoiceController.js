@@ -2170,7 +2170,7 @@ class EInvoiceController {
       Utils.Logger({
         LVL: 'error',
         MODULE: 'EInvoiceController',
-        FUNC: 'extractXMLContent_Dec',
+        FUNC: 'weTaxExtractXMLContentNotice',
         CONTENT: e.message,
       });
       console.log('e   ', e);

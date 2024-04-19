@@ -14971,7 +14971,7 @@ class EInvoiceController {
 
   async weTaxSendMailRecords(p_tei_einvoice_ss_d_pk, p_tei_company_pk, p_buyer_mail, p_buyer_mail_cc, p_language, p_crt_by) {
     try {
-      console.log("weTaxSendMailRecords  ", p_tei_einvoice_m_pk, " p_tei_company_pk ", p_tei_company_pk)
+      console.log("weTaxSendMailRecords  ", p_tei_einvoice_ss_d_pk, " p_tei_company_pk ", p_tei_company_pk)
       let para_value_mail = {
         p_tei_einvoice_ss_d_pk: p_tei_einvoice_ss_d_pk, //"4090",//
         p_tco_company_pk: p_tei_company_pk,
@@ -14993,7 +14993,7 @@ class EInvoiceController {
 
       if (data_mail.p_rtn_cur.length > 0) {
         let EiExcels = new EiExcel04SS2Handler();
-        let url_pdf = await EiExcels.getEinvoice(p_tei_einvoice_m_pk, p_language, p_crt_by);
+        let url_pdf = await EiExcels.getEinvoice(p_tei_einvoice_ss_d_pk, p_language, p_crt_by);
         //console.log("url_pdf2  ", url_pdf);
 
         const res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {

@@ -125,20 +125,20 @@ export default {
           dataField: "NO",
           caption: this.$t("stt"),
         },
-        {
-          dataField: "DONVI",
-          caption: this.$t("don_vi"),
-          width: 80,
-        },
-        {
-          dataField: "DONVIMST",
-          caption: this.$t("dvi_mst"),
-          width: 80,
-        },
+        // {
+        //   dataField: "DONVI",
+        //   caption: this.$t("don_vi"),
+        //   width: 80,
+        // },
+        // {
+        //   dataField: "DONVIMST",
+        //   caption: this.$t("dvi_mst"),
+        //   width: 80,
+        // },
         {
           dataField: "TRADE_CODE",
           caption: this.$t("ma_giao_dich"),
-          width: 80,
+          width: 300,
         },
         {
           dataField: "SLLR_COMP_NM",

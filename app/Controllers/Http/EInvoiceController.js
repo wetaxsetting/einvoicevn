@@ -13899,6 +13899,7 @@ class EInvoiceController {
 
       //console.log("signingTime  ", signingTime)
       const para_noti = {
+        seller_tax_code: jsonInvoice[0].DLieu.NBan.MST,
         seller_comp_name: jsonInvoice[0].DLieu.NBan.Ten,
         seller_position: jsonInvoice[0].DLieu.NBan.CVu,
         seller_represent: jsonInvoice[0].DLieu.NBan.NDDien,
@@ -13920,18 +13921,21 @@ class EInvoiceController {
         voucher_no: jsonInvoice[0].DLieu.SBBan,
       };
 
-      //console.log("para_noti  ", para_noti );
+      console.log("para_noti  ", para_noti );
       const rtnValueNoti = await DBService.ExecuteSQLBlob(
         `BEGIN wt_upd_noti_xml_d (          
                                           :seller_tax_code,
                                           :seller_comp_name,
                                           :seller_position,
                                           :seller_represent,
+                                          :seller_tel,
+                                          :seller_address,
                                           :buyer_position,
                                           :buyer_represent,
+                                          :buyer_address,
                                           :buyer_taxcode,
                                           :buyer_tel,
-                                          :buyer_name,		  
+                                          :buyer_name,
                                           :form_no,
                                           :serial_no,
                                           :invoice_no,
@@ -13947,6 +13951,7 @@ class EInvoiceController {
         p_language,
         p_crt_by,
       );
+      return rtnValueNoti?.p_rtn_cur[0];
       return rtnValueNoti?.p_rtn_cur[0];
     } catch (e) {
       Utils.Logger({

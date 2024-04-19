@@ -127,7 +127,7 @@ export default {
         {
           dataField: "TRADE_CODE",
           caption: this.$t("ma_giao_dich"),
-          width: 80,
+          width: 300,
         },
         {
           dataField: "SLLR_COMP_NM",

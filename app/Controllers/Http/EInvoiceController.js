@@ -13899,12 +13899,17 @@ class EInvoiceController {
 
       //console.log("signingTime  ", signingTime)
       const para_noti = {
-        seller_tax_code: jsonInvoice[0].DLieu.NBan.MST,
         seller_comp_name: jsonInvoice[0].DLieu.NBan.Ten,
         seller_position: jsonInvoice[0].DLieu.NBan.CVu,
         seller_represent: jsonInvoice[0].DLieu.NBan.NDDien,
+        seller_tel: jsonInvoice[0].DLieu.NBan.DTLHe,
+        seller_address :  jsonInvoice[0].DLieu.NBan.DChi,
         buyer_position: jsonInvoice[0].DLieu.NMua.CVu,
         buyer_represent: jsonInvoice[0].DLieu.NMua.NDDien,
+        buyer_address: jsonInvoice[0].DLieu.NMua.DChi,
+        buyer_taxcode: jsonInvoice[0].DLieu.NMua.MST,
+        buyer_tel: jsonInvoice[0].DLieu.NMua.DTLHe,
+        buyer_name: jsonInvoice[0].DLieu.NMua.Ten,
         form_no: jsonInvoice[0].DLieu.HDon.KHMSHDon,
         serial_no: jsonInvoice[0].DLieu.HDon.KHHDon,
         invoice_no: jsonInvoice[0].DLieu.HDon.SHDon,

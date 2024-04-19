@@ -9062,7 +9062,7 @@ class EInvoiceController {
         // console.log("noti  ", noti);
         const res = await this.weTaxExtractRecordXMLContent(noti.xml_signed, noti.req_key, p_language, p_crt_by);
 
-        //console.log("weTaxSendRecords   details res", res);
+        console.log("weTaxSendRecords   details res", res);
 
         if (res.STATUS == 'OK') {
           const data_mail = await this.weTaxSendMailRecords(
@@ -13865,6 +13865,7 @@ class EInvoiceController {
               DChi: 'DLieu/NBan/DChi',
               NDDien: 'DLieu/NBan/NDDien',
               CVu: 'DLieu/NBan/CVu',
+              DTLHe: 'DLieu/NBan/DTLHe',
             },
             NMua: {
               Ten: 'DLieu/NMua/Ten',
@@ -13872,6 +13873,7 @@ class EInvoiceController {
               DChi: 'DLieu/NMua/DChi',
               NDDien: 'DLieu/NMua/NDDien',
               CVu: 'DLieu/NMua/CVu',
+              DTLHe: 'DLieu/NMua/DTLHe',
             },
             HDon: {
               KHMSHDon: 'DLieu/HDon/KHMSHDon',
@@ -13951,7 +13953,7 @@ class EInvoiceController {
         p_language,
         p_crt_by,
       );
-      return rtnValueNoti?.p_rtn_cur[0];
+      console.log(" reuslt " ,rtnValueNoti?.p_rtn_cur[0]);
       return rtnValueNoti?.p_rtn_cur[0];
     } catch (e) {
       Utils.Logger({
@@ -14969,7 +14971,7 @@ class EInvoiceController {
 
   async weTaxSendMailRecords(p_tei_einvoice_ss_d_pk, p_tei_company_pk, p_buyer_mail, p_buyer_mail_cc, p_language, p_crt_by) {
     try {
-      //console.log("p_tei_einvoice_m_pk  ", p_tei_einvoice_m_pk, " p_tei_company_pk ", p_tei_company_pk)
+      console.log("weTaxSendMailRecords  ", p_tei_einvoice_m_pk, " p_tei_company_pk ", p_tei_company_pk)
       let para_value_mail = {
         p_tei_einvoice_ss_d_pk: p_tei_einvoice_ss_d_pk, //"4090",//
         p_tco_company_pk: p_tei_company_pk,

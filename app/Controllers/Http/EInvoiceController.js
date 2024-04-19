@@ -3395,7 +3395,7 @@ class EInvoiceController {
         return response.status(400).json(Utils.responseByRule({success: false, message: valid.message}));
       }
 
-      const matesNoticePK = await this.weTaxExtractXMLContentNotice(xml_signed,doc_no, p_crt_by, p_language);
+      const matesNoticePK = await this.weTaxExtractXMLContentNotice(xml_signed, doc_no, p_crt_by, p_language);
 
       //  console.log("weTaxSendInformAdjustToTaxOffice  valid  ", matesNoticePK);
 

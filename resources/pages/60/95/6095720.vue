@@ -125,16 +125,16 @@ export default {
           dataField: "NO",
           caption: this.$t("stt"),
         },
-        {
-          dataField: "DONVI",
-          caption: this.$t("don_vi"),
-          width: 300,
-        },
-        {
-          dataField: "DONVIMST",
-          caption: this.$t("dvi_mst"),
-          width: 150,
-        },
+        // {
+        //   dataField: "DONVI",
+        //   caption: this.$t("don_vi"),
+        //   width: 80,
+        // },
+        // {
+        //   dataField: "DONVIMST",
+        //   caption: this.$t("dvi_mst"),
+        //   width: 80,
+        // },
         {
           dataField: "TRADE_CODE",
           caption: this.$t("ma_giao_dich"),
@@ -149,7 +149,7 @@ export default {
           dataField: "SLLR_TAXCD",
           caption: this.$t("mst"),
           type: "number",
-          width: 150,
+          width: 100,
         },
         {
           dataField: "FORM_NO",
@@ -168,17 +168,17 @@ export default {
           dataField: "SEND_DT",
           caption: this.$t("nlap"),
           dataType: "date",
-          width: 120,
+          width: 150,
         },
         {
           dataField: "STATUS",
           caption: this.$t("tthai"),
-          width: 160,
+          width: 150,
         },
         {
           dataField: "CQT_RESULT",
           caption: this.$t("ph_cqt"),
-          width: 160,
+          width: 150,
         },
         { dataField: "TITTLE", caption: "thao_tac", type: "html", width: 150, fixed: true, cellsrenderer: this.myCellHTML },
       ];

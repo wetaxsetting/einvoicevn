@@ -8706,7 +8706,7 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
 
-      const {form_no, inform_date, version, seller_company_name, seller_taxcode, seller_address, seller_position, seller_representative, noti_list} =
+      const {form_no, inform_date, version, seller_company_name, seller_taxcode, seller_address, seller_position, seller_representative, seller_tel, noti_list} =
         request.all();
 
       //console.log("weTaxGenerateRecordsXml  BEGIN ============================");
@@ -8757,7 +8757,7 @@ class EInvoiceController {
               DChi: '',
               NDDien: '',
               CVu: '',
-			  DTLHe:'',		   
+			        DTLHe:'',		   
             },
             NMua: {
               Ten: '',
@@ -8766,7 +8766,7 @@ class EInvoiceController {
               DDanh: '',
               NDDien: '',
               CVu: '',
-			  DTLHe:'',		   
+			        DTLHe:'',		   
             },
             HDon: {
               KHMSHDon: '',
@@ -8805,14 +8805,14 @@ class EInvoiceController {
         objInvoice.BBan.DLieu.NBan.DChi = seller_address;
         objInvoice.BBan.DLieu.NBan.NDDien = seller_representative;
         objInvoice.BBan.DLieu.NBan.CVu = seller_position;
-		objInvoice.BBan.DLieu.NBan.DTLHe = seller_tel;											
+		    objInvoice.BBan.DLieu.NBan.DTLHe = seller_tel;											
 
         objInvoice.BBan.DLieu.NMua.Ten = noti.buyer_company_name;
         objInvoice.BBan.DLieu.NMua.MST = noti.buyer_taxcode;
         objInvoice.BBan.DLieu.NMua.DChi = noti.buyer_address;
         objInvoice.BBan.DLieu.NMua.NDDien = noti.buyer_representative;
         objInvoice.BBan.DLieu.NMua.CVu = noti.buyer_position;
-		objInvoice.BBan.DLieu.NMua.DTLHe = noti.buyer_tel;												  
+		    objInvoice.BBan.DLieu.NMua.DTLHe = noti.buyer_tel;												  
 
         objInvoice.BBan.DLieu.HDon.KHMSHDon = noti.form_no;
         objInvoice.BBan.DLieu.HDon.KHHDon = noti.serial_no;

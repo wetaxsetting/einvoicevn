@@ -55,6 +55,8 @@ class EiExcelHandler {
         p_crt_by,
         _db2
       );
+
+      console.log("einvoiceMasterData ", einvoiceMasterData);
       const einvoiceDetailData = await DBService.callProcCursor(
         "ei_sel_einvoice_d_pdf", [tradecode],
         p_language,

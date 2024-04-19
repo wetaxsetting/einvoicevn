@@ -228,6 +228,8 @@ class EiExcelHandler {
           this.masterDataArray, detailCellFormat, logos, signCell, signBoxCell, signByCell, cancelYn,
           backgroundCell, backgroundRow, backgroundWidth, backgroundHeight)
       }
+
+
       return resultExcel
 
     } catch (error) {

@@ -746,7 +746,7 @@ class Utils {
 
         rtnf = minus + rtnf; //process minus case  
 
-        return rtnf.substring(0, 2) + rtnf.substring( 2, rtnf.length -1).toLocaleLowerCase() + ".";
+        return rtnf.substring(0, 2) + rtnf.substring( 2, rtnf.length).toLocaleLowerCase();
     }
 
     // Num2VNText2 for WeTax

@@ -96,7 +96,7 @@
         <v-col cols="12">
           <v-card outlined>
               <!-- :selectionmode="'checkbox'" -->
-              <BaseGridView ref="gridview" :header="grdReviewSign" sel_procedure="EI_SEL_6095090_SEL_DATA_NC"
+              <BaseGridView ref="gridview" :header="grdReviewSign" sel_procedure="EI_SEL_6095410_SEL_DATA_NC"
                 :multiselect="true" :selectionmode="'checkbox'" :autocheckbox="false" :headertype="1"
                 @onSelectionDataChanged="onGridSelectionChanged" :filter_paras="[
                   this.selected_company,

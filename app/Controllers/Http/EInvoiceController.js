@@ -2945,7 +2945,7 @@ class EInvoiceController {
                   p_ngayTaoTB : ngayTaoTB,
                   p_ord : ord,
                 };
-                console.log("weTaxCheckInformAdjustToTaxOffice  para_history  ",para_history);
+                console.log("weTaxCheckingDeclarations  para_history  ",para_history);
 
                 const res_op = await DBService.ExecuteSQLBlob(
                   `BEGIN ei_upd_his_dec_inv(
@@ -7004,7 +7004,6 @@ class EInvoiceController {
 
         if (rtnValue?.p_rtn_cur?.[0]?.STATUS == 'OK') {
           tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
-          lookup_code : rtnValue.p_rtn_cur[0].LOOKUP_CD,
           data_send_mail.push({
             tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
             invoice: {
@@ -8763,7 +8762,21 @@ class EInvoiceController {
                   }
                 }
               }
+            }else
+            {
+              rtnValue.push({
+                req_key: tr_code.sale_id,
+                trade_code: tr_code.trade_code,
+                inform_code: "",
+                inform_name: "",
+                xml_tax_signed: "",
+                mccqt: "",
+                lookup_code: tr_code.lookup_code,
+                data_error: null,
+              });
+              return response.status(200).json(Utils.responseByRule({success: true, message: 'Sent Normal invoice successfully.', data: rtnValue}));
             }
+
           });
         }
       
@@ -14398,6 +14411,7 @@ class EInvoiceController {
         p_language,
         p_crt_by,
       );
+
       return rtnValueNoti?.p_rtn_cur[0];
     } catch (e) {
       Utils.Logger({

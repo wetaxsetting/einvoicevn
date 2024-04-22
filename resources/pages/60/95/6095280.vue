@@ -674,11 +674,11 @@ export default {
     ,
     async OnPreviewBB()
     {
-      if(this.tei_einvoice_m_pk_row != "")
+      if(this.tei_einvoice_ss_d_pk != "")
       {
         let res_url = await this.$axios.$post("/einvoice/general-url-pdf-einvoice-bb", {
               responseType: "json",
-              tei_einvoice_m_pk_row: this.tei_einvoice_m_pk_row,
+              tei_einvoice_m_pk_row: this.tei_einvoice_ss_d_pk,
             });
 
         if(res_url.success)
@@ -698,11 +698,11 @@ export default {
 
     async OnPreviewBBR()
     {
-      if(this.tei_einvoice_m_pk_row != "")
+      if(this.tei_einvoice_ss_d_pk != "")
       {
         let res_url = await this.$axios.$post("/einvoice/general-url-pdf-einvoice-bb-r", {
               responseType: "json",
-              tei_einvoice_m_pk_row: this.tei_einvoice_m_pk_row,
+              tei_einvoice_m_pk_row: this.tei_einvoice_ss_d_pk,
             });
 
         if(res_url.success)

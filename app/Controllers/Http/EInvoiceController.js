@@ -8762,7 +8762,21 @@ class EInvoiceController {
                   }
                 }
               }
+            }else
+            {
+              rtnValue.push({
+                req_key: tr_code.sale_id,
+                trade_code: tr_code.trade_code,
+                inform_code: "",
+                inform_name: "",
+                xml_tax_signed: "",
+                mccqt: "",
+                lookup_code: tr_code.lookup_code,
+                data_error: null,
+              });
+              return response.status(200).json(Utils.responseByRule({success: true, message: 'Sent Normal invoice successfully.', data: rtnValue}));
             }
+
           });
         }
       

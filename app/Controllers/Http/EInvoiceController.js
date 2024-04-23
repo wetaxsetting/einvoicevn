@@ -7821,53 +7821,125 @@ class EInvoiceController {
           },
         })
           .then(async res => {
-            // //console.log("res  ++===> ", res.data);
+            if (res.data.length) {
+              for (let j = 0; j < res.data.length; j++) {
+                const items = res.data[j];
+                for (let k = 0; k < items.length; k++) {
+                  if (items[k].loaiTBao == '1') {
+                    base64XML = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8');
+                    const temp_of_tax = {
+                      MLTDiep: 'TDiep/TTChung/MLTDiep',
+                    };
+                    const data_of_tax = await transform(base64XML, temp_of_tax);
 
-            if (!res.data.length) {
-              // return response.send(Utils.response(false, `No data found.`, null));
-              return response.status(404).json(Utils.responseByRule({success: false, message: 'No data found.'}));
-            }
-            for (let j = 0; j < res.data.length; j++) {
-              const items = res.data[j];
-              for (let k = 0; k < items.length; k++) {
-                // //console.log("items[k].loaiTBao " + items[k].loaiTBao);
-                var getLength = require('utf8-byte-length');
-                if (items[k].loaiTBao == '10') {
-                  maCQT = items[k].ndungTBao.maCQT;
-                  base64XMLCQT = items[k].ndungTBao.base64XML;
-                  xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8');
-                  xml_length = getLength(xml_tax_signed);
+                    maTD = data_of_tax.MLTDiep;
+                    maGDDTu = items[k].ndungTBao.maGDichTNDLieu;
+                    ngayTaoTB = items[k].ngayTaoTBao;
 
-                  maTBao = items[k].loaiTBao;
-                  tenTBao = items[k].tenTBao;
-                  const para_value = {
-                    trade_code: data[i].trade_code,
-                    macqt: maCQT,
-                    xml_sign: base64XML,
-                  };
+                    if (maTD == '202') {
+                      tenGDDTu = 'hóa đơn được CQT cấp mã';
+                      ord = '3';
+                    } else {
+                      tenGDDTu = 'gói tin hợp lệ';
+                      ord = '2';
+                    }
 
-                  data_inv.push({
-                    sale_id: data[i].req_key,
-                    trade_code: data[i].trade_code,
-                    msg_his_id: data[i].msg_his_id,
-                    buyer_email: data[i].mail_to,
-                    buyer_email_cc: data[i].mail_cc,
-                    mccqt: maCQT,
-                    send_mail_yn: 'N',
-                  });
-                } else if (items[k].loaiTBao == '9' || items[k].loaiTBao == '16' || items[k].loaiTBao == '15') {
-                  data_inv.push({
-                    sale_id: data[i].req_key,
-                    trade_code: data[i].trade_code,
-                    msg_his_id: data[i].msg_his_id,
-                    buyer_email: data[i].mail_to,
-                    buyer_email_cc: data[i].mail_cc,
-                    mccqt: maCQT,
-                    send_mail_yn: 'N',
-                  });
+                    if (base64XML) {
+                      const para_history = {
+                        p_CQT_Code: tr_code.trade_code,
+                        p_xml_sign: base64XML,
+                        p_maTD: maTD,
+                        p_maGDDTu: maGDDTu,
+                        p_tenGDDTu: tenGDDTu,
+                        p_ngayTaoTB: ngayTaoTB,
+                        p_ord: ord,
+                      };
+
+                      console.log('weTaxSendInvoiceToTaxOffice  para_history  ', para_history);
+
+                      const res_op = await DBService.ExecuteSQLBlob(
+                        `BEGIN ei_upd_his_nor_inv(
+                                                    :p_CQT_Code, 
+                                                    :p_xml_sign,
+                                                    :p_maTD,
+                                                    :p_maGDDTu,
+                                                    :p_tenGDDTu,
+                                                    :p_ngayTaoTB,
+                                                    :p_ord,
+                                                    :p_language, 
+                                                    :p_crt_by, 
+                                                    :p_rtn_cur); 
+                                    END;`,
+                        para_history,
+                        p_language,
+                        p_crt_by,
+                      );
+
+                      base64XML = '';
+                      maTD = '';
+                      maGDDTu = '';
+                      tenGDDTu = '';
+                      ngayTaoTB = '';
+                    }
+                  } else if (items[k].loaiTBao == '10') {
+                    maCQT = items[k].ndungTBao.maCQT;
+                    base64XMLCQT = items[k].ndungTBao.base64XML;
+                    xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8');
+                    xml_length = getLength(xml_tax_signed);
+  
+                    maTBao = items[k].loaiTBao;
+                    tenTBao = items[k].tenTBao;
+                    const para_value = {
+                      trade_code: data[i].trade_code,
+                      macqt: maCQT,
+                      xml_sign: base64XML,
+                    };
+  
+                    data_inv.push({
+                      sale_id: data[i].req_key,
+                      trade_code: data[i].trade_code,
+                      msg_his_id: data[i].msg_his_id,
+                      buyer_email: data[i].mail_to,
+                      buyer_email_cc: data[i].mail_cc,
+                      mccqt: maCQT,
+                      send_mail_yn: 'N',
+                    });
+                  } else if (items[k].loaiTBao == '9' || items[k].loaiTBao == '16' || items[k].loaiTBao == '15') {
+                    data_inv.push({
+                      sale_id: data[i].req_key,
+                      trade_code: data[i].trade_code,
+                      msg_his_id: data[i].msg_his_id,
+                      buyer_email: data[i].mail_to,
+                      buyer_email_cc: data[i].mail_cc,
+                      mccqt: maCQT,
+                      send_mail_yn: 'N',
+                    });
+                  }
                 }
               }
+              rtnValue.push({
+                trade_code: data[i].trade_code,
+                mccqt: maCQT,
+                inform_code: maTBao,
+                inform_name: tenTBao,
+                xml_tax_signed: base64XMLCQT,
+                tax_code: data[i].tax_code,
+                req_key: data[i].req_key,
+                data_error: data_error,
+              });
+            }else
+            {
+              rtnValue.push({
+                req_key: data[i].req_key,
+                trade_code: data[i].trade_code,
+                inform_code: '',
+                inform_name: '',
+                xml_tax_signed: '',
+                mccqt: '',
+                data_error: null,
+              });
             }
+            
           })
           .catch(error => {
             console.log(error);
@@ -7896,17 +7968,6 @@ class EInvoiceController {
           p_language,
           p_crt_by,
         );
-
-        rtnValue.push({
-          trade_code: data[i].trade_code,
-          mccqt: maCQT,
-          inform_code: maTBao,
-          inform_name: tenTBao,
-          xml_tax_signed: base64XMLCQT,
-          tax_code: data[i].tax_code,
-          req_key: data[i].req_key,
-          data_error: data_error,
-        });
       }
       ////console.log("data_inv  ", data_inv)
       this.sendMailNormailWT(data_inv, 'WTPTA003-1', p_language, p_crt_by);

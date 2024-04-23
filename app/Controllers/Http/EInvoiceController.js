@@ -5558,11 +5558,7 @@ class EInvoiceController {
       if (!valid.status) {
         return response.status(400).json(Utils.responseByRule({success: false, message: valid.message}));
       }
-      /*let invoices_sample=[
-                            {master:{},detail:[{}]},
-                            {master:{},detail:[{}]},
-                            {master:{},detail:[{}]},
-                        ];*/
+
       ////console.log("invoices1:", invoices)
       if (invoices.length == undefined || invoices.length == 0) {
         return response.status(400).json(Utils.responseByRule({success: false, message: `Invalid: list_invoice`}));
@@ -5599,13 +5595,18 @@ class EInvoiceController {
         objInvoice.DLHDon.NDHDon.NBan.DChi = invoices[i].seller_address;
         objInvoice.DLHDon.NDHDon.NBan.SDThoai = invoices[i].seller_tel;
 
-        objInvoice.DLHDon.NDHDon.NMua.Ten = invoices[i].buyer_comp_name;
+        if (!invoices[i].buyer_comp_name && invoices[i].buyer_comp_name) {
+          objInvoice.DLHDon.NDHDon.NMua.Ten = invoices[i].buyer_name;
+        } else {
+          objInvoice.DLHDon.NDHDon.NMua.Ten = invoices[i].buyer_comp_name;
+        }
+
         objInvoice.DLHDon.NDHDon.NMua.MST = invoices[i].buyer_taxcode;
         objInvoice.DLHDon.NDHDon.NMua.DChi = invoices[i].buyer_address;
         objInvoice.DLHDon.NDHDon.NMua.CCCDan = invoices[i].buyer_cccd;
         objInvoice.DLHDon.NDHDon.NMua.SDThoai = invoices[i].buyer_tel;
 
-        if (invoices[i].buyer_tel) objInvoice.DLHDon.NDHDon.DSHHDVu = [];
+        objInvoice.DLHDon.NDHDon.DSHHDVu = [];
 
         objInvoice.DLHDon.NDHDon.DSHHDVu = {};
         objInvoice.DLHDon.NDHDon.DSHHDVu.HHDVu = [];
@@ -7886,7 +7887,7 @@ class EInvoiceController {
                     base64XMLCQT = items[k].ndungTBao.base64XML;
                     xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8');
                     xml_length = getLength(xml_tax_signed);
-  
+
                     maTBao = items[k].loaiTBao;
                     tenTBao = items[k].tenTBao;
                     const para_value = {
@@ -7894,7 +7895,7 @@ class EInvoiceController {
                       macqt: maCQT,
                       xml_sign: base64XML,
                     };
-  
+
                     data_inv.push({
                       sale_id: data[i].req_key,
                       trade_code: data[i].trade_code,
@@ -7927,8 +7928,7 @@ class EInvoiceController {
                 req_key: data[i].req_key,
                 data_error: data_error,
               });
-            }else
-            {
+            } else {
               rtnValue.push({
                 req_key: data[i].req_key,
                 trade_code: data[i].trade_code,
@@ -7939,7 +7939,6 @@ class EInvoiceController {
                 data_error: null,
               });
             }
-            
           })
           .catch(error => {
             console.log(error);

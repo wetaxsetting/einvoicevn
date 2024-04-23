@@ -7926,9 +7926,7 @@ class EInvoiceController {
       }
       ////console.log("data_inv  ", data_inv)
       this.sendMailNormailWT(data_inv, 'WTPTA003-1', p_language, p_crt_by);
-      // return response.send(
-      //   Utils.response(true, `${data.length} invoices was update status from tax office.`, rtnValue)
-      // );
+
       return response
         .status(200)
         .json(Utils.responseByRule({success: true, message: `${data.length} invoices was update status from tax office.`, data: rtnValue}));
@@ -7940,7 +7938,7 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       console.log(e);
-      // return response.send(Utils.response(false, e.message, null));
+
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
     }
   }
@@ -8732,25 +8730,15 @@ class EInvoiceController {
                   }
                 }
               }
-              // rtnValue.push({
-              //   req_key: tr_code.sale_id,
-              //   trade_code: tr_code.trade_code,
-              //   inform_code: maTBao,
-              //   inform_name: tenTBao,
-              //   xml_tax_signed: xml_tax_signed,
-              //   mccqt: maCQT,
-              //   lookup_code: tr_code.lookup_code,
-              //   data_error: data_error,
-              // });
               rtnValue.push({
                 req_key: tr_code.sale_id,
                 trade_code: tr_code.trade_code,
-                inform_code: '',
-                inform_name: '',
-                xml_tax_signed: '',
-                mccqt: '',
+                inform_code: maTBao,
+                inform_name: tenTBao,
+                xml_tax_signed: xml_tax_signed,
+                mccqt: maCQT,
                 lookup_code: tr_code.lookup_code,
-                data_error: null,
+                data_error: data_error,
               });
             } else {
               rtnValue.push({

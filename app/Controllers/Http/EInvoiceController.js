@@ -3441,44 +3441,12 @@ class EInvoiceController {
       //  console.log("weTaxSendInformAdjustToTaxOffice  valid  ", matesNoticePK);
 
       if (matesNoticePK == 0) {
-        //  return response.send(
-        //    Utils.response(false, `Notice have not details`, {
-        //      req_key: req_key,
-        //      xml_signed: "",
-        //      trade_code: "",
-        //      tax_code: "",
-        //    })
-        //  );
         return response.status(400).json(Utils.responseByRule({success: false, message: 'Notice have no details', data: {req_key: req_key}}));
       } else if (matesNoticePK == -1) {
-        //  return response.send(
-        //    Utils.response(false, `Taxcode company not yet register! `, {
-        //      req_key: req_key,
-        //      xml_signed: "",
-        //      trade_code: "",
-        //      tax_code: "",
-        //    })
-        //  );
         return response.status(404).json(Utils.responseByRule({success: false, message: 'Company not yet register!', data: {req_key: req_key}}));
       } else if (matesNoticePK == -2) {
-        //  return response.send(
-        //    Utils.response(false, `The file xml is wrong! `, {
-        //      req_key: req_key,
-        //      xml_signed: "",
-        //      trade_code: "",
-        //      tax_code: "",
-        //    })
-        //  );
         return response.status(400).json(Utils.responseByRule({success: false, message: 'The file xml is wrong!', data: {req_key: req_key}}));
       } else if (matesNoticePK == -3) {
-        //  return response.send(
-        //    Utils.response(false, `The invoice registered !`, {
-        //      req_key: req_key,
-        //      xml_signed: "",
-        //      trade_code: "",
-        //      tax_code: "",
-        //    })
-        //  );
         return response.status(400).json(Utils.responseByRule({success: false, message: 'The invoice registered!', data: {req_key: req_key}}));
       }
 
@@ -3512,10 +3480,6 @@ class EInvoiceController {
         );
 
         if (res.p_rtn_cur[0].STATUS == 'OK') {
-          // return Utils.response(true, `Call tax office api success.`, {
-          //     req_key: req_key,
-          //     trade_code: trade_code.data.maGDich,
-          // });
           return response.status(200).json(
             Utils.responseByRule({
               success: true,
@@ -3524,14 +3488,6 @@ class EInvoiceController {
             }),
           );
         } else {
-          // return response.send(
-          //     Utils.response(
-          //         false,
-          //         `Something went wrong, please try again later.
-          //         WT_UP_NOTICE_TRADE_CODE`,
-          //         para_value
-          //     )
-          // );
           return response.status(409).json(Utils.responseByRule({success: false, message: 'WT_UP_NOTICE_TRADE_CODE wrong!', data: para_value}));
         }
       } else {

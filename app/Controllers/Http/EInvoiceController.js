@@ -7751,15 +7751,19 @@ class EInvoiceController {
       const {data} = request.all();
       //console.log("data  ", data);
       let rtnValue = [];
-      let maCQT = '',
-        maTBao = '',
-        tenTBao = '',
-        base64XMLCQT = '',
-        data_error = [],
-        data_inv = [],
-        xml_tax_signed = '',
-        base64XML = '';
+      let data_inv = [];
+      let maTBao = '';
+      let tenTBao = '';
+      let maCQT = '';
+      let xml_tax_signed = '';
       let xml_length = 0;
+      let data_error = [];
+      let base64XML = '';
+      let maTD = '';
+      let maGDDTu = '';
+      let tenGDDTu = '';
+      let ngayTaoTB = '';
+      let ord = '';
       for (let i = 0; i < data.length; i++) {
         ////console.log("SSS ", url + data[i].trade_code);
 

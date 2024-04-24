@@ -7080,7 +7080,7 @@ class EInvoiceController {
           p_crt_by,
         );
 
-        //console.log("rtnValue  ", rtnValue)
+        //console.log('rtnValue  ', rtnValue);
 
         if (rtnValue?.p_rtn_cur?.[0]?.STATUS == 'OK') {
           tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
@@ -7171,7 +7171,7 @@ class EInvoiceController {
           });
         }
       }
-
+      //console.log('data_send_mail  ', data_send_mail);
       this.sendMailNormailWT(data_send_mail, 'WTPTA002N-2', p_language, p_crt_by);
 
       // return response.send(Utils.response(true, `ReSend invoice was Successfully!`, data_r));
@@ -15026,13 +15026,14 @@ class EInvoiceController {
       // send mail ............
       let data_rep = [];
       let tax_code = '';
-      //console.log("data_send_mail", data_send_mail);
+      console.log('data_send_mail', data_send_mail);
       for (const data of data_send_mail) {
         if (data.mccqt && data.msg_his_id && data.buyer_email) {
           const data_param = {
             rep_key: data.trade_code,
             send_mail_yn: data.send_mail_yn,
           };
+          console.log('sendMailNormailWT  ', data_param);
           const rtnValue_inv = await DBService.ExecuteSQLBlob(
             `BEGIN wt_sel_nor_inv_mail (          
                                                                   :rep_key,
@@ -15045,7 +15046,7 @@ class EInvoiceController {
             p_crt_by,
           );
 
-          //console.log("rtnValue_inv  ", rtnValue_inv);
+          console.log('rtnValue_inv  ', rtnValue_inv);
           if (rtnValue_inv?.p_rtn_cur?.[0]?.STATUS == 'OK') {
             const invoice = {
               buyer_comp_name: rtnValue_inv.p_rtn_cur[0].BUYER_COMP_NM,

@@ -7764,6 +7764,7 @@ class EInvoiceController {
       let tenGDDTu = '';
       let ngayTaoTB = '';
       let ord = '';
+      var getLength = require('utf8-byte-length');
       for (let i = 0; i < data.length; i++) {
         const agent = {
           Agent: {
@@ -7842,7 +7843,7 @@ class EInvoiceController {
                     }
                   } else if (items[k].loaiTBao == '10') {
                     maCQT = items[k].ndungTBao.maCQT;
-                    base64XMLCQT = items[k].ndungTBao.base64XML;
+                    base64XML = items[k].ndungTBao.base64XML;
                     xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8');
                     xml_length = getLength(xml_tax_signed);
 
@@ -7881,7 +7882,7 @@ class EInvoiceController {
                 mccqt: maCQT,
                 inform_code: maTBao,
                 inform_name: tenTBao,
-                xml_tax_signed: base64XMLCQT,
+                xml_tax_signed: base64XML,
                 tax_code: data[i].tax_code,
                 req_key: data[i].req_key,
                 data_error: data_error,

@@ -8521,7 +8521,7 @@ class EInvoiceController {
 
       const authUserName = 'GENUWIN'; // "GENUWIN";
       const authPassword = 'genuwin123'; // "e_GX4v@";
-      const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon';
+      let url; // 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon';
       //const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/hdonkma';
 
       const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
@@ -8540,6 +8540,7 @@ class EInvoiceController {
       let rtnValue = [];
       let rtnValueTradecode = [];
       let masterInvoicePK;
+      let type;
       for (let i = 0; i < invoices.length; i++) {
         masterInvoicePK = await this.weTaxExtractXMLContent(
           invoices[i].xml_signed,
@@ -8577,7 +8578,11 @@ class EInvoiceController {
           });
           continue;
         }
-
+        if (masterInvoicePK.TYPE == 'C') {
+          url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon';
+        } else if (masterInvoicePK.TYPE == 'K') {
+          url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/hdonkma';
+        }
         // ======================== tam thoi =========================
         const trade_code = await Request.post(
           url,
@@ -14795,6 +14800,7 @@ class EInvoiceController {
         return (result_extra = {
           PK: master[0].PK,
           TEI_EINVOICE_M_PK: master[0].TEI_EINVOICE_M_PK,
+          TYPE: master[0].TYPE,
         });
       } else {
         return (result_extra = {

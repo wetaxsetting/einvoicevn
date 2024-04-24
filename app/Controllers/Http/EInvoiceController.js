@@ -7765,8 +7765,6 @@ class EInvoiceController {
       let ngayTaoTB = '';
       let ord = '';
       for (let i = 0; i < data.length; i++) {
-        ////console.log("SSS ", url + data[i].trade_code);
-
         const agent = {
           Agent: {
             defaultPort: 443,
@@ -7807,7 +7805,7 @@ class EInvoiceController {
 
                     if (base64XML) {
                       const para_history = {
-                        p_CQT_Code: tr_code.trade_code,
+                        p_CQT_Code: data[i].trade_code,
                         p_xml_sign: base64XML,
                         p_maTD: maTD,
                         p_maGDDTu: maGDDTu,

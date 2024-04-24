@@ -7981,13 +7981,13 @@ class EInvoiceController {
       }
     } catch (e) {
       console.log(e);
-      // Utils.Logger({
-      //     LVL: "error",
-      //     MODULE: "EInvoiceController",
-      //     FUNC: "weTaxExtractXMLContentGetDataDec",
-      //     CONTENT: e.message,
-      // });
-      // return -1;
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'weTaxExtractXMLContentGetDataDec',
+        CONTENT: e.message,
+      });
+      return -1;
     }
   }
 

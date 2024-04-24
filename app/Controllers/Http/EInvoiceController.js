@@ -7040,13 +7040,13 @@ class EInvoiceController {
       }
       const {tax_code, sale_date, store_code, store_name, infor_send_mail} = request.all();
 
-      // console.log("weTaxReSendNormalInvoice  BEGIN ============================= ");
-      // console.log("weTaxReSendNormalInvoice  tax_code ",tax_code);
-      // console.log("weTaxReSendNormalInvoice  sale_date ",sale_date);
-      // console.log("weTaxReSendNormalInvoice  store_code ",store_code);
-      // console.log("weTaxReSendNormalInvoice  store_name ",store_name);
-      // console.log("weTaxReSendNormalInvoice  infor_send_mail ",infor_send_mail);
-      // console.log("weTaxReSendNormalInvoice  END =============================== ");
+      console.log('weTaxReSendNormalInvoice  BEGIN ============================= ');
+      console.log('weTaxReSendNormalInvoice  tax_code ', tax_code);
+      console.log('weTaxReSendNormalInvoice  sale_date ', sale_date);
+      console.log('weTaxReSendNormalInvoice  store_code ', store_code);
+      console.log('weTaxReSendNormalInvoice  store_name ', store_name);
+      console.log('weTaxReSendNormalInvoice  infor_send_mail ', infor_send_mail);
+      console.log('weTaxReSendNormalInvoice  END =============================== ');
 
       let tei_wt_sale_bill_pk = 0;
       let data_r = [];
@@ -8522,6 +8522,8 @@ class EInvoiceController {
       const authUserName = 'GENUWIN'; // "GENUWIN";
       const authPassword = 'genuwin123'; // "e_GX4v@";
       const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon';
+      //const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/hdonkma';
+
       const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
       const {invoices} = request.all();
 

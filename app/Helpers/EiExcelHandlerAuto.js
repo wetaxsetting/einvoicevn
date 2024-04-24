@@ -78,9 +78,9 @@ class EiExcelHandler {
       //console.log('einvoiceMasterData[0].ETAX_STATUS ', einvoiceMasterData[0].ETAX_STATUS);
       if (einvoiceMasterData[0].ETAX_STATUS == '1') {
         cancelPath = 'assets/images/einvoices_logo/Cancle.png';
-      } else if (einvoiceMasterData[0].ETAX_STATUS == '2') {
-        cancelPath = 'assets/images/einvoices_logo/Adjust.png';
       } else if (einvoiceMasterData[0].ETAX_STATUS == '3') {
+        cancelPath = 'assets/images/einvoices_logo/Adjust.png';
+      } else if (einvoiceMasterData[0].ETAX_STATUS == '2') {
         cancelPath = 'assets/images/einvoices_logo/Replace.png';
       }
 

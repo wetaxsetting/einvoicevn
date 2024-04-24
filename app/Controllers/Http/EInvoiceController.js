@@ -8583,6 +8583,7 @@ class EInvoiceController {
         } else if (masterInvoicePK.TYPE == 'K') {
           url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/hdonkma';
         }
+        console.log('weTaxSendInvoiceToTaxOffice masterInvoicePK.TYPE  ', masterInvoicePK.TYPE, '  -- url ', url);
         // ======================== tam thoi =========================
         const trade_code = await Request.post(
           url,

@@ -7252,7 +7252,7 @@ class EInvoiceController {
           p_crt_by,
         );
       }
-      ////console.log("data_inv  ", data_inv)
+      console.log('data_inv  ', data_inv);
       this.sendMailNormailWT(data_inv, 'WTPTA003-1', p_language, p_crt_by);
 
       return response
@@ -14143,6 +14143,7 @@ class EInvoiceController {
         return (result_extra = {
           PK: master[0].PK,
           TEI_EINVOICE_M_PK: master[0].TEI_EINVOICE_M_PK,
+          TYPE: master[0].TYPE,
         }); //master[0].PK;
       }
     } catch (e) {

@@ -179,16 +179,16 @@ class HSMController2 {
           }),
         );
       }
+
       const {transform, prettyPrint} = require('camaro');
       const templateKHHDon = {
         KHHDon: 'HDon/DLHDon/TTChung/KHHDon',
       };
-      const KHHDon = await transform(signing_xml, templateKHHDon);
-      console.log('KHHDon   ', KHHDon);
+      const KHHDon = await transform(signing_xml[0].xml, templateKHHDon);
+
       if (KHHDon.KHHDon) {
         type = KHHDon.KHHDon.toString().substring(0, 1);
       }
-
       let data;
       switch (organization) {
         case 'easysign':
@@ -220,6 +220,7 @@ class HSMController2 {
         FUNC: 'HsmSignXml',
         CONTENT: e.message,
       });
+      console.log('HsmSignXml  ', e);
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
     }
   }

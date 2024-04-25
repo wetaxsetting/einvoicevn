@@ -8258,10 +8258,12 @@ class EInvoiceController {
         objInvoice_M.HDon.DLHDon.NDHDon.NBan.Ten = invoices[i].seller_comp_name || '';
 
         // BEGIN 22 đoạn này là dùng để sử dụng đc hóa đơn k có mã
-        if (invoices[i].serial_no.substring(0, 1) == 'C') {
+        if ((invoices[i].serial_no.substring(0, 1) == 'C') & (invoices[i].seller_taxcode == '0104128565-999')) {
           objInvoice_M.HDon.DLHDon.NDHDon.NBan.MST = '0104128565-999';
-        } else {
+        } else if ((invoices[i].serial_no.substring(0, 1) == 'K') & (invoices[i].seller_taxcode == '0104128565-999')) {
           objInvoice_M.HDon.DLHDon.NDHDon.NBan.MST = '0104128565-998';
+        } else {
+          objInvoice_M.HDon.DLHDon.NDHDon.NBan.MST = invoices[i].seller_taxcode || '';
         }
         // END 22 đoạn này là dùng để sử dụng đc hóa đơn k có mã
 

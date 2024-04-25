@@ -179,12 +179,11 @@ class HSMController2 {
           }),
         );
       }
-
       const {transform, prettyPrint} = require('camaro');
       const templateKHHDon = {
         KHHDon: 'HDon/DLHDon/TTChung/KHHDon',
       };
-      const KHHDon = await transform(signing_xml[0].xml, templateKHHDon);
+      const KHHDon = await transform(signing_xml?.[0]?.xml, templateKHHDon);
 
       if (KHHDon.KHHDon) {
         type = KHHDon.KHHDon.toString().substring(0, 1);

@@ -168,8 +168,9 @@ class HSMController2 {
       }
 
       const {user_name, password, otp, serial_no, pin, organization, signing_xml} = request.all();
-      const url = "http://demosign.easyca.vn:8080/api/";
-      const site = "test";
+      const url = 'http://demosign.easyca.vn:8080/api/';
+      const site = 'test';
+      let type = 'C';
       if (!user_name || !password || !pin || !organization || !serial_no || !signing_xml) {
         return response.status(400).json(
           Utils.responseByRule({
@@ -178,12 +179,21 @@ class HSMController2 {
           }),
         );
       }
+      const {transform, prettyPrint} = require('camaro');
+      const templateKHHDon = {
+        KHHDon: 'HDon/DLHDon/TTChung/KHHDon',
+      };
+      const KHHDon = await transform(signing_xml, templateKHHDon);
+      console.log('KHHDon   ', KHHDon);
+      if (KHHDon.KHHDon) {
+        type = KHHDon.KHHDon.toString().substring(0, 1);
+      }
 
       let data;
       switch (organization) {
         case 'easysign':
           const res = await Request.post(EINVOICE_ESIGN_XML, {
-            xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site}),
+            xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site, type}),
           });
           data = res.data.d;
           break;

@@ -8256,7 +8256,16 @@ class EInvoiceController {
         }
 
         objInvoice_M.HDon.DLHDon.NDHDon.NBan.Ten = invoices[i].seller_comp_name || '';
-        objInvoice_M.HDon.DLHDon.NDHDon.NBan.MST = invoices[i].seller_taxcode || '';
+
+        // BEGIN 22 đoạn này là dùng để sử dụng đc hóa đơn k có mã
+        if (invoices[i].serial_no.substring(0, 1) == 'C') {
+          objInvoice_M.HDon.DLHDon.NDHDon.NBan.MST = '0104128565-999';
+        } else {
+          objInvoice_M.HDon.DLHDon.NDHDon.NBan.MST = '0104128565-998';
+        }
+        // END 22 đoạn này là dùng để sử dụng đc hóa đơn k có mã
+
+        //objInvoice_M.HDon.DLHDon.NDHDon.NBan.MST = invoices[i].seller_taxcode || '';
         objInvoice_M.HDon.DLHDon.NDHDon.NBan.DChi = invoices[i].seller_address || '';
         objInvoice_M.HDon.DLHDon.NDHDon.NBan.SDThoai = invoices[i].seller_phone || '';
         objInvoice_M.HDon.DLHDon.NDHDon.NBan.DCTDTu = invoices[i].seller_email || '';

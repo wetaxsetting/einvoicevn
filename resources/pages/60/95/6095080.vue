@@ -950,12 +950,12 @@ export default {
           voucher: this.modelMaster.CTU,
           digital_certificates: [],
         };
-
+        console.log("this.$refs.grdDetail.getDataSource() ", this.$refs.grdDetail.getDataSource());
         for (let j = 0; j < this.$refs.grdDetail.getDataSource().length; j++) {
           if (this.$refs.grdDetail.getDataSource()[j]._rowstatus != "") {
             return;
           }
-
+          console.log("this.$refs.grdDetail.getDataSource() ", this.$refs.grdDetail.getDataSource());
           objDataMaster.digital_certificates.push({
             sequence: this.$refs.grdDetail.getDataSource()[j].NO,
             organization_name: this.$refs.grdDetail.getDataSource()[j].TTCHUC,
@@ -965,7 +965,7 @@ export default {
             type: this.$refs.grdDetail.getDataSource()[j].HTHUC,
           });
         }
-
+        console.log("objDataMaster", objDataMaster);
         return objDataMaster;
       }
     },
@@ -1015,7 +1015,7 @@ export default {
         responseType: "json",
         para: {
           xml_signed: obj_token.result[0].xml,
-          erp_declaration_m_pk: obj_token.result[0].master_pk,
+          erp_declaration_m_pk: obj_token.result[0].req_key,
         },
       });
       if (resAPI.success) {

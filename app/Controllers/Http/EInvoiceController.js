@@ -2187,7 +2187,7 @@ class EInvoiceController {
       const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/dkyhddt/dkysdung';
       const {proc, para} = request.all();
 
-      //console.log("para   ", para);
+      console.log('para   ', para);
 
       const agent = {
         Agent: {

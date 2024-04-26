@@ -6604,11 +6604,11 @@ class EInvoiceController {
             console.error('Error:', error);
           });
 
-        if (logo_width > logo_height && logo_width > 100) {
+        if (logo_width => logo_height && logo_width > 100) {
           logo_width = 100;
           logo_height = (100 * logo_width) / logo_height;
         }
-        if (logo_height > logo_width && logo_height > 100) {
+        if (logo_height => logo_width && logo_height > 100) {
           logo_height = 100;
           logo_width = (100 * logo_height) / logo_width;
         }

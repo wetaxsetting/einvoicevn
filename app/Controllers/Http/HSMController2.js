@@ -168,6 +168,15 @@ class HSMController2 {
       }
 
       const {user_name, password, otp, serial_no, pin, organization, signing_xml} = request.all();
+
+      console.log('HsmSignXml  BEGIN ===================================');
+      console.log('HsmSignXml user_name ', user_name);
+      console.log('HsmSignXml password ', password);
+      console.log('HsmSignXml otp ', otp);
+      console.log('HsmSignXml serial_no ', serial_no);
+      console.log('HsmSignXml pin ', pin);
+      console.log('HsmSignXml organization ', organization);
+      console.log('HsmSignXml signing_xml ', signing_xml);
       const url = 'http://demosign.easyca.vn:8080/api/';
       const site = 'test';
       let type = 'C';
@@ -184,7 +193,7 @@ class HSMController2 {
         KHHDon: 'HDon/DLHDon/TTChung/KHHDon',
       };
       const KHHDon = await transform(signing_xml?.[0]?.xml, templateKHHDon);
-
+      console.log('HsmSignXml KHHDon ', KHHDon);
       if (KHHDon.KHHDon) {
         type = KHHDon.KHHDon.toString().substring(0, 1);
       }
@@ -195,6 +204,7 @@ class HSMController2 {
             xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site, type}),
           });
           data = res.data.d;
+          console.log('HsmSignXml data ', data);
           break;
         default:
           return response.status(404).json(
@@ -204,6 +214,7 @@ class HSMController2 {
             }),
           );
       }
+      console.log('HsmSignXml  END ========================');
 
       return response.status(200).json(
         Utils.responseByRule({
@@ -220,6 +231,7 @@ class HSMController2 {
         CONTENT: e.message,
       });
       console.log('HsmSignXml  ', e);
+      console.log('HsmSignXml  END ========================');
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
     }
   }

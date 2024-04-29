@@ -8280,8 +8280,8 @@ class EInvoiceController {
         objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu = [];
 
         objInvoice_M.HDon.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat = [];
-
         for (let k = 0; k < invoices[i].total_vat_list.length; k++) {
+          console.log('total_vat_list ', invoices[i].total_vat_list[k]);
           objInvoice_M.HDon.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat.push({
             TSuat: invoices[i].total_vat_list[k].sub_vat_rate || '0%',
             ThTien: invoices[i].total_vat_list[k].sub_amt || '0',
@@ -8300,7 +8300,7 @@ class EInvoiceController {
         objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu = [];
 
         for (let j = 0; j < invoices[i].detail_invoice.length; j++) {
-          //console.log("invoices[i].detail_invoice  ", invoices[i].detail_invoice);
+          console.log('invoices[i].detail_invoice  ', invoices[i].detail_invoice);
           objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
             TChat: invoices[i].detail_invoice[j].feature,
             STT: invoices[i].detail_invoice[j].seq,
@@ -15026,5 +15026,4 @@ class EInvoiceController {
     }
   }
 }
-
 module.exports = EInvoiceController;

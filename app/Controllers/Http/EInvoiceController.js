@@ -5971,6 +5971,7 @@ class EInvoiceController {
           count_length: count_length,
           xml_type: xml_type,
         };
+        console.log('weTaxSendOrderInfo para_value   ', para_value);
 
         const rtnValue = await DBService.ExecuteSQLBlob(
           `BEGIN wt_upd_send_order_info (          
@@ -6093,6 +6094,7 @@ class EInvoiceController {
         } //if (rtnValue.p_rtn_cur[0].STATUS == "NOEXIT")
         else {
           //console.log("tei_wt_sale_bill_pk NOEXIT ", tei_wt_sale_bill_pk);
+          console.log('weTaxSendOrderInfo rtnValue   ', rtnValue);
 
           data_rep.push({
             sale_id: invoice.sale_id,

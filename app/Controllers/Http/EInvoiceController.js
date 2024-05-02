@@ -5439,7 +5439,7 @@ class EInvoiceController {
         objInvoice.DLHDon.NDHDon.DSHHDVu.HHDVu = [];
 
         for (let j = 0; j < invoices[i].detail_invoice.length; j++) {
-          //console.log("invoices[i].detail_invoice  ", invoices[i].detail_invoice);
+          console.log('weTaxConvertPosInvoiceToXML invoices[i].detail_invoice  ', invoices[i].detail_invoice[j]);
           objInvoice.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
             TChat: invoices[i].detail_invoice[j].feature,
             STT: invoices[i].detail_invoice[j].seq,
@@ -5459,9 +5459,8 @@ class EInvoiceController {
         objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat = {};
         objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat = [];
 
-        console.log(' weTaxConvertPosInvoiceToXML invoices[i].total_vat_list', invoices[i].total_vat_list);
-
         for (let j = 0; j < invoices[i].total_vat_list.length; j++) {
+          console.log(' weTaxConvertPosInvoiceToXML invoices[i].total_vat_list', invoices[i].total_vat_list[j]);
           objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat.push({
             TSuat: invoices[i].total_vat_list[j].sub_vat_rate,
             ThTien: invoices[i].total_vat_list[j].sub_amt,

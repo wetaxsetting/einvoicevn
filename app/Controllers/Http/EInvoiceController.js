@@ -2558,7 +2558,7 @@ class EInvoiceController {
                   p_ngayTaoTB : ngayTaoTB,
                   p_ord : ord,
                 };
-                console.log("weTaxCheckInformAdjustToTaxOffice  para_history  ",para_history);
+                console.log("weTaxSendDeclarationToTaxOffice  para_history  ",para_history);
 
                 const res_op = await DBService.ExecuteSQLBlob(
                   `BEGIN ei_upd_his_dec_inv(

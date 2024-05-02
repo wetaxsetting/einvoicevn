@@ -6264,6 +6264,7 @@ class EInvoiceController {
               sale_id: invoice.sale_id,
               msg_his_id: invoice.msg_his_id,
               currency: rtnValue.p_rtn_cur[0].CURRENCY,
+              lookup_code: rtnValue?.p_rtn_cur?.[0]?.LOOKUP_CD,
             },
           });
 
@@ -6507,7 +6508,7 @@ class EInvoiceController {
       Utils.Logger({
         LVL: 'error',
         MODULE: 'EInvoiceController',
-        FUNC: 'weTaxReSendOrderInfo',
+        FUNC: 'weTaxReSendNormalInvoice',
         CONTENT: error.message,
       });
       // console.log(error);

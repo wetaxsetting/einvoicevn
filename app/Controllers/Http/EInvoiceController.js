@@ -5790,7 +5790,7 @@ class EInvoiceController {
                   };
                 }
               }
-            } else if (!errorList[`${key}`].test(invoice[key]) && invoice[key] != null) {
+            } else if (!errorList[`${key}`].test(invoice[key]) && invoice[key]) {
               status = false;
               resMess = `${mess1} ${key}.`;
               return {
@@ -12342,7 +12342,7 @@ class EInvoiceController {
                   };
                 }
               }
-            } else if (!errorList[`${key}`].test(invoice[key]) && invoice[key] != null) {
+            } else if (!errorList[`${key}`].test(invoice[key]) && invoice[key]) {
               status = false;
               resMess = `${mess1} ${key}.`;
               return {

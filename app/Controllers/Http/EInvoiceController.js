@@ -6251,6 +6251,7 @@ class EInvoiceController {
           tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
           data_send_mail.push({
             tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
+            lookup_code: rtnValue?.p_rtn_cur?.[0]?.LOOKUP_CD,
             invoice: {
               buyer_comp_name: rtnValue.p_rtn_cur[0].BUYER_COMP_NAME,
               seller_comp_name: rtnValue.p_rtn_cur[0].SELLER_COMP_NAME,
@@ -6264,9 +6265,10 @@ class EInvoiceController {
               sale_id: invoice.sale_id,
               msg_his_id: invoice.msg_his_id,
               currency: rtnValue.p_rtn_cur[0].CURRENCY,
-              lookup_code: rtnValue?.p_rtn_cur?.[0]?.LOOKUP_CD,
             },
           });
+
+          console.log('data_send_mail  ', data_send_mail);
 
           if (!invoice.buyer_email && !invoice.buyer_email_cc && !rtnValue.p_rtn_cur[0].BUYER_EMAIL && !rtnValue.p_rtn_cur[0].BUYER_EMAIL_CC) {
             data_r.push({

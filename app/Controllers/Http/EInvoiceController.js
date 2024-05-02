@@ -6020,7 +6020,7 @@ class EInvoiceController {
         tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
         // console.log("tei_wt_sale_bill_pk  ", tei_wt_sale_bill_pk);
         //console.log("para_value   ", para_value);
-        // console.log("rtnValue   ", rtnValue);
+        console.log('weTaxSendOrderInfo rtnValue   ', rtnValue);
 
         if (rtnValue.p_rtn_cur[0].STATUS == 'OK') {
           // console.log("tei_wt_sale_bill_pk OK ", tei_wt_sale_bill_pk);
@@ -6105,13 +6105,13 @@ class EInvoiceController {
             form_no: invoice.form_no,
             serial_no: invoice.serial_no,
             invoice_no: invoice.invoice_no,
+            etax_result: '',
             // user_name: '',
             // send_date: '',
             // send_time: '',
             // mail_form: '',
             // mail_to: '',
             // mail_to_cc: '',
-            etax_result: '',
             // etax_status: "",
             // title: '',
             // content: '',

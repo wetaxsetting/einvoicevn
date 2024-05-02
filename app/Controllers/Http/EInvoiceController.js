@@ -6102,7 +6102,7 @@ class EInvoiceController {
             link_invoice_preview: 'https://dev.einvoicevn.com/lookup-einvoice?trade_code',
             lookup_code: '',
             status_code: '0',
-            status_name: 'Tax code has not been registered',
+            status_name: 'Tax code has not been registered / Invoice date has wrong',
             seller_tax_code: invoice.seller_taxcode,
             form_no: invoice.form_no,
             serial_no: invoice.serial_no,

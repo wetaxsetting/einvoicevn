@@ -825,105 +825,6 @@ class EInvoiceController {
     }
   }
 
-  async convertInvaliInvoiceToXML2({request, response, auth}) {
-    try {
-      var p_language = request.header('accept-language', 'ENG');
-      var p_crt_by = '';
-      const user = await auth.getUser();
-      if (user) {
-        p_crt_by = user.USER_ID;
-      }
-      let data_respone = [];
-      const {invalid_invoices} = request.all();
-      let jsonInvalidInvoices = {
-        TBao: {
-          DLTBao: {
-            PBan: '2.0.1',
-            MSo: '04/SS-HĐĐT',
-            Ten: 'Thông báo hóa đơn điện tử có sai sót',
-            Loai: 1,
-            So: '',
-            NTBCCQT: '',
-            TCQT: 'Chi cục thuế thành phố Hà Nội',
-            MCQT: 101,
-            MST: 104918404,
-            TNNT: 'Vinmart',
-            DDanh: 'Hà Nội',
-            NTBao: '2021-10-07',
-            DSHDon: {
-              HDon: [
-                /*{
-                    MCCQT: 1234,
-                    KHMSHDon: 4,
-                    KHHDon: "C21TYY",
-                    SHDon: 411,
-                    Ngay: "2021-10-07",
-                    LADHDDT: 1,
-                    TCTBao: 2,
-                    LDo: "Điều chỉnh tên người bán cho hóa đơn Mẫu số 6 ký hiệu C21TYY số 61 ngày 29 tháng 09 năm 2021"
-                },*/
-              ],
-            },
-          },
-          DSCKS: {
-            NNT: '',
-          },
-        },
-      };
-      if (invalid_invoices && !invalid_invoices.hasOwnProperty('tax_office_name')) {
-        return response.send(Utils.response(false, `Invalid json format.`, invalid_invoices));
-      }
-      jsonInvalidInvoices.TBao.DLTBao.PBan = invalid_invoices.version;
-      jsonInvalidInvoices.TBao.DLTBao.TCQT = invalid_invoices.tax_office_name;
-      jsonInvalidInvoices.TBao.DLTBao.MCQT = invalid_invoices.tax_office_code;
-      jsonInvalidInvoices.TBao.DLTBao.MST = invalid_invoices.seller_taxcode;
-      jsonInvalidInvoices.TBao.DLTBao.TNNT = invalid_invoices.seller_company_name;
-      jsonInvalidInvoices.TBao.DLTBao.DDanh = invalid_invoices.location_name;
-      jsonInvalidInvoices.TBao.DLTBao.NTBao = invalid_invoices.inform_date;
-
-      for (let i = 0; i < invalid_invoices.invoices.length; i++) {
-        jsonInvalidInvoices.TBao.DLTBao.DSHDon.HDon.push({
-          MCCQT: invalid_invoices.invoices[i].tax_confirmation_code,
-          KHMSHDon: invalid_invoices.invoices[i].form_no,
-          KHHDon: invalid_invoices.invoices[i].serial_no,
-          SHDon: invalid_invoices.invoices[i].invoice_no,
-          Ngay: invalid_invoices.invoices[i].invoice_date,
-          LADHDDT: invalid_invoices.invoices[i].invoice_type,
-          TCTBao: invalid_invoices.invoices[i].inform_type,
-          LDo: this.convertHtmlCode(invalid_invoices.invoices[i].reason),
-        });
-      }
-      const xml = convertXML.json2xml(jsonInvalidInvoices, {
-        compact: true,
-        ignoreComment: true,
-        spaces: 4,
-      });
-
-      const id = uuid.v4();
-      const xmlId = xml.toString().replace('<DLTBao>', `<DLTBao Id=\'${id}\'>`);
-      const xmlRemoveLine = xmlId.toString().replace(/\n/g, '');
-
-      data_respone = await this.privateGeneralRecordsXml(invalid_invoices);
-
-      data_respone.push({
-        req_key: invalid_invoices.req_key,
-        xml: xmlRemoveLine,
-        id_signing: id,
-        url_signing: 'TBao/DSCKS/NNT',
-      });
-
-      return response.send(Utils.response(true, `Convert invalid invoices to xml was succesful.`, data_respone));
-    } catch (e) {
-      Utils.Logger({
-        LVL: 'error',
-        MODULE: 'EInvoiceController',
-        FUNC: 'convertInvaliInvoiceToXML',
-        CONTENT: e.message,
-      });
-      return response.send(Utils.response(false, 'error', e.message));
-    }
-  }
-
   async weTaxConvertInvalidInvoiceToXML({request, response, auth}) {
     try {
       var p_language = request.header('accept-language', 'ENG');
@@ -5039,6 +4940,7 @@ class EInvoiceController {
       return null;
     }
   }
+
   // async createSignedInfo() {
   //     try {
   //         return createxml({ version: '1.0' })

@@ -3,7 +3,7 @@ const Utils = use('Utils');
 const fs = use('fs');
 let regexCell = /([a-zA-Z]+)(\d+)/;
 const ReportHelper = use('App/Helpers/ReportHelper');
-class EiExcelConverterAuto {
+class EiWTExcelConverterAuto {
   constructor() {}
   async ExcelBuilder(
     p_crt_by,
@@ -1417,4 +1417,4 @@ class EiExcelConverterAuto {
     return result;
   };
 }
-module.exports = EiExcelConverterAuto;
+module.exports = EiWTExcelConverterAuto;

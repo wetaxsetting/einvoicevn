@@ -2,14 +2,14 @@
 const DBService = use('DBService');
 const Helpers = use('Helpers');
 const fs = require('fs');
-const EiExcelConverter = use('App/Helpers/EiWTExcelConverterAuto');
+const EiWTExcelConverterAuto = use('App/Helpers/EiWTExcelConverterAuto');
 class EiExcelHandler {
   constructor() {}
   masterDataArray = [];
 
   async getEinvoice(pk, p_language, p_crt_by, _db2 = 'N') {
     try {
-      let exceljs = new EiExcelConverter();
+      let exceljs = new EiWTExcelConverterAuto();
       let resultExcel = null;
       let companyTaxcode = 0;
 

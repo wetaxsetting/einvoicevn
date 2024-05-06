@@ -3,7 +3,7 @@ const Utils = use('Utils');
 const fs = use('fs');
 let regexCell = /([a-zA-Z]+)(\d+)/;
 const ReportHelper = use('App/Helpers/ReportHelper');
-class EiExcelConverterAuto {
+class EiWTExcelConverterAuto {
   constructor() {}
   async ExcelBuilder(
     p_crt_by,
@@ -176,40 +176,11 @@ class EiExcelConverterAuto {
           v_countNumberOfPages++;
         }
       }
-
-      //console.log(page)
-      //console.log("v_countNumberOfPages", v_countNumberOfPages)
       //END-this part calculate the number of pages base on the data.
 
       //this part re-format amt.
-      //console.log("file: EiWTExcelConverterAuto.js:172 [vng-304] ExcelBuilder [vng-304] einvoiceMasterData:", einvoiceMasterData)
-      // if(einvoiceMasterData[0]["TOTALAMOUNTINWORD_VIE"] ){
-      // if (einvoiceMasterData[0]["CCY"].toString() == "VND") {
-      // 	lb_amount_trans = "";
-      // 	amount_trans = "";
-      // 	amount_total = einvoiceMasterData[0]["TOTALAMOUNT_DISPLAY"] == null ? null : einvoiceMasterData[0]["TOTALAMOUNT_DISPLAY"].toString();
-      // 	amount_vat = einvoiceMasterData[0]["VATAMOUNT_DISPLAY"] == null ? null : einvoiceMasterData[0]["VATAMOUNT_DISPLAY"].toString();
-      // 	amount_net = einvoiceMasterData[0]["NETAMOUNT_DISPLAY"] == null ? null : einvoiceMasterData[0]["NETAMOUNT_DISPLAY"].toString();
-      // 	read_price = einvoiceMasterData[0]["TOTALAMOUNTINWORD"] == null ? null : einvoiceMasterData[0]["TOTALAMOUNTINWORD"].toString();
-
-      // 	// read_price = einvoiceMasterData[0]["TOTALAMOUNTINWORD"].substr(0, 2) + einvoiceMasterData[0]["TOTALAMOUNTINWORD"].substr(2, einvoiceMasterData[0]["TOTALAMOUNTINWORD"].length - 2).toLowerCase() + '.';
-      // 	//console.log("file: EiWTExcelConverterAuto.js:180 [vng-304] ExcelBuilder [vng-304] read_price:", read_price)
-      // }
-      // else {
-      // 	lb_amount_trans = einvoiceMasterData[0]["EXCHANGE_RATE"] == null ? null : einvoiceMasterData[0]["EXCHANGE_RATE"].toString();
-      // 	amount_trans = einvoiceMasterData[0]["TOTALAMT_TR_DISPLAY"] == null ? null : einvoiceMasterData[0]["TOTALAMT_TR_DISPLAY"].toString();
-      // 	amount_total = einvoiceMasterData[0]["TOTALAMOUNT_DISPLAY"] == null ? null : einvoiceMasterData[0]["TOTALAMOUNT_DISPLAY"].toString();
-      // 	amount_vat = einvoiceMasterData[0]["VATAMOUNT_DISPLAY"] == null ? null : einvoiceMasterData[0]["VATAMOUNT_DISPLAY"].toString();
-      // 	amount_net = einvoiceMasterData[0]["NETAMOUNT_DISPLAY"] == null ? null : einvoiceMasterData[0]["NETAMOUNT_DISPLAY"].toString();
-
-      // 	read_price = this.Num2VNText(einvoiceMasterData[0]["TOTALAMOUNTINWORD"].toString(), "USD");
-      // }
-      // }
 
       read_price = einvoiceMasterData[0]['TOTALAMOUNTINWORD'] == null ? null : einvoiceMasterData[0]['TOTALAMOUNTINWORD'].toString();
-      // console.log("file: EiWTExcelConverterAuto.js:192 [vng-304] ExcelBuilder [vng-304] read_price:", read_price)
-      //read_priceV=NumberToTextVN(parseFloat(einvoiceMasterData[0]["TOTALAMOUNTINWORD"] == null ? null : einvoiceMasterData[0]["TOTALAMOUNTINWORD"].toString()));
-      //read_priceU=Num2VNText(einvoiceMasterData[0]["TOTALAMOUNTINWORD"].toString(), "USD");
 
       //END-this part re-format amt.
 
@@ -579,15 +550,15 @@ class EiExcelConverterAuto {
           //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
           //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
 
-          //console.log("e  " , e)
+          console.log('e  ', e);
           if (e > 0) {
             for (let i = 0; i < e; i++) {
               const _e = einvoiceDetailData[i + count_2];
-              //console.log("_e  " , _e)
+              console.log('_e  ', _e);
               try {
                 let item_name_lt = this.countlength_v2(_e['ITEM_NAME']);
                 if (_e['ITEM_NAME'] !== null) {
-                  //console.log(`_e["ITEM_NAME"]  ` + _e["ITEM_NAME"]);
+                  console.log(`_e["ITEM_NAME"]  ` + _e['ITEM_NAME']);
                   let longRow = _e['ITEM_NAME'].split('&#xA;');
                   for (let itl = 0; itl < item_name_lt; itl++) {
                     const _item_name = longRow[itl];
@@ -606,10 +577,10 @@ class EiExcelConverterAuto {
                       left: {style: 'thin'},
                     };
                   });
-
                   worksheet.getCell(`${lastCell + (_sourceRow_2 + totalRowCount_2)}`).style.border = {
                     right: {style: 'thin'},
                     bottom: {style: detailCellFormat[0].cellBorder},
+                    left: {style: 'thin'},
                   };
                   //worksheet.getCell( `${nmCell + (_sourceRow_2 + totalRowCount_2 + item_name_lt)}`).style.border = { bottom: { style: detailCellFormat[0].cellBorder }, };
                   //	worksheet.getCell( `${sttCell + (_sourceRow_2 + totalRowCount_2 + item_name_lt)}`).style.border = { left: { style: 'thin' }, right: { style: 'thin' }, bottom: { style: detailCellFormat[0].cellBorder }, top: { style: 'thin' } };
@@ -630,7 +601,10 @@ class EiExcelConverterAuto {
                         };
                       }
                     });
-                    worksheet.getCell(`${lastCell + (_sourceRow_2 + totalRowCount_2 + itl)}`).style.border = {right: {style: 'thin'}};
+                    worksheet.getCell(`${lastCell + (_sourceRow_2 + totalRowCount_2 + itl)}`).style.border = {
+                      right: {style: 'thin'},
+                      left: {style: 'thin'},
+                    };
                     worksheet.getCell(`${nmCell + (_sourceRow_2 + totalRowCount_2 + itl)}`).style.border = {left: {style: 'thin'}};
                   }
                   detailCellFormat.forEach(e => {
@@ -665,7 +639,7 @@ class EiExcelConverterAuto {
             }
             if (j == 0) {
               totalRowCount_2 += pos_lv - totalRowCount_2;
-              //console.log("totalRowCount_2  " + totalRowCount_2);
+              console.log('totalRowCount_2  ' + totalRowCount_2);
               if (cancelYn == 'Y') {
                 try {
                   worksheet.addImage(await exceljs.insertPathImage(cancelPath), {
@@ -716,7 +690,7 @@ class EiExcelConverterAuto {
 
               if (bgPath != '') {
                 if (j == v_countNumberOfPages - 1) {
-                  //console.log("backgroundCell  " + backgroundRow  + "  j  " + j + " totalRowCount_2 " + totalRowCount_2 + " pos_lv  " + pos_lv );
+                  console.log('backgroundCell  ' + backgroundRow + '  j  ' + j + ' totalRowCount_2 ' + totalRowCount_2 + ' pos_lv  ' + pos_lv);
                   try {
                     worksheet.addImage(await exceljs.insertPathImage(bgPath), {
                       // tl: { col: backgroundCell, row: backgroundRow + totalRowCount_2 - pos_lv - 1 },
@@ -1443,4 +1417,4 @@ class EiExcelConverterAuto {
     return result;
   };
 }
-module.exports = EiExcelConverterAuto;
+module.exports = EiWTExcelConverterAuto;

@@ -5323,7 +5323,7 @@ class EInvoiceController {
         objInvoice.DLHDon.NDHDon.NBan.DChi = invoices[i].seller_address;
         objInvoice.DLHDon.NDHDon.NBan.SDThoai = invoices[i].seller_tel;
 
-        if (!invoices[i].buyer_comp_name && invoices[i].buyer_comp_name) {
+        if (!invoices[i].buyer_comp_name && invoices[i].buyer_name) {
           objInvoice.DLHDon.NDHDon.NMua.Ten = invoices[i].buyer_name;
         } else {
           objInvoice.DLHDon.NDHDon.NMua.Ten = invoices[i].buyer_comp_name;

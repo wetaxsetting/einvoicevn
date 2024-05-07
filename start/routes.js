@@ -218,6 +218,7 @@ Route.group(() => {
   Route.post('hsm-sign-pdf', 'HSMController.signPdf');
 
   Route.post('hsm-sign-xml', 'HSMController2.HsmSignXml');
+  Route.post('hsm-general-qr-code', 'HSMController2.HSMGeneralQRCode');
 })
   .prefix('api/hsm')
   .middleware('user');

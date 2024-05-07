@@ -235,6 +235,51 @@ class HSMController2 {
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
     }
   }
+
+  async HSMGeneralQRCode({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+
+      const {serial, pin} = request.all();
+
+      const body = {
+        username: '1201496252', //  HSM_Username,
+        password: '1201496252', //
+        rememberMe: false,
+      };
+
+      const token = await Request.post(`https://sign.easyca.vn/api` + '/authenticate', body);
+
+      console.log('token  ', token);
+      if (token.data.id_token) {
+        const certData = await Request.get(`https://sign.easyca.vn/api` + `/certificate/getQRCodeOTP?serial=${serial}&pin=${pin}`, {
+          headers: {
+            Authorization: `Bearer ${token.data.id_token}`,
+          },
+        });
+        console.log('certData  ', certData);
+        console.log('certData  ', certData.data.data);
+        return {
+          msg: 'General QR Code sussces !!',
+          data: certData.data.data,
+        };
+      } else {
+        console.error('Failed to get api token');
+        return {
+          msg: 'Failed to get api token',
+          data: '',
+        };
+      }
+    } catch (err) {
+      console.log('err', err);
+      return null;
+    }
+  }
 }
 
 module.exports = HSMController2;

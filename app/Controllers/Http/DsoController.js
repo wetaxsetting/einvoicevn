@@ -1172,7 +1172,23 @@ class DsoController {
     try {
       const {file_name} = request.get(['file_name']);
       const filePath = ROOT_DIR_FILES + file_name;
-      console.log('filePath ', filePath, 'file_name ', file_name, 'ROOT_DIR_FILES  ', ROOT_DIR_FILES);
+
+      const current = new Date();
+      const year = current.getFullYear();
+      let month = current.getMonth() + 1;
+      let day = current.getDate();
+      if (day < 10) {
+        day = '0' + day;
+      }
+      if (month < 10) {
+        month = '0' + month;
+      }
+
+      let token = AES.encrypt(file_name + '|' + year + month + day, APP_KEY);
+      token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
+
+      console.log('filePath ', filePath, 'file_name ', file_name, 'ROOT_DIR_FILES  ', ROOT_DIR_FILES, ' token ', token);
+
       return response.attachment(filePath);
     } catch (e) {
       return response.send(Utils.response(false, e.message, null));

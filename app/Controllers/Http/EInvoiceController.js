@@ -65,6 +65,7 @@ const {create, createCB} = require('xmlbuilder2');
 const {log, Console} = require('console');
 
 const EINVOICE_API_SEND_MAIL = 'http://sendmail.genuwinsolution.com/api/user/sendmail';
+const EINVOICE_API_SEND_MAIL_SMTP = 'http://sendmail.genuwinsolution.com/api/user/sendmailsmtp';
 const moment = require('moment');
 const {jar} = require('request');
 const {lookup} = require('dns');
@@ -16178,6 +16179,82 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       console.log('UpdataInvalidInvoiceToXMLFromCustomer  ', e.message);
+
+      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+    }
+  }
+
+  async SendMailCSharp({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const {data} = request.all();
+
+      console.log(data);
+      let url = '';
+
+      if (data.length > 0 && data) {
+        if (
+          data[0].tei_company_pk == '482' ||
+          data[0].tei_company_pk == '483' ||
+          data[0].tei_company_pk == '382' ||
+          data[0].tei_company_pk == '642'
+        ) {
+          url = EINVOICE_API_SEND_MAIL_SMTP;
+        } else {
+          url = EINVOICE_API_SEND_MAIL;
+        }
+        for (const invoice of data) {
+          const res_send_mail = await Request.post(url, {
+            mail_to: invoice.email_address,
+            cc_to: invoice.email_address_cc,
+            subject: invoice.subject,
+            body: invoice.body_mail,
+            attachfile1: invoice.attachfile1,
+            attachfile2: invoice.attachfile2,
+            filename1: invoice.filename1,
+            filename2: invoice.filename2,
+          });
+
+          console.log('res_send_mail  ', res_send_mail);
+
+          if (res_send_mail.data.success) {
+            let para_end_mail = {
+              p_tei_einvoice_m_pk: invoice.pk,
+              p_email_address: invoice.email_address,
+              p_email_address_cc: invoice.email_address_cc,
+            };
+            await DBService.ExecuteSQLBlob(
+              `BEGIN EI_UPD_6095100_2(
+                                :p_tei_einvoice_m_pk, 
+                                :p_email_address, 
+                                :p_email_address_cc, 
+                                :p_language, 
+                                :p_crt_by, 
+                                :p_rtn_cur
+                            ); END;`,
+              para_end_mail,
+              p_language,
+              p_crt_by,
+            );
+          }
+        }
+        return response.send(Utils.response(true, `Send mail customer was suscess`));
+      } else {
+        return response.send(Utils.response(false, `Send mail customer was faile`));
+      }
+    } catch (error) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'SendMailCSharp',
+        CONTENT: e.message,
+      });
+      console.log('SendMailCSharp  ', e.message);
 
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
     }

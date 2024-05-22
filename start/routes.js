@@ -218,6 +218,8 @@ Route.group(() => {
 
   Route.post('invalidinvoice2xml-from-customer-c-sharp', 'EInvoiceController.GeneralInvalidInvoiceToXMLFromCustomer');
   Route.post('update-invalid-invoice-from-customer-c-sharp', 'EInvoiceController.UpdataInvalidInvoiceToXMLFromCustomer');
+
+  Route.post('send-mail-c-sharp', 'EInvoiceController.SendMailCSharp');
 })
   .prefix('api/einvoice')
   .middleware('user');

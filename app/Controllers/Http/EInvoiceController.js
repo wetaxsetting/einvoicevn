@@ -77,6 +77,7 @@ const TAX_PASSWORD = 'e_GX4v@';
 const WETAX_TOKEN_CALLBACK = Env.get('WETAX_API_KEY');
 const WETAX_API_URL = Env.get('WETAX_API_URL');
 
+const WEBSERVICE_C_SHARP = 'http://genuclouding.com/wseinvoice/BSService.asmx';
 // test site
 // const TAX_CHECK_TRADE_CODE = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
 

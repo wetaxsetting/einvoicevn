@@ -77,6 +77,7 @@ const TAX_PASSWORD = 'e_GX4v@';
 const WETAX_TOKEN_CALLBACK = Env.get('WETAX_API_KEY');
 const WETAX_API_URL = Env.get('WETAX_API_URL');
 
+const WEBSERVICE_C_SHARP = 'http://genuclouding.com/wseinvoice/BSService.asmx';
 // test site
 // const TAX_CHECK_TRADE_CODE = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
 
@@ -13526,7 +13527,7 @@ class EInvoiceController {
             );
             console.log('weTaxExtractPosXMLContent rtnValueMaster  ', rtnValueMaster);
             status = rtnValueMaster.p_rtn_cur[0].STATUS;
-            // tao json hd va trann thai các kiểu để sau này trả về cho WeTax dễ update
+            // tao json hd va trang thai các kiểu để sau này trả về cho WeTax dễ update
             data_inv.push({
               mccqt: invoice.MCCQT,
               tax_code: invoice.DLHDon.NDHDon.NBan.MST,
@@ -15032,6 +15033,497 @@ class EInvoiceController {
       });
       console.log(e);
       return response.send(Utils.response(false, 'error', e.message));
+    }
+  }
+
+  async GeneralDeclarationXML({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const {tei_einvoice_m_pk, tei_company_pk} = request.all(); //data:6030
+
+      let url = WEBSERVICE_C_SHARP + '/GeneralDeclaration';
+      let data;
+      const res = await Request.post(url, {
+        tei_einvoice_m_pk: tei_einvoice_m_pk,
+        p_tei_company_pk: tei_company_pk,
+      });
+      data = res.data.d;
+
+      return response.status(200).json(
+        Utils.responseByRule({
+          success: true,
+          message: 'success.',
+          data: JSON.parse(data),
+        }),
+      );
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'GeneralDeclarationXML',
+        CONTENT: e.message,
+      });
+      console.log('GeneralDeclarationXML  ', e.message);
+
+      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+    }
+  }
+
+  async UpdateDeclarationXML({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const {
+        tei_einvoice_issuse_cqt_pk,
+        tei_company_pk,
+        arg_XmlStr,
+        serialNumber,
+        notBefore,
+        notAfter,
+        rawData,
+        isSuer,
+        issueBy,
+        issueTo,
+        dn_Name,
+        dm_MST,
+        ctr_by,
+      } = request.all(); //data:6030
+
+      let url = WEBSERVICE_C_SHARP + '/UpdateXmlList_v4';
+      let data;
+      const res = await Request.post(url, {
+        tei_einvoice_issuse_cqt_pk: tei_einvoice_issuse_cqt_pk,
+        tei_company_pk: tei_company_pk,
+        arg_XmlStr: arg_XmlStr,
+        serialNumber: serialNumber,
+        notBefore: notBefore,
+        notAfter: notAfter,
+        rawData: rawData,
+        isSuer: isSuer,
+        issueBy: issueBy,
+        issueTo: issueTo,
+        dn_Name: dn_Name,
+        dm_MST: dm_MST,
+        ctr_by: ctr_by,
+      });
+      data = res.data.d;
+
+      return response.status(200).json(
+        Utils.responseByRule({
+          success: true,
+          message: 'success.',
+          data: JSON.parse(data),
+        }),
+      );
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'UpdateDeclarationXML',
+        CONTENT: e.message,
+      });
+      console.log('UpdateDeclarationXML  ', e.message);
+
+      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+    }
+  }
+
+  async CheckDeclarationXML({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const {tei_einvoice_issuse_cqt_pk, tei_company_pk, tradecode, ctr_by, mtt_yn} = request.all(); //data:6030
+
+      let url = WEBSERVICE_C_SHARP + '/CheckingDeclationCQT';
+      let data;
+      const res = await Request.post(url, {
+        tei_einvoice_issuse_cqt_pk: tei_einvoice_issuse_cqt_pk,
+        tei_company_pk: tei_company_pk,
+        tradecode: tradecode,
+        ctr_by: ctr_by,
+        mtt_yn: mtt_yn,
+      });
+      data = res.data.d;
+
+      return response.status(200).json(
+        Utils.responseByRule({
+          success: true,
+          message: 'success.',
+          data: JSON.parse(data),
+        }),
+      );
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'CheckDeclarationXML',
+        CONTENT: e.message,
+      });
+      console.log('CheckDeclarationXML  ', e.message);
+
+      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+    }
+  }
+
+  async GeneralInvoiceXML({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const {tei_einvoice_m_pk} = request.all(); //data:6030
+
+      let url = WEBSERVICE_C_SHARP + '/GeneralXmlList_v2';
+      let data;
+      const res = await Request.post(url, {
+        tei_einvoice_m_pk: tei_einvoice_m_pk,
+      });
+      data = res.data.d;
+
+      return response.status(200).json(
+        Utils.responseByRule({
+          success: true,
+          message: 'success.',
+          data: JSON.parse(data),
+        }),
+      );
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'GeneralInvoiceXML',
+        CONTENT: e.message,
+      });
+      console.log('GeneralInvoiceXML  ', e.message);
+
+      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+    }
+  }
+
+  async UpdateInvoiceXML({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const {
+        tei_einvoice_m_pk,
+        tei_company_pk,
+        arg_XmlStr,
+        form_no,
+        serial_no,
+        invoice_no,
+        ctr_by,
+        serialNumber,
+        notBefore,
+        notAfter,
+        rawData,
+        isSuer,
+        issueBy,
+        issueTo,
+        dn_Name,
+        dm_MST,
+        type_send_data,
+        sign_type,
+      } = request.all(); //data:6030
+
+      let url = WEBSERVICE_C_SHARP + '/UpdateXmlList_v3';
+      let data;
+      const res = await Request.post(url, {
+        tei_einvoice_m_pk: tei_einvoice_m_pk,
+        tei_company_pk: tei_company_pk,
+        arg_XmlStr: arg_XmlStr,
+        form_no: form_no,
+        serial_no: serial_no,
+        invoice_no: invoice_no,
+        ctr_by: ctr_by,
+        serialNumber: serialNumber,
+        notBefore: notBefore,
+        notAfter: notAfter,
+        rawData: rawData,
+        isSuer: isSuer,
+        issueBy: issueBy,
+        issueTo: issueTo,
+        dn_Name: dn_Name,
+        dm_MST: dm_MST,
+        type_send_data: type_send_data,
+        sign_type: sign_type, //  txtInvoice_Form_Symbol.value
+      });
+      data = res.data.d;
+
+      return response.status(200).json(
+        Utils.responseByRule({
+          success: true,
+          message: 'success.',
+          data: JSON.parse(data),
+        }),
+      );
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'UpdateInvoiceXML',
+        CONTENT: e.message,
+      });
+      console.log('UpdateInvoiceXML  ', e.message);
+
+      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+    }
+  }
+
+  async CheckInvoiceXML({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const {tei_einvoice_m_pk, tei_company_pk, tradecode, ctr_by} = request.all(); //data:6030
+
+      let url = WEBSERVICE_C_SHARP + '/CheckingTradeCodeCQT';
+      let data;
+      const res = await Request.post(url, {
+        tei_einvoice_m_pk: tei_einvoice_m_pk,
+        tei_company_pk: tei_company_pk,
+        tradecode: tradecode,
+        ctr_by: ctr_by,
+      });
+      data = res.data.d;
+
+      return response.status(200).json(
+        Utils.responseByRule({
+          success: true,
+          message: 'success.',
+          data: JSON.parse(data),
+        }),
+      );
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'CheckInvoiceXML',
+        CONTENT: e.message,
+      });
+      console.log('CheckInvoiceXML  ', e.message);
+
+      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+    }
+  }
+
+  async GeneralInvalidInvoiceToXML({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const {tei_einvoice_m_pk, p_ctr_by} = request.all(); //data:6030
+
+      let url = WEBSERVICE_C_SHARP + '/GeneralEInvoiceAdjust_v2';
+      let data;
+      const res = await Request.post(url, {
+        tei_einvoice_m_pk: tei_einvoice_m_pk,
+        p_ctr_by: p_ctr_by,
+      });
+      data = res.data.d;
+
+      return response.status(200).json(
+        Utils.responseByRule({
+          success: true,
+          message: 'success.',
+          data: JSON.parse(data),
+        }),
+      );
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'GeneralInvalidInvoiceToXML',
+        CONTENT: e.message,
+      });
+      console.log('GeneralInvalidInvoiceToXML  ', e.message);
+
+      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+    }
+  }
+
+  async UpdataInvalidInvoiceToXML({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const {tei_einvoice_m_pk, tei_company_pk, arg_XmlStr, ctr_by} = request.all(); //data:6030
+
+      let url = WEBSERVICE_C_SHARP + '/UpdateXmlList_v6';
+      let data;
+      const res = await Request.post(url, {
+        tei_einvoice_m_pk: tei_einvoice_m_pk,
+        tei_company_pk: tei_company_pk,
+        arg_XmlStr: arg_XmlStr,
+        ctr_by: ctr_by,
+      });
+      data = res.data.d;
+
+      return response.status(200).json(
+        Utils.responseByRule({
+          success: true,
+          message: 'success.',
+          data: JSON.parse(data),
+        }),
+      );
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'UpdataInvalidInvoiceToXML',
+        CONTENT: e.message,
+      });
+      console.log('UpdataInvalidInvoiceToXML  ', e.message);
+
+      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+    }
+  }
+
+  async CheckInvalidInvoiceToXML({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const {tei_einvoice_m_pk, tei_company_pk, arg_XmlStr, ctr_by} = request.all(); //data:6030
+
+      let url = WEBSERVICE_C_SHARP + '/UpdateXmlList_v6';
+      let data;
+      const res = await Request.post(url, {
+        tei_einvoice_m_pk: tei_einvoice_m_pk,
+        tei_company_pk: tei_company_pk,
+        arg_XmlStr: arg_XmlStr,
+        ctr_by: ctr_by,
+      });
+      data = res.data.d;
+
+      return response.status(200).json(
+        Utils.responseByRule({
+          success: true,
+          message: 'success.',
+          data: JSON.parse(data),
+        }),
+      );
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'UpdataInvalidInvoiceToXML',
+        CONTENT: e.message,
+      });
+      console.log('UpdataInvalidInvoiceToXML  ', e.message);
+
+      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+    }
+  }
+
+  async GeneralInvalidInvoiceToXMLFromCustomer({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const {p_trade_code, p_ctr_by} = request.all(); //data:6030
+
+      let url = WEBSERVICE_C_SHARP + '/GeneralEInvoiceAdjustFromCustomer';
+      let data;
+      const res = await Request.post(url, {
+        p_trade_code: p_trade_code,
+        p_ctr_by: p_ctr_by,
+      });
+      data = res.data.d;
+
+      return response.status(200).json(
+        Utils.responseByRule({
+          success: true,
+          message: 'success.',
+          data: JSON.parse(data),
+        }),
+      );
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'GeneralInvalidInvoiceToXMLFromCustomer',
+        CONTENT: e.message,
+      });
+      console.log('GeneralInvalidInvoiceToXMLFromCustomer  ', e.message);
+
+      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+    }
+  }
+
+  async UpdataInvalidInvoiceToXMLFromCustomer({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const { tei_einvoice_m_pk, 
+              trade_code, 
+              arg_XmlStr,
+              ctr_by} = request.all(); //data:6030
+
+      let url = WEBSERVICE_C_SHARP + '/UpdateXmlList_v8';
+      let data;
+      const res = await Request.post(url, {
+        tei_einvoice_m_pk: tei_einvoice_m_pk, 
+        trade_code: trade_code, 
+        arg_XmlStr: arg_XmlStr,
+        ctr_by: ctr_by
+      });
+      data = res.data.d;
+
+      return response.status(200).json(
+        Utils.responseByRule({
+          success: true,
+          message: 'success.',
+          data: JSON.parse(data),
+        }),
+      );
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'UpdataInvalidInvoiceToXMLFromCustomer',
+        CONTENT: e.message,
+      });
+      console.log('UpdataInvalidInvoiceToXMLFromCustomer  ', e.message);
+
+      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
     }
   }
 }

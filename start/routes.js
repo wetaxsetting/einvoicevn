@@ -198,6 +198,22 @@ Route.group(() => {
   Route.post('send-invoice-erp', 'EInvoiceController.sendInvoiceErp');
   Route.post('view-pdf', 'EInvoiceController.viewPDFInvoice');
   Route.post('general-base64-from-url', 'EInvoiceController.getBase64ImgFromUrl');
+
+  // e-invoice C#
+  Route.post('declare2xml-c-sharp', 'EInvoiceController.GeneralDeclarationXML');
+  Route.post('update-declare-c-sharp', 'EInvoiceController.UpdateDeclarationXML');
+  Route.post('check-declare-c-sharp', 'EInvoiceController.CheckDeclarationXML');
+
+  Route.post('invoice2xml-c-sharp', 'EInvoiceController.GeneralInvoiceXML');
+  Route.post('update-invoice-c-sharp', 'EInvoiceController.UpdateInvoiceXML');
+  Route.post('check-invoice-c-sharp', 'EInvoiceController.CheckInvoiceXML');
+
+  Route.post('invalidinvoice2xml-c-sharp', 'EInvoiceController.GeneralInvalidInvoiceToXML');
+  Route.post('update-invalid-invoice-c-sharp', 'EInvoiceController.UpdataInvalidInvoiceToXML');
+  Route.post('check-invalid-invoice-c-sharp', 'EInvoiceController.CheckInvalidInvoiceToXML');
+
+  Route.post('invalidinvoice2xml-from-customer-c-sharp', 'EInvoiceController.GeneralInvalidInvoiceToXMLFromCustomer');
+  Route.post('update-invalid-invoice-from-customer-c-sharp', 'EInvoiceController.UpdataInvalidInvoiceToXMLFromCustomer');
 })
   .prefix('api/einvoice')
   .middleware('user');

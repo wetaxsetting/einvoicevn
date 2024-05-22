@@ -15698,7 +15698,7 @@ class EInvoiceController {
       }
       const {data} = request.all();
 
-      console.log(data);
+      //console.log(data);
       let url = '';
 
       if (data.length > 0 && data) {
@@ -15724,7 +15724,7 @@ class EInvoiceController {
             filename2: invoice.filename2,
           });
 
-          console.log('res_send_mail  ', res_send_mail);
+          //console.log('res_send_mail  ', res_send_mail);
 
           if (res_send_mail.data.success) {
             let para_end_mail = {

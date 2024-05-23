@@ -5628,14 +5628,25 @@ class EInvoiceController {
         for (const key in invoice) {
           if (errorList[`${key}`] != undefined && !Array.isArray(invoice[key])) {
             if (key == 'seller_taxcode' || key == 'buyer_taxcode') {
-              if (invoice[key].length == 10 && !errorList[`${key}`][10].test(invoice[key])) {
-                status = false;
-                resMess = `${mess1} ${key}.`;
-                return {
-                  status,
-                  message: resMess,
-                };
-              } else if (invoice[key].length == 14 && !errorList[`${key}`][14].test(invoice[key])) {
+              if (invoice[key].length == 10) {
+                if (!errorList[`${key}`][10].test(invoice[key])) {
+                  status = false;
+                  resMess = `${mess1} ${key}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+              } else if (invoice[key].length == 14) {
+                if (!errorList[`${key}`][14].test(invoice[key])) {
+                  status = false;
+                  resMess = `${mess1} ${key}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+              } else {
                 status = false;
                 resMess = `${mess1} ${key}.`;
                 return {
@@ -8444,14 +8455,25 @@ class EInvoiceController {
         for (const key in invoice) {
           if (errorList[`${key}`] != undefined && !Array.isArray(invoice[key])) {
             if (key == 'seller_taxcode' || key == 'buyer_taxcode') {
-              if (invoice[key].length == 10 && !errorList[`${key}`][10].test(invoice[key])) {
-                status = false;
-                resMess = `${mess1} ${key}.`;
-                return {
-                  status,
-                  message: resMess,
-                };
-              } else if (invoice[key].length == 14 && !errorList[`${key}`][14].test(invoice[key])) {
+              if (invoice[key].length == 10) {
+                if (!errorList[`${key}`][10].test(invoice[key])) {
+                  status = false;
+                  resMess = `${mess1} ${key}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+              } else if (invoice[key].length == 14) {
+                if (!errorList[`${key}`][14].test(invoice[key])) {
+                  status = false;
+                  resMess = `${mess1} ${key}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+              } else {
                 status = false;
                 resMess = `${mess1} ${key}.`;
                 return {
@@ -8459,14 +8481,6 @@ class EInvoiceController {
                   message: resMess,
                 };
               }
-            } else if (!errorList[`${key}`].test(invoice[key]) && invoice[key]) {
-              status = false;
-              resMess = `${mess1} ${key}.`;
-              return {
-                status,
-                message: resMess,
-              };
-            }
           } else {
             if (key == 'total_vat_list') {
               for (const sub_vat of invoice[key]) {

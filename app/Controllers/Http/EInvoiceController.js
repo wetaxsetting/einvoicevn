@@ -5646,13 +5646,6 @@ class EInvoiceController {
                     message: resMess,
                   };
                 }
-              } else {
-                status = false;
-                resMess = `${mess1} ${key}.`;
-                return {
-                  status,
-                  message: resMess,
-                };
               }
             } else if (!errorList[`${key}`].test(invoice[key]) && invoice[key]) {
               status = false;
@@ -8478,13 +8471,6 @@ class EInvoiceController {
                     message: resMess,
                   };
                 }
-              } else {
-                status = false;
-                resMess = `${mess1} ${key}.`;
-                return {
-                  status,
-                  message: resMess,
-                };
               }
             }
           } else {

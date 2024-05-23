@@ -5646,7 +5646,7 @@ class EInvoiceController {
                     message: resMess,
                   };
                 }
-              } else if (invoice[key].length < 10 || invoice[key].length > 14) {
+              } else if ((invoice[key].length < 10 || invoice[key].length > 14) && invoice[key]) {
                 status = false;
                 resMess = `${mess1} ${key}. length between 10 and 14}.`;
                 return {
@@ -5897,14 +5897,7 @@ class EInvoiceController {
                     message: resMess,
                   };
                 }
-              } else if (invoice[key].length < 10 || invoice[key].length > 14) {
-                status = false;
-                resMess = `${mess1} ${key}. length between 10 and 14}.`;
-                return {
-                  status,
-                  message: resMess,
-                };
-              } else if (invoice[key].length < 10 || invoice[key].length > 14) {
+              } else if ((invoice[key].length < 10 || invoice[key].length > 14) && invoice[key]) {
                 status = false;
                 resMess = `${mess1} ${key}. length between 10 and 14}.`;
                 return {
@@ -6011,9 +6004,9 @@ class EInvoiceController {
                     message: resMess,
                   };
                 }
-                if (!errorList[`${key}`].uprice.test(inv.uprice)) {
+                if (!errorList[`${key}`].unit_price.test(inv.unit_price)) {
                   status = false;
-                  resMess = `${mess1} uprice is:  ${inv.uprice}.`;
+                  resMess = `${mess1} unit_price is:  ${inv.unit_price}.`;
                   return {
                     status,
                     message: resMess,
@@ -6035,9 +6028,9 @@ class EInvoiceController {
                     message: resMess,
                   };
                 }
-                if (!errorList[`${key}`].amt.test(inv.amt)) {
+                if (!errorList[`${key}`].amount.test(inv.amount)) {
                   status = false;
-                  resMess = `${mess1} amt is:  ${inv.amt}.`;
+                  resMess = `${mess1} amount is:  ${inv.amount}.`;
                   return {
                     status,
                     message: resMess,
@@ -6046,14 +6039,6 @@ class EInvoiceController {
                 if (!errorList[`${key}`].vat_rate.test(inv.vat_rate) && inv.vat_rate != 'KCT' && inv.vat_rate != 'KKKNT') {
                   status = false;
                   resMess = `${mess1} vat_rate is:  ${inv.vat_rate}.`;
-                  return {
-                    status,
-                    message: resMess,
-                  };
-                }
-                if (!errorList[`${key}`].amt_vat.test(inv.amt_vat)) {
-                  status = false;
-                  resMess = `${mess1} amt_vat is:  ${inv.amt_vat}.`;
                   return {
                     status,
                     message: resMess,
@@ -8736,6 +8721,13 @@ class EInvoiceController {
                     message: resMess,
                   };
                 }
+              } else if ((invoice[key].length < 10 || invoice[key].length > 14) && invoice[key]) {
+                status = false;
+                resMess = `${mess1} ${key}. length between 10 and 14}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
               }
             }
           } else {

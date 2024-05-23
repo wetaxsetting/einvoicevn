@@ -6154,6 +6154,11 @@ class EInvoiceController {
         return response.status(400).json(Utils.responseByRule({success: false, message: 'Invalid data_invoice'}));
       }
 
+      const valid = this.validateJsonInvalidPosInvoiceToXML(data_invoice);
+      if (!valid.status) {
+        return response.status(400).json(Utils.responseByRule({success: false, message: valid.message}));
+      }
+
       if (!sale_date) {
         // return response.send(Utils.response(false, `Invalid sale_date `, null)
         // );

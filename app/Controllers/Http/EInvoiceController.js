@@ -5813,6 +5813,249 @@ class EInvoiceController {
     }
   }
 
+  validateJsonInvalidSaleOrderToXML(invoices) {
+    let status = true;
+    let resMess = '';
+    const mess1 = 'Invalid field';
+    //console.log("invoice  ", invoice)
+    try {
+      const errorList = {
+        version: /^(\d{1}\.\d{1}\.\d{1})$/, //6
+        req_key: /^-?\d+(\.\d{1,99})?$/, //99
+        invoice_name: /^.{0,100}$/, //100
+        form_no: /^.{0,1}$/, //1
+        serial_no: /^.{0,6}$/, // 6
+        invoice_no: /^.{0,9}$/, // 8
+        invoice_date: /^(\d{4}\-\d{2}\-\d{2})$/, //10,
+        currency: /^.{0,3}$/, //3,
+        ex_rate: /^-?[0-9]{1,7}(?:\.[0-9]{1,2})?$/, //7.2
+        payment_method: /^.{0,50}$/, //50,
+        seller_comp_name: /^.{0,400}$/, //400,
+        seller_taxcode: {10: /^(\d{10})$/, 14: /^(\d{10}\-\d{3})$/}, // 10
+        seller_address: /^.{0,400}$/, //400,
+        seller_tel: /^.{0,50}$/, // 20
+        buyer_comp_name: /^.{0,400}$/, //400,
+        buyer_taxcode: {10: /^(\d{10})$/, 14: /^(\d{10}\-\d{3})$/},
+        buyer_address: /^.{0,400}$/, // 400
+        buyer_nm: /^.{0,100}$/,
+        buyer_tel: /^.{0,20}$/, //20,
+        buyer_cccd: /^.{0,12}$/, //12,
+        detail_invoice: {
+          feature: /^-?\d+(\.\d{1})?$/, //1,
+          seq: /^-?\d+(\.\d{0,4})?$/, //4 ,
+          item_code: /^.{0,50}$/, //50,
+          item_name: /^.{1,500}$/, //500,
+          item_uom: /^.{0,50}$/, //50,
+          quantity: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/, //21.6,
+          uprice: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/, // 21.6,
+          dc_rate: /^-?\d+(\.\d{1,4})?[%]/, // 6,4
+          dc_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
+          amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
+          vat_rate: /^-?\d+(\.\d{1,4})?[%]/,
+          amt_vat: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/, //21, 6
+        },
+
+        total_vat_list: {
+          sub_vat_rate: /^-?\d+(\.\d{1,4})?[%]/, //11,
+          sub_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
+          sub_vat_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
+        },
+
+        total_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
+        total_vat_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
+        total_dc_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
+        total_payment: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
+        total_payment_word_vie: /^.{0,255}$/, // 255
+      };
+
+      for (const invoice of invoices) {
+        for (const key in invoice) {
+          if (errorList[`${key}`] != undefined && !Array.isArray(invoice[key])) {
+            if (key == 'seller_taxcode' || key == 'buyer_taxcode') {
+              if (invoice[key].length == 10) {
+                if (!errorList[`${key}`][10].test(invoice[key])) {
+                  status = false;
+                  resMess = `${mess1} ${key}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+              } else if (invoice[key].length == 14) {
+                if (!errorList[`${key}`][14].test(invoice[key])) {
+                  status = false;
+                  resMess = `${mess1} ${key}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+              }
+            } else if (!errorList[`${key}`].test(invoice[key]) && invoice[key]) {
+              status = false;
+              resMess = `${mess1} ${key}.`;
+              return {
+                status,
+                message: resMess,
+              };
+            }
+          } else {
+            if (key == 'total_vat_list') {
+              console.log('key  ', key);
+
+              for (const sub_vat of invoice[key]) {
+                console.log('sub_vat   ', sub_vat);
+                if (
+                  !errorList[`${key}`].sub_vat_rate.test(sub_vat.sub_vat_rate) &&
+                  sub_vat.sub_vat_rate != 'KCT' &&
+                  sub_vat.sub_vat_rate != 'KKKNT'
+                ) {
+                  status = false;
+                  resMess = `${mess1} sub_vat_rate is ${sub_vat.sub_vat_rate}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+
+                if (!errorList[`${key}`].sub_amt.test(sub_vat.sub_amt)) {
+                  status = false;
+                  resMess = `${mess1} sub_amt is ${sub_vat.sub_amt}.`;
+
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+
+                if (!errorList[`${key}`].sub_vat_amt.test(sub_vat.sub_vat_amt)) {
+                  status = false;
+                  resMess = `${mess1} sub_vat_amt is ${sub_vat.sub_vat_amt}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+              }
+            }
+
+            if (key == 'detail_invoice') {
+              for (const inv of invoice[key]) {
+                if (!errorList[`${key}`].feature.test(inv.feature)) {
+                  status = false;
+                  resMess = `${mess1} ${key}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                if (!errorList[`${key}`].seq.test(inv.seq)) {
+                  status = false;
+                  resMess = `${mess1} seq is:  ${inv.seq}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                if (!errorList[`${key}`].item_code.test(inv.item_code) && inv.item_code) {
+                  status = false;
+                  resMess = `${mess1} item_code is:  ${inv.item_code}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                if (!errorList[`${key}`].item_name.test(inv.item_name)) {
+                  status = false;
+                  resMess = `${mess1} item_name is:  ${inv.item_name}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                if (!errorList[`${key}`].item_uom.test(inv.item_uom)) {
+                  status = false;
+                  resMess = `${mess1} item_uom is:  ${inv.item_uom}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                if (!errorList[`${key}`].quantity.test(inv.quantity)) {
+                  status = false;
+                  resMess = `${mess1} quantity is:  ${inv.quantity}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                if (!errorList[`${key}`].uprice.test(inv.uprice)) {
+                  status = false;
+                  resMess = `${mess1} uprice is:  ${inv.uprice}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                if (!errorList[`${key}`].dc_amt.test(inv.dc_amt)) {
+                  status = false;
+                  resMess = `${mess1} dc_amt is:  ${inv.dc_amt}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                if (!errorList[`${key}`].dc_rate.test(inv.dc_rate) && inv.dc_rate && inv.dc_rate != 'KCT' && inv.dc_rate != 'KKKNT') {
+                  status = false;
+                  resMess = `${mess1} dc_rate is:  ${inv.dc_rate}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                if (!errorList[`${key}`].amt.test(inv.amt)) {
+                  status = false;
+                  resMess = `${mess1} amt is:  ${inv.amt}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                if (!errorList[`${key}`].vat_rate.test(inv.vat_rate) && inv.vat_rate != 'KCT' && inv.vat_rate != 'KKKNT') {
+                  status = false;
+                  resMess = `${mess1} vat_rate is:  ${inv.vat_rate}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                if (!errorList[`${key}`].amt_vat.test(inv.amt_vat)) {
+                  status = false;
+                  resMess = `${mess1} amt_vat is:  ${inv.amt_vat}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+              }
+            }
+          }
+        }
+      }
+      // if dont have any problem
+      return {
+        status,
+        message: resMess,
+      };
+    } catch (error) {
+      console.log('error  ', error);
+      //let status = false;
+      return {
+        status,
+        message: resMess,
+      };
+    }
+  }
   weTaxValidateJsonInvalidPosInvoiceToXML(invalid_pos_invoices) {
     let status = true;
     let resMess = '';
@@ -6147,7 +6390,7 @@ class EInvoiceController {
         return response.status(400).json(Utils.responseByRule({success: false, message: 'Invalid data_invoice'}));
       }
 
-      const valid = this.validateJsonInvalidPosInvoiceToXML(data_invoice);
+      const valid = this.validateJsonInvalidSaleOrderToXML(data_invoice);
       if (!valid.status) {
         return response.status(400).json(Utils.responseByRule({success: false, message: valid.message}));
       }

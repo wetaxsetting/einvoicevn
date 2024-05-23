@@ -8481,6 +8481,7 @@ class EInvoiceController {
                   message: resMess,
                 };
               }
+            }
           } else {
             if (key == 'total_vat_list') {
               for (const sub_vat of invoice[key]) {

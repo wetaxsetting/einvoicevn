@@ -205,6 +205,7 @@ Route.group(() => {
 
   // e-invoice C#
   Route.post('declare2xml-c-sharp', 'EInvoiceController.GeneralDeclarationXML');
+  Route.post('declare2xml-hsm-c-sharp', 'EInvoiceController.GeneralDeclarationHsmXML');
   Route.post('update-declare-c-sharp', 'EInvoiceController.UpdateDeclarationXML');
   Route.post('check-declare-c-sharp', 'EInvoiceController.CheckDeclarationXML');
 

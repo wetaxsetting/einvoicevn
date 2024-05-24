@@ -205,8 +205,10 @@ Route.group(() => {
   Route.post('check-declare-c-sharp', 'EInvoiceController.CheckDeclarationXML');
 
   Route.post('invoice2xml-c-sharp', 'EInvoiceController.GeneralInvoiceXML');
+  Route.post('invoice2xml-for-hsm-c-sharp', 'EInvoiceController.GeneralInvoiceHsmXML');
   Route.post('update-invoice-c-sharp', 'EInvoiceController.UpdateInvoiceXML');
   Route.post('check-invoice-c-sharp', 'EInvoiceController.CheckInvoiceXML');
+  Route.post('sign-invoice-hsm-c-sharp', 'EInvoiceController.SignInvoiceHsmXML');
 
   Route.post('invalidinvoice2xml-c-sharp', 'EInvoiceController.GeneralInvalidInvoiceToXML');
   Route.post('update-invalid-invoice-c-sharp', 'EInvoiceController.UpdataInvalidInvoiceToXML');

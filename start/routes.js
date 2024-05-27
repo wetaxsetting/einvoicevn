@@ -215,11 +215,11 @@ Route.group(() => {
   Route.post('check-invalid-invoice-c-sharp', 'EInvoiceController.CheckInvalidInvoiceToXML');
   Route.post('invalidinvoice2xml-hsm-c-sharp', 'EInvoiceController.GeneralInvalidInvoiceToHsmXML');
 
-
   Route.post('invalidinvoice2xml-from-customer-c-sharp', 'EInvoiceController.GeneralInvalidInvoiceToXMLFromCustomer');
   Route.post('update-invalid-invoice-from-customer-c-sharp', 'EInvoiceController.UpdataInvalidInvoiceToXMLFromCustomer');
 
   Route.post('send-mail-c-sharp', 'EInvoiceController.SendMailCSharp');
+  Route.post('update-image-c-sharp', 'EInvoiceController.UpdateImage');
 })
   .prefix('api/einvoice')
   .middleware('user');

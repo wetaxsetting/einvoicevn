@@ -16430,8 +16430,8 @@ class EInvoiceController {
       let data_res;
       const res = await Request.post(url, {
         tei_company_pk: tei_company_pk,
-        tei_type: data,
-        data: p_otp,
+        tei_type: tei_type,
+        data: data,
       });
       data_res = res.data.d;
 

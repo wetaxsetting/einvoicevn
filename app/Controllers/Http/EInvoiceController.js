@@ -6710,8 +6710,6 @@ class EInvoiceController {
       const {sale_id, msg_his_id, tax_code, sale_date, store_code, store_name, infor_send_mail} = request.all();
 
       console.log('weTaxReSendOrderInfo  BEGIN ============================= ');
-      //console.log("weTaxReSendOrderInfo  sale_id ",sale_id);
-      //console.log("weTaxReSendOrderInfo  msg_his_id ",msg_his_id);
       console.log('weTaxReSendOrderInfo  tax_code ', tax_code);
       console.log('weTaxReSendOrderInfo  sale_date ', sale_date);
       console.log('weTaxReSendOrderInfo  store_code ', store_code);

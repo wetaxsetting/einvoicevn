@@ -16203,6 +16203,45 @@ class EInvoiceController {
     }
   }
 
+  async GeneralInvalidInvoiceToHsmXML({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const {p_tei_einvoice_m_pk, p_ctr_by, p_otp} = request.all(); //data:6030
+
+      let url = WEBSERVICE_C_SHARP + '/GeneralEInvoiceAdjustHSM';
+      let data;
+      const res = await Request.post(url, {
+        p_tei_einvoice_m_pk: tei_einvoice_m_pk,
+        p_ctr_by: p_ctr_by,
+        p_otp: p_otp,
+      });
+      data = res.data.d;
+
+      return response.status(200).json(
+        Utils.responseByRule({
+          success: true,
+          message: 'success.',
+          data: JSON.parse(data),
+        }),
+      );
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'GeneralInvalidInvoiceToHsmXML',
+        CONTENT: e.message,
+      });
+      console.log('GeneralInvalidInvoiceToHsmXML  ', e.message);
+
+      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+    }
+  }
+
   async UpdataInvalidInvoiceToXML({request, response, auth}) {
     try {
       var p_language = request.header('accept-language', 'ENG');

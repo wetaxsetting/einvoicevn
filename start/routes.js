@@ -213,6 +213,8 @@ Route.group(() => {
   Route.post('invalidinvoice2xml-c-sharp', 'EInvoiceController.GeneralInvalidInvoiceToXML');
   Route.post('update-invalid-invoice-c-sharp', 'EInvoiceController.UpdataInvalidInvoiceToXML');
   Route.post('check-invalid-invoice-c-sharp', 'EInvoiceController.CheckInvalidInvoiceToXML');
+  Route.post('invalidinvoice2xml-hsm-c-sharp', 'EInvoiceController.GeneralInvalidInvoiceToHsmXML');
+
 
   Route.post('invalidinvoice2xml-from-customer-c-sharp', 'EInvoiceController.GeneralInvalidInvoiceToXMLFromCustomer');
   Route.post('update-invalid-invoice-from-customer-c-sharp', 'EInvoiceController.UpdataInvalidInvoiceToXMLFromCustomer');

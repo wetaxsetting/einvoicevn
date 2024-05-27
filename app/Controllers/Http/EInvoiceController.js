@@ -16415,6 +16415,45 @@ class EInvoiceController {
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
     }
   }
+
+  async UpdateImage({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const {tei_company_pk, tei_type, data} = request.all(); //data:6030
+
+      let url = WEBSERVICE_C_SHARP + '/Upload_IMG';
+      let data_res;
+      const res = await Request.post(url, {
+        tei_company_pk: tei_company_pk,
+        tei_type: data,
+        data: p_otp,
+      });
+      data_res = res.data.d;
+
+      return response.status(200).json(
+        Utils.responseByRule({
+          success: true,
+          message: 'success.',
+          data: JSON.parse(data_res),
+        }),
+      );
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'GeneralInvalidInvoiceToHsmXML',
+        CONTENT: e.message,
+      });
+      console.log('GeneralInvalidInvoiceToHsmXML  ', e.message);
+
+      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+    }
+  }
 }
 
 module.exports = EInvoiceController;

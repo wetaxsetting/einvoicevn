@@ -157,9 +157,7 @@ Route.group(() => {
   Route.post('check-status-declare', 'EInvoiceController.weTaxCheckingDeclarations');
   Route.post('generate-notice-cancel-adjust-replace-xml', 'EInvoiceController.weTaxConvertInvalidInvoiceToXML');
   Route.post('send-notice-cancel-adjust-replace', 'EInvoiceController.weTaxSendInformAdjustToTaxOffice2');
-  //Route.post("send-notice-cancel-adjust-replace-2", "EInvoiceController.weTaxSendInformAdjustToTaxOffice2")
   Route.post('check-notification-status', 'EInvoiceController.weTaxCheckInformAdjustToTaxOffice');
-  //Route.post("send-order-info", "EInvoiceController.weTaxSendOrderInfo")
   Route.post('send-order-info', 'EInvoiceController.weTaxSendOrderInfoV2');
   Route.post('send-order-info-update', 'EInvoiceController.weTaxUpdateSendOrderInfo');
   Route.post('get-sendmail-invoice-status', 'EInvoiceController.weTaxCheckStausSendMail');
@@ -169,7 +167,6 @@ Route.group(() => {
   Route.post('check-status-invoice', 'EInvoiceController.weTaxCheckInvoiceStatusFromTaxOffice');
   Route.post('generate-invoice-xml', 'EInvoiceController.weTaxConvertInvoiceToXML');
   Route.post('send-company-info', 'EInvoiceController.weTaxSendCompanyInfo');
-  //Route.post("re-send-order-info", "EInvoiceController.weTaxReSendOrderInfo")
   Route.post('re-send-order-info', 'EInvoiceController.weTaxReSendOrderInfoV2');
   Route.post('re-send-normal-invoice', 'EInvoiceController.weTaxReSendNormalInvoice');
   Route.post('send-company-template', 'EInvoiceController.weTaxSendCompanyTemplate');

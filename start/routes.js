@@ -220,6 +220,8 @@ Route.group(() => {
 
   Route.post('send-mail-c-sharp', 'EInvoiceController.SendMailCSharp');
   Route.post('update-image-c-sharp', 'EInvoiceController.UpdateImage');
+
+  Route.post('sign-invoice-hsm-c-sharp', 'EInvoiceController.SignInvoiceHsmXML');
 })
   .prefix('api/einvoice')
   .middleware('user');

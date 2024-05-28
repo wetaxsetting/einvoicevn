@@ -16286,7 +16286,7 @@ class EInvoiceController {
       } else {
         return response.send(Utils.response(false, `Send mail customer was faile`));
       }
-    } catch (error) {
+    } catch (e) {
       Utils.Logger({
         LVL: 'error',
         MODULE: 'EInvoiceController',

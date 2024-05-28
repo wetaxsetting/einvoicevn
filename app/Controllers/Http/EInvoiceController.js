@@ -16407,8 +16407,62 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
       const {data} = request.all();
+      const data_json = request.file('data_json');
+      console.log('data   ', data);
+      console.log('data_json   ', data_json);
 
-      console.log(data);
+      if (data.length > 0 && data) {
+        if (
+          data[0].tei_company_pk == '482' ||
+          data[0].tei_company_pk == '483' ||
+          data[0].tei_company_pk == '382' ||
+          data[0].tei_company_pk == '642'
+        ) {
+          url = EINVOICE_API_SEND_MAIL_SMTP;
+        } else {
+          url = EINVOICE_API_SEND_MAIL;
+        }
+        for (const invoice of data) {
+          const res_send_mail = await Request.post(url, {
+            mail_to: invoice.email_address,
+            cc_to: invoice.email_address_cc,
+            subject: invoice.subject,
+            body: invoice.body_mail,
+            attachfile1: invoice.attachfile1,
+            attachfile2: invoice.attachfile2,
+            filename1: invoice.filename1,
+            filename2: invoice.filename2,
+          });
+
+          console.log('res_send_mail  ', res_send_mail);
+
+          if (res_send_mail.data.success) {
+            let para_end_mail = {
+              p_tei_einvoice_m_pk: invoice.pk,
+              p_email_address: invoice.email_address,
+              p_email_address_cc: invoice.email_address_cc,
+            };
+            await DBService.ExecuteSQLBlob(
+              `BEGIN EI_UPD_6095100_2(
+                    :p_tei_einvoice_m_pk, 
+                    :p_email_address, 
+                    :p_email_address_cc, 
+                    :p_language, 
+                    :p_crt_by, 
+                    :p_rtn_cur
+                  ); END;`,
+              para_end_mail,
+              p_language,
+              p_crt_by,
+            );
+          }
+        }
+        return response.send(Utils.response(true, `Send mail customer was suscess`));
+      } else {
+        return response.send(Utils.response(false, `Send mail customer was faile`));
+      }
+
+      /*console.log(data);
       let url = '';
 
       if (data.length > 0 && data) {
@@ -16478,8 +16532,8 @@ class EInvoiceController {
         return response.send(Utils.response(true, `Send mail customer was suscess`));
       } else {
         return response.send(Utils.response(false, `Send mail customer was faile`));
-      }
-    } catch (error) {
+      }*/
+    } catch (e) {
       Utils.Logger({
         LVL: 'error',
         MODULE: 'EInvoiceController',

@@ -16406,11 +16406,9 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      const {data, data_json} = request.all();
-      const data_jsons = request.file('data_json');
+      const {data} = request.all();
+      let url = '';
       console.log('data   ', data);
-      console.log('data_json   ', data_json);
-      console.log('data_jsons   ', data_jsons);
 
       if (data.length > 0 && data) {
         if (

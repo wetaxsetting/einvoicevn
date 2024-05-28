@@ -135,7 +135,7 @@
     components: { VuePdfjsWrapper, PdfPage, Drawing},
     data() {
       return {
-        src: 'https://test.einvoicevn.com/api/dso/getfiletoken?file_name=/pdf/2024/04/rpt-1714375433731-TID_111_VAT%20INVOICE_IMP_wetax-test.pdf&token=U2FsdGVkX1p1L2u3SRylkLY48ke7gVni35bvhmdL3fQXscG01VydHlp1L2u3Sh227vEVzgB1YnTBoiE29whGSON4aIx6oJIjxMqUYvPafVoX4GSAK7VGHRViNkCAnL6tUtnjjBzWp1L2u3Sg6o',
+        src: 'https://test.einvoicepro.webcashvietnam.com/api/dso/getfiletoken?file_name=/pdf/2024/04/rpt-1714375433731-TID_111_VAT%20INVOICE_IMP_wetax-test.pdf&token=U2FsdGVkX1p1L2u3SRylkLY48ke7gVni35bvhmdL3fQXscG01VydHlp1L2u3Sh227vEVzgB1YnTBoiE29whGSON4aIx6oJIjxMqUYvPafVoX4GSAK7VGHRViNkCAnL6tUtnjjBzWp1L2u3Sg6o',
         scale: 1.5,
         isRenderText: true,
         pdfFile : null,
@@ -162,7 +162,7 @@
                 src: 'https://unpkg.com/downloadjs@1.4.7',
               },
               { name: 'makeTextPDF', 
-                src: 'https://test.einvoicevn.com/api/dso/getfiletoken?file_name=/js/makeTextPDF.js&token=U2FsdGVkX1s1L2a3S4hNCFjlQp1L2u3SqzhM6YqS6imm7LUsfOcXw5uOx67rEM5VvCn2O6ac05YYf6'
+                src: 'https://test.einvoicepro.webcashvietnam.com/api/dso/getfiletoken?file_name=/js/makeTextPDF.js&token=U2FsdGVkX1s1L2a3S4hNCFjlQp1L2u3SqzhM6YqS6imm7LUsfOcXw5uOx67rEM5VvCn2O6ac05YYf6'
                },   
             ],
         assets : {},
@@ -201,7 +201,7 @@
     this.onResize();
   },
   async created() {
-    const res = await  fetch("https://test.einvoicevn.com/api/dso/getfiletoken?file_name=/pdf/test.pdf&token=U2FsdGVkX1p1L2u3Szcay2op6GIn9H4oj9QymM8q4BnSebUeStlnEWffwzcWaAhso0s1L2a3S4ha5v");//fetch("./utils/test.pdf");
+    const res = await  fetch("https://test.einvoicepro.webcashvietnam.com/api/dso/getfiletoken?file_name=/pdf/test.pdf&token=U2FsdGVkX1p1L2u3Szcay2op6GIn9H4oj9QymM8q4BnSebUeStlnEWffwzcWaAhso0s1L2a3S4ha5v");//fetch("./utils/test.pdf");
     const pdfBlob = await res.blob();
       await this.addPDF(pdfBlob);
       this.selectedPageIndex = 0; 

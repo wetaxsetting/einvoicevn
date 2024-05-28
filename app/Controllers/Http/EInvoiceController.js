@@ -16422,16 +16422,34 @@ class EInvoiceController {
         } else {
           url = EINVOICE_API_SEND_MAIL;
         }
-        for (const invoice of data) {
+
+        let para_mail = {
+          p_list_pk: data[0].tei_company_pk,
+          p_tco_company_pk: data[0].tei_company_pk,
+        };
+        const data_send_mail = await DBService.ExecuteSQLBlob(
+          `BEGIN EI_SEL_SEND_MAIL_DATA(
+                            :p_list_pk, 
+                            :p_tco_company_pk, 
+                            :p_language, 
+                            :p_crt_by, 
+                            :p_rtn_cur
+                        ); END;`,
+          para_mail,
+          p_language,
+          p_crt_by,
+        );
+
+        for (const invoice of data_send_mail?.p_rtn_cur) {
           const res_send_mail = await Request.post(url, {
-            mail_to: invoice.email_address,
-            cc_to: invoice.email_address_cc,
-            subject: invoice.subject,
-            body: invoice.body_mail,
-            attachfile1: invoice.attachfile1,
-            attachfile2: invoice.attachfile2,
-            filename1: invoice.filename1,
-            filename2: invoice.filename2,
+            mail_to: invoice.EMAIL_ADDRESS,
+            cc_to: invoice.EMAIL_ADDRESS_CC,
+            subject: invoice.SUBJECT,
+            body: invoice.BODY_1_MAIL + invoice.BODY_2_MAIL,
+            attachfile1: invoice.ATTACHFILE1,
+            attachfile2: invoice.ATTACHFILE2,
+            filename1: invoice.FILENAME1,
+            filename2: invoice.FILENAME2,
           });
 
           console.log('res_send_mail  ', res_send_mail);

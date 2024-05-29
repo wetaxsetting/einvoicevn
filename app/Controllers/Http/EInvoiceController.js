@@ -8505,7 +8505,6 @@ class EInvoiceController {
       }
       //const authPassword = "e_GX4v@"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
       //const url = "https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon";
-
       const authUserName = 'GENUWIN'; // "GENUWIN";
       const authPassword = 'genuwin123'; // "e_GX4v@";
       const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon';
@@ -16233,11 +16232,10 @@ class EInvoiceController {
       }
       const {data} = request.all();
 
-      console.log(data);
+      //console.log(data);
       let url = '';
-
       const data_inv = JSON.parse(data);
-      console.log('data_inv ', data_inv);
+      //console.log('data_inv ', data_inv);
       if (data_inv.length > 0 && data_inv) {
         if (
           data[0].tei_company_pk == '482' ||
@@ -16351,13 +16349,114 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      const {xmlContent, tax_code, pin, otp} = request.all(); //data:6030
+      const {xmlContent} = request.all(); //data:6030
+
+      const data = JSON.parse(xmlContent);
+
+      const authUserName = 'GENUWIN'; // "GENUWIN";
+      const authPassword = 'e_GX4v@'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+      const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      const url = '';
+      const agent = {
+        Agent: {
+          defaultPort: 443,
+          protocol: 'https:',
+          options: {maxVersion: 'TLSv1.2', minVersion: 'TLSv1.2', path: null},
+        },
+      };
+      let data_r_tradecode = [];
+      let data_r = [];
+      for (const invoice of data) {
+        if (invoice.type == 'C') {
+          url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon';
+
+          const trade_code = await Request.post(
+            url,
+            {base64XML: Buffer.from(invoice.xml).toString('base64')},
+            {
+              agent,
+              headers: {
+                Authorization: 'Basic ' + Buffer.from(`${authUserName}:${authPassword}`).toString('base64'),
+              },
+            },
+          );
+
+          const para_trade_code = {
+            req_ep_key: invoice.req_pk,
+            trade_code: trade_code.data.maGDich,
+            xml_signed: invoice.xml,
+          };
+
+          await DBService.ExecuteSQLBlob(
+            `BEGIN EI_UPD_TRADECODE_INV(
+                                    :req_ep_key, 
+                                    :trade_code,
+                                    :xml_signed,
+                                    :p_language, 
+                                    :p_crt_by, 
+                                    :p_rtn_cur); 
+                    END;`,
+            para_trade_code,
+            p_language,
+            p_crt_by,
+          );
+
+          data_r_tradecode.push({
+            req_ep_key: invoice.req_pk,
+            trade_code: trade_code.data.maGDich,
+          });
+        } else if (invoice.type == 'S') {
+          url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
+
+          const trade_code = await Request.post(
+            url,
+            {base64XML: Buffer.from(invoice.xml).toString('base64')},
+            {
+              agent,
+              headers: {
+                Authorization: 'Basic ' + Buffer.from(`${authUserName}:${authPassword}`).toString('base64'),
+              },
+            },
+          );
+
+          const para_trade_code = {
+            req_ep_key: invoice.req_pk,
+            trade_code: trade_code.data.maGDich,
+            xml_signed: invoice.xml,
+          };
+
+          await DBService.ExecuteSQLBlob(
+            `BEGIN EI_UPD_TRADECODE_INV(
+                                    :req_ep_key, 
+                                    :trade_code,
+                                    :xml_signed,
+                                    :p_language, 
+                                    :p_crt_by, 
+                                    :p_rtn_cur); 
+                    END;`,
+            para_trade_code,
+            p_language,
+            p_crt_by,
+          );
+
+          data_r_tradecode.push({
+            req_ep_key: invoice.req_pk,
+            trade_code: trade_code.data.maGDich,
+          });
+        } else if (invoice.type == 'D') {
+          url = 'https://tvan.fpt.com.vn/ftvan-hddt/dkyhddt/dkysdung';
+        } else if (invoice.type == 'M') {
+          url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien';
+        } else if (invoice.type == 'K') {
+          url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/hdonkma';
+        }
+      }
 
       return response.status(200).json(
         Utils.responseByRule({
           success: true,
-          message: 'success.',
-          data: JSON.parse(data),
+          message: 'Sign xml successfully..',
+          data: data_r_tradecode,
         }),
       );
     } catch (e) {

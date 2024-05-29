@@ -16114,7 +16114,7 @@ class EInvoiceController {
       }
       const {tei_einvoice_m_pk, tei_company_pk, arg_XmlStr, ctr_by} = request.all(); //data:6030
 
-      let url = WEBSERVICE_C_SHARP + '/UpdateXmlList_v6';
+      let url = WEBSERVICE_C_SHARP + '/CheckingDeclationCQT_v3';
       let data;
       const res = await Request.post(url, {
         tei_einvoice_m_pk: tei_einvoice_m_pk,

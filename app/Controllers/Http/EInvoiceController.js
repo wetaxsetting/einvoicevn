@@ -16112,14 +16112,14 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      const {tei_einvoice_m_pk, tei_company_pk, arg_XmlStr, ctr_by} = request.all(); //data:6030
+      const {tei_einvoice_issuse_cqt_pk, tei_company_pk, tradecode, ctr_by} = request.all(); //data:6030
 
       let url = WEBSERVICE_C_SHARP + '/CheckingDeclationCQT_v3';
       let data;
       const res = await Request.post(url, {
-        tei_einvoice_m_pk: tei_einvoice_m_pk,
+        tei_einvoice_issuse_cqt_pk: tei_einvoice_m_pk,
         tei_company_pk: tei_company_pk,
-        arg_XmlStr: arg_XmlStr,
+        tradecode: tradecode,
         ctr_by: ctr_by,
       });
       data = res.data.d;

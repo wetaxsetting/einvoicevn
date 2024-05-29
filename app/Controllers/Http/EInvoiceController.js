@@ -16426,7 +16426,7 @@ class EInvoiceController {
           };
 
           await DBService.ExecuteSQLBlob(
-            `BEGIN EI_UPD_TRADECODE_INV(
+            `BEGIN EI_UPD_TRADECODE_INV_SS(
                                     :req_ep_key, 
                                     :trade_code,
                                     :xml_signed,

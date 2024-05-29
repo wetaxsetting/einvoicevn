@@ -16236,7 +16236,9 @@ class EInvoiceController {
       console.log(data);
       let url = '';
 
-      if (data.length > 0 && data) {
+      const data_inv = JSON.parse(data);
+      console.log('data_inv ', data_inv);
+      if (data_inv.length > 0 && data_inv) {
         if (
           data[0].tei_company_pk == '482' ||
           data[0].tei_company_pk == '483' ||
@@ -16247,7 +16249,9 @@ class EInvoiceController {
         } else {
           url = EINVOICE_API_SEND_MAIL;
         }
-        for (const invoice of data) {
+        for (const invoice of data_inv) {
+          //console.log('invoice  ', invoice);
+          //return invoice;
           const res_send_mail = await Request.post(url, {
             mail_to: invoice.email_address,
             cc_to: invoice.email_address_cc,
@@ -16259,7 +16263,7 @@ class EInvoiceController {
             filename2: invoice.filename2,
           });
 
-          console.log('res_send_mail  ', res_send_mail);
+          //console.log('res_send_mail  ', res_send_mail.data);
 
           if (res_send_mail.data.success) {
             let para_end_mail = {
@@ -16334,6 +16338,36 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       console.log('SignInvoiceHsmXML  ', e.message);
+
+      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+    }
+  }
+
+  async SignInvoiceXML({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const {xmlContent, tax_code, pin, otp} = request.all(); //data:6030
+
+      return response.status(200).json(
+        Utils.responseByRule({
+          success: true,
+          message: 'success.',
+          data: JSON.parse(data),
+        }),
+      );
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'SignInvoiceXML',
+        CONTENT: e.message,
+      });
+      console.log('SignInvoiceXML  ', e.message);
 
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
     }

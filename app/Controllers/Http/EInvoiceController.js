@@ -16408,10 +16408,10 @@ class EInvoiceController {
       }
       const {data} = request.all();
 
-      //console.log(data);
+      console.log(data);
       let url = '';
       const data_inv = JSON.parse(data);
-      //console.log('data_inv ', data_inv);
+      console.log('data_inv ', data_inv);
       if (data_inv.length > 0 && data_inv) {
         if (
           data[0].tei_company_pk == '482' ||
@@ -16476,6 +16476,7 @@ class EInvoiceController {
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
     }
   }
+
   async UpdateImage({request, response, auth}) {
     try {
       var p_language = request.header('accept-language', 'ENG');

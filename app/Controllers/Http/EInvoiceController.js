@@ -16407,10 +16407,12 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
       const {data} = request.all();
-      let url = '';
-      console.log('data   ', data);
 
-      if (data.length > 0 && data) {
+      //console.log(data);
+      let url = '';
+      const data_inv = JSON.parse(data);
+      //console.log('data_inv ', data_inv);
+      if (data_inv.length > 0 && data_inv) {
         if (
           data[0].tei_company_pk == '482' ||
           data[0].tei_company_pk == '483' ||
@@ -16421,7 +16423,9 @@ class EInvoiceController {
         } else {
           url = EINVOICE_API_SEND_MAIL;
         }
-        for (const invoice of data) {
+        for (const invoice of data_inv) {
+          //console.log('invoice  ', invoice);
+          //return invoice;
           const res_send_mail = await Request.post(url, {
             mail_to: invoice.email_address,
             cc_to: invoice.email_address_cc,
@@ -16433,7 +16437,7 @@ class EInvoiceController {
             filename2: invoice.filename2,
           });
 
-          console.log('res_send_mail  ', res_send_mail);
+          //console.log('res_send_mail  ', res_send_mail.data);
 
           if (res_send_mail.data.success) {
             let para_end_mail = {
@@ -16443,13 +16447,13 @@ class EInvoiceController {
             };
             await DBService.ExecuteSQLBlob(
               `BEGIN EI_UPD_6095100_2(
-                    :p_tei_einvoice_m_pk, 
-                    :p_email_address, 
-                    :p_email_address_cc, 
-                    :p_language, 
-                    :p_crt_by, 
-                    :p_rtn_cur
-                  ); END;`,
+                                :p_tei_einvoice_m_pk, 
+                                :p_email_address, 
+                                :p_email_address_cc, 
+                                :p_language, 
+                                :p_crt_by, 
+                                :p_rtn_cur
+                            ); END;`,
               para_end_mail,
               p_language,
               p_crt_by,
@@ -16472,7 +16476,6 @@ class EInvoiceController {
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
     }
   }
-
   async UpdateImage({request, response, auth}) {
     try {
       var p_language = request.header('accept-language', 'ENG');

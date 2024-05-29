@@ -16523,7 +16523,7 @@ class EInvoiceController {
       let url = WEBSERVICE_C_SHARP + '/GeneralEInvoiceAdjustHSM';
       let data;
       const res = await Request.post(url, {
-        p_tei_einvoice_m_pk: tei_einvoice_m_pk,
+        p_tei_einvoice_m_pk: p_tei_einvoice_m_pk,
         p_ctr_by: p_ctr_by,
         p_otp: p_otp,
       });

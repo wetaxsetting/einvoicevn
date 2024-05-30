@@ -16356,7 +16356,7 @@ class EInvoiceController {
       const authUserName = 'GENUWIN'; // "GENUWIN";
       const authPassword = 'e_GX4v@'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
       const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
-      const url = '';
+      let url = '';
       const agent = {
         Agent: {
           defaultPort: 443,

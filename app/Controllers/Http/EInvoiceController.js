@@ -16173,9 +16173,11 @@ class EInvoiceController {
       }
       const {xmlContent} = request.all(); //data:6030
 
+      console.log('xmlContent ', xmlContent);
+
       const data = JSON.parse(xmlContent);
 
-      console.log(data);
+      console.log('data ', data);
       const authUserName = 'GENUWIN'; // "GENUWIN";
       const authPassword = 'e_GX4v@'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
       const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';

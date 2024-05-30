@@ -16382,7 +16382,7 @@ class EInvoiceController {
           );
 
           const para_trade_code = {
-            req_ep_key: invoice.req_pk,
+            req_ep_key: invoice.req_key,
             trade_code: trade_code.data.maGDich,
             xml_signed: invoice.xml,
           };
@@ -16402,7 +16402,7 @@ class EInvoiceController {
           );
 
           data_r_tradecode.push({
-            req_ep_key: invoice.req_pk,
+            req_ep_key: invoice.req_key,
             trade_code: trade_code.data.maGDich,
           });
         } else if (invoice.type == 'S') {
@@ -16420,7 +16420,7 @@ class EInvoiceController {
           );
 
           const para_trade_code = {
-            req_ep_key: invoice.req_pk,
+            req_ep_key: invoice.req_key,
             trade_code: trade_code.data.maGDich,
             xml_signed: invoice.xml,
           };
@@ -16440,7 +16440,7 @@ class EInvoiceController {
           );
 
           data_r_tradecode.push({
-            req_ep_key: invoice.req_pk,
+            req_ep_key: invoice.req_key,
             trade_code: trade_code.data.maGDich,
           });
         } else if (invoice.type == 'D') {

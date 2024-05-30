@@ -16163,6 +16163,140 @@ class EInvoiceController {
     }
   }
 
+  async SignInvoiceXML({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const {xmlContent} = request.all(); //data:6030
+
+      const data = JSON.parse(xmlContent);
+
+      console.log(data);
+      const authUserName = 'GENUWIN'; // "GENUWIN";
+      const authPassword = 'e_GX4v@'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+      const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      const url = '';
+      const agent = {
+        Agent: {
+          defaultPort: 443,
+          protocol: 'https:',
+          options: {maxVersion: 'TLSv1.2', minVersion: 'TLSv1.2', path: null},
+        },
+      };
+      let data_r_tradecode = [];
+
+      for (const invoice of data) {
+        if (invoice.type == 'C') {
+          console.log('invoice ', invoice);
+
+          /*url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon';
+
+          const trade_code = await Request.post(
+            url,
+            {base64XML: Buffer.from(invoice.xml).toString('base64')},
+            {
+              agent,
+              headers: {
+                Authorization: 'Basic ' + Buffer.from(`${authUserName}:${authPassword}`).toString('base64'),
+              },
+            },
+          );
+
+          const para_trade_code = {
+            req_ep_key: invoice.req_pk,
+            trade_code: trade_code.data.maGDich,
+            xml_signed: invoice.xml,
+          };
+
+          await DBService.ExecuteSQLBlob(
+            `BEGIN EI_UPD_TRADECODE_INV(
+                                    :req_ep_key, 
+                                    :trade_code,
+                                    :xml_signed,
+                                    :p_language, 
+                                    :p_crt_by, 
+                                    :p_rtn_cur); 
+                    END;`,
+            para_trade_code,
+            p_language,
+            p_crt_by,
+          );
+
+          data_r_tradecode.push({
+            req_ep_key: invoice.req_pk,
+            trade_code: trade_code.data.maGDich,
+          });*/
+        } else if (invoice.type == 'S') {
+          url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
+
+          const trade_code = await Request.post(
+            url,
+            {base64XML: Buffer.from(invoice.xml).toString('base64')},
+            {
+              agent,
+              headers: {
+                Authorization: 'Basic ' + Buffer.from(`${authUserName}:${authPassword}`).toString('base64'),
+              },
+            },
+          );
+
+          const para_trade_code = {
+            req_ep_key: invoice.req_pk,
+            trade_code: trade_code.data.maGDich,
+            xml_signed: invoice.xml,
+          };
+
+          await DBService.ExecuteSQLBlob(
+            `BEGIN EI_UPD_TRADECODE_INV_SS(
+                                    :req_ep_key, 
+                                    :trade_code,
+                                    :xml_signed,
+                                    :p_language, 
+                                    :p_crt_by, 
+                                    :p_rtn_cur); 
+                    END;`,
+            para_trade_code,
+            p_language,
+            p_crt_by,
+          );
+
+          data_r_tradecode.push({
+            req_ep_key: invoice.req_pk,
+            trade_code: trade_code.data.maGDich,
+          });
+        } else if (invoice.type == 'D') {
+          url = 'https://tvan.fpt.com.vn/ftvan-hddt/dkyhddt/dkysdung';
+        } else if (invoice.type == 'M') {
+          url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien';
+        } else if (invoice.type == 'K') {
+          url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/hdonkma';
+        }
+      }
+
+      return response.status(200).json(
+        Utils.responseByRule({
+          success: true,
+          message: 'Sign xml successfully..',
+          data: data_r_tradecode,
+        }),
+      );
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'SignInvoiceXML',
+        CONTENT: e.message,
+      });
+      console.log('SignInvoiceXML  ', e.message);
+
+      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+    }
+  }
+
   async GeneralInvalidInvoiceToXML({request, response, auth}) {
     try {
       var p_language = request.header('accept-language', 'ENG');

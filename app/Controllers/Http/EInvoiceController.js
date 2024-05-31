@@ -16233,38 +16233,38 @@ class EInvoiceController {
             trade_code: trade_code.data.maGDich,
           });*/
         } else if (invoice.type == 'S') {
-          url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
+          // url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
 
-          const trade_code = await Request.post(
-            url,
-            {base64XML: Buffer.from(invoice.xml).toString('base64')},
-            {
-              agent,
-              headers: {
-                Authorization: 'Basic ' + Buffer.from(`${authUserName}:${authPassword}`).toString('base64'),
-              },
-            },
-          );
+          // const trade_code = await Request.post(
+          //   url,
+          //   {base64XML: Buffer.from(invoice.xml).toString('base64')},
+          //   {
+          //     agent,
+          //     headers: {
+          //       Authorization: 'Basic ' + Buffer.from(`${authUserName}:${authPassword}`).toString('base64'),
+          //     },
+          //   },
+          // );
 
-          const para_trade_code = {
-            req_ep_key: invoice.req_pk,
-            trade_code: trade_code.data.maGDich,
-            xml_signed: invoice.xml,
-          };
+          // const para_trade_code = {
+          //   req_ep_key: invoice.req_pk,
+          //   trade_code: trade_code.data.maGDich,
+          //   xml_signed: invoice.xml,
+          // };
 
-          await DBService.ExecuteSQLBlob(
-            `BEGIN EI_UPD_TRADECODE_INV_SS(
-                                    :req_ep_key, 
-                                    :trade_code,
-                                    :xml_signed,
-                                    :p_language, 
-                                    :p_crt_by, 
-                                    :p_rtn_cur); 
-                    END;`,
-            para_trade_code,
-            p_language,
-            p_crt_by,
-          );
+          // await DBService.ExecuteSQLBlob(
+          //   `BEGIN EI_UPD_TRADECODE_INV_SS(
+          //                           :req_ep_key,
+          //                           :trade_code,
+          //                           :xml_signed,
+          //                           :p_language,
+          //                           :p_crt_by,
+          //                           :p_rtn_cur);
+          //           END;`,
+          //   para_trade_code,
+          //   p_language,
+          //   p_crt_by,
+          // );
 
           data_r_tradecode.push({
             req_ep_key: invoice.req_pk,

@@ -16233,8 +16233,8 @@ class EInvoiceController {
             trade_code: trade_code.data.maGDich,
           });*/
         } else if (invoice.type == 'S') {
+          console.log('invoice ', invoice);
           // url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
-
           // const trade_code = await Request.post(
           //   url,
           //   {base64XML: Buffer.from(invoice.xml).toString('base64')},

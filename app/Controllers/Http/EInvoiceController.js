@@ -5606,8 +5606,8 @@ class EInvoiceController {
         detail_invoice: {
           feature: /^-?\d+(\.\d{1})?$/, //1,
           seq: /^-?\d+(\.\d{0,4})?$/, //4 ,
-          item_code: /^.{0,50}$/, //50,
-          item_name: /^.{1,500}$/, //500,
+          item_code: /^[\s\S]{0,50}$/, //50,
+          item_name: /^[\s\S]{1,500}$/, //500,
           item_uom: /^.{0,50}$/, //50,
           quantity: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/, //21.6,
           uprice: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/, // 21.6,
@@ -5857,8 +5857,8 @@ class EInvoiceController {
         detail_invoice: {
           feature: /^-?\d+(\.\d{1})?$/, //1,
           seq: /^-?\d+(\.\d{0,4})?$/, //4 ,
-          item_code: /^.{0,50}$/, //50,
-          item_name: /^.{1,500}$/, //500,
+          item_code: /^[\s\S]{0,50}$/, //50,
+          item_name: /^[\s\S]{1,500}$/, //500,
           item_uom: /^.{0,50}$/, //50,
           quantity: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/, //21.6,
           unit_price: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/, // 21.6,
@@ -8679,8 +8679,8 @@ class EInvoiceController {
         detail_invoice: {
           feature: /^-?\d+(\.\d{1})?$/, //1,
           seq: /^-?\d+(\.\d{0,4})?$/, //4 ,
-          item_code: /^.{0,50}$/, //50,
-          item_name: /^.{1,500}$/, //500,
+          item_code: /^[\s\S]{0,50}$/, //50,
+          item_name: /^[\s\S]{1,500}$/, //500,
           item_uom: /^.{0,50}$/, //50,
           quantity: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/, //21.6,
           uprice: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/, // 21.6,
@@ -16192,6 +16192,7 @@ class EInvoiceController {
       let data_r_tradecode = [];
 
       for (const invoice of data) {
+        //console.log('invoice m', invoice.type);
         if (invoice.type == 'C') {
           console.log('invoice ', invoice);
 

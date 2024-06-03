@@ -16019,6 +16019,7 @@ class EInvoiceController {
           });
         }
       }
+
       if (data_rep && data_rep.length > 0) {
         const agent = {
           Agent: {
@@ -16501,6 +16502,43 @@ class EInvoiceController {
         p_tei_einvoice_m_pk: p_tei_einvoice_m_pk,
         p_tei_company_pk: p_tei_company_pk,
         p_otp: p_otp,
+      });
+      data = res.data.d;
+
+      return response.status(200).json(
+        Utils.responseByRule({
+          success: true,
+          message: 'success.',
+          data: JSON.parse(data),
+        }),
+      );
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'GeneralDeclarationHsmXML',
+        CONTENT: e.message,
+      });
+      console.log('GeneralDeclarationHsmXML  ', e.message);
+
+      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+    }
+  }
+
+  async GeneralPITHsmXML({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const {p_tei_einvoice_m_pk} = request.all(); //data:6030
+
+      let url = WEBSERVICE_C_SHARP + '/GeneralXmlPITHSMList';
+      let data;
+      const res = await Request.post(url, {
+        p_tei_einvoice_m_pk: p_tei_einvoice_m_pk,
       });
       data = res.data.d;
 
@@ -17203,6 +17241,25 @@ class EInvoiceController {
           url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien';
         } else if (invoice.type == 'K') {
           url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/hdonkma';
+        } else if (invoice.type == 'P') {
+          let para_pit = {
+            p_tei_einvoice_m_pk: invoice.req_key,
+            p_xml_sign: invoice.xml,
+            p_cqt_code: '',
+          };
+          await DBService.ExecuteSQLBlob(
+            `BEGIN ei_upd_pit_xml(
+                              :p_tei_einvoice_m_pk, 
+                              :p_xml_sign, 
+                              :p_cqt_code, 
+                              :p_language, 
+                              :p_crt_by, 
+                              :p_rtn_cur
+                          ); END;`,
+            para_pit,
+            p_language,
+            p_crt_by,
+          );
         }
       }
 

@@ -223,6 +223,8 @@ Route.group(() => {
 
   Route.post('update-image-c-sharp', 'EInvoiceController.UpdateImage');
   Route.post('sign-invoice-c-sharp', 'EInvoiceController.SignInvoiceXML');
+
+  Route.post('pit2xml-c-sharp', 'EInvoiceController.GeneralPITHsmXML');
 })
   .prefix('api/einvoice')
   .middleware('user');

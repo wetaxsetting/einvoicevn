@@ -17260,6 +17260,14 @@ class EInvoiceController {
             p_language,
             p_crt_by,
           );
+
+          let url = WEBSERVICE_C_SHARP + '/SendPDF_R';
+          let data;
+          const res = await Request.post(url, {
+            tei_einvoice_m_pk: invoice.req_key + '|',
+            tei_company_pk: 'PIT',
+          });
+          data = res.data.d;
         }
       }
 

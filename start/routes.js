@@ -230,7 +230,7 @@ Route.group(() => {
   .middleware('user');
 
 Route.group(() => {
-  Route.post('download-pdf-c-sharp', 'EInvoiceController.viewPDFInvoiceOut');
+  Route.get('download-pdf-c-sharp', 'EInvoiceController.viewPDFInvoiceOut');
 }).prefix('api/out/einvoice');
 
 Route.group(() => {

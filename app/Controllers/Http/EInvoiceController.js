@@ -12465,11 +12465,7 @@ class EInvoiceController {
 
   async viewPDFInvoiceOut({request, response, auth}) {
     try {
-      var p_language = request.header('accept-language', 'ENG');
-      var p_crt_by = '';
-
       const {rep_key, type} = request.all();
-
       //console.log("rep_key ", rep_key, "  type ", type);
       const screte_key = 'RVNJbjib65jkGKJB789';
       const key = Utils.md5(rep_key + screte_key);

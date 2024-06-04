@@ -16694,8 +16694,8 @@ class EInvoiceController {
         responseType: 'stream',
       })
         .then(async res => {
-          //await res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES.replace('/', '') + fileName));
-          return response.download(res.data);
+          console.log(res.data);
+          await res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES.replace('/', '') + fileName));
         })
         .catch(error => {
           console.error(error);

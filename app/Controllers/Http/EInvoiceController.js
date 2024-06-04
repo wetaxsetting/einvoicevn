@@ -16704,20 +16704,23 @@ class EInvoiceController {
       //   Utils.response(true, 'general url pdf success', APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token),
       // );
       //const filePath = APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token;
+
       const filePath = ROOT_DIR_FILES.replace('/', '') + fileName;
-      let templateFile = Helpers.resourcesPath(filePath);
-      console.error('templateFile  ', templateFile);
+      return response.download(filePath);
 
-      let isExists = await fs.existsSync(templateFile);
+      // let templateFile = Helpers.resourcesPath(filePath);
+      // console.error('templateFile  ', templateFile);
 
-      console.error('isExists  ', isExists);
+      // let isExists = await fs.existsSync(templateFile);
 
-      if (isExists) {
-        Utils.Logger({LVL: 'error', MODULE: 'EInvoiceController', FUNC: 'viewPDFInvoiceOut', CONTENT: templateFile});
-        return response.download(templateFile);
-      }
+      // console.error('isExists  ', isExists);
 
-      return response.download(null);
+      // if (isExists) {
+      //   Utils.Logger({LVL: 'error', MODULE: 'EInvoiceController', FUNC: 'viewPDFInvoiceOut', CONTENT: templateFile});
+      //   return response.download(templateFile);
+      // }
+
+      // return response.download(null);
     } catch (e) {
       Utils.Logger({
         LVL: 'error',

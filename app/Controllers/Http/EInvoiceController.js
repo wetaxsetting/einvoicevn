@@ -16704,7 +16704,7 @@ class EInvoiceController {
       //   Utils.response(true, 'general url pdf success', APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token),
       // );
       //const filePath = APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token;
-      const filePath = ROOT_DIR_FILES.replace('/', '') + file_name;
+      const filePath = ROOT_DIR_FILES.replace('/', '') + fileName;
       return response.download(filePath);
     } catch (e) {
       Utils.Logger({

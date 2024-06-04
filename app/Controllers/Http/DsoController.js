@@ -1252,6 +1252,7 @@ class DsoController {
         }
       }
       const filePath = ROOT_DIR_FILES.replace('/', '') + file_name;
+      console.log(' filePath ', filePath);
       return response.download(filePath);
     } catch (e) {
       return response.send(Utils.response(false, e.message, null));

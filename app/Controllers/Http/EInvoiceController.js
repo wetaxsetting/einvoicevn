@@ -16907,7 +16907,7 @@ class EInvoiceController {
       let url = WEBSERVICE_C_SHARP + '/CheckingDeclationCQT_v3';
       let data;
       const res = await Request.post(url, {
-        tei_einvoice_issuse_cqt_pk: tei_einvoice_m_pk,
+        tei_einvoice_issuse_cqt_pk: tei_einvoice_issuse_cqt_pk,
         tei_company_pk: tei_company_pk,
         tradecode: tradecode,
         ctr_by: ctr_by,

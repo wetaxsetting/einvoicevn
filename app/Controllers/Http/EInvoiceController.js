@@ -16705,12 +16705,21 @@ class EInvoiceController {
       // );
       //const filePath = APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token;
       const filePath = ROOT_DIR_FILES.replace('/', '') + fileName;
-      return response.download(filePath);
+      let templateFile = Helpers.resourcesPath(filePath);
+
+      let isExists = await fs.existsSync(templateFile);
+
+      if (isExists) {
+        Utils.Logger({LVL: 'error', MODULE: 'EInvoiceController', FUNC: 'viewPDFInvoiceOut', CONTENT: templateFile});
+        return response.download(templateFile);
+      }
+
+      return response.download(null);
     } catch (e) {
       Utils.Logger({
         LVL: 'error',
         MODULE: 'EInvoiceController',
-        FUNC: 'checkInvoiceStatusFromTaxOffice',
+        FUNC: 'viewPDFInvoiceOut',
         CONTENT: e.message,
       });
       console.log(e);

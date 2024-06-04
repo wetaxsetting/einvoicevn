@@ -16706,8 +16706,11 @@ class EInvoiceController {
       //const filePath = APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token;
       const filePath = ROOT_DIR_FILES.replace('/', '') + fileName;
       let templateFile = Helpers.resourcesPath(filePath);
+      console.error('templateFile  ', templateFile);
 
       let isExists = await fs.existsSync(templateFile);
+
+      console.error('isExists  ', isExists);
 
       if (isExists) {
         Utils.Logger({LVL: 'error', MODULE: 'EInvoiceController', FUNC: 'viewPDFInvoiceOut', CONTENT: templateFile});

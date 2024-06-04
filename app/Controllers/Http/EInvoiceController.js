@@ -16652,5 +16652,69 @@ class EInvoiceController {
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
     }
   }
+
+  async viewPDFInvoiceOut({request, response, auth}) {
+    try {
+      const {rep_key, type} = request.all();
+      //console.log("rep_key ", rep_key, "  type ", type);
+      const screte_key = 'RVNJbjib65jkGKJB789';
+      const key = Utils.md5(rep_key + screte_key);
+      let database64 = '';
+      const axios = use('axios');
+      const fs = use('fs');
+      const url = `http://genuclouding.com/wseinvoice/BSService.asmx/Download_File_PDF_Nodejs?p_trade_code=${rep_key}&p_key=${key}&p_type=${type}`;
+
+      const current = new Date();
+      const year = current.getFullYear();
+      let month = current.getMonth() + 1;
+      let day = current.getDate();
+      if (day < 10) {
+        day = '0' + day;
+      }
+      if (month < 10) {
+        month = '0' + month;
+      }
+      const dir = ROOT_DIR_FILES.replace('/', '') + '/pdf/' + year + '/' + month;
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, {recursive: true}, err => {
+          console.log(err);
+        });
+      }
+      //console.log("dir ", dir);
+
+      const unixtime = Date.now();
+      const fileName = '/pdf/' + year + '/' + month + '/rpt-' + unixtime + '-' + rep_key + '.pdf';
+      let token = AES.encrypt(fileName + '|' + year + month + day, APP_KEY);
+      token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
+
+      //console.log(" ROOT_DIR_FILES2 + fileName  ", ROOT_DIR_FILES.replace("/","") + fileName)
+      await axios({
+        method: 'get',
+        url: url,
+        responseType: 'stream',
+      })
+        .then(async res => {
+          await res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES.replace('/', '') + fileName));
+        })
+        .catch(error => {
+          console.error(error);
+        });
+
+      // return response.send(
+      //   Utils.response(true, 'general url pdf success', APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token),
+      // );
+      const filePath = APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token;
+      return response.download(filePath);
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'checkInvoiceStatusFromTaxOffice',
+        CONTENT: e.message,
+      });
+      console.log(e);
+      return response.send(Utils.response(false, 'error', e.message));
+    }
+  }
 }
 module.exports = EInvoiceController;

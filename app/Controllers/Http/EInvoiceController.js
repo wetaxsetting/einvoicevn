@@ -16680,14 +16680,14 @@ class EInvoiceController {
           console.log(err);
         });
       }
-      //console.log("dir ", dir);
+      console.log('dir ', dir);
 
       const unixtime = Date.now();
       const fileName = '/pdf/' + year + '/' + month + '/rpt-' + unixtime + '-' + rep_key + '.pdf';
       let token = AES.encrypt(fileName + '|' + year + month + day, APP_KEY);
       token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
 
-      //console.log(" ROOT_DIR_FILES2 + fileName  ", ROOT_DIR_FILES.replace("/","") + fileName)
+      console.log(' ROOT_DIR_FILES2 + fileName  ', ROOT_DIR_FILES.replace('/', '') + fileName);
       await axios({
         method: 'get',
         url: url,
@@ -16703,7 +16703,8 @@ class EInvoiceController {
       // return response.send(
       //   Utils.response(true, 'general url pdf success', APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token),
       // );
-      const filePath = APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token;
+      //const filePath = APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token;
+      const filePath = ROOT_DIR_FILES.replace('/', '') + file_name;
       return response.download(filePath);
     } catch (e) {
       Utils.Logger({

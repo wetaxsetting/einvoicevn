@@ -7306,7 +7306,13 @@ class EInvoiceController {
               buyer_email_cc: invoice.buyer_email_cc,
               currency: rtnValue.p_rtn_cur[0].CURRENCY,
             };
-            const {res_send_mail, subject, body} = await this.sendMailToCustomer(tei_wt_sale_bill_pk, invoice_data, p_language, p_crt_by);
+            const {res_send_mail, subject, body} = await this.sendMailToCustomer(
+              tei_wt_sale_bill_pk,
+              rtnValue?.p_rtn_cur?.[0]?.LOOKUP_CODE,
+              invoice_data,
+              p_language,
+              p_crt_by,
+            );
 
             // console.log("res_send_mail  ", res_send_mail.data);
             // console.log("res_send_mail  ", res_send_mail.data.success);

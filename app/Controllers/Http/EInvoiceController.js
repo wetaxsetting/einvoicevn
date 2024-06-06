@@ -12037,7 +12037,7 @@ class EInvoiceController {
         APP_URL_LOCAL + '/api/dso/getfiledbtoken?pk=' + tei_wt_sale_bill_pk + '&proc=' + 'EI_SEL_XML_POS_EINVOICE' + '&token=',
       ); //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
       let url_xml = re_url_xml.data;
-      console.log("sendMailToCustomer  data_invoice ", data_invoice);
+      console.log('sendMailToCustomer  data_invoice ', data_invoice);
 
       let subject = `${data_invoice.seller_comp_name}[Thông báo phát hành HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
       let body = `<html>
@@ -12136,7 +12136,7 @@ class EInvoiceController {
         filename1: data_invoice.form_no + '_' + data_invoice.serial_no + '_' + data_invoice.invoice_no + '.xml',
         filename2: data_invoice.form_no + '_' + data_invoice.serial_no + '_' + data_invoice.invoice_no + '.pdf',
       });
-      //console.log("res_send_mail  ", res_send_mail);
+      console.log('sendMailToCustomer res_send_mail  ', res_send_mail);
       return {res_send_mail, subject, body};
     } catch (error) {
       console.log('res_send_mail error  ', error);

@@ -6782,6 +6782,7 @@ class EInvoiceController {
             content: '',
           });
         } else {
+          console.log('tei_wt_sale_bill_pk  sendMailToCustomer ', tei_wt_sale_bill_pk);
           const {res_send_mail, subject, body} = await this.sendMailToCustomer(tei_wt_sale_bill_pk, invoice, p_language, p_crt_by);
 
           if (res_send_mail.data.success) {

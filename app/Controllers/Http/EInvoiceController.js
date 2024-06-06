@@ -6839,6 +6839,7 @@ class EInvoiceController {
               p_language,
               p_crt_by,
             );
+            console.log('res_send_mail weTaxSendOrderInfo ', res_send_mail);
             data_rep.push({
               link_invoice_preview: 'https://einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
               security_code: '1234567bac',

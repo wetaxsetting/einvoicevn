@@ -6543,16 +6543,16 @@ class EInvoiceController {
 
       const {tax_code = '', sale_date = '', store_code = '', store_name = '', pos_no = '', bill_no = '', data_invoice = []} = request.all();
 
-      console.log('======================weTaxSendOrderInfo BEGIN===================');
-      console.log('weTaxSendOrderInfo tax_code  ', tax_code);
-      console.log('weTaxSendOrderInfo p_crt_by  ', p_crt_by);
-      console.log('weTaxSendOrderInfo sale_date  ', sale_date);
-      console.log('weTaxSendOrderInfo store_code  ', store_code);
-      console.log('weTaxSendOrderInfo store_name  ', store_name);
-      console.log('weTaxSendOrderInfo pos_no  ', pos_no);
-      console.log('weTaxSendOrderInfo bill_no  ', bill_no);
-      console.log('weTaxSendOrderInfo data_invoice  ', data_invoice);
-      console.log('======================weTaxSendOrderInfo END===================');
+      //console.log("======================weTaxSendOrderInfo BEGIN===================");
+      //console.log("weTaxSendOrderInfo tax_code  ",tax_code );
+      //console.log("weTaxSendOrderInfo p_crt_by  ",p_crt_by );
+      //console.log("weTaxSendOrderInfo sale_date  ",sale_date );
+      //console.log("weTaxSendOrderInfo store_code  ",store_code );
+      //console.log("weTaxSendOrderInfo store_name  ",store_name );
+      //console.log("weTaxSendOrderInfo pos_no  ",pos_no );
+      //console.log("weTaxSendOrderInfo bill_no  ",bill_no );
+      //console.log("weTaxSendOrderInfo data_invoice  ",data_invoice );
+      //console.log("======================weTaxSendOrderInfo END===================");
 
       if (!data_invoice) {
         return response.send(Utils.response(false, `Invalid data_invoice `, null));
@@ -6782,14 +6782,7 @@ class EInvoiceController {
             content: '',
           });
         } else {
-          console.log('tei_wt_sale_bill_pk  sendMailToCustomer ', tei_wt_sale_bill_pk, '  invoice  ', invoice);
-          const {res_send_mail, subject, body} = await this.sendMailToCustomer(
-            tei_wt_sale_bill_pk,
-            rtnValue.p_rtn_cur[0].LOOKUP_CODE,
-            invoice,
-            p_language,
-            p_crt_by,
-          );
+          const {res_send_mail, subject, body} = await this.sendMailToCustomer(tei_wt_sale_bill_pk, invoice, p_language, p_crt_by);
 
           if (res_send_mail.data.success) {
             const para_inv_st = {
@@ -6808,7 +6801,7 @@ class EInvoiceController {
               p_language,
               p_crt_by,
             );
-            console.log('res_send_mail weTaxSendOrderInfo ', res_send_mail);
+
             data_rep.push({
               link_invoice_preview: 'https://test.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
               lookup_code: '1234567bac',
@@ -6846,7 +6839,6 @@ class EInvoiceController {
               p_language,
               p_crt_by,
             );
-            console.log('res_send_mail weTaxSendOrderInfo ', res_send_mail);
             data_rep.push({
               link_invoice_preview: 'https://test.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
               security_code: '1234567bac',
@@ -7306,13 +7298,7 @@ class EInvoiceController {
               buyer_email_cc: invoice.buyer_email_cc,
               currency: rtnValue.p_rtn_cur[0].CURRENCY,
             };
-            const {res_send_mail, subject, body} = await this.sendMailToCustomer(
-              tei_wt_sale_bill_pk,
-              rtnValue?.p_rtn_cur?.[0]?.LOOKUP_CODE,
-              invoice_data,
-              p_language,
-              p_crt_by,
-            );
+            const {res_send_mail, subject, body} = await this.sendMailToCustomer(tei_wt_sale_bill_pk, invoice_data, p_language, p_crt_by);
 
             // console.log("res_send_mail  ", res_send_mail.data);
             // console.log("res_send_mail  ", res_send_mail.data.success);
@@ -7485,7 +7471,6 @@ class EInvoiceController {
           tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
           data_send_mail.push({
             tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
-            lookup_code: rtnValue?.p_rtn_cur?.[0]?.LOOKUP_CD,
             invoice: {
               buyer_comp_name: rtnValue.p_rtn_cur[0].BUYER_COMP_NAME,
               seller_comp_name: rtnValue.p_rtn_cur[0].SELLER_COMP_NAME,
@@ -12050,7 +12035,7 @@ class EInvoiceController {
         APP_URL_LOCAL + '/api/dso/getfiledbtoken?pk=' + tei_wt_sale_bill_pk + '&proc=' + 'EI_SEL_XML_POS_EINVOICE' + '&token=',
       ); //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
       let url_xml = re_url_xml.data;
-      console.log('sendMailToCustomer  data_invoice ', data_invoice);
+      //console.log("base64XXML  ", url_xml);
 
       let subject = `${data_invoice.seller_comp_name}[Thông báo phát hành HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
       let body = `<html>
@@ -12149,7 +12134,7 @@ class EInvoiceController {
         filename1: data_invoice.form_no + '_' + data_invoice.serial_no + '_' + data_invoice.invoice_no + '.xml',
         filename2: data_invoice.form_no + '_' + data_invoice.serial_no + '_' + data_invoice.invoice_no + '.pdf',
       });
-      console.log('sendMailToCustomer res_send_mail  ', res_send_mail);
+      //console.log("res_send_mail  ", res_send_mail);
       return {res_send_mail, subject, body};
     } catch (error) {
       console.log('res_send_mail error  ', error);
@@ -12525,9 +12510,11 @@ class EInvoiceController {
           console.error(error);
         });
 
-      return response.send(
-        Utils.response(true, 'general url pdf success', APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token),
-      );
+      // return response.send(
+      //   Utils.response(true, 'general url pdf success', APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token),
+      // );
+      const filePath = APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token;
+      return response.download(filePath);
     } catch (e) {
       Utils.Logger({
         LVL: 'error',

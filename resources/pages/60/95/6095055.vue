@@ -607,6 +607,7 @@ export default {
     renderImg(imgUrl) {
       console.log("renderImg  ", imgUrl); 
       if (!imgUrl) {
+        console.log("renderImg vào đây k  ", imgUrl); 
         return require("@/assets/images/no_image.png");
       } else {
         if (imgUrl.includes("base64")) {
@@ -954,6 +955,8 @@ export default {
                 //console.log(res_url);
                 if (res_url.success) {
                   this.imageLOGO = res_url.data;
+                } else {
+                  this.imageLOGO = null;
                 } 
               } catch (e) {
                 this.showNotification("danger", this.$t("fail_to_url", "Error"), e.message);

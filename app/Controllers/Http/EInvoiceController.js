@@ -12466,7 +12466,7 @@ class EInvoiceController {
   async viewPDFInvoiceOut({request, response, auth}) {
     try {
       const {rep_key, type} = request.all();
-      //console.log("rep_key ", rep_key, "  type ", type);
+      console.log('rep_key ', rep_key, '  type ', type);
       const screte_key = 'RVNJbjib65jkGKJB789';
       const key = Utils.md5(rep_key + screte_key);
       let database64 = '';
@@ -12510,9 +12510,6 @@ class EInvoiceController {
           console.error(error);
         });
 
-      // return response.send(
-      //   Utils.response(true, 'general url pdf success', APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token),
-      // );
       const filePath = APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token;
       return response.download(filePath);
     } catch (e) {

@@ -234,10 +234,6 @@ Route.group(() => {
 }).prefix('api/out/einvoice');
 
 Route.group(() => {
-  Route.get('download-pdf-c-sharp', 'EInvoiceController.viewPDFInvoiceOut');
-}).prefix('api/out/einvoice');
-
-Route.group(() => {
   //iPOS
   Route.get('ipos-get-partner', 'IPosController.iPosGetPartner');
   Route.get('ipos-get-shop_list', 'IPosController.iPosGetShopList');

@@ -12510,11 +12510,11 @@ class EInvoiceController {
           console.error(error);
         });
 
-      // return response.send(
-      //   Utils.response(true, 'general url pdf success', APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token),
-      // );
-      const filePath = APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token;
-      return response.download(filePath);
+      return response.send(
+        Utils.response(true, 'general url pdf success', APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token),
+      );
+      // const filePath = APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token;
+      // return response.download(filePath);
     } catch (e) {
       Utils.Logger({
         LVL: 'error',

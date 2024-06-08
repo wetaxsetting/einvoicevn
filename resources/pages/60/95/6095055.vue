@@ -954,7 +954,9 @@ export default {
                 //console.log(res_url);
                 if (res_url.success) {
                   this.imageLOGO = res_url.data;
-                } 
+                } else {
+                  this.imageLOGO = null;
+                }
               } catch (e) {
                 this.showNotification("danger", this.$t("fail_to_url", "Error"), e.message);
               }  

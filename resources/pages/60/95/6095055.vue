@@ -605,7 +605,7 @@ export default {
       }
     },
     renderImg(imgUrl) {
-      console.log("renderImg  ", imgUrl); 
+      //console.log("renderImg  ", imgUrl); 
       if (!imgUrl) {
         return require("@/assets/images/no_image.png");
       } else {
@@ -616,9 +616,9 @@ export default {
         try {
           image =  require("@/../data/einvoices_logo/" + imgUrl.replace("data/einvoices_logo/", "")); 
           //image =  require("@/../data/einvoices_logo/0104128565-999/2024/02/1709109756801_1709109756801.png"); 
-          console.log("image ", image); 
+          //console.log("image ", image); 
         } catch (error) {
-          console.log("error ", error); 
+          //console.log("error ", error); 
           image = require("@/assets/images/no_image.png");
         }
         return image;

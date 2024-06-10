@@ -17222,7 +17222,8 @@ class EInvoiceController {
       let data_r = [];
       for (const invoice of data) {
         if (invoice.type == 'C') {
-          url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon';
+          // TODO
+          /*url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon';
 
           const trade_code = await Request.post(
             url,
@@ -17260,6 +17261,11 @@ class EInvoiceController {
           data_r_tradecode.push({
             req_ep_key: invoice.req_key,
             trade_code: trade_code.data.maGDich,
+          });*/
+          // END TODO
+          data_r_tradecode.push({
+            req_ep_key: invoice.req_key,
+            trade_code: 'SSADASDASD',
           });
         } else if (invoice.type == 'S') {
           url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';

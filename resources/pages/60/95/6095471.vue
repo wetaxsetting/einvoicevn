@@ -4,7 +4,7 @@
       <v-col lg="6" :class="isShowLeft ? null : 'd-none'">
         <v-card>
           <v-row dense class="pt-2">
-            <v-col lg="4" class="pl-2">
+            <v-col lg="3" class="pl-2">
               <BaseSelect outlined v-model="sellerName" :lstData="dataSearchList.sellerNameList" item-value="CODE" item-text="NAME" :label="$t('seller_name')"></BaseSelect>
             </v-col>
             <v-col lg="2">
@@ -19,6 +19,10 @@
             <v-col lg="2" class="text-right">
               <GwFlexBox class="d-flex justify-end">
                 <BaseButton icon_type="search" :btn_text="$t('search')" :disabled="isProcessing" @onclick="onClickButton('search')" />
+              </GwFlexBox>
+            </v-col>
+            <v-col lg="1" class="text-right">
+              <GwFlexBox class="d-flex justify-end">
                 <BaseButton icon_type="XML" :btn_text="$t('XML')" :disabled="isProcessing" @onclick="onClickButton('XML')" />
               </GwFlexBox>
             </v-col>

@@ -13344,7 +13344,7 @@ class EInvoiceController {
     objInvoice_M.HDon.DLHDon.NDHDon.TToan.TTCKTMai = dataObject.total_amt_dc;
     objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = dataObject.total_payment;
     if (!dataObject.total_payment_word_vie) {
-      let wordsAmt = await Utils.Num2VNText2(dataObject.total_payment.toString(), dataObject.currency);
+      let wordsAmt = (await Utils.Num2VNText2(dataObject.total_payment.toString(), dataObject.currency)) + '.';
       console.log('createXMLByOne  wordsAmt  ', wordsAmt);
       objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = wordsAmt;
     } else {

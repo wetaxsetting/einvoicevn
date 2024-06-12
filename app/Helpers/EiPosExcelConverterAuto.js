@@ -193,7 +193,7 @@ class EiExcelConverterAuto {
       if (!einvoiceMasterData[0]['TOTALAMOUNTINWORD_VIE']) {
         read_price = Utils.Num2VNText2(einvoiceMasterData[0]['TOTAL_PAYMENT'].toString(), einvoiceMasterData[0]['CCY'].toString());
       } else {
-        read_price = einvoiceMasterData[0]['TOTALAMOUNTINWORD_VIE'] + '.';
+        read_price = einvoiceMasterData[0]['TOTALAMOUNTINWORD_VIE'];
       }
 
       let dateString = `Ngày (Date) ${einvoiceMasterData[0]['INVOICE_DATE_DD']}   tháng (month)  ${einvoiceMasterData[0]['INVOICE_DATE_MM']}  năm (year) ${einvoiceMasterData[0]['INVOICE_DATE_YYYY']}`;

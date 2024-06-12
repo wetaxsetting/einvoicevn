@@ -6986,7 +6986,7 @@ class EInvoiceController {
           total_amt_dc: invoice.total_dc_amt,
           total_amt_vat: invoice.total_amt_vat,
           total_payment: invoice.total_payment,
-          total_payment_word_vie: await Utils.Num2VNText2(invoice.total_payment.toString(), invoice.currency), //  invoice.total_payment_word_vie,
+          total_payment_word_vie: (await Utils.Num2VNText2(invoice.total_payment.toString(), invoice.currency)) + '.', //  invoice.total_payment_word_vie,
           mccqt: invoice.mccqt,
           data_xml: data_xml,
           count_length: count_length,

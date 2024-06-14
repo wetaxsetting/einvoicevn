@@ -102,26 +102,16 @@ export default {
     xmlUrl: "",
     xmlFileNm: "",
     currentRow: "",
+    headerGridLeft:[]
   }),
 
   async created() {
     this.initDataList("company");
     // this.getListCodes();
   },
-
-  computed: {
-    user() {
-      return this.$store.getters["auth/user"];
-    },
-    limitHeight() {
-      if (this.$vuetify.breakpoint.smAndUp) {
-        return 750;
-      }
-    },
-    headerGridLeft() {
-      const self = this;
-      return [
-        {
+  mounted(){
+    this.headerGridLeft = [
+    {
           dataField: "NO",
           caption: this.$t("stt"),
         },
@@ -174,7 +164,16 @@ export default {
           width: 150,
         },
         { dataField: "TITTLE", caption: "thao_tac", type: "html", width: 150, fixed: true, cellsrenderer: this.myCellHTML },
-      ];
+    ]
+  },
+  computed: {
+    user() {
+      return this.$store.getters["auth/user"];
+    },
+    limitHeight() {
+      if (this.$vuetify.breakpoint.smAndUp) {
+        return 750;
+      }
     },
   },
   watch: {

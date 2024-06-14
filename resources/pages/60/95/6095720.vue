@@ -102,6 +102,7 @@ export default {
     xmlUrl: "",
     xmlFileNm: "",
     currentRow: "",
+    headerGridLeft:[]
   }),
 
   async created() {
@@ -109,32 +110,12 @@ export default {
     // this.getListCodes();
   },
 
-  computed: {
-    user() {
-      return this.$store.getters["auth/user"];
-    },
-    limitHeight() {
-      if (this.$vuetify.breakpoint.smAndUp) {
-        return 750;
-      }
-    },
-    headerGridLeft() {
-      const self = this;
-      return [
+  mounted(){
+    this.headerGridLeft = [
         {
           dataField: "NO",
           caption: this.$t("stt"),
         },
-        // {
-        //   dataField: "DONVI",
-        //   caption: this.$t("don_vi"),
-        //   width: 80,
-        // },
-        // {
-        //   dataField: "DONVIMST",
-        //   caption: this.$t("dvi_mst"),
-        //   width: 80,
-        // },
         {
           dataField: "TRADE_CODE",
           caption: this.$t("ma_giao_dich"),
@@ -182,7 +163,18 @@ export default {
         },
         { dataField: "TITTLE", caption: "thao_tac", type: "html", width: 150, fixed: true, cellsrenderer: this.myCellHTML },
       ];
+  },
+
+  computed: {
+    user() {
+      return this.$store.getters["auth/user"];
     },
+    limitHeight() {
+      if (this.$vuetify.breakpoint.smAndUp) {
+        return 750;
+      }
+    },
+    
   },
   watch: {
     sellerName(val) {

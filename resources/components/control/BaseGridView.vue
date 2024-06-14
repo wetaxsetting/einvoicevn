@@ -1,6 +1,6 @@
 <template>
-    <v-card ref="basegridview" :height="limitHeight" :id="'gridview_' + idKey" v-resize="_onMyResize" color="transparent" outlined
-        style="overflow-y:hidden; overflow-x: auto"
+    <v-card ref="basegridview" :height="limitHeight" :id="'gridview_' + idKey" v-resize="_onMyResize" @paste="_onpaste" color="transparent" outlined
+        style="overflow-y:hidden; overflow-x: auto" 
             :style="{
         width: '100%', 'min-height': heightZoneMin,  position: 'relative',
         display: 'inline-block', 'vertical-align': 'top',padding: '2px',
@@ -232,7 +232,7 @@
                     :handlekeyboardnavigation="handlekeyboardnavigation"
                     :width="'100%'" :height="limitHeight-28"
                     :columns="columns" :columngroups="columngroups"
-                    :editable="editable" :editmode="editmode"
+                    :editable="editable" :editmode="'dblclick'"
                     :showstatusbar="showstatusbar" :statusbarheight="statusbarheight"
                     :showaggregates="showaggregates" :altrows="altrows"
                     :columnsresize="true" :virtualmode="false"
@@ -547,11 +547,11 @@
             checkMenu: { type: Boolean, default: true },
             filterRow: {type: Boolean, default: false },
             autoselectallrows: {type: Boolean, default: false },
-            columnsreorder: {type: Boolean, default: false }     ,
-            editmode:{type: String, default: 'dblclick'}     // 'click'  'dblclick'   'selectedcell'  
+            columnsreorder: {type: Boolean, default: false }            
         },
         data() {
             return {
+                _busy:false,
                 sheets: [{
                     name: "Sheet1",
                     data: [{
@@ -887,8 +887,10 @@
         },
 
         methods: {
-            renewCss() {
-                
+            _onpaste(evt){
+                console.log({evt})
+            },
+            renewCss() {                
                 try {
                     let element = document.getElementsByName("myGrid_"+this.idKey);
                     let gridContent = element[0].childNodes[0].childNodes[0].childNodes //.find(q => q.id.includes("contentjqxGrid"));
@@ -970,11 +972,17 @@
                 e.preventDefault();
             },
             mousedown: function (event) {
-                let rightClick = this.isRightClick(event) || jqx.mobile.isTouchDevice();
-                if (rightClick) {
+                try {
+                    // console.log("mousedown", event)
+                    let rightClick = this.isRightClick(event) || jqx.mobile.isTouchDevice();
+                    if (rightClick) {
                     this.$refs.myMenu.open(parseInt(event.clientX), parseInt(event.clientY));
                     return false;
-                }
+                    }  
+                } catch (error) {
+                    console.log("context-menu mousedown event error:", error.message);
+                    return this.showNotification("error", "Error occurs!", error.message);        
+                }      
             },
 
             rendergridrows(params) {
@@ -1008,36 +1016,40 @@
                 return rows;
             },
             deleteRows() {
-                if (this.selectedrowindex >= 0) {
-                    let row = this.$refs.myGrid.getrowdata(this.selectedrowindex);
-                    row._rowstatus = "d";
-                    if (row.PK) {
-                        this.dataAdapter.localdata.filter((x) => {
-                            if (x.PK == row.PK) {
-                                x._rowstatus = "d";
-                                return;
-                            }
-                        })
-                        this.reFresh();
-                    }
-                }
+                this.onSetMarkedDelete()
+                // console.log({indexs:this.$refs.myGrid.getselectedrowindexes()})
+                // console.log({index:this.selectedrowindex})
+                // if (this.selectedrowindex >= 0) {
+                //     let row = this.$refs.myGrid.getrowdata(this.selectedrowindex);
+                //     row._rowstatus = "d";
+                //     if (row.PK) {
+                //         this.dataAdapter.localdata.filter((x) => {
+                //             if (x.PK == row.PK) {
+                //                 x._rowstatus = "d";
+                //                 return;
+                //             }
+                //         })
+                //         this.reFresh();
+                //     }
+                // }
             },
             unDeleteRows() {
-                if (this.selectedrowindex >= 0) {
-                    let row = this.$refs.myGrid.getrowdata(this.selectedrowindex);
-                    if (row._rowstatus != "i") {
-                        row._rowstatus = "";
-                        if (row.PK) {
-                            this.dataAdapter.localdata.filter((x) => {
-                                if (x.PK == row.PK) {
-                                    x._rowstatus = "";
-                                    return;
-                                }
-                            })
-                            this.reFresh();
-                        }
-                    }
-                }
+                this.onSetMarkedDelete(false)
+                // if (this.selectedrowindex >= 0) {
+                //     let row = this.$refs.myGrid.getrowdata(this.selectedrowindex);
+                //     if (row._rowstatus != "i") {
+                //         row._rowstatus = "";
+                //         if (row.PK) {
+                //             this.dataAdapter.localdata.filter((x) => {
+                //                 if (x.PK == row.PK) {
+                //                     x._rowstatus = "";
+                //                     return;
+                //                 }
+                //             })
+                //             this.reFresh();
+                //         }
+                //     }
+                // }
             },
             myGridOnCellDblClick(event) {
                 // console.log(event)
@@ -1208,7 +1220,7 @@
                         _dso.elname.push("ADDDITION_PARA");
                     }
                     _dso.data.forEach(x => {
-                        this.customCols.forEach(q => {
+                        this.customCols.filter(col =>  !(col["TYPE"] == "01")).forEach(q => {
                             x[q["FIELD_ID"]] = !!x[q["FIELD_ID"]] ? x[q["FIELD_ID"]] : null;
                         })
                         try {
@@ -1219,7 +1231,7 @@
                                     that.customTables.forEach(x => {
                                         let s = `${x}:`;
                                         let idx = 0;
-                                        that.customCols.forEach(q => {
+                                        that.customCols.filter(col =>  !(col["TYPE"] == "01")).forEach(q => {
                                             if (q["TABLE_NAME"] == x && q["EDITABLE_YN"] == "Y") {
                                                 let columnGrid = !!q["FIELD_ALIAS"] ? q["FIELD_ALIAS"] : q["FIELD_ID"]
                                                 if (idx++ == 0) {
@@ -1265,6 +1277,7 @@
                     this.onGridCalculate(result);
 
                     this.setDataSource(result);
+                    this.$emit("onAfterLoadData",result);
 
                     if(this.gridFilterList && this.gridFilterList.filter(q=> q["add"] == true).length > 0) {
                         this.$nextTick( () => {
@@ -1328,7 +1341,7 @@
                         value: e.args.value,
                         rowType: 'data',
                         e: e
-                    });
+                    });                    
                     this.$emit("cellDblClickData", e.args.row.bounddata);
                 } else {
                     this.lastCellClick = e;
@@ -1734,7 +1747,7 @@
                         }
 
                         if(coldates.includes(_col)) {
-                            _cellValue =  this._formatDateForPicker(_cellValue);
+                            _cellValue =  this._formatDate(_cellValue);
                         }
 
                         if(colmonths.includes(_col)) {
@@ -1836,48 +1849,6 @@
             exportExcel() {
                 this.myGridOnExport();
                 return;
-
-
-
-                var wb = XLSX.utils.book_new();
-                wb.Props = {
-                    Title: "Export to from datagrid",
-                    Subject: "Export to excel",
-                    Author: "Genuwin Solution",
-                    CreatedDate: new Date()
-                };
-
-                wb.SheetNames.push("Sheet1");
-                const datarows = this.getDataSource();
-                const columns = this.$refs.myGrid.columns.records;
-                // console.log(columns)
-                let header = [];
-                columns.forEach((e) => {
-                    if (e.hasOwnProperty("text")) {
-                        header.push(e.text);
-                    }
-                });
-                let ws_data = [];
-                datarows.forEach((x) => {
-                    let row = [];
-                    columns.forEach((y) => {
-                        if (y.hasOwnProperty("datafield")) {
-                            row.push(x[y.datafield]);
-                        }
-                    });
-                    ws_data.push(row);
-                });
-
-                ws_data.unshift(header);
-                //console.log(ws_data)
-                var ws = XLSX.utils.aoa_to_sheet(ws_data);
-                wb.Sheets["Sheet1"] = ws;
-                var wbout = XLSX.write(wb, {
-                    bookType: 'xlsx',
-                    type: 'binary'
-                });
-                const data = this.s2ab(wbout);
-                this._ExcelSaveAs(data, 'export.xlsx');
             },
             exportPdf() {
                 var wb = XLSX.utils.book_new();
@@ -2423,6 +2394,7 @@
                                                 });
                                                 try {
                                                     editor.jqxDropDownList('setContent', displayVal);
+                                                    editor.jqxDropDownList('open');
                                                 } catch {
                                                     editor.jqxDropDownList('setContent', value);
                                                 }
@@ -2881,10 +2853,11 @@
                         await this._rebuildHeader( this.headertype );
                         this.rebuildHeader();
                      }
-
+										 this.$emit("onAfterLoadData",resTmp);
                 } else {
                     this.rowCount(0);
                     this.Clear();
+										this.$emit("onAfterLoadData",[]);
                 }
                 this.$refs.myGrid.hideloadelement();
                 this.isProcessing = false;
@@ -2898,12 +2871,14 @@
                     let tempObj={}
                     let summaryArray=[]
                     if(hdItem.summaryType!=null){
+                        
                         try {
+                            let _field  = hdItem.hasOwnProperty("dataField") ? hdItem.dataField : hdItem.field;
                             summaryArray=this.summaryTypes.split(',')
                             summaryArray.forEach(e => {
-                                tempObj[e]=this._gridCalculation(e,hdItem.field,datas)
+                                tempObj[e]=this._gridCalculation(e,_field,datas)
                             });
-                            this.aggregates[hdItem.field]=tempObj
+                            this.aggregates[_field]=tempObj
                         } catch (error) {
                             console.log(error)
                         }
@@ -3005,13 +2980,28 @@
                 this.records = value;
                 this.$emit("rowCount", value);
             },
-            handlekeyboardnavigation: function (event) {
+            handlekeyboardnavigation: async function (event) {    
                 if (!this.cellEntering && String.fromCharCode(event.keyCode).match(/(\w|\s)/g) || event.keyCode == 96) {
                     setTimeout(() => {
                         this.cellEditing["key"] = event.key;
                         this.cellEditing["keyCode"] = event.keyCode;
                     }, 5);
                     this.cellEntering = true;
+                }
+                const key = event.charCode ? event.charCode : event.keyCode ? event.keyCode : 0;
+                
+                if (key == 86 && event.ctrlKey && !this._busy) {
+                    // this._busy=true
+                    // event.preventDefault();
+                    // const clipboardData = await navigator.clipboard.readText()
+                    // let arr = clipboardData.split("\n");
+                    // console.log("rows: "+arr.length)
+                    // if(clipboardData && clipboardData.length > 0){
+                    //     arr.forEach((item)=>{this.onAdd(null,true)})
+                    // }
+                    // await navigator.clipboard.writeText("")
+                    // this._busy=false
+                    return true;
                 }
             },
 
@@ -3025,6 +3015,7 @@
                 let isUpdated = false;
 
                 let rowData = this.$refs.myGrid.getrowdata(event.args.rowindex);
+
                 if (event.args.columntype == 'numeric') {
                     let isnumValue = !isNaN(event.args.value) || event.args.value == null;
                     let isnumOldvalue = !isNaN(event.args.oldvalue) || event.args.oldvalue == null;
@@ -3041,7 +3032,7 @@
                         this.$refs.myGrid.setcellvalue(event.args.rowindex, event.args.datafield, event.args.value == null || event.args.value == "" ? null : newVal);
                     }
                 } else if (event.args.columntype == 'datetimeinput') {
-                    if (this._formatDate(event.args.value) != event.args.oldvalue && rowData._rowstatus != "i" && rowData._rowstatus != "d") {
+                    if (!moment(event.args.value).isSame(moment(event.args.oldvalue), "day")  && rowData._rowstatus != "i" && rowData._rowstatus != "d") {
                         rowData._rowstatus = 'u';
                         this.$refs.myGrid.setcellvalue(event.args.rowindex, '_rowstatus', 'u');
 
@@ -3153,7 +3144,7 @@
             removeSortBtnOnClick() {
                 this.gridUpdate();
             },
-			ClearSel(){
+            ClearSel(){
                 try { this.$refs.myGrid.clearselection(); } catch { }
             },
             Clear() {
@@ -3279,11 +3270,16 @@
 
                 if (result) {
                     this.reportList = result;
+                    this.$refs.myGrid.height = this.$refs.myGrid.height - 15;
                 }
 
             },
 
             rebuildHeader() {
+                try { this.$refs.myGrid.clearselection(); } catch { }
+                
+                let position = this.$refs.myGrid.scrollposition();
+
                 let currData = this.$refs.myGrid.getrows();
                 if(currData && currData.length>0) {
                     this.dataAdapter.localdata = [...currData];
@@ -3295,6 +3291,12 @@
                 } catch (e){
                     console.log("rebuildHeader-catch exception:", e.message);
                 }
+
+                try{
+                    setTimeout(() => {
+                        this.$refs.myGrid.scrolloffset(position.top, position.left);
+                    }, 1000);
+                } catch{}
             },
             async _rebuildHeader(headerType = 0) {
                 if (this.setting != null) { //vng-207 hien cai dong setting cho grid hr
@@ -3381,28 +3383,48 @@
                         }
 
                         if (this.customCols && this.customCols.length > 0) {
-                            this.customCols.forEach(col => {
-                                if (_header.findIndex(x => x["field"] == col["FIELD_ID"]) < 0) {
-                                    let obj = {};
+                            this.customCols.forEach((col) => {
+                            
+                                if ( !(col["TYPE"] == "01" )) {
+                                    if (_header.findIndex((x) => x["field"] == col["FIELD_ID"] ) < 0) {
+                                    let obj = null;
                                     if (col["FIELD_TYPE"] == "TEXT") {
-                                        obj = { title: this.$t(col["FIELD_NAME"]), field: !!col["FIELD_ALIAS"] ? col["FIELD_ALIAS"] : col["FIELD_ID"], editable: col["EDITABLE_YN"] == 'Y', type: "", isAdditionColumn: true };
+                                        obj = { title: this.$t(col["FIELD_NAME"]), field: !!col["FIELD_ALIAS"] ? col["FIELD_ALIAS"] : col["FIELD_ID"], editable: col["EDITABLE_YN"] == "Y", type: "", isAdditionColumn: true };
                                     } else if (col["FIELD_TYPE"] == "DATE") {
-                                        obj = { title: this.$t(col["FIELD_NAME"]), field: !!col["FIELD_ALIAS"] ? col["FIELD_ALIAS"] : col["FIELD_ID"], editable: col["EDITABLE_YN"] == 'Y', type: "date", isAdditionColumn: true };
+                                        obj = { title: this.$t(col["FIELD_NAME"]), field: !!col["FIELD_ALIAS"] ? col["FIELD_ALIAS"] : col["FIELD_ID"], editable: col["EDITABLE_YN"] == "Y", type: "date", isAdditionColumn: true };
                                     } else if (col["FIELD_TYPE"] == "LIST") {
-                                        obj = { title: this.$t(col["FIELD_NAME"]), field: !!col["FIELD_ALIAS"] ? col["FIELD_ALIAS"] : col["FIELD_ID"], editable: col["EDITABLE_YN"] == 'Y', type: "list", datasource: { KEY: 'CODE', VALUE: 'NAME', data: col.dataSource }, isAdditionColumn: true }
+                                        obj = { title: this.$t(col["FIELD_NAME"]), field: !!col["FIELD_ALIAS"] ? col["FIELD_ALIAS"] : col["FIELD_ID"], editable: col["EDITABLE_YN"] == "Y", type: "list", datasource: { KEY: "CODE", VALUE: "NAME", data: col.dataSource }, isAdditionColumn: true };
                                     } else if (col["FIELD_TYPE"] == "BOOLEAN") {
-                                        obj = { title: this.$t(col["FIELD_NAME"]), field: !!col["FIELD_ALIAS"] ? col["FIELD_ALIAS"] : col["FIELD_ID"], editable: col["EDITABLE_YN"] == 'Y', type: "boolean", isAdditionColumn: true }
+                                        obj = { title: this.$t(col["FIELD_NAME"]), field: !!col["FIELD_ALIAS"] ? col["FIELD_ALIAS"] : col["FIELD_ID"], editable: col["EDITABLE_YN"] == "Y", type: "boolean", isAdditionColumn: true };
                                     } else if (col["FIELD_TYPE"] == "NUMBER") {
-                                        obj = { title: this.$t(col["FIELD_NAME"]), field: !!col["FIELD_ALIAS"] ? col["FIELD_ALIAS"] : col["FIELD_ID"], editable: col["EDITABLE_YN"] == 'Y', type: "", format: "###,###,###.##" , isAdditionColumn: true}
+                                        obj = { title: this.$t(col["FIELD_NAME"]), field: !!col["FIELD_ALIAS"] ? col["FIELD_ALIAS"] : col["FIELD_ID"], editable: col["EDITABLE_YN"] == "Y", type: "", format: "###,###,###.##", isAdditionColumn: true };
                                     } else if (col["FIELD_TYPE"] == "TIME") {
-                                        _header.push({ caption: this.$t(col["FIELD_NAME"]), dataField: !!col["FIELD_ALIAS"] ? col["FIELD_ALIAS"] : col["FIELD_ID"], allowEditing: col["EDITABLE_YN"] == 'Y', dataType: "time", isAdditionColumn: true },);
+                                        _header.push({ caption: this.$t(col["FIELD_NAME"]), dataField: !!col["FIELD_ALIAS"] ? col["FIELD_ALIAS"] : col["FIELD_ID"], allowEditing: col["EDITABLE_YN"] == "Y", dataType: "time", isAdditionColumn: true });
                                     }
 
-                                    if (!!col["HEADER_1"]) { obj["group1"] = this.$t(col["HEADER_1"]) };
-                                    if (!!col["HEADER_2"]) { obj["group2"] = this.$t(col["HEADER_2"]) };
-                                    _header.push(obj);
+                                    if (!!col["HEADER_1"]) {
+                                        obj["group1"] = this.$t(col["HEADER_1"]);
+                                    }
+                                    if (!!col["HEADER_2"]) {
+                                        obj["group2"] = this.$t(col["HEADER_2"]);
+                                    }
+                                    if(obj != null)
+                                        _header.push(obj);
+                                    }
                                 }
                             });
+
+                            //vng-207 20230822 order lai grid
+                            _header = _header.map((h, idx) => {
+                                let col = this.customCols.find(q => h["field"] == q["FIELD_ID"] || h["dataField"] == q["FIELD_ID"]);
+                                if (col && col["TYPE"] != undefined ) {
+                                    h.ORD_SEQ = col["ORD_SEQ"] != null ? col["ORD_SEQ"]:idx;
+                                } else {
+                                    h.ORD_SEQ = idx;
+                                }
+                                return h;
+                            });
+                            _header = _header.sort((a, b) => (a.ORD_SEQ >= b.ORD_SEQ ? 1 : -1));
                         }
                         this.mergecolumn = [];
                         // let obj = JSON.stringify(_header);
@@ -3411,7 +3433,7 @@
                         _header.forEach(x => {
                             let idxTemp = tempHeader.findIndex(q => q.field === x.field && !q.added);
                             if (idxTemp >= 0) {
-                                let column = { visible: true, width: x.width ? x.width : 100 };
+                                let column = { visible: true, width: x.width ? x.width : 150 };
                                 const xKeys = Object.keys(x);
                                 if (xKeys.includes("group1")) {
                                     let groupCols = tempHeader.filter(q => q.group1 === x.group1);
@@ -3446,7 +3468,7 @@
                 let column = { visible: true, allowEditing: false };
                 let isLast = !keys.some(x => x.includes("group" + level));
                 if (isLast) {
-                    column.width = headers.width ? headers.width : 100;
+                    column.width = headers.width ? headers.width : 150;
                     keys.forEach(key => {
                         switch (key) {
                             case "title": { column.caption = this.autotranslate && !!!headers["isAdditionColumn"] ? this.$t(headers[key].toLowerCase()) : String(headers[key]); break; }
@@ -3695,6 +3717,8 @@
                     }
 
                     if (rowindexes.length > 0) {
+                        let position = this.$refs.myGrid.scrollposition();
+                        
                         this.$refs.myGrid.beginupdate();
                         rowindexes.forEach((idx, i )=> {
                             let rowData = this.$refs.myGrid.getrowdata(idx);
@@ -3728,6 +3752,10 @@
                         })
                         this.$refs.myGrid.endupdate();
                         //this.setDataSource(dataList);
+
+                        try{
+                            this.$refs.myGrid.scrolloffset(position.top, position.left);
+                        } catch{}
                         return true;
                     } else {
                         this.showNotification("warning", this.$t("please_select_row"), '');
@@ -3922,19 +3950,25 @@
                     rowindexes = this.$refs.myGrid.getselectedrowindexes();
                 }
 
-
                 if (rowindexes.length > 0) {
+                    //check has updating data
+                    let dataList = this.$refs.myGrid.getrows();
+
+                    let _updatingRows = dataList.filter(q => (q._rowstatus == 'u' || q._rowstatus == 'i') && !rowindexes.includes(q["boundindex"]) );
+                    if(_updatingRows?.length > 0) {
+                        this.showNotification("warning", this.$t("please_save_the_modifing_rows"), '');
+                        return false;
+                    }
+
                     this.$refs.myGrid.beginupdate();
                     rowindexes.forEach(idx => {
                         this.$refs.myGrid.setcellvalue(idx, '_rowstatus', 'd');
                     })
                     this.$refs.myGrid.endupdate();
 
-                    let dataList = this.$refs.myGrid.getrows();
-                    if (dataList.findIndex(x => x._rowstatus === "d") >= 0) {
-                        try { this.$refs.myGrid.clearselection(); } catch { }
-                        return await this.onSave(dso, notify);
-                    }
+                    try { this.$refs.myGrid.clearselection(); } catch { }
+                    return await this.onSave(dso, notify);
+
                 } else {
                     this.showNotification("warning", this.$t("please_select_row"), '');
                     return false;
@@ -4003,6 +4037,7 @@
             },
 
             async onPrintReport() {
+                await this._clearCache("N");
                 this.isProcessReport = true;
 
                 let selectionMode = this.$refs.myGrid.selectionmode;
@@ -4364,6 +4399,13 @@
             //=======================================================================================END FUNCTION APPLY FOR HR STYLE===============================================================================
             //=====================================================================================================================================================================================================
 
+            selectRow(rowIndex) {
+                try {
+                    this.$refs.myGrid.selectrow(rowIndex);                    
+                } catch (error) {
+                    console.log("selectRow-catch exception:", error.message);
+                }
+            }
         },
 
     }

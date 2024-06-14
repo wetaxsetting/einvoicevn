@@ -66,6 +66,24 @@
       </v-col>
     </v-row>
     <view-einvoice-pdf-dialog ref="ViewEInvoicePDFDialog" :src_pdfUrl="pdfUrl"></view-einvoice-pdf-dialog>
+    <v-dialog eager :persistent="isProcessing" :width="Math.floor(windowWidth*0.25)" v-model="dialog2IsShow">
+      <v-card>
+        <v-card-title class="text-h5 d-flex align-center justify-center">CHUYỂN THÀNH HÓA ĐƠN GIẤY</v-card-title>
+        <v-card-text class="pb-0">
+          <v-form
+            lazy-validation
+            ref="form"
+          >
+            <v-text-field dense outlined validate-on-blur ref="converterInputRefs" label="Họ tên người chuyển đổi" :color="currentTheme" :disabled="isProcessing" :rules="inputRule" v-model="inputName"></v-text-field>
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn depressed :color="currentTheme" :class="currentTextColor"  :disabled="isProcessing" :loading="isProcessing" @click="convert">Tiếp tục</v-btn>
+          <v-btn outlined color="grey darken-2" :disabled="isProcessing" @click="dialog2IsShow = false">Hủy bỏ</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 <!-- ================================================================= END DESIGN LAYOUT & BEGIN SCRIPT ========================================================================= --> 
@@ -93,11 +111,16 @@ export default {
 
     invoice_no: null,
     partner: null,
-
-
+    trade_cqt:"",
+    cqt_code:"",
+    dialog2IsShow: false,
     selected_rows: [],
     pdfUrl: "",
-    tei_einvoice_m_pk_row: ""
+    tei_einvoice_m_pk_row: "",
+    inputName:"",
+    isSending:true,
+    inputRule: [(v) => !!v || "Please fill in this field!"],
+
   }),
   /*############### created #######################*/
   created() {
@@ -105,15 +128,11 @@ export default {
   },
   /*############### watch ######################*/
   watch: {
-    // lst_line: async function () {
-    //   // const machineMtCC = await this._callProcedure(
-    //   //   "mes_sel_meca020_select_machine_mt_comcode",
-    //   //   [this.lst_line]
-    //   // );
-    //     const machineMtCC = await this._getCommonCode("MTYPE");
-    //   console.log(machineMtCC)
-    //   this.mt_comcode = machineMtCC[0].mt_comcode;
-    // },
+    dialog2IsShow(val) {
+      if(val) {
+        this.$refs.form.resetValidation()
+      }
+    }
   },
   /*############### computed ######################*/
   computed: {
@@ -129,24 +148,24 @@ export default {
     grdHeader() {
       return [{ field: "RN", width: 40, title: "No", alignment: "right", type: "text" },
       { field: "TR_DATE", width: 100, title: "TransDate", alignment: "right", type: "text" },
-      { field: "CUS_CD", width: 120, title: "CustomerID", alignment: "right", type: "text" },
-      { field: "CUS_NM", width: 200, title: "Customername", alignment: "right", type: "text" },
-      { field: "ORM_NO", width: 120, title: "FormNo", alignment: "right", type: "text" },
+      { field: "CUS_CD", width: 120, title: "CustomerID", alignment: "left", type: "text" },
+      { field: "CUS_NM", width: 200, title: "Customername", alignment: "left", type: "text" },
+      { field: "FORM_NO", width: 120, title: "FormNo", alignment: "right", type: "text" },
       { field: "SERIAL_NO", width: 90, title: "SerialNo", alignment: "right", type: "text" },
       { field: "INVOICE_NO", width: 100, title: "InvoiceNo", alignment: "right", type: "text" },
-      { field: "TR_CCY", width: 80, title: "Currency", alignment: "right", type: "text" },
-      { field: "R_RATE", width: 90, title: "Ex.rate", alignment: "right", type: "text" },
-      { field: "TOT_NET_TR_AMT", width: 130, title: "Amount(Trans)", alignment: "right", type: "text" },
-      { field: "TOT_NET_BK_AMT", width: 130, title: "Amount(Books)", alignment: "right", type: "text" },
+      { field: "TR_CCY", width: 80, title: "Currency", alignment: "center", type: "text" },
+      { field: "TR_RATE", width: 90, title: "Ex.rate", alignment: "right", type: "number" },
+      { field: "TOT_NET_TR_AMT", width: 130, title: "Amount(Trans)", alignment: "right", type: "number" },
+      { field: "TOT_NET_BK_AMT", width: 130, title: "Amount(Books)", alignment: "right", type: "number" },
       { field: "REMARK", width: 210, title: "Description", alignment: "right", type: "text" },
       { field: "REMARK2", width: 210, title: "LocalDescription", alignment: "right", type: "text" },
-      { field: "EI_STATUS", width: 120, title: "EI.Status", alignment: "right", type: "text" },
+      { field: "EI_STATUS", width: 120, title: "EI.Status", alignment: "center", type: "text" },
       { field: "SIGN_BY", width: 150, title: "Signname", alignment: "center", type: "text" },
       { field: "SIGN_DT", width: 170, title: "Signdate", alignment: "center", type: "text" },
-      { field: "INVOICE_TYPE", width: 150, title: "InvoiceType", alignment: "left", type: "text" },
+      { field: "INVOICE_TYPE", width: 150, title: "InvoiceType", alignment: "center", type: "text" },
       { field: "CONVERT_NAME", width: 150, title: "Convertname", alignment: "left", type: "text" },
       { field: "CONVERT_DATE", width: 150, title: "Convertdate", alignment: "left", type: "text" },
-      { field: "CONVERT_YN", width: 50, title: "ConvertY/N", alignment: "left", type: "text" },
+      { field: "CONVERT_YN", width: 50, title: "ConvertY/N", alignment: "center", type: "checkbox" },
 
       ];
     },
@@ -156,19 +175,76 @@ export default {
 
   /*############### methods #######################*/
   methods: {
-    debitNote() { },
-    onConvert() { },
+    debitNote(){},
+    creditNote() { },
+    onConvert(){
+      if(this.tei_einvoice_m_pk_row != "")
+      {
+        this.dialog2IsShow = true
+
+      }else{
+        this.showNotification("warning", this.$t("no_row_selected"), '');
+      }
+
+    },
+    async convert() {
+      if (this.inputName === "" || this.inputName === undefined) {
+        this.$refs.converterInputRefs.focus();
+        return;
+      }
+      try {
+        this.isProcessing = true;
+        await this._callProcedure("EI_PRO_CONVERT_INV", [
+        this.tei_einvoice_m_pk_row,
+        this.inputName
+      ]);  
+        this.showNotification("success", message, "", 3000);
+        this.onSearch();
+      } catch (error) {
+        this.isProcessing = false;
+      }
+    },
+  
     async onPreview() {
       this.isProcessing = true
-      this.pdfUrl = await this.pdfUrlGetter(this.tei_einvoice_m_pk_row);
-      this.$nextTick(() => {
-        this.isProcessing = false
-        this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
-      });
-    },
-    async pdfUrlGetter(pk) {
-      const pdfUrlExcel = await this.getEinvoice(this, pk)
-      return pdfUrlExcel
+      if(this.tei_einvoice_m_pk_row != "")
+      {
+        if( Number(this.selected_company) < 943 )
+        {
+          let res_url = await this.$axios.$post("/einvoice/view-pdf", {
+              responseType: "json",
+              rep_key: this.tei_einvoice_m_pk_row,
+              type: "C"
+            });
+          if(res_url.success)
+          {
+            this.pdfUrl = res_url.data;
+            this.$nextTick(() => {
+              this.isProcessing = false
+              this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+            });
+          }
+        }else
+        {
+          let res_url = await this.$axios.$post("/einvoice/general-url-pdf", {
+              responseType: "json",
+              tei_wt_sale_bill_pk: this.tei_einvoice_m_pk_row,
+            });
+          if(res_url.success)
+          {
+            this.pdfUrl = res_url.data;
+
+            this.$nextTick(() => {
+              this.isProcessing = false
+              this.$refs.ViewEInvoicePDFDialog.dialogIsShow = true;
+            });
+          }
+        }
+      }else
+      {
+        this.isProcessing = false;
+        this.showNotification("warning", this.$t("no_row_selected"), '');
+      }
     },
     ///////////////////////////
     onDownloadPdf() {
@@ -195,6 +271,7 @@ export default {
         });
       }
     },
+
     downloadPDF(pdf) {
       //const linkSource = `data:application/pdf;base64,${pdf}`;
       const downloadLink = document.createElement("a");
@@ -246,6 +323,7 @@ export default {
       this.selected_rows = data;
     },
     async onCellClick({ column, data, rowIndex, rowType }) {
+      console.log("onCellClick  ", data)
       this.tei_einvoice_m_pk_row = data.PK
     },
 

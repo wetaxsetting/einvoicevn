@@ -17492,7 +17492,7 @@ class EInvoiceController {
 
       console.log('data  ', data);
 
-      let url = WEBSERVICE_C_SHARP + '/UploadFileExcel';
+      let url = WEBSERVICE_C_SHARP + '/UploadFileExcel?tei_company_pk=' + tei_company_pk + '&p_ctr_by=' + p_ctr_by;
       let data_res;
 
       const form_data = new FormData();
@@ -17508,8 +17508,6 @@ class EInvoiceController {
       //Request.post(url, form_data, request_config);
 
       const res = await Request.post(url, {
-        tei_company_pk: tei_company_pk,
-        p_ctr_by: p_ctr_by,
         data: form_data,
       });
       data_res = res.data.d;

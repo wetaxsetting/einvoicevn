@@ -17477,6 +17477,62 @@ class EInvoiceController {
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
     }
   }
+
+  async UploadDataExcelPIT({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const {tei_company_pk, p_ctr_by} = request.all(); //data:6030
+
+      const data = request.file('data');
+
+      console.log('data  ', data);
+
+      let url = WEBSERVICE_C_SHARP + '/UploadFileExcel';
+      let data_res;
+
+      const form_data = new FormData();
+      form_data.append('data', data);
+
+      // const request_config = {
+      //   headers: {
+      //     'Content-Type': 'multipart/form-data',
+      //   },
+      //   data: form_data,
+      // };
+
+      //Request.post(url, form_data, request_config);
+
+      const res = await Request.post(url, {
+        tei_company_pk: tei_company_pk,
+        p_ctr_by: p_ctr_by,
+        data: form_data,
+      });
+      data_res = res.data.d;
+
+      return response.status(200).json(
+        Utils.responseByRule({
+          success: true,
+          message: 'success.',
+          data: JSON.parse(data_res),
+        }),
+      );
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'GeneralInvalidInvoiceToHsmXML',
+        CONTENT: e.message,
+      });
+      console.log('GeneralInvalidInvoiceToHsmXML  ', e.message);
+
+      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+    }
+  }
 }
 
 module.exports = EInvoiceController;

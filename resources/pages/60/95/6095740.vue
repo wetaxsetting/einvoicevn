@@ -36,7 +36,7 @@
                 select_mode="Single"
                 :max_height="limitHeight"
                 :header="headerGridLeft"
-                :filter_paras="[this.sellerName, this.form_date, this.to_date, this.symbols]"
+                :filter_paras="[this.sellerTaxcode, this.form_date, this.to_date, this.symbols]"
               />
             </v-col>
           </v-row>

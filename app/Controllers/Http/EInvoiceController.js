@@ -6,6 +6,7 @@ const AES = use('AES');
 const APP_KEY = Env.get('APP_KEY');
 const Helpers = use('Helpers');
 const Request = use('Request');
+const ImportHelper = use('App/Helpers/ImportHelper');
 const ROOT_DIR_FILES = Env.get('ROOT_DIR_FILES', Helpers.tmpPath());
 const API_URL = Env.get('API_URL');
 const APP_URL_LOCAL = Env.get('APP_URL_LOCAL', Env.get('APP_URL'));
@@ -64,8 +65,8 @@ const {X509Certificate, crypto} = require('crypto');
 const {create, createCB} = require('xmlbuilder2');
 const {log, Console} = require('console');
 
-const EINVOICE_API_SEND_MAIL = 'http://sendmail.genuwinsolution.com/api/user/sendmail';
-const EINVOICE_API_SEND_MAIL_SMTP = 'http://sendmail.genuwinsolution.com/api/user/sendmailsmtp';
+const EINVOICE_API_SEND_MAIL = 'http://sendmail.webcashvietnam.com/api/user/sendmail';
+const EINVOICE_API_SEND_MAIL_SMTP = 'http://sendmail.webcashvietnam.com/api/user/sendmailsmtp';
 const moment = require('moment');
 const {jar} = require('request');
 const {lookup} = require('dns');
@@ -17488,30 +17489,95 @@ class EInvoiceController {
       }
       const {tei_company_pk, p_ctr_by} = request.all(); //data:6030
 
-      const data = request.file('data');
+      const file = request.file('excel_data');
 
-      console.log('data  ', data);
+      console.log(file);
+      console.log(file.tmpPath);
+      const fileContent = await Utils.readFile(file.tmpPath);
 
-      let url = WEBSERVICE_C_SHARP + '/UploadFileExcel?tei_company_pk=' + tei_company_pk + '&p_ctr_by=' + p_ctr_by;
-      let data_res;
+      let buffer = fileContent;
+      let tmp_file = Helpers.tmpPath(file.clientName);
 
-      const form_data = new FormData();
-      form_data.append('data', data);
+      //excel load buffer bi loi nen phai save lai ra file temp
+      let rtnFileExcel = await fs.writeFileSync(tmp_file, buffer);
 
-      // const request_config = {
-      //   headers: {
-      //     'Content-Type': 'multipart/form-data',
+      var imp = new ImportHelper(p_language, p_crt_by);
+      await imp.loadFile(tmp_file);
+
+      let table_pk = '';
+      let table_nm = '';
+      const import_info = {
+        proc: '',
+        start_row: '6',
+        start_col: '2',
+        end_col: '28',
+        add_params: '',
+        impValidCol: '',
+        impValidValue: '',
+        impConfigRowCall: '100',
+      };
+
+      await imp.importDBData(JSON.stringify(import_info), p_language, p_crt_by, tmp_file, file.clientName, table_pk, table_nm);
+
+      return response.attachment(imp.returnFile, file.clientName);
+
+      // console.log('fileContent  ', fileContent);
+
+      // let url = WEBSERVICE_C_SHARP + '/UploadFileExcel?tei_company_pk=' + tei_company_pk + '&p_ctr_by=' + p_ctr_by;
+      // let data_res;
+
+      // const form_data = new FormData();
+      // await form_data.append(file.clientName, file);
+
+      // // console.log('form_data  ', form_data);
+      // const axios = use('axios');
+
+      // axios
+      //   .post(url, [{form_data}], {
+      //     headers: {
+      //       'Content-Type': 'multipart/form-data',
+      //     },
+      //   })
+      //   .then(function (data) {
+      //     console.log('SUCCESS!!', data);
+      //   })
+      //   .catch(function (err) {
+      //     console.log('FAILURE!!', err);
+      //   });
+
+      // const res = await Request.post(
+      //   url,
+      //   {data: form_data},
+      //   {
+      //     headers: {
+      //       'Content-Type': 'multipart/form-data',
+      //     },
       //   },
-      //   data: form_data,
-      // };
+      // );
+      // data_res = res.data.d;
 
-      //Request.post(url, form_data, request_config);
+      //const form = new FormData();
+      //const stream = fs.createReadStream(file.tmpPath);
 
-      const res = await Request.post(url, {
-        data: form_data,
-      });
-      data_res = res.data.d;
+      //form.append('image', stream);
 
+      // In Node.js environment you need to set boundary in the header field 'Content-Type' by calling method `getHeaders`
+      // const formHeaders = form.getHeaders();
+
+      // axios
+      //   .post(url, form, {
+      //     headers: {
+      //       'Content-Type': 'multipart/form-data',
+      //     },
+      //   })
+      //   .then(function (data) {
+      //     console.log('SUCCESS!!', data);
+      //   })
+      //   .catch(function (err) {
+      //     console.log('FAILURE!!', err);
+      //   });
+
+      //console.log('res  ', res);
       return response.status(200).json(
         Utils.responseByRule({
           success: true,
@@ -17523,10 +17589,10 @@ class EInvoiceController {
       Utils.Logger({
         LVL: 'error',
         MODULE: 'EInvoiceController',
-        FUNC: 'GeneralInvalidInvoiceToHsmXML',
+        FUNC: 'UploadDataExcelPIT',
         CONTENT: e.message,
       });
-      console.log('GeneralInvalidInvoiceToHsmXML  ', e.message);
+      console.log('UploadDataExcelPIT  ', e.message);
 
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
     }

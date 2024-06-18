@@ -64,8 +64,8 @@ const {X509Certificate, crypto} = require('crypto');
 const {create, createCB} = require('xmlbuilder2');
 const {log, Console} = require('console');
 
-const EINVOICE_API_SEND_MAIL = 'http://sendmail.genuwinsolution.com/api/user/sendmail';
-const EINVOICE_API_SEND_MAIL_SMTP = 'http://sendmail.genuwinsolution.com/api/user/sendmailsmtp';
+const EINVOICE_API_SEND_MAIL = 'http://sendmail.webcashvietnam.com/api/user/sendmail';
+const EINVOICE_API_SEND_MAIL_SMTP = 'http://sendmail.webcashvietnam.com/api/user/sendmailsmtp';
 const moment = require('moment');
 const {jar} = require('request');
 const {lookup} = require('dns');
@@ -6986,7 +6986,7 @@ class EInvoiceController {
           total_amt_dc: invoice.total_dc_amt,
           total_amt_vat: invoice.total_amt_vat,
           total_payment: invoice.total_payment,
-          total_payment_word_vie: (await Utils.Num2VNText2(invoice.total_payment.toString(), invoice.currency)), //  invoice.total_payment_word_vie,
+          total_payment_word_vie: await Utils.Num2VNText2(invoice.total_payment.toString(), invoice.currency), //  invoice.total_payment_word_vie,
           mccqt: invoice.mccqt,
           data_xml: data_xml,
           count_length: count_length,
@@ -13345,7 +13345,7 @@ class EInvoiceController {
     objInvoice_M.HDon.DLHDon.NDHDon.TToan.TTCKTMai = dataObject.total_amt_dc;
     objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = dataObject.total_payment;
     if (!dataObject.total_payment_word_vie) {
-      let wordsAmt = (await Utils.Num2VNText2(dataObject.total_payment.toString(), dataObject.currency));
+      let wordsAmt = await Utils.Num2VNText2(dataObject.total_payment.toString(), dataObject.currency);
       console.log('createXMLByOne  wordsAmt  ', wordsAmt);
       objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = wordsAmt;
     } else {

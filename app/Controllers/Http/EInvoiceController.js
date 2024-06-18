@@ -64,8 +64,8 @@ const {X509Certificate, crypto} = require('crypto');
 const {create, createCB} = require('xmlbuilder2');
 const {log, Console} = require('console');
 
-const EINVOICE_API_SEND_MAIL = 'http://sendmail.genuwinsolution.com/api/user/sendmail';
-const EINVOICE_API_SEND_MAIL_SMTP = 'http://sendmail.genuwinsolution.com/api/user/sendmailsmtp';
+const EINVOICE_API_SEND_MAIL = 'http://sendmail.webcashvietnam.com/api/user/sendmail';
+const EINVOICE_API_SEND_MAIL_SMTP = 'http://sendmail.webcashvietnam.com/api/user/sendmailsmtp';
 const moment = require('moment');
 const {jar} = require('request');
 const {lookup} = require('dns');

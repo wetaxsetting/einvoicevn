@@ -12486,37 +12486,64 @@ class EInvoiceController {
       if (month < 10) {
         month = '0' + month;
       }
-      const dir = ROOT_DIR_FILES.replace('/', '') + '/pdf/' + year + '/' + month;
-      if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, {recursive: true}, err => {
-          console.log(err);
-        });
-      }
-      //console.log("dir ", dir);
 
-      const unixtime = Date.now();
-      const fileName = '/pdf/' + year + '/' + month + '/rpt-' + unixtime + '-' + rep_key + '.pdf';
-      let token = AES.encrypt(fileName + '|' + year + month + day, APP_KEY);
-      token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
+      if (type == 'C') {
+        const dir = ROOT_DIR_FILES.replace('/', '') + '/pdf/' + year + '/' + month;
+        if (!fs.existsSync(dir)) {
+          fs.mkdirSync(dir, {recursive: true}, err => {
+            console.log(err);
+          });
+        }
 
-      //console.log(" ROOT_DIR_FILES2 + fileName  ", ROOT_DIR_FILES.replace("/","") + fileName)
-      await axios({
-        method: 'get',
-        url: url,
-        responseType: 'stream',
-      })
-        .then(async res => {
-          await res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES.replace('/', '') + fileName));
+        const unixtime = Date.now();
+        const fileName = '/pdf/' + year + '/' + month + '/rpt-' + unixtime + '-' + rep_key + '.pdf';
+        let token = AES.encrypt(fileName + '|' + year + month + day, APP_KEY);
+        token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
+
+        await axios({
+          method: 'get',
+          url: url,
+          responseType: 'stream',
         })
-        .catch(error => {
-          console.error(error);
-        });
+          .then(async res => {
+            await res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES.replace('/', '') + fileName));
+          })
+          .catch(error => {
+            console.error(error);
+          });
 
-      // const filePath = APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token;
-      // return response.download(filePath);
-      return response.send(
-        Utils.response(true, 'general url pdf success', APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token),
-      );
+        return response.send(
+          Utils.response(true, 'general url pdf success', APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token),
+        );
+      } else if (type == 'E') {
+        const dir = ROOT_DIR_FILES.replace('/', '') + '/excel/' + year + '/' + month;
+        if (!fs.existsSync(dir)) {
+          fs.mkdirSync(dir, {recursive: true}, err => {
+            console.log(err);
+          });
+        }
+
+        const unixtime = Date.now();
+        const fileName = '/pdf/' + year + '/' + month + '/rpt-' + unixtime + '-' + rep_key + '.xlsx';
+        let token = AES.encrypt(fileName + '|' + year + month + day, APP_KEY);
+        token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
+
+        await axios({
+          method: 'get',
+          url: url,
+          responseType: 'stream',
+        })
+          .then(async res => {
+            await res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES.replace('/', '') + fileName));
+          })
+          .catch(error => {
+            console.error(error);
+          });
+
+        return response.send(
+          Utils.response(true, 'general url excel success', APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token),
+        );
+      }
     } catch (e) {
       Utils.Logger({
         LVL: 'error',

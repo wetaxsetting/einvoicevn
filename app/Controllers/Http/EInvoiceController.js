@@ -12524,7 +12524,7 @@ class EInvoiceController {
         }
 
         const unixtime = Date.now();
-        const fileName = '/pdf/' + year + '/' + month + '/rpt-' + unixtime + '-' + 'VAT_Inquery' + '.xlsx';
+        const fileName = '/excel/' + year + '/' + month + '/rpt-' + unixtime + '-' + 'VAT_Inquery' + '.xls';
         let token = AES.encrypt(fileName + '|' + year + month + day, APP_KEY);
         token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
 
@@ -12534,6 +12534,7 @@ class EInvoiceController {
           responseType: 'stream',
         })
           .then(async res => {
+            console.log(res);
             await res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES.replace('/', '') + fileName));
           })
           .catch(error => {

@@ -17469,17 +17469,10 @@ class EInvoiceController {
       let url = WEBSERVICE_C_SHARP + '/GeneralXmlList_v3';
       let data;
       console.log(url);
-      const res = await Request.post(
-        url,
-        {
-          tei_einvoice_m_pk: tei_einvoice_m_pk,
-          otp: otp,
-        },
-        {
-          maxContentLength: Infinity,
-          maxBodyLength: Infinity,
-        },
-      );
+      const res = await Request.post(url, {
+        tei_einvoice_m_pk: tei_einvoice_m_pk,
+        otp: otp,
+      });
       console.log(res);
       data = res.data.d;
 

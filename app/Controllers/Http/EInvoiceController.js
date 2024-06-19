@@ -12543,6 +12543,35 @@ class EInvoiceController {
         return response.send(
           Utils.response(true, 'general url excel success', APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token),
         );
+      } else if (type == 'X') {
+        const dir = ROOT_DIR_FILES.replace('/', '') + '/xml/' + year + '/' + month;
+        if (!fs.existsSync(dir)) {
+          fs.mkdirSync(dir, {recursive: true}, err => {
+            console.log(err);
+          });
+        }
+
+        const unixtime = Date.now();
+        const fileName = '/xml/' + year + '/' + month + '/rpt-' + unixtime + '-' + rep_key + '.xml';
+        let token = AES.encrypt(fileName + '|' + year + month + day, APP_KEY);
+        token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
+
+        await axios({
+          method: 'get',
+          url: url,
+          responseType: 'stream',
+        })
+          .then(async res => {
+            console.log(res);
+            await res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES.replace('/', '') + fileName));
+          })
+          .catch(error => {
+            console.error(error);
+          });
+
+        return response.send(
+          Utils.response(true, 'general url excel success', APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token),
+        );
       }
     } catch (e) {
       Utils.Logger({

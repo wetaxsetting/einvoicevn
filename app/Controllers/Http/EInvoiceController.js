@@ -17462,7 +17462,7 @@ class EInvoiceController {
 
       const res = await Request.get(url);
 
-      console.log(res);
+      //console.log(res);
 
       data = res.data; //.toString().replaceAll('&lt;', '<').replaceAll('&gt;', '>');
 
@@ -17471,7 +17471,7 @@ class EInvoiceController {
       };
       const data_json = await transform(data, templateSignTime);
 
-      console.log('data_json ', data_json);
+      //console.log('data_json ', data_json);
 
       return response.status(200).json(
         Utils.responseByRule({
@@ -17851,8 +17851,8 @@ class EInvoiceController {
 
       const file = request.file('excel_data');
 
-      console.log(file);
-      console.log(file.tmpPath);
+      //console.log(file);
+      //console.log(file.tmpPath);
       const fileContent = await Utils.readFile(file.tmpPath);
 
       let buffer = fileContent;

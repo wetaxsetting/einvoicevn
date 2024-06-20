@@ -12935,17 +12935,6 @@ class EInvoiceController {
         }
       }
 
-      /* const para_inv = {
-        lookupcode : lookupcode,
-      }; */
-      //console.log("lookupcode:", lookupcode);
-      /* const rtnValue_VAT = await DBService.ExecuteSQLBlob(
-        `BEGIN ei_sel_get_data_lookup_code (:lookupcode,:p_language,:p_crt_by,:p_rtn_cur); END;`,
-        para_inv,
-        p_language,
-        p_crt_by
-      ); */
-
       const para_inv_st = {
         trade_code: lookupcode.replaceAll(' ', '+'),
       };
@@ -12960,10 +12949,11 @@ class EInvoiceController {
       let url_pdf = '',
         url_xml = '';
       if (rtnValue.p_rtn_cur[0].TYPE == 'EP') {
-        if (Number(rtnValue.p_rtn_cur[0].TEI_EINVOICE_M_PK) < 943) {
+        console.log(rtnValue.p_rtn_cur[0]);
+        if (Number(rtnValue.p_rtn_cur[0].TEI_COMPANY_PK) < 943) {
           const screte_key = 'RVNJbjib65jkGKJB789';
-          const key = Utils.md5(rep_key + screte_key);
-          const type = "C";
+          const key = Utils.md5(rtnValue.p_rtn_cur[0].TEI_EINVOICE_M_PK + screte_key);
+          const type = 'C';
           const axios = use('axios');
           const fs = use('fs');
           const url = `http://genuclouding.com/wseinvoice/BSService.asmx/Download_File_PDF_Nodejs?p_trade_code=${rtnValue.p_rtn_cur[0].TEI_EINVOICE_M_PK}&p_key=${key}&p_type=${type}`;
@@ -12978,31 +12968,30 @@ class EInvoiceController {
           if (month < 10) {
             month = '0' + month;
           }
-            const dir = ROOT_DIR_FILES.replace('/', '') + '/pdf/' + year + '/' + month;
-            if (!fs.existsSync(dir)) {
-              fs.mkdirSync(dir, {recursive: true}, err => {
-                console.log(err);
-              });
-            }
-            const unixtime = Date.now();
-            const fileName = '/pdf/' + year + '/' + month + '/rpt-' + unixtime + '-' + rep_key + '.pdf';
-            let token = AES.encrypt(fileName + '|' + year + month + day, APP_KEY);
-            token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
+          const dir = ROOT_DIR_FILES.replace('/', '') + '/pdf/' + year + '/' + month;
+          if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, {recursive: true}, err => {
+              console.log(err);
+            });
+          }
+          const unixtime = Date.now();
+          const fileName = '/pdf/' + year + '/' + month + '/rpt-' + unixtime + '-' + rtnValue.p_rtn_cur[0].TEI_EINVOICE_M_PK + '.pdf';
+          let token = AES.encrypt(fileName + '|' + year + month + day, APP_KEY);
+          token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
 
-            await axios({
-              method: 'get',
-              url: url,
-              responseType: 'stream',
+          await axios({
+            method: 'get',
+            url: url,
+            responseType: 'stream',
+          })
+            .then(async res => {
+              await res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES.replace('/', '') + fileName));
             })
-              .then(async res => {
-                await res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES.replace('/', '') + fileName));
-              })
-              .catch(error => {
-                console.error(error);
-              });
+            .catch(error => {
+              console.error(error);
+            });
 
-            url_pdf = APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token;
-
+          url_pdf = APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token;
         } else {
           EiExcels = new EiExcelHandlerAuto(); //CQT_MAGD
           url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].TEI_EINVOICE_M_PK, p_language, p_crt_by);

@@ -289,6 +289,10 @@ Route.group(() => {
   .middleware('user');
 
 Route.group(() => {
+  Route.post('generate', 'PublicApiController.generateQrPayment');
+}).prefix('api/pa/qr-payment');
+
+Route.group(() => {
   Route.post('sync', 'WeTaxController.iposSync');
 })
   .prefix('api/wtx/pa/v1/ipos')

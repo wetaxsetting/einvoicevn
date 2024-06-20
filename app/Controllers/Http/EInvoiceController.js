@@ -12960,8 +12960,54 @@ class EInvoiceController {
       let url_pdf = '',
         url_xml = '';
       if (rtnValue.p_rtn_cur[0].TYPE == 'EP') {
-        EiExcels = new EiExcelHandlerAuto(); //CQT_MAGD
-        url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].TEI_EINVOICE_M_PK, p_language, p_crt_by);
+        if (Number(rtnValue.p_rtn_cur[0].TEI_EINVOICE_M_PK) < 943) {
+          const screte_key = 'RVNJbjib65jkGKJB789';
+          const key = Utils.md5(rep_key + screte_key);
+          const type = "C";
+          const axios = use('axios');
+          const fs = use('fs');
+          const url = `http://genuclouding.com/wseinvoice/BSService.asmx/Download_File_PDF_Nodejs?p_trade_code=${rtnValue.p_rtn_cur[0].TEI_EINVOICE_M_PK}&p_key=${key}&p_type=${type}`;
+
+          const current = new Date();
+          const year = current.getFullYear();
+          let month = current.getMonth() + 1;
+          let day = current.getDate();
+          if (day < 10) {
+            day = '0' + day;
+          }
+          if (month < 10) {
+            month = '0' + month;
+          }
+            const dir = ROOT_DIR_FILES.replace('/', '') + '/pdf/' + year + '/' + month;
+            if (!fs.existsSync(dir)) {
+              fs.mkdirSync(dir, {recursive: true}, err => {
+                console.log(err);
+              });
+            }
+            const unixtime = Date.now();
+            const fileName = '/pdf/' + year + '/' + month + '/rpt-' + unixtime + '-' + rep_key + '.pdf';
+            let token = AES.encrypt(fileName + '|' + year + month + day, APP_KEY);
+            token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
+
+            await axios({
+              method: 'get',
+              url: url,
+              responseType: 'stream',
+            })
+              .then(async res => {
+                await res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES.replace('/', '') + fileName));
+              })
+              .catch(error => {
+                console.error(error);
+              });
+
+            url_pdf = APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token;
+
+        } else {
+          EiExcels = new EiExcelHandlerAuto(); //CQT_MAGD
+          url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].TEI_EINVOICE_M_PK, p_language, p_crt_by);
+        }
+
         // console.log("base64PDf: ", url_pdf);
 
         re_url_xml = await Request.get(

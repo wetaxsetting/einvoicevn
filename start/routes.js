@@ -155,7 +155,7 @@ Route.group(() => {
   Route.post('send-declare', 'EInvoiceController.weTaxSendDeclarationToTaxOffice');
   Route.post('check-status-declare', 'EInvoiceController.weTaxCheckingDeclarations');
   Route.post('generate-notice-cancel-adjust-replace-xml', 'EInvoiceController.weTaxConvertInvalidInvoiceToXML');
-  Route.post('send-notice-cancel-adjust-replace', 'EInvoiceController.weTaxSendInformAdjustToTaxOffice');
+  Route.post('send-notice-cancel-adjust-replace', 'EInvoiceController.weTaxSendInformAdjustToTaxOffice2');
   Route.post('check-notification-status', 'EInvoiceController.weTaxCheckInformAdjustToTaxOffice');
   Route.post('send-order-info', 'EInvoiceController.weTaxSendOrderInfoV2');
   Route.post('send-order-info-update', 'EInvoiceController.weTaxUpdateSendOrderInfo');
@@ -293,7 +293,6 @@ Route.group(() => {
 Route.group(() => {
   Route.post('generate', 'PublicApiController.generateQrPayment');
 }).prefix('api/pa/qr-payment');
-
 
 Route.group(() => {
   Route.post('shops', 'WeTaxController.createShopByPos');

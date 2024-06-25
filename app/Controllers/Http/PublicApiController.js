@@ -926,6 +926,11 @@ class PublicApiController {
 
   async generateQrPayment({request, response}) {
     const {acqId, accountNo, amount, addInfo} = request.all();
+
+    if(addInfo.length > 100){
+      return response.send(Utils.responseByRule({success: false, message: 'addInfo max length is 100',}));
+    }
+
     const payloadFormatId = '00';
     const payloadFormatLength = '02';
     const payloadFormatValue = '01';

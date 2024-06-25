@@ -3416,6 +3416,13 @@ class EInvoiceController {
       //const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
       //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
       const {xml_signed, req_key, smbl_type, doc_no} = request.all();
+
+      console.log('weTaxSendInformAdjustToTaxOffice2  BEGIN');
+      console.log('xml_signed ', xml_signed);
+      console.log('req_key ', req_key);
+      console.log('smbl_type ', doc_no);
+      console.log('doc_no ', doc_no);
+
       const agent = {
         Agent: {
           defaultPort: 443,
@@ -3518,6 +3525,7 @@ class EInvoiceController {
           //     req_key: req_key,
           //     trade_code: trade_code.data.maGDich,
           // });
+          console.log('weTaxSendInformAdjustToTaxOffice2  END');
           return response.status(200).json(
             Utils.responseByRule({
               success: true,

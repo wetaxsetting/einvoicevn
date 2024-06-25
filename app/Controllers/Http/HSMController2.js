@@ -151,7 +151,7 @@ class HSMController2 {
       Utils.Logger({
         LVL: 'error',
         MODULE: 'HSMController',
-        FUNC: 'HsmSignXml',
+        FUNC: 'getQr2Fa',
         CONTENT: e.message,
       });
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));

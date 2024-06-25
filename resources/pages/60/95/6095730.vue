@@ -64,7 +64,7 @@
     <view-einvoice-transaction-details-dialog ref="ViewTransaction" @minimizeDialog="manualIsMinimized = true" @closeManualDialog="manualIsMinimized = false"></view-einvoice-transaction-details-dialog>
     <view-einvoice-json-dialog
       ref="ViewEInvoiceJsonDialog"
-      :data_json="xmlUrl"
+      :data_json="dataJson"
       @minimizeDialog="manualIsMinimized = true"
       @closeManualDialog="manualIsMinimized = false"
     ></view-einvoice-json-dialog>
@@ -79,6 +79,7 @@
 </template>
 
 <script>
+
 import ViewEInvoiceJsonDialog from "@/components/dialog/ViewEInvoiceJsonDialog.vue";
 import ViewEInvoiceXMLDialog from "@/components/dialog/ViewEInvoiceXMLDialog.vue";
 import ViewEInvoiceXML_CQTDialog from "@/components/dialog/ViewEInvoiceXML_CQTDialog.vue";
@@ -109,7 +110,8 @@ export default {
     xmlUrl: "",
     xmlFileNm: "",
     currentRow: "",
-    headerGridLeft:[]
+    headerGridLeft:[],
+    dataJson:""
   }),
 
   async created() {
@@ -242,7 +244,7 @@ export default {
         const found = ds.find((item) => item.PK == this.currentRow);
         console.log("found", found);
         if (found) {
-          this.xmlUrl = found.TVAN_DATA_RESULT;
+          this.dataJson = found.TVAN_DATA_RESULT;
           this.$refs.ViewEInvoiceJsonDialog.dialogIsShow = true;
         }
       }

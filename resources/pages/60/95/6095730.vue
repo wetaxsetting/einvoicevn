@@ -74,7 +74,10 @@
     <button type="button" v-show="false" :id="`btnPrview3`" @click="previewCellFile3"></button>
 
     <input type="textbox" id="tempPK" v-show="false" />
-    
+    <input type="textbox" id="tempPK1" v-show="false" />
+    <input type="textbox" id="tempPK2" v-show="false" />
+    <input type="textbox" id="tempPK3" v-show="false" />
+
   </v-container>
 </template>
 
@@ -259,9 +262,9 @@ export default {
 
 
       let html = `<button class="v-icon mdi mdi-eye light-blue--text px-4" onclick="document.getElementById('tempPK').value = '${rowData.PK}';${previewFile}"></button>
-                  <button class="v-icon mdi mdi-file-document light-blue--text px-1" onclick="document.getElementById('tempPK').value = '${rowData.PK}';${previewFile1}"></button>
-                  <button class="v-icon mdi mdi-checkbox-marked-circle-outline light-blue--text px-4" onclick="document.getElementById('tempPK').value = '${rowData.PK}';${previewFile2}"></button>
-                  <button class="v-icon mdi mdi-code-json light-blue--text" onclick="document.getElementById('tempPK').value = '${rowData.PK}';${previewFile3}"></button>`;
+                  <button class="v-icon mdi mdi-file-document light-blue--text px-1" onclick="document.getElementById('tempPK1').value = '${rowData.PK}';${previewFile1}"></button>
+                  <button class="v-icon mdi mdi-checkbox-marked-circle-outline light-blue--text px-4" onclick="document.getElementById('tempPK2').value = '${rowData.PK}';${previewFile2}"></button>
+                  <button class="v-icon mdi mdi-code-json light-blue--text" onclick="document.getElementById('tempPK3').value = '${rowData.PK}';${previewFile3}"></button>`;
       return html;
     },
 

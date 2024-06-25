@@ -210,7 +210,7 @@ export default {
       }
     },
     previewCellFile1() {
-      this.currentRow = document.getElementById("tempPK").value;
+      this.currentRow = document.getElementById("tempPK1").value;
       // console.log("this.currentRow  previewCellFile1", this.currentRow);
       const ds = this.$refs.grdCompany.getDataSource();
 
@@ -225,7 +225,7 @@ export default {
     },
 
     previewCellFile2() {
-      this.currentRow = document.getElementById("tempPK").value;
+      this.currentRow = document.getElementById("tempPK2").value;
       // console.log("this.currentRow  previewCellFile2", this.currentRow);
       const ds = this.$refs.grdCompany.getDataSource();
 
@@ -239,7 +239,7 @@ export default {
       }
     },
     previewCellFile3() {
-      this.currentRow = document.getElementById("tempPK").value;
+      this.currentRow = document.getElementById("tempPK3").value;
       // console.log("this.currentRow  previewCellFile2", this.currentRow);
       const ds = this.$refs.grdCompany.getDataSource();
 

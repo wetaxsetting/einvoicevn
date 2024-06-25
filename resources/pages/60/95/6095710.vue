@@ -63,8 +63,12 @@
     <button type="button" v-show="false" :id="`btnPrview1`" @click="previewCellFile1"></button>
     <button type="button" v-show="false" :id="`btnPrview2`" @click="previewCellFile2"></button>
     <button type="button" v-show="false" :id="`btnPrview3`" @click="previewCellFile3"></button>
+    
     <input type="textbox" id="tempPK" v-show="false" />
-  
+    <input type="textbox" id="tempPK1" v-show="false" />
+    <input type="textbox" id="tempPK2" v-show="false" />
+    <input type="textbox" id="tempPK3" v-show="false" />
+
   </v-container>
 </template>
 

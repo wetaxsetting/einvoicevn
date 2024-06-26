@@ -172,9 +172,14 @@ class DsoController {
       const result = await DBService.callProcCursor(proc, [pk], 'ENG', 'public', 'N');
       console.log('result ', result);
       if (result.length > 0) {
+        if (result[0].FILE_SIZE) {
+          response.header('Content-Length', result[0].FILE_SIZE);
+        } else {
+          var getLength = require('utf8-byte-length');
+          response.header('Content-Length', getLength(result[0].FILE_CONTENT));
+        }
         response.header('Content-Type', result[0].FILE_TYPE);
         response.header('Content-Disposition', 'attachment; filename=' + result[0].FILE_NAME);
-        response.header('Content-Length', result[0].FILE_SIZE);
         return response.send(result[0].FILE_CONTENT);
       }
       return response.send(Utils.response(false, 'not found data', null));

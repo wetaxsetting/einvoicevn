@@ -12,7 +12,6 @@
         <v-row no-gutters>
           <v-col cols="12">
             <v-card outlined :height="limitHeight1" :max-height="limitHeight1" style="overflow-y: scroll;" v-resize="onResize">
-              <!-- <iframe :src="src_pdfUrl" height="100%" width="100%" ></iframe> -->
               <json-viewer :value="jsonData"></json-viewer>
             </v-card>
           </v-col>

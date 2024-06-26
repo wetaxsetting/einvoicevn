@@ -16,7 +16,7 @@
             <v-col lg="2" class="pl-2">
               <BaseSelect outlined v-model="sellerName" :lstData="dataSearchList.sellerNameList" item-value="CODE" item-text="NAME" :label="$t('seller_name')"></BaseSelect>
             </v-col>
-            <v-col lg="2">
+            <v-col lg="1">
               <BaseInput outlined v-model="trade_codde" :label="$t('trade_codde')"></BaseInput>
             </v-col>
             <v-col lg="1">
@@ -28,7 +28,9 @@
             <v-col lg="1">
               <BaseInput outlined v-model="form_no" :label="$t('form_no')"></BaseInput>
             </v-col>
-
+            <v-col lg="1">
+              <BaseSelect outlined v-model="cqt_result" :lstData="dataSearchList.cqtResult" item-value="CODE" item-text="NAME" :label="$t('cqt_result')"></BaseSelect>
+            </v-col>
             <v-col lg="2" class="text-right">
               <GwFlexBox class="d-flex justify-end">
                 <BaseButton icon_type="search" :btn_text="$t('search')" :disabled="isProcessing" @onclick="onClickButton('search')" />
@@ -104,6 +106,7 @@ export default {
     sellerTaxcode: "",
     dataSearchList: {
       sellerNameList: [],
+      cqtResult: []
     },
     dataJson:"",
     sellerName: "",
@@ -114,12 +117,13 @@ export default {
     xmlUrl: "",
     xmlFileNm: "",
     currentRow: "",
-    headerGridLeft:[]
+    headerGridLeft:[],
+    cqt_result:""
   }),
 
   async created() {
     this.initDataList("company");
-    // this.getListCodes();
+    this.getListCodes();
   },
 
   mounted(){
@@ -274,7 +278,7 @@ export default {
           if (company.length > 0) {
             this.dataSearchList.sellerNameList = company;
           }
-          break;
+        break;
       }
     },
     async onClickButton(pos) {
@@ -285,11 +289,10 @@ export default {
       }
     },
 
-    // async getListCodes() {
-    //   const results = await this._getCommonCode2(["ACEI0010", "ACEI0040", "ACEI0120", "ACEI0190", "ACEI0140", "ACEIN010", "ACJS0460"], this.user.PK);
-    //   this.statusList = results[0];
-    //   this.dataSearchList.tradingTypeList = results[1];
-    // },
+    async getListCodes() {
+      const results = await this._getCommonCode2(["ACJS0510"], this.user.PK);
+      this.dataSearchList.cqtResult = results[0];
+    },
   },
 };
 </script>

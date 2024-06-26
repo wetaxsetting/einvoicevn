@@ -3420,7 +3420,7 @@ class EInvoiceController {
       console.log('weTaxSendInformAdjustToTaxOffice2  BEGIN');
       console.log('xml_signed ', xml_signed);
       console.log('req_key ', req_key);
-      console.log('smbl_type ', doc_no);
+      console.log('smbl_type ', smbl_type);
       console.log('doc_no ', doc_no);
 
       const agent = {

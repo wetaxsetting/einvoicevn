@@ -879,7 +879,7 @@ class Utils {
     }
 
     if (ccy == 'USD') {
-      rtnf += ' đô';
+      rtnf += ' Đô La Mỹ';
       if (s1?.length > 0) {
         //Đọc số lẻ
         l = s1?.length;

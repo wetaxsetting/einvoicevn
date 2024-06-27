@@ -962,7 +962,7 @@ class Utils {
         }
       }
       if (strTmp != '') {
-        rtnf = rtnf + ' và' + strTmp + ' cen';
+        rtnf = rtnf + ' và' + strTmp + ' xu';
       }
     }
 

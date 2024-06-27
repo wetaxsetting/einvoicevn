@@ -8637,6 +8637,7 @@ class EInvoiceController {
                   p_tenGdDTu: tenGDDTu,
                   p_ngayTaoTB: ngayCQTKy,
                   p_ord: ord,
+                  p_tvan_data_result: JSON.stringify(res.data),
                 };
                 ////console.log("weTaxSendPosInvoiceToTaxOffice param_pos  ", param_pos);
                 await DBService.ExecuteSQLBlob(
@@ -8648,6 +8649,7 @@ class EInvoiceController {
                                     :p_tenGdDTu,
                                     :p_ngayTaoTB,
                                     :p_ord,
+                                    :p_tvan_data_result,
                                     :p_language, 
                                     :p_crt_by, 
                                     :p_rtn_cur); 

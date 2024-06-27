@@ -17225,6 +17225,7 @@ class EInvoiceController {
             invoice.tei_company_pk == '482' ||
             invoice.tei_company_pk == '483' ||
             invoice.tei_company_pk == '382' ||
+            //invoice.tei_company_pk == '942' ||
             invoice.tei_company_pk == '642'
           ) {
             url = EINVOICE_API_SEND_MAIL_SMTP;

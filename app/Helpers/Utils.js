@@ -972,7 +972,7 @@ class Utils {
 
     rtnf = minus + rtnf; //process minus case
     let rmSpace = rtnf.trim();
-    return rmSpace.charAt(0).toUpperCase() + rmSpace.slice(1);
+    return rmSpace.charAt(0).toUpperCase() + rmSpace.slice(1) + '.';
   };
 
   Num2EngText(s_r, ccy) {

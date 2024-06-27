@@ -9177,6 +9177,7 @@ class EInvoiceController {
                         p_tenGDDTu: tenGDDTu,
                         p_ngayTaoTB: ngayTaoTB,
                         p_ord: ord,
+                        p_tvan_data_result: JSON.stringify(res.data),
                       };
 
                       console.log('weTaxSendInvoiceToTaxOffice  para_history  ', para_history);
@@ -9190,6 +9191,7 @@ class EInvoiceController {
                                                     :p_tenGDDTu,
                                                     :p_ngayTaoTB,
                                                     :p_ord,
+                                                    :p_tvan_data_result,
                                                     :p_language, 
                                                     :p_crt_by, 
                                                     :p_rtn_cur); 

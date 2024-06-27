@@ -771,6 +771,7 @@ class Utils {
       s1 = s.substring(s.indexOf('.') + 1);
       s = s.substring(0, s.indexOf('.'));
     }
+
     var B = [];
     s = s.trim();
     l = s.length;
@@ -878,8 +879,31 @@ class Utils {
       if (dk == 1) break;
     }
 
-    if (ccy == 'USD') {
-      rtnf += ' đô la mỹ';
+    if (ccy != 'VND') {
+      if (ccy == 'USD') {
+        rtnf += ' đô la mỹ';
+      } else if (ccy == 'EUR') {
+        rtnf += ' euro';
+      } else if (ccy == 'KRW') {
+        rtnf += ' won';
+      } else if (ccy == 'JPY') {
+        rtnf += ' yên';
+      } else if (ccy == 'GBP') {
+        rtnf += ' bảng anh';
+      } else if (ccy == 'CNY') {
+        rtnf += ' nhân dân tệ';
+      } else if (ccy == 'AUD') {
+        rtnf += ' đô la úc';
+      } else if (ccy == 'CAD') {
+        rtnf += ' đô la canada';
+      } else if (ccy == 'CHF') {
+        rtnf += ' franc thụy sĩ';
+      } else if (ccy == 'HKD') {
+        rtnf += ' đô la hồng kông';
+      } else if (ccy == 'NZD') {
+        rtnf += ' đô la new zealand';
+      }
+
       if (s1?.length > 0) {
         //Đọc số lẻ
         l = s1?.length;
@@ -888,7 +912,7 @@ class Utils {
           return rtnf;
         }
         for (i = 0; i < l; i++) {
-          B[i] = s1.substring(i, 1);
+          B[i] = s1.substring(i, i + 1);
         }
         strTmp = '';
         //Dịch Tạm
@@ -948,7 +972,7 @@ class Utils {
 
     rtnf = minus + rtnf; //process minus case
     let rmSpace = rtnf.trim();
-    return rmSpace.charAt(0).toUpperCase() + rmSpace.slice(1) + '.';
+    return rmSpace.charAt(0).toUpperCase() + rmSpace.slice(1);
   };
 
   Num2EngText(s_r, ccy) {

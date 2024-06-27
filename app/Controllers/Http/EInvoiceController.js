@@ -17218,7 +17218,6 @@ class EInvoiceController {
       const data_inv = JSON.parse(data);
       //console.log('data_inv ', data_inv);
       if (data_inv.length > 0 && data_inv) {
-        
         for (const invoice of data_inv) {
           //console.log('invoice  ', invoice);
           //return invoice;
@@ -17232,7 +17231,7 @@ class EInvoiceController {
           } else {
             url = EINVOICE_API_SEND_MAIL;
           }
-
+          //console.log('url  ', url);
           const res_send_mail = await Request.post(url, {
             mail_to: invoice.email_address,
             cc_to: invoice.email_address_cc,
@@ -17242,6 +17241,7 @@ class EInvoiceController {
             attachfile2: invoice.attachfile2,
             filename1: invoice.filename1,
             filename2: invoice.filename2,
+            client_id: invoice.client_id,
           });
 
           //console.log('res_send_mail  ', res_send_mail.data);

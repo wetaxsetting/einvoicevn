@@ -17218,19 +17218,21 @@ class EInvoiceController {
       const data_inv = JSON.parse(data);
       //console.log('data_inv ', data_inv);
       if (data_inv.length > 0 && data_inv) {
-        if (
-          data[0].tei_company_pk == '482' ||
-          data[0].tei_company_pk == '483' ||
-          data[0].tei_company_pk == '382' ||
-          data[0].tei_company_pk == '642'
-        ) {
-          url = EINVOICE_API_SEND_MAIL_SMTP;
-        } else {
-          url = EINVOICE_API_SEND_MAIL;
-        }
+        
         for (const invoice of data_inv) {
           //console.log('invoice  ', invoice);
           //return invoice;
+          if (
+            invoice.tei_company_pk == '482' ||
+            invoice.tei_company_pk == '483' ||
+            invoice.tei_company_pk == '382' ||
+            invoice.tei_company_pk == '642'
+          ) {
+            url = EINVOICE_API_SEND_MAIL_SMTP;
+          } else {
+            url = EINVOICE_API_SEND_MAIL;
+          }
+
           const res_send_mail = await Request.post(url, {
             mail_to: invoice.email_address,
             cc_to: invoice.email_address_cc,

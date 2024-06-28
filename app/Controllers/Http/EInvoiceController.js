@@ -7013,7 +7013,7 @@ class EInvoiceController {
           seller_taxcode: invoice.seller_taxcode,
           seller_address: invoice.seller_address,
           seller_phone: invoice.seller_phone,
-          // buyer_nm: invoice.buyer_nm || '', tam thoi dong -- vng-199
+          buyer_nm: invoice.buyer_nm || '', // tam thoi dong -- vng-199
           buyer_comp_name: invoice.buyer_comp_name || '',
           buyer_taxcode: invoice.buyer_taxcode,
           buyer_phone: invoice.buyer_phone,
@@ -7053,6 +7053,7 @@ class EInvoiceController {
                                                           :seller_taxcode,
                                                           :seller_address,
                                                           :seller_phone,
+                                                          :buyer_nm,
                                                           :buyer_comp_name,
                                                           :buyer_taxcode,
                                                           :buyer_phone,

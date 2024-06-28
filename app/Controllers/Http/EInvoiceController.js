@@ -14948,6 +14948,7 @@ class EInvoiceController {
                 DChi: 'DLHDon/NDHDon/NMua/DChi',
                 SDThoai: 'DLHDon/NDHDon/NMua/SDThoai',
                 CCCDan: 'DLHDon/NDHDon/NMua/CCCDan',
+                HVTNMHang: 'DLHDon/NDHDon/NMua/TTKhac/TTin/DLieu',
               },
               DSHHDVu: {
                 HHDVu: [
@@ -15072,6 +15073,7 @@ class EInvoiceController {
               nmua_dchi: invoice.DLHDon.NDHDon.NMua.DChi,
               nmua_sdthoai: invoice.DLHDon.NDHDon.NMua.SDThoai,
               nmua_cccdan: invoice.DLHDon.NDHDon.NMua.CCCDan,
+              nmua_hvten: invoice.DLHDon.NDHDon.NMua.HVTNMHang,
 
               tgtcthue: invoice.DLHDon.NDHDon.TToan.TgTCThue,
               tgtthue: invoice.DLHDon.NDHDon.TToan.TgTThue,
@@ -15113,6 +15115,7 @@ class EInvoiceController {
                                                   :nmua_dchi,
                                                   :nmua_sdthoai,
                                                   :nmua_cccdan,
+                                                  :nmua_hvten,
                                                   :tgtcthue,
                                                   :tgtthue,
                                                   :ttcktmai,

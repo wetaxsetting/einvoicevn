@@ -5611,13 +5611,13 @@ class EInvoiceController {
         objInvoice.DLHDon.TTChung.HTTToan = invoices[i].payment_method;
         objInvoice.DLHDon.TTChung.MSTTCGP = '1201496252'; //webcashgenuwin.com taxcode
 
-        //objInvoice_M.HDon.DLHDon.TTChung.TTKhac = {};
-        //objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin = [];
-        // objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin.push({
-        //   TTruong: 'PortalLink',
-        //   KDLieu: 'string',
-        //   DLieu: 'https://einvoicepro.webcashvietnam.com/login',
-        // });
+        objInvoice.DLHDon.TTChung.TTKhac = {};
+        objInvoice.DLHDon.TTChung.TTKhac.TTin = [];
+        objInvoice.DLHDon.TTChung.TTKhac.TTin.push({
+          TTruong: 'PortalLink',
+          KDLieu: 'string',
+          DLieu: 'https://einvoicepro.webcashvietnam.com/login',
+        });
 
         // objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin.push({
         //   TTruong: 'Wkey',
@@ -5635,15 +5635,16 @@ class EInvoiceController {
         objInvoice.DLHDon.NDHDon.NMua.DChi = this.convertHtmlCode(invoices[i].buyer_address);
         objInvoice.DLHDon.NDHDon.NMua.CCCDan = invoices[i].buyer_cccd;
         objInvoice.DLHDon.NDHDon.NMua.SDThoai = invoices[i].buyer_tel;
+        if (invoices[i].buyer_nm) {
+          objInvoice.DLHDon.NDHDon.NMua.TTKhac = {};
+          objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin = [];
 
-        objInvoice.DLHDon.NDHDon.NMua.TTKhac = {};
-        objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin = [];
-
-        objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
-          TTruong: 'HVTNMHang',
-          KDLieu: 'string',
-          DLieu: invoices[i].buyer_nm,
-        });
+          objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
+            TTruong: 'HVTNMHang',
+            KDLieu: 'string',
+            DLieu: invoices[i].buyer_nm,
+          });
+        }
 
         //if(invoices[i].buyer_tel)
 

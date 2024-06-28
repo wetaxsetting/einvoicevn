@@ -102,6 +102,7 @@
         "vue-chartjs": "^3.5.1",
         "vue-friendly-iframe": "^0.19.0",
         "vue-i18n": "^8.15.0",
+        "vue-json-viewer": "^2.2.22",
         "vue-notifyjs": "^0.4.3",
         "vue-pdf-app": "^2.1.0",
         "vue-pdf-embed": "^1.1.6",

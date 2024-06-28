@@ -5520,6 +5520,7 @@ class EInvoiceController {
             DVTTe: '',
             TGia: '',
             HTTToan: '',
+            TTKhac: '',
           },
           NDHDon: {
             NBan: {
@@ -5527,6 +5528,7 @@ class EInvoiceController {
               MST: '',
               DChi: '',
               SDThoai: '',
+              TTKhac: '',
             },
             NMua: {
               Ten: '',
@@ -5534,6 +5536,7 @@ class EInvoiceController {
               DChi: '',
               SDThoai: '',
               CCCDan: '',
+              TTKhac: '',
             },
             DSHHDVu: {},
             TToan: {
@@ -5608,6 +5611,20 @@ class EInvoiceController {
         objInvoice.DLHDon.TTChung.HTTToan = invoices[i].payment_method;
         objInvoice.DLHDon.TTChung.MSTTCGP = '1201496252'; //webcashgenuwin.com taxcode
 
+        //objInvoice_M.HDon.DLHDon.TTChung.TTKhac = {};
+        //objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin = [];
+        // objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin.push({
+        //   TTruong: 'PortalLink',
+        //   KDLieu: 'string',
+        //   DLieu: 'https://einvoicepro.webcashvietnam.com/login',
+        // });
+
+        // objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin.push({
+        //   TTruong: 'Wkey',
+        //   KDLieu: 'string',
+        //   DLieu: invoices[i].master.customfield2,
+        // });
+
         objInvoice.DLHDon.NDHDon.NBan.Ten = this.convertHtmlCode(invoices[i].seller_comp_name);
         objInvoice.DLHDon.NDHDon.NBan.MST = invoices[i].seller_taxcode;
         objInvoice.DLHDon.NDHDon.NBan.DChi = this.convertHtmlCode(invoices[i].seller_address);
@@ -5618,6 +5635,15 @@ class EInvoiceController {
         objInvoice.DLHDon.NDHDon.NMua.DChi = this.convertHtmlCode(invoices[i].buyer_address);
         objInvoice.DLHDon.NDHDon.NMua.CCCDan = invoices[i].buyer_cccd;
         objInvoice.DLHDon.NDHDon.NMua.SDThoai = invoices[i].buyer_tel;
+
+        objInvoice.DLHDon.NDHDon.NMua.TTKhac = {};
+        objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin = [];
+
+        objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
+          TTruong: 'HVTNMHang',
+          KDLieu: 'string',
+          DLieu: invoices[i].buyer_nm,
+        });
 
         //if(invoices[i].buyer_tel)
 

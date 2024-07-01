@@ -12467,7 +12467,7 @@ class EInvoiceController {
 
   async viewPDFInvoiceOut({request, response, auth}) {
     try {
-      const {rep_key, type} = request.all();
+      const {rep_key, type, name} = request.all();
       console.log('rep_key ', rep_key, '  type ', type);
       const screte_key = 'RVNJbjib65jkGKJB789';
       const key = Utils.md5(rep_key + screte_key);
@@ -12571,7 +12571,10 @@ class EInvoiceController {
           });
 
         return response.send(
-          Utils.response(true, 'general url excel success', APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token),
+          Utils.response(true, 'general url excel success', {
+            url: APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token,
+            name: name,
+          }),
         );
       } else if (type == 'X') {
         const dir = ROOT_DIR_FILES.replace('/', '') + '/xml/' + year + '/' + month;

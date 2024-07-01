@@ -12512,8 +12512,14 @@ class EInvoiceController {
             console.error(error);
           });
 
+        // return response.send(
+        //   Utils.response(true, 'general url pdf success', APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token),
+        // );
         return response.send(
-          Utils.response(true, 'general url pdf success', APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token),
+          Utils.response(true, 'general url pdf success', {
+            url: APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token,
+            name: name,
+          }),
         );
       } else if (type == 'E') {
         const dir = ROOT_DIR_FILES.replace('/', '') + '/excel/' + year + '/' + month;
@@ -12541,8 +12547,14 @@ class EInvoiceController {
             console.error(error);
           });
 
+        // return response.send(
+        //   Utils.response(true, 'general url excel success', APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token),
+        // );
         return response.send(
-          Utils.response(true, 'general url excel success', APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token),
+          Utils.response(true, 'general url excel success', {
+            url: APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token,
+            name: name,
+          }),
         );
       } else if (type == 'EL') {
         const dir = ROOT_DIR_FILES.replace('/', '') + '/excel/' + year + '/' + month;
@@ -12602,8 +12614,14 @@ class EInvoiceController {
             console.error(error);
           });
 
+        // return response.send(
+        //   Utils.response(true, 'general url  success', APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token),
+        // );
         return response.send(
-          Utils.response(true, 'general url xml success', APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token),
+          Utils.response(true, 'general url xml success', {
+            url: APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token,
+            name: name,
+          }),
         );
       }
     } catch (e) {

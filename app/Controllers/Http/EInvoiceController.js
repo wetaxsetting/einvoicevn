@@ -13371,7 +13371,6 @@ class EInvoiceController {
               MST: '',
               DChi: '',
               SDThoai: '',
-              HVTNMHang: '',
               CCCDan: '',
             },
             DSHHDVu: {},
@@ -13435,6 +13434,17 @@ class EInvoiceController {
     objInvoice_M.HDon.DLHDon.NDHDon.NMua.DChi = this.convertHtmlCode(dataObject.buyer_address);
     objInvoice_M.HDon.DLHDon.NDHDon.NMua.CCCDan = dataObject.buyer_cccd;
     objInvoice_M.HDon.DLHDon.NDHDon.NMua.SDThoai = dataObject.buyer_phone;
+
+    if (dataObject.buyer_nm) {
+      objInvoice_M.HDon.DLHDon.NDHDon.NMua.TTKhac = {};
+      objInvoice_M.HDon.DLHDon.NDHDon.NMua.TTKhac.TTin = [];
+
+      objInvoice_M.HDon.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
+        TTruong: 'HVTNMHang',
+        KDLieu: 'string',
+        DLieu: dataObject.buyer_nm,
+      });
+    }
 
     objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu = [];
 

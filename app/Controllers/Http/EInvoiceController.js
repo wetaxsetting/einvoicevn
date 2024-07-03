@@ -13424,6 +13424,13 @@ class EInvoiceController {
     objInvoice_M.HDon.DLHDon.TTChung.HTTToan = dataObject.payment_method;
     objInvoice_M.HDon.DLHDon.TTChung.MSTTCGP = '1201496252'; //webcashgenuwin.com taxcode
 
+    objInvoice_M.HDon.DLHDon.TTChung.TTKhac = {};
+    objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin = [];
+    objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin.push({
+      TTruong: 'PortalLink',
+      KDLieu: 'string',
+      DLieu: 'https://einvoicepro.webcashvietnam.com/login',
+    });
     objInvoice_M.HDon.DLHDon.NDHDon.NBan.Ten = this.convertHtmlCode(dataObject.seller_comp_name);
     objInvoice_M.HDon.DLHDon.NDHDon.NBan.MST = dataObject.seller_taxcode;
     objInvoice_M.HDon.DLHDon.NDHDon.NBan.DChi = this.convertHtmlCode(dataObject.seller_address);

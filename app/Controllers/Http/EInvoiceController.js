@@ -3715,7 +3715,7 @@ class EInvoiceController {
                     p_tenGDDTu: tenGDDTu,
                     p_ngayTaoTB: ngayTaoTB,
                     p_ord: ord,
-                    p_tvan_data_result: JSON.stringify(res.data),
+                    p_tvan_data_result: JSON.stringify(result.data),
                   };
 
                   console.log('weTaxCheckInformAdjustToTaxOffice  para_history  ', para_history);

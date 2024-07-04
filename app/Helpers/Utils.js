@@ -782,101 +782,105 @@ class Utils {
     for (i = 0; i < l; i++) {
       A[i] = s.substring(i, 1 + i);
     }
-    for (i = 0; i < l; i++) {
-      if ((l - i) % 3 == 0 && A[i] == '0' && (A[i + 1] != '0' || A[i + 2] != '0')) {
-        rtnf += ' không';
-      }
-      if (A[i] == '2') {
-        rtnf += ' hai';
-      }
-      if (A[i] == '3') {
-        rtnf += ' ba';
-      }
-      if (A[i] == '4') {
-        rtnf += ' bốn';
-      }
-      if (A[i] == '6') {
-        rtnf += ' sáu';
-      }
-      if (A[i] == '7') {
-        rtnf += ' bảy';
-      }
-      if (A[i] == '8') {
-        rtnf += ' tám';
-      }
-      if (A[i] == '9') {
-        rtnf += ' chín';
-      }
-      if (A[i] == '5') {
-        if (i > 0 && (l - i) % 3 == 1 && A[i - 1] != '0') {
-          rtnf += ' lăm';
-        } else {
-          rtnf += ' năm';
-        }
-      }
-      if (i > 2 && A[i] == '1' && (l - i) % 3 == 1 && Number(A[i - 1]) > 1) {
-        rtnf += ' mốt';
-      } else if (A[i] == '1' && (l - i) % 3 != 2) {
-        rtnf += ' một';
-      }
-      if ((l - i) % 3 == 2 && A[i] != '0' && A[i] != '1') {
-        rtnf += ' mươi';
-      } else if ((l - i) % 3 == 2 && A[i] != '0') {
-        rtnf += ' mười';
-      }
-      if (i == 0) {
-        if ((l - i) % 3 == 2 && A[i] == '0' && A[i + 1] != '0') {
+    if (l == 1 && A[0] == '0') {
+      rtnf += ' không';
+    } else {
+      for (i = 0; i < l; i++) {
+        if ((l - i) % 3 == 0 && A[i] == '0' && (A[i + 1] != '0' || A[i + 2] != '0')) {
           rtnf += ' không';
         }
-      } else {
-        if ((l - i) % 3 == 2 && A[i] == '0' && A[i + 1] != '0') {
-          rtnf += ' lẻ';
+        if (A[i] == '2') {
+          rtnf += ' hai';
         }
-      }
-      if ((l - i) % 3 == 0 && (A[i + 1] != '0' || A[i + 2] != '0')) {
-        rtnf += ' trăm';
-      } else if ((l - i) % 3 == 0 && A[i] != '0') {
-        rtnf += ' trăm';
-      }
-      if (l - i == 4) {
-        rtnf += ' nghìn';
-      }
-      if (l - i == 7) {
-        rtnf += ' triệu';
-      }
-      if (l - i == 10) {
-        rtnf += ' tỷ';
-      }
-      if (l - i == 13) {
-        rtnf += ' nghìn tỷ';
-      }
-      if (l - i == 16) {
-        rtnf += ' triệu tỷ';
-      }
-      if (l - i == 19) {
-        rtnf += ' tỷ tỷ';
-      }
-      if (l - i == 22) {
-        rtnf += ' triệu tỷ tỷ';
-      }
-      if (l - i == 25) {
-        rtnf += ' triệu tỷ tỷ';
-      }
-      if (l - i == 28) {
-        rtnf += ' tỷ tỷ tỷ';
-      }
-      if ((l - i) % 3 == 0 && A[i] == '0' && A[i + 1] == '0' && A[i + 2] == '0') {
-        i = i + 2;
-      }
-      if ((l - i) % 3 == 1) {
-        dk = 1;
-        for (j = i; j < l; j++) {
-          if (A[j] != '0') {
-            dk = 0;
+        if (A[i] == '3') {
+          rtnf += ' ba';
+        }
+        if (A[i] == '4') {
+          rtnf += ' bốn';
+        }
+        if (A[i] == '6') {
+          rtnf += ' sáu';
+        }
+        if (A[i] == '7') {
+          rtnf += ' bảy';
+        }
+        if (A[i] == '8') {
+          rtnf += ' tám';
+        }
+        if (A[i] == '9') {
+          rtnf += ' chín';
+        }
+        if (A[i] == '5') {
+          if (i > 0 && (l - i) % 3 == 1 && A[i - 1] != '0') {
+            rtnf += ' lăm';
+          } else {
+            rtnf += ' năm';
           }
         }
+        if (i > 2 && A[i] == '1' && (l - i) % 3 == 1 && Number(A[i - 1]) > 1) {
+          rtnf += ' mốt';
+        } else if (A[i] == '1' && (l - i) % 3 != 2) {
+          rtnf += ' một';
+        }
+        if ((l - i) % 3 == 2 && A[i] != '0' && A[i] != '1') {
+          rtnf += ' mươi';
+        } else if ((l - i) % 3 == 2 && A[i] != '0') {
+          rtnf += ' mười';
+        }
+        if (i == 0) {
+          if ((l - i) % 3 == 2 && A[i] == '0' && A[i + 1] != '0') {
+            rtnf += ' không';
+          }
+        } else {
+          if ((l - i) % 3 == 2 && A[i] == '0' && A[i + 1] != '0') {
+            rtnf += ' lẻ';
+          }
+        }
+        if ((l - i) % 3 == 0 && (A[i + 1] != '0' || A[i + 2] != '0')) {
+          rtnf += ' trăm';
+        } else if ((l - i) % 3 == 0 && A[i] != '0') {
+          rtnf += ' trăm';
+        }
+        if (l - i == 4) {
+          rtnf += ' nghìn';
+        }
+        if (l - i == 7) {
+          rtnf += ' triệu';
+        }
+        if (l - i == 10) {
+          rtnf += ' tỷ';
+        }
+        if (l - i == 13) {
+          rtnf += ' nghìn tỷ';
+        }
+        if (l - i == 16) {
+          rtnf += ' triệu tỷ';
+        }
+        if (l - i == 19) {
+          rtnf += ' tỷ tỷ';
+        }
+        if (l - i == 22) {
+          rtnf += ' triệu tỷ tỷ';
+        }
+        if (l - i == 25) {
+          rtnf += ' triệu tỷ tỷ';
+        }
+        if (l - i == 28) {
+          rtnf += ' tỷ tỷ tỷ';
+        }
+        if ((l - i) % 3 == 0 && A[i] == '0' && A[i + 1] == '0' && A[i + 2] == '0') {
+          i = i + 2;
+        }
+        if ((l - i) % 3 == 1) {
+          dk = 1;
+          for (j = i; j < l; j++) {
+            if (A[j] != '0') {
+              dk = 0;
+            }
+          }
+        }
+        if (dk == 1) break;
       }
-      if (dk == 1) break;
     }
 
     if (ccy != 'VND') {

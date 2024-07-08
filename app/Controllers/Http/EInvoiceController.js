@@ -5810,7 +5810,7 @@ class EInvoiceController {
         buyer_tel: /^.{0,20}$/, //20,
         buyer_cccd: /^.{0,12}$/, //12,
         detail_invoice: {
-          feature: /^-?\d+(\.\d{1})?$/, //1,
+          feature: /^(1|2|3|4)$/, /// /^-?\d+(\.\d{1})?$/, //1,
           seq: /^-?\d+(\.\d{0,4})?$/, //4 ,
           item_code: /^[\s\S]{0,50}$/, //50,
           item_name: /^[\s\S]{1,500}$/, //500,
@@ -6061,7 +6061,7 @@ class EInvoiceController {
         buyer_tel: /^.{0,20}$/, //20,
         buyer_cccd: /^.{0,12}$/, //12,
         detail_invoice: {
-          feature: /^-?\d+(\.\d{1})?$/, //1,
+          feature: /^(1|2|3|4)$/, ///^-?\d+(\.\d{1})?$/, //1,
           seq: /^-?\d+(\.\d{0,4})?$/, //4 ,
           item_code: /^[\s\S]{0,50}$/, //50,
           item_name: /^[\s\S]{1,500}$/, //500,
@@ -9378,7 +9378,7 @@ class EInvoiceController {
         buyer_bank_no: /^.{0,30}$/,
         buyer_bank_name: /^.{0,400}$/,
         detail_invoice: {
-          feature: /^-?\d+(\.\d{1})?$/, //1,
+          feature: /^(1|2|3|4)$/, //  /^-?\d+(\.\d{1})?$/, //1,
           seq: /^-?\d+(\.\d{0,4})?$/, //4 ,
           item_code: /^[\s\S]{0,50}$/, //50,
           item_name: /^[\s\S]{1,500}$/, //500,

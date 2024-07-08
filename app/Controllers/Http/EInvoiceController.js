@@ -5772,7 +5772,7 @@ class EInvoiceController {
         buyer_tel: /^.{0,20}$/, //20,
         buyer_cccd: /^.{0,12}$/, //12,
         detail_invoice: {
-          feature: /^(1|2|3|4)$/, // /^-?\d+(\.\d{1})?$/, //1,
+          feature: /^(1|2|3|4){1}$/, // /^-?\d+(\.\d{1})?$/, //1,
           seq: /^-?\d+(\.\d{0,4})?$/, //4 ,
           item_code: /^[\s\S]{0,50}$/, //50,
           item_name: /^[\s\S]{1,500}$/, //500,
@@ -6023,7 +6023,7 @@ class EInvoiceController {
         buyer_tel: /^.{0,20}$/, //20,
         buyer_cccd: /^.{0,12}$/, //12,
         detail_invoice: {
-          feature: /^(1|2|3|4)$/, ///^-?\d+(\.\d{1})?$/, //1,
+          feature: /^(1|2|3|4){1}$/, ///^-?\d+(\.\d{1})?$/, //1,
           seq: /^-?\d+(\.\d{0,4})?$/, //4 ,
           item_code: /^[\s\S]{0,50}$/, //50,
           item_name: /^[\s\S]{1,500}$/, //500,
@@ -9335,7 +9335,7 @@ class EInvoiceController {
         buyer_bank_no: /^.{0,30}$/,
         buyer_bank_name: /^.{0,400}$/,
         detail_invoice: {
-          feature: /^(1|2|3|4)$/, ///^-?\d+(\.\d{1})?$/, //1,
+          feature: /^(1|2|3|4){1}$/, ///^-?\d+(\.\d{1})?$/, //1,
           seq: /^-?\d+(\.\d{0,4})?$/, //4 ,
           item_code: /^[\s\S]{0,50}$/, //50,
           item_name: /^[\s\S]{1,500}$/, //500,
@@ -9361,8 +9361,10 @@ class EInvoiceController {
         total_payment: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
         total_payment_word_vie: /^.{0,255}$/, // 255
       };
-
+      console.log(' invoices  ', invoices);
       for (const invoice of invoices) {
+        console.log(' invoice  ', invoice);
+
         for (const key in invoice) {
           if (errorList[`${key}`] != undefined && !Array.isArray(invoice[key])) {
             if (key == 'seller_taxcode' || key == 'buyer_taxcode') {
@@ -18015,6 +18017,27 @@ class EInvoiceController {
 
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
     }
+  }
+
+  async ValidateInvoiceCSharp({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const {data_inv} = request.all();
+      console.log('data_inv  ', data_inv);
+      const invoices = JSON.parse(data_inv);
+
+      const valid = await this.validateJsonInvalidNormalInvoiceToXML(invoices);
+      console.log('valid  ', valid);
+      if (!valid.status) {
+        return response.status(400).json(Utils.responseByRule({success: false, message: valid.message}));
+      }
+      return response.status(200).json(Utils.responseByRule({success: true, message: 'Check validate is done.'}));
+    } catch (error) {}
   }
 }
 

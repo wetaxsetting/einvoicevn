@@ -5644,7 +5644,7 @@ class EInvoiceController {
         buyer_tel: /^.{0,20}$/, //20,
         buyer_cccd: /^.{0,12}$/, //12,
         detail_invoice: {
-          feature: /^-?\d+(\.\d{1})?$/, //1,
+          feature: /^(1|2|3|4)$/, ///^-?\d+(\.\d{1})?$/, //1,
           seq: /^-?\d+(\.\d{0,4})?$/, //4 ,
           item_code: /^.{0,50}$/, //50,
           item_name: /^.{1,500}$/, //500,
@@ -8315,7 +8315,7 @@ class EInvoiceController {
         objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTThue = invoices[i].total_vat_amt || '0';
         objInvoice_M.HDon.DLHDon.NDHDon.TToan.TTCKTMai = invoices[i].total_dc_amt || '0';
         objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = invoices[i].total_payment || '0';
-        objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = invoices[i].total_payment_word_vie ;//await Utils.Num2VNText2(invoices[i].total_payment.toString() || '0', invoices[i].currency);
+        objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = invoices[i].total_payment_word_vie; //await Utils.Num2VNText2(invoices[i].total_payment.toString() || '0', invoices[i].currency);
 
         objInvoice_M.HDon.DSCKS.NBan = '';
         objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu = {};
@@ -12203,7 +12203,7 @@ class EInvoiceController {
         buyer_bank_no: /^.{0,30}$/,
         buyer_bank_name: /^.{0,400}$/,
         detail_invoice: {
-          feature: /^-?\d+(\.\d{1})?$/, //1,
+          feature: /^(1|2|3|4)$/, ///^-?\d+(\.\d{1})?$/, //1,
           seq: /^-?\d+(\.\d{0,4})?$/, //4 ,
           item_code: /^.{0,50}$/, //50,
           item_name: /^.{1,500}$/, //500,

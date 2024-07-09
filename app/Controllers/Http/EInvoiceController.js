@@ -9435,7 +9435,8 @@ class EInvoiceController {
               for (const inv of invoice[key]) {
                 if (!errorList[`${key}`].feature.test(inv.feature)) {
                   status = false;
-                  resMess = `${mess1} ${key}.`;
+                  resMess = `${mess1} feature is:  ${inv.feature}.`;
+
                   return {
                     status,
                     message: resMess,

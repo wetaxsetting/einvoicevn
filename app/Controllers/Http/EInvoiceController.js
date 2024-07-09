@@ -5834,7 +5834,7 @@ class EInvoiceController {
         total_vat_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
         total_dc_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
         total_payment: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
-        total_payment_word_vie: /^.{0,255}$/, // 255
+        total_payment_word_vie: /^.{1,255}$/, // 255
       };
 
       for (const invoice of invoices) {
@@ -6085,7 +6085,7 @@ class EInvoiceController {
         total_amt_vat: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
         total_amt_dc: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
         total_payment: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
-        //total_payment_word_vie: /^.{0,255}$/, // 255
+        total_payment_word_vie: /^.{1,255}$/, // 255
       };
 
       for (const invoice of invoices) {
@@ -9402,7 +9402,7 @@ class EInvoiceController {
         total_vat_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
         total_dc_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
         total_payment: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
-        total_payment_word_vie: /^.{0,255}$/, // 255
+        total_payment_word_vie: /^.{1,255}$/, // 255
       };
 
       for (const invoice of invoices) {

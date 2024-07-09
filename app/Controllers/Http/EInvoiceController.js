@@ -5840,6 +5840,7 @@ class EInvoiceController {
       for (const invoice of invoices) {
         for (const key in invoice) {
           if (errorList[`${key}`] != undefined && !Array.isArray(invoice[key])) {
+            //console.log('weTaxConvertPosInvoiceToXML key  ', key, ' invoice[key] ', invoice[key]);
             if (key == 'seller_taxcode' || key == 'buyer_taxcode') {
               if (invoice[key].length == 10) {
                 if (!errorList[`${key}`][10].test(invoice[key])) {
@@ -5867,7 +5868,8 @@ class EInvoiceController {
                   message: resMess,
                 };
               }
-            } else if (!errorList[`${key}`].test(invoice[key]) && invoice[key]) {
+            } else if (!errorList[`${key}`].test(invoice[key])) {
+              // && invoice[key]
               status = false;
               resMess = `${mess1} ${key}.`;
               return {
@@ -6118,7 +6120,8 @@ class EInvoiceController {
                   message: resMess,
                 };
               }
-            } else if (!errorList[`${key}`].test(invoice[key]) && invoice[key]) {
+            } else if (!errorList[`${key}`].test(invoice[key])) {
+              //&& invoice[key]
               status = false;
               resMess = `${mess1} ${key}.`;
               return {
@@ -9435,6 +9438,14 @@ class EInvoiceController {
                   message: resMess,
                 };
               }
+            } else if (!errorList[`${key}`].test(invoice[key])) {
+              // && invoice[key]
+              status = false;
+              resMess = `${mess1} ${key}.`;
+              return {
+                status,
+                message: resMess,
+              };
             }
           } else {
             if (key == 'total_vat_list') {

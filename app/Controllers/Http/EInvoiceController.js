@@ -5881,7 +5881,7 @@ class EInvoiceController {
               for (const inv of invoice[key]) {
                 if (!errorList[`${key}`].feature.test(inv.feature)) {
                   status = false;
-                  resMess = `${mess1} ${key}.`;
+                  resMess = `${mess1} feature is:  ${inv.feature}.`;
                   return {
                     status,
                     message: resMess,
@@ -6133,7 +6133,7 @@ class EInvoiceController {
                 console.log('detail_invoice  inv ', inv);
                 if (!errorList[`${key}`].feature.test(inv.feature)) {
                   status = false;
-                  resMess = `${mess1} ${key}.`;
+                  resMess = `${mess1} feature is:  ${inv.feature}.`;
                   return {
                     status,
                     message: resMess,
@@ -9404,7 +9404,7 @@ class EInvoiceController {
                   sub_vat.sub_vat_rate != 'KKKNT'
                 ) {
                   status = false;
-                  resMess = `${mess1} ${key}.`;
+                  resMess = `${mess1} sub_vat_rate is:  ${inv.sub_vat_rate}.`;
                   return {
                     status,
                     message: resMess,
@@ -9413,7 +9413,7 @@ class EInvoiceController {
 
                 if (!errorList[`${key}`].sub_amt.test(sub_vat.sub_amt)) {
                   status = false;
-                  resMess = `${mess1} ${key}.`;
+                  resMess = `${mess1} sub_amt is:  ${inv.sub_amt}.`;
                   return {
                     status,
                     message: resMess,
@@ -9422,7 +9422,7 @@ class EInvoiceController {
 
                 if (!errorList[`${key}`].sub_amt_vat.test(sub_vat.sub_amt_vat)) {
                   status = false;
-                  resMess = `${mess1} ${key}.`;
+                  resMess = `${mess1} sub_amt_vat is:  ${inv.sub_amt_vat}.`;
                   return {
                     status,
                     message: resMess,

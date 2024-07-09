@@ -5644,7 +5644,7 @@ class EInvoiceController {
         buyer_tel: /^.{0,20}$/, //20,
         buyer_cccd: /^.{0,12}$/, //12,
         detail_invoice: {
-          feature: /^(1|2|3|4)$/, ///^-?\d+(\.\d{1})?$/, //1,
+          feature: /^(1|2|3|4){1}$/, ///^-?\d+(\.\d{1})?$/, //1,
           seq: /^-?\d+(\.\d{0,4})?$/, //4 ,
           item_code: /^.{0,50}$/, //50,
           item_name: /^.{1,500}$/, //500,
@@ -5753,7 +5753,7 @@ class EInvoiceController {
               for (const inv of invoice[key]) {
                 if (!errorList[`${key}`].feature.test(inv.feature)) {
                   status = false;
-                  resMess = `${mess1} ${key}.`;
+                  resMess = `${mess1} feature is:  ${inv.feature}.`;
                   return {
                     status,
                     message: resMess,
@@ -12203,7 +12203,7 @@ class EInvoiceController {
         buyer_bank_no: /^.{0,30}$/,
         buyer_bank_name: /^.{0,400}$/,
         detail_invoice: {
-          feature: /^(1|2|3|4)$/, ///^-?\d+(\.\d{1})?$/, //1,
+          feature: /^(1|2|3|4){1}$/, ///^-?\d+(\.\d{1})?$/, //1,
           seq: /^-?\d+(\.\d{0,4})?$/, //4 ,
           item_code: /^.{0,50}$/, //50,
           item_name: /^.{1,500}$/, //500,
@@ -12301,7 +12301,7 @@ class EInvoiceController {
               for (const inv of invoice[key]) {
                 if (!errorList[`${key}`].feature.test(inv.feature)) {
                   status = false;
-                  resMess = `${mess1} ${key}.`;
+                  resMess = `${mess1} feature is:  ${inv.feature}.`;
                   return {
                     status,
                     message: resMess,

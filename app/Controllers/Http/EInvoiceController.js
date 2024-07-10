@@ -5701,7 +5701,17 @@ class EInvoiceController {
                   message: resMess,
                 };
               }
-            } else if (!errorList[`${key}`].test(invoice[key]) && invoice[key]) {
+            } else if (key == 'buyer_email' || key == 'buyer_email_cc' || key == 'seller_email') {
+              if (!errorList[`${key}`].test(invoice[key]) && invoice[key]) {
+                // && invoice[key]
+                status = false;
+                resMess = `${mess1} ${key}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+            } else if (!errorList[`${key}`].test(invoice[key])) {
               status = false;
               resMess = `${mess1} ${key}.`;
               return {
@@ -12260,6 +12270,23 @@ class EInvoiceController {
                   message: resMess,
                 };
               }
+            } else if (key == 'buyer_email' || key == 'buyer_email_cc' || key == 'seller_email') {
+              if (!errorList[`${key}`].test(invoice[key]) && invoice[key]) {
+                // && invoice[key]
+                status = false;
+                resMess = `${mess1} ${key}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+            } else if (!errorList[`${key}`].test(invoice[key])) {
+              status = false;
+              resMess = `${mess1} ${key}.`;
+              return {
+                status,
+                message: resMess,
+              };
             }
           } else {
             if (key == 'total_vat_list') {

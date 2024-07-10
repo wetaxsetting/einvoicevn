@@ -5868,6 +5868,16 @@ class EInvoiceController {
                   message: resMess,
                 };
               }
+            } else if (key == 'buyer_email' || key == 'buyer_email_cc' || key == 'seller_email') {
+              if (!errorList[`${key}`].test(invoice[key]) && invoice[key]) {
+                // && invoice[key]
+                status = false;
+                resMess = `${mess1} ${key}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
             } else if (!errorList[`${key}`].test(invoice[key])) {
               // && invoice[key]
               status = false;
@@ -6115,6 +6125,16 @@ class EInvoiceController {
               } else if ((invoice[key].length < 10 || invoice[key].length > 14) && invoice[key]) {
                 status = false;
                 resMess = `${mess1} ${key}. length between 10 and 14}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+            } else if (key == 'buyer_email' || key == 'buyer_email_cc' || key == 'seller_email') {
+              if (!errorList[`${key}`].test(invoice[key]) && invoice[key]) {
+                // && invoice[key]
+                status = false;
+                resMess = `${mess1} ${key}.`;
                 return {
                   status,
                   message: resMess,
@@ -9438,8 +9458,17 @@ class EInvoiceController {
                   message: resMess,
                 };
               }
+            } else if (key == 'buyer_email' || key == 'buyer_email_cc' || key == 'seller_email') {
+              if (!errorList[`${key}`].test(invoice[key]) && invoice[key]) {
+                // && invoice[key]
+                status = false;
+                resMess = `${mess1} ${key}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
             } else if (!errorList[`${key}`].test(invoice[key])) {
-              // && invoice[key]
               status = false;
               resMess = `${mess1} ${key}.`;
               return {

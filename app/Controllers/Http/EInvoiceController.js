@@ -9459,6 +9459,7 @@ class EInvoiceController {
                 };
               }
             } else if (key == 'buyer_email' || key == 'buyer_email_cc' || key == 'seller_email') {
+              console.log('validateJsonInvalidNormalInvoiceToXML  key   ', key, ' - ', invoice[key]);
               if (!errorList[`${key}`].test(invoice[key]) && invoice[key]) {
                 // && invoice[key]
                 status = false;

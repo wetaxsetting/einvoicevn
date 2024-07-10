@@ -159,11 +159,10 @@ class DsoController {
         ip = request.ip();
       }
       if (HOST != ip && ip != '127.0.0.1') {
-        // đóng vì k bỏ giới hạn thời hạn
-        /*const curDate = Utils.CurrentDate();
-        if (arrToken[1].substring(0, 8) != curDate) {
-          return response.send(Utils.response(false, "Token was expired", null));
-        }*/
+        // const curDate = Utils.CurrentDate();
+        // if (arrToken[1].substring(0, 8) != curDate) {
+        //   return response.send(Utils.response(false, "Token was expired", null));
+        // }
       }
       if (DB_CONNECTION == 'oracle') {
         oracledb.fetchAsBuffer = [oracledb.BLOB];
@@ -172,14 +171,14 @@ class DsoController {
       const result = await DBService.callProcCursor(proc, [pk], 'ENG', 'public', 'N');
       console.log('result ', result);
       if (result.length > 0) {
+        response.header('Content-Type', result[0].FILE_TYPE);
+        response.header('Content-Disposition', 'attachment; filename=' + result[0].FILE_NAME);
         if (result[0].FILE_SIZE) {
           response.header('Content-Length', result[0].FILE_SIZE);
         } else {
           var getLength = require('utf8-byte-length');
           response.header('Content-Length', getLength(result[0].FILE_CONTENT));
         }
-        response.header('Content-Type', result[0].FILE_TYPE);
-        response.header('Content-Disposition', 'attachment; filename=' + result[0].FILE_NAME);
         return response.send(result[0].FILE_CONTENT);
       }
       return response.send(Utils.response(false, 'not found data', null));
@@ -1177,23 +1176,6 @@ class DsoController {
     try {
       const {file_name} = request.get(['file_name']);
       const filePath = ROOT_DIR_FILES + file_name;
-
-      const current = new Date();
-      const year = current.getFullYear();
-      let month = current.getMonth() + 1;
-      let day = current.getDate();
-      if (day < 10) {
-        day = '0' + day;
-      }
-      if (month < 10) {
-        month = '0' + month;
-      }
-
-      let token = AES.encrypt(file_name + '|' + year + month + day, APP_KEY);
-      token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
-
-      console.log('filePath ', filePath, 'file_name ', file_name, 'ROOT_DIR_FILES  ', ROOT_DIR_FILES, ' token ', token);
-
       return response.attachment(filePath);
     } catch (e) {
       return response.send(Utils.response(false, e.message, null));
@@ -1219,14 +1201,12 @@ class DsoController {
         ip = request.ip();
       }
       if (HOST != ip && ip != '127.0.0.1') {
-        //tam thời đóng vì invoice lấy tư do k y/c thời hạn
-        /*const curDate = Utils.CurrentDate();
-        if (arrToken[1].substring(0, 8) != curDate) {
-          return response.send(Utils.response(false, "Token was expired", null));
-        }*/
+        //const curDate = Utils.CurrentDate();
+        //if (arrToken[1].substring(0, 8) != curDate) {
+        //  return response.send(Utils.response(false, "Token was expired", null));
+        //}
       }
-      const filePath = ROOT_DIR_FILES.replace('/', '') + file_name; // chưa biết có khác cấu trúc vật lý gì k nhưng real có "/" còn test thì k có "/" mới download đc.
-      console.log('filePath  ', filePath);
+      const filePath = ROOT_DIR_FILES.replace('/', '') + file_name;
       return response.download(filePath);
     } catch (e) {
       return response.send(Utils.response(false, e.message, null));
@@ -1257,8 +1237,7 @@ class DsoController {
           return response.send(Utils.response(false, 'Token was expired', null));
         }
       }
-      const filePath = ROOT_DIR_FILES.replace('/', '') + file_name; // chưa biết có khác cấu trúc vật lý gì k nhưng real có "/" còn test thì k có "/" mới download đc.
-      console.log(' filePath ', filePath);
+      const filePath = ROOT_DIR_FILES.replace('/', '') + file_name;
       return response.download(filePath);
     } catch (e) {
       return response.send(Utils.response(false, e.message, null));

@@ -1225,7 +1225,7 @@ class DsoController {
           return response.send(Utils.response(false, "Token was expired", null));
         }*/
       }
-      const filePath = ROOT_DIR_FILES.replace('/', '') + file_name; // không biết có khác cấu trúc vật lý gì k nhưng real có "/" còn test thì k có "/" mới download đc.
+      const filePath = ROOT_DIR_FILES.replace('/', '') + file_name; // chưa biết có khác cấu trúc vật lý gì k nhưng real có "/" còn test thì k có "/" mới download đc.
       console.log('filePath  ', filePath);
       return response.download(filePath);
     } catch (e) {
@@ -1257,7 +1257,7 @@ class DsoController {
           return response.send(Utils.response(false, 'Token was expired', null));
         }
       }
-      const filePath = ROOT_DIR_FILES + file_name;
+      const filePath = ROOT_DIR_FILES.replace('/', '') + file_name; // chưa biết có khác cấu trúc vật lý gì k nhưng real có "/" còn test thì k có "/" mới download đc.
       console.log(' filePath ', filePath);
       return response.download(filePath);
     } catch (e) {

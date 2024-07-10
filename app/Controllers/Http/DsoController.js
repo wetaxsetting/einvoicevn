@@ -1206,7 +1206,7 @@ class DsoController {
         //  return response.send(Utils.response(false, "Token was expired", null));
         //}
       }
-      const filePath = ROOT_DIR_FILES.replace('/', '') + file_name;
+      const filePath = ROOT_DIR_FILES + file_name;
       return response.download(filePath);
     } catch (e) {
       return response.send(Utils.response(false, e.message, null));
@@ -1237,7 +1237,7 @@ class DsoController {
           return response.send(Utils.response(false, 'Token was expired', null));
         }
       }
-      const filePath = ROOT_DIR_FILES.replace('/', '') + file_name;
+      const filePath = ROOT_DIR_FILES + file_name;
       return response.download(filePath);
     } catch (e) {
       return response.send(Utils.response(false, e.message, null));

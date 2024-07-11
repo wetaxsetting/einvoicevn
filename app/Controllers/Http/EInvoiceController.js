@@ -8548,15 +8548,21 @@ class EInvoiceController {
                     send_mail_yn: 'N',
                   });
                 } else if (items[k].loaiTBao == '9' || items[k].loaiTBao == '16' || items[k].loaiTBao == '15') {
-                  data_inv.push({
-                    sale_id: data[i].req_key,
-                    trade_code: data[i].trade_code,
-                    msg_his_id: data[i].msg_his_id,
-                    buyer_email: data[i].mail_to,
-                    buyer_email_cc: data[i].mail_cc,
-                    mccqt: maCQT,
-                    send_mail_yn: 'N',
+                  maTBao = items[k].loaiTBao;
+                  tenTBao = items[k].tenTBao;
+                  data_error.push({
+                    maLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].maLoi,
+                    mtaLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].mtaLoi,
                   });
+                  // data_inv.push({
+                  //   sale_id: data[i].req_key,
+                  //   trade_code: data[i].trade_code,
+                  //   msg_his_id: data[i].msg_his_id,
+                  //   buyer_email: data[i].mail_to,
+                  //   buyer_email_cc: data[i].mail_cc,
+                  //   mccqt: maCQT,
+                  //   send_mail_yn: 'N',
+                  // });
                 }
               }
             }

@@ -5570,17 +5570,49 @@ class EInvoiceController {
       if (!valid.status) {
         return response.status(400).json(Utils.responseByRule({success: false, message: valid.message}));
       }
-      /*let invoices_sample=[
-                            {master:{},detail:[{}]},
-                            {master:{},detail:[{}]},
-                            {master:{},detail:[{}]},
-                        ];*/
-      ////console.log("invoices1:", invoices)
+
       if (invoices.length == undefined || invoices.length == 0) {
         return response.status(400).json(Utils.responseByRule({success: false, message: `Invalid: list_invoice`}));
       }
 
       for (let i = 0; i < invoices.length; i++) {
+        const lastInvoiceNo = await DBService.callProcCursor(
+          'wt_sel_last_invoice_no',
+          [invoices[i].seller_taxcode, invoices[i].serial_no, invoices[i].form_no],
+          'ENG',
+          p_crt_by,
+          'N',
+        );
+        let last_invoice_no = lastInvoiceNo[0].INVOICE_NO;
+        const last_invoice_date = lastInvoiceNo[0].INVOICE_DATE;
+        const tomorrow_date = lastInvoiceNo[0].TOMORROW_DATE;
+        if (isNaN(last_invoice_no)) {
+          return response.status(409).json(
+            Utils.responseByRule({
+              success: false,
+              message: `Failed to create invoice no. Please contact administrator for helping.`,
+              data: null,
+            }),
+          );
+        }
+
+        if (invoices[i].invoice_date < last_invoice_date) {
+          return response.status(409).json(
+            Utils.responseByRule({
+              success: false,
+              message: `invoice date cannot smaller than ${last_invoice_date}.`,
+              data: invoices[i].invoice_date,
+            }),
+          );
+        }
+        if (invoices[i].invoice_date > tomorrow_date) {
+          return response
+            .status(409)
+            .json(
+              Utils.responseByRule({success: false, message: `invoice date cannot greater than ${tomorrow_date}.`, data: invoices[i].invoice_date}),
+            );
+        }
+
         req_key.push(invoices[i].req_key);
         if (invoices[i].form_no == 1) {
           objInvoice.DLHDon.TTChung.THDon = 'Hóa đơn giá trị gia tăng khởi tạo từ máy tính tiền';

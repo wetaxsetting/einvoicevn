@@ -9203,6 +9203,14 @@ class EInvoiceController {
             errmsg: 'The issuer invoice has not register',
           });
           continue;
+        } else if (masterInvoicePK.PK == -2) {
+          // console.log(`invalid xml format [${invoices[i].req_key}]`, invoices[i].xml_signed);
+          rtnValue.push({
+            req_key: invoices[i].req_key,
+            trade_code: '',
+            errmsg: 'invoice date current < invoice date max ',
+          });
+          continue;
         } else if (masterInvoicePK.PK == 0) {
           rtnValue.push({
             req_key: invoices[i].req_key,

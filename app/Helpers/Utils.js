@@ -1295,7 +1295,7 @@ class Utils {
       if (month < 10) {
         month = '0' + month;
       }
-      let savePath = `${this.ROOT_DIR_FILES.replace('/', '')}/${folder}/${year}/${month}`;
+      let savePath = `${this.ROOT_DIR_FILES}/${folder}/${year}/${month}`;
       let fileName = `${current.getTime()}.${imageExt.toLowerCase()}`;
       const timeName = new Date().getTime();
       await file.move(savePath, {name: timeName + '_' + fileName});

@@ -12461,7 +12461,7 @@ class EInvoiceController {
       if (month < 10) {
         month = '0' + month;
       }
-      const dir = ROOT_DIR_FILES.replace('/', '') + '/pdf/' + year + '/' + month;
+      const dir = ROOT_DIR_FILES + '/pdf/' + year + '/' + month;
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, {recursive: true}, err => {
           console.log(err);
@@ -12481,7 +12481,7 @@ class EInvoiceController {
         responseType: 'stream',
       })
         .then(async res => {
-          await res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES.replace('/', '') + fileName));
+          await res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES + fileName));
         })
         .catch(error => {
           console.error(error);
@@ -12525,7 +12525,7 @@ class EInvoiceController {
       }
 
       if (type == 'C') {
-        const dir = ROOT_DIR_FILES.replace('/', '') + '/pdf/' + year + '/' + month;
+        const dir = ROOT_DIR_FILES + '/pdf/' + year + '/' + month;
         if (!fs.existsSync(dir)) {
           fs.mkdirSync(dir, {recursive: true}, err => {
             console.log(err);
@@ -12543,7 +12543,7 @@ class EInvoiceController {
           responseType: 'stream',
         })
           .then(async res => {
-            await res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES.replace('/', '') + fileName));
+            await res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES + fileName));
           })
           .catch(error => {
             console.error(error);
@@ -12559,7 +12559,7 @@ class EInvoiceController {
           }),
         );
       } else if (type == 'E') {
-        const dir = ROOT_DIR_FILES.replace('/', '') + '/excel/' + year + '/' + month;
+        const dir = ROOT_DIR_FILES + '/excel/' + year + '/' + month;
         if (!fs.existsSync(dir)) {
           fs.mkdirSync(dir, {recursive: true}, err => {
             console.log(err);
@@ -12578,7 +12578,7 @@ class EInvoiceController {
         })
           .then(async res => {
             console.log(res);
-            await res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES.replace('/', '') + fileName));
+            await res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES + fileName));
           })
           .catch(error => {
             console.error(error);
@@ -12594,7 +12594,7 @@ class EInvoiceController {
           }),
         );
       } else if (type == 'EL') {
-        const dir = ROOT_DIR_FILES.replace('/', '') + '/excel/' + year + '/' + month;
+        const dir = ROOT_DIR_FILES + '/excel/' + year + '/' + month;
         if (!fs.existsSync(dir)) {
           fs.mkdirSync(dir, {recursive: true}, err => {
             console.log(err);
@@ -12613,7 +12613,7 @@ class EInvoiceController {
         })
           .then(async res => {
             console.log(res);
-            await res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES.replace('/', '') + fileName));
+            await res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES + fileName));
           })
           .catch(error => {
             console.error(error);
@@ -12626,7 +12626,7 @@ class EInvoiceController {
           }),
         );
       } else if (type == 'X') {
-        const dir = ROOT_DIR_FILES.replace('/', '') + '/xml/' + year + '/' + month;
+        const dir = ROOT_DIR_FILES + '/xml/' + year + '/' + month;
         if (!fs.existsSync(dir)) {
           fs.mkdirSync(dir, {recursive: true}, err => {
             console.log(err);
@@ -12645,7 +12645,7 @@ class EInvoiceController {
         })
           .then(async res => {
             console.log(res);
-            await res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES.replace('/', '') + fileName));
+            await res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES + fileName));
           })
           .catch(error => {
             console.error(error);
@@ -13026,7 +13026,7 @@ class EInvoiceController {
           if (month < 10) {
             month = '0' + month;
           }
-          const dir = ROOT_DIR_FILES.replace('/', '') + '/pdf/' + year + '/' + month;
+          const dir = ROOT_DIR_FILES + '/pdf/' + year + '/' + month;
           if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir, {recursive: true}, err => {
               console.log(err);
@@ -13043,7 +13043,7 @@ class EInvoiceController {
             responseType: 'stream',
           })
             .then(async res => {
-              await res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES.replace('/', '') + fileName));
+              await res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES + fileName));
             })
             .catch(error => {
               console.error(error);

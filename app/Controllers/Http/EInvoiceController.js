@@ -8716,7 +8716,9 @@ class EInvoiceController {
       ////console.log("json  ", json);
       //
       // //console.log("json.TDiep.DLieu.HDon  ", json.TDiep.DLieu.HDon);
-      console.log('check_data   ', check_data, 'data_inv  ', data_inv);
+      //console.log('check_data   ', check_data, 'data_inv  ', data_inv);
+
+      //return response.status(200).json(Utils.responseByRule({success: false, message: 'Send invoice to Tax Office failure!', data: check_data}));
       if (check_data.STATUS == 'FAILE') {
         // return response.send(Utils.response(false, `Send invoice to Tax Office was failure!`, null));
         return response.status(409).json(Utils.responseByRule({success: false, message: 'Send invoice to Tax Office failure!'}));
@@ -15163,11 +15165,15 @@ class EInvoiceController {
               KHMSHDon: 'DLHDon/TTChung/KHMSHDon',
               KHHDon: 'DLHDon/TTChung/KHHDon',
               SHDon: 'DLHDon/TTChung/SHDon',
-              MHSo: 'DLHDon/TTChung/MHSo',
               NLap: 'DLHDon/TTChung/NLap',
-              DVTTe: 'DLHDon/TTChung/DVTTe',
-              TGia: 'DLHDon/TTChung/TGia',
-              HTTToan: 'DLHDon/TTChung/HTTToan',
+              TTKhac: [
+                'DLHDon/TTChung/TTKhac/TTin',
+                {
+                  TTruong: 'TTruong',
+                  KDLieu: 'KDLieu',
+                  DLieu: 'DLieu',
+                },
+              ],
             },
             NDHDon: {
               NBan: {
@@ -15175,6 +15181,14 @@ class EInvoiceController {
                 MST: 'DLHDon/NDHDon/NBan/MST',
                 DChi: 'DLHDon/NDHDon/NBan/DChi',
                 SDThoai: 'DLHDon/NDHDon/NBan/SDThoai',
+                TTKhac: [
+                  'DLHDon/NDHDon/NBan/TTKhac/TTin',
+                  {
+                    TTruong: 'TTruong',
+                    KDLieu: 'KDLieu',
+                    DLieu: 'DLieu',
+                  },
+                ],
               },
               NMua: {
                 Ten: 'DLHDon/NDHDon/NMua/Ten',
@@ -15182,7 +15196,14 @@ class EInvoiceController {
                 DChi: 'DLHDon/NDHDon/NMua/DChi',
                 SDThoai: 'DLHDon/NDHDon/NMua/SDThoai',
                 CCCDan: 'DLHDon/NDHDon/NMua/CCCDan',
-                HVTNMHang: 'DLHDon/NDHDon/NMua/TTKhac/TTin/DLieu',
+                TTKhac: [
+                  'DLHDon/NDHDon/NMua/TTKhac/TTin',
+                  {
+                    TTruong: 'TTruong',
+                    KDLieu: 'KDLieu',
+                    DLieu: 'DLieu',
+                  },
+                ],
               },
               DSHHDVu: {
                 HHDVu: [
@@ -15240,7 +15261,9 @@ class EInvoiceController {
         },
       ];
       const jsonInvoice = await transform(xml_content, template);
-
+      // let check_data = jsonInvoice;
+      // let data_inv = check_data;
+      // return {check_data, data_inv};
       //console.log('weTaxExtractPosXMLContent BEGIN ===> line 14117 jsonInvoice ', jsonInvoice);
 
       const templateSignTime = {
@@ -15287,6 +15310,70 @@ class EInvoiceController {
             var getLength = require('utf8-byte-length');
             let xml_length = getLength(xml_content);
             console.log('weTaxExtractPosXMLContent m xml_content ===> ', xml_content);
+            let p_DVTTe = '',
+              p_TGia = '',
+              p_HTTToan = '';
+            invoice.DLHDon.TTChung.TTKhac.forEach((element, index) => {
+              if (element.TTruong == 'DVTTe') {
+                p_DVTTe = element.DLieu;
+              }
+              if (element.TTruong == 'TGia') {
+                p_TGia = element.DLieu;
+              }
+              if (element.TTruong == 'HTTToan') {
+                p_HTTToan = element.DLieu;
+              }
+            });
+
+            let p_DCTDTu = '',
+              p_STKNHang = '',
+              p_TNHang = '',
+              p_Fax = '',
+              p_Website = '';
+            invoice.DLHDon.NDHDon.NBan.TTKhac.forEach((element, index) => {
+              if (element.TTruong == 'DCTDTu') {
+                p_DCTDTu = element.DLieu;
+              }
+              if (element.TTruong == 'STKNHang') {
+                p_STKNHang = element.DLieu;
+              }
+              if (element.TTruong == 'TNHang') {
+                p_TNHang = element.DLieu;
+              }
+
+              if (element.TTruong == 'Fax') {
+                p_Fax = element.DLieu;
+              }
+
+              if (element.TTruong == 'Website') {
+                p_Website = element.DLieu;
+              }
+            });
+
+            let p_nm_DCTDTu = '',
+              p_nm_MKHang = '',
+              p_nm_HVTNMHang = '',
+              p_nm_STKNHang = '',
+              p_nm_TNHang = '';
+            invoice.DLHDon.NDHDon.NMua.TTKhac.forEach((element, index) => {
+              if (element.TTruong == 'DCTDTu') {
+                p_nm_DCTDTu = element.DLieu;
+              }
+              if (element.TTruong == 'MKHang') {
+                p_nm_MKHang = element.DLieu;
+              }
+              if (element.TTruong == 'HVTNMHang') {
+                p_nm_HVTNMHang = element.DLieu;
+              }
+
+              if (element.TTruong == 'STKNHang') {
+                p_nm_STKNHang = element.DLieu;
+              }
+
+              if (element.TTruong == 'TNHang') {
+                p_nm_TNHang = element.DLieu;
+              }
+            });
             const paraMaster = {
               pban: invoice.DLHDon.TTChung.PBan,
               thdon: invoice.DLHDon.TTChung.THDon,
@@ -15294,20 +15381,31 @@ class EInvoiceController {
               khhdon: invoice.DLHDon.TTChung.KHHDon,
               shdon: invoice.DLHDon.TTChung.SHDon,
               nlap: invoice.DLHDon.TTChung.NLap,
-              dvtte: invoice.DLHDon.TTChung.DVTTe,
-              tgia: invoice.DLHDon.TTChung.TGia,
-              htttoan: invoice.DLHDon.TTChung.HTTToan,
+
+              dvtte: p_DVTTe, //invoice.DLHDon.TTChung.DVTTe,
+              tgia: p_TGia, //invoice.DLHDon.TTChung.TGia,
+              htttoan: p_HTTToan, //invoice.DLHDon.TTChung.HTTToan,
+
               nban_ten: invoice.DLHDon.NDHDon.NBan.Ten,
               nban_mst: invoice.DLHDon.NDHDon.NBan.MST,
               nban_dchi: invoice.DLHDon.NDHDon.NBan.DChi,
               nban_sdthoai: invoice.DLHDon.NDHDon.NBan.SDThoai,
+              nban_dctdtu: p_DCTDTu,
+              nban_stknhang: p_STKNHang,
+              nban_tnhang: p_TNHang,
+              nban_fax: p_Fax,
+              nban_website: p_Website,
 
               nmua_ten: invoice.DLHDon.NDHDon.NMua.Ten,
               nmua_mst: invoice.DLHDon.NDHDon.NMua.MST,
               nmua_dchi: invoice.DLHDon.NDHDon.NMua.DChi,
               nmua_sdthoai: invoice.DLHDon.NDHDon.NMua.SDThoai,
               nmua_cccdan: invoice.DLHDon.NDHDon.NMua.CCCDan,
-              nmua_hvten: invoice.DLHDon.NDHDon.NMua.HVTNMHang,
+              nmua_dctdtu: p_nm_DCTDTu,
+              nmua_mkhang: p_nm_MKHang,
+              nmua_hvten: p_nm_HVTNMHang,
+              nmua_stknhang: p_nm_STKNHang,
+              nmua_tnhang: p_nm_TNHang,
 
               tgtcthue: invoice.DLHDon.NDHDon.TToan.TgTCThue,
               tgtthue: invoice.DLHDon.NDHDon.TToan.TgTThue,
@@ -15344,12 +15442,21 @@ class EInvoiceController {
                                                   :nban_mst,
                                                   :nban_dchi,
                                                   :nban_sdthoai,
+                                                  :nban_dctdtu,
+                                                  :nban_stknhang,
+                                                  :nban_tnhang,
+                                                  :nban_fax,
+                                                  :nban_website,
                                                   :nmua_ten,
                                                   :nmua_mst,
                                                   :nmua_dchi,
                                                   :nmua_sdthoai,
                                                   :nmua_cccdan,
+                                                  :nmua_dctdtu,
+                                                  :nmua_mkhang,
                                                   :nmua_hvten,
+                                                  :nmua_stknhang,
+                                                  :nmua_tnhang,
                                                   :tgtcthue,
                                                   :tgtthue,
                                                   :ttcktmai,
@@ -15494,7 +15601,7 @@ class EInvoiceController {
           STATUS: rtnValuePos.p_rtn_cur[0].STATUS,
         };
 
-        //console.log('weTaxExtractPosXMLContent END ===> ');
+        console.log('weTaxExtractPosXMLContent END ===> check_data ', check_data, ' data_inv ', data_inv);
 
         return {check_data, data_inv};
       }

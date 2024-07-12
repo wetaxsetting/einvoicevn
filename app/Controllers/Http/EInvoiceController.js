@@ -8796,7 +8796,7 @@ class EInvoiceController {
       );
 
       trade_code = res.data.maGDich;
-      ////console.log("weTaxSendPosInvoiceToTaxOffice trade_code   ", trade_code);
+      console.log('weTaxSendPosInvoiceToTaxOffice trade_code   ', trade_code);
       if (trade_code) {
         const para_value = {
           tei_einvoice_ar_pk: check_data.PK,
@@ -15721,7 +15721,7 @@ class EInvoiceController {
               }
             } else if (rtnValueMaster.p_rtn_cur[0].STATUS == 'RESEND') {
               check_data = {
-                //PK: rtnValuePos.p_rtn_cur[0].PK,
+                PK: rtnValuePos.p_rtn_cur[0].PK,
                 //TEI_HISTORY_M_PK: rtnValuePos.p_rtn_cur[0].TEI_HISTORY_M_PK,
                 STATUS: 'OK', // rtnValuePos.p_rtn_cur[0].STATUS,
               };
@@ -15729,7 +15729,7 @@ class EInvoiceController {
               // return {check_data, data_inv};
             } else {
               check_data = {
-                //PK: null,
+                PK: null,
                 //TEI_HISTORY_M_PK: null,
                 STATUS: 'FAILE',
               };
@@ -15740,7 +15740,7 @@ class EInvoiceController {
           }
         } else {
           check_data = {
-            //PK: null,
+            PK: null,
             //TEI_HISTORY_M_PK: null,
             STATUS: 'FAILE',
           };
@@ -15749,7 +15749,7 @@ class EInvoiceController {
         }
 
         check_data = {
-          //PK: rtnValuePos.p_rtn_cur[0].PK,
+          PK: rtnValuePos.p_rtn_cur[0].PK,
           //TEI_HISTORY_M_PK: rtnValuePos.p_rtn_cur[0].TEI_HISTORY_M_PK,
           STATUS: rtnValuePos.p_rtn_cur[0].STATUS,
         };

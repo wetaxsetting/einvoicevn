@@ -9250,11 +9250,36 @@ class EInvoiceController {
           });
           continue;
         } else if (masterInvoicePK.PK == 0) {
-          rtnValue.push({
-            req_key: invoices[i].req_key,
-            trade_code: '',
-            errmsg: 'Duplicated data. This invoice already sent',
-          });
+          if (masterInvoicePK.CQT_MCCQT) {
+            rtnValueTradecode.push({
+              sale_id: invoices[i].req_key,
+              req_ep_key: masterInvoicePK.REQ_KEY_PK,
+              trade_code: masterInvoicePK.MA_TRACUU,
+              msg_his_id: invoices[i].msg_his_id,
+              lookup_code: masterInvoicePK.LOOKUP_CODE,
+              buyer_email: invoices[i].mail_to,
+              buyer_email_cc: invoices[i].mail_cc,
+              mccqt: '',
+              send_mail_yn: 'Y',
+            });
+          } else {
+            rtnValueTradecode.push({
+              sale_id: invoices[i].req_key,
+              req_ep_key: masterInvoicePK.REQ_KEY_PK,
+              trade_code: masterInvoicePK.MA_TRACUU,
+              msg_his_id: invoices[i].msg_his_id,
+              lookup_code: masterInvoicePK.LOOKUP_CODE,
+              buyer_email: invoices[i].mail_to,
+              buyer_email_cc: invoices[i].mail_cc,
+              mccqt: '',
+              send_mail_yn: 'N',
+            });
+          }
+          // rtnValue.push({
+          //   req_key: invoices[i].req_key,
+          //   trade_code: '',
+          //   errmsg: 'Duplicated data. This invoice already sent',
+          // });
           continue;
         } else if (masterInvoicePK.PK < -1) {
           // console.log(`invalid xml format [${invoices[i].req_key}]`, invoices[i].xml_signed);
@@ -15988,7 +16013,11 @@ class EInvoiceController {
       } else {
         return (result_extra = {
           PK: master[0].PK,
-          TEI_EINVOICE_M_PK: master[0].TEI_EINVOICE_M_PK,
+          //TEI_EINVOICE_M_PK: master[0].TEI_EINVOICE_M_PK,
+          MA_TRACUU: master[0].MA_TRACUU,
+          CQT_MCCQT: master[0].CQT_MCCQT,
+          REQ_KEY_PK: master[0].REQ_KEY_PK,
+          LOOKUP_CODE: master[0].LOOKUP_CODE,
         }); //master[0].PK;
       }
     } catch (e) {

@@ -13797,7 +13797,7 @@ class EInvoiceController {
       objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
         TTruong: 'DCTDTu',
         KDLieu: 'string',
-        DLieu: invoices[i].buyer_email,
+        DLieu: dataObject.buyer_email,
       });
     }
 

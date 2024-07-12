@@ -15261,10 +15261,12 @@ class EInvoiceController {
         },
       ];
       const jsonInvoice = await transform(xml_content, template);
-      // let check_data = jsonInvoice;
-      // let data_inv = check_data;
-      // return {check_data, data_inv};
-      //console.log('weTaxExtractPosXMLContent BEGIN ===> line 14117 jsonInvoice ', jsonInvoice);
+
+      var xpath = require('xpath');
+      var dom = require('@xmldom/xmldom').DOMParser;
+
+      var doc = new dom().parseFromString(xml_content, 'text/xml');
+      var nodes = xpath.select('//HDon', doc);
 
       const templateSignTime = {
         SigningTime: 'TDiep/CKSNNT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
@@ -15305,8 +15307,9 @@ class EInvoiceController {
         status = rtnValuePos.p_rtn_cur[0].STATUS;
         if (rtnValuePos.p_rtn_cur[0].STATUS == 'OK') {
           //console.log("jsonInvoice  ", jsonInvoice);
+          let index_node_xml = 0;
           for (const invoice of jsonInvoice) {
-            let xml_content = '<HDon>' + this.OBJtoXML(invoice) + '</HDon>';
+            let xml_content =  nodes[index_node_xml].toString();// '<HDon>' + this.OBJtoXML(invoice) + '</HDon>';
             var getLength = require('utf8-byte-length');
             let xml_length = getLength(xml_content);
             console.log('weTaxExtractPosXMLContent m xml_content ===> ', xml_content);
@@ -15584,6 +15587,7 @@ class EInvoiceController {
 
               return {check_data, data_inv};
             }
+            index_node_xml++;
           }
         } else {
           check_data = {

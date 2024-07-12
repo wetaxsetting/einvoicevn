@@ -8747,11 +8747,11 @@ class EInvoiceController {
         p_crt_by,
       );
 
-      return response.status(200).json(Utils.responseByRule({success: true, message: 'Send invoice to Tax Office failure!', data: check_data}));
+      //return response.status(200).json(Utils.responseByRule({success: true, message: 'Send invoice to Tax Office failure!', data: check_data}));
       ////console.log("json  ", json);
       //
       // //console.log("json.TDiep.DLieu.HDon  ", json.TDiep.DLieu.HDon);
-      console.log('check_data   ', check_data, 'data_inv  ', data_inv);
+      //console.log('check_data   ', check_data, 'data_inv  ', data_inv);
       if (check_data.STATUS == 'FAILE') {
         // return response.send(Utils.response(false, `Send invoice to Tax Office was failure!`, null));
         return response.status(409).json(Utils.responseByRule({success: false, message: 'Send invoice to Tax Office failure!'}));
@@ -15721,16 +15721,16 @@ class EInvoiceController {
               }
             } else if (rtnValueMaster.p_rtn_cur[0].STATUS == 'RESEND') {
               check_data = {
-                PK: rtnValuePos.p_rtn_cur[0].PK,
-                TEI_HISTORY_M_PK: rtnValuePos.p_rtn_cur[0].TEI_HISTORY_M_PK,
+                //PK: rtnValuePos.p_rtn_cur[0].PK,
+                //TEI_HISTORY_M_PK: rtnValuePos.p_rtn_cur[0].TEI_HISTORY_M_PK,
                 STATUS: 'OK', // rtnValuePos.p_rtn_cur[0].STATUS,
               };
 
-              return {check_data, data_inv};
+              // return {check_data, data_inv};
             } else {
               check_data = {
-                PK: null,
-                TEI_HISTORY_M_PK: null,
+                //PK: null,
+                //TEI_HISTORY_M_PK: null,
                 STATUS: 'FAILE',
               };
 
@@ -15740,8 +15740,8 @@ class EInvoiceController {
           }
         } else {
           check_data = {
-            PK: null,
-            TEI_HISTORY_M_PK: null,
+            //PK: null,
+            //TEI_HISTORY_M_PK: null,
             STATUS: 'FAILE',
           };
 
@@ -15749,8 +15749,8 @@ class EInvoiceController {
         }
 
         check_data = {
-          PK: rtnValuePos.p_rtn_cur[0].PK,
-          TEI_HISTORY_M_PK: rtnValuePos.p_rtn_cur[0].TEI_HISTORY_M_PK,
+          //PK: rtnValuePos.p_rtn_cur[0].PK,
+          //TEI_HISTORY_M_PK: rtnValuePos.p_rtn_cur[0].TEI_HISTORY_M_PK,
           STATUS: rtnValuePos.p_rtn_cur[0].STATUS,
         };
 

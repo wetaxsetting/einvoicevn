@@ -1192,7 +1192,7 @@ class EInvoiceController {
         if (invoices[i].master.invoice_date < last_invoice_date) {
           return response.send(Utils.response(false, `invoice date cannot smaller than ${last_invoice_date}.`, invoices[i].master.invoice_date));
         }
-        if (invoices[i].master.invoice_date > tomorrow_date) {
+        if (invoices[i].master.invoice_date >= tomorrow_date) {
           return response.send(Utils.response(false, `invoice date cannot greater than ${tomorrow_date}.`, invoices[i].master.invoice_date));
         }
         objInvoice_M.HDon.DLHDon.TTChung.NLap = invoices[i].master.invoice_date;
@@ -5605,7 +5605,7 @@ class EInvoiceController {
             }),
           );
         }
-        if (invoices[i].invoice_date > tomorrow_date) {
+        if (invoices[i].invoice_date >= tomorrow_date) {
           return response
             .status(409)
             .json(
@@ -7148,7 +7148,7 @@ class EInvoiceController {
             }),
           );
         }
-        if (invoice.invoice_date > tomorrow_date) {
+        if (invoice.invoice_date >= tomorrow_date) {
           return response
             .status(409)
             .json(Utils.responseByRule({success: false, message: `invoice date cannot greater than ${tomorrow_date}.`, data: invoice.invoice_date}));
@@ -9944,7 +9944,7 @@ class EInvoiceController {
             }),
           );
         }
-        if (invoices[i].invoice_date > tomorrow_date) {
+        if (invoices[i].invoice_date >= tomorrow_date) {
           return response
             .status(409)
             .json(

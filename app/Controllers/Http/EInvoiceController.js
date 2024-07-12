@@ -9338,6 +9338,7 @@ class EInvoiceController {
           send_mail_yn: 'N',
         });
       }
+      console.log('weTaxSendInvoiceToTaxOffice befor check status e-invoice ', rtnValueTradecode);
 
       await Utils._sleep(5);
 

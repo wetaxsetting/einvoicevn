@@ -9260,7 +9260,7 @@ class EInvoiceController {
               buyer_email: invoices[i].mail_to,
               buyer_email_cc: invoices[i].mail_cc,
               mccqt: '',
-              send_mail_yn: 'Y',
+              send_mail_yn: 'N',
             });
           } else {
             rtnValueTradecode.push({

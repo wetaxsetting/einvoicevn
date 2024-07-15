@@ -8539,10 +8539,11 @@ class EInvoiceController {
         p_crt_by,
       );
 
+      //return response.status(200).json(Utils.responseByRule({success: true, message: 'Send invoice to Tax Office failure!', data: check_data}));
       ////console.log("json  ", json);
       //
       // //console.log("json.TDiep.DLieu.HDon  ", json.TDiep.DLieu.HDon);
-      console.log('check_data   ', check_data, 'data_inv  ', data_inv);
+      //console.log('check_data   ', check_data, 'data_inv  ', data_inv);
       if (check_data.STATUS == 'FAILE') {
         // return response.send(Utils.response(false, `Send invoice to Tax Office was failure!`, null));
         return response.status(409).json(Utils.responseByRule({success: false, message: 'Send invoice to Tax Office failure!'}));
@@ -8561,14 +8562,15 @@ class EInvoiceController {
           options: {maxVersion: 'TLSv1.2', minVersion: 'TLSv1.2', path: null},
         },
       };
-      let trade_code = '';
-      let maCQT = '';
-      let maTBao = '';
-      let tenTBao = '';
-      let xml_tax_signed = '';
+      let SLuong = 0;
       let rtnValue = {};
       let data_error = [];
       let mLTDiep = '',
+        trade_code = '',
+        maCQT = '',
+        maTBao = '',
+        tenTBao = '',
+        xml_tax_signed = '',
         ngayTBao = '',
         ngayCQTKy = '',
         maGDichDTu = '',
@@ -8587,7 +8589,7 @@ class EInvoiceController {
       );
 
       trade_code = res.data.maGDich;
-      ////console.log("weTaxSendPosInvoiceToTaxOffice trade_code   ", trade_code);
+      //console.log('weTaxSendPosInvoiceToTaxOffice trade_code   ', trade_code);
       if (trade_code) {
         const para_value = {
           tei_einvoice_ar_pk: check_data.PK,
@@ -8626,21 +8628,38 @@ class EInvoiceController {
                 xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8');
 
                 const templateMLTDiep = {
-                  SigningTime: 'TDiep/TTChung/MLTDiep',
+                  mLTDiep: 'TDiep/TTChung/MLTDiep',
                 };
                 var jsonD = await transform(xml_tax_signed, templateMLTDiep);
-                mLTDiep = jsonD.SigningTime;
+                mLTDiep = jsonD.mLTDiep;
+
                 ngayTBao = items[k].ndungTBao.ngayTBao;
                 ngayCQTKy = items[k].ndungTBao.ngayCQTKy;
                 maGDichDTu = items[k].ndungTBao.maGDichDTu;
                 if (mLTDiep == '204') {
                   tenGDDTu = 'Thông báo về việc kết quả kiểm tra dữ liệu hóa đơn điện tử';
                   ord = '3';
+
+                  const templateMLTDiep_204 = {
+                    LTBao: 'TDiep/DLieu/TBao/DLTBao/LTBao',
+                    SLuong: 'TDiep/DLieu/TBao/DLTBao/SLuong',
+                  };
+                  var json_td_204 = await transform(xml_tax_signed, templateMLTDiep_204);
+
+                  //console.log('weTaxSendPosInvoiceToTaxOffice xml_tax_signed  ', xml_tax_signed);
+
+                  //console.log('weTaxSendPosInvoiceToTaxOffice json_td_204  ', json_td_204);
+
+                  SLuong = json_td_204.SLuong || 0;
+                  maTBao = json_td_204.LTBao || '2';
                 } else if (mLTDiep == '999') {
                   tenGDDTu = 'Thông báo gói tin hợp lệ.';
                   ord = '2';
                 }
                 const param_pos = {
+                  p_tei_history_m_pk: check_data.TEI_HISTORY_M_PK,
+                  p_qty_invoice: SLuong,
+                  p_loaiTB: maTBao,
                   p_CQT_Code: trade_code,
                   p_xml_sign: xml_tax_signed,
                   p_maTDiep: mLTDiep,
@@ -8648,10 +8667,14 @@ class EInvoiceController {
                   p_tenGdDTu: tenGDDTu,
                   p_ngayTaoTB: ngayCQTKy,
                   p_ord: ord,
+                  p_tvan_data_result: JSON.stringify(res.data),
                 };
-                ////console.log("weTaxSendPosInvoiceToTaxOffice param_pos  ", param_pos);
+                //console.log('weTaxSendPosInvoiceToTaxOffice param_pos  ', param_pos);
                 await DBService.ExecuteSQLBlob(
                   `BEGIN WT_UPD_HISTORY_D_POS(
+                                    :p_tei_history_m_pk,
+                                    :p_qty_invoice,
+                                    :p_loaiTB,
                                     :p_CQT_Code,
                                     :p_xml_sign,
                                     :p_maTDiep,
@@ -8659,6 +8682,7 @@ class EInvoiceController {
                                     :p_tenGdDTu,
                                     :p_ngayTaoTB,
                                     :p_ord,
+                                    :p_tvan_data_result,
                                     :p_language, 
                                     :p_crt_by, 
                                     :p_rtn_cur); 
@@ -8673,7 +8697,7 @@ class EInvoiceController {
                 ngayCQTKy = '';
                 maGDichDTu = '';
               } else if (items[k].loaiTBao == '8') {
-                trade_code = items[k].ndungTBao.maGDichTChieu;
+                //trade_code = items[k].ndungTBao.maGDichTChieu;
                 maTBao = items[k].loaiTBao;
                 tenTBao = items[k].tenTBao;
                 soTBao = items[k].ndungTBao.tbaoKTraDLieu.soTBao;
@@ -8702,7 +8726,7 @@ class EInvoiceController {
                   p_crt_by,
                 );
               } else if (items[k].loaiTBao == '9' || items[k].loaiTBao == '7') {
-                trade_code = items[k].ndungTBao.maGDichTChieu;
+                //trade_code = items[k].ndungTBao.maGDichTChieu;
                 maTBao = items[k].loaiTBao;
                 tenTBao = items[k].tenTBao;
                 soTBao = items[k].ndungTBao.tbaoKTraDLieu.soTBao;

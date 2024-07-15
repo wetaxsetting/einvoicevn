@@ -8849,8 +8849,8 @@ class EInvoiceController {
                   ord = '3';
 
                   const templateMLTDiep_204 = {
-                    LTBao: 'TDiep/DLieu/TBao/LTBao',
-                    SLuong: 'TDiep/DLieu/TBao/SLuong',
+                    LTBao: 'TDiep/DLieu/TBao/DLTBao/LTBao',
+                    SLuong: 'TDiep/DLieu/TBao/DLTBao/SLuong',
                   };
                   var json_td_204 = await transform(xml_tax_signed, templateMLTDiep_204);
 

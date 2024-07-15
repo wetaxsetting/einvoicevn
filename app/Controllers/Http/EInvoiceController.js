@@ -5596,7 +5596,7 @@ class EInvoiceController {
           );
         }
 
-        if (invoices[i].invoice_date < last_invoice_date) {
+        if (invoices[i].invoice_date < last_invoice_date && !invoices[i].invoice_no) {
           return response.status(409).json(
             Utils.responseByRule({
               success: false,
@@ -7139,7 +7139,7 @@ class EInvoiceController {
           );
         }
 
-        if (invoice.invoice_date < last_invoice_date) {
+        if (invoice.invoice_date < last_invoice_date && !invoice.invoice_no) {
           return response.status(409).json(
             Utils.responseByRule({
               success: false,
@@ -8854,9 +8854,8 @@ class EInvoiceController {
                   };
                   var json_td_204 = await transform(xml_tax_signed, templateMLTDiep_204);
 
-                  console.log('weTaxSendPosInvoiceToTaxOffice xml_tax_signed  ', xml_tax_signed);
-
-                  console.log('weTaxSendPosInvoiceToTaxOffice json_td_204  ', json_td_204);
+                  //console.log('weTaxSendPosInvoiceToTaxOffice xml_tax_signed  ', xml_tax_signed);
+                  //console.log('weTaxSendPosInvoiceToTaxOffice json_td_204  ', json_td_204);
 
                   SLuong = json_td_204.SLuong || 0;
                   maTBao = json_td_204.LTBao || '2';
@@ -8877,7 +8876,7 @@ class EInvoiceController {
                   p_ord: ord,
                   p_tvan_data_result: JSON.stringify(res.data),
                 };
-                console.log('weTaxSendPosInvoiceToTaxOffice param_pos  ', param_pos);
+                //console.log('weTaxSendPosInvoiceToTaxOffice param_pos  ', param_pos);
                 await DBService.ExecuteSQLBlob(
                   `BEGIN WT_UPD_HISTORY_D_POS(
                                     :p_tei_history_m_pk,
@@ -9956,7 +9955,7 @@ class EInvoiceController {
           );
         }
 
-        if (invoices[i].invoice_date < last_invoice_date) {
+        if (invoices[i].invoice_date < last_invoice_date && !invoices[i].invoice_no) {
           return response.status(409).json(
             Utils.responseByRule({
               success: false,
@@ -16228,7 +16227,7 @@ class EInvoiceController {
         signingTime.SigningTime,
       ]);
 
-      console.log('weTaxExtractXMLContent masterPara', masterPara);
+      //console.log('weTaxExtractXMLContent masterPara', masterPara);
       //const master = await callAPI(_jwtToken, { proc: 'ei_upd_tei_einvoice_cloud', para: masterPara });
       const master = await DBService.callProcCursor('WT_UPD_TEI_WT_INVOICE_M', masterPara, p_language, p_crt_by);
       // console.log("master", master);

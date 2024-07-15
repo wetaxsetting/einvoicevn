@@ -8770,14 +8770,15 @@ class EInvoiceController {
           options: {maxVersion: 'TLSv1.2', minVersion: 'TLSv1.2', path: null},
         },
       };
-      let trade_code = '';
-      let maCQT = '';
-      let maTBao = '';
-      let tenTBao = '';
-      let xml_tax_signed = '';
+      let SLuong = 0;
       let rtnValue = {};
       let data_error = [];
       let mLTDiep = '',
+        trade_code = '',
+        maCQT = '',
+        maTBao = '',
+        tenTBao = '',
+        xml_tax_signed = '',
         ngayTBao = '',
         ngayCQTKy = '',
         maGDichDTu = '',
@@ -8835,21 +8836,34 @@ class EInvoiceController {
                 xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8');
 
                 const templateMLTDiep = {
-                  SigningTime: 'TDiep/TTChung/MLTDiep',
+                  mLTDiep: 'TDiep/TTChung/MLTDiep',
                 };
                 var jsonD = await transform(xml_tax_signed, templateMLTDiep);
-                mLTDiep = jsonD.SigningTime;
+                mLTDiep = jsonD.mLTDiep;
+
                 ngayTBao = items[k].ndungTBao.ngayTBao;
                 ngayCQTKy = items[k].ndungTBao.ngayCQTKy;
                 maGDichDTu = items[k].ndungTBao.maGDichDTu;
                 if (mLTDiep == '204') {
                   tenGDDTu = 'Thông báo về việc kết quả kiểm tra dữ liệu hóa đơn điện tử';
                   ord = '3';
+
+                  const templateMLTDiep_204 = {
+                    LTBao: 'TDiep/DLieu/TBao/LTBao',
+                    SLuong: 'TDiep/DLieu/TBao/SLuong',
+                  };
+                  var json_td_204 = await transform(xml_tax_signed, templateMLTDiep_204);
+
+                  SLuong = json_td_204.SLuong;
+                  maTBao = json_td_204.LTBao;
                 } else if (mLTDiep == '999') {
                   tenGDDTu = 'Thông báo gói tin hợp lệ.';
                   ord = '2';
                 }
                 const param_pos = {
+                  p_tei_history_m_pk: check_data.TEI_HISTORY_M_PK,
+                  p_qty_invoice: SLuong,
+                  p_loaiTB: maTBao,
                   p_CQT_Code: trade_code,
                   p_xml_sign: xml_tax_signed,
                   p_maTDiep: mLTDiep,

@@ -8854,8 +8854,12 @@ class EInvoiceController {
                   };
                   var json_td_204 = await transform(xml_tax_signed, templateMLTDiep_204);
 
+                  console.log('weTaxSendPosInvoiceToTaxOffice xml_tax_signed  ', xml_tax_signed);
+
+                  console.log('weTaxSendPosInvoiceToTaxOffice json_td_204  ', json_td_204);
+
                   SLuong = json_td_204.SLuong;
-                  maTBao = json_td_204.LTBao;
+                  maTBao = json_td_204.LTBao || '2';
                 } else if (mLTDiep == '999') {
                   tenGDDTu = 'Thông báo gói tin hợp lệ.';
                   ord = '2';

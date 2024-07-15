@@ -15722,7 +15722,7 @@ class EInvoiceController {
             } else if (rtnValueMaster.p_rtn_cur[0].STATUS == 'RESEND') {
               check_data = {
                 PK: rtnValuePos.p_rtn_cur[0].PK,
-                //TEI_HISTORY_M_PK: rtnValuePos.p_rtn_cur[0].TEI_HISTORY_M_PK,
+                TEI_HISTORY_M_PK: rtnValuePos.p_rtn_cur[0].TEI_HISTORY_M_PK,
                 STATUS: 'OK', // rtnValuePos.p_rtn_cur[0].STATUS,
               };
 
@@ -15741,7 +15741,7 @@ class EInvoiceController {
         } else {
           check_data = {
             PK: null,
-            //TEI_HISTORY_M_PK: null,
+            TEI_HISTORY_M_PK: null,
             STATUS: 'FAILE',
           };
 
@@ -15750,7 +15750,7 @@ class EInvoiceController {
 
         check_data = {
           PK: rtnValuePos.p_rtn_cur[0].PK,
-          //TEI_HISTORY_M_PK: rtnValuePos.p_rtn_cur[0].TEI_HISTORY_M_PK,
+          TEI_HISTORY_M_PK: rtnValuePos.p_rtn_cur[0].TEI_HISTORY_M_PK,
           STATUS: rtnValuePos.p_rtn_cur[0].STATUS,
         };
 

@@ -8884,7 +8884,7 @@ class EInvoiceController {
                 ngayCQTKy = '';
                 maGDichDTu = '';
               } else if (items[k].loaiTBao == '8') {
-                trade_code = items[k].ndungTBao.maGDichTChieu;
+                //trade_code = items[k].ndungTBao.maGDichTChieu;
                 maTBao = items[k].loaiTBao;
                 tenTBao = items[k].tenTBao;
                 soTBao = items[k].ndungTBao.tbaoKTraDLieu.soTBao;
@@ -8913,7 +8913,7 @@ class EInvoiceController {
                   p_crt_by,
                 );
               } else if (items[k].loaiTBao == '9' || items[k].loaiTBao == '7') {
-                trade_code = items[k].ndungTBao.maGDichTChieu;
+                //trade_code = items[k].ndungTBao.maGDichTChieu;
                 maTBao = items[k].loaiTBao;
                 tenTBao = items[k].tenTBao;
                 soTBao = items[k].ndungTBao.tbaoKTraDLieu.soTBao;

@@ -8859,7 +8859,7 @@ class EInvoiceController {
                   p_ord: ord,
                   p_tvan_data_result: JSON.stringify(res.data),
                 };
-                ////console.log("weTaxSendPosInvoiceToTaxOffice param_pos  ", param_pos);
+                console.log('weTaxSendPosInvoiceToTaxOffice param_pos  ', param_pos);
                 await DBService.ExecuteSQLBlob(
                   `BEGIN WT_UPD_HISTORY_D_POS(
                                     :p_CQT_Code,

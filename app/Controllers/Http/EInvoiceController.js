@@ -8858,7 +8858,7 @@ class EInvoiceController {
 
                   console.log('weTaxSendPosInvoiceToTaxOffice json_td_204  ', json_td_204);
 
-                  SLuong = json_td_204.SLuong;
+                  SLuong = json_td_204.SLuong || 0;
                   maTBao = json_td_204.LTBao || '2';
                 } else if (mLTDiep == '999') {
                   tenGDDTu = 'Thông báo gói tin hợp lệ.';

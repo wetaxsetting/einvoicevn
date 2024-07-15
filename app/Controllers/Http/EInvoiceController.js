@@ -8880,6 +8880,9 @@ class EInvoiceController {
                 console.log('weTaxSendPosInvoiceToTaxOffice param_pos  ', param_pos);
                 await DBService.ExecuteSQLBlob(
                   `BEGIN WT_UPD_HISTORY_D_POS(
+                                    :p_tei_history_m_pk,
+                                    :p_qty_invoice,
+                                    :p_loaiTB,
                                     :p_CQT_Code,
                                     :p_xml_sign,
                                     :p_maTDiep,

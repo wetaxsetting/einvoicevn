@@ -6056,7 +6056,7 @@ class EInvoiceController {
         total_amt_vat: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
         total_amt_dc: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
         total_payment: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
-        //total_payment_word_vie: /^.{0,255}$/, // 255
+        total_payment_word_vie: /^.{1,255}$/, // 255
       };
 
       for (const invoice of invoices) {
@@ -6091,6 +6091,7 @@ class EInvoiceController {
               }
             } else if (key == 'buyer_email' || key == 'buyer_email_cc' || key == 'seller_email') {
               if (!errorList[`${key}`].test(invoice[key]) && invoice[key]) {
+                // && invoice[key]
                 status = false;
                 resMess = `${mess1} ${key}.`;
                 return {
@@ -6099,6 +6100,7 @@ class EInvoiceController {
                 };
               }
             } else if (!errorList[`${key}`].test(invoice[key])) {
+              //&& invoice[key]
               status = false;
               resMess = `${mess1} ${key}.`;
               return {

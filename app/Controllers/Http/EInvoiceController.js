@@ -13688,6 +13688,7 @@ class EInvoiceController {
           },
         },
         DSCKS: {},
+        MCCQT: '',
       },
     };
 

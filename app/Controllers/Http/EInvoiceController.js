@@ -13426,12 +13426,8 @@ class EInvoiceController {
             KHMSHDon: '',
             KHHDon: '',
             SHDon: '',
-            MHSo: '',
             NLap: '',
-            NBKe: '',
-            DVTTe: '',
-            TGia: '',
-            HTTToan: '',
+            TTKhac: '',
           },
           NDHDon: {
             NBan: {
@@ -13439,25 +13435,24 @@ class EInvoiceController {
               MST: '',
               DChi: '',
               SDThoai: '',
+              TTKhac: '',
             },
             NMua: {
               Ten: '',
               MST: '',
               DChi: '',
               SDThoai: '',
-              HVTNMHang: '',
               CCCDan: '',
+              TTKhac: '',
             },
             DSHHDVu: {},
             TToan: {
               THTTLTSuat: {
-                // LTSuat: [
-                //     {
-                //         TSuat: "",
-                //         ThTien: "",
-                //         TThue: "",
-                //     }
-                // ],
+                LTSuat: {
+                  TSuat: '',
+                  ThTien: '',
+                  TThue: '',
+                },
               },
               TgTCTHue: '',
               TgTThue: '',
@@ -13470,8 +13465,8 @@ class EInvoiceController {
             },
           },
         },
-        MCCQT: {},
         DSCKS: {},
+        MCCQT: '',
       },
     };
 
@@ -13494,21 +13489,142 @@ class EInvoiceController {
     objInvoice_M.HDon.DLHDon.TTChung.KHHDon = dataObject.serial_no;
     objInvoice_M.HDon.DLHDon.TTChung.SHDon = dataObject.invoice_no;
     objInvoice_M.HDon.DLHDon.TTChung.NLap = dataObject.invoice_date;
-    objInvoice_M.HDon.DLHDon.TTChung.DVTTe = dataObject.currency;
-    objInvoice_M.HDon.DLHDon.TTChung.TGia = dataObject.ex_rate;
-    objInvoice_M.HDon.DLHDon.TTChung.HTTToan = dataObject.payment_method;
-    objInvoice_M.HDon.DLHDon.TTChung.MSTTCGP = '1201496252'; //webcashgenuwin.com taxcode
+    //objInvoice_M.HDon.DLHDon.TTChung.DVTTe = dataObject.currency;
+    //objInvoice_M.HDon.DLHDon.TTChung.TGia = dataObject.ex_rate;
+    //objInvoice_M.HDon.DLHDon.TTChung.HTTToan = dataObject.payment_method;
+    //objInvoice_M.HDon.DLHDon.TTChung.MSTTCGP = '1201496252'; //webcashgenuwin.com taxcode
+
+    objInvoice_M.HDon.DLHDon.TTChung.TTKhac = {};
+    objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin = [];
+    objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin.push({
+      TTruong: 'PortalLink',
+      KDLieu: 'string',
+      DLieu: 'https://einvoicepro.webcashvietnam.com/login',
+    });
+
+    if (dataObject.currency) {
+      objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin.push({
+        TTruong: 'DVTTe',
+        KDLieu: 'string',
+        DLieu: dataObject.currency,
+      });
+    }
+    if (dataObject.ex_rate) {
+      objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin.push({
+        TTruong: 'TGia',
+        KDLieu: 'number',
+        DLieu: dataObject.ex_rate,
+      });
+    }
+    if (dataObject.payment_method) {
+      objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin.push({
+        TTruong: 'HTTToan',
+        KDLieu: 'string',
+        DLieu: dataObject.payment_method,
+      });
+    }
+    objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin.push({
+      TTruong: 'MSTTCGP',
+      KDLieu: 'string',
+      DLieu: '1201496252',
+    });
 
     objInvoice_M.HDon.DLHDon.NDHDon.NBan.Ten = this.convertHtmlCode(dataObject.seller_comp_name);
     objInvoice_M.HDon.DLHDon.NDHDon.NBan.MST = dataObject.seller_taxcode;
     objInvoice_M.HDon.DLHDon.NDHDon.NBan.DChi = this.convertHtmlCode(dataObject.seller_address);
     objInvoice_M.HDon.DLHDon.NDHDon.NBan.SDThoai = dataObject.seller_phone;
 
+    objInvoice_M.HDon.DLHDon.NDHDon.NBan.TTKhac = {};
+    objInvoice_M.HDon.DLHDon.NDHDon.NBan.TTKhac.TTin = [];
+
+    if (dataObject.seller_email) {
+      objInvoice_M.HDon.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
+        TTruong: 'DCTDTu',
+        KDLieu: 'string',
+        DLieu: dataObject.seller_email,
+      });
+    }
+
+    if (dataObject.seller_bank_no) {
+      objInvoice_M.HDon.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
+        TTruong: 'STKNHang',
+        KDLieu: 'string',
+        DLieu: dataObject.seller_bank_no,
+      });
+    }
+
+    if (dataObject.seller_bank_name) {
+      objInvoice_M.HDon.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
+        TTruong: 'TNHang',
+        KDLieu: 'string',
+        DLieu: dataObject.seller_bank_name,
+      });
+    }
+
+    if (dataObject.seller_fax) {
+      objInvoice_M.HDon.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
+        TTruong: 'Fax',
+        KDLieu: 'string',
+        DLieu: dataObject.seller_fax,
+      });
+    }
+
+    if (dataObject.seller_website) {
+      objInvoice_M.HDon.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
+        TTruong: 'Website',
+        KDLieu: 'string',
+        DLieu: dataObject.seller_website,
+      });
+    }
+
     objInvoice_M.HDon.DLHDon.NDHDon.NMua.Ten = this.convertHtmlCode(dataObject.buyer_comp_name);
     objInvoice_M.HDon.DLHDon.NDHDon.NMua.MST = dataObject.buyer_taxcode;
     objInvoice_M.HDon.DLHDon.NDHDon.NMua.DChi = this.convertHtmlCode(dataObject.buyer_address);
     objInvoice_M.HDon.DLHDon.NDHDon.NMua.CCCDan = dataObject.buyer_cccd;
     objInvoice_M.HDon.DLHDon.NDHDon.NMua.SDThoai = dataObject.buyer_phone;
+
+    objInvoice_M.HDon.DLHDon.NDHDon.NMua.TTKhac = {};
+    objInvoice_M.HDon.DLHDon.NDHDon.NMua.TTKhac.TTin = [];
+
+    if (dataObject.buyer_code) {
+      objInvoice_M.HDon.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
+        TTruong: 'MKHang',
+        KDLieu: 'string',
+        DLieu: dataObject.buyer_code,
+      });
+    }
+
+    if (dataObject.buyer_email) {
+      objInvoice_M.HDon.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
+        TTruong: 'DCTDTu',
+        KDLieu: 'string',
+        DLieu: dataObject.buyer_email,
+      });
+    }
+
+    if (dataObject.buyer_nm) {
+      objInvoice_M.HDon.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
+        TTruong: 'HVTNMHang',
+        KDLieu: 'string',
+        DLieu: dataObject.buyer_nm,
+      });
+    }
+
+    if (dataObject.buyer_bank_no) {
+      objInvoice_M.HDon.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
+        TTruong: 'STKNHang',
+        KDLieu: 'string',
+        DLieu: dataObject.buyer_bank_no,
+      });
+    }
+
+    if (dataObject.buyer_bank_name) {
+      objInvoice_M.HDon.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
+        TTruong: 'TNHang',
+        KDLieu: 'string',
+        DLieu: dataObject.buyer_bank_name,
+      });
+    }
 
     objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu = [];
 
@@ -13548,12 +13664,7 @@ class EInvoiceController {
 
     objInvoice_M.HDon.DLHDon.NDHDon.TToan.TTCKTMai = dataObject.total_amt_dc;
     objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = dataObject.total_payment;
-    if (!dataObject.total_payment_word_vie) {
-      let wordsAmt = await Utils.Num2VNText2(dataObject.total_payment.toString(), dataObject.ccy);
-      objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = wordsAmt.substr(0, 2) + wordsAmt.substr(2, wordsAmt.length - 2).toLowerCase(); //  wordsAmt.substring(0,2) + wordsAmt.substring(2);  // dataObject.total_payment_word_vie;
-    } else {
-      objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = dataObject.total_payment_word_vie;
-    }
+    objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = dataObject.total_payment_word_vie;
 
     objInvoice_M.HDon.DSCKS.NBan = '';
 

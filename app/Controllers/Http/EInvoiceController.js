@@ -13724,27 +13724,27 @@ class EInvoiceController {
     });
 
     if (dataObject.currency) {
-      objInvoice.DLHDon.TTChung.TTKhac.TTin.push({
+      objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin.push({
         TTruong: 'DVTTe',
         KDLieu: 'string',
         DLieu: dataObject.currency,
       });
     }
     if (dataObject.ex_rate) {
-      objInvoice.DLHDon.TTChung.TTKhac.TTin.push({
+      objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin.push({
         TTruong: 'TGia',
         KDLieu: 'number',
         DLieu: dataObject.ex_rate,
       });
     }
     if (dataObject.payment_method) {
-      objInvoice.DLHDon.TTChung.TTKhac.TTin.push({
+      objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin.push({
         TTruong: 'HTTToan',
         KDLieu: 'string',
         DLieu: dataObject.payment_method,
       });
     }
-    objInvoice.DLHDon.TTChung.TTKhac.TTin.push({
+    objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin.push({
       TTruong: 'MSTTCGP',
       KDLieu: 'string',
       DLieu: '1201496252',
@@ -13759,7 +13759,7 @@ class EInvoiceController {
     objInvoice.DLHDon.NDHDon.NBan.TTKhac.TTin = [];
 
     if (dataObject.seller_email) {
-      objInvoice.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
+      objInvoice_M.HDon.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
         TTruong: 'DCTDTu',
         KDLieu: 'string',
         DLieu: dataObject.seller_email,
@@ -13767,7 +13767,7 @@ class EInvoiceController {
     }
 
     if (dataObject.seller_bank_no) {
-      objInvoice.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
+      objInvoice_M.HDon.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
         TTruong: 'STKNHang',
         KDLieu: 'string',
         DLieu: dataObject.seller_bank_no,
@@ -13775,7 +13775,7 @@ class EInvoiceController {
     }
 
     if (dataObject.seller_bank_name) {
-      objInvoice.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
+      objInvoice_M.HDon.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
         TTruong: 'TNHang',
         KDLieu: 'string',
         DLieu: dataObject.seller_bank_name,
@@ -13783,7 +13783,7 @@ class EInvoiceController {
     }
 
     if (dataObject.seller_fax) {
-      objInvoice.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
+      objInvoice_M.HDon.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
         TTruong: 'Fax',
         KDLieu: 'string',
         DLieu: dataObject.seller_fax,
@@ -13791,7 +13791,7 @@ class EInvoiceController {
     }
 
     if (dataObject.seller_website) {
-      objInvoice.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
+      objInvoice_M.HDon.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
         TTruong: 'Website',
         KDLieu: 'string',
         DLieu: dataObject.seller_website,
@@ -13808,7 +13808,7 @@ class EInvoiceController {
     objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin = [];
 
     if (dataObject.buyer_code) {
-      objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
+      objInvoice_M.HDon.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
         TTruong: 'MKHang',
         KDLieu: 'string',
         DLieu: dataObject.buyer_code,
@@ -13816,7 +13816,7 @@ class EInvoiceController {
     }
 
     if (dataObject.buyer_email) {
-      objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
+      objInvoice_M.HDon.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
         TTruong: 'DCTDTu',
         KDLieu: 'string',
         DLieu: dataObject.buyer_email,
@@ -13824,7 +13824,7 @@ class EInvoiceController {
     }
 
     if (dataObject.buyer_nm) {
-      objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
+      objInvoice_M.HDon.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
         TTruong: 'HVTNMHang',
         KDLieu: 'string',
         DLieu: dataObject.buyer_nm,
@@ -13832,7 +13832,7 @@ class EInvoiceController {
     }
 
     if (dataObject.buyer_bank_no) {
-      objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
+      objInvoice_M.HDon.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
         TTruong: 'STKNHang',
         KDLieu: 'string',
         DLieu: dataObject.buyer_bank_no,
@@ -13840,7 +13840,7 @@ class EInvoiceController {
     }
 
     if (dataObject.buyer_bank_name) {
-      objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
+      objInvoice_M.HDon.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
         TTruong: 'TNHang',
         KDLieu: 'string',
         DLieu: dataObject.buyer_bank_name,

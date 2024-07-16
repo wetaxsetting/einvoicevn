@@ -13640,53 +13640,55 @@ class EInvoiceController {
 
   async createXMLByOne(dataObject) {
     let objInvoice_M = {
-      DLHDon: {
-        TTChung: {
-          PBan: '',
-          THDon: '',
-          KHMSHDon: '',
-          KHHDon: '',
-          SHDon: '',
-          NLap: '',
-          TTKhac: '',
-        },
-        NDHDon: {
-          NBan: {
-            Ten: '',
-            MST: '',
-            DChi: '',
-            SDThoai: '',
+      HDon: {
+        DLHDon: {
+          TTChung: {
+            PBan: '',
+            THDon: '',
+            KHMSHDon: '',
+            KHHDon: '',
+            SHDon: '',
+            NLap: '',
             TTKhac: '',
           },
-          NMua: {
-            Ten: '',
-            MST: '',
-            DChi: '',
-            SDThoai: '',
-            CCCDan: '',
-            TTKhac: '',
-          },
-          DSHHDVu: {},
-          TToan: {
-            THTTLTSuat: {
-              LTSuat: {
-                TSuat: '',
-                ThTien: '',
-                TThue: '',
+          NDHDon: {
+            NBan: {
+              Ten: '',
+              MST: '',
+              DChi: '',
+              SDThoai: '',
+              TTKhac: '',
+            },
+            NMua: {
+              Ten: '',
+              MST: '',
+              DChi: '',
+              SDThoai: '',
+              CCCDan: '',
+              TTKhac: '',
+            },
+            DSHHDVu: {},
+            TToan: {
+              THTTLTSuat: {
+                LTSuat: {
+                  TSuat: '',
+                  ThTien: '',
+                  TThue: '',
+                },
               },
+              TgTCTHue: '',
+              TgTThue: '',
+              DSLPhi: {
+                LPhi: {},
+              },
+              TTCKTMai: '',
+              TgTTTBSo: '',
+              TgTTTBChu: '',
             },
-            TgTCTHue: '',
-            TgTThue: '',
-            DSLPhi: {
-              LPhi: {},
-            },
-            TTCKTMai: '',
-            TgTTTBSo: '',
-            TgTTTBChu: '',
           },
         },
+        DSCKS: {},
       },
-      DSCKS: {},
     };
 
     if (dataObject.form_no == 1) {

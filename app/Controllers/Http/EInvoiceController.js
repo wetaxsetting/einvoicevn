@@ -15595,6 +15595,7 @@ class EInvoiceController {
               tei_wt_invoice_pos_pk: rtnValuePos.p_rtn_cur[0].PK,
               xml_content: xml_content,
               xml_length: xml_length,
+              vat_rate: invoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat[0].TThue,
             };
 
             console.log('weTaxExtractPosXMLContent m param ===> ', paraMaster);
@@ -15609,6 +15610,7 @@ class EInvoiceController {
                                                   :nlap,
                                                   :dvtte,
                                                   :tgia,
+                                                  :vat_rate,
                                                   :htttoan,
                                                   :nban_ten,
                                                   :nban_mst,

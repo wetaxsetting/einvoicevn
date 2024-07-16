@@ -13804,8 +13804,8 @@ class EInvoiceController {
     objInvoice_M.HDon.DLHDon.NDHDon.NMua.CCCDan = dataObject.buyer_cccd;
     objInvoice_M.HDon.DLHDon.NDHDon.NMua.SDThoai = dataObject.buyer_phone;
 
-    objInvoice_M.DLHDon.NDHDon.NMua.TTKhac = {};
-    objInvoice_M.DLHDon.NDHDon.NMua.TTKhac.TTin = [];
+    objInvoice_M.HDon.DLHDon.NDHDon.NMua.TTKhac = {};
+    objInvoice_M.HDon.DLHDon.NDHDon.NMua.TTKhac.TTin = [];
 
     if (dataObject.buyer_code) {
       objInvoice_M.HDon.DLHDon.NDHDon.NMua.TTKhac.TTin.push({

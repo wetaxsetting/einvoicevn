@@ -283,12 +283,14 @@ export default {
           caption: this.$t("invoice_date"),
           dataType: "date",
           format: this.curLang.DATE_FORMAT,
-          width: 120
+          width: 120,
         },
         {
           dataField: "CRT_DT",
           caption: this.$t("time"),
-          width: 220
+          width: 220,
+          alignment: "center",
+
         },
         {
           dataField: "POS_INV_XML",
@@ -299,6 +301,7 @@ export default {
           dataField: "INVOICE_QTY",
           caption: this.$t("invoice_qty"),
           type:"number",
+          alignment: "right",
         },
         {
           dataField: "STATUS",
@@ -337,6 +340,7 @@ export default {
         {
           dataField: "RN",
           caption: this.$t("no"),
+          alignment: "right",
         },
         {
           dataField: "FORM_NO",
@@ -347,6 +351,7 @@ export default {
         {
           dataField: "SERIAL_NO",
           caption: this.$t("serial_no"),
+          alignment: "center",
         },
         {
           dataField: "INVOICE_DATE",

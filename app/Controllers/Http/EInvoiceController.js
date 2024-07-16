@@ -7121,7 +7121,7 @@ class EInvoiceController {
       for (const invoice of data_invoice) {
         const lastInvoiceNo = await DBService.callProcCursor(
           'wt_sel_last_invoice_no',
-          [invoice.seller_taxcode, invoice.serial_no, invoices.form_no],
+          [invoice.seller_taxcode, invoice.serial_no, invoice.form_no],
           'ENG',
           p_crt_by,
           'N',

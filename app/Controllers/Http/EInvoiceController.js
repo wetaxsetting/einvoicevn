@@ -7426,7 +7426,7 @@ class EInvoiceController {
         FUNC: 'weTaxSendOrderInfoV2',
         CONTENT: e.message,
       });
-      console.log('weTaxSendOrderInfoV2 ', e.message);
+      console.log('weTaxSendOrderInfoV2 ', e);
       // return response.send(Utils.response(false, e.message, null));
       return response.status(400).json(Utils.responseByRule({success: true, message: e.message}));
     }

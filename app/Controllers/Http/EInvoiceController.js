@@ -13755,8 +13755,8 @@ class EInvoiceController {
     objInvoice_M.HDon.DLHDon.NDHDon.NBan.DChi = this.convertHtmlCode(dataObject.seller_address);
     objInvoice_M.HDon.DLHDon.NDHDon.NBan.SDThoai = dataObject.seller_phone;
 
-    objInvoice.DLHDon.NDHDon.NBan.TTKhac = {};
-    objInvoice.DLHDon.NDHDon.NBan.TTKhac.TTin = [];
+    objInvoice_M.HDon.DLHDon.NDHDon.NBan.TTKhac = {};
+    objInvoice_M.HDon.DLHDon.NDHDon.NBan.TTKhac.TTin = [];
 
     if (dataObject.seller_email) {
       objInvoice_M.HDon.DLHDon.NDHDon.NBan.TTKhac.TTin.push({

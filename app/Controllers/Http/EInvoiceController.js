@@ -8583,7 +8583,10 @@ class EInvoiceController {
                   });
                 } else if (items[k].loaiTBao == '9' || items[k].loaiTBao == '16' || items[k].loaiTBao == '15') {
                   maTBao = '1'; //items[k].loaiTBao;
-                  tenTBao = items[k].tenTBao;
+                  tenTBao =
+                    items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].maLoi +
+                    ' - ' +
+                    items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].mtaLoi; //items[k].tenTBao;
                   data_error.push({
                     maLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].maLoi,
                     mtaLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].mtaLoi,
@@ -9499,7 +9502,10 @@ class EInvoiceController {
                     });
                   } else if (items[k].loaiTBao == '9' || items[k].loaiTBao == '16' || items[k].loaiTBao == '15') {
                     maTBao = '1'; //items[k].loaiTBao;
-                    tenTBao = items[k].tenTBao;
+                    tenTBao =
+                      items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].maLoi +
+                      ' - ' +
+                      items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].mtaLoi; //items[k].tenTBao;
                     data_error.push({
                       maLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].maLoi,
                       mtaLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].mtaLoi,

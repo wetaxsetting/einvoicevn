@@ -8927,6 +8927,7 @@ class EInvoiceController {
 
                 await DBService.ExecuteSQLBlob(
                   `BEGIN WT_UPD_HISTORY_D_POS_TB8(
+                                    :p_tei_history_m_pk,
                                     :p_CQT_Code,
                                     :p_soTBao,
                                     :p_maTBao,
@@ -8958,6 +8959,7 @@ class EInvoiceController {
                 console.log('weTaxSendPosInvoiceToTaxOffice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
                 await DBService.ExecuteSQLBlob(
                   `BEGIN WT_UPD_HISTORY_D_POS_TB8(
+                                    :p_tei_history_m_pk,
                                     :p_CQT_Code,
                                     :p_soTBao,
                                     :p_maTBao,

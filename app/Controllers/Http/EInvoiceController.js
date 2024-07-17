@@ -8857,8 +8857,8 @@ class EInvoiceController {
                   };
                   var json_td_204 = await transform(xml_tax_signed, templateMLTDiep_204);
 
-                  //console.log('weTaxSendPosInvoiceToTaxOffice xml_tax_signed  ', xml_tax_signed);
-                  //console.log('weTaxSendPosInvoiceToTaxOffice json_td_204  ', json_td_204);
+                  console.log('weTaxSendPosInvoiceToTaxOffice xml_tax_signed  ', xml_tax_signed);
+                  console.log('weTaxSendPosInvoiceToTaxOffice json_td_204  ', json_td_204);
 
                   SLuong = json_td_204.SLuong || 0;
                   maTBao = json_td_204.LTBao || '2';
@@ -8921,6 +8921,9 @@ class EInvoiceController {
                   p_tenTBao: tenTBao,
                   p_ngayCQTKy: ngayCQTKy,
                 };
+
+                console.log('weTaxSendPosInvoiceToTaxOffice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
+
                 await DBService.ExecuteSQLBlob(
                   `BEGIN WT_UPD_HISTORY_D_POS_TB8(
                                     :p_CQT_Code,
@@ -8950,6 +8953,7 @@ class EInvoiceController {
                   p_tenTBao: tenTBao,
                   p_ngayCQTKy: ngayCQTKy,
                 };
+                console.log('weTaxSendPosInvoiceToTaxOffice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
                 await DBService.ExecuteSQLBlob(
                   `BEGIN WT_UPD_HISTORY_D_POS_TB8(
                                     :p_CQT_Code,

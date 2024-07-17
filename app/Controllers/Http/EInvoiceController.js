@@ -8915,6 +8915,7 @@ class EInvoiceController {
                 ngayCQTKy = items[k].ndungTBao.tbaoKTraDLieu.ngayCQTKy;
 
                 const param_ltb_8 = {
+                  p_tei_history_m_pk: check_data.TEI_HISTORY_M_PK,
                   p_CQT_Code: trade_code,
                   p_soTBao: soTBao,
                   p_maTBao: maTBao,
@@ -8941,12 +8942,13 @@ class EInvoiceController {
                 );
               } else if (items[k].loaiTBao == '9' || items[k].loaiTBao == '7') {
                 //trade_code = items[k].ndungTBao.maGDichTChieu;
-                maTBao = items[k].loaiTBao;
+                maTBao = '7'; //items[k].loaiTBao;
                 tenTBao = items[k].tenTBao;
                 soTBao = items[k].ndungTBao.tbaoKTraDLieu.soTBao;
                 ngayCQTKy = items[k].ndungTBao.tbaoKTraDLieu.ngayCQTKy;
 
                 const param_ltb_8 = {
+                  p_tei_history_m_pk: check_data.TEI_HISTORY_M_PK,
                   p_CQT_Code: trade_code,
                   p_soTBao: soTBao,
                   p_maTBao: maTBao,

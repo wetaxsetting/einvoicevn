@@ -8909,7 +8909,7 @@ class EInvoiceController {
                 maGDichDTu = '';
               } else if (items[k].loaiTBao == '8') {
                 //trade_code = items[k].ndungTBao.maGDichTChieu;
-                maTBao = items[k].loaiTBao;
+                maTBao = '2'; //items[k].loaiTBao;
                 tenTBao = items[k].tenTBao;
                 soTBao = items[k].ndungTBao.tbaoKTraDLieu.soTBao;
                 ngayCQTKy = items[k].ndungTBao.tbaoKTraDLieu.ngayCQTKy;

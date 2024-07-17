@@ -8582,7 +8582,7 @@ class EInvoiceController {
                     send_mail_yn: 'N',
                   });
                 } else if (items[k].loaiTBao == '9' || items[k].loaiTBao == '16' || items[k].loaiTBao == '15') {
-                  maTBao = items[k].loaiTBao;
+                  maTBao = '1'; //items[k].loaiTBao;
                   tenTBao = items[k].tenTBao;
                   data_error.push({
                     maLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].maLoi,
@@ -8876,7 +8876,8 @@ class EInvoiceController {
                   p_ord: ord,
                   p_tvan_data_result: JSON.stringify(res.data),
                 };
-                //console.log('weTaxSendPosInvoiceToTaxOffice param_pos  ', param_pos);
+
+                console.log('weTaxSendPosInvoiceToTaxOffice param_pos  ', param_pos);
                 await DBService.ExecuteSQLBlob(
                   `BEGIN WT_UPD_HISTORY_D_POS(
                                     :p_tei_history_m_pk,
@@ -9497,7 +9498,7 @@ class EInvoiceController {
                       }
                     });
                   } else if (items[k].loaiTBao == '9' || items[k].loaiTBao == '16' || items[k].loaiTBao == '15') {
-                    maTBao = items[k].loaiTBao;
+                    maTBao = '1'; //items[k].loaiTBao;
                     tenTBao = items[k].tenTBao;
                     data_error.push({
                       maLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].maLoi,

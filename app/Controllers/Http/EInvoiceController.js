@@ -9018,7 +9018,7 @@ class EInvoiceController {
                 const chars = invoice.mtaLoi.split(';');
                 data_inv.forEach((element, index) => {
                   if (element.form_no === chars[0] && element.serial_no === chars[1] && element.invoice_no === chars[2]) {
-                    data_inv[index].inform_code = items[k].loaiTBao;
+                    data_inv[index].inform_code = '7'; //items[k].loaiTBao;
                     data_inv[index].inform_name = invoice.maLoi + ' - ' + invoice.mtaLoi;
                   }
                 });
@@ -15714,8 +15714,8 @@ class EInvoiceController {
               form_no: invoice.DLHDon.TTChung.KHMSHDon,
               serial_no: invoice.DLHDon.TTChung.KHHDon,
               invoice_no: invoice.DLHDon.TTChung.SHDon,
-              inform_code: '8',
-              inform_name: 'Dữ liệu hóa đơn hợp lệ',
+              inform_code: '', //8
+              inform_name: '', //Dữ liệu hóa đơn hợp lệ
               lookup_code: '',
             });
             if (rtnValueMaster.p_rtn_cur[0].STATUS == 'OK') {

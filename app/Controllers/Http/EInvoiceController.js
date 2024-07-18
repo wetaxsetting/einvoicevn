@@ -5639,7 +5639,7 @@ class EInvoiceController {
         //objInvoice.DLHDon.TTChung.HTTToan = invoices[i].payment_method;
         //objInvoice.DLHDon.TTChung.MSTTCGP = '1201496252'; //webcashgenuwin.com taxcode
 
-        objInvoice_M.DLHDon.TTChung.TTHDLQuan = [];
+        objInvoice.DLHDon.TTChung.TTHDLQuan = [];
         // console.log("invoices[i].invoice_feature  " ,invoices[i].invoice_feature)
         if (invoices[i].invoice_feature != 0 && invoices[i].invoice_feature != null) {
           //

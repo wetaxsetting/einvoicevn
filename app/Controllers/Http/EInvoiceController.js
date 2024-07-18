@@ -5639,6 +5639,21 @@ class EInvoiceController {
         //objInvoice.DLHDon.TTChung.HTTToan = invoices[i].payment_method;
         //objInvoice.DLHDon.TTChung.MSTTCGP = '1201496252'; //webcashgenuwin.com taxcode
 
+        objInvoice_M.DLHDon.TTChung.TTHDLQuan = [];
+        // console.log("invoices[i].invoice_feature  " ,invoices[i].invoice_feature)
+        if (invoices[i].invoice_feature != 0 && invoices[i].invoice_feature != null) {
+          //
+          objInvoice.DLHDon.TTChung.TTHDLQuan.push({
+            TCHDon: invoices[i].invoice_feature,
+            LHDCLQuan: invoices[i].invoice_type_relative,
+            KHMSHDCLQuan: invoices[i].form_no_relative,
+            KHHDCLQuan: invoices[i].serial_no_relative,
+            SHDCLQuan: invoices[i].invoice_no_relative,
+            NLHDCLQuan: invoices[i].invoice_date_relative,
+            GChu: invoices[i].description,
+          });
+        }
+
         objInvoice.DLHDon.TTChung.TTKhac = {};
         objInvoice.DLHDon.TTChung.TTKhac.TTin = [];
         objInvoice.DLHDon.TTChung.TTKhac.TTin.push({

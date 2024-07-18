@@ -8850,6 +8850,8 @@ class EInvoiceController {
             },
           });
 
+          console.log('weTaxSendPosInvoiceToTaxOffice res while ', ' triesCounter ', triesCounter, '    ', JSON.stringify(data_resutl.data));
+
           if (data_resutl.data.length > 1) {
             break; // 'return' would work here as well
           } else {

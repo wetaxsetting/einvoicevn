@@ -174,6 +174,7 @@ export default {
           caption: this.$t("qty"),
           type: "number",
           width: 150,
+          alignment: 'right',
         },
         { dataField: "TITTLE", caption: "thao_tac", type: "html", width: 200, fixed: true, cellsrenderer: this.myCellHTML },
     ]

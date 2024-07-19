@@ -9027,7 +9027,7 @@ class EInvoiceController {
           }
         }
         data_inv.forEach((element, index) => {
-          if (element.inform_code == '' && element.inform_code == '') {
+          if (element.inform_code == '' && element.inform_name == '') {
             data_inv[index].inform_code = '2'; //items[k].loaiTBao;
             data_inv[index].inform_name = 'Dữ liệu hóa đơn hợp lệ';
           }

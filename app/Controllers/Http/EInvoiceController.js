@@ -18189,7 +18189,7 @@ class EInvoiceController {
     }
   }
   async jobCheckTradeCodePosInvoice(check_data) {
-    console.log('jobCheckTradeCodePosInvoice  trade_code', check_data);
+    console.log('jobCheckTradeCodePosInvoice BEGIN ========================  ');
     const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
     const authUserName = 'GENUWIN'; // "GENUWIN";
     const authPassword = 'genuwin123'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
@@ -18458,7 +18458,7 @@ class EInvoiceController {
         // };
       });
 
-      console.log('jobCheckTradeCodePosInvoice rtnValue  ', rtnValue);
+      //console.log('jobCheckTradeCodePosInvoice rtnValue  ', rtnValue);
       console.log('jobCheckTradeCodePosInvoice END ========================  ');
     } catch (error) {
       console.log('jobCheckTradeCodePosInvoice  error', error);

@@ -78,7 +78,7 @@ class JobScheduler {
       let einvoice = new EInvoiceController();
 
       for (let i = 0; i < res.length; i++) {
-        console.log('jobCheckTradeCodePosInvoice  ', res[i].TRADE_CODE);
+        //console.log('jobCheckTradeCodePosInvoice  ', res[i].TRADE_CODE);
         await einvoice.jobCheckTradeCodePosInvoice(res[i]);
       }
     } catch (e) {

@@ -74,6 +74,7 @@
         "mysql": "^2.16.0",
         "n-readlines": "^1.0.0",
         "node-cache": "^5.1.2",
+        "node-cron": "^3.0.3",
         "nodemailer": "^6.4.6",
         "nodemon": "^1.18.10",
         "nuxt": "^2.15.8",

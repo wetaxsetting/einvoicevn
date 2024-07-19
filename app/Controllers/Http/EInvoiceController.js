@@ -8894,7 +8894,7 @@ class EInvoiceController {
                   p_tenGdDTu: tenGDDTu,
                   p_ngayTaoTB: ngayCQTKy,
                   p_ord: ord,
-                  p_tvan_data_result: JSON.stringify(data_resutl.data),
+                  p_tvan_data_result: JSON.stringify(res.data),
                 };
 
                 console.log('weTaxSendPosInvoiceToTaxOffice param_pos  ', param_pos);

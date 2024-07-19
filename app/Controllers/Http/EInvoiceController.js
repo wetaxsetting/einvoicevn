@@ -8847,8 +8847,8 @@ class EInvoiceController {
       }).then(async res => {
         ////console.log("weTaxSendPosInvoiceToTaxOffice res  ", res.data);
         if (res.data.length) {
-          for (let j = 0; j < data_resutl.data.length; j++) {
-            const items = data_resutl.data[j];
+          for (let j = 0; j < res.data.length; j++) {
+            const items = res.data[j];
             for (let k = 0; k < items.length; k++) {
               if (items[k].loaiTBao == '1') {
                 xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8');

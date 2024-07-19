@@ -9026,6 +9026,12 @@ class EInvoiceController {
             }
           }
         }
+        data_inv.forEach((element, index) => {
+          if (element.inform_code == '' && element.inform_code == '') {
+            data_inv[index].inform_code = '2'; //items[k].loaiTBao;
+            data_inv[index].inform_name = 'Dữ liệu hóa đơn hợp lệ';
+          }
+        });
 
         for (const inv of data_inv) {
           const param_m = {
@@ -18188,6 +18194,9 @@ class EInvoiceController {
 
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
     }
+  }
+  async jobCheckTradeCodePosInvoice(trade_code) {
+    return '';
   }
 }
 

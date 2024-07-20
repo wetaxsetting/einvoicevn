@@ -76,10 +76,14 @@ class JobScheduler {
     try {
       let res = await DBService.callProcCursor(job.function, params, 'ENG', 'system-scheduler', '');
       let einvoice = new EInvoiceController();
-
-      for (let i = 0; i < res.length; i++) {
-        //console.log('jobCheckTradeCodePosInvoice  ', res[i].TRADE_CODE);
-        await einvoice.jobCheckTradeCodePosInvoice(res[i]);
+      if (job.type == '2') {
+        for (let i = 0; i < res.length; i++) {
+          await einvoice.jobCheckTradeCodeNorInvoice(res[i]);
+        }
+      } else if (job.type == '3') {
+        for (let i = 0; i < res.length; i++) {
+          await einvoice.jobCheckTradeCodePosInvoice(res[i]);
+        }
       }
     } catch (e) {
       Utils.Logger({LVL: 'error', MODULE: 'JobScheduler', FUNC: 'Schedule_Procedure', CONTENT: e.message});

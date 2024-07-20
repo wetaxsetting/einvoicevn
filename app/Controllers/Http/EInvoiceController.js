@@ -9662,7 +9662,7 @@ class EInvoiceController {
                     });
 
                     const param_ltb_8 = {
-                      p_tei_history_m_pk: check_data.TEI_HISTORY_M_PK,
+                      p_tei_history_m_pk: null,
                       p_CQT_Code: tr_code.trade_code,
                       p_soTBao: '',
                       p_maTBao: maTBao,
@@ -9709,7 +9709,7 @@ class EInvoiceController {
                     ngayCQTKy = items[k].ndungTBao.tbaoKTraDLieu.ngayCQTKy;
 
                     const param_ltb_8 = {
-                      p_tei_history_m_pk: check_data.TEI_HISTORY_M_PK,
+                      p_tei_history_m_pk: null,
                       p_CQT_Code: tr_code.trade_code,
                       p_soTBao: soTBao,
                       p_maTBao: maTBao,

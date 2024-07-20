@@ -84,6 +84,10 @@ class JobScheduler {
         for (let i = 0; i < res.length; i++) {
           await einvoice.jobCheckTradeCodePosInvoice(res[i]);
         }
+      } else if (job.type == '4') {
+        for (let i = 0; i < res.length; i++) {
+          await einvoice.jobCheckTradeCode04SSInvoice(res[i]);
+        }
       }
     } catch (e) {
       Utils.Logger({LVL: 'error', MODULE: 'JobScheduler', FUNC: 'Schedule_Procedure', CONTENT: e.message});

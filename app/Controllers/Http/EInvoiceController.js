@@ -8571,33 +8571,119 @@ class EInvoiceController {
             for (let j = 0; j < res.data.length; j++) {
               const items = res.data[j];
               for (let k = 0; k < items.length; k++) {
-                // //console.log("items[k].loaiTBao " + items[k].loaiTBao);
-                var getLength = require('utf8-byte-length');
-                if (items[k].loaiTBao == '10') {
-                  maCQT = items[k].ndungTBao.maCQT;
-                  base64XMLCQT = items[k].ndungTBao.base64XML;
-                  xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8');
+                if (items[k].loaiTBao == '1') {
+                  base64XML = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8');
+                  const temp_of_tax = {
+                    MLTDiep: 'TDiep/TTChung/MLTDiep',
+                  };
+                  const data_of_tax = await transform(base64XML, temp_of_tax);
+
+                  maTD = data_of_tax.MLTDiep;
+                  maGDDTu = items[k].ndungTBao.maGDichTNDLieu;
+                  ngayTaoTB = items[k].ngayTaoTBao;
+
+                  if (maTD == '202') {
+                    tenGDDTu = 'hóa đơn được CQT cấp mã';
+                    ord = '3';
+                  } else if (maTD == '204') {
+                    tenGDDTu = 'hóa đơn không được CQT cấp mã';
+                    ord = '3';
+                  } else {
+                    tenGDDTu = 'gói tin hợp lệ';
+                    ord = '2';
+                  }
+
+                  if (base64XML) {
+                    const para_history = {
+                      p_CQT_Code: data[i].trade_code,
+                      p_xml_sign: base64XML,
+                      p_maTD: maTD,
+                      p_maGDDTu: maGDDTu,
+                      p_tenGDDTu: tenGDDTu,
+                      p_ngayTaoTB: ngayTaoTB,
+                      p_ord: ord,
+                      p_tvan_data_result: JSON.stringify(res.data),
+                    };
+
+                    console.log('weTaxSendInvoiceToTaxOffice  para_history  ', para_history);
+
+                    const res_op = await DBService.ExecuteSQLBlob(
+                      `BEGIN ei_upd_his_nor_inv(
+                                                  :p_CQT_Code, 
+                                                  :p_xml_sign,
+                                                  :p_maTD,
+                                                  :p_maGDDTu,
+                                                  :p_tenGDDTu,
+                                                  :p_ngayTaoTB,
+                                                  :p_ord,
+                                                  :p_tvan_data_result,
+                                                  :p_language, 
+                                                  :p_crt_by, 
+                                                  :p_rtn_cur); 
+                                  END;`,
+                      para_history,
+                      p_language,
+                      p_crt_by,
+                    );
+
+                    base64XML = '';
+                    maTD = '';
+                    maGDDTu = '';
+                    tenGDDTu = '';
+                    ngayTaoTB = '';
+                  }
+                } else if (items[k].loaiTBao == '10') {
+                  let xml_draft = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8').split('</TTChung><DLieu>');
+                  xml_tax_signed = '<?xml version="1.0" encoding="UTF-8"?>' + xml_draft[1].replace('</DLieu></TDiep>', '');
+                  var getLength = require('utf8-byte-length');
                   xml_length = getLength(xml_tax_signed);
 
+                  maCQT = items[k].ndungTBao.maCQT;
                   maTBao = items[k].loaiTBao;
                   tenTBao = items[k].tenTBao;
-                  const para_value = {
-                    trade_code: data[i].trade_code,
-                    macqt: maCQT,
-                    xml_sign: base64XML,
+                  ngayCQTKy = items[k].ndungTBao.tbaoCMa.ngayCQTKy;
+
+                  rtnValueTradecode.forEach((element, index) => {
+                    if (element.trade_code === tr_code.trade_code) {
+                      rtnValueTradecode[index].mccqt = maCQT;
+                    }
+                  });
+
+                  const param_ltb_8 = {
+                    p_tei_history_m_pk: null,
+                    p_CQT_Code: data[i].trade_code,
+                    p_soTBao: '',
+                    p_maTBao: maTBao,
+                    p_tenTBao: tenTBao,
+                    p_ngayCQTKy: ngayCQTKy,
+                    p_mccqt: maCQT,
+                    p_xml_tax_signed: xml_tax_signed,
+                    p_xml_length: xml_length,
                   };
 
-                  data_inv.push({
-                    sale_id: data[i].req_key,
-                    trade_code: data[i].trade_code,
-                    msg_his_id: data[i].msg_his_id,
-                    buyer_email: data[i].mail_to,
-                    buyer_email_cc: data[i].mail_cc,
-                    mccqt: maCQT,
-                    send_mail_yn: 'N',
-                  });
+                  console.log('jobCheckTradeCodeNorInvoice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
+
+                  await DBService.ExecuteSQLBlob(
+                    `BEGIN WT_UPD_HISTORY_D_NOR_TB8(
+                                    :p_tei_history_m_pk,
+                                    :p_CQT_Code,
+                                    :p_soTBao,
+                                    :p_maTBao,
+                                    :p_tenTBao,
+                                    :p_ngayCQTKy,
+                                    :p_mccqt,
+                                    :p_xml_tax_signed,
+                                    :p_xml_length,
+                                    :p_language, 
+                                    :p_crt_by, 
+                                    :p_rtn_cur); 
+                    END;`,
+                    param_ltb_8,
+                    p_language,
+                    p_crt_by,
+                  );
                 } else if (items[k].loaiTBao == '9' || items[k].loaiTBao == '16' || items[k].loaiTBao == '15') {
-                  maTBao = '1'; //items[k].loaiTBao;
+                  maTBao = items[k].ndungTBao.tbaoKTraDLieu.loaiTBao;
                   tenTBao =
                     items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].maLoi +
                     ' - ' +
@@ -8606,15 +8692,43 @@ class EInvoiceController {
                     maLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].maLoi,
                     mtaLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].mtaLoi,
                   });
-                  // data_inv.push({
-                  //   sale_id: data[i].req_key,
-                  //   trade_code: data[i].trade_code,
-                  //   msg_his_id: data[i].msg_his_id,
-                  //   buyer_email: data[i].mail_to,
-                  //   buyer_email_cc: data[i].mail_cc,
-                  //   mccqt: maCQT,
-                  //   send_mail_yn: 'N',
-                  // });
+
+                  soTBao = items[k].ndungTBao.tbaoKTraDLieu.soTBao;
+                  ngayCQTKy = items[k].ndungTBao.tbaoKTraDLieu.ngayCQTKy;
+
+                  const param_ltb_8 = {
+                    p_tei_history_m_pk: null,
+                    p_CQT_Code: data[i].trade_code,
+                    p_soTBao: soTBao,
+                    p_maTBao: maTBao,
+                    p_tenTBao: tenTBao,
+                    p_ngayCQTKy: ngayCQTKy,
+                    p_mccqt: '',
+                    p_xml_tax_signed: '',
+                    p_xml_length: '',
+                  };
+
+                  console.log('jobCheckTradeCodeNorInvoice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
+
+                  await DBService.ExecuteSQLBlob(
+                    `BEGIN WT_UPD_HISTORY_D_NOR_TB8(
+                                    :p_tei_history_m_pk,
+                                    :p_CQT_Code,
+                                    :p_soTBao,
+                                    :p_maTBao,
+                                    :p_tenTBao,
+                                    :p_ngayCQTKy,
+                                    :p_mccqt,
+                                    :p_xml_tax_signed,
+                                    :p_xml_length,
+                                    :p_language, 
+                                    :p_crt_by, 
+                                    :p_rtn_cur); 
+                    END;`,
+                    param_ltb_8,
+                    p_language,
+                    p_crt_by,
+                  );
                 }
               }
             }
@@ -8625,7 +8739,7 @@ class EInvoiceController {
             return response.status(409).json(Utils.responseByRule({success: false, message: error.message}));
           });
 
-        const para_status = {
+        /*const para_status = {
           trade_code: data[i].trade_code,
           maCQT: maCQT,
           xml_tax_signed: xml_tax_signed,
@@ -8645,7 +8759,7 @@ class EInvoiceController {
           para_status,
           p_language,
           p_crt_by,
-        );
+        );*/
 
         rtnValue.push({
           trade_code: data[i].trade_code,
@@ -9482,6 +9596,9 @@ class EInvoiceController {
 
                     if (maTD == '202') {
                       tenGDDTu = 'hóa đơn được CQT cấp mã';
+                      ord = '3';
+                    } else if (maTD == '204') {
+                      tenGDDTu = 'hóa đơn không được CQT cấp mã';
                       ord = '3';
                     } else {
                       tenGDDTu = 'gói tin hợp lệ';
@@ -18597,6 +18714,9 @@ class EInvoiceController {
 
                 if (maTD == '202') {
                   tenGDDTu = 'hóa đơn được CQT cấp mã';
+                  ord = '3';
+                } else if (maTD == '204') {
+                  tenGDDTu = 'hóa đơn không được CQT cấp mã';
                   ord = '3';
                 } else {
                   tenGDDTu = 'gói tin hợp lệ';

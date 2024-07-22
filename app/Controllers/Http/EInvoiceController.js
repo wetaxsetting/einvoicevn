@@ -1468,13 +1468,14 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-
+      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon';
       const authUserName = 'GENUWIN'; // "GENUWIN";
-      //const authPassword = "e_GX4v@"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
-      const authPassword = 'genuwin123'; // "e_GX4v@";
-      //const url = "https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon";
-      const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon';
-      //const url = "http://118.71.250.233/ftvan-hddt/hdon/cmahdon";
+      const authPassword = 'e_GX4v@'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+
+      // const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon';
+      // const authUserName = 'GENUWIN'; // "GENUWIN";
+      // const authPassword = 'genuwin123'; // "e_GX4v@";
+
       const {proc, para} = request.all();
 
       const agent = {
@@ -1631,11 +1632,14 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
+      // const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      // const authUserName = 'GENUWIN'; // "GENUWIN";
+      // const authPassword = 'genuwin123'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+
+      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
       const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'genuwin123'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
-      //const authPassword = "genuwin123"; // "e_GX4v@";
-      //const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao";
-      let url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      const authPassword = 'e_GX4v@';
+
       const agent = {
         Agent: {
           defaultPort: 443,
@@ -2445,12 +2449,16 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-
+      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/dkyhddt/dkysdung';
+      const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
       const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'genuwin123'; // "e_GX4v@";
-      //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon";
-      const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/dkyhddt/dkysdung';
-      const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      const authPassword = 'e_GX4v@';
+
+      // const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/dkyhddt/dkysdung';
+      // const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      // const authUserName = 'GENUWIN'; // "GENUWIN";
+      // const authPassword = 'genuwin123'; // "e_GX4v@";
+
       const {xml_signed, tax_code, req_key} = request.all();
 
       if (!xml_signed) {
@@ -2512,19 +2520,23 @@ class EInvoiceController {
         p_crt_by,
       );
 
-      /*Utils._sleep(5);
+      Utils._sleep(5);
 
       if (tradeCode.data.maGDich.length > 0) {
-
-        let tenTBao = "", status = "", base64XML = "", maTD = "", maGDDTu = "", tenGDDTu = "", ngayTaoTB = "";
+        let tenTBao = '',
+          status = '',
+          base64XML = '',
+          maTD = '',
+          maGDDTu = '',
+          tenGDDTu = '',
+          ngayTaoTB = '';
 
         if (!res_tradeCode.data) {
           return response.status(400).json(Utils.responseByRule({success: false, message: `no data found.`}));
         }
         for (let item of res.data) {
           for (let child of item) {
-            if (child.loaiTBao == "1") 
-            {
+            if (child.loaiTBao == '1') {
               base64XML = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8');
               const temp_of_tax = {
                 MLTDiep: 'TDiep/TTChung/MLTDiep',
@@ -2532,36 +2544,31 @@ class EInvoiceController {
               const data_of_tax = await transform(base64XML, temp_of_tax);
 
               maTD = data_of_tax.MLTDiep;
-              maGDDTu =  items[k].ndungTBao.maGDichTNDLieu;
+              maGDDTu = items[k].ndungTBao.maGDichTNDLieu;
               ngayTaoTB = items[k].ngayTaoTBao;
-    
-              if (maTD == "999")
-              {
-                  tenGDDTu = "gói tin hợp lệ";
-                  ord = "2";
-              }else if (maTD == "102")
-              {
-                  tenGDDTu = "tiếp nhận tờ khai đăng ký";
-                  ord = "3";
-              }
-              else if (maTD == "103")
-              {
-                  tenGDDTu = "chấp nhận tờ khai đăng ký";
-                  ord = "4";
+
+              if (maTD == '999') {
+                tenGDDTu = 'gói tin hợp lệ';
+                ord = '2';
+              } else if (maTD == '102') {
+                tenGDDTu = 'tiếp nhận tờ khai đăng ký';
+                ord = '3';
+              } else if (maTD == '103') {
+                tenGDDTu = 'chấp nhận tờ khai đăng ký';
+                ord = '4';
               }
 
-            if (base64XML)
-            {
+              if (base64XML) {
                 const para_history = {
-                  p_CQT_Code : tradeCode.data.maGDich,
-                  p_xml_sign : base64XML,
-                  p_maTD : maTD,
-                  p_maGDDTu : maGDDTu,
-                  p_tenGDDTu : tenGDDTu, 
-                  p_ngayTaoTB : ngayTaoTB,
-                  p_ord : ord,
+                  p_CQT_Code: tradeCode.data.maGDich,
+                  p_xml_sign: base64XML,
+                  p_maTD: maTD,
+                  p_maGDDTu: maGDDTu,
+                  p_tenGDDTu: tenGDDTu,
+                  p_ngayTaoTB: ngayTaoTB,
+                  p_ord: ord,
                 };
-                console.log("weTaxSendDeclarationToTaxOffice  para_history  ",para_history);
+                console.log('weTaxSendDeclarationToTaxOffice  para_history  ', para_history);
 
                 const res_op = await DBService.ExecuteSQLBlob(
                   `BEGIN ei_upd_his_dec_inv(
@@ -2576,19 +2583,19 @@ class EInvoiceController {
                                             :p_crt_by, 
                                             :p_rtn_cur); 
                             END;`,
-                            para_history,
+                  para_history,
                   p_language,
                   p_crt_by,
                 );
-                maTD = "";
-                maGDDTu = "";
-                tenGDDTu = "";
-                ngayTaoTB = "";
-              }                    
-            } else if (child.loaiTBao == "3") {
-              status = "0";
+                maTD = '';
+                maGDDTu = '';
+                tenGDDTu = '';
+                ngayTaoTB = '';
+              }
+            } else if (child.loaiTBao == '3') {
+              status = '0';
             } else {
-              status = "1";
+              status = '1';
             }
             tenTBao = child.tenTBao;
 
@@ -2610,7 +2617,7 @@ class EInvoiceController {
                             ); END;`,
               para_value,
               p_language,
-              p_crt_by
+              p_crt_by,
             );
           }
         }
@@ -2640,7 +2647,7 @@ class EInvoiceController {
       } else {
         // return response.send(Utils.response(false, `Failed to call tax office api.`, tradeCode));
         return response.status(404).json(Utils.responseByRule({success: false, message: 'Failed to call tax office api!', data: tradeCode}));
-      }*/
+      }
 
       return response.status(200).json(
         Utils.responseByRule({
@@ -2706,13 +2713,13 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-
+      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
       const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'genuwin123'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
-      // const authPassword = "genuwin123"; // "e_GX4v@";
+      const authPassword = 'e_GX4v@';
 
-      //const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
-      let url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      // let url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      // const authUserName = 'GENUWIN'; // "GENUWIN";
+      // const authPassword = 'genuwin123'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
 
       const {para} = request.all();
       // console.log("para +++===> ", para);
@@ -2850,13 +2857,13 @@ class EInvoiceController {
       const {trade_code, tax_code, req_key} = request.all();
 
       let para_value;
-      const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'genuwin123'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
-      const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
-
       // const authUserName = 'GENUWIN'; // "GENUWIN";
-      // const authPassword = 'e_GX4v@'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
-      // const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
+      // const authPassword = 'genuwin123'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+      // const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+
+      const authUserName = 'GENUWIN'; // "GENUWIN";
+      const authPassword = 'e_GX4v@'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
 
       const agent = {
         Agent: {
@@ -3109,10 +3116,14 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
+      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
       const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'genuwin123'; // "e_GX4v@";
-      //const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
-      const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
+      const authPassword = 'e_GX4v@';
+
+      // const authUserName = 'GENUWIN'; // "GENUWIN";
+      // const authPassword = 'genuwin123'; // "e_GX4v@";
+      // const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
+
       const {proc, para} = request.all();
       const agent = {
         Agent: {
@@ -3189,10 +3200,14 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'genuwin123'; // "e_GX4v@";
-      //const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
-      const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
+      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
+      const authUserName = 'GENUWIN';
+      const authPassword = 'e_GX4v@';
+
+      // const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
+      // const authUserName = 'GENUWIN'; // "GENUWIN";
+      // const authPassword = 'genuwin123'; // "e_GX4v@";
+
       const {para} = request.all();
       const agent = {
         Agent: {
@@ -3283,11 +3298,14 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'genuwin123'; // "e_GX4v@";
-      //const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
-      const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
-      //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/mttien/tbaossot";
+      // const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
+      // const authUserName = 'GENUWIN'; // "GENUWIN";
+      // const authPassword = 'genuwin123'; // "e_GX4v@";
+
+      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
+      const authUserName = 'GENUWIN';
+      const authPassword = 'e_GX4v@';
+
       const {xml_signed, req_key} = request.all();
       const agent = {
         Agent: {
@@ -3412,10 +3430,13 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'genuwin123'; // "e_GX4v@";
+
+      const authUserName = 'GENUWIN';
+      const authPassword = 'e_GX4v@';
       let url = ''; //  "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/mttien/tbaossot";
 
+      // const authUserName = 'GENUWIN'; // "GENUWIN";
+      // const authPassword = 'genuwin123'; // "e_GX4v@";
       //const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
       //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
       const {xml_signed, req_key, smbl_type, doc_no} = request.all();
@@ -3429,9 +3450,11 @@ class EInvoiceController {
 
       //console.log("smbl_kind ", smbl_type);
       if (smbl_type == 'M') {
-        url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/mttien/tbaossot';
+        // url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/mttien/tbaossot';
+        url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/mttien/tbaossot';
       } else {
-        url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
+        // url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
+        url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
       }
       // console.log("weTaxSendInformAdjustToTaxOffice  xml_signed  ", xml_signed);
 
@@ -3607,12 +3630,13 @@ class EInvoiceController {
         },
       };
 
-      //const authUserName = "GENUWIN";
-      //const authPassword = "e_GX4v@";
-      //const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
-      const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'genuwin123'; // "e_GX4v@";
-      let url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      const authUserName = 'GENUWIN';
+      const authPassword = 'e_GX4v@';
+      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+
+      // const authUserName = 'GENUWIN'; // "GENUWIN";
+      // const authPassword = 'genuwin123'; // "e_GX4v@";
+      // let url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
 
       const {tax_code, trade_code_list} = request.all();
 
@@ -3972,13 +3996,14 @@ class EInvoiceController {
           options: {maxVersion: 'TLSv1.2', minVersion: 'TLSv1.2', path: null},
         },
       };
-
+      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
       const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'genuwin123'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
-      let url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
-      //const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
-      //const authUserName = "GENUWIN"; // "GENUWIN";
-      //const authPassword = "e_GX4v@";// "genuwin123";// "e_GX4v@";
+      const authPassword = 'e_GX4v@'; // "genuwin123";// "e_GX4v@";
+
+      // let url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      // const authUserName = 'GENUWIN'; // "GENUWIN";
+      // const authPassword = 'genuwin123'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+
       const {proc, para} = request.all();
 
       //console.log("para", para);
@@ -8511,377 +8536,6 @@ class EInvoiceController {
     }
   }
 
-  async weTaxSendPosInvoiceToTaxOffice({request, response, auth}) {
-    try {
-      var p_language = request.header('accept-language', 'ENG');
-      var p_crt_by = '';
-      const user = await auth.getUser();
-      if (user) {
-        p_crt_by = user.USER_ID;
-      }
-
-      const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'genuwin123'; // "e_GX4v@";
-      const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien';
-      const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
-
-      const {tax_serial_number, seller_tax_code, sale_date, store_code, store_name, pos_no, invoice_xml_signed, req_key} = request.all();
-      // //console.log("weTaxSendPosInvoiceToTaxOffice   =========================== BEGIN =======================", )
-      // //console.log("weTaxSendPosInvoiceToTaxOffice   tax_serial_number ", tax_serial_number )
-      // //console.log("weTaxSendPosInvoiceToTaxOffice   seller_tax_code ",seller_tax_code )
-      // //console.log("weTaxSendPosInvoiceToTaxOffice   sale_date ", sale_date )
-      // //console.log("weTaxSendPosInvoiceToTaxOffice   store_code ", store_code )
-      // //console.log("weTaxSendPosInvoiceToTaxOffice   pos_no ", pos_no )
-      // //console.log("weTaxSendPosInvoiceToTaxOffice   invoice_xml_signed ", invoice_xml_signed)
-      // //console.log("weTaxSendPosInvoiceToTaxOffice   req_key ", req_key)
-      // //console.log("weTaxSendPosInvoiceToTaxOffice   =========================== END =======================", )
-
-      // let json =  this.parseXmlToJson(invoice_xml_signed);
-      //console.log("weTaxSendPosInvoiceToTaxOffice BEGIN ================================   ");
-
-      const {check_data, data_inv} = await this.weTaxExtractPosXMLContent(
-        invoice_xml_signed,
-        seller_tax_code,
-        sale_date,
-        tax_serial_number,
-        req_key,
-        store_code,
-        store_name,
-        pos_no,
-        p_language,
-        p_crt_by,
-      );
-
-      //return response.status(200).json(Utils.responseByRule({success: true, message: 'Send invoice to Tax Office failure!', data: check_data}));
-      ////console.log("json  ", json);
-      //
-      // //console.log("json.TDiep.DLieu.HDon  ", json.TDiep.DLieu.HDon);
-      //console.log('check_data   ', check_data, 'data_inv  ', data_inv);
-      if (check_data.STATUS == 'FAILE') {
-        // return response.send(Utils.response(false, `Send invoice to Tax Office was failure!`, null));
-        return response.status(409).json(Utils.responseByRule({success: false, message: 'Send invoice to Tax Office failure!'}));
-      } else if (check_data.STATUS == 'EXIT') {
-        // return response.send(Utils.response(false, `The sign xml was send Tax Office!`, null));
-        return response.status(409).json(Utils.responseByRule({success: false, message: 'This invoice has been sent for Tax Office!'}));
-      } else if (check_data.STATUS == 'NOEXIT') {
-        // return response.send(Utils.response(false, `Compay not yet register`, null));
-        return response.status(404).json(Utils.responseByRule({success: false, message: 'Compay not yet register!'}));
-      }
-
-      const agent = {
-        Agent: {
-          defaultPort: 443,
-          protocol: 'https:',
-          options: {maxVersion: 'TLSv1.2', minVersion: 'TLSv1.2', path: null},
-        },
-      };
-      let SLuong = 0;
-      let rtnValue = {};
-      let data_error = [];
-      let mLTDiep = '',
-        trade_code = '',
-        maCQT = '',
-        maTBao = '',
-        tenTBao = '',
-        xml_tax_signed = '',
-        ngayTBao = '',
-        ngayCQTKy = '',
-        maGDichDTu = '',
-        tenGDDTu = '',
-        ord = '',
-        soTBao = '';
-      const res = await Request.post(
-        url,
-        {base64XML: Buffer.from(invoice_xml_signed).toString('base64')},
-        {
-          agent,
-          headers: {
-            Authorization: 'Basic ' + Buffer.from(`${authUserName}:${authPassword}`).toString('base64'),
-          },
-        },
-      );
-
-      trade_code = res.data.maGDich;
-      console.log('weTaxSendPosInvoiceToTaxOffice trade_code   ', trade_code);
-      if (trade_code) {
-        const para_value = {
-          tei_einvoice_ar_pk: check_data.PK,
-          tei_history_m_pk: check_data.TEI_HISTORY_M_PK,
-          trade_code: trade_code,
-        };
-
-        await DBService.ExecuteSQLBlob(
-          `BEGIN WT_UPD_TRADECODE_P_XML(
-                            :tei_einvoice_ar_pk,
-                            :tei_history_m_pk,
-                            :trade_code,
-                            :p_language, 
-                            :p_crt_by, 
-                            :p_rtn_cur); 
-            END;`,
-          para_value,
-          p_language,
-          p_crt_by,
-        );
-      }
-      await Utils._sleep(5);
-
-      await Request.get(urlCheck + trade_code, {
-        agent,
-        headers: {
-          Authorization: 'Basic ' + Buffer.from(`${authUserName}:${authPassword}`).toString('base64'),
-        },
-      }).then(async res => {
-        ////console.log("weTaxSendPosInvoiceToTaxOffice res  ", res.data);
-        if (res.data.length) {
-          for (let j = 0; j < res.data.length; j++) {
-            const items = res.data[j];
-            for (let k = 0; k < items.length; k++) {
-              if (items[k].loaiTBao == '1') {
-                xml_tax_signed = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8');
-
-                const templateMLTDiep = {
-                  mLTDiep: 'TDiep/TTChung/MLTDiep',
-                };
-                console.log('weTaxSendPosInvoiceToTaxOffice xml_tax_signed begin ', xml_tax_signed);
-
-                var jsonD = await transform(xml_tax_signed, templateMLTDiep);
-                mLTDiep = jsonD.mLTDiep;
-
-                ngayTBao = items[k].ndungTBao.ngayTBao;
-                ngayCQTKy = items[k].ndungTBao.ngayCQTKy;
-                maGDichDTu = items[k].ndungTBao.maGDichDTu;
-                if (mLTDiep == '204') {
-                  tenGDDTu = 'Thông báo về việc kết quả kiểm tra dữ liệu hóa đơn điện tử';
-                  ord = '3';
-
-                  const templateMLTDiep_204 = {
-                    LTBao: 'TDiep/DLieu/TBao/DLTBao/LTBao',
-                    SLuong: 'TDiep/DLieu/TBao/DLTBao/SLuong',
-                  };
-                  var json_td_204 = await transform(xml_tax_signed, templateMLTDiep_204);
-
-                  console.log('weTaxSendPosInvoiceToTaxOffice xml_tax_signed  ', xml_tax_signed);
-
-                  console.log('weTaxSendPosInvoiceToTaxOffice json_td_204  ', json_td_204);
-
-                  SLuong = json_td_204.SLuong || 0;
-                  maTBao = json_td_204.LTBao || '2';
-                } else if (mLTDiep == '999') {
-                  tenGDDTu = 'Thông báo gói tin hợp lệ.';
-                  ord = '2';
-                }
-                const param_pos = {
-                  p_tei_history_m_pk: check_data.TEI_HISTORY_M_PK,
-                  p_qty_invoice: SLuong,
-                  p_loaiTB: maTBao,
-                  p_CQT_Code: trade_code,
-                  p_xml_sign: xml_tax_signed,
-                  p_maTDiep: mLTDiep,
-                  p_maGdDTu: maGDichDTu,
-                  p_tenGdDTu: tenGDDTu,
-                  p_ngayTaoTB: ngayCQTKy,
-                  p_ord: ord,
-                  p_tvan_data_result: JSON.stringify(res.data),
-                };
-
-                console.log('weTaxSendPosInvoiceToTaxOffice param_pos  ', param_pos);
-                await DBService.ExecuteSQLBlob(
-                  `BEGIN WT_UPD_HISTORY_D_POS(
-                                      :p_tei_history_m_pk,
-                                      :p_qty_invoice,
-                                      :p_loaiTB,
-                                      :p_CQT_Code,
-                                      :p_xml_sign,
-                                      :p_maTDiep,
-                                      :p_maGdDTu,
-                                      :p_tenGdDTu,
-                                      :p_ngayTaoTB,
-                                      :p_ord,
-                                      :p_tvan_data_result,
-                                      :p_language, 
-                                      :p_crt_by, 
-                                      :p_rtn_cur); 
-                      END;`,
-                  param_pos,
-                  p_language,
-                  p_crt_by,
-                );
-
-                mLTDiep = '';
-                ngayTBao = '';
-                ngayCQTKy = '';
-                maGDichDTu = '';
-              } else if (items[k].loaiTBao == '8') {
-                //trade_code = items[k].ndungTBao.maGDichTChieu;
-                maTBao = items[k].ndungTBao.tbaoKTraDLieu.loaiTBao; //  '2'; //items[k].loaiTBao;
-                tenTBao = items[k].tenTBao;
-                soTBao = items[k].ndungTBao.tbaoKTraDLieu.soTBao;
-                ngayCQTKy = items[k].ndungTBao.tbaoKTraDLieu.ngayCQTKy;
-
-                const param_ltb_8 = {
-                  p_tei_history_m_pk: check_data.TEI_HISTORY_M_PK,
-                  p_CQT_Code: trade_code,
-                  p_soTBao: soTBao,
-                  p_maTBao: maTBao,
-                  p_tenTBao: tenTBao,
-                  p_ngayCQTKy: ngayCQTKy,
-                };
-
-                console.log('weTaxSendPosInvoiceToTaxOffice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
-
-                await DBService.ExecuteSQLBlob(
-                  `BEGIN WT_UPD_HISTORY_D_POS_TB8(
-                                      :p_tei_history_m_pk,
-                                      :p_CQT_Code,
-                                      :p_soTBao,
-                                      :p_maTBao,
-                                      :p_tenTBao,
-                                      :p_ngayCQTKy,
-                                      :p_language, 
-                                      :p_crt_by, 
-                                      :p_rtn_cur); 
-                      END;`,
-                  param_ltb_8,
-                  p_language,
-                  p_crt_by,
-                );
-
-                data_inv.forEach((element, index) => {
-                  if (element.inform_code == '' && element.inform_name == '') {
-                    (data_inv[index].inform_code = maTBao), //items[k].loaiTBao;
-                      (data_inv[index].inform_name = tenTBao); //'Dữ liệu hóa đơn hợp lệ';
-                  }
-                });
-              } else if (items[k].loaiTBao == '9' || items[k].loaiTBao == '7') {
-                //trade_code = items[k].ndungTBao.maGDichTChieu;
-                maTBao = items[k].ndungTBao.tbaoKTraDLieu.loaiTBao; //items[k].loaiTBao;
-                tenTBao = items[k].tenTBao;
-                soTBao = items[k].ndungTBao.tbaoKTraDLieu.soTBao;
-                ngayCQTKy = items[k].ndungTBao.tbaoKTraDLieu.ngayCQTKy;
-
-                const param_ltb_8 = {
-                  p_tei_history_m_pk: check_data.TEI_HISTORY_M_PK,
-                  p_CQT_Code: trade_code,
-                  p_soTBao: soTBao,
-                  p_maTBao: maTBao,
-                  p_tenTBao: tenTBao,
-                  p_ngayCQTKy: ngayCQTKy,
-                };
-                console.log('weTaxSendPosInvoiceToTaxOffice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
-                await DBService.ExecuteSQLBlob(
-                  `BEGIN WT_UPD_HISTORY_D_POS_TB8(
-                                      :p_tei_history_m_pk,
-                                      :p_CQT_Code,
-                                      :p_soTBao,
-                                      :p_maTBao,
-                                      :p_tenTBao,
-                                      :p_ngayCQTKy,
-                                      :p_language, 
-                                      :p_crt_by, 
-                                      :p_rtn_cur); 
-                      END;`,
-                  param_ltb_8,
-                  p_language,
-                  p_crt_by,
-                );
-
-                for (let invoice of items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu) {
-                  data_error.push({
-                    maLoi: invoice.maLoi,
-                    mtaLoi: invoice.mtaLoi,
-                  });
-                  const chars = invoice.mtaLoi.split(';');
-                  data_inv.forEach((element, index) => {
-                    if (element.form_no === chars[0] && element.serial_no === chars[1] && element.invoice_no === chars[2]) {
-                      data_inv[index].inform_code = '7'; //items[k].loaiTBao;
-                      data_inv[index].inform_name = invoice.maLoi + ' - ' + invoice.mtaLoi;
-                    }
-                  });
-                }
-
-                data_inv.forEach((element, index) => {
-                  if (element.inform_code == '' && element.inform_name == '') {
-                    data_inv[index].inform_code = maTBao; //'2'; //items[k].loaiTBao;
-                    data_inv[index].inform_name = tenTBao; //'Thông báo dữ liệu hóa đơn hợp lệ';
-                  }
-                });
-              }
-            }
-          }
-        }
-
-        // data_inv insert data ==> tei_einvoice_m
-        //console.log("weTaxSendPosInvoiceToTaxOffice data_inv  ", data_inv);
-
-        for (const inv of data_inv) {
-          const param_m = {
-            mccqt: inv.mccqt,
-            tax_code: inv.tax_code,
-            form_no: inv.form_no,
-            serial_no: inv.serial_no,
-            invoice_no: inv.invoice_no,
-            inform_code: inv.inform_code,
-          };
-
-          const r_data_inv = await DBService.ExecuteSQLBlob(
-            `BEGIN WT_UPD_TEI_WT_INVOICE_POS(
-                              :mccqt,
-                              :tax_code,
-                              :form_no,
-                              :serial_no,
-                              :invoice_no,
-                              :inform_code,
-                              :p_language, 
-                              :p_crt_by, 
-                              :p_rtn_cur); 
-              END;`,
-            param_m,
-            p_language,
-            p_crt_by,
-          );
-
-          data_inv.forEach((element, index) => {
-            if (element.form_no === inv.form_no && element.serial_no === inv.serial_no && element.invoice_no === inv.invoice_no) {
-              data_inv[index].lookup_code = r_data_inv.p_rtn_cur[0].LOOKUP_CODE;
-            }
-          });
-        }
-
-        rtnValue = {
-          trade_code: trade_code,
-          seller_tax_code: seller_tax_code,
-          sale_date: sale_date,
-          store_code: store_code,
-          store_name: store_name,
-          tax_serial_number: tax_serial_number,
-          pos_no: pos_no,
-          data_error: data_error,
-          data_inv: data_inv,
-          inform_code: maTBao,
-          inform_name: tenTBao,
-          //mccqt: maCQT,
-          xml_tax_signed: xml_tax_signed,
-        };
-      });
-
-      console.log('weTaxSendPosInvoiceToTaxOffice rtnValue  ', rtnValue);
-      console.log('weTaxSendPosInvoiceToTaxOffice END ========================  ');
-      // return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
-      return response.status(200).json(Utils.responseByRule({success: true, message: 'Sent POS invoice successfully.', data: rtnValue}));
-    } catch (e) {
-      Utils.Logger({
-        LVL: 'error',
-        MODULE: 'EInvoiceController',
-        FUNC: 'sendInvoiceToTaxOffice',
-        CONTENT: e.message,
-      });
-      console.log('weTaxSendPosInvoiceToTaxOffice ERROR ', e);
-      // return response.send(Utils.response(false, e.message, null));
-      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
-    }
-  }
-
   async weTaxExtractXMLContentGetDataDec(xml_content) {
     try {
       const templateTTChung = [
@@ -8936,10 +8590,15 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
 
+      // const authUserName = 'GENUWIN'; // "GENUWIN";
+      // const authPassword = 'genuwin123'; // "e_GX4v@";
+      // const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien';
+      // const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+
       const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'genuwin123'; // "e_GX4v@";
-      const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien';
-      const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      const authPassword = 'e_GX4v@';
+      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/mttien';
+      const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
 
       const {tax_serial_number, seller_tax_code, sale_date, store_code, store_name, pos_no, invoice_xml_signed, req_key} = request.all();
       // //console.log("weTaxSendPosInvoiceToTaxOffice   =========================== BEGIN =======================", )
@@ -9281,11 +8940,15 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
 
-      const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'genuwin123'; // "e_GX4v@";
-      const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien';
-      const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      // const authUserName = 'GENUWIN'; // "GENUWIN";
+      // const authPassword = 'genuwin123'; // "e_GX4v@";
+      // const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien';
+      // const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
 
+      const authUserName = 'GENUWIN'; // "GENUWIN";
+      const authPassword = 'e_GX4v@';
+      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/mttien';
+      const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
       const agent = {
         Agent: {
           defaultPort: 443,
@@ -9476,15 +9139,19 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      //const authPassword = "e_GX4v@"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
-      //const url = "https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon";
+      const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon';
       const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'genuwin123'; // "e_GX4v@";
-      const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon';
-      const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      const authPassword = 'e_GX4v@'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+
+      // const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon';
+      // const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      // const authUserName = 'GENUWIN'; // "GENUWIN";
+      // const authPassword = 'genuwin123'; // "e_GX4v@";
+
       const {invoices} = request.all();
 
-      console.log('weTaxSendInvoiceToTaxOffice  BEGIN ================================= ');
+      //console.log('weTaxSendInvoiceToTaxOffice  BEGIN ================================= ');
       //console.log("weTaxSendInvoiceToTaxOffice  invoices  ",invoices);
       const agent = {
         Agent: {
@@ -9737,7 +9404,7 @@ class EInvoiceController {
                       p_xml_length: xml_length,
                     };
 
-                    console.log('jobCheckTradeCodeNorInvoice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
+                    //console.log('jobCheckTradeCodeNorInvoice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
 
                     await DBService.ExecuteSQLBlob(
                       `BEGIN WT_UPD_HISTORY_D_NOR_TB8(
@@ -11882,12 +11549,14 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
+      // const authUserName = 'GENUWIN'; // "GENUWIN";
+      // const authPassword = 'genuwin123'; // "e_GX4v@";
+      // const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon';
+
+      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon';
       const authUserName = 'GENUWIN'; // "GENUWIN";
-      //const authPassword = "e_GX4v@"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
-      const authPassword = 'genuwin123'; // "e_GX4v@";
-      //const url = "https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon";
-      const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon';
-      //const url = "http://118.71.250.233/ftvan-hddt/hdon/cmahdon";
+      const authPassword = 'e_GX4v@'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+
       const {invoices} = request.all();
 
       const agent = {
@@ -11963,9 +11632,14 @@ class EInvoiceController {
       }
 
       const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'genuwin123'; // "e_GX4v@";
-      const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien';
-      const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      const authPassword = 'e_GX4v@';
+      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/mttien';
+      const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+
+      // const authUserName = 'GENUWIN'; // "GENUWIN";
+      // const authPassword = 'genuwin123'; // "e_GX4v@";
+      // const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien';
+      // const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
       const {data} = request.all();
       //console.log("data  ", data);
       const agent = {
@@ -12130,13 +11804,13 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      let url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
-      const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'genuwin123'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+      // let url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      // const authUserName = 'GENUWIN'; // "GENUWIN";
+      // const authPassword = 'genuwin123'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
 
-      // const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
-      // const authUserName = "GENUWIN"; // "GENUWIN";
-      // const authPassword = "e_GX4v@"; // "e_GX4v@";
+      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      const authUserName = 'GENUWIN'; // "GENUWIN";
+      const authPassword = 'e_GX4v@'; // "e_GX4v@";
 
       const {data} = request.all();
       //console.log("data  ", data);
@@ -13458,10 +13132,15 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
 
-      const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'genuwin123'; // "e_GX4v@";
-      const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien';
-      const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      // const authUserName = 'GENUWIN'; // "GENUWIN";
+      // const authPassword = 'genuwin123'; // "e_GX4v@";
+      // const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien';
+      // const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+
+      const authUserName = 'GENUWIN';
+      const authPassword = 'e_GX4v@';
+      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/mttien';
+      const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
 
       const {tax_serial_number, seller_tax_code, sale_date, store_code, store_name, pos_no, invoice_xml_signed, req_key} = request.all();
 
@@ -16669,13 +16348,16 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      //const authPassword = "e_GX4v@"; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
-      //const url = "https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon";
+      // const authUserName = 'GENUWIN'; // "GENUWIN";
+      // const authPassword = 'genuwin123'; // "e_GX4v@";
+      // const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon';
+      // const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
 
       const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'genuwin123'; // "e_GX4v@";
-      const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon';
-      const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      const authPassword = 'e_GX4v@';
+      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon';
+      const urlCheck = 'https://tvan.fpt.com.vn//ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+
       const {invoices} = request.all();
 
       const agent = {
@@ -18231,7 +17913,7 @@ class EInvoiceController {
 
       const authUserName = 'GENUWIN'; // "GENUWIN";
       const authPassword = 'e_GX4v@'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
-      const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
       let url = '';
       const agent = {
         Agent: {
@@ -18910,10 +18592,14 @@ class EInvoiceController {
   }
 
   async jobCheckTradeCodePosInvoice(check_data) {
-    console.log('jobCheckTradeCodePosInvoice BEGIN ========================  ');
-    const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
-    const authUserName = 'GENUWIN'; // "GENUWIN";
-    const authPassword = 'genuwin123'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+    // const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+    // const authUserName = 'GENUWIN'; // "GENUWIN";
+    // const authPassword = 'genuwin123'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+
+    const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+    const authUserName = 'GENUWIN';
+    const authPassword = 'e_GX4v@';
+
     const p_language = 'ENG';
     const p_crt_by = 'system-scheduler';
 
@@ -18958,7 +18644,7 @@ class EInvoiceController {
                 const templateMLTDiep = {
                   mLTDiep: 'TDiep/TTChung/MLTDiep',
                 };
-                console.log('jobCheckTradeCodePosInvoice xml_tax_signed begin ', xml_tax_signed);
+                //console.log('jobCheckTradeCodePosInvoice xml_tax_signed begin ', xml_tax_signed);
 
                 var jsonD = await transform(xml_tax_signed, templateMLTDiep);
                 mLTDiep = jsonD.mLTDiep;
@@ -18976,8 +18662,8 @@ class EInvoiceController {
                   };
                   var json_td_204 = await transform(xml_tax_signed, templateMLTDiep_204);
 
-                  console.log('jobCheckTradeCodePosInvoice xml_tax_signed  ', xml_tax_signed);
-                  console.log('jobCheckTradeCodePosInvoice json_td_204  ', json_td_204);
+                  //console.log('jobCheckTradeCodePosInvoice xml_tax_signed  ', xml_tax_signed);
+                  //console.log('jobCheckTradeCodePosInvoice json_td_204  ', json_td_204);
 
                   SLuong = json_td_204.SLuong || 0;
                   maTBao = json_td_204.LTBao || '2';
@@ -18999,7 +18685,7 @@ class EInvoiceController {
                   p_tvan_data_result: JSON.stringify(res.data),
                 };
 
-                console.log('jobCheckTradeCodePosInvoice param_pos  ', param_pos);
+                //console.log('jobCheckTradeCodePosInvoice param_pos  ', param_pos);
                 await DBService.ExecuteSQLBlob(
                   `BEGIN WT_UPD_HISTORY_D_POS(
                                       :p_tei_history_m_pk,
@@ -19189,10 +18875,14 @@ class EInvoiceController {
   }
 
   async jobCheckTradeCodeNorInvoice(check_data) {
-    console.log('jobCheckTradeCodeNorInvoice BEGIN ========================  ');
-    const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
-    const authUserName = 'GENUWIN'; // "GENUWIN";
-    const authPassword = 'genuwin123'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+    // const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+    // const authUserName = 'GENUWIN'; // "GENUWIN";
+    // const authPassword = 'genuwin123'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+
+    const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+    const authUserName = 'GENUWIN';
+    const authPassword = 'e_GX4v@';
+
     const p_language = 'ENG';
     const p_crt_by = 'system-scheduler';
 
@@ -19386,9 +19076,6 @@ class EInvoiceController {
           }
         }
       });
-
-      //console.log('jobCheckTradeCodePosInvoice rtnValue  ', rtnValue);
-      console.log('jobCheckTradeCodeNorInvoice END ========================  ');
     } catch (error) {
       console.log('jobCheckTradeCodeNorInvoice  error', error);
     }
@@ -19397,10 +19084,14 @@ class EInvoiceController {
   }
 
   async jobCheckTradeCode04SSInvoice(check_data) {
-    console.log('jobCheckTradeCode04SSInvoice BEGIN ========================  ');
-    const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
-    const authUserName = 'GENUWIN'; // "GENUWIN";
-    const authPassword = 'genuwin123'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
+    // const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+    // const authUserName = 'GENUWIN';
+    // const authPassword = 'genuwin123';
+
+    const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+    const authUserName = 'GENUWIN';
+    const authPassword = 'e_GX4v@';
+
     const p_language = 'ENG';
     const p_crt_by = 'system-scheduler';
 
@@ -19735,8 +19426,6 @@ class EInvoiceController {
 
         //this.sendMailTBSSToCustomer(inv.trade_code, p_language, p_crt_by);
       }
-
-      //console.log('jobCheckTradeCode04SSInvoice END ========================  ');
     } catch (error) {
       console.log('jobCheckTradeCode04SSInvoice  error', error);
     }

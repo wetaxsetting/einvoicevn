@@ -278,7 +278,20 @@ export default {
           if (company.length > 0) {
             this.dataSearchList.sellerNameList = company;
           }
+          this.dataSearchList.cqtResult = [];
+          const results = await this._getCommonCode2(["ACJS0510"], this.txtCompanyName);
+
+          
+
+          results[0].forEach((element, index) => {
+                  if (element.VAL1 == null || element.VAL1 == 'N') {
+                    console.log("element " , element);
+                    this.dataSearchList.cqtResult.push(element);
+                  }
+                });
+         console.log(this.dataSearchList.cqtResult);
         break;
+        
       }
     },
     async onClickButton(pos) {

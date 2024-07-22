@@ -18324,9 +18324,9 @@ class EInvoiceController {
         } else if (invoice.type == 'D') {
           url = 'https://tvan.fpt.com.vn/ftvan-hddt/dkyhddt/dkysdung';
         } else if (invoice.type == 'M') {
-          url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien';
+          url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/mttien';
         } else if (invoice.type == 'K') {
-          url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/hdonkma';
+          url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/hdonkma';
         } else if (invoice.type == 'P') {
           let para_pit = {
             p_tei_einvoice_m_pk: invoice.req_key,

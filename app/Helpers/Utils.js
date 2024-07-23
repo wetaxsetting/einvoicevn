@@ -1303,7 +1303,13 @@ class Utils {
       return `${savePath}/${timeName + '_' + fileName}`;
     } catch (error) {
       console.log('Ultls putFileRandomNameRootPathOut  error: ', error);
-      return ex.message;
+      this.Logger({
+        level: 'error',
+        module: 'Utils',
+        func: 'putFileRandomNameRootPathOut',
+        content: error.message,
+      });
+      return error.message;
     }
   }
 }

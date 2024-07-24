@@ -63,9 +63,9 @@ class EiExcelHandler {
           LVL: 'error',
           MODULE: 'EiExcelTemplateHandler',
           FUNC: 'logos',
-          CONTENT: 's2',
+          CONTENT: einvoiceMasterData,
         });
-        if (fs.existsSync(einvoiceMasterData[0].URL_IMG_LOGO)) {
+        if (fs.existsSync(einvoiceMasterData[0].URL_IMG_LOGO.replace('/data', 'data'))) {
           logos = [
             {
               logo_start_col: einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_START_COL ? einvoiceMasterData[0].LOGO_START_COL : 1,

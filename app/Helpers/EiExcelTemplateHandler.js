@@ -126,7 +126,7 @@ class EiExcelHandler {
         LVL: 'error',
         MODULE: 'EiExcelTemplateHandler',
         FUNC: 'getEinvoice',
-        CONTENT: error.message,
+        CONTENT: error,
       });
     }
   }

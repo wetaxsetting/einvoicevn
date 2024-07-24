@@ -91,7 +91,7 @@ class EiExcelConverterAuto {
       return excelUrl;
     } catch (error) {
       console.log(error);
-      Utils.Logger({LVL: 'error', MODULE: 'ReportHelper', FUNC: 'TestReport', CONTENT: error.message});
+      Utils.Logger({LVL: 'error', MODULE: 'ReportHelper', FUNC: 'TestReport', CONTENT: error});
     }
   }
 

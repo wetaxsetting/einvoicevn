@@ -198,6 +198,7 @@ Route.group(() => {
   Route.post('send-data-pos-invoice-erp', 'EInvoiceController.sendPosInvoiceErp');
   Route.post('send-invoice-erp', 'EInvoiceController.sendInvoiceErp');
   Route.post('view-pdf', 'EInvoiceController.viewPDFInvoice');
+  Route.post('general-base64-from-url', 'EInvoiceController.getBase64ImgFromUrl');
 
   // e-invoice C#
   Route.post('declare2xml-c-sharp', 'EInvoiceController.GeneralDeclarationXML');

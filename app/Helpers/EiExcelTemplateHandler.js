@@ -57,13 +57,21 @@ class EiExcelHandler {
       });
       try {
         //let savePath = await Helpers.appRoot(`resources/${einvoiceMasterData[0].URL_IMG_LOGO}`);
-        //let savePath = await Helpers.appRoot(`${einvoiceMasterData[0].URL_IMG_LOGO}`);
+
         //console.log("savePath  ", savePath)
         Utils.Logger({
           LVL: 'error',
           MODULE: 'EiExcelTemplateHandler',
           FUNC: 'logos',
           CONTENT: einvoiceMasterData,
+        });
+        let savePath = await Helpers.appRoot(`${einvoiceMasterData[0].URL_IMG_LOGO}`);
+
+        Utils.Logger({
+          LVL: 'error',
+          MODULE: 'EiExcelTemplateHandler',
+          FUNC: 'savePath',
+          CONTENT: savePath,
         });
         if (fs.existsSync(einvoiceMasterData[0].URL_IMG_LOGO.replace('/data', 'data'))) {
           logos = [

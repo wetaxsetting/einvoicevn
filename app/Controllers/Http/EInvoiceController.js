@@ -18531,6 +18531,9 @@ class EInvoiceController {
                   p_crt_by,
                 );
 
+                if (check_data.CRT_BY == 'wetax-test') {
+                }
+
                 data_inv.forEach((element, index) => {
                   if (element.inform_code == '' && element.inform_name == '') {
                     data_inv[index].inform_code = maTBao; //items[k].loaiTBao;

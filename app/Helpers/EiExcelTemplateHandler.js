@@ -1,5 +1,6 @@
 'use strict';
 const DBService = use('DBService');
+const Utils = use('Utils');
 const Helpers = use('Helpers');
 const fs = use('fs');
 const EiExcelConverter = use('App/Helpers/EiExcelTemplateConverter');
@@ -74,7 +75,12 @@ class EiExcelHandler {
         logos = [];
         console.log('error  require url ', error);
       }
-
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EiExcelTemplateHandler',
+        FUNC: 'logos',
+        CONTENT: logos,
+      });
       bg = [
         {
           bg_start_row: einvoiceMasterData[0] && einvoiceMasterData[0].BG_START_ROW ? einvoiceMasterData[0].BG_START_ROW : 1,
@@ -116,6 +122,12 @@ class EiExcelHandler {
       return resultExcel;
     } catch (error) {
       console.log(error);
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EiExcelTemplateHandler',
+        FUNC: 'getEinvoice',
+        CONTENT: error.message,
+      });
     }
   }
 

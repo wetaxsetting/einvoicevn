@@ -62,7 +62,7 @@ class EiExcelHandler {
               logo_height: einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_HEIGHT ? einvoiceMasterData[0].LOGO_HEIGHT : 1,
               logoPath: `${
                 einvoiceMasterData[0] && einvoiceMasterData[0].URL_IMG_LOGO
-                  ? einvoiceMasterData[0].URL_IMG_LOGO //'/../' +
+                  ? einvoiceMasterData[0].URL_IMG_LOGO.toString().replace('/data', 'data') //'/../' +
                   : 'assets/images/no_image.png'
               }`, ///assets/images/einvoices_logo/abc/
             },

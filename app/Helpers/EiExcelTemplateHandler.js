@@ -49,11 +49,22 @@ class EiExcelHandler {
 
       const einvoiceMasterParam = await DBService.callProcCursor('EI_SEL_6095057_PARAM', [pk], p_language, p_crt_by, _db2);
       //console.log("file: EiExcelTemplateHandler.js:56 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceMasterParam:", einvoiceMasterData)
-
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EiExcelTemplateHandler',
+        FUNC: 'logos',
+        CONTENT: 'sssssssssssssss',
+      });
       try {
         //let savePath = await Helpers.appRoot(`resources/${einvoiceMasterData[0].URL_IMG_LOGO}`);
         //let savePath = await Helpers.appRoot(`${einvoiceMasterData[0].URL_IMG_LOGO}`);
         //console.log("savePath  ", savePath)
+        Utils.Logger({
+          LVL: 'error',
+          MODULE: 'EiExcelTemplateHandler',
+          FUNC: 'logos',
+          CONTENT: 's2',
+        });
         if (fs.existsSync(einvoiceMasterData[0].URL_IMG_LOGO)) {
           logos = [
             {
@@ -74,6 +85,12 @@ class EiExcelHandler {
       } catch (error) {
         logos = [];
         console.log('error  require url ', error);
+        Utils.Logger({
+          LVL: 'error',
+          MODULE: 'EiExcelTemplateHandler',
+          FUNC: 'logos error',
+          CONTENT: error,
+        });
       }
       Utils.Logger({
         LVL: 'error',

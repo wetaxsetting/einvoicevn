@@ -1,6 +1,5 @@
 'use strict';
 const DBService = use('DBService');
-const Utils = use('Utils');
 const Helpers = use('Helpers');
 const fs = use('fs');
 const EiExcelConverter = use('App/Helpers/EiExcelTemplateConverter');
@@ -49,31 +48,12 @@ class EiExcelHandler {
 
       const einvoiceMasterParam = await DBService.callProcCursor('EI_SEL_6095057_PARAM', [pk], p_language, p_crt_by, _db2);
       //console.log("file: EiExcelTemplateHandler.js:56 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceMasterParam:", einvoiceMasterData)
-      Utils.Logger({
-        LVL: 'error',
-        MODULE: 'EiExcelTemplateHandler',
-        FUNC: 'logos',
-        CONTENT: 'sssssssssssssss',
-      });
+
       try {
         //let savePath = await Helpers.appRoot(`resources/${einvoiceMasterData[0].URL_IMG_LOGO}`);
-
-        //console.log("savePath  ", savePath)
-        Utils.Logger({
-          LVL: 'error',
-          MODULE: 'EiExcelTemplateHandler',
-          FUNC: 'logos',
-          CONTENT: einvoiceMasterData,
-        });
         let savePath = await Helpers.appRoot(`${einvoiceMasterData[0].URL_IMG_LOGO}`);
-
-        Utils.Logger({
-          LVL: 'error',
-          MODULE: 'EiExcelTemplateHandler',
-          FUNC: 'savePath',
-          CONTENT: savePath,
-        });
-        if (fs.existsSync(einvoiceMasterData[0].URL_IMG_LOGO.replace('/data', 'data'))) {
+        console.log('savePath  ', savePath);
+        if (fs.existsSync(savePath)) {
           logos = [
             {
               logo_start_col: einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_START_COL ? einvoiceMasterData[0].LOGO_START_COL : 1,
@@ -82,7 +62,7 @@ class EiExcelHandler {
               logo_height: einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_HEIGHT ? einvoiceMasterData[0].LOGO_HEIGHT : 1,
               logoPath: `${
                 einvoiceMasterData[0] && einvoiceMasterData[0].URL_IMG_LOGO
-                  ? einvoiceMasterData[0].URL_IMG_LOGO.toString().replace('/data', 'data') //'/../' +
+                  ? '/../' + einvoiceMasterData[0].URL_IMG_LOGO
                   : 'assets/images/no_image.png'
               }`, ///assets/images/einvoices_logo/abc/
             },
@@ -93,19 +73,8 @@ class EiExcelHandler {
       } catch (error) {
         logos = [];
         console.log('error  require url ', error);
-        Utils.Logger({
-          LVL: 'error',
-          MODULE: 'EiExcelTemplateHandler',
-          FUNC: 'logos error',
-          CONTENT: error,
-        });
       }
-      Utils.Logger({
-        LVL: 'error',
-        MODULE: 'EiExcelTemplateHandler',
-        FUNC: 'logos',
-        CONTENT: logos,
-      });
+
       bg = [
         {
           bg_start_row: einvoiceMasterData[0] && einvoiceMasterData[0].BG_START_ROW ? einvoiceMasterData[0].BG_START_ROW : 1,
@@ -147,12 +116,6 @@ class EiExcelHandler {
       return resultExcel;
     } catch (error) {
       console.log(error);
-      Utils.Logger({
-        LVL: 'error',
-        MODULE: 'EiExcelTemplateHandler',
-        FUNC: 'getEinvoice',
-        CONTENT: error,
-      });
     }
   }
 

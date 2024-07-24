@@ -452,12 +452,12 @@ export default {
           formatFloat: 2,
           dataType: "number",
         },
-        {
-          dataField: "VAT_TR_AMT",
-          caption: this.$t("amount_vat"),
-          formatFloat: 2,
-          dataType: "number",
-        },
+        // {
+        //   dataField: "VAT_TR_AMT",
+        //   caption: this.$t("amount_vat"),
+        //   formatFloat: 2,
+        //   dataType: "number",
+        // },
         {
           dataField: "FEATURE",
           caption: this.$t("nature"),

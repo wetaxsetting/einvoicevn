@@ -2170,8 +2170,8 @@ class ReportHelper {
     let img = null;
     let imageBuffer = null;
     try {
-      //img = Helpers.appRoot(path);
-      imageBuffer = await fs.readFileSync(path); //  Utils.readFile(img);
+      img = Helpers.appRoot(path);
+      imageBuffer = await fs.readFileSync(img); //  Utils.readFile(img);
     } catch (e) {
       Utils.Logger({LVL: 'error', MODULE: 'ReportController', FUNC: 'insertPathImage', CONTENT: e.message});
     }

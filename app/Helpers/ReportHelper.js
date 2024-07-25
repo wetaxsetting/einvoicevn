@@ -2177,7 +2177,7 @@ class ReportHelper {
       });
 
       if (imageID === '' || !imageID) {
-        imageBase64 = 'data:image/jpeg;base64, ' + tmp;
+        imageBase64 = 'data:image/jpeg;base64, ' + contents.toString('base64');
         imageID = this.workbook.addImage({
           base64: imageBase64,
           extension: 'jpeg',

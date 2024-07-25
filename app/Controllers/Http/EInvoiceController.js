@@ -17191,8 +17191,8 @@ class EInvoiceController {
 
       const {url} = request.all(); //data:6030
       if (url) {
-        //let savePath = await Helpers.appRoot(url);
-        const contents = fs.readFileSync(url);
+        let savePath = await Helpers.appRoot(url);
+        const contents = fs.readFileSync(savePath);
 
         const b64 = contents.toString('base64');
         const type = 'image/png';

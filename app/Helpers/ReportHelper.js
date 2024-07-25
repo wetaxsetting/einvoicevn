@@ -3,6 +3,7 @@
 const AES = use('AES');
 const Env = use('Env');
 const Helpers = use('Helpers');
+const path = use('path');
 const fs = use('fs');
 const Utils = use('Utils');
 const DB_CONNECTION = Env.get('DB_CONNECTION');
@@ -2170,7 +2171,8 @@ class ReportHelper {
     let img = null;
     let imageBuffer = null;
     try {
-      img = Helpers.dataPath(path);
+      img = path.resolve(path); // Helpers.dataPath(path);
+      console.log('img  ', img);
       imageBuffer = await fs.readFileSync(img); //  Utils.readFile(img);
     } catch (e) {
       Utils.Logger({LVL: 'error', MODULE: 'ReportController', FUNC: 'insertPathImage', CONTENT: e.message});

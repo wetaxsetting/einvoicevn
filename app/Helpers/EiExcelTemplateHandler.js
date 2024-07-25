@@ -61,9 +61,7 @@ class EiExcelHandler {
               logo_width: einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_WIDTH ? einvoiceMasterData[0].LOGO_WIDTH : 1,
               logo_height: einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_HEIGHT ? einvoiceMasterData[0].LOGO_HEIGHT : 1,
               logoPath: `${
-                einvoiceMasterData[0] && einvoiceMasterData[0].URL_IMG_LOGO
-                  ? '/../' + einvoiceMasterData[0].URL_IMG_LOGO
-                  : 'assets/images/no_image.png'
+                einvoiceMasterData[0] && einvoiceMasterData[0].URL_IMG_LOGO ? einvoiceMasterData[0].URL_IMG_LOGO : '/data/einvoices_logo/no_image.png'
               }`, ///assets/images/einvoices_logo/abc/
             },
           ];
@@ -82,7 +80,7 @@ class EiExcelHandler {
           bg_width: einvoiceMasterData[0] && einvoiceMasterData[0].BG_WIDTH ? einvoiceMasterData[0].BG_WIDTH : 1,
           bg_height: einvoiceMasterData[0] && einvoiceMasterData[0].BG_HEIGHT ? einvoiceMasterData[0].BG_HEIGHT : 1,
           bgPath: `${
-            einvoiceMasterData[0] && einvoiceMasterData[0].URL_IMG_BG ? '/../' + einvoiceMasterData[0].URL_IMG_BG : 'assets/images/no_background.png'
+            einvoiceMasterData[0] && einvoiceMasterData[0].URL_IMG_BG ? einvoiceMasterData[0].URL_IMG_BG : '/data/einvoices_logo/no_background.png'
           }`,
         },
       ];

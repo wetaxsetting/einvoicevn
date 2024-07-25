@@ -2175,10 +2175,8 @@ class ReportHelper {
     } catch (e) {
       Utils.Logger({LVL: 'error', MODULE: 'ReportController', FUNC: 'insertPathImage', CONTENT: e.message});
     }
-
     if (imageBuffer) {
       let tmp = Utils._arrayBufferToBase64(imageBuffer);
-      console.log('tmp', tmp);
       let imageBase64 = 'data:image/png;base64,' + tmp;
       imageID = this.workbook.addImage({
         base64: imageBase64,

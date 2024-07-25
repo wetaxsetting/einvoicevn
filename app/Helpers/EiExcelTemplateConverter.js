@@ -44,7 +44,7 @@ class EiExcelConverterAuto {
       }
       //console.log("logos  " , logos  );
       //console.log("logos[0].logoPath  " , logos[0].logoPath  );
-      //Utils.Logger({LVL: 'error', MODULE: 'EiExcelTemplateConverter', FUNC: 'ExcelBuilder', CONTENT: logos});
+      Utils.Logger({LVL: 'error', MODULE: 'EiExcelTemplateConverter', FUNC: 'ExcelBuilder', CONTENT: logos});
       if (logos && logos.length > 0 && logos[0].logoPath) {
         try {
           console.log('file: EiExcelTemplateConverter.js:57 [vng-304] ExcelBuilder [vng-304] logos[0].logoPath:', logos[0].logoPath);

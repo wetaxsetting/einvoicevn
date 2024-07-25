@@ -1,7 +1,6 @@
 'use strict';
 const DBService = use('DBService');
 const Helpers = use('Helpers');
-const Utils = use('Utils');
 const fs = use('fs');
 const EiExcelConverter = use('App/Helpers/EiExcelTemplateConverter');
 class EiExcelHandler {
@@ -52,9 +51,7 @@ class EiExcelHandler {
 
       try {
         //let savePath = await Helpers.appRoot(`resources/${einvoiceMasterData[0].URL_IMG_LOGO}`);
-
         let savePath = await Helpers.appRoot(`${einvoiceMasterData[0].URL_IMG_LOGO}`);
-
         console.log('savePath  ', savePath);
         if (fs.existsSync(savePath)) {
           logos = [
@@ -65,8 +62,8 @@ class EiExcelHandler {
               logo_height: einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_HEIGHT ? einvoiceMasterData[0].LOGO_HEIGHT : 1,
               logoPath: `${
                 einvoiceMasterData[0] && einvoiceMasterData[0].URL_IMG_LOGO
-                  ? einvoiceMasterData[0].URL_IMG_LOGO //'/../' +
-                  : '/data/einvoices_logo/0104128565-999/2024/07/1721875608993_1721875608993.png' //'assets/images/no_image.png'
+                  ? '/../' + einvoiceMasterData[0].URL_IMG_LOGO
+                  : 'assets/images/no_image.png'
               }`, ///assets/images/einvoices_logo/abc/
             },
           ];
@@ -77,6 +74,7 @@ class EiExcelHandler {
         logos = [];
         console.log('error  require url ', error);
       }
+
       bg = [
         {
           bg_start_row: einvoiceMasterData[0] && einvoiceMasterData[0].BG_START_ROW ? einvoiceMasterData[0].BG_START_ROW : 1,
@@ -84,9 +82,7 @@ class EiExcelHandler {
           bg_width: einvoiceMasterData[0] && einvoiceMasterData[0].BG_WIDTH ? einvoiceMasterData[0].BG_WIDTH : 1,
           bg_height: einvoiceMasterData[0] && einvoiceMasterData[0].BG_HEIGHT ? einvoiceMasterData[0].BG_HEIGHT : 1,
           bgPath: `${
-            einvoiceMasterData[0] && einvoiceMasterData[0].URL_IMG_BG
-              ? '/../' + einvoiceMasterData[0].URL_IMG_BG
-              : '/data/einvoices_logo/0104128565-999/2024/07/1721875514631_1721875514631.png' //'assets/images/no_background.png'
+            einvoiceMasterData[0] && einvoiceMasterData[0].URL_IMG_BG ? '/../' + einvoiceMasterData[0].URL_IMG_BG : 'assets/images/no_background.png'
           }`,
         },
       ];

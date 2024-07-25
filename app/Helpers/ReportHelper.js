@@ -810,10 +810,11 @@ class ReportHelper {
   }
 
   async writeFile() {
+    console.log('writeFile ', this.returnFile);
     if (this.reportType === 'word') {
       await fs.writeFileSync(this.returnFile, this.docBuffer);
     } else if (this.reportType === 'excel') {
-      await this.workbook.xlsx.writeFile(this.returnFile);
+      await this.workbook.xlsx.writeFile(this.returnFile.replace(/\\/g, '/'));
     }
 
     // convert file
@@ -2134,13 +2135,17 @@ class ReportHelper {
     let imageBuffer = null;
     try {
       img = Helpers.resourcesPath(path);
+      console.log('insertPathImage ', img);
       imageBuffer = await Utils.readFile(img);
     } catch (e) {
+      console.log('insertPathImage  e', e);
+
       Utils.Logger({LVL: 'error', MODULE: 'ReportController', FUNC: 'insertPathImage', CONTENT: e.message});
     }
 
     if (imageBuffer) {
       let tmp = Utils._arrayBufferToBase64(imageBuffer);
+      console.log('tmp', tmp);
       let imageBase64 = 'data:image/png;base64,' + tmp;
       imageID = this.workbook.addImage({
         base64: imageBase64,
@@ -2154,6 +2159,7 @@ class ReportHelper {
           extension: 'jpeg',
         });
       }
+      console.log('imageBase64', imageBase64);
     }
 
     return imageID;
@@ -2162,22 +2168,25 @@ class ReportHelper {
   async insertPathImage2(path) {
     let imageID = null;
     let img = null;
-    let contents = null;
+    let imageBuffer = null;
     try {
-      contents = fs.readFileSync(path);
+      img = Helpers.appRoot(path);
+      imageBuffer = await Utils.readFile(img);
     } catch (e) {
-      Utils.Logger({LVL: 'error', MODULE: 'ReportController', FUNC: 'insertPathImage2', CONTENT: e.message});
+      Utils.Logger({LVL: 'error', MODULE: 'ReportController', FUNC: 'insertPathImage', CONTENT: e.message});
     }
 
-    if (contents) {
-      let imageBase64 = 'data:image/png;base64,' + contents.toString('base64');
+    if (imageBuffer) {
+      let tmp = Utils._arrayBufferToBase64(imageBuffer);
+      console.log('tmp', tmp);
+      let imageBase64 = 'data:image/png;base64,' + tmp;
       imageID = this.workbook.addImage({
         base64: imageBase64,
         extension: 'png',
       });
 
       if (imageID === '' || !imageID) {
-        imageBase64 = 'data:image/jpeg;base64, ' + contents.toString('base64');
+        imageBase64 = 'data:image/jpeg;base64, ' + tmp;
         imageID = this.workbook.addImage({
           base64: imageBase64,
           extension: 'jpeg',

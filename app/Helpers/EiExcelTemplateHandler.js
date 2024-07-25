@@ -1,6 +1,7 @@
 'use strict';
 const DBService = use('DBService');
 const Helpers = use('Helpers');
+const Utils = use('Utils');
 const fs = use('fs');
 const EiExcelConverter = use('App/Helpers/EiExcelTemplateConverter');
 class EiExcelHandler {
@@ -51,7 +52,9 @@ class EiExcelHandler {
 
       try {
         //let savePath = await Helpers.appRoot(`resources/${einvoiceMasterData[0].URL_IMG_LOGO}`);
+
         let savePath = await Helpers.appRoot(`${einvoiceMasterData[0].URL_IMG_LOGO}`);
+
         console.log('savePath  ', savePath);
         if (fs.existsSync(savePath)) {
           logos = [
@@ -62,7 +65,7 @@ class EiExcelHandler {
               logo_height: einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_HEIGHT ? einvoiceMasterData[0].LOGO_HEIGHT : 1,
               logoPath: `${
                 einvoiceMasterData[0] && einvoiceMasterData[0].URL_IMG_LOGO
-                  ? '/../' + einvoiceMasterData[0].URL_IMG_LOGO
+                  ? einvoiceMasterData[0].URL_IMG_LOGO //'/../' +
                   : 'assets/images/no_image.png'
               }`, ///assets/images/einvoices_logo/abc/
             },
@@ -74,7 +77,6 @@ class EiExcelHandler {
         logos = [];
         console.log('error  require url ', error);
       }
-
       bg = [
         {
           bg_start_row: einvoiceMasterData[0] && einvoiceMasterData[0].BG_START_ROW ? einvoiceMasterData[0].BG_START_ROW : 1,

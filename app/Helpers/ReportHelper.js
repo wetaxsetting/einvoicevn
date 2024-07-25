@@ -2159,6 +2159,35 @@ class ReportHelper {
     return imageID;
   }
 
+  async insertPathImage2(path) {
+    let imageID = null;
+    let img = null;
+    let contents = null;
+    try {
+      contents = fs.readFileSync(path);
+    } catch (e) {
+      Utils.Logger({LVL: 'error', MODULE: 'ReportController', FUNC: 'insertPathImage2', CONTENT: e.message});
+    }
+
+    if (contents) {
+      let imageBase64 = 'data:image/png;base64,' + contents.toString('base64');
+      imageID = this.workbook.addImage({
+        base64: imageBase64,
+        extension: 'png',
+      });
+
+      if (imageID === '' || !imageID) {
+        imageBase64 = 'data:image/jpeg;base64, ' + tmp;
+        imageID = this.workbook.addImage({
+          base64: imageBase64,
+          extension: 'jpeg',
+        });
+      }
+    }
+
+    return imageID;
+  }
+
   setHideColumns(columns, isHide) {
     if (columns && columns.length > 0) {
       for (let i = 0; i < columns.length; i++) {

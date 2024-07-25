@@ -80,25 +80,26 @@ class EiExcelHandler {
           logo_width: einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_WIDTH ? einvoiceMasterData[0].LOGO_WIDTH : 1,
           logo_height: einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_HEIGHT ? einvoiceMasterData[0].LOGO_HEIGHT : 1,
           logoPath: `${
-            einvoiceMasterData[0] && einvoiceMasterData[0].URL_IMG_LOGO ? einvoiceMasterData[0].URL_IMG_LOGO : '/data/einvoices_logo/no_image.png'
+            einvoiceMasterData[0] && einvoiceMasterData[0].URL_IMG_LOGO
+              ? einvoiceMasterData[0].URL_IMG_LOGO
+              : '/data/einvoices_logo/0104128565-999/2024/07/1721906430005_1721906430005.png'
           }`, ///assets/images/einvoices_logo/abc/
         },
       ];
 
-      // bg = [
-      //   {
-      //     bg_start_row: einvoiceMasterData[0] && einvoiceMasterData[0].BG_START_ROW ? einvoiceMasterData[0].BG_START_ROW : 1,
-      //     bg_start_col: einvoiceMasterData[0] && einvoiceMasterData[0].BG_START_COL ? einvoiceMasterData[0].BG_START_COL : 1,
-      //     bg_width: einvoiceMasterData[0] && einvoiceMasterData[0].BG_WIDTH ? einvoiceMasterData[0].BG_WIDTH : 1,
-      //     bg_height: einvoiceMasterData[0] && einvoiceMasterData[0].BG_HEIGHT ? einvoiceMasterData[0].BG_HEIGHT : 1,
-      //     bgPath: `${
-      //       einvoiceMasterData[0] && einvoiceMasterData[0].URL_IMG_BG
-      //         ? einvoiceMasterData[0].URL_IMG_BG
-      //         : '/data/einvoices_logo/no_background.png'
-      //     }`,
-      //   },
-      // ];
-      gb = [];
+      bg = [
+        {
+          bg_start_row: einvoiceMasterData[0] && einvoiceMasterData[0].BG_START_ROW ? einvoiceMasterData[0].BG_START_ROW : 1,
+          bg_start_col: einvoiceMasterData[0] && einvoiceMasterData[0].BG_START_COL ? einvoiceMasterData[0].BG_START_COL : 1,
+          bg_width: einvoiceMasterData[0] && einvoiceMasterData[0].BG_WIDTH ? einvoiceMasterData[0].BG_WIDTH : 1,
+          bg_height: einvoiceMasterData[0] && einvoiceMasterData[0].BG_HEIGHT ? einvoiceMasterData[0].BG_HEIGHT : 1,
+          bgPath: `${
+            einvoiceMasterData[0] && einvoiceMasterData[0].URL_IMG_BG
+              ? einvoiceMasterData[0].URL_IMG_BG
+              : '/data/einvoices_logo/0104128565-999/2024/07/1721906402842_1721906402842.png'
+          }`,
+        },
+      ];
       this.masterDataArray = [];
       for (let i = 0; i < einvoiceMasterParam.length; i++) {
         this.masterDataArray.push({

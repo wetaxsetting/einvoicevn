@@ -2182,7 +2182,6 @@ class ReportHelper {
         base64: imageBase64,
         extension: 'png',
       });
-
       if (imageID === '' || !imageID) {
         imageBase64 = 'data:image/jpeg;base64, ' + tmp;
         imageID = this.workbook.addImage({
@@ -2191,7 +2190,6 @@ class ReportHelper {
         });
       }
     }
-
     return imageID;
   }
 

@@ -123,7 +123,7 @@ class EiExcelConverterAuto {
 
       if (bg.length) {
         try {
-          worksheet.addImage(await exceljs.insertPathImage(bg[0].bgPath), {
+          worksheet.addImage(await exceljs.insertPathImage2(bg[0].bgPath), {
             tl: {col: bg[0].bg_start_col, row: bg[0].bg_start_row},
             ext: {width: bg[0].bg_width, height: bg[0].bg_height},
           });
@@ -135,7 +135,7 @@ class EiExcelConverterAuto {
       //console.log("logos[0].logoPath  " , logos[0].logoPath  );
       if (logos && logos.length > 0 && logos[0].logoPath) {
         try {
-          let idimg = await exceljs.insertPathImage(logos[0].logoPath);
+          let idimg = await exceljs.insertPathImage2(logos[0].logoPath);
           //console.log("file: EiExcelTemplateConverter.js:57 [vng-304] ExcelBuilder [vng-304] idimg:", idimg)
           worksheet.addImage(idimg, {
             tl: {col: logos[0].logo_start_col, row: logos[0].logo_start_row},

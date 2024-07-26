@@ -2550,22 +2550,34 @@ class EInvoiceController {
                 THop: 'TDiep/DLieu/TBao/DLTBao/THop',
                 So: 'TDiep/DLieu/TBao/DLTBao/So',
                 TGGui: 'TDiep/DLieu/TBao/DLTBao/TGGui',
+                TTXNCQT: 'TDiep/DLieu/TBao/DLTBao/TTXNCQT',
+                STBao: {
+                  So: 'TDiep/DLieu/TBao/STBao/So',
+                  NTBao: 'TDiep/DLieu/TBao/STBao/NTBao',
+                },
               };
               const data_of_tax = await transform(base64XML, temp_of_tax);
-
-              THop = data_of_tax.THop;
-              maTD = data_of_tax.MLTDiep;
-              maGDDTu = child.ndungTBao.maGDichTNDLieu;
-              ngayTaoTB = child.ngayTaoTBao;
 
               if (maTD == '999') {
                 tenGDDTu = 'gói tin hợp lệ';
                 ord = '2';
               } else if (maTD == '102') {
-                tenGDDTu = 'tiếp nhận tờ khai đăng ký';
+                if (THop == 2 || THop == 4) {
+                  tenGDDTu = 'không tiếp nhận tờ khai đăng ký';
+                } else {
+                  tenGDDTu = 'tiếp nhận tờ khai đăng ký';
+                }
+                THop = data_of_tax.THop;
+                maTD = data_of_tax.MLTDiep;
+                maGDDTu = child.ndungTBao.maGDichTNDLieu;
+                ngayTaoTB = child.ngayTaoTBao;
                 ord = '3';
               } else if (maTD == '103') {
-                tenGDDTu = 'chấp nhận tờ khai đăng ký';
+                if (TTXNCQT == 1) {
+                  tenGDDTu = 'chấp nhận tờ khai đăng ký';
+                } else {
+                  tenGDDTu = 'không chấp nhận tờ khai đăng ký';
+                }
                 ord = '4';
               }
 

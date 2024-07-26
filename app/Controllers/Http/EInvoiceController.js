@@ -2530,7 +2530,8 @@ class EInvoiceController {
           maGDDTu = '',
           tenGDDTu = '',
           ngayTaoTB = '',
-          ord = '';
+          ord = '',
+          THop = '';
 
         const ress = await Request.get(urlCheck + tradeCode.data.maGDich, {
           // tradeCode.data.maGDich
@@ -2546,9 +2547,13 @@ class EInvoiceController {
               base64XML = Buffer.from(child.ndungTBao.base64XML, 'base64').toString('utf8');
               const temp_of_tax = {
                 MLTDiep: 'TDiep/TTChung/MLTDiep',
+                THop: 'TDiep/DLieu/TBao/DLTBao/THop',
+                So: 'TDiep/DLieu/TBao/DLTBao/So',
+                TGGui: 'TDiep/DLieu/TBao/DLTBao/TGGui',
               };
               const data_of_tax = await transform(base64XML, temp_of_tax);
 
+              THop = data_of_tax.THop;
               maTD = data_of_tax.MLTDiep;
               maGDDTu = child.ndungTBao.maGDichTNDLieu;
               ngayTaoTB = child.ngayTaoTBao;
@@ -2602,6 +2607,34 @@ class EInvoiceController {
               }
             } else if (child.loaiTBao == '3') {
               status = '0';
+
+              const para_history = {
+                p_CQT_Code: tradeCode.data.maGDich, // {  // tradeCode.data.maGDich tradeCode.data.maGDich,
+                p_soTBao: child.ndungTBao.tbaoTNhanDTu.soTBao,
+                p_ngayTBao: child.ndungTBao.tbaoTNhanDTu.ngayTBao,
+                p_ngayCQTKy: child.ndungTBao.tbaoTNhanDTu.ngayCQTKy,
+                p_thopTNhan: child.ndungTBao.tbaoTNhanDTu.thopTNhan,
+              };
+              console.log('weTaxSendDeclarationToTaxOffice  para_history  ', para_history);
+
+              const res_op = await DBService.ExecuteSQLBlob(
+                `BEGIN ei_upd_his_dec_inv(
+                                          :p_CQT_Code, 
+                                          :p_xml_sign,
+                                          :p_maTD,
+                                          :p_maGDDTu,
+                                          :p_tenGDDTu,
+                                          :p_ngayTaoTB,
+                                          :p_ord,
+                                          :p_tvan_data_result,
+                                          :p_language, 
+                                          :p_crt_by, 
+                                          :p_rtn_cur); 
+                          END;`,
+                para_history,
+                p_language,
+                p_crt_by,
+              );
             } else {
               status = '1';
             }
@@ -17803,8 +17836,20 @@ class EInvoiceController {
       //console.log('data_inv ', data_inv);
       if (data_inv.length > 0 && data_inv) {
         for (const invoice of data_inv) {
-          //console.log('invoice  ', invoice);
-          //return invoice;
+          const screte_key = 'RVNJbjib65jkGKJB789';
+          const key = Utils.md5(invoice.pk + screte_key);
+          const type = 'C';
+          let database64 = '';
+          const axios = use('axios');
+          const fs = use('fs');
+          const urlx = `http://genuclouding.com/wseinvoice/BSService.asmx/Download_File_PDF_Nodejs?p_trade_code=${invoice.pk}&p_key=${key}&p_type=${type}`;
+
+          await axios({
+            method: 'get',
+            url: urlx,
+            responseType: 'stream',
+          });
+
           if (
             invoice.tei_company_pk == '482' ||
             invoice.tei_company_pk == '483' ||

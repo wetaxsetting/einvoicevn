@@ -2503,7 +2503,7 @@ class EInvoiceController {
 
       const para_dec = {
         p_req_key: matesDecPK,
-        p_trade_code: tradeCode?.data?.maGDich,
+        p_trade_code: tradeCode.data.maGDich,
         p_xml_sign: xml_signed,
       };
 

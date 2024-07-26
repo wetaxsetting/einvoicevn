@@ -2512,8 +2512,8 @@ class EInvoiceController {
                         :p_req_key,
                         :p_trade_code,
                         :p_xml_sign,
-                        :p_language, 
-                        :p_crt_by, 
+                        :p_language,
+                        :p_crt_by,
                         :p_rtn_cur); END;`,
         para_dec,
         p_language,
@@ -2521,17 +2521,19 @@ class EInvoiceController {
       );
 
       Utils._sleep(5);
-
       if (tradeCode.data.maGDich.length > 0) {
+        //tradeCode.data.maGDich
         let tenTBao = '',
           status = '',
           base64XML = '',
           maTD = '',
           maGDDTu = '',
           tenGDDTu = '',
-          ngayTaoTB = '';
+          ngayTaoTB = '',
+          ord = '';
 
-        const ress = await Request.get(url + tradeCode.data.maGDich, {
+        const ress = await Request.get(urlCheck + tradeCode.data.maGDich, {
+          // tradeCode.data.maGDich
           agent,
           headers: {
             Authorization: 'Basic ' + Buffer.from(`${authUserName}:${authPassword}`).toString('base64'),
@@ -2541,15 +2543,15 @@ class EInvoiceController {
         for (let item of ress.data) {
           for (let child of item) {
             if (child.loaiTBao == '1') {
-              base64XML = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8');
+              base64XML = Buffer.from(child.ndungTBao.base64XML, 'base64').toString('utf8');
               const temp_of_tax = {
                 MLTDiep: 'TDiep/TTChung/MLTDiep',
               };
               const data_of_tax = await transform(base64XML, temp_of_tax);
 
               maTD = data_of_tax.MLTDiep;
-              maGDDTu = items[k].ndungTBao.maGDichTNDLieu;
-              ngayTaoTB = items[k].ngayTaoTBao;
+              maGDDTu = child.ndungTBao.maGDichTNDLieu;
+              ngayTaoTB = child.ngayTaoTBao;
 
               if (maTD == '999') {
                 tenGDDTu = 'gói tin hợp lệ';
@@ -2564,7 +2566,7 @@ class EInvoiceController {
 
               if (base64XML) {
                 const para_history = {
-                  p_CQT_Code: tradeCode.data.maGDich,
+                  p_CQT_Code: tradeCode.data.maGDich, // {  // tradeCode.data.maGDich tradeCode.data.maGDich,
                   p_xml_sign: base64XML,
                   p_maTD: maTD,
                   p_maGDDTu: maGDDTu,
@@ -2629,9 +2631,9 @@ class EInvoiceController {
         }
 
         const para_value = {
-          req_key: matesDecPK,
+          req_key: matesDecPK, //  matesDecPK,
           xml_sign: xml_signed,
-          trade_code: tradeCode.data.maGDich,
+          trade_code: tradeCode.data.maGDich, //tradeCode.data.maGDich,
           tax_code: tax_code,
         };
 
@@ -2652,14 +2654,16 @@ class EInvoiceController {
         // console.log("res  ", res);
       } else {
         // return response.send(Utils.response(false, `Failed to call tax office api.`, tradeCode));
-        return response.status(404).json(Utils.responseByRule({success: false, message: 'Failed to call tax office api!', data: tradeCode}));
+        return response
+          .status(404)
+          .json(Utils.responseByRule({success: false, message: 'Failed to call tax office api!', data: tradeCode.data.maGDich}));
       }
 
       return response.status(200).json(
         Utils.responseByRule({
           success: true,
           message: 'Sent declare successfully.',
-          data: {req_key: req_key, trade_code: tradeCode.data.maGDich, tax_code: tax_code},
+          data: {req_key: req_key, trade_code: tradeCode.data.maGDich, tax_code: tax_code}, //tradeCode.data.maGDich
         }),
       );
     } catch (e) {
@@ -2669,6 +2673,7 @@ class EInvoiceController {
         FUNC: 'weTaxSendDeclarationToTaxOffice',
         CONTENT: e.message,
       });
+      console.log(' weTaxSendDeclarationToTaxOffice error ', e);
       // return response.send(Utils.response(false, e.message, null));
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
     }

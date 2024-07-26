@@ -634,7 +634,7 @@ class EInvoiceController {
 
       for (let i = 0; i < digital_certificates.length; i++) {
         jsonDeclare.TKhai.DLTKhai.NDTKhai.DSCTSSDung.CTS.push({
-          STT: digital_certificates[i].sequence || i,
+          STT: digital_certificates[i].sequence || i + 1,
           TTChuc: digital_certificates[i].organization_name,
           Seri: digital_certificates[i].serial_no,
           TNgay: digital_certificates[i].from_date,

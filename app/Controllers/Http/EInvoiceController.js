@@ -2531,10 +2531,14 @@ class EInvoiceController {
           tenGDDTu = '',
           ngayTaoTB = '';
 
-        if (!res_tradeCode.data) {
-          return response.status(400).json(Utils.responseByRule({success: false, message: `no data found.`}));
-        }
-        for (let item of res.data) {
+        const ress = await Request.get(url + trade_code, {
+          agent,
+          headers: {
+            Authorization: 'Basic ' + Buffer.from(`${authUserName}:${authPassword}`).toString('base64'),
+          },
+        });
+
+        for (let item of ress.data) {
           for (let child of item) {
             if (child.loaiTBao == '1') {
               base64XML = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8');
@@ -2567,6 +2571,7 @@ class EInvoiceController {
                   p_tenGDDTu: tenGDDTu,
                   p_ngayTaoTB: ngayTaoTB,
                   p_ord: ord,
+                  p_tvan_data_result: JSON.stringify(ress.data),
                 };
                 console.log('weTaxSendDeclarationToTaxOffice  para_history  ', para_history);
 
@@ -2579,6 +2584,7 @@ class EInvoiceController {
                                             :p_tenGDDTu,
                                             :p_ngayTaoTB,
                                             :p_ord,
+                                            :p_tvan_data_result,
                                             :p_language, 
                                             :p_crt_by, 
                                             :p_rtn_cur); 

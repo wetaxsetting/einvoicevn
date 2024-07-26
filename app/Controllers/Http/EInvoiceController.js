@@ -2531,7 +2531,7 @@ class EInvoiceController {
           tenGDDTu = '',
           ngayTaoTB = '';
 
-        const ress = await Request.get(url + trade_code, {
+        const ress = await Request.get(url + tradeCode.data.maGDich, {
           agent,
           headers: {
             Authorization: 'Basic ' + Buffer.from(`${authUserName}:${authPassword}`).toString('base64'),
@@ -2606,7 +2606,7 @@ class EInvoiceController {
             tenTBao = child.tenTBao;
 
             para_value = {
-              p_tei_einvoice_issuse_cqt_pk: para.p_tei_einvoice_issuse_cqt_pk,
+              p_tei_einvoice_issuse_cqt_pk: matesDecPK,
               xml_sign: base64XML,
               p_messCQT: tenTBao,
               p_status: status,

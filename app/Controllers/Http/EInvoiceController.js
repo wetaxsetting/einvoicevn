@@ -2605,26 +2605,26 @@ class EInvoiceController {
             }
             tenTBao = child.tenTBao;
 
-            para_value = {
-              p_tei_einvoice_issuse_cqt_pk: matesDecPK,
-              xml_sign: base64XML,
-              p_messCQT: tenTBao,
-              p_status: status,
-            };
-            await DBService.ExecuteSQLBlob(
-              `BEGIN ei_upd_file_xml_v6(
-                                :p_tei_einvoice_issuse_cqt_pk, 
-                                :xml_sign, 
-                                :p_messCQT, 
-                                :p_status,
-                                :p_language, 
-                                :p_crt_by, 
-                                :p_rtn_cur
-                            ); END;`,
-              para_value,
-              p_language,
-              p_crt_by,
-            );
+            // para_value = {
+            //   p_tei_einvoice_issuse_cqt_pk: matesDecPK,
+            //   xml_sign: base64XML,
+            //   p_messCQT: tenTBao,
+            //   p_status: status,
+            // };
+            // await DBService.ExecuteSQLBlob(
+            //   `BEGIN ei_upd_file_xml_v6(
+            //                     :p_tei_einvoice_issuse_cqt_pk,
+            //                     :xml_sign,
+            //                     :p_messCQT,
+            //                     :p_status,
+            //                     :p_language,
+            //                     :p_crt_by,
+            //                     :p_rtn_cur
+            //                 ); END;`,
+            //   para_value,
+            //   p_language,
+            //   p_crt_by,
+            // );
           }
         }
 

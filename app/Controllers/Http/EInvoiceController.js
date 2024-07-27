@@ -2921,8 +2921,7 @@ class EInvoiceController {
               ngayTBao = child.ndungTBao.ngayTBao;
               ngayCQTKy = child.ndungTBao.ngayCQTKy;
               ord = '3';
-              loaiTBao = child.loaiTBao;
-              tenTBao = child.tenTBao;
+           
               if (maTD == '999') {
                 tenGDDTu = 'gói tin hợp lệ';
                 ord = '2';
@@ -2997,6 +2996,8 @@ class EInvoiceController {
             } else if (child.loaiTBao == '5')
             {
               contentNotice = child.ndungTBao.tbaoDKyDTu;
+              loaiTBao = child.loaiTBao;
+              tenTBao = child.tenTBao;
             }
            
           }

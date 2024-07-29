@@ -2458,7 +2458,7 @@ class EInvoiceController {
       // const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
       // const authUserName = 'GENUWIN'; // "GENUWIN";
       // const authPassword = 'genuwin123'; // "e_GX4v@";
-      
+
       const {xml_signed, tax_code, req_key} = request.all();
 
       if (!xml_signed) {
@@ -2537,7 +2537,7 @@ class EInvoiceController {
           ord = '',
           THop = '',
           So = '',
-          TTXNCQT= '',
+          TTXNCQT = '',
           MCCQT = '';
 
         const ress = await Request.get(urlCheck + tradeCode.data.maGDich, {
@@ -2570,11 +2570,11 @@ class EInvoiceController {
               THop = data_of_tax.THop;
               maTD = data_of_tax.MLTDiep;
               maGDDTu = child.ndungTBao.maGDichTNDLieu;
-              ngayTaoTBao =  child.ngayTaoTBao;
+              ngayTaoTBao = child.ngayTaoTBao;
               ngayTBao = child.ndungTBao.ngayTBao;
               ngayCQTKy = child.ndungTBao.ngayCQTKy;
               ord = '3';
-        
+
               if (maTD == '999') {
                 tenGDDTu = 'gói tin hợp lệ';
                 ord = '2';
@@ -2609,14 +2609,13 @@ class EInvoiceController {
                   p_ngayTBao: ngayTBao,
                   p_ngayCQTKy: ngayCQTKy,
                   p_ord: ord,
-                  p_THop : THop,
+                  p_THop: THop,
                   p_So: So,
                   p_TTXNCQT: TTXNCQT,
                   p_MCCQT: MCCQT,
                   p_tvan_data_result: JSON.stringify(ress.data),
                 };
 
-             
                 console.log('weTaxSendDeclarationToTaxOffice  para_history  ', para_history);
 
                 const res_op = await DBService.ExecuteSQLBlob(
@@ -2647,8 +2646,7 @@ class EInvoiceController {
                 // tenGDDTu = '';
                 // ngayTaoTBao = '';
               }
-            } 
-           
+            }
           }
         }
 
@@ -2661,12 +2659,12 @@ class EInvoiceController {
 
         // // console.log(para_value);
         // const res = await DBService.ExecuteSQLBlob(
-        //   `BEGIN WT_UPD_DECLARATION_STATUS( :req_key, 
-        //                                     :xml_sign, 
-        //                                     :trade_code, 
+        //   `BEGIN WT_UPD_DECLARATION_STATUS( :req_key,
+        //                                     :xml_sign,
+        //                                     :trade_code,
         //                                     :tax_code,
-        //                                     :p_language, 
-        //                                     :p_crt_by, 
+        //                                     :p_language,
+        //                                     :p_crt_by,
         //                                     :p_rtn_cur); END;`,
         //   para_value,
         //   p_language,
@@ -2758,7 +2756,6 @@ class EInvoiceController {
       // console.log("para +++===> ", para);
       // @TODO: _______________________________________________________
 
-      
       const agent = {
         Agent: {
           defaultPort: 443,
@@ -2877,21 +2874,21 @@ class EInvoiceController {
       });
 
       let tenTBao = '',
-          loaiTBao = '',
-          status = '',
-          base64XML = '',
-          maTD = '',
-          maGDDTu = '',
-          tenGDDTu = '',
-          ngayTaoTBao = '',
-          ngayTBao = '',
-          ngayCQTKy = '',
-          ord = '',
-          THop = '',
-          So = '',
-          TTXNCQT= '',
-          MCCQT = '',
-          contentNotice = {};
+        loaiTBao = '',
+        status = '',
+        base64XML = '',
+        maTD = '',
+        maGDDTu = '',
+        tenGDDTu = '',
+        ngayTaoTBao = '',
+        ngayTBao = '',
+        ngayCQTKy = '',
+        ord = '',
+        THop = '',
+        So = '',
+        TTXNCQT = '',
+        MCCQT = '',
+        contentNotice = {};
       if (!ress.data.length) {
         // return response.send(Utils.response(false, 'Checking Tax Status Failure. No data found.', null));
         return response.status(404).json(Utils.responseByRule({success: false, message: 'No data found!'}));
@@ -2917,11 +2914,11 @@ class EInvoiceController {
               THop = data_of_tax.THop;
               maTD = data_of_tax.MLTDiep;
               maGDDTu = child.ndungTBao.maGDichTNDLieu;
-              ngayTaoTBao =  child.ngayTaoTBao;
+              ngayTaoTBao = child.ngayTaoTBao;
               ngayTBao = child.ndungTBao.ngayTBao;
               ngayCQTKy = child.ndungTBao.ngayCQTKy;
               ord = '3';
-           
+
               if (maTD == '999') {
                 tenGDDTu = 'gói tin hợp lệ';
                 ord = '2';
@@ -2943,7 +2940,6 @@ class EInvoiceController {
                   tenGDDTu = 'không chấp nhận tờ khai đăng ký';
                 }
                 ord = '4';
-                
               }
 
               if (base64XML) {
@@ -2957,14 +2953,13 @@ class EInvoiceController {
                   p_ngayTBao: ngayTBao,
                   p_ngayCQTKy: ngayCQTKy,
                   p_ord: ord,
-                  p_THop : THop,
+                  p_THop: THop,
                   p_So: So,
                   p_TTXNCQT: TTXNCQT,
                   p_MCCQT: MCCQT,
                   p_tvan_data_result: JSON.stringify(ress.data),
                 };
 
-             
                 console.log('weTaxSendDeclarationToTaxOffice  para_history  ', para_history);
 
                 const res_op = await DBService.ExecuteSQLBlob(
@@ -2991,15 +2986,16 @@ class EInvoiceController {
                   p_language,
                   p_crt_by,
                 );
-              
               }
-            } else if (child.loaiTBao == '5')
-            {
+            } else if (child.loaiTBao == '5') {
               contentNotice = child.ndungTBao.tbaoDKyDTu;
               loaiTBao = child.loaiTBao;
               tenTBao = child.tenTBao;
+            } else if (child.loaiTBao == '4') {
+              contentNotice = child.ndungTBao.tbaoTNhanDTu;
+              loaiTBao = child.loaiTBao;
+              tenTBao = child.tenTBao;
             }
-           
           }
         }
         // para_value = {
@@ -3026,8 +3022,8 @@ class EInvoiceController {
         //                     :p_ngayTB,
         //                     :p_thoiGianCQTKy,
         //                     :p_ketQua,
-        //                     :p_language, 
-        //                     :p_crt_by, 
+        //                     :p_language,
+        //                     :p_crt_by,
         //                     :p_rtn_cur
         //                 ); END;`,
         //   para_value,
@@ -19448,6 +19444,156 @@ class EInvoiceController {
         // });
 
         //this.sendMailTBSSToCustomer(inv.trade_code, p_language, p_crt_by);
+      }
+    } catch (error) {
+      console.log('jobCheckTradeCode04SSInvoice  error', error);
+    }
+
+    return '';
+  }
+
+  async jobCheckTradeCodeDeclaration(check_data) {
+    // const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+    // const authUserName = 'GENUWIN';
+    // const authPassword = 'genuwin123';
+
+    const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+    const authUserName = 'GENUWIN';
+    const authPassword = 'e_GX4v@';
+
+    const p_language = 'ENG';
+    const p_crt_by = 'system-scheduler';
+
+    let rtnValue = [];
+
+    try {
+      const agent = {
+        Agent: {
+          defaultPort: 443,
+          protocol: 'https:',
+          options: {maxVersion: 'TLSv1.2', minVersion: 'TLSv1.2', path: null},
+        },
+      };
+
+      let tenTBao = '',
+        status = '',
+        base64XML = '',
+        maTD = '',
+        maGDDTu = '',
+        tenGDDTu = '',
+        ngayTaoTBao = '',
+        ngayTBao = '',
+        ngayCQTKy = '',
+        ord = '',
+        THop = '',
+        So = '',
+        TTXNCQT = '',
+        MCCQT = '';
+
+      const ress = await Request.get(urlCheck + check_data.TRADE_CODE, {
+        // tradeCode.data.maGDich
+        agent,
+        headers: {
+          Authorization: 'Basic ' + Buffer.from(`${authUserName}:${authPassword}`).toString('base64'),
+        },
+      });
+
+      for (let item of ress.data) {
+        for (let child of item) {
+          if (child.loaiTBao == '1') {
+            base64XML = Buffer.from(child.ndungTBao.base64XML, 'base64').toString('utf8');
+            const temp_of_tax = {
+              MLTDiep: 'TDiep/TTChung/MLTDiep',
+              THop: 'TDiep/DLieu/TBao/DLTBao/THop',
+              So: 'TDiep/DLieu/TBao/DLTBao/So',
+              TGGui: 'TDiep/DLieu/TBao/DLTBao/TGGui',
+              TTXNCQT: 'TDiep/DLieu/TBao/DLTBao/TTXNCQT',
+              MCCQT: 'TDiep/DLieu/TBao/DLTBao/MCCQT',
+
+              STBao: {
+                So: 'TDiep/DLieu/TBao/STBao/So',
+                NTBao: 'TDiep/DLieu/TBao/STBao/NTBao',
+              },
+            };
+            const data_of_tax = await transform(base64XML, temp_of_tax);
+            TTXNCQT = data_of_tax.TTXNCQT;
+            THop = data_of_tax.THop;
+            maTD = data_of_tax.MLTDiep;
+            maGDDTu = child.ndungTBao.maGDichTNDLieu;
+            ngayTaoTBao = child.ngayTaoTBao;
+            ngayTBao = child.ndungTBao.ngayTBao;
+            ngayCQTKy = child.ndungTBao.ngayCQTKy;
+            ord = '3';
+
+            if (maTD == '999') {
+              tenGDDTu = 'gói tin hợp lệ';
+              ord = '2';
+            } else if (maTD == '102') {
+              So = data_of_tax.So;
+              if (THop == 2 || THop == 4) {
+                tenGDDTu = 'không tiếp nhận tờ khai đăng ký';
+              } else {
+                tenGDDTu = 'tiếp nhận tờ khai đăng ký';
+              }
+            } else if (maTD == '103') {
+              So = data_of_tax.STBao.So;
+              ngayTBao = data_of_tax.STBao.NTBao;
+              MCCQT = data_of_tax.MCCQT;
+
+              if (TTXNCQT == 1) {
+                tenGDDTu = 'chấp nhận tờ khai đăng ký';
+              } else {
+                tenGDDTu = 'không chấp nhận tờ khai đăng ký';
+              }
+              ord = '4';
+            }
+
+            if (base64XML) {
+              const para_history = {
+                p_CQT_Code: check_data.TRADE_CODE, // {  // tradeCode.data.maGDich tradeCode.data.maGDich,
+                p_xml_sign: base64XML,
+                p_maTDiep: maTD,
+                p_maGDDTu: maGDDTu,
+                p_tenGDDTu: tenGDDTu,
+                p_ngayTaoTBao: ngayTaoTBao,
+                p_ngayTBao: ngayTBao,
+                p_ngayCQTKy: ngayCQTKy,
+                p_ord: ord,
+                p_THop: THop,
+                p_So: So,
+                p_TTXNCQT: TTXNCQT,
+                p_MCCQT: MCCQT,
+                p_tvan_data_result: JSON.stringify(ress.data),
+              };
+
+              console.log('weTaxSendDeclarationToTaxOffice  para_history  ', para_history);
+
+              const res_op = await DBService.ExecuteSQLBlob(
+                `BEGIN ei_upd_his_dec_inv(
+                                            :p_CQT_Code, 
+                                            :p_xml_sign,
+                                            :p_maTDiep,
+                                            :p_maGDDTu,
+                                            :p_tenGDDTu,
+                                            :p_ngayTaoTBao,
+                                            :p_ngayTBao,
+                                            :p_ngayCQTKy,
+                                            :p_ord,
+                                            :p_THop,
+                                            :p_So,
+                                            :p_TTXNCQT,
+                                            :p_tvan_data_result,
+                                            :p_language, 
+                                            :p_crt_by, 
+                                            :p_rtn_cur); 
+                            END;`,
+                para_history,
+                p_language,
+                p_crt_by,
+              );
+            }
+          }
+        }
       }
     } catch (error) {
       console.log('jobCheckTradeCode04SSInvoice  error', error);

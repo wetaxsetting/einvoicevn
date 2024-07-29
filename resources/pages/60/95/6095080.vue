@@ -68,9 +68,9 @@
                 <v-col md="2" class="pl-5">
                   <BaseSelect outlined :label="$t('version')" :lstData="dataMasterList.versionList" v-model="modelMaster.PBAN" item-text="NAME" item-value="CODE" />
                 </v-col>
+                
+                <v-col md="2" class="pl-5"><BaseInput outlined  bgcolor="yellow lighten-4" :label="$t('pos_key')" v-model="modelMaster.CQT_COMPANY_CODE" /></v-col>
                 <v-col md="8"></v-col>
-                <v-col md="2" class="pl-5 pt-1 pr-5"><BaseInput outlined :label="$t('pos_key')" v-model="modelMaster.CQT_COMPANY_CODE" /></v-col>
-
                 <!--  -->
                 <v-col md="4" class="pl-5 pt-1">
                   <BaseSelect outlined item-value="VAL" item-text="NAME" :label="$t('taxpayer_name')" :lstData="dataMasterList.companyList" v-model="modelMaster.TEI_COMPANY_PK" readonly />

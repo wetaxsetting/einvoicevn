@@ -8537,7 +8537,7 @@ class EInvoiceController {
       // const authPassword = "e_GX4v@"; // "e_GX4v@";
 
       const {data} = request.all();
-      //console.log("data  ", data);
+      console.log('data  ', data);
       let rtnValue = [];
       let maCQT = '',
         maTBao = '',
@@ -8550,7 +8550,8 @@ class EInvoiceController {
         maTD = '',
         maGDDTu = '',
         ngayTaoTB = '',
-        tenGDDTu = '';
+        tenGDDTu = '',
+        ord = '';
       let xml_length = 0;
       for (let i = 0; i < data.length; i++) {
         ////console.log("SSS ", url + data[i].trade_code);

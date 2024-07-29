@@ -8547,7 +8547,8 @@ class EInvoiceController {
         data_inv = [],
         xml_tax_signed = '',
         base64XML = '',
-        maTD = '';
+        maTD = '',
+        maGDDTu = '';
       let xml_length = 0;
       for (let i = 0; i < data.length; i++) {
         ////console.log("SSS ", url + data[i].trade_code);

@@ -8552,7 +8552,8 @@ class EInvoiceController {
         ngayTaoTB = '',
         tenGDDTu = '',
         ord = '',
-        soTBao = '';
+        soTBao = '',
+        ngayCQTKy = '';
       let xml_length = 0;
       for (let i = 0; i < data.length; i++) {
         ////console.log("SSS ", url + data[i].trade_code);

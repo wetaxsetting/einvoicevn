@@ -2994,7 +2994,11 @@ class EInvoiceController {
             } else if (child.loaiTBao == '4') {
               contentNotice = child.ndungTBao.tbaoTNhanDTu;
               loaiTBao = child.loaiTBao;
-              tenTBao = child.tenTBao;
+              tenTBao = '';
+
+              child.ndungTBao.tbaoTNhanDTu.dsachLoiTNhanDTu.forEach((element, index) => {
+                tenTBao = element.maLoi + ' - ' + element.mtaLoi;
+              });
             }
           }
         }

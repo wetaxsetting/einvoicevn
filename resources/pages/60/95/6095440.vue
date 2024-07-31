@@ -48,7 +48,7 @@
                                         @onclick="isShowLeft = !isShowLeft" />
                                 </v-col>
                                 <v-col md="4">
-                                    <!-- <b style=" color: red ">{{ modelMaster.CQT_NOTIFICATION }}</b> -->
+                                    <b style=" color: red ">{{ modelMaster.CQT_NOTIFICATION }}</b>
                                 </v-col>
                                 <v-col md="7">
                                     <GwFlexBox justify="end">
@@ -80,10 +80,11 @@
                                     <BaseSelect outlined :label="$t('version')" :lstData="dataMasterList.versionList"
                                         v-model="modelMaster.PBAN" item-text="NAME" item-value="CODE" />
                                 </v-col>
-                                <v-col md="8"></v-col>
                                 <v-col md="2" class="pr-5 pt-1">
-                                    <BaseInput outlined :label="$t('pos_key')" v-model="modelMaster.POS_KEY" />
+                                    <BaseInput outlined  bgcolor="yellow lighten-4"  readonly :label="$t('pos_key')" v-model="modelMaster.CQT_COMPANY_CODE" />
                                 </v-col>
+                                <v-col md="8"></v-col>
+
                                 <!--  -->
                                 <v-col md="4" class="pl-5 pt-1">
                                     <BaseSelect outlined item-value="VAL" item-text="NAME" :label="$t('taxpayer_name')"

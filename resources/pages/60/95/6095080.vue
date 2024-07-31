@@ -69,7 +69,7 @@
                   <BaseSelect outlined :label="$t('version')" :lstData="dataMasterList.versionList" v-model="modelMaster.PBAN" item-text="NAME" item-value="CODE" />
                 </v-col>
                 
-                <v-col md="2" class="pl-5"><BaseInput outlined  bgcolor="yellow lighten-4" :label="$t('pos_key')" v-model="modelMaster.CQT_COMPANY_CODE" /></v-col>
+                <v-col md="2" class="pl-5"><BaseInput outlined  bgcolor="yellow lighten-4"  readonly :label="$t('pos_key')" v-model="modelMaster.CQT_COMPANY_CODE" /></v-col>
                 <v-col md="8"></v-col>
                 <!--  -->
                 <v-col md="4" class="pl-5 pt-1">

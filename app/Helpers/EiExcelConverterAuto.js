@@ -648,7 +648,7 @@ class EiExcelConverterAuto {
               if (bgPath != '') {
                 console.log('backgroundCell  ' + backgroundCell + '  j  ' + j);
                 try {
-                  worksheet.addImage(await exceljs.insertPathImage(bgPath), {
+                  worksheet.addImage(await exceljs.insertPathImage2(bgPath), {
                     tl: {col: backgroundCell, row: backgroundRow - 1},
                     ext: {width: backgroundWidth, height: backgroundHeight},
                   });
@@ -687,7 +687,7 @@ class EiExcelConverterAuto {
                 if (j == v_countNumberOfPages - 1) {
                   console.log('backgroundCell  ' + backgroundRow + '  j  ' + j + ' totalRowCount_2 ' + totalRowCount_2 + ' pos_lv  ' + pos_lv);
                   try {
-                    worksheet.addImage(await exceljs.insertPathImage(bgPath), {
+                    worksheet.addImage(await exceljs.insertPathImage2(bgPath), {
                       // tl: { col: backgroundCell, row: backgroundRow + totalRowCount_2 - pos_lv - 1 },
                       tl: {col: backgroundCell, row: backgroundRow + pos_lv * j + headerRowCount * j - 1},
                       ext: {width: backgroundWidth, height: backgroundHeight},
@@ -697,7 +697,7 @@ class EiExcelConverterAuto {
                   }
                 } else {
                   try {
-                    worksheet.addImage(await exceljs.insertPathImage(bgPath), {
+                    worksheet.addImage(await exceljs.insertPathImage2(bgPath), {
                       // tl: { col: backgroundCell, row: _sourceRow_2 + totalRowCount_2 - pos_lv - 1 },
                       tl: {col: backgroundCell, row: backgroundRow + pos_lv * j + headerRowCount * j - 1},
                       ext: {width: backgroundWidth, height: backgroundHeight},
@@ -811,7 +811,7 @@ class EiExcelConverterAuto {
                   }
                   if (bgPath != '') {
                     try {
-                      worksheet.addImage(await exceljs.insertPathImage(bgPath), {
+                      worksheet.addImage(await exceljs.insertPathImage2(bgPath), {
                         tl: {col: backgroundCell, row: backgroundRow - 1},
                         ext: {width: backgroundWidth, height: backgroundHeight},
                       });
@@ -927,7 +927,7 @@ class EiExcelConverterAuto {
         // console.log(" e +++===> ", e);
         let imgRow = e.logoStartCount;
         //  let logoImage =  await createFile(e.logoPath);
-        let logoIconByteArray = await exceljs.insertPathImage(e.logoPath);
+        let logoIconByteArray = await exceljs.insertPathImage2(e.logoPath);
         try {
           worksheet.addImage(logoIconByteArray, {
             tl: {col: e.start, row: imgRow},
@@ -946,7 +946,7 @@ class EiExcelConverterAuto {
           let promises = logosAray.map(async (e, i) => {
             let imgRow = imgPos + e.logoStartCount;
             //  let logoImage =  await createFile(e.logoPath);
-            let logoIconByteArray = await exceljs.insertPathImage(e.logoPath);
+            let logoIconByteArray = await exceljs.insertPathImage2(e.logoPath);
             try {
               worksheet.addImage(logoIconByteArray, {
                 tl: {col: e.start, row: imgRow},
@@ -974,7 +974,7 @@ class EiExcelConverterAuto {
           worksheet.unMergeCells(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 1));
           worksheet.unMergeCells(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 2));
           try {
-            worksheet.addImage(await exceljs.insertPathImage(signPath), {
+            worksheet.addImage(await exceljs.insertPathImage2(signPath), {
               tl: {col: signCell.start, row: totalRows + _sourceRow_3 + countFromEndDetailToSignBox - 1},
               ext: {width: 80, height: 50},
             });

@@ -111,40 +111,53 @@ class EiExcelHandler {
         bgPath = '';
       }
 
-      let checkYN = 'N';
-      //console.log("EiPosExcelHandlerAuto ==> einvoiceMasterData[0].URL_IMG_LOGO  line 128", einvoiceMasterData[0].URL_IMG_LOGO)
-      try {
-        checkYN = 'Y';
-        //let savePath = await Helpers.appRoot(`resources/${einvoiceMasterData[0].URL_IMG_LOGO}`);
-        let savePath = await Helpers.appRoot(`${einvoiceMasterData[0].URL_IMG_LOGO}`);
-        //console.log(" einvoiceMasterData[0].URL_IMG_LOGO   ", einvoiceMasterData[0].URL_IMG_LOGO);
-        //console.log(" savePath   ", savePath);
-        if (fs.existsSync(savePath)) {
-          console.log('file exists');
-          checkYN = 'Y';
-        } else {
-          console.log('file not found!');
-          checkYN = 'N';
-        }
-      } catch (error) {
-        checkYN = 'N';
-        console.log('error  require url ', error);
-      }
+      // let checkYN = 'N';
+      // //console.log("EiPosExcelHandlerAuto ==> einvoiceMasterData[0].URL_IMG_LOGO  line 128", einvoiceMasterData[0].URL_IMG_LOGO)
+      // try {
+      //   checkYN = 'Y';
+      //   //let savePath = await Helpers.appRoot(`resources/${einvoiceMasterData[0].URL_IMG_LOGO}`);
+      //   let savePath = await Helpers.appRoot(`${einvoiceMasterData[0].URL_IMG_LOGO}`);
+      //   //console.log(" einvoiceMasterData[0].URL_IMG_LOGO   ", einvoiceMasterData[0].URL_IMG_LOGO);
+      //   //console.log(" savePath   ", savePath);
+      //   if (fs.existsSync(savePath)) {
+      //     console.log('file exists');
+      //     checkYN = 'Y';
+      //   } else {
+      //     console.log('file not found!');
+      //     checkYN = 'N';
+      //   }
+      // } catch (error) {
+      //   checkYN = 'N';
+      //   console.log('error  require url ', error);
+      // }
 
-      if (einvoiceMasterData.length && einvoiceMasterData[0].URL_IMG_LOGO && checkYN == 'Y') {
-        logos = [
-          {
-            start: einvoiceMasterData[0].LOGO_START_ROW,
-            width: 0.99 * dpi,
-            height: 0.99 * dpi,
-            logoStartCount: einvoiceMasterData[0].LOGO_START_COL,
-            logoPath: '/../' + `${einvoiceMasterData[0].URL_IMG_LOGO}`,
-          },
-        ];
-      } else {
-        logos = [];
-      }
+      // if (einvoiceMasterData.length && einvoiceMasterData[0].URL_IMG_LOGO && checkYN == 'Y') {
+      //   logos = [
+      //     {
+      //       start: einvoiceMasterData[0].LOGO_START_ROW,
+      //       width: 0.99 * dpi,
+      //       height: 0.99 * dpi,
+      //       logoStartCount: einvoiceMasterData[0].LOGO_START_COL,
+      //       logoPath: '/../' + `${einvoiceMasterData[0].URL_IMG_LOGO}`,
+      //     },
+      //   ];
+      // } else {
+      //   logos = [];
+      // }
 
+      logos = [
+        {
+          start: einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_START_COL ? einvoiceMasterData[0].LOGO_START_COL : 1,
+          logoStartCount: einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_START_ROW ? einvoiceMasterData[0].LOGO_START_ROW : 1,
+          width: einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_WIDTH ? einvoiceMasterData[0].LOGO_WIDTH : 1,
+          height: einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_HEIGHT ? einvoiceMasterData[0].LOGO_HEIGHT : 1,
+          logoPath: `${
+            einvoiceMasterData[0] && einvoiceMasterData[0].URL_IMG_LOGO
+              ? einvoiceMasterData[0].URL_IMG_LOGO
+              : '/data/einvoices_logo/0104128565-999/2024/07/1721906430005_1721906430005.png'
+          }`, ///assets/images/einvoices_logo/abc/
+        },
+      ];
       // console.log(" bgPath  ", bgPath, "logos  ", logos);
 
       for (let i = 0; i < einvoiceDetailsParam.length; i++) {

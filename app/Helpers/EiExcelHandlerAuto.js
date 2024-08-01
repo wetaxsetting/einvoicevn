@@ -122,25 +122,39 @@ class EiExcelHandler {
         bgPath = '';
       }
 
-      try {
-        let savePath = await Helpers.appRoot(`${einvoiceMasterData[0].URL_IMG_LOGO}`);
-        if (fs.existsSync(savePath)) {
-          logos = [
-            {
-              start: einvoiceMasterData[0].LOGO_START_COL,
-              width: einvoiceMasterData[0].LOGO_WIDTH, //   0.99 * dpi,
-              height: einvoiceMasterData[0].LOGO_HEIGHT, // 0.99 * dpi,
-              logoStartCount: einvoiceMasterData[0].LOGO_START_ROW,
-              logoPath: '/../' + `${einvoiceMasterData[0].URL_IMG_LOGO}`,
-            },
-          ];
-        } else {
-          logos = [];
-        }
-      } catch (error) {
-        logos = [];
-        console.log('error  require url ', error);
-      }
+      // try {
+      //   let savePath = await Helpers.appRoot(`${einvoiceMasterData[0].URL_IMG_LOGO}`);
+      //   if (fs.existsSync(savePath)) {
+      //     logos = [
+      //       {
+      //         start: einvoiceMasterData[0].LOGO_START_COL,
+      //         width: einvoiceMasterData[0].LOGO_WIDTH, //   0.99 * dpi,
+      //         height: einvoiceMasterData[0].LOGO_HEIGHT, // 0.99 * dpi,
+      //         logoStartCount: einvoiceMasterData[0].LOGO_START_ROW,
+      //         logoPath: '/../' + `${einvoiceMasterData[0].URL_IMG_LOGO}`,
+      //       },
+      //     ];
+      //   } else {
+      //     logos = [];
+      //   }
+      // } catch (error) {
+      //   logos = [];
+      //   console.log('error  require url ', error);
+      // }
+
+      logos = [
+        {
+          start: einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_START_COL ? einvoiceMasterData[0].LOGO_START_COL : 1,
+          logoStartCount: einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_START_ROW ? einvoiceMasterData[0].LOGO_START_ROW : 1,
+          width: einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_WIDTH ? einvoiceMasterData[0].LOGO_WIDTH : 1,
+          height: einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_HEIGHT ? einvoiceMasterData[0].LOGO_HEIGHT : 1,
+          logoPath: `${
+            einvoiceMasterData[0] && einvoiceMasterData[0].URL_IMG_LOGO
+              ? einvoiceMasterData[0].URL_IMG_LOGO
+              : '/data/einvoices_logo/0104128565-999/2024/07/1721906430005_1721906430005.png'
+          }`, ///assets/images/einvoices_logo/abc/
+        },
+      ];
 
       for (let i = 0; i < einvoiceDetailsParam.length; i++) {
         detailCellFormat.push({

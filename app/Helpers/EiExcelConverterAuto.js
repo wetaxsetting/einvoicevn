@@ -974,7 +974,7 @@ class EiExcelConverterAuto {
           worksheet.unMergeCells(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 1));
           worksheet.unMergeCells(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 2));
           try {
-            worksheet.addImage(await exceljs.insertPathImage2(signPath), {
+            worksheet.addImage(await exceljs.insertPathImage(signPath), {
               tl: {col: signCell.start, row: totalRows + _sourceRow_3 + countFromEndDetailToSignBox - 1},
               ext: {width: 80, height: 50},
             });

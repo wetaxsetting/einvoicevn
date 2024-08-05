@@ -18839,6 +18839,7 @@ class EInvoiceController {
           data_inv.forEach((element, index) => {
             if (element.form_no === inv.form_no && element.serial_no === inv.serial_no && element.invoice_no === inv.invoice_no) {
               data_inv[index].lookup_code = r_data_inv.p_rtn_cur[0].LOOKUP_CODE;
+              data_inv[index].xml_tax_signed = r_data_inv.p_rtn_cur[0].SIGNED_XML;
             }
           });
         }

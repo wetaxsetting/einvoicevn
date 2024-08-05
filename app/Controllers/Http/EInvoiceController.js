@@ -18861,7 +18861,7 @@ class EInvoiceController {
         // };
       });
       if (check_data.CRT_BY == 'wetax-test') {
-        this.weTaxCallBackStatusPosInv(data_inv, '/api/wtx/v1/pos-invoice-delivery-status');
+        this.weTaxCallBackStatusPosInv(data_inv, '/api/wtx/v1/pos-invoice-delivery-status', 'WTPTA003');
       }
       //console.log('jobCheckTradeCodePosInvoice rtnValue  ', rtnValue);
       console.log('jobCheckTradeCodePosInvoice END ========================  ');
@@ -19428,7 +19428,7 @@ class EInvoiceController {
     return '';
   }
 
-  async weTaxCallBackStatusPosInv(data, url) {
+  async weTaxCallBackStatusPosInv(data, url, service_id) {
     const agent = {
       Agent: {
         defaultPort: 443,
@@ -19438,14 +19438,17 @@ class EInvoiceController {
     };
     console.log('weTaxCallBackStatusPosInv data', JSON.stringify(data));
     console.log('weTaxCallBackStatusPosInv url', url);
-
+    let res_data_json = {
+      service_id: service_id,
+      info_send_invoices: JSON.stringify(data),
+    };
     let triesCounter = 0;
     while (triesCounter < 3) {
       try {
         const res = await Request.patch(
           //`${WETAX_API_URL}/api/wtx/ca/v1/sales/e-record/status`,
           `${WETAX_API_URL}${url}`,
-          data,
+          res_data_json,
           {
             agent,
             headers: {

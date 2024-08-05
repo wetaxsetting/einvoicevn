@@ -19440,7 +19440,7 @@ class EInvoiceController {
     console.log('weTaxCallBackStatusPosInv url', url);
     let res_data_json = {
       service_id: service_id,
-      info_send_invoices: JSON.stringify(data),
+      info_send_invoices: data,
     };
     let triesCounter = 0;
     while (triesCounter < 3) {

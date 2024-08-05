@@ -19435,6 +19435,8 @@ class EInvoiceController {
         options: {maxVersion: 'TLSv1.2', minVersion: 'TLSv1.2', path: null},
       },
     };
+    console.log('weTaxCallBackStatusPosInv data', JSON.stringify(data));
+    console.log('weTaxCallBackStatusPosInv url', url);
 
     let triesCounter = 0;
     while (triesCounter < 3) {

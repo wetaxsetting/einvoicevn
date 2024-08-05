@@ -167,7 +167,7 @@ class HSMController2 {
         p_crt_by = user.USER_ID;
       }
 
-      const {user_name, password, otp, serial_no, pin, organization, signing_xml} = request.all();
+      const {user_name, password, otp, serial_no, pin, organization, signing_xml, client_id, client_secret} = request.all();
 
       if (!user_name || !password || !pin || !organization || !serial_no || !signing_xml) {
         return response.status(400).json(
@@ -193,7 +193,7 @@ class HSMController2 {
         case 'vnpt':
           url = 'https://rmgateway.vnptit.vn/sca/sp769';
           res = await Request.post(EINVOICE_ESIGN_XML, {
-            xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site}),
+            xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site, client_id, client_secret}),
           });
           data = res.data.d;
           break;

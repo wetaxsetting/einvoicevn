@@ -18581,6 +18581,39 @@ class EInvoiceController {
       ord = '',
       soTBao = '';
     try {
+      const param_trade_code = {
+        p_trade_code: check_data.TRADE_CODE,
+      };
+
+      console.log('jobCheckTradeCodePosInvoice param_pos  ', param_pos);
+      const data_inv_of_trade_code = await DBService.ExecuteSQLBlob(
+        `BEGIN wt_sel_einvoice_by_tradecode(
+                            :p_trade_code,
+                            :p_language, 
+                            :p_crt_by, 
+                            :p_rtn_cur); 
+            END;`,
+        param_trade_code,
+        p_language,
+        p_crt_by,
+      );
+      if (data_inv_of_trade_code.p_rtn_cur) {
+        for (const inv of data_inv_of_trade_code.p_rtn_cur) {
+          data_inv.push({
+            tax_code: inv.SLLR_TAXCODE,
+            form_no: inv.FROM_NO,
+            invoice_no: inv.INVOICE_NO,
+            serial_no: inv.SERIAL_NO,
+            invoice_date: inv.INVOICE_DATE,
+            inform_code: '',
+            inform_name: '',
+            mccqt: inv.CQT_MCCQT,
+            lookup_code: '',
+            xml_tax_signed: '',
+          });
+        }
+      }
+
       const agent = {
         Agent: {
           defaultPort: 443,
@@ -18709,9 +18742,6 @@ class EInvoiceController {
                   p_crt_by,
                 );
 
-                if (check_data.CRT_BY == 'wetax-test') {
-                }
-
                 data_inv.forEach((element, index) => {
                   if (element.inform_code == '' && element.inform_name == '') {
                     data_inv[index].inform_code = maTBao; //items[k].loaiTBao;
@@ -18829,7 +18859,9 @@ class EInvoiceController {
         //   xml_tax_signed: xml_tax_signed,
         // };
       });
-
+      if (check_data.CRT_BY == 'wetax-test') {
+        this.weTaxCallBackStatusPosInv(data_inv, '/api/wtx/v1/pos-invoice-delivery-status');
+      }
       //console.log('jobCheckTradeCodePosInvoice rtnValue  ', rtnValue);
       console.log('jobCheckTradeCodePosInvoice END ========================  ');
     } catch (error) {
@@ -19393,6 +19425,38 @@ class EInvoiceController {
     }
 
     return '';
+  }
+
+  async weTaxCallBackStatusPosInv(data, url) {
+    const agent = {
+      Agent: {
+        defaultPort: 443,
+        protocol: 'https:',
+        options: {maxVersion: 'TLSv1.2', minVersion: 'TLSv1.2', path: null},
+      },
+    };
+
+    let triesCounter = 0;
+    while (triesCounter < 3) {
+      try {
+        const res = await Request.patch(
+          //`${WETAX_API_URL}/api/wtx/ca/v1/sales/e-record/status`,
+          `${WETAX_API_URL}${url}`,
+          data,
+          {
+            agent,
+            headers: {
+              Authorization: 'Basic ' + WETAX_TOKEN_CALLBACK,
+            },
+          },
+        );
+        break; // 'return' would work here as well
+      } catch (err) {
+        await Utils._sleep(5);
+        console.log('weTaxCallBackStatusPosInv ', err);
+      }
+      triesCounter++;
+    }
   }
 }
 

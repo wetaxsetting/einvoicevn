@@ -18585,7 +18585,7 @@ class EInvoiceController {
         p_trade_code: check_data.TRADE_CODE,
       };
 
-      console.log('jobCheckTradeCodePosInvoice param_pos  ', param_pos);
+      console.log('jobCheckTradeCodePosInvoice param_pos  ', param_trade_code);
       const data_inv_of_trade_code = await DBService.ExecuteSQLBlob(
         `BEGIN wt_sel_einvoice_by_tradecode(
                             :p_trade_code,

@@ -19436,12 +19436,13 @@ class EInvoiceController {
         options: {maxVersion: 'TLSv1.2', minVersion: 'TLSv1.2', path: null},
       },
     };
-    console.log('weTaxCallBackStatusPosInv data', JSON.stringify(data));
-    console.log('weTaxCallBackStatusPosInv url', url);
+
     let res_data_json = {
       service_id: service_id,
       info_send_invoices: data,
     };
+    console.log('weTaxCallBackStatusPosInv res_data_json', JSON.stringify(res_data_json));
+    console.log('weTaxCallBackStatusPosInv url', url);
     let triesCounter = 0;
     while (triesCounter < 3) {
       try {

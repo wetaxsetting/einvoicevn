@@ -19430,7 +19430,7 @@ class EInvoiceController {
     let triesCounter = 0;
     while (triesCounter < 3) {
       try {
-        const res = await Request.patch(
+        const res = await Request.post(
           //`${WETAX_API_URL}/api/wtx/ca/v1/sales/e-record/status`,
           `${WETAX_API_URL}${url}`,
           res_data_json,

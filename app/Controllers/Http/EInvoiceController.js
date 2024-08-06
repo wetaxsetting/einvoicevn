@@ -6141,9 +6141,21 @@ class EInvoiceController {
       };
 
       for (const invoice of invoices) {
+        let vat_amount_vat = 0,
+          vat_amout = 0,
+          vat_total_amount = 0;
+        let master_amount_vat = 0,
+          master_amount = 0,
+          master_total_amount = 0;
+        let detail_amount_vat = 0,
+          detail_amount = 0,
+          detail_total_amount = 0;
         for (const key in invoice) {
           if (errorList[`${key}`] != undefined && !Array.isArray(invoice[key])) {
             //console.log('weTaxConvertPosInvoiceToXML key  ', key, ' invoice[key] ', invoice[key]);
+            master_amount_vat = invoice['total_vat_amt'];
+            master_amount = invoice['total_amt'];
+            master_total_amount = invoice['total_payment'];
             if (key == 'seller_taxcode' || key == 'buyer_taxcode') {
               if (invoice[key].length == 10) {
                 if (!errorList[`${key}`][10].test(invoice[key])) {
@@ -6193,8 +6205,9 @@ class EInvoiceController {
           } else {
             if (key == 'total_vat_list') {
               console.log('key  ', key);
-
               for (const sub_vat of invoice[key]) {
+                vat_amount_vat += sub_vat.sub_amt_vat;
+                vat_amout += sub_vat.sub_amt;
                 console.log('sub_vat   ', sub_vat);
                 if (
                   !errorList[`${key}`].sub_vat_rate.test(sub_vat.sub_vat_rate) &&
@@ -6232,6 +6245,8 @@ class EInvoiceController {
 
             if (key == 'detail_invoice') {
               for (const inv of invoice[key]) {
+                detail_amount_vat += inv.amt_vat;
+                detail_amount += inv.amt;
                 if (!errorList[`${key}`].feature.test(inv.feature)) {
                   status = false;
                   resMess = `${mess1} feature is:  ${inv.feature}.`;
@@ -6331,6 +6346,37 @@ class EInvoiceController {
               }
             }
           }
+        }
+        if (master_amount !== detail_amount && master_amount !== null) {
+          //master_amount !== vat_amout &&
+          status = false;
+          resMess = `${mess1} amount is:  ${master_amount}   !== ${detail_amount}`; //!== ${vat_amout}
+          return {
+            status,
+            message: resMess,
+          };
+        }
+
+        if (master_amount_vat !== detail_amount_vat && master_amount_vat !== null) {
+          //master_amount_vat !== vat_amount_vat &&
+          status = false;
+          resMess = `${mess1} amount vat is:  ${master_amount_vat}   !== ${detail_amount_vat}`; //!== ${vat_amount_vat}
+          return {
+            status,
+            message: resMess,
+          };
+        }
+        //vat_total_amount = vat_amount_vat + vat_amout;
+        detail_total_amount = detail_amount + detail_amount_vat;
+        //console.log('++++++++++++ ', master_total_amount, vat_total_amount, detail_total_amount);
+        if (master_total_amount !== detail_total_amount && master_total_amount !== null) {
+          //master_total_amount !== vat_total_amount &&
+          status = false;
+          resMess = `${mess1} amount total is:  ${master_total_amount}  !== ${detail_total_amount}`; //!== ${vat_total_amount}
+          return {
+            status,
+            message: resMess,
+          };
         }
       }
       // if dont have any problem
@@ -10064,8 +10110,21 @@ class EInvoiceController {
       };
 
       for (const invoice of invoices) {
+        let vat_amount_vat = 0,
+          vat_amout = 0,
+          vat_total_amount = 0;
+        let master_amount_vat = 0,
+          master_amount = 0,
+          master_total_amount = 0;
+        let detail_amount_vat = 0,
+          detail_amount = 0,
+          detail_total_amount = 0;
+
         for (const key in invoice) {
           if (errorList[`${key}`] != undefined && !Array.isArray(invoice[key])) {
+            master_amount_vat = invoice['total_vat_amt'];
+            master_amount = invoice['total_amt'];
+            master_total_amount = invoice['total_payment'];
             if (key == 'seller_taxcode' || key == 'buyer_taxcode') {
               if (invoice[key].length == 10) {
                 if (!errorList[`${key}`][10].test(invoice[key])) {
@@ -10115,6 +10174,8 @@ class EInvoiceController {
           } else {
             if (key == 'total_vat_list') {
               for (const sub_vat of invoice[key]) {
+                vat_amount_vat += sub_vat.sub_amt_vat;
+                vat_amout += sub_vat.sub_amt;
                 if (
                   !errorList[`${key}`].sub_vat_rate.test(sub_vat.sub_vat_rate) &&
                   sub_vat.sub_vat_rate != 'KCT' &&
@@ -10150,6 +10211,8 @@ class EInvoiceController {
 
             if (key == 'detail_invoice') {
               for (const inv of invoice[key]) {
+                detail_amount_vat += inv.amt_vat;
+                detail_amount += inv.amt;
                 if (!errorList[`${key}`].feature.test(inv.feature)) {
                   status = false;
                   resMess = `${mess1} feature is:  ${inv.feature}.`;
@@ -10249,6 +10312,35 @@ class EInvoiceController {
               }
             }
           }
+        }
+
+        if (master_amount !== detail_amount && master_amount !== null) {
+          status = false;
+          resMess = `${mess1} amount xx is:  ${master_amount}  !== ${detail_amount}`;
+          return {
+            status,
+            message: resMess,
+          };
+        }
+
+        if (master_amount_vat !== detail_amount_vat && master_amount_vat !== null) {
+          status = false;
+          resMess = `${mess1} amount vat is:  ${master_amount_vat}   !== ${detail_amount_vat}`;
+          return {
+            status,
+            message: resMess,
+          };
+        }
+        //vat_total_amount = vat_amount_vat + vat_amout;
+        detail_total_amount = detail_amount + detail_amount_vat;
+
+        if (master_total_amount !== detail_total_amount && master_total_amount !== null) {
+          status = false;
+          resMess = `${mess1} amount total is:  ${master_total_amount}  !== ${detail_total_amount}`;
+          return {
+            status,
+            message: resMess,
+          };
         }
       }
       // if dont have any problem

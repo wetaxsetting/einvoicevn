@@ -18601,7 +18601,7 @@ class EInvoiceController {
         for (const inv of data_inv_of_trade_code.p_rtn_cur) {
           data_inv.push({
             tax_code: inv.SLLR_TAXCODE,
-            form_no: inv.FROM_NO,
+            form_no: inv.FORM_NO,
             invoice_no: inv.INVOICE_NO,
             serial_no: inv.SERIAL_NO,
             invoice_date: inv.INVOICE_DATE,

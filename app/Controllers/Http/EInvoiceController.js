@@ -18597,6 +18597,8 @@ class EInvoiceController {
         p_language,
         p_crt_by,
       );
+      console.log('jobCheckTradeCodePosInvoice data_inv_of_trade_code  ', JSON.stringify(data_inv_of_trade_code.p_rtn_cur));
+
       if (data_inv_of_trade_code.p_rtn_cur) {
         for (const inv of data_inv_of_trade_code.p_rtn_cur) {
           data_inv.push({
@@ -18613,6 +18615,7 @@ class EInvoiceController {
           });
         }
       }
+      console.log('jobCheckTradeCodePosInvoice data_inv  ', JSON.stringify(data_inv));
 
       const agent = {
         Agent: {
@@ -18806,9 +18809,6 @@ class EInvoiceController {
           }
         }
 
-        // data_inv insert data ==> tei_einvoice_m
-        //console.log("jobCheckTradeCodePosInvoice data_inv  ", data_inv);
-
         for (const inv of data_inv) {
           const param_m = {
             mccqt: inv.mccqt,
@@ -18843,22 +18843,6 @@ class EInvoiceController {
             }
           });
         }
-
-        // rtnValue = {
-        //   trade_code: check_data.TRADE_CODE,
-        //   seller_tax_code: check_data.SLLR_TAXCD,
-        //   sale_date: check_data.INVOICE_DATE,
-        //   store_code: "",
-        //   store_name: "",
-        //   tax_serial_number: tax_serial_number,
-        //   pos_no: pos_no,
-        //   data_error: data_error,
-        //   data_inv: data_inv,
-        //   inform_code: maTBao,
-        //   inform_name: tenTBao,
-        //   //mccqt: maCQT,
-        //   xml_tax_signed: xml_tax_signed,
-        // };
       });
       if (check_data.CRT_BY == 'wetax-test') {
         this.weTaxCallBackStatusPosInv(data_inv, '/api/wtx/v1/pos-invoice-delivery-status', 'WTPTA003');

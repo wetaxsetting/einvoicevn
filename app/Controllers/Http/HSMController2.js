@@ -3,7 +3,7 @@ const Utils = use('Utils');
 const Request = use('Request');
 const easysignUrl = 'http://demosign.easyca.vn:8080/api'; //https://sign.easyca.vn 540110c7d6d61b8f6474f5b993d3b979  12345678
 const axios = require('axios');
-const EINVOICE_ESIGN_XML = 'http://genuclouding.com/wseinvoice/BSService.asmx/SignXml';
+const EINVOICE_ESIGN_XML = 'http://csharp-api.webcashvietnam.com/wseinvoice/BSService.asmx/SignXml';
 
 class HSMController2 {
   async verifyCertificate({request, response, auth}) {
@@ -151,7 +151,7 @@ class HSMController2 {
       Utils.Logger({
         LVL: 'error',
         MODULE: 'HSMController',
-        FUNC: 'HsmSignXml',
+        FUNC: 'getQr2Fa',
         CONTENT: e.message,
       });
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
@@ -167,7 +167,7 @@ class HSMController2 {
         p_crt_by = user.USER_ID;
       }
 
-      const {user_name, password, otp, serial_no, pin, organization, signing_xml} = request.all();
+      const {user_name, password, otp, serial_no, pin, organization, signing_xml, client_id, client_secret} = request.all();
 
       console.log('HsmSignXml  BEGIN ===================================');
       console.log('HsmSignXml user_name ', user_name);
@@ -198,10 +198,26 @@ class HSMController2 {
         type = KHHDon.KHHDon.toString().substring(0, 1);
       }
       let data;
+      let res;
+      let url;
+      let site = 'test';
       switch (organization) {
         case 'easysign':
+<<<<<<< HEAD
           const res = await Request.post(EINVOICE_ESIGN_XML, {
             xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site, type}),
+=======
+          url = 'http://demosign.easyca.vn:8080/api/';
+          res = await Request.post(EINVOICE_ESIGN_XML, {
+            xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site}),
+          });
+          data = res.data.d;
+          break;
+        case 'vnpt':
+          url = 'https://rmgateway.vnptit.vn/sca/sp769';
+          res = await Request.post(EINVOICE_ESIGN_XML, {
+            xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site, client_id, client_secret}),
+>>>>>>> test
           });
           data = res.data.d;
           console.log('HsmSignXml data ', data);

@@ -4,7 +4,7 @@
       <v-col lg="6" :class="isShowLeft ? null : 'd-none'">
         <v-card>
           <v-row dense class="pt-2">
-            <v-col lg="4" class="pl-2">
+            <v-col lg="3" class="pl-2">
               <BaseSelect outlined v-model="sellerName" :lstData="dataSearchList.sellerNameList" item-value="CODE" item-text="NAME" :label="$t('seller_name')"></BaseSelect>
             </v-col>
             <v-col lg="2">
@@ -19,6 +19,10 @@
             <v-col lg="2" class="text-right">
               <GwFlexBox class="d-flex justify-end">
                 <BaseButton icon_type="search" :btn_text="$t('search')" :disabled="isProcessing" @onclick="onClickButton('search')" />
+              </GwFlexBox>
+            </v-col>
+            <v-col lg="1" class="text-right">
+              <GwFlexBox class="d-flex justify-end">
                 <BaseButton icon_type="XML" :btn_text="$t('XML')" :disabled="isProcessing" @onclick="onClickButton('XML')" />
               </GwFlexBox>
             </v-col>
@@ -279,12 +283,14 @@ export default {
           caption: this.$t("invoice_date"),
           dataType: "date",
           format: this.curLang.DATE_FORMAT,
-          width: 120
+          width: 120,
         },
         {
           dataField: "CRT_DT",
           caption: this.$t("time"),
-          width: 220
+          width: 220,
+          alignment: "center",
+
         },
         {
           dataField: "POS_INV_XML",
@@ -295,6 +301,7 @@ export default {
           dataField: "INVOICE_QTY",
           caption: this.$t("invoice_qty"),
           type:"number",
+          alignment: "right",
         },
         {
           dataField: "STATUS",
@@ -333,6 +340,7 @@ export default {
         {
           dataField: "RN",
           caption: this.$t("no"),
+          alignment: "right",
         },
         {
           dataField: "FORM_NO",
@@ -343,6 +351,7 @@ export default {
         {
           dataField: "SERIAL_NO",
           caption: this.$t("serial_no"),
+          alignment: "center",
         },
         {
           dataField: "INVOICE_DATE",
@@ -432,17 +441,23 @@ export default {
           dataType: "number",
         },
         {
+          dataField: "NET_TR_AMT",
+          caption: this.$t("amount"),
+          formatFloat: 2,
+          dataType: "number",
+        },
+        {
           dataField: "VAT_RATE",
           caption: this.$t("tax_rate"),
           formatFloat: 2,
           dataType: "number",
         },
-        {
-          dataField: "VAT_TR_AMT",
-          caption: this.$t("amount"),
-          formatFloat: 2,
-          dataType: "number",
-        },
+        // {
+        //   dataField: "VAT_TR_AMT",
+        //   caption: this.$t("amount_vat"),
+        //   formatFloat: 2,
+        //   dataType: "number",
+        // },
         {
           dataField: "FEATURE",
           caption: this.$t("nature"),

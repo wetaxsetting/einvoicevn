@@ -1231,7 +1231,7 @@
         // if (confirm("Bạn muốn kiểm tra tờ khai này?")) {
         //   jQuery.support.cors = true;
         //   $.ajax({
-        //     url: "http://genuclouding.com/wseinvoice/BSService.asmx/CheckingDeclationCQT_v3",
+        //     url: "http://csharp-api.webcashvietnam.com/wseinvoice/BSService.asmx/CheckingDeclationCQT_v3",
         //     dataType: 'text',
         //     method: 'POST',
         //     data: {

@@ -16,7 +16,7 @@
             <v-col lg="2" class="pl-2">
               <BaseSelect outlined v-model="sellerName" :lstData="dataSearchList.sellerNameList" item-value="CODE" item-text="NAME" :label="$t('seller_name')"></BaseSelect>
             </v-col>
-            <v-col lg="2">
+            <v-col lg="1">
               <BaseInput outlined v-model="trade_codde" :label="$t('trade_codde')"></BaseInput>
             </v-col>
             <v-col lg="1">
@@ -28,7 +28,9 @@
             <v-col lg="1">
               <BaseInput outlined v-model="form_no" :label="$t('form_no')"></BaseInput>
             </v-col>
-
+            <v-col lg="1">
+              <BaseSelect outlined v-model="cqt_result" :lstData="dataSearchList.cqtResult" item-value="CODE" item-text="NAME" :label="$t('cqt_result')"></BaseSelect>
+            </v-col>
             <v-col lg="2" class="text-right">
               <GwFlexBox class="d-flex justify-end">
                 <BaseButton icon_type="search" :btn_text="$t('search')" :disabled="isProcessing" @onclick="onClickButton('search')" />
@@ -45,7 +47,7 @@
                 select_mode="Single"
                 :max_height="limitHeight"
                 :header="headerGridLeft"
-                :filter_paras="[this.sellerName, this.form_date, this.to_date, this.trade_codde, this.invoice_no, this.serial_no, this.form_no ]"
+                :filter_paras="[this.sellerTaxcode, this.form_date, this.to_date, this.trade_codde, this.invoice_no, this.serial_no, this.form_no ]"
               />
             </v-col>
           </v-row>
@@ -62,18 +64,28 @@
     ></view-einvoice-xml-dialog>
     <view-einvoice-xml-cqt-dialog ref="ViewEIXMLCQTDialog" @minimizeDialog="manualIsMinimized = true" @closeManualDialog="manualIsMinimized = false"></view-einvoice-xml-cqt-dialog>
     <view-einvoice-transaction-details-dialog ref="ViewTransaction" @minimizeDialog="manualIsMinimized = true" @closeManualDialog="manualIsMinimized = false"></view-einvoice-transaction-details-dialog>
-    
-    <button type="button" v-show="false" :id="`btnPrview`" @click="previewCellFile"></button>
-    <button type="button" v-show="false" :id="`btnPrview1`" @click="previewCellFile1"></button>
-    <button type="button" v-show="false" :id="`btnPrview2`" @click="previewCellFile2"></button>
-    <input type="textbox" id="tempPK" v-show="false" />
-    <input type="textbox" id="tempPK1" v-show="false" />
-    <input type="textbox" id="tempPK2" v-show="false" />
+    <view-einvoice-json-dialog
+      ref="ViewEInvoiceJsonDialog"
+      :data_json="dataJson"
+      @minimizeDialog="manualIsMinimized = true"
+      @closeManualDialog="manualIsMinimized = false"
+    ></view-einvoice-json-dialog>
+    <button type="button" v-show="false" id="6095720-btnPrview" @click="previewCellFile"></button>
+    <button type="button" v-show="false" id="6095720-btnPrview1" @click="previewCellFile1"></button>
+    <button type="button" v-show="false" id="6095720-btnPrview2" @click="previewCellFile2"></button>
+    <button type="button" v-show="false" id="6095720-btnPrview3" @click="previewCellFile3"></button>
+
+    <input type="textbox" id="6095720-tempPK" v-show="false" />
+    <input type="textbox" id="6095720-tempPK1" v-show="false" />
+    <input type="textbox" id="6095720-tempPK2" v-show="false" />
+    <input type="textbox" id="6095720-tempPK3" v-show="false" />
+
     
   </v-container>
 </template>
 
 <script>
+import ViewEInvoiceJsonDialog from "@/components/dialog/ViewEInvoiceJsonDialog.vue";
 import ViewEInvoiceXMLDialog from "@/components/dialog/ViewEInvoiceXMLDialog.vue";
 import ViewEInvoiceXML_CQTDialog from "@/components/dialog/ViewEInvoiceXML_CQTDialog.vue";
 import ViewEInvoice_TransactionDetailsDailog from "@/components/dialog/ViewEInvoice_TransactionDetailsDailog.vue";
@@ -83,6 +95,7 @@ export default {
   middleware: "user",
 
   components: {
+    "view-einvoice-json-dialog": ViewEInvoiceJsonDialog,
     "view-einvoice-xml-dialog": ViewEInvoiceXMLDialog,
     "view-einvoice-xml-cqt-dialog": ViewEInvoiceXML_CQTDialog,
     "view-einvoice-transaction-details-dialog":ViewEInvoice_TransactionDetailsDailog
@@ -93,7 +106,9 @@ export default {
     sellerTaxcode: "",
     dataSearchList: {
       sellerNameList: [],
+      cqtResult: []
     },
+    dataJson:"",
     sellerName: "",
     trade_codde: "",
     invoice_no:"",
@@ -102,29 +117,22 @@ export default {
     xmlUrl: "",
     xmlFileNm: "",
     currentRow: "",
+    headerGridLeft:[],
+    cqt_result:""
   }),
 
   async created() {
     this.initDataList("company");
-    // this.getListCodes();
+    this.getListCodes();
   },
 
-  computed: {
-    user() {
-      return this.$store.getters["auth/user"];
-    },
-    limitHeight() {
-      if (this.$vuetify.breakpoint.smAndUp) {
-        return 750;
-      }
-    },
-    headerGridLeft() {
-      const self = this;
-      return [
+  mounted(){
+    this.headerGridLeft = [
         {
           dataField: "NO",
           caption: this.$t("stt"),
         },
+<<<<<<< HEAD
         // {
         //   dataField: "DONVI",
         //   caption: this.$t("don_vi"),
@@ -135,6 +143,8 @@ export default {
         //   caption: this.$t("dvi_mst"),
         //   width: 80,
         // },
+=======
+>>>>>>> test
         {
           dataField: "TRADE_CODE",
           caption: this.$t("ma_giao_dich"),
@@ -180,9 +190,19 @@ export default {
           caption: this.$t("ph_cqt"),
           width: 150,
         },
-        { dataField: "TITTLE", caption: "thao_tac", type: "html", width: 150, fixed: true, cellsrenderer: this.myCellHTML },
+        { dataField: "TITTLE", caption: "thao_tac", type: "html", width: 200, fixed: true, cellsrenderer: this.myCellHTML },
       ];
+  },
+
+  computed: {
+    user() {
+      return this.$store.getters["auth/user"];
     },
+    limitHeight() {
+      if (this.$vuetify.breakpoint.smAndUp) {
+        return 750;
+      }
+    }
   },
   watch: {
     sellerName(val) {
@@ -193,12 +213,13 @@ export default {
   },
   methods: {
     previewCellFile() {
-      this.currentRow = document.getElementById("tempPK").value;
+      // console.log("previewCellFile-6095720!");
+      this.currentRow = document.getElementById('6095720-tempPK').value;
       const ds = this.$refs.grdCompany.getDataSource();
       // console.log("this.currentRow  previewCellFile", this.currentRow);
       if (ds.length) {
         const found = ds.find((item) => item.PK == this.currentRow);
-        console.log("found", found);
+        // console.log("found", found);
         if (found) {
           this.xmlUrl = found.CQT_DATA_RESULT;
           this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
@@ -206,10 +227,10 @@ export default {
       }
     },
     previewCellFile1() {
-      this.currentRow = document.getElementById("tempPK1").value;
+      // console.log("previewCellFile1-6095720!");
+      this.currentRow = document.getElementById('6095720-tempPK1').value;
       // console.log("this.currentRow  previewCellFile1", this.currentRow);
       const ds = this.$refs.grdCompany.getDataSource();
-
       if (ds.length) {
         const found = ds.find((item) => item.PK == this.currentRow);
         // console.log("found", found);
@@ -221,10 +242,10 @@ export default {
     },
 
     previewCellFile2() {
-      this.currentRow = document.getElementById("tempPK2").value;
+      // console.log("previewCellFile2-6095720!");
+      this.currentRow = document.getElementById('6095720-tempPK2').value;
       // console.log("this.currentRow  previewCellFile2", this.currentRow);
       const ds = this.$refs.grdCompany.getDataSource();
-
       if (ds.length) {
         const found = ds.find((item) => item.PK == this.currentRow);
         // console.log("found", found);
@@ -234,16 +255,36 @@ export default {
         }
       }
     },
+    previewCellFile3() {
+      // console.log("previewCellFile3-6095720!");
+      this.currentRow = document.getElementById('6095720-tempPK3').value;
+      // console.log("this.currentRow  previewCellFile2", this.currentRow);
+      const ds = this.$refs.grdCompany.getDataSource();
+      if (ds.length) {
+        const found = ds.find((item) => item.PK == this.currentRow);
+        // console.log("found", found);
+        if (found) {
+          this.dataJson = found.TVAN_DATA_RESULT;
+          this.$refs.ViewEInvoiceJsonDialog.dialogIsShow = true;
+        }
+      }
+    },
     myCellHTML(row, column, value, cellhtml) {
       let grid = this.$refs.grdCompany.getControl();
       let rowData = grid.getrowdata(row);
-      let previewFile = `document.getElementById('btnPrview').click()`;
-      let previewFile1 = `document.getElementById('btnPrview1').click()`;
-      let previewFile2 = `document.getElementById('btnPrview2').click()`;
+      const updateTempPK = `document.getElementById('6095720-tempPK').value = ${rowData.PK}; document.getElementById('6095720-tempPK1').value = ''; document.getElementById('6095720-tempPK2').value = ''; document.getElementById('6095720-tempPK3').value = ''`;
+      const updateTempPK1 = `document.getElementById('6095720-tempPK').value = ''; document.getElementById('6095720-tempPK1').value = ${rowData.PK}; document.getElementById('6095720-tempPK2').value = ''; document.getElementById('6095720-tempPK3').value = ''`;
+      const updateTempPK2 = `document.getElementById('6095720-tempPK').value = ''; document.getElementById('6095720-tempPK1').value = ''; document.getElementById('6095720-tempPK2').value = ${rowData.PK}; document.getElementById('6095720-tempPK3').value = ''`;
+      const updateTempPK3 = `document.getElementById('6095720-tempPK').value = ''; document.getElementById('6095720-tempPK1').value = ''; document.getElementById('6095720-tempPK2').value = ''; document.getElementById('6095720-tempPK3').value = ${rowData.PK}`;
+      let previewFile = `document.getElementById('6095720-btnPrview').click()`;
+      let previewFile1 = `document.getElementById('6095720-btnPrview1').click()`;
+      let previewFile2 = `document.getElementById('6095720-btnPrview2').click()`;
+      let previewFile3 = `document.getElementById('6095720-btnPrview3').click()`;
 
-      let html = `<button class="v-icon mdi mdi-eye light-blue--text px-4" onclick="document.getElementById('tempPK').value = '${rowData.PK}';${previewFile}"></button>
-                  <button class="v-icon mdi mdi-file-document light-blue--text px-1" onclick="document.getElementById('tempPK1').value = '${rowData.PK}';${previewFile1}"></button>
-                  <button class="v-icon mdi mdi-checkbox-marked-circle-outline light-blue--text px-4" onclick="document.getElementById('tempPK2').value = '${rowData.PK}';${previewFile2}"></button>`;
+      let html = `<button class="v-icon mdi mdi-eye light-blue--text px-4" onclick="${updateTempPK};${previewFile}"></button>
+                  <button class="v-icon mdi mdi-file-document light-blue--text px-1" onclick="${updateTempPK1};${previewFile1}"></button>
+                  <button class="v-icon mdi mdi-checkbox-marked-circle-outline light-blue--text px-4" onclick="${updateTempPK2};${previewFile2}"></button>
+                  <button class="v-icon mdi mdi-code-json light-blue--text" onclick="${updateTempPK3};${previewFile3}"></button>`;
       return html;
     },
 
@@ -254,7 +295,7 @@ export default {
           if (company.length > 0) {
             this.dataSearchList.sellerNameList = company;
           }
-          break;
+        break;
       }
     },
     async onClickButton(pos) {
@@ -265,11 +306,10 @@ export default {
       }
     },
 
-    // async getListCodes() {
-    //   const results = await this._getCommonCode2(["ACEI0010", "ACEI0040", "ACEI0120", "ACEI0190", "ACEI0140", "ACEIN010", "ACJS0460"], this.user.PK);
-    //   this.statusList = results[0];
-    //   this.dataSearchList.tradingTypeList = results[1];
-    // },
+    async getListCodes() {
+      const results = await this._getCommonCode2(["ACJS0510"], this.user.PK);
+      this.dataSearchList.cqtResult = results[0];
+    },
   },
 };
 </script>

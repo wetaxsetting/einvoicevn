@@ -671,7 +671,11 @@ class Utils {
     }
 
     if (ccy == 'USD') {
+<<<<<<< HEAD
       rtnf += ' Đô La Mỹ';
+=======
+      rtnf += ' Đô';
+>>>>>>> test
       if (s1.Length > 0) {
         //Đọc số lẻ
         l = s1.Length;

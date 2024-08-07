@@ -45,7 +45,7 @@
                 select_mode="Single"
                 :max_height="limitHeight"
                 :header="headerGridLeft"
-                :filter_paras="[this.sellerName, this.form_date, this.to_date, this.trade_codde, this.invoice_no, this.serial_no, this.form_no ]"
+                :filter_paras="[sellerTaxcode, form_date, to_date, trade_codde, invoice_no, serial_no, form_no]"
               />
             </v-col>
           </v-row>
@@ -62,18 +62,28 @@
     ></view-einvoice-xml-dialog>
     <view-einvoice-xml-cqt-dialog ref="ViewEIXMLCQTDialog" @minimizeDialog="manualIsMinimized = true" @closeManualDialog="manualIsMinimized = false"></view-einvoice-xml-cqt-dialog>
     <view-einvoice-transaction-details-dialog ref="ViewTransaction" @minimizeDialog="manualIsMinimized = true" @closeManualDialog="manualIsMinimized = false"></view-einvoice-transaction-details-dialog>
-    
-    <button type="button" v-show="false" :id="`btnPrview`" @click="previewCellFile"></button>
-    <button type="button" v-show="false" :id="`btnPrview1`" @click="previewCellFile1"></button>
-    <button type="button" v-show="false" :id="`btnPrview2`" @click="previewCellFile2"></button>
-    <input type="textbox" id="tempPK" v-show="false" />
-    <input type="textbox" id="tempPK1" v-show="false" />
-    <input type="textbox" id="tempPK2" v-show="false" />
-    
+    <view-einvoice-json-dialog
+      ref="ViewEInvoiceJsonDialog"
+      :data_json="dataJson"
+      @minimizeDialog="manualIsMinimized = true"
+      @closeManualDialog="manualIsMinimized = false"
+    ></view-einvoice-json-dialog>
+    <button type="button" v-show="false" id="6095730-btnPrview" @click="previewCellFile"></button>
+    <button type="button" v-show="false" id="6095730-btnPrview1" @click="previewCellFile1"></button>
+    <button type="button" v-show="false" id="6095730-btnPrview2" @click="previewCellFile2"></button>
+    <button type="button" v-show="false" id="6095730-btnPrview3" @click="previewCellFile3"></button>
+
+    <input type="textbox" id="6095730-tempPK" v-show="false" />
+    <input type="textbox" id="6095730-tempPK1" v-show="false" />
+    <input type="textbox" id="6095730-tempPK2" v-show="false" />
+    <input type="textbox" id="6095730-tempPK3" v-show="false" />
+
   </v-container>
 </template>
 
 <script>
+
+import ViewEInvoiceJsonDialog from "@/components/dialog/ViewEInvoiceJsonDialog.vue";
 import ViewEInvoiceXMLDialog from "@/components/dialog/ViewEInvoiceXMLDialog.vue";
 import ViewEInvoiceXML_CQTDialog from "@/components/dialog/ViewEInvoiceXML_CQTDialog.vue";
 import ViewEInvoice_TransactionDetailsDailog from "@/components/dialog/ViewEInvoice_TransactionDetailsDailog.vue";
@@ -83,6 +93,7 @@ export default {
   middleware: "user",
 
   components: {
+    "view-einvoice-json-dialog": ViewEInvoiceJsonDialog,
     "view-einvoice-xml-dialog": ViewEInvoiceXMLDialog,
     "view-einvoice-xml-cqt-dialog": ViewEInvoiceXML_CQTDialog,
     "view-einvoice-transaction-details-dialog":ViewEInvoice_TransactionDetailsDailog
@@ -102,13 +113,71 @@ export default {
     xmlUrl: "",
     xmlFileNm: "",
     currentRow: "",
+    headerGridLeft:[],
+    dataJson:""
   }),
 
   async created() {
     this.initDataList("company");
     // this.getListCodes();
   },
-
+  mounted() {
+    this.headerGridLeft = [
+      {
+        dataField: "NO",
+        caption: this.$t("stt"),
+      },
+      // {
+      //   dataField: "DONVI",
+      //   caption: this.$t("don_vi"),
+      //   width: 80,
+      // },
+      // {
+      //   dataField: "DONVIMST",
+      //   caption: this.$t("dvi_mst"),
+      //   width: 80,
+      // },
+      {
+        dataField: "TRADE_CODE",
+        caption: this.$t("ma_giao_dich"),
+        width: 300,
+      },
+      {
+        dataField: "SLLR_COMP_NM",
+        caption: this.$t("tennnt"),
+        width: 300,
+      },
+      {
+        dataField: "SLLR_TAXCD",
+        caption: this.$t("mst"),
+        type: "number",
+        width: 150,
+      },
+      {
+        dataField: "SEND_DT",
+        caption: this.$t("nlap"),
+        dataType: "date",
+        width: 120,
+      },
+      {
+        dataField: "STATUS",
+        caption: this.$t("tthai"),
+        width: 160,
+      },
+      {
+        dataField: "CQT_RESULT",
+        caption: this.$t("ph_cqt"),
+        width: 160,
+      },
+      {
+        dataField: "INV_QTY",
+        caption: this.$t("qty"),
+        type: "number",
+        width: 150,
+      },
+      { dataField: "TITTLE", caption: "thao_tac", type: "html", width: 200, fixed: true, cellsrenderer: this.myCellHTML },
+    ]
+  },
   computed: {
     user() {
       return this.$store.getters["auth/user"];
@@ -118,6 +187,7 @@ export default {
         return 750;
       }
     },
+<<<<<<< HEAD
     headerGridLeft() {
       const self = this;
       return [
@@ -176,6 +246,8 @@ export default {
         { dataField: "TITTLE", caption: "thao_tac", type: "html", width: 150, fixed: true, cellsrenderer: this.myCellHTML },
       ];
     },
+=======
+>>>>>>> test
   },
   watch: {
     sellerName(val) {
@@ -186,12 +258,12 @@ export default {
   },
   methods: {
     previewCellFile() {
-      this.currentRow = document.getElementById("tempPK").value;
+      this.currentRow = document.getElementById("6095730-tempPK").value;
       const ds = this.$refs.grdCompany.getDataSource();
       // console.log("this.currentRow  previewCellFile", this.currentRow);
       if (ds.length) {
         const found = ds.find((item) => item.PK == this.currentRow);
-        console.log("found", found);
+        // console.log("previewCellFile", found);
         if (found) {
           this.xmlUrl = found.CQT_DATA_RESULT;
           this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
@@ -199,13 +271,13 @@ export default {
       }
     },
     previewCellFile1() {
-      this.currentRow = document.getElementById("tempPK1").value;
+      this.currentRow = document.getElementById("6095730-tempPK1").value;
       // console.log("this.currentRow  previewCellFile1", this.currentRow);
       const ds = this.$refs.grdCompany.getDataSource();
 
       if (ds.length) {
         const found = ds.find((item) => item.PK == this.currentRow);
-        // console.log("found", found);
+        // console.log("previewCellFile1", found);
         if (found) {
           this.$refs.ViewEIXMLCQTDialog.pk = found.PK;
           this.$refs.ViewEIXMLCQTDialog.dialogIsShow = true;
@@ -214,29 +286,49 @@ export default {
     },
 
     previewCellFile2() {
-      this.currentRow = document.getElementById("tempPK2").value;
+      this.currentRow = document.getElementById("6095730-tempPK2").value;
       // console.log("this.currentRow  previewCellFile2", this.currentRow);
       const ds = this.$refs.grdCompany.getDataSource();
 
       if (ds.length) {
         const found = ds.find((item) => item.PK == this.currentRow);
-        // console.log("found", found);
+        // console.log("previewCellFile2", found);
         if (found) {
           this.$refs.ViewTransaction.pk = found.PK;
           this.$refs.ViewTransaction.dialogIsShow = true;
         }
       }
     },
+    previewCellFile3() {
+      this.currentRow = document.getElementById("6095730-tempPK3").value;
+      // console.log("this.currentRow  previewCellFile2", this.currentRow);
+      const ds = this.$refs.grdCompany.getDataSource();
+
+      if (ds.length) {
+        const found = ds.find((item) => item.PK == this.currentRow);
+        // console.log("previewCellFile3", found);
+        if (found) {
+          this.dataJson = found.TVAN_DATA_RESULT;
+          this.$refs.ViewEInvoiceJsonDialog.dialogIsShow = true;
+        }
+      }
+    },
     myCellHTML(row, column, value, cellhtml) {
       let grid = this.$refs.grdCompany.getControl();
       let rowData = grid.getrowdata(row);
-      let previewFile = `document.getElementById('btnPrview').click()`;
-      let previewFile1 = `document.getElementById('btnPrview1').click()`;
-      let previewFile2 = `document.getElementById('btnPrview2').click()`;
+      const updateTempPK = `document.getElementById('6095730-tempPK').value = ${rowData.PK}; document.getElementById('6095730-tempPK1').value = ''; document.getElementById('6095730-tempPK2').value = ''; document.getElementById('6095730-tempPK3').value = ''`;
+      const updateTempPK1 = `document.getElementById('6095730-tempPK').value = ''; document.getElementById('6095730-tempPK1').value = ${rowData.PK}; document.getElementById('6095730-tempPK2').value = ''; document.getElementById('6095730-tempPK3').value = ''`;
+      const updateTempPK2 = `document.getElementById('6095730-tempPK').value = ''; document.getElementById('6095730-tempPK1').value = ''; document.getElementById('6095730-tempPK2').value = ${rowData.PK}; document.getElementById('6095730-tempPK3').value = ''`;
+      const updateTempPK3 = `document.getElementById('6095730-tempPK').value = ''; document.getElementById('6095730-tempPK1').value = ''; document.getElementById('6095730-tempPK2').value = ''; document.getElementById('6095730-tempPK3').value = ${rowData.PK}`;
+      let previewFile = `document.getElementById('6095730-btnPrview').click()`;
+      let previewFile1 = `document.getElementById('6095730-btnPrview1').click()`;
+      let previewFile2 = `document.getElementById('6095730-btnPrview2').click()`;
+      let previewFile3 = `document.getElementById('6095730-btnPrview3').click()`;
 
-      let html = `<button class="v-icon mdi mdi-eye light-blue--text px-4" onclick="document.getElementById('tempPK').value = '${rowData.PK}';${previewFile}"></button>
-                  <button class="v-icon mdi mdi-file-document light-blue--text px-1" onclick="document.getElementById('tempPK1').value = '${rowData.PK}';${previewFile1}"></button>
-                  <button class="v-icon mdi mdi-checkbox-marked-circle-outline light-blue--text px-4" onclick="document.getElementById('tempPK2').value = '${rowData.PK}';${previewFile2}"></button>`;
+      let html = `<button class="v-icon mdi mdi-eye light-blue--text px-4" onclick="${updateTempPK};${previewFile}"></button>
+                  <button class="v-icon mdi mdi-file-document light-blue--text px-1" onclick="${updateTempPK1};${previewFile1}"></button>
+                  <button class="v-icon mdi mdi-checkbox-marked-circle-outline light-blue--text px-4" onclick="${updateTempPK2};${previewFile2}"></button>
+                  <button class="v-icon mdi mdi-code-json light-blue--text" onclick="${updateTempPK3};${previewFile3}"></button>`;
       return html;
     },
 

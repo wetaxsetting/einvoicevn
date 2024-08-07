@@ -31,7 +31,13 @@ class EiExcelHandler {
       let logos = [];
       let qrPath = 'assets/images/einvoices_logo/qr.png'; //đường dẫn của dấu tick xanh
       let signPath = 'assets/images/einvoices_logo/greentick.png'; //đường dẫn của dấu tick xanh
+<<<<<<< HEAD
       let cancelPath = 'assets/images/einvoices_logo/Einvoice_cancel.png'; //đường dẫn của hình cancel
+=======
+      let cancelPath = 'assets/images/einvoices_logo/Cancle.png'; //đường dẫn của hình cancel
+      let adjustPath = 'assets/images/einvoices_logo/Adjust.png'; //đường dẫn của hình cancel
+      let replacePath = 'assets/images/einvoices_logo/Replace.png'; //đường dẫn của hình cancel
+>>>>>>> test
       let bgPath = ''; //đường dẫn của hình background
 
       let _sourceRow = 0; //chiều cao tính từ đầu trang tới dòng đầu tiên của detail
@@ -72,6 +78,7 @@ class EiExcelHandler {
         companyTaxcode = einvoiceMasterData[0].SELLER_TAXCODE.replace(/\s+/g, '');
         convertYn = einvoiceMasterData[0].CONVERT_YN == 'Y' ? 'Y' : 'N';
         cancelYn = einvoiceMasterData[0].CANCEL_YN == 'Y' ? 'Y' : 'N';
+<<<<<<< HEAD
       }
 
       if (einvoiceMasterData[0].ETAX_STATUS == '1') {
@@ -82,6 +89,18 @@ class EiExcelHandler {
         cancelPath = 'assets/images/einvoices_logo/Replace.png';
       }
 
+=======
+      }
+      //console.log('einvoiceMasterData[0].ETAX_STATUS ', einvoiceMasterData[0].ETAX_STATUS);
+      if (einvoiceMasterData[0].ETAX_STATUS == '1') {
+        cancelPath = 'assets/images/einvoices_logo/Cancle.png';
+      } else if (einvoiceMasterData[0].ETAX_STATUS == '3') {
+        cancelPath = 'assets/images/einvoices_logo/Adjust.png';
+      } else if (einvoiceMasterData[0].ETAX_STATUS == '2') {
+        cancelPath = 'assets/images/einvoices_logo/Replace.png';
+      }
+
+>>>>>>> test
       let msThueCutter = async (msothueArray, taxCode, taxRow) => {
         for (let i = 0; i < taxCode.length; i++) {
           const e = taxCode[i];

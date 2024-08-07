@@ -1,8 +1,11 @@
 'use strict';
 const Utils = use('Utils');
 const qrcode = use('qrcode');
+<<<<<<< HEAD
 const fs = use('fs');
 const Helpers = use('Helpers');
+=======
+>>>>>>> test
 
 const BANKS = [
   {
@@ -928,6 +931,14 @@ class PublicApiController {
 
   async generateQrPayment({request, response}) {
     const {acqId, accountNo, amount, addInfo} = request.all();
+<<<<<<< HEAD
+=======
+
+    if(addInfo.length > 100){
+      return response.send(Utils.responseByRule({success: false, message: 'addInfo max length is 100',}));
+    }
+
+>>>>>>> test
     const payloadFormatId = '00';
     const payloadFormatLength = '02';
     const payloadFormatValue = '01';

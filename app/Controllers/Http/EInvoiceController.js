@@ -6089,6 +6089,8 @@ class EInvoiceController {
     let status = true;
     let resMess = '';
     const mess1 = 'Invalid field';
+    let data_suscess = [],
+      data_error = [];
     //console.log("invoice  ", invoice)
     try {
       const errorList = {
@@ -9122,15 +9124,15 @@ class EInvoiceController {
       const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
 
       const {tax_serial_number, seller_tax_code, sale_date, store_code, store_name, pos_no, invoice_xml_signed, req_key} = request.all();
-      // //console.log("weTaxSendPosInvoiceToTaxOffice   =========================== BEGIN =======================", )
-      // //console.log("weTaxSendPosInvoiceToTaxOffice   tax_serial_number ", tax_serial_number )
-      // //console.log("weTaxSendPosInvoiceToTaxOffice   seller_tax_code ",seller_tax_code )
-      // //console.log("weTaxSendPosInvoiceToTaxOffice   sale_date ", sale_date )
-      // //console.log("weTaxSendPosInvoiceToTaxOffice   store_code ", store_code )
-      // //console.log("weTaxSendPosInvoiceToTaxOffice   pos_no ", pos_no )
-      // //console.log("weTaxSendPosInvoiceToTaxOffice   invoice_xml_signed ", invoice_xml_signed)
-      // //console.log("weTaxSendPosInvoiceToTaxOffice   req_key ", req_key)
-      // //console.log("weTaxSendPosInvoiceToTaxOffice   =========================== END =======================", )
+      console.log('weTaxSendPosInvoiceToTaxOffice   =========================== BEGIN =======================');
+      console.log('weTaxSendPosInvoiceToTaxOffice   tax_serial_number ', tax_serial_number);
+      console.log('weTaxSendPosInvoiceToTaxOffice   seller_tax_code ', seller_tax_code);
+      console.log('weTaxSendPosInvoiceToTaxOffice   sale_date ', sale_date);
+      console.log('weTaxSendPosInvoiceToTaxOffice   store_code ', store_code);
+      console.log('weTaxSendPosInvoiceToTaxOffice   pos_no ', pos_no);
+      console.log('weTaxSendPosInvoiceToTaxOffice   invoice_xml_signed ', invoice_xml_signed);
+      console.log('weTaxSendPosInvoiceToTaxOffice   req_key ', req_key);
+      console.log('weTaxSendPosInvoiceToTaxOffice   =========================== END =======================');
 
       // let json =  this.parseXmlToJson(invoice_xml_signed);
       //console.log("weTaxSendPosInvoiceToTaxOffice BEGIN ================================   ");
@@ -18694,6 +18696,7 @@ class EInvoiceController {
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
     }
   }
+
   async jobCheckTradeCodePosInvoice(check_data) {
     console.log('jobCheckTradeCodePosInvoice BEGIN ========================  ');
     const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
@@ -19268,15 +19271,6 @@ class EInvoiceController {
             dsachLoi: [],
           });
         }
-
-        // rtnValue.push({
-        //   trade_code: inv.trade_code,
-        //   req_key: inv.req_key,
-        //   inform_code: '16',
-        //   inform_desc: 'Thông báo có thông báo mới của CQT',
-        //   tax_code: tax_code,
-        //   result_content: ndungTBao,
-        // });
       } else {
         for (let j = 0; j < result.data.length; j++) {
           const items = result.data[j];
@@ -19347,17 +19341,6 @@ class EInvoiceController {
 
               for (const invoice of items[k].ndungTBao.tbaoTNhanSSotDoc.dsachHDonLoi) {
                 console.log('weTaxCheckInformAdjustToTaxOffice invoice  ', invoice);
-                // ndungTBao.push({
-                //   tax_auth_cd: invoice.MCCQT,
-                //   form_no: invoice.khieuMauHDon,
-                //   serial_no: invoice.khieuHDon,
-                //   invoice_no: invoice.soHDon,
-                //   invoice_date: invoice.ngayHDon,
-                //   cqt_result: invoice.tthaiTNCQT, //   invoice.dsachLoi.length == 0 ? 1 : 2,
-                //   dsachLoi: invoice.dsachLoi,
-                // });
-
-                //console.log("invoice.dsachLoi  ", invoice.dsachLoi)
 
                 if (invoice.dsachLoi.length == 0) {
                   p_cqt_result = 'Thành công';
@@ -19464,18 +19447,6 @@ class EInvoiceController {
                     element.FORM_NO == invoice.khieuMauHDon && element.SERIAL_NO == invoice.khieuHDon && element.INVOICE_NO == invoice.soHDon,
                 );
 
-                //console.log("found  ", found);
-
-                // ndungTBao.push({
-                //   tax_auth_cd: found?.MCCQT,
-                //   form_no: invoice.khieuMauHDon,
-                //   serial_no: invoice.khieuHDon,
-                //   invoice_no: invoice.soHDon,
-                //   invoice_date: invoice.ngayHDon,
-                //   cqt_result: '2', //   invoice.dsachLoi.length == 0 ? 1 : 2,
-                //   dsachLoi: error_list,
-                // });
-
                 const data_d_tbss = {
                   p_mccqt: found?.MCCQT,
                   p_form_no: invoice.khieuMauHDon,
@@ -19528,17 +19499,6 @@ class EInvoiceController {
           p_language,
           p_crt_by,
         );
-
-        // rtnValue.push({
-        //   trade_code: check_data.TRADE_CODE,
-        //   req_key: inv.req_key,
-        //   inform_code: maTBao,
-        //   inform_desc: tenTBao,
-        //   tax_code: tax_code,
-        //   result_content: ndungTBao,
-        // });
-
-        //this.sendMailTBSSToCustomer(inv.trade_code, p_language, p_crt_by);
       }
 
       console.log('jobCheckTradeCode04SSInvoice END ========================  ');

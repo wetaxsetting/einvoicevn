@@ -6080,7 +6080,8 @@ class EInvoiceController {
         tax_code: tax_code,
         store_code: store_code,
         store_name: store_name,
-        count_invoice_convert: invoices.length,
+        count_invoice_convert: req_key.length,
+        count_invoice_error: data_error.length,
         sign_id: id,
         signature_path: signature_path,
         xml_data: xmlRemoveLine,
@@ -6229,7 +6230,7 @@ class EInvoiceController {
               for (const sub_vat of invoice[key]) {
                 vat_amount_vat += sub_vat.sub_amt_vat;
                 vat_amout += sub_vat.sub_amt;
-                console.log('sub_vat   ', sub_vat);
+                //console.log('sub_vat   ', sub_vat);
                 if (
                   !errorList[`${key}`].sub_vat_rate.test(sub_vat.sub_vat_rate) &&
                   sub_vat.sub_vat_rate != 'KCT' &&
@@ -7379,14 +7380,14 @@ class EInvoiceController {
       console.log('======================weTaxSendOrderInfoV2 BEGIN===================');
       //console.log("weTaxSendOrderInfoV2 sale_id   ",sale_id  );
       //console.log("weTaxSendOrderInfoV2 msg_his_id  ",msg_his_id );
-      console.log('weTaxSendOrderInfoV2 tax_code  ', tax_code);
-      console.log('weTaxSendOrderInfoV2 p_crt_by  ', p_crt_by);
-      console.log('weTaxSendOrderInfoV2 sale_date  ', sale_date);
-      console.log('weTaxSendOrderInfoV2 store_code  ', store_code);
-      console.log('weTaxSendOrderInfoV2 store_name  ', store_name);
-      console.log('weTaxSendOrderInfoV2 pos_no  ', pos_no);
-      console.log('weTaxSendOrderInfoV2 bill_no  ', bill_no);
-      console.log('weTaxSendOrderInfoV2 data_invoice  ', data_invoice);
+      // console.log('weTaxSendOrderInfoV2 tax_code  ', tax_code);
+      // console.log('weTaxSendOrderInfoV2 p_crt_by  ', p_crt_by);
+      // console.log('weTaxSendOrderInfoV2 sale_date  ', sale_date);
+      // console.log('weTaxSendOrderInfoV2 store_code  ', store_code);
+      // console.log('weTaxSendOrderInfoV2 store_name  ', store_name);
+      // console.log('weTaxSendOrderInfoV2 pos_no  ', pos_no);
+      // console.log('weTaxSendOrderInfoV2 bill_no  ', bill_no);
+      console.log('weTaxSendOrderInfoV2 data_invoice  ', JSON.stringify(data_invoice));
 
       if (!data_invoice) {
         // return response.send(Utils.response(false, `Invalid data_invoice `, null)
@@ -12064,14 +12065,7 @@ class EInvoiceController {
           id_signing: id,
           url_signing: '//DSCKS/NBan',
         });
-        // rtnXML = {
-        //     //tax_code: data.tax_code,
-        //     //store_code: data.store_code,
-        //     //store_name: data.store_name,
-        //     //count_invoice_convert: invoices.length,
-        //     id_signing: "ID1",
-        //     xml_converted: xmlRemoveLine
-        // };
+
         objInvoice = {
           HDon: {
             DLHDon: {

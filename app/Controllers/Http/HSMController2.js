@@ -177,8 +177,6 @@ class HSMController2 {
       console.log('HsmSignXml pin ', pin);
       console.log('HsmSignXml organization ', organization);
       console.log('HsmSignXml signing_xml ', signing_xml);
-      const url = 'http://demosign.easyca.vn:8080/api/';
-      const site = 'test';
       let type = 'C';
       if (!user_name || !password || !pin || !organization || !serial_no || !signing_xml) {
         return response.status(400).json(
@@ -203,10 +201,6 @@ class HSMController2 {
       let site = 'test';
       switch (organization) {
         case 'easysign':
-<<<<<<< HEAD
-          const res = await Request.post(EINVOICE_ESIGN_XML, {
-            xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site, type}),
-=======
           url = 'http://demosign.easyca.vn:8080/api/';
           res = await Request.post(EINVOICE_ESIGN_XML, {
             xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site}),
@@ -217,7 +211,6 @@ class HSMController2 {
           url = 'https://rmgateway.vnptit.vn/sca/sp769';
           res = await Request.post(EINVOICE_ESIGN_XML, {
             xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site, client_id, client_secret}),
->>>>>>> test
           });
           data = res.data.d;
           console.log('HsmSignXml data ', data);

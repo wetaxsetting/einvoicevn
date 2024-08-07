@@ -155,15 +155,9 @@ Route.group(() => {
   Route.post('send-declare', 'EInvoiceController.weTaxSendDeclarationToTaxOffice');
   Route.post('check-status-declare', 'EInvoiceController.weTaxCheckingDeclarations');
   Route.post('generate-notice-cancel-adjust-replace-xml', 'EInvoiceController.weTaxConvertInvalidInvoiceToXML');
-<<<<<<< HEAD
-  Route.post('send-notice-cancel-adjust-replace', 'EInvoiceController.weTaxSendInformAdjustToTaxOffice');
-  Route.post('check-notification-status', 'EInvoiceController.weTaxCheckInformAdjustToTaxOffice');
-  Route.post('send-order-info', 'EInvoiceController.weTaxSendOrderInfo');
-=======
   Route.post('send-notice-cancel-adjust-replace', 'EInvoiceController.weTaxSendInformAdjustToTaxOffice2');
   Route.post('check-notification-status', 'EInvoiceController.weTaxCheckInformAdjustToTaxOffice');
   Route.post('send-order-info', 'EInvoiceController.weTaxSendOrderInfoV2');
->>>>>>> test
   Route.post('send-order-info-update', 'EInvoiceController.weTaxUpdateSendOrderInfo');
   Route.post('get-sendmail-invoice-status', 'EInvoiceController.weTaxCheckStausSendMail');
   Route.post('generate-pos-invoice-xml', 'EInvoiceController.weTaxConvertPosInvoiceToXML');
@@ -172,11 +166,8 @@ Route.group(() => {
   Route.post('check-status-invoice', 'EInvoiceController.weTaxCheckInvoiceStatusFromTaxOffice');
   Route.post('generate-invoice-xml', 'EInvoiceController.weTaxConvertInvoiceToXML');
   Route.post('send-company-info', 'EInvoiceController.weTaxSendCompanyInfo');
-<<<<<<< HEAD
-  Route.post('re-send-order-info', 'EInvoiceController.weTaxReSendOrderInfo');
-=======
+
   Route.post('re-send-order-info', 'EInvoiceController.weTaxReSendOrderInfoV2');
->>>>>>> test
   Route.post('re-send-normal-invoice', 'EInvoiceController.weTaxReSendNormalInvoice');
   Route.post('send-company-template', 'EInvoiceController.weTaxSendCompanyTemplate');
   Route.post('generate-records-xml', 'EInvoiceController.weTaxGenerateRecordsXml');
@@ -215,92 +206,30 @@ Route.group(() => {
   Route.post('check-declare-c-sharp', 'EInvoiceController.CheckDeclarationXML');
 
   Route.post('invoice2xml-c-sharp', 'EInvoiceController.GeneralInvoiceXML');
-<<<<<<< HEAD
-  Route.post('update-invoice-c-sharp', 'EInvoiceController.UpdateInvoiceXML');
-  Route.post('check-invoice-c-sharp', 'EInvoiceController.CheckInvoiceXML');
-=======
+
   Route.post('invoice2xml-for-hsm-c-sharp', 'EInvoiceController.GeneralInvoiceHsmXML');
   Route.post('update-invoice-c-sharp', 'EInvoiceController.UpdateInvoiceXML');
   Route.post('check-invoice-c-sharp', 'EInvoiceController.CheckInvoiceXML');
   Route.post('sign-invoice-hsm-c-sharp', 'EInvoiceController.SignInvoiceHsmXML');
->>>>>>> test
 
   Route.post('invalidinvoice2xml-c-sharp', 'EInvoiceController.GeneralInvalidInvoiceToXML');
   Route.post('update-invalid-invoice-c-sharp', 'EInvoiceController.UpdataInvalidInvoiceToXML');
   Route.post('check-invalid-invoice-c-sharp', 'EInvoiceController.CheckInvalidInvoiceToXML');
-<<<<<<< HEAD
-=======
+
   Route.post('invalidinvoice2xml-hsm-c-sharp', 'EInvoiceController.GeneralInvalidInvoiceToHsmXML');
->>>>>>> test
 
   Route.post('invalidinvoice2xml-from-customer-c-sharp', 'EInvoiceController.GeneralInvalidInvoiceToXMLFromCustomer');
   Route.post('update-invalid-invoice-from-customer-c-sharp', 'EInvoiceController.UpdataInvalidInvoiceToXMLFromCustomer');
 
   Route.post('send-mail-c-sharp', 'EInvoiceController.SendMailCSharp');
-<<<<<<< HEAD
-=======
   Route.post('update-image-c-sharp', 'EInvoiceController.UpdateImage');
-
   Route.post('sign-invoice-c-sharp', 'EInvoiceController.SignInvoiceXML');
-
   Route.post('pit2xml-c-sharp', 'EInvoiceController.SignInvoiceXML');
->>>>>>> test
 })
   .prefix('api/einvoice')
   .middleware('user');
 
 Route.group(() => {
-<<<<<<< HEAD
-  //iPOS
-  Route.get('ipos-get-partner', 'IPosController.iPosGetPartner');
-  Route.get('ipos-get-shop_list', 'IPosController.iPosGetShopList');
-  Route.get('ipos-get-product', 'IPosController.iPosGetProduct');
-  Route.get('ipos-get-invoice', 'IPosController.iPosGetInvoice');
-})
-  .prefix('api/ipos')
-  .middleware('user');
-
-Route.group(() => {
-  //iPOS
-  Route.post('hsm-generate-qr', 'HSMController.HSMGeneralQRCode');
-  Route.post('hsm-sign-pdf', 'HSMController.signPdf');
-
-  Route.post('hsm-sign-xml', 'HSMController2.HsmSignXml');
-  Route.post('hsm-general-qr-code', 'HSMController2.HSMGeneralQRCode');
-})
-  .prefix('api/hsm')
-  .middleware('user');
-
-Route.group(() => {
-  Route.post('get-certificates', 'HSMController2.getCertificates');
-  Route.post('verify-certificate', 'HSMController2.verifyCertificate');
-  Route.post('get-qr-2fa', 'HSMController2.getQr2Fa');
-})
-  .prefix('api/hsm/softdream')
-  .middleware('user');
-
-Route.group(() => {
-  // WeTax
-  Route.post('send-pos-invoice', 'EInvoiceController.weTaxSendPosInvoiceToTaxOffice2');
-  Route.post('generate-notification-records-xml', 'EInvoiceController.sendInformAdjustToTaxOffice2');
-  Route.post('send-company-template', 'EInvoiceController.weTaxSendCompanyTemplate2');
-
-  //e-invoice
-  Route.post('invalidinvoice2xml', 'EInvoiceController.convertInvaliInvoiceToXML2');
-  Route.post('sendinformadjustinvoice', 'EInvoiceController.sendInformAdjustToTaxOffice2');
-})
-  .prefix('api/einvoice/v2')
-  .middleware('user');
-
-Route.group(() => {
-  Route.post('lookup-code', 'EInvoiceController.getDataEinvoiceFormLookupCode');
-  Route.post('general-convert-einvoice', 'EInvoiceController.generalConvertEinvoice');
-  Route.post('lookup-minutes', 'EInvoiceController.getDataEinvoiceFormLookupMinutesCode');
-  Route.post('lookup-minutes-update', 'EInvoiceController.getUpdateXmlBuyerSign');
-}).prefix('api/einvoice');
-
-Route.group(() => {
-=======
   Route.get('download-pdf-c-sharp', 'EInvoiceController.viewPDFInvoiceOut');
 }).prefix('api/out/einvoice');
 
@@ -353,7 +282,6 @@ Route.group(() => {
 }).prefix('api/einvoice');
 
 Route.group(() => {
->>>>>>> test
   Route.get('ReceiveSmsStatus', 'EInvoiceController.receiveSmsStatus');
 }).prefix('api/callbackotp');
 
@@ -361,14 +289,11 @@ Route.group(() => {
 Route.group(() => {
   Route.post('login', 'UserController.cloneWeTaxlogIn');
 }).prefix('api/wtx/pa/v1/auth');
-<<<<<<< HEAD
-=======
 
 // Public api
 Route.group(() => {
   Route.post('generate', 'PublicApiController.generateQrPayment');
 }).prefix('api/pa/qr-payment');
->>>>>>> test
 
 Route.group(() => {
   Route.post('shops', 'WeTaxController.createShopByPos');
@@ -381,13 +306,10 @@ Route.group(() => {
   .middleware('user');
 
 Route.group(() => {
-<<<<<<< HEAD
   Route.post('generate', 'PublicApiController.generateQrPayment');
 }).prefix('api/pa/qr-payment');
 
 Route.group(() => {
-=======
->>>>>>> test
   Route.post('sync', 'WeTaxController.iposSync');
 })
   .prefix('api/wtx/pa/v1/ipos')

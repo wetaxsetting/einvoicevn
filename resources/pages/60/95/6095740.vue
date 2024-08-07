@@ -117,19 +117,7 @@ export default {
           dataField: "NO",
           caption: this.$t("stt"),
         },
-<<<<<<< HEAD
-        // {
-        //   dataField: "DONVI",
-        //   caption: this.$t("don_vi"),
-        //   width: 100,
-        // },
-        // {
-        //   dataField: "DONVIMST",
-        //   caption: this.$t("dvi_mst"),
-        //   width: 100,
-        // },
-=======
->>>>>>> test
+
         {
           dataField: "TRADE_CODE",
           caption: this.$t("ma_giao_dich"),

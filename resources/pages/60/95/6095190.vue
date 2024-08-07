@@ -187,7 +187,7 @@ export default {
         jQuery.support.cors = true;
         $.ajax({
           type: "POST",
-          url: "http://genuclouding.com/wseinvoice/BSService.asmx/SendPDF_R",
+          url: "http://csharp-api.webcashvietnam.com/wseinvoice/BSService.asmx/SendPDF_R",
           data: {
             tei_einvoice_m_pk: pkArr,
             tei_company_pk: this.selected_company,
@@ -224,7 +224,7 @@ export default {
         let txtPK = this.selected_rows[i].PK;
         if (txtPK != "") {
           var url =
-            "http://genuclouding.com/wseinvoice/BSService.asmx/Download_File_XML_v4?pk=" +
+            "http://csharp-api.webcashvietnam.com/wseinvoice/BSService.asmx/Download_File_XML_v4?pk=" +
             txtPK;
           url += "&key=" + this.selected_company;
           window.open(url, txtPK);

@@ -3,7 +3,7 @@ const Utils = use('Utils');
 const Request = use('Request');
 const easysignUrl = 'http://demosign.easyca.vn:8080/api'; //https://sign.easyca.vn 540110c7d6d61b8f6474f5b993d3b979  12345678
 const axios = require('axios');
-const EINVOICE_ESIGN_XML = 'http://genuclouding.com/wseinvoice/BSService.asmx/SignXml';
+const EINVOICE_ESIGN_XML = 'http://csharp-api.webcashvietnam.com/wseinvoice/BSService.asmx/SignXml';
 
 class HSMController2 {
   async verifyCertificate({request, response, auth}) {

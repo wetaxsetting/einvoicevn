@@ -602,7 +602,7 @@ export default {
 							$.support.cors = true;
 							$.ajax({
 								type: "POST",
-								url:"http://genuclouding.com/wseinvoice/BSService.asmx/UpdateCustomers_v3",
+								url:"http://csharp-api.webcashvietnam.com/wseinvoice/BSService.asmx/UpdateCustomers_v3",
 								data: {arg_XmlStr:arg_XmlStr},
 								dataType: "text",
 								crossDomain: true,
@@ -685,7 +685,7 @@ export default {
 							$.support.cors = true;
 							$.ajax({
 								type: "POST",
-								url:"http://genuclouding.com/wseinvoice/BSService.asmx/ListInsertCustomers_Md5",
+								url:"http://csharp-api.webcashvietnam.com/wseinvoice/BSService.asmx/ListInsertCustomers_Md5",
 								data: {arg_XmlStr:arg_XmlStr},
 								dataType: "text",
 								crossDomain: true,

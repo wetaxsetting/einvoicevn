@@ -310,7 +310,7 @@ export default {
       jQuery.support.cors = true;
       $.ajax({
         type: "POST",
-        url: "http://genuclouding.com/wseinvoice/BSService.asmx/ReadXML",
+        url: "http://csharp-api.webcashvietnam.com/wseinvoice/BSService.asmx/ReadXML",
         //url:"http://localhost:39236/BSService.asmx/ReadXML",
         data: { data: this.txtXml_Search },
         dataType: "jsonp",

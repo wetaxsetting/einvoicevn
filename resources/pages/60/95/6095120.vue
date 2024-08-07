@@ -259,7 +259,7 @@ export default {
         jQuery.support.cors = true;
         $.ajax({
           type: "POST",
-          url: "http://genuclouding.com/wseinvoice/BSService.asmx/SendPDF_R",
+          url: "http://csharp-api.webcashvietnam.com/wseinvoice/BSService.asmx/SendPDF_R",
           data: {
             tei_einvoice_m_pk: pkArr,
             tei_company_pk: this.selected_company,

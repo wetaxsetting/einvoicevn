@@ -5747,6 +5747,7 @@ class EInvoiceController {
       }
 
       for (let i = 0; i < invoices.length; i++) {
+        process_yn = true;
         let arr_invoice = [invoices[i]];
         const valid = await this.validateJsonInvalidPosInvoiceToXML(arr_invoice);
         //console.log('validateJsonInvalidPosInvoiceToXML2  valid', valid);
@@ -5805,6 +5806,7 @@ class EInvoiceController {
           //continue;
           process_yn = false;
         }
+        console.log('process_yn ', process_yn);
         if (process_yn) {
           req_key.push(invoices[i].req_key);
           if (invoices[i].form_no == 1) {
@@ -6113,6 +6115,9 @@ class EInvoiceController {
         };
       }
 
+      const xml = await this.OBJtoXML(objData);
+      const xmlId = xml.toString().replace('<DLieu>', `<DLieu Id=\'${id}\'>`);
+      xmlRemoveLine = xmlId.toString().replace(/\n/g, '').replaceAll('"', "'");
       rtnXML = {
         tax_code: tax_code,
         store_code: store_code,
@@ -6121,7 +6126,7 @@ class EInvoiceController {
         count_invoice_error: data_error.length,
         sign_id: id,
         signature_path: signature_path,
-        xml_data: data_xml,
+        xml_data: xmlRemoveLine,
         req_key: req_key,
         data_error: data_error,
       };

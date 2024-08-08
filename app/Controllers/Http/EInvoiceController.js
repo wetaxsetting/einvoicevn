@@ -6029,36 +6029,39 @@ class EInvoiceController {
 
           objData.TDiep.DLieu.HDon.push(objInvoice);
 
-          const xml = await this.OBJtoXML(objData);
-          const xmlId = xml.toString().replace('<DLieu>', `<DLieu Id=\'${id}\'>`);
-          xmlRemoveLine = xmlId.toString().replace(/\n/g, '').replaceAll('"', "'");
+          //TO_DO newwww
+          // const xml = await this.OBJtoXML(objData);
+          // const xmlId = xml.toString().replace('<DLieu>', `<DLieu Id=\'${id}\'>`);
+          // xmlRemoveLine = xmlId.toString().replace(/\n/g, '').replaceAll('"', "'");
 
-          //   1MB = 1024*1024 byte   1048576
-          console.log(' xmlRemoveLine  ', Buffer.byteLength(xmlRemoveLine, 'utf8') + ' bytes');
+          // //   1MB = 1024*1024 byte   1048576
+          // console.log(' xmlRemoveLine  ', Buffer.byteLength(xmlRemoveLine, 'utf8') + ' bytes');
 
-          const size_curr = Buffer.byteLength(xmlRemoveLine, 'utf8');
-          if (size_curr > size) {
-            data_xml.push({
-              req_key: '',
-              xml_data: xmlRemoveLine,
-              sign_id: id,
-              signature_path: signature_path,
-            });
-            xmlRemoveLine = null;
-            objData.TDiep.DLieu.HDon = [];
-          }
+          // const size_curr = Buffer.byteLength(xmlRemoveLine, 'utf8');
+          // if (size_curr > size) {
+          //   data_xml.push({
+          //     req_key: '',
+          //     xml_data: xmlRemoveLine,
+          //     sign_id: id,
+          //     signature_path: signature_path,
+          //   });
+          //   xmlRemoveLine = null;
+          //   objData.TDiep.DLieu.HDon = [];
+          // }
+          //TO_DO newwww
         }
+        //TO_DO newwww
+        // console.log(' i ', i, invoices.length);
 
-        console.log(' i ', i, invoices.length);
-
-        if (i == invoices.length - 1 && xmlRemoveLine) {
-          data_xml.push({
-            req_key: '',
-            xml_data: xmlRemoveLine,
-            sign_id: id,
-            signature_path: signature_path,
-          });
-        }
+        // if (i == invoices.length - 1 && xmlRemoveLine) {
+        //   data_xml.push({
+        //     req_key: '',
+        //     xml_data: xmlRemoveLine,
+        //     sign_id: id,
+        //     signature_path: signature_path,
+        //   });
+        // }
+        //TO_DO newwww
         objInvoice = {
           DLHDon: {
             TTChung: {
@@ -6116,8 +6119,8 @@ class EInvoiceController {
         store_name: store_name,
         count_invoice_convert: req_key.length,
         count_invoice_error: data_error.length,
-        //sign_id: id,
-        //signature_path: signature_path,
+        sign_id: id,
+        signature_path: signature_path,
         xml_data: data_xml,
         req_key: req_key,
         data_error: data_error,

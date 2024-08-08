@@ -266,6 +266,7 @@ Route.group(() => {
   Route.post('send-pos-invoice', 'EInvoiceController.weTaxSendPosInvoiceToTaxOffice2');
   Route.post('generate-notification-records-xml', 'EInvoiceController.sendInformAdjustToTaxOffice2');
   Route.post('send-company-template', 'EInvoiceController.weTaxSendCompanyTemplate2');
+  Route.post('generate-pos-invoice-xml', 'EInvoiceController.weTaxConvertPosInvoiceToXML2');
 
   //e-invoice
   Route.post('invalidinvoice2xml', 'EInvoiceController.convertInvaliInvoiceToXML2');

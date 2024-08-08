@@ -5741,7 +5741,7 @@ class EInvoiceController {
       let xmlRemoveLine = '';
       const id = 'ID1'; //uuid.v4();
       const signature_path = 'TDiep/CKSNNT';
-      const size = 40000; // 1048576; 1MB
+      const size = 20000; // 1048576; 1MB
       let process_yn = true;
       const invoices = list_invoice;
 
@@ -6049,22 +6049,23 @@ class EInvoiceController {
           const size_curr = Buffer.byteLength(xmlRemoveLine, 'utf8');
           if (size_curr > size) {
             data_xml.push({
-              req_key: '',
+              req_key: req_key,
               xml_data: xmlRemoveLine,
               sign_id: id,
               signature_path: signature_path,
             });
             xmlRemoveLine = null;
             objData.TDiep.DLieu.HDon = [];
+            req_key = [];
           }
         }
 
         console.log(' i ', i, invoices.length, xmlRemoveLine);
 
-        if (i == invoices.length - 1 && xmlRemoveLine.length > 0) {
-          console.log('vào đ0a k ', xmlRemoveLine);
+        if (i == invoices.length - 1 && xmlRemoveLine != null) {
+          //console.log('vào đ0a k ', xmlRemoveLine);
           data_xml.push({
-            req_key: '',
+            req_key: req_key,
             xml_data: xmlRemoveLine,
             sign_id: id,
             signature_path: signature_path,
@@ -6125,12 +6126,12 @@ class EInvoiceController {
         tax_code: tax_code,
         store_code: store_code,
         store_name: store_name,
-        count_invoice_convert: req_key.length,
+        count_invoice_convert: invoices.length - data_error.length,
         count_invoice_error: data_error.length,
         //sign_id: id,
         //signature_path: signature_path,
         xml_data: data_xml,
-        req_key: req_key,
+        //req_key: req_key,
         data_error: data_error,
       };
       console.log(' weTaxConvertPosInvoiceToXML ', rtnXML);
@@ -7547,8 +7548,8 @@ class EInvoiceController {
           seller_address: invoice.seller_address,
           seller_phone: invoice.seller_phone,
           buyer_nm: invoice.buyer_nm || '', //tam thoi dong -- vng-199
-          buyer_comp_name:invoice.buyer_comp_name,
-          buyer_taxcode:invoice.buyer_taxcode,
+          buyer_comp_name: invoice.buyer_comp_name,
+          buyer_taxcode: invoice.buyer_taxcode,
           buyer_phone: invoice.buyer_phone,
           buyer_address: invoice.buyer_address,
           buyer_cccd: invoice.buyer_cccd,

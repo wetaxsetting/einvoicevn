@@ -5672,7 +5672,7 @@ class EInvoiceController {
       const {tax_code, store_code, store_name, count_invoice, list_invoice} = request.all();
 
       console.log(' weTaxConvertPosInvoiceToXML  BEGIN ==================================================');
-      console.log(' weTaxConvertPosInvoiceToXML  list_invoice   ', list_invoice);
+      console.log(' weTaxConvertPosInvoiceToXML  list_invoice   ', JSON.stringify(list_invoice));
 
       //invoices = JSON.parse(invoices);
 
@@ -5808,27 +5808,27 @@ class EInvoiceController {
           //continue;
           process_yn = false;
         }
-
-        req_key.push(invoices[i].req_key);
-        if (invoices[i].form_no == 1) {
-          objInvoice.DLHDon.TTChung.THDon = 'Hóa đơn giá trị gia tăng khởi tạo từ máy tính tiền';
-        } else if (invoices[i].form_no == 2) {
-          objInvoice.DLHDon.TTChung.THDon = 'Hóa đơn bán hàng khởi tạo từ máy tính tiền';
-        } else if (invoices[i].form_no == 3) {
-          objInvoice.DLHDon.TTChung.THDon = 'Hóa đơn bán tài sản công khởi tạo từ máy tính tiền';
-        } else if (invoices[i].form_no == 4) {
-          objInvoice.DLHDon.TTChung.THDon = 'Hóa đơn bán hàng dự trữ quốc gia khởi tạo từ máy tính tiền';
-        } else if (invoices[i].form_no == 5) {
-          objInvoice.DLHDon.TTChung.THDon =
-            'Tem điện tử, vé điện tử, thẻ điện tử, phiếu thu điện tử, chứng từ thu phí DV ngân hàng khởi tạo từ máy tính tiền';
-        } else if (invoices[i].form_no == 6) {
-          objInvoice.DLHDon.TTChung.THDon = 'Phiếu xuất kho kiêm vận chuyển nội bộ, phiếu xuất kho hàng gửi bán đại lý khởi tạo từ máy tính tiền';
-        }
-        objInvoice.DLHDon.TTChung.PBan = invoices[i].version;
-        objInvoice.DLHDon.TTChung.KHMSHDon = invoices[i].form_no;
-        objInvoice.DLHDon.TTChung.KHHDon = invoices[i].serial_no;
-        objInvoice.DLHDon.TTChung.SHDon = invoices[i].invoice_no;
-        objInvoice.DLHDon.TTChung.NLap = invoices[i].invoice_date;
+        if (!process_yn) {
+          req_key.push(invoices[i].req_key);
+          if (invoices[i].form_no == 1) {
+            objInvoice.DLHDon.TTChung.THDon = 'Hóa đơn giá trị gia tăng khởi tạo từ máy tính tiền';
+          } else if (invoices[i].form_no == 2) {
+            objInvoice.DLHDon.TTChung.THDon = 'Hóa đơn bán hàng khởi tạo từ máy tính tiền';
+          } else if (invoices[i].form_no == 3) {
+            objInvoice.DLHDon.TTChung.THDon = 'Hóa đơn bán tài sản công khởi tạo từ máy tính tiền';
+          } else if (invoices[i].form_no == 4) {
+            objInvoice.DLHDon.TTChung.THDon = 'Hóa đơn bán hàng dự trữ quốc gia khởi tạo từ máy tính tiền';
+          } else if (invoices[i].form_no == 5) {
+            objInvoice.DLHDon.TTChung.THDon =
+              'Tem điện tử, vé điện tử, thẻ điện tử, phiếu thu điện tử, chứng từ thu phí DV ngân hàng khởi tạo từ máy tính tiền';
+          } else if (invoices[i].form_no == 6) {
+            objInvoice.DLHDon.TTChung.THDon = 'Phiếu xuất kho kiêm vận chuyển nội bộ, phiếu xuất kho hàng gửi bán đại lý khởi tạo từ máy tính tiền';
+          }
+          objInvoice.DLHDon.TTChung.PBan = invoices[i].version;
+          objInvoice.DLHDon.TTChung.KHMSHDon = invoices[i].form_no;
+          objInvoice.DLHDon.TTChung.KHHDon = invoices[i].serial_no;
+          objInvoice.DLHDon.TTChung.SHDon = invoices[i].invoice_no;
+          objInvoice.DLHDon.TTChung.NLap = invoices[i].invoice_date;
 
           //objInvoice.DLHDon.TTChung.DVTTe = invoices[i].currency;
           //objInvoice.DLHDon.TTChung.TGia = invoices[i].ex_rate;
@@ -5850,13 +5850,13 @@ class EInvoiceController {
             });
           }
 
-        objInvoice.DLHDon.TTChung.TTKhac = {};
-        objInvoice.DLHDon.TTChung.TTKhac.TTin = [];
-        objInvoice.DLHDon.TTChung.TTKhac.TTin.push({
-          TTruong: 'PortalLink',
-          KDLieu: 'string',
-          DLieu: 'https://einvoicepro.webcashvietnam.com/login',
-        });
+          objInvoice.DLHDon.TTChung.TTKhac = {};
+          objInvoice.DLHDon.TTChung.TTKhac.TTin = [];
+          objInvoice.DLHDon.TTChung.TTKhac.TTin.push({
+            TTruong: 'PortalLink',
+            KDLieu: 'string',
+            DLieu: 'https://einvoicepro.webcashvietnam.com/login',
+          });
 
           if (invoices[i].currency) {
             objInvoice.DLHDon.TTChung.TTKhac.TTin.push({
@@ -14395,7 +14395,6 @@ class EInvoiceController {
       TTruong: 'PortalLink',
       KDLieu: 'string',
       DLieu: 'https://dev.einvoicepro.webcashvietnam.com/login',
-      test,
     });
 
     if (dataObject.currency) {

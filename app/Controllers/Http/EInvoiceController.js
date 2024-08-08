@@ -5741,7 +5741,7 @@ class EInvoiceController {
       let xmlRemoveLine = '';
       const id = 'ID1'; //uuid.v4();
       const signature_path = 'TDiep/CKSNNT';
-      const size = 40000; // 1048576;
+      const size = 40000; // 1048576; 1MB
       let process_yn = true;
       const invoices = list_invoice;
 

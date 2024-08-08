@@ -5750,9 +5750,10 @@ class EInvoiceController {
       }
 
       for (let i = 0; i < invoices.length; i++) {
+        process_yn = true;
         let arr_invoice = [invoices[i]];
         const valid = await this.validateJsonInvalidPosInvoiceToXML(arr_invoice);
-        //console.log('validateJsonInvalidPosInvoiceToXML2  valid', valid);
+        console.log('validateJsonInvalidPosInvoiceToXML  valid', valid);
         if (!valid.status) {
           data_error.push({
             req_key: invoices[i].req_key,
@@ -5767,6 +5768,8 @@ class EInvoiceController {
           p_crt_by,
           'N',
         );
+        console.log('validateJsonInvalidPosInvoiceToXML  wt_sel_last_invoice_no', lastInvoiceNo);
+
         let last_invoice_no = lastInvoiceNo[0].INVOICE_NO;
         const last_invoice_date = lastInvoiceNo[0].INVOICE_DATE;
         const tomorrow_date = lastInvoiceNo[0].TOMORROW_DATE;
@@ -5795,6 +5798,8 @@ class EInvoiceController {
           //continue;
           process_yn = false;
         }
+        console.log('validateJsonInvalidPosInvoiceToXML  invoice date cannot smaller than', data_error);
+
         if (invoices[i].invoice_date >= tomorrow_date) {
           // return response
           //   .status(409)
@@ -5808,7 +5813,9 @@ class EInvoiceController {
           //continue;
           process_yn = false;
         }
-        if (!process_yn) {
+        console.log('validateJsonInvalidPosInvoiceToXML  invoice date cannot greater than', data_error);
+
+        if (process_yn) {
           req_key.push(invoices[i].req_key);
           if (invoices[i].form_no == 1) {
             objInvoice.DLHDon.TTChung.THDon = 'Hóa đơn giá trị gia tăng khởi tạo từ máy tính tiền';
@@ -6052,9 +6059,10 @@ class EInvoiceController {
           }
         }
 
-        console.log(' i ', i, invoices.length);
+        console.log(' i ', i, invoices.length, xmlRemoveLine);
 
-        if (i == invoices.length - 1 && xmlRemoveLine) {
+        if (i == invoices.length - 1 && xmlRemoveLine.length > 0) {
+          console.log('vào đ0a k ', xmlRemoveLine);
           data_xml.push({
             req_key: '',
             xml_data: xmlRemoveLine,
@@ -7469,6 +7477,7 @@ class EInvoiceController {
           p_crt_by,
           'N',
         );
+        console.log('lastInvoiceNo ', lastInvoiceNo);
         let last_invoice_no = lastInvoiceNo[0].INVOICE_NO;
         const last_invoice_date = lastInvoiceNo[0].INVOICE_DATE;
         const tomorrow_date = lastInvoiceNo[0].TOMORROW_DATE;
@@ -7544,7 +7553,7 @@ class EInvoiceController {
           buyer_email: invoice.buyer_email,
           buyer_email_cc: invoice.buyer_email_cc,
           total_amt_no_vat: invoice.total_amt,
-          total_amt_dc: invoice.total_dc_amt,
+          total_amt_dc: invoice.total_amt_dc || 0,
           total_amt_vat: invoice.total_amt_vat,
           total_payment: invoice.total_payment,
           total_payment_word_vie: invoice.total_payment_word_vie, //await Utils.Num2VNText2(invoice.total_payment.toString(), invoice.currency), //  invoice.total_payment_word_vie,
@@ -7553,7 +7562,7 @@ class EInvoiceController {
           count_length: count_length,
           xml_type: xml_type,
         };
-
+        console.log(para_value);
         const rtnValue = await DBService.ExecuteSQLBlob(
           `BEGIN wt_upd_send_order_info (          
                                                           :sale_date,
@@ -7599,6 +7608,7 @@ class EInvoiceController {
           p_language,
           p_crt_by,
         );
+        console.log(rtnValue);
 
         tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
         // console.log("tei_wt_sale_bill_pk  ", tei_wt_sale_bill_pk);

@@ -7547,6 +7547,8 @@ class EInvoiceController {
           seller_address: invoice.seller_address,
           seller_phone: invoice.seller_phone,
           buyer_nm: invoice.buyer_nm || '', //tam thoi dong -- vng-199
+          buyer_comp_name:invoice.buyer_comp_name,
+          buyer_taxcode:invoice.buyer_taxcode,
           buyer_phone: invoice.buyer_phone,
           buyer_address: invoice.buyer_address,
           buyer_cccd: invoice.buyer_cccd,

@@ -18047,6 +18047,45 @@ class EInvoiceController {
     }
   }
 
+  async SendMailPITCSharp({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const {p_tei_company_pk, p_tei_einvoice_m_pk, p_ctr_by} = request.all(); //data:6030
+
+      let url = WEBSERVICE_C_SHARP + '/SendMailPIT';
+      let data;
+      const res = await Request.post(url, {
+        p_tei_company_pk: p_tei_company_pk,
+        p_tei_einvoice_m_pk: p_tei_einvoice_m_pk,
+        p_ctr_by: p_ctr_by,
+      });
+      data = res.data.d;
+
+      return response.status(200).json(
+        Utils.responseByRule({
+          success: true,
+          message: 'success.',
+          data: JSON.parse(data),
+        }),
+      );
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'SignInvoiceHsmXML',
+        CONTENT: e.message,
+      });
+      console.log('SignInvoiceHsmXML  ', e.message);
+
+      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+    }
+  }
+
   async SignInvoiceHsmXML({request, response, auth}) {
     try {
       var p_language = request.header('accept-language', 'ENG');

@@ -227,6 +227,7 @@ Route.group(() => {
 
   Route.post('pit2xml-c-sharp', 'EInvoiceController.GeneralPITHsmXML');
   Route.post('upload-excel-pit-c-sharp', 'EInvoiceController.UploadDataExcelPIT');
+  Route.post('send-pit-c-sharp', 'EInvoiceController.SendMailPITCSharp');
 
   Route.post('validate-invoice-c-sharp', 'EInvoiceController.ValidateInvoiceCSharp');
 })

@@ -79,7 +79,7 @@ const TAX_PASSWORD = 'e_GX4v@';
 const WETAX_TOKEN_CALLBACK = Env.get('WETAX_API_KEY');
 const WETAX_API_URL = Env.get('WETAX_API_URL');
 
-const WEBSERVICE_C_SHARP = 'http://genuclouding.com/wseinvoice/BSService.asmx';
+const WEBSERVICE_C_SHARP = 'http://csharp-api.webcashvietnam.com/wseinvoice/BSService.asmx';
 // test site
 // const TAX_CHECK_TRADE_CODE = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
 
@@ -12904,7 +12904,7 @@ class EInvoiceController {
       let database64 = '';
       const axios = use('axios');
       const fs = use('fs');
-      const url = `http://genuclouding.com/wseinvoice/BSService.asmx/Download_File_PDF_Nodejs?p_trade_code=${rep_key}&p_key=${key}&p_type=${type}`;
+      const url = `http://csharp-api.webcashvietnam.com/wseinvoice/BSService.asmx/Download_File_PDF_Nodejs?p_trade_code=${rep_key}&p_key=${key}&p_type=${type}`;
 
       const current = new Date();
       const year = current.getFullYear();
@@ -12966,7 +12966,7 @@ class EInvoiceController {
       let database64 = '';
       const axios = use('axios');
       const fs = use('fs');
-      const url = `http://genuclouding.com/wseinvoice/BSService.asmx/Download_File_PDF_Nodejs?p_trade_code=${rep_key}&p_key=${key}&p_type=${type}`;
+      const url = `http://csharp-api.webcashvietnam.com/wseinvoice/BSService.asmx/Download_File_PDF_Nodejs?p_trade_code=${rep_key}&p_key=${key}&p_type=${type}`;
 
       const current = new Date();
       const year = current.getFullYear();
@@ -13474,7 +13474,7 @@ class EInvoiceController {
           const type = 'C';
           const axios = use('axios');
           const fs = use('fs');
-          const url = `http://genuclouding.com/wseinvoice/BSService.asmx/Download_File_PDF_Nodejs?p_trade_code=${rtnValue.p_rtn_cur[0].TEI_EINVOICE_M_PK}&p_key=${key}&p_type=${type}`;
+          const url = `http://csharp-api.webcashvietnam.com/wseinvoice/BSService.asmx/Download_File_PDF_Nodejs?p_trade_code=${rtnValue.p_rtn_cur[0].TEI_EINVOICE_M_PK}&p_key=${key}&p_type=${type}`;
 
           const current = new Date();
           const year = current.getFullYear();
@@ -17975,7 +17975,7 @@ class EInvoiceController {
           let database64 = '';
           const axios = use('axios');
           const fs = use('fs');
-          const urlx = `http://genuclouding.com/wseinvoice/BSService.asmx/Download_File_PDF_Nodejs?p_trade_code=${invoice.pk}&p_key=${key}&p_type=${type}`;
+          const urlx = `http://csharp-api.webcashvietnam.com/wseinvoice/BSService.asmx/Download_File_PDF_Nodejs?p_trade_code=${invoice.pk}&p_key=${key}&p_type=${type}`;
 
           await axios({
             method: 'get',

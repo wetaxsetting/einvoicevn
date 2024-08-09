@@ -6175,7 +6175,7 @@ class EInvoiceController {
       let xmlRemoveLine = '';
       const id = 'ID1'; //uuid.v4();
       const signature_path = 'TDiep/CKSNNT';
-      const size = 20000; // 1048576; 1MB
+      const size_max = 20000; // 1048576; 1MB
       let process_yn = true;
       const invoices = list_invoice;
 
@@ -6481,7 +6481,7 @@ class EInvoiceController {
           console.log(' xmlRemoveLine  ', Buffer.byteLength(xmlRemoveLine, 'utf8') + ' bytes');
 
           const size_curr = Buffer.byteLength(xmlRemoveLine, 'utf8');
-          if (size_curr > size) {
+          if (size_curr > size_max) {
             data_xml.push({
               req_key: req_key,
               xml_data: xmlRemoveLine,

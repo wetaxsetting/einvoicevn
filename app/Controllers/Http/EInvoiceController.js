@@ -18778,6 +18778,7 @@ class EInvoiceController {
       tenGDDTu = '',
       ord = '',
       soTBao = '';
+    let p_seller_comp_seller = '';
     try {
       const param_trade_code = {
         p_trade_code: check_data.TRADE_CODE,
@@ -18799,6 +18800,7 @@ class EInvoiceController {
 
       if (data_inv_of_trade_code.p_rtn_cur) {
         for (const inv of data_inv_of_trade_code.p_rtn_cur) {
+          p_seller_comp_seller = inv.SLLR_TAXCODE;
           data_inv.push({
             tax_code: inv.SLLR_TAXCODE,
             form_no: inv.FORM_NO,
@@ -18988,12 +18990,51 @@ class EInvoiceController {
                     mtaLoi: invoice.mtaLoi,
                   });
                   const chars = invoice.mtaLoi.split(';');
-                  data_inv.forEach((element, index) => {
-                    if (element.form_no === chars[0] && element.serial_no === chars[1] && element.invoice_no === chars[2]) {
-                      data_inv[index].inform_code = maTBao; //'7'; //items[k].loaiTBao;
-                      data_inv[index].inform_name = invoice.maLoi + ' - ' + invoice.mtaLoi;
+
+                  // data_inv.forEach((element, index) => {
+                  //   if (element.form_no === chars[0] && element.serial_no === chars[1] && element.invoice_no === chars[2]) {
+                  //     data_inv[index].inform_code = maTBao; //'7'; //items[k].loaiTBao;
+                  //     data_inv[index].inform_name = invoice.maLoi + ' - ' + invoice.mtaLoi;
+                  //   }
+                  // });
+                  const param_inv_error = {
+                    p_seller_comp_seller: p_seller_comp_seller,
+                    p_form_no: chars[0],
+                    p_serial_no: chars[1],
+                    p_invoice_no: chars[2],
+                  };
+
+                  const data_inv_error = await DBService.ExecuteSQLBlob(
+                    `BEGIN wt_sel_einv_error_by_inf(
+                                        :p_seller_comp_seller,
+                                        :p_form_no,
+                                        :p_serial_no,
+                                        :p_invoice_no,
+                                        :p_language, 
+                                        :p_crt_by, 
+                                        :p_rtn_cur); 
+                        END;`,
+                    param_inv_error,
+                    p_language,
+                    p_crt_by,
+                  );
+
+                  if (data_inv_error.p_rtn_cur) {
+                    for (const inv of data_inv_error.p_rtn_cur) {
+                      data_inv.push({
+                        tax_code: inv.SLLR_TAXCODE,
+                        form_no: inv.FORM_NO,
+                        invoice_no: inv.INVOICE_NO,
+                        serial_no: inv.SERIAL_NO,
+                        invoice_date: inv.INVOICE_DATE,
+                        inform_code: maTBao,
+                        inform_name: invoice.maLoi + ' - ' + invoice.mtaLoi,
+                        mccqt: inv.CQT_MCCQT,
+                        lookup_code: '',
+                        xml_tax_signed: '',
+                      });
                     }
-                  });
+                  }
                 }
                 console.log('data_inv ', JSON.stringify(data_inv));
                 data_inv.forEach((element, index) => {

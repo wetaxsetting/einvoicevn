@@ -9464,8 +9464,8 @@ class EInvoiceController {
 
                 data_inv.forEach((element, index) => {
                   if (element.inform_code == '' && element.inform_name == '') {
-                    data_inv[index].inform_code = maTBao; //'2'; //items[k].loaiTBao;
-                    data_inv[index].inform_name = tenTBao; //'Thông báo dữ liệu hóa đơn hợp lệ';
+                    data_inv[index].inform_code = '2'; //items[k].loaiTBao;
+                    data_inv[index].inform_name = 'Thông báo dữ liệu hóa đơn hợp lệ';
                   }
                 });
               }
@@ -18995,13 +18995,14 @@ class EInvoiceController {
                     }
                   });
                 }
-
+                console.log('data_inv ', JSON.stringify(data_inv));
                 data_inv.forEach((element, index) => {
                   if (element.inform_code == '' && element.inform_name == '') {
                     data_inv[index].inform_code = '2'; //items[k].loaiTBao;
                     data_inv[index].inform_name = 'Thông báo dữ liệu hóa đơn hợp lệ';
                   }
                 });
+                console.log('data_inv 2 ', JSON.stringify(data_inv));
               }
             }
           }

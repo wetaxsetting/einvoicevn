@@ -6175,7 +6175,7 @@ class EInvoiceController {
       let xmlRemoveLine = '';
       const id = 'ID1'; //uuid.v4();
       const signature_path = 'TDiep/CKSNNT';
-      const size_max = 20000; // 1048576; 1MB
+      const size_max = 1572864; // 1.5MB  1048576; 1MB
       let process_yn = true;
       const invoices = list_invoice;
 
@@ -6856,32 +6856,32 @@ class EInvoiceController {
           }
         }
 
-        if (master_amount !== detail_amount && master_amount !== null) {
+        if (master_amount !== detail_amount && master_amount !== vat_amout) {
           //master_amount !== vat_amout &&
           status = false;
-          resMess = `${mess1} amount is: ${master_amount} !== ${detail_amount}`; //!== ${vat_amout}
+          resMess = `${mess1} amount is: ${master_amount} !== ${vat_amout} !== ${detail_amount}`; //
           return {
             status,
             message: resMess,
           };
         }
 
-        if (master_amount_vat !== detail_amount_vat && master_amount_vat !== null) {
+        if (master_amount_vat !== detail_amount_vat && master_amount_vat !== vat_amount_vat) {
           //master_amount_vat !== vat_amount_vat &&
           status = false;
-          resMess = `${mess1} amount vat is: ${master_amount_vat} !== ${detail_amount_vat}`; //!== ${vat_amount_vat}
+          resMess = `${mess1} amount vat is: ${master_amount_vat} !== ${vat_amount_vat} !== ${detail_amount_vat}`; //
           return {
             status,
             message: resMess,
           };
         }
-        //vat_total_amount = vat_amount_vat + vat_amout;
+        vat_total_amount = vat_amount_vat + vat_amout;
         detail_total_amount = detail_amount + detail_amount_vat;
         //console.log('++++++++++++ ', master_total_amount, vat_total_amount, detail_total_amount);
-        if (master_total_amount !== detail_total_amount && master_total_amount !== null) {
+        if (master_total_amount !== detail_total_amount && master_total_amount !== vat_total_amount) {
           //master_total_amount !== vat_total_amount &&
           status = false;
-          resMess = `${mess1} amount total is: ${master_total_amount}  !== ${detail_total_amount}`; //!== ${vat_total_amount}
+          resMess = `${mess1} amount total is: ${master_total_amount} !== ${vat_total_amount} !== ${detail_total_amount}`; //
           return {
             status,
             message: resMess,

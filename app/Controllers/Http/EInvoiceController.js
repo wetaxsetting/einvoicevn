@@ -6247,7 +6247,7 @@ class EInvoiceController {
           //continue;
           process_yn = false;
         }
-        if (!process_yn) {
+        if (process_yn) {
           req_key.push(invoices[i].req_key);
           if (invoices[i].form_no == 1) {
             objInvoice.DLHDon.TTChung.THDon = 'Hóa đơn giá trị gia tăng khởi tạo từ máy tính tiền';

@@ -9717,6 +9717,7 @@ class EInvoiceController {
         },
       );
 
+      console.log('weTaxSendPosInvoiceToTaxOffice res ', res);
       trade_code = res.data.maGDich;
 
       console.log('weTaxSendPosInvoiceToTaxOffice trade_code   ', trade_code);

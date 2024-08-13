@@ -6480,7 +6480,7 @@ class EInvoiceController {
           // console.log(' xmlRemoveLine  ', Buffer.byteLength(xmlRemoveLine, 'utf8') + ' bytes');
 
           const size_curr = Buffer.byteLength(xmlRemoveLine, 'utf8');
-          if (size_curr > size) {
+          if (size_curr > size_max) {
             data_xml.push({
               req_key: '',
               xml_data: xmlRemoveLine,

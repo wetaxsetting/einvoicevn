@@ -9637,7 +9637,7 @@ class EInvoiceController {
       }
 
       const authUserName = 'GENUWIN'; // "GENUWIN";
-      const authPassword = 'genuwin123'; // "e_GX4v@";
+      const authPassword = 'genuwin1234'; // "e_GX4v@";
       const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien';
       const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
 

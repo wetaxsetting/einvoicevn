@@ -6557,9 +6557,9 @@ class EInvoiceController {
         };
       }
 
-      const xml = await this.OBJtoXML(objData);
-      const xmlId = xml.toString().replace('<DLieu>', `<DLieu Id=\'${id}\'>`);
-      xmlRemoveLine = xmlId.toString().replace(/\n/g, '').replaceAll('"', "'");
+      //const xml = await this.OBJtoXML(objData);
+      //const xmlId = xml.toString().replace('<DLieu>', `<DLieu Id=\'${id}\'>`);
+      //xmlRemoveLine = xmlId.toString().replace(/\n/g, '').replaceAll('"', "'");
       rtnXML = {
         tax_code: tax_code,
         store_code: store_code,

@@ -6482,13 +6482,14 @@ class EInvoiceController {
           const size_curr = Buffer.byteLength(xmlRemoveLine, 'utf8');
           if (size_curr > size_max) {
             data_xml.push({
-              req_key: '',
+              req_key: req_key,
               xml_data: xmlRemoveLine,
               sign_id: id,
               signature_path: signature_path,
             });
             xmlRemoveLine = null;
             objData.TDiep.DLieu.HDon = [];
+            req_key = [];
           }
         }
 
@@ -6497,7 +6498,7 @@ class EInvoiceController {
 
         if (i == invoices.length - 1 && xmlRemoveLine) {
           data_xml.push({
-            req_key: '',
+            req_key: req_key,
             xml_data: xmlRemoveLine,
             sign_id: id,
             signature_path: signature_path,

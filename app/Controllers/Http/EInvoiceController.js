@@ -6247,9 +6247,7 @@ class EInvoiceController {
           //continue;
           process_yn = false;
         }
-        console.log('validateJsonInvalidPosInvoiceToXML  invoice date cannot greater than', data_error);
-
-        if (process_yn) {
+        if (!process_yn) {
           req_key.push(invoices[i].req_key);
           if (invoices[i].form_no == 1) {
             objInvoice.DLHDon.TTChung.THDon = 'Hóa đơn giá trị gia tăng khởi tạo từ máy tính tiền';
@@ -6473,33 +6471,32 @@ class EInvoiceController {
 
           objData.TDiep.DLieu.HDon.push(objInvoice);
 
-          const xml = await this.OBJtoXML(objData);
-          const xmlId = xml.toString().replace('<DLieu>', `<DLieu Id=\'${id}\'>`);
-          xmlRemoveLine = xmlId.toString().replace(/\n/g, '').replaceAll('"', "'");
+          //TO_DO newwww
+          // const xml = await this.OBJtoXML(objData);
+          // const xmlId = xml.toString().replace('<DLieu>', `<DLieu Id=\'${id}\'>`);
+          // xmlRemoveLine = xmlId.toString().replace(/\n/g, '').replaceAll('"', "'");
 
-          //   1MB = 1024*1024 byte   1048576
-          console.log(' xmlRemoveLine  ', Buffer.byteLength(xmlRemoveLine, 'utf8') + ' bytes');
+          // //   1MB = 1024*1024 byte   1048576
+          // console.log(' xmlRemoveLine  ', Buffer.byteLength(xmlRemoveLine, 'utf8') + ' bytes');
 
           const size_curr = Buffer.byteLength(xmlRemoveLine, 'utf8');
-          if (size_curr > size_max) {
+          if (size_curr > size) {
             data_xml.push({
-              req_key: req_key,
+              req_key: '',
               xml_data: xmlRemoveLine,
               sign_id: id,
               signature_path: signature_path,
             });
             xmlRemoveLine = null;
             objData.TDiep.DLieu.HDon = [];
-            req_key = [];
           }
         }
 
-        console.log(' i ', i, invoices.length, xmlRemoveLine);
+        console.log(' i ', i, invoices.length);
 
-        if (i == invoices.length - 1 && xmlRemoveLine != null) {
-          //console.log('vào đ0a k ', xmlRemoveLine);
+        if (i == invoices.length - 1 && xmlRemoveLine) {
           data_xml.push({
-            req_key: req_key,
+            req_key: '',
             xml_data: xmlRemoveLine,
             sign_id: id,
             signature_path: signature_path,
@@ -6556,6 +6553,9 @@ class EInvoiceController {
         };
       }
 
+      const xml = await this.OBJtoXML(objData);
+      const xmlId = xml.toString().replace('<DLieu>', `<DLieu Id=\'${id}\'>`);
+      xmlRemoveLine = xmlId.toString().replace(/\n/g, '').replaceAll('"', "'");
       rtnXML = {
         tax_code: tax_code,
         store_code: store_code,
@@ -6565,7 +6565,7 @@ class EInvoiceController {
         //sign_id: id,
         //signature_path: signature_path,
         xml_data: data_xml,
-        //req_key: req_key,
+        req_key: req_key,
         data_error: data_error,
       };
       console.log(' weTaxConvertPosInvoiceToXML2 ', rtnXML);
@@ -9919,8 +9919,8 @@ class EInvoiceController {
 
                 data_inv.forEach((element, index) => {
                   if (element.inform_code == '' && element.inform_name == '') {
-                    data_inv[index].inform_code = maTBao; //'2'; //items[k].loaiTBao;
-                    data_inv[index].inform_name = tenTBao; //'Thông báo dữ liệu hóa đơn hợp lệ';
+                    data_inv[index].inform_code = '2'; //items[k].loaiTBao;
+                    data_inv[index].inform_name = 'Thông báo dữ liệu hóa đơn hợp lệ';
                   }
                 });
               }
@@ -9984,8 +9984,8 @@ class EInvoiceController {
 
       console.log('weTaxSendPosInvoiceToTaxOffice rtnValue  ', rtnValue);
       console.log('weTaxSendPosInvoiceToTaxOffice END ========================  ');
-      // return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
       return response.status(200).json(Utils.responseByRule({success: true, message: 'Sent POS invoice successfully.', data: rtnValue}));
+      //return response.status(200).json(Utils.responseByRule({success: true, message: 'Sent POS invoice successfully.'}));
     } catch (e) {
       Utils.Logger({
         LVL: 'error',
@@ -19289,6 +19289,7 @@ class EInvoiceController {
       tenGDDTu = '',
       ord = '',
       soTBao = '';
+    let p_seller_comp_seller = '';
     try {
       const param_trade_code = {
         p_trade_code: check_data.TRADE_CODE,
@@ -19310,6 +19311,7 @@ class EInvoiceController {
 
       if (data_inv_of_trade_code.p_rtn_cur) {
         for (const inv of data_inv_of_trade_code.p_rtn_cur) {
+          p_seller_comp_seller = inv.SLLR_TAXCODE;
           data_inv.push({
             tax_code: inv.SLLR_TAXCODE,
             form_no: inv.FORM_NO,
@@ -19499,20 +19501,60 @@ class EInvoiceController {
                     mtaLoi: invoice.mtaLoi,
                   });
                   const chars = invoice.mtaLoi.split(';');
-                  data_inv.forEach((element, index) => {
-                    if (element.form_no === chars[0] && element.serial_no === chars[1] && element.invoice_no === chars[2]) {
-                      data_inv[index].inform_code = maTBao; //'7'; //items[k].loaiTBao;
-                      data_inv[index].inform_name = invoice.maLoi + ' - ' + invoice.mtaLoi;
-                    }
-                  });
-                }
 
+                  // data_inv.forEach((element, index) => {
+                  //   if (element.form_no === chars[0] && element.serial_no === chars[1] && element.invoice_no === chars[2]) {
+                  //     data_inv[index].inform_code = maTBao; //'7'; //items[k].loaiTBao;
+                  //     data_inv[index].inform_name = invoice.maLoi + ' - ' + invoice.mtaLoi;
+                  //   }
+                  // });
+                  const param_inv_error = {
+                    p_seller_comp_seller: p_seller_comp_seller,
+                    p_form_no: chars[0],
+                    p_serial_no: chars[1],
+                    p_invoice_no: chars[2],
+                  };
+
+                  const data_inv_error = await DBService.ExecuteSQLBlob(
+                    `BEGIN wt_sel_einv_error_by_inf(
+                                        :p_seller_comp_seller,
+                                        :p_form_no,
+                                        :p_serial_no,
+                                        :p_invoice_no,
+                                        :p_language, 
+                                        :p_crt_by, 
+                                        :p_rtn_cur); 
+                        END;`,
+                    param_inv_error,
+                    p_language,
+                    p_crt_by,
+                  );
+
+                  if (data_inv_error.p_rtn_cur) {
+                    for (const inv of data_inv_error.p_rtn_cur) {
+                      data_inv.push({
+                        tax_code: inv.SLLR_TAXCODE,
+                        form_no: inv.FORM_NO,
+                        invoice_no: inv.INVOICE_NO,
+                        serial_no: inv.SERIAL_NO,
+                        invoice_date: inv.INVOICE_DATE,
+                        inform_code: maTBao,
+                        inform_name: invoice.maLoi + ' - ' + invoice.mtaLoi,
+                        mccqt: inv.CQT_MCCQT,
+                        lookup_code: '',
+                        xml_tax_signed: '',
+                      });
+                    }
+                  }
+                }
+                console.log('data_inv ', JSON.stringify(data_inv));
                 data_inv.forEach((element, index) => {
                   if (element.inform_code == '' && element.inform_name == '') {
                     data_inv[index].inform_code = '2'; //items[k].loaiTBao;
                     data_inv[index].inform_name = 'Thông báo dữ liệu hóa đơn hợp lệ';
                   }
                 });
+                console.log('data_inv 2 ', JSON.stringify(data_inv));
               }
             }
           }

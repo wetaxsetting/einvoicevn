@@ -6187,7 +6187,7 @@ class EInvoiceController {
         process_yn = true;
         let arr_invoice = [invoices[i]];
         const valid = await this.validateJsonInvalidPosInvoiceToXML(arr_invoice);
-        console.log('validateJsonInvalidPosInvoiceToXML  valid', valid);
+        console.log('weTaxConvertPosInvoiceToXML2  valid', valid);
         if (!valid.status) {
           data_error.push({
             req_key: invoices[i].req_key,
@@ -6202,7 +6202,7 @@ class EInvoiceController {
           p_crt_by,
           'N',
         );
-        console.log('validateJsonInvalidPosInvoiceToXML  wt_sel_last_invoice_no', lastInvoiceNo);
+        console.log('weTaxConvertPosInvoiceToXML2  wt_sel_last_invoice_no', lastInvoiceNo);
 
         let last_invoice_no = lastInvoiceNo[0].INVOICE_NO;
         const last_invoice_date = lastInvoiceNo[0].INVOICE_DATE;
@@ -6232,7 +6232,7 @@ class EInvoiceController {
           //continue;
           process_yn = false;
         }
-        console.log('validateJsonInvalidPosInvoiceToXML  invoice date cannot smaller than', data_error);
+        console.log('weTaxConvertPosInvoiceToXML2  invoice date cannot smaller than', data_error);
 
         if (invoices[i].invoice_date >= tomorrow_date) {
           // return response
@@ -6501,6 +6501,8 @@ class EInvoiceController {
             sign_id: id,
             signature_path: signature_path,
           });
+
+          console.log(' weTaxConvertPosInvoiceToXML2 data_xml ', i, JSON.stringify(data_xml));
         }
         objInvoice = {
           DLHDon: {

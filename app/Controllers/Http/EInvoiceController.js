@@ -6472,9 +6472,9 @@ class EInvoiceController {
           objData.TDiep.DLieu.HDon.push(objInvoice);
 
           //TO_DO newwww
-          // const xml = await this.OBJtoXML(objData);
-          // const xmlId = xml.toString().replace('<DLieu>', `<DLieu Id=\'${id}\'>`);
-          // xmlRemoveLine = xmlId.toString().replace(/\n/g, '').replaceAll('"', "'");
+          const xml = await this.OBJtoXML(objData);
+          const xmlId = xml.toString().replace('<DLieu>', `<DLieu Id=\'${id}\'>`);
+          xmlRemoveLine = xmlId.toString().replace(/\n/g, '').replaceAll('"', "'");
 
           // //   1MB = 1024*1024 byte   1048576
           // console.log(' xmlRemoveLine  ', Buffer.byteLength(xmlRemoveLine, 'utf8') + ' bytes');
@@ -6493,6 +6493,7 @@ class EInvoiceController {
         }
 
         console.log(' i ', i, invoices.length);
+        console.log(' xmlRemoveLine ', i, xmlRemoveLine);
 
         if (i == invoices.length - 1 && xmlRemoveLine) {
           data_xml.push({

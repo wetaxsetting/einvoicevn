@@ -6698,7 +6698,7 @@ class EInvoiceController {
             }
           } else {
             if (key == 'total_vat_list') {
-              console.log('key  ', key);
+              //console.log('key  ', key);
 
               for (const sub_vat of invoice[key]) {
                 vat_amount_vat += sub_vat.sub_amt_vat;
@@ -7008,7 +7008,7 @@ class EInvoiceController {
             }
           } else {
             if (key == 'total_vat_list') {
-              console.log('key  ', key);
+              //console.log('key  ', key);
 
               for (const sub_vat of invoice[key]) {
                 vat_amount_vat += sub_vat.sub_vat_amt;

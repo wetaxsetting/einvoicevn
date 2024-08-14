@@ -6104,8 +6104,8 @@ class EInvoiceController {
 
       const {tax_code, store_code, store_name, count_invoice, list_invoice} = request.all();
 
-      console.log(' weTaxConvertPosInvoiceToXML2  BEGIN ==================================================');
-      console.log(' weTaxConvertPosInvoiceToXML2  list_invoice   ', JSON.stringify(list_invoice));
+      // console.log(' weTaxConvertPosInvoiceToXML2  BEGIN ==================================================');
+      // console.log(' weTaxConvertPosInvoiceToXML2  list_invoice   ', JSON.stringify(list_invoice));
 
       //invoices = JSON.parse(invoices);
 
@@ -6187,7 +6187,7 @@ class EInvoiceController {
         process_yn = true;
         let arr_invoice = [invoices[i]];
         const valid = await this.validateJsonInvalidPosInvoiceToXML(arr_invoice);
-        console.log('weTaxConvertPosInvoiceToXML2  valid', valid);
+        // console.log('weTaxConvertPosInvoiceToXML2  valid', valid);
         if (!valid.status) {
           data_error.push({
             req_key: invoices[i].req_key,
@@ -6202,7 +6202,7 @@ class EInvoiceController {
           p_crt_by,
           'N',
         );
-        console.log('weTaxConvertPosInvoiceToXML2  wt_sel_last_invoice_no', lastInvoiceNo);
+        // console.log('weTaxConvertPosInvoiceToXML2  wt_sel_last_invoice_no', lastInvoiceNo);
 
         let last_invoice_no = lastInvoiceNo[0].INVOICE_NO;
         const last_invoice_date = lastInvoiceNo[0].INVOICE_DATE;
@@ -6224,7 +6224,7 @@ class EInvoiceController {
           });
           process_yn = false;
         }
-        console.log('weTaxConvertPosInvoiceToXML2  invoice date cannot smaller than', data_error);
+        // console.log('weTaxConvertPosInvoiceToXML2  invoice date cannot smaller than', data_error);
 
         if (invoices[i].invoice_date >= tomorrow_date) {
           data_error.push({
@@ -6479,8 +6479,9 @@ class EInvoiceController {
           }
         }
 
-        console.log(' i ', i, invoices.length);
-        console.log(' xmlRemoveLine ', i, xmlRemoveLine);
+        // console.log(' i ', i, invoices.length);
+        const d = new Date();
+        console.log(d, ' xmlRemoveLine ', i, xmlRemoveLine);
 
         if (i == invoices.length - 1 && xmlRemoveLine) {
           data_xml.push({

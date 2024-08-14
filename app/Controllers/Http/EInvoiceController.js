@@ -6481,7 +6481,7 @@ class EInvoiceController {
 
         // console.log(' i ', i, invoices.length);
         const d = new Date();
-        console.log(d, ' xmlRemoveLine ', i, xmlRemoveLine);
+        console.log(d.toLocaleDateString(), ' xmlRemoveLine ', i, invoices.length);
 
         if (i == invoices.length - 1 && xmlRemoveLine) {
           data_xml.push({

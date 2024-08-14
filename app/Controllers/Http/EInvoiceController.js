@@ -9633,15 +9633,15 @@ class EInvoiceController {
       const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
 
       const {tax_serial_number, seller_tax_code, sale_date, store_code, store_name, pos_no, invoice_xml_signed, req_key} = request.all();
-      console.log('weTaxSendPosInvoiceToTaxOffice   =========================== BEGIN =======================');
-      console.log('weTaxSendPosInvoiceToTaxOffice   tax_serial_number ', tax_serial_number);
-      console.log('weTaxSendPosInvoiceToTaxOffice   seller_tax_code ', seller_tax_code);
-      console.log('weTaxSendPosInvoiceToTaxOffice   sale_date ', sale_date);
-      console.log('weTaxSendPosInvoiceToTaxOffice   store_code ', store_code);
-      console.log('weTaxSendPosInvoiceToTaxOffice   pos_no ', pos_no);
-      console.log('weTaxSendPosInvoiceToTaxOffice   invoice_xml_signed ', invoice_xml_signed);
-      console.log('weTaxSendPosInvoiceToTaxOffice   req_key ', req_key);
-      console.log('weTaxSendPosInvoiceToTaxOffice   =========================== END =======================');
+      // console.log('weTaxSendPosInvoiceToTaxOffice   =========================== BEGIN =======================');
+      // console.log('weTaxSendPosInvoiceToTaxOffice   tax_serial_number ', tax_serial_number);
+      // console.log('weTaxSendPosInvoiceToTaxOffice   seller_tax_code ', seller_tax_code);
+      // console.log('weTaxSendPosInvoiceToTaxOffice   sale_date ', sale_date);
+      // console.log('weTaxSendPosInvoiceToTaxOffice   store_code ', store_code);
+      // console.log('weTaxSendPosInvoiceToTaxOffice   pos_no ', pos_no);
+      // console.log('weTaxSendPosInvoiceToTaxOffice   invoice_xml_signed ', invoice_xml_signed);
+      // console.log('weTaxSendPosInvoiceToTaxOffice   req_key ', req_key);
+      // console.log('weTaxSendPosInvoiceToTaxOffice   =========================== END =======================');
 
       // let json =  this.parseXmlToJson(invoice_xml_signed);
       //console.log("weTaxSendPosInvoiceToTaxOffice BEGIN ================================   ");

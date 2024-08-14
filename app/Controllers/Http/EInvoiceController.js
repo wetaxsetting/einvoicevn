@@ -6480,8 +6480,8 @@ class EInvoiceController {
         }
 
         // console.log(' i ', i, invoices.length);
-        const d = new Date();
-        console.log(d.toLocaleDateString(), ' xmlRemoveLine ', i, invoices.length);
+        // const d = new Date();
+        // console.log(d.toLocaleDateString(), ' xmlRemoveLine ', i, invoices.length);
 
         if (i == invoices.length - 1 && xmlRemoveLine) {
           data_xml.push({
@@ -6559,8 +6559,8 @@ class EInvoiceController {
         req_key: req_key,
         data_error: data_error,
       };
-      console.log(' weTaxConvertPosInvoiceToXML2 ', rtnXML);
-      console.log(' weTaxConvertPosInvoiceToXML2  END ==================================================');
+      // console.log(' weTaxConvertPosInvoiceToXML2 ', rtnXML);
+      // console.log(' weTaxConvertPosInvoiceToXML2  END ==================================================');
 
       return response.status(200).json(Utils.responseByRule({success: true, message: `Generate POS invoice xml format successfully.`, data: rtnXML}));
     } catch (e) {
@@ -19287,7 +19287,7 @@ class EInvoiceController {
         p_trade_code: check_data.TRADE_CODE,
       };
 
-      console.log('jobCheckTradeCodePosInvoice param_pos  ', param_trade_code);
+      // console.log('jobCheckTradeCodePosInvoice param_pos  ', param_trade_code);
       const data_inv_of_trade_code = await DBService.ExecuteSQLBlob(
         `BEGIN wt_sel_einvoice_by_tradecode(
                             :p_trade_code,

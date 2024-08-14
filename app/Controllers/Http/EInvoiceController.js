@@ -16598,7 +16598,7 @@ class EInvoiceController {
             let xml_content = nodes[index_node_xml].toString(); // '<HDon>' + this.OBJtoXML(invoice) + '</HDon>';
             var getLength = require('utf8-byte-length');
             let xml_length = getLength(xml_content);
-            console.log('weTaxExtractPosXMLContent m xml_content ===> ', xml_content);
+            // console.log('weTaxExtractPosXMLContent m xml_content ===> ', xml_content);
             let p_DVTTe = '',
               p_TGia = '',
               p_HTTToan = '';
@@ -16715,7 +16715,7 @@ class EInvoiceController {
               vat_rate: invoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat[0].TSuat,
             };
 
-            console.log('weTaxExtractPosXMLContent m param ===> ', paraMaster);
+            // console.log('weTaxExtractPosXMLContent m param ===> ', paraMaster);
 
             const rtnValueMaster = await DBService.ExecuteSQLBlob(
               `BEGIN WT_UPD_SALE_BILL (          
@@ -16771,7 +16771,7 @@ class EInvoiceController {
               p_language,
               p_crt_by,
             );
-            console.log('weTaxExtractPosXMLContent rtnValueMaster  ', rtnValueMaster);
+            //console.log('weTaxExtractPosXMLContent rtnValueMaster  ', rtnValueMaster);
             status = rtnValueMaster.p_rtn_cur[0].STATUS;
             // tao json hd va trann thai các kiểu để sau này trả về cho WeTax dễ update
             data_inv.push({
@@ -16803,7 +16803,7 @@ class EInvoiceController {
                   tsuat: inv_d.TSuat,
                 };
 
-                console.log('weTaxExtractPosXMLContent d param ===> ', paraDetails);
+                //console.log('weTaxExtractPosXMLContent d param ===> ', paraDetails);
 
                 const rtnValueDetail = await DBService.ExecuteSQLBlob(
                   `BEGIN WT_UPD_SALE_BILL_d (          
@@ -16827,7 +16827,7 @@ class EInvoiceController {
                   p_crt_by,
                 );
 
-                console.log(' weTaxExtractPosXMLContent rtnValueDetail  ', rtnValueDetail);
+                //console.log(' weTaxExtractPosXMLContent rtnValueDetail  ', rtnValueDetail);
               }
 
               const invoice_detail_vat = invoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat;
@@ -16840,7 +16840,7 @@ class EInvoiceController {
                   sub_vat_amt: inv_d_vat.TThue,
                 };
 
-                console.log('weTaxExtractPosXMLContent d vat param  ===> ', para_amt_vat);
+                //console.log('weTaxExtractPosXMLContent d vat param  ===> ', para_amt_vat);
 
                 const rtnValue_VAT = await DBService.ExecuteSQLBlob(
                   `BEGIN WT_UPD_SALE_BILL_d_vat (          
@@ -16856,7 +16856,7 @@ class EInvoiceController {
                   p_crt_by,
                 );
 
-                console.log(' weTaxExtractPosXMLContent invoice_detail_vat  ', rtnValue_VAT);
+                //console.log(' weTaxExtractPosXMLContent invoice_detail_vat  ', rtnValue_VAT);
               }
             } else if (rtnValueMaster.p_rtn_cur[0].STATUS == 'RESEND') {
               check_data = {
@@ -16893,7 +16893,7 @@ class EInvoiceController {
           STATUS: rtnValuePos.p_rtn_cur[0].STATUS,
         };
 
-        console.log('weTaxExtractPosXMLContent END ===> check_data ', check_data, ' data_inv ', data_inv);
+        //console.log('weTaxExtractPosXMLContent END ===> check_data ', check_data, ' data_inv ', data_inv);
 
         return {check_data, data_inv};
       }

@@ -6218,33 +6218,19 @@ class EInvoiceController {
         }
 
         if (invoices[i].invoice_date < last_invoice_date && !invoices[i].invoice_no) {
-          // return response.status(409).json(
-          //   Utils.responseByRule({
-          //     success: false,
-          //     message: `invoice date cannot smaller than ${last_invoice_date}.`,
-          //     data: invoices[i].invoice_date,
-          //   }),
-          // );
           data_error.push({
             req_key: invoices[i].req_key,
             error_name: `invoice date cannot smaller than ${last_invoice_date}.`, //valid.message
           });
-          //continue;
           process_yn = false;
         }
         console.log('weTaxConvertPosInvoiceToXML2  invoice date cannot smaller than', data_error);
 
         if (invoices[i].invoice_date >= tomorrow_date) {
-          // return response
-          //   .status(409)
-          //   .json(
-          //     Utils.responseByRule({success: false, message: `invoice date cannot greater than ${tomorrow_date}.`, data: invoices[i].invoice_date}),
-          //   );
           data_error.push({
             req_key: invoices[i].req_key,
             error_name: `invoice date cannot greater than ${tomorrow_date}.`,
           });
-          //continue;
           process_yn = false;
         }
         if (process_yn) {

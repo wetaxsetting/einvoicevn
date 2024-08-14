@@ -16,10 +16,10 @@ class NuxtService {
     if (config.dev) {
       new Builder(this.nuxt).build();
     }
-    try {
-      let schedule = new JobScheduler();
-      schedule.start();
-    } catch {}
+    // try {
+    //   let schedule = new JobScheduler();
+    //   schedule.start();
+    // } catch {}
   }
 }
 

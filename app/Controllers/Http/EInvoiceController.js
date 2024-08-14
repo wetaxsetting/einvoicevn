@@ -19299,7 +19299,7 @@ class EInvoiceController {
         p_language,
         p_crt_by,
       );
-      console.log('jobCheckTradeCodePosInvoice data_inv_of_trade_code  ', JSON.stringify(data_inv_of_trade_code.p_rtn_cur));
+      // console.log('jobCheckTradeCodePosInvoice data_inv_of_trade_code  ', JSON.stringify(data_inv_of_trade_code.p_rtn_cur));
 
       if (data_inv_of_trade_code.p_rtn_cur) {
         for (const inv of data_inv_of_trade_code.p_rtn_cur) {
@@ -19318,7 +19318,7 @@ class EInvoiceController {
           });
         }
       }
-      console.log('jobCheckTradeCodePosInvoice data_inv  ', JSON.stringify(data_inv));
+      // console.log('jobCheckTradeCodePosInvoice data_inv  ', JSON.stringify(data_inv));
 
       const agent = {
         Agent: {
@@ -19345,7 +19345,7 @@ class EInvoiceController {
                 const templateMLTDiep = {
                   mLTDiep: 'TDiep/TTChung/MLTDiep',
                 };
-                console.log('jobCheckTradeCodePosInvoice xml_tax_signed begin ', xml_tax_signed);
+                // console.log('jobCheckTradeCodePosInvoice xml_tax_signed begin ', xml_tax_signed);
 
                 var jsonD = await transform(xml_tax_signed, templateMLTDiep);
                 mLTDiep = jsonD.mLTDiep;
@@ -19363,8 +19363,8 @@ class EInvoiceController {
                   };
                   var json_td_204 = await transform(xml_tax_signed, templateMLTDiep_204);
 
-                  console.log('jobCheckTradeCodePosInvoice xml_tax_signed  ', xml_tax_signed);
-                  console.log('jobCheckTradeCodePosInvoice json_td_204  ', json_td_204);
+                  // console.log('jobCheckTradeCodePosInvoice xml_tax_signed  ', xml_tax_signed);
+                  // console.log('jobCheckTradeCodePosInvoice json_td_204  ', json_td_204);
 
                   SLuong = json_td_204.SLuong || 0;
                   maTBao = json_td_204.LTBao || '2';
@@ -19386,7 +19386,7 @@ class EInvoiceController {
                   p_tvan_data_result: JSON.stringify(res.data),
                 };
 
-                console.log('jobCheckTradeCodePosInvoice param_pos  ', param_pos);
+                // console.log('jobCheckTradeCodePosInvoice param_pos  ', param_pos);
                 await DBService.ExecuteSQLBlob(
                   `BEGIN WT_UPD_HISTORY_D_POS(
                                       :p_tei_history_m_pk,
@@ -19469,7 +19469,7 @@ class EInvoiceController {
                   p_tenTBao: tenTBao,
                   p_ngayCQTKy: ngayCQTKy,
                 };
-                console.log('jobCheckTradeCodePosInvoice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
+                // console.log('jobCheckTradeCodePosInvoice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
                 await DBService.ExecuteSQLBlob(
                   `BEGIN WT_UPD_HISTORY_D_POS_TB8(
                                       :p_tei_history_m_pk,
@@ -19539,14 +19539,14 @@ class EInvoiceController {
                     }
                   }
                 }
-                console.log('data_inv ', JSON.stringify(data_inv));
+                // console.log('data_inv ', JSON.stringify(data_inv));
                 data_inv.forEach((element, index) => {
                   if (element.inform_code == '' && element.inform_name == '') {
                     data_inv[index].inform_code = '2'; //items[k].loaiTBao;
                     data_inv[index].inform_name = 'Thông báo dữ liệu hóa đơn hợp lệ';
                   }
                 });
-                console.log('data_inv 2 ', JSON.stringify(data_inv));
+                // console.log('data_inv 2 ', JSON.stringify(data_inv));
               }
             }
           }
@@ -19591,7 +19591,7 @@ class EInvoiceController {
         this.weTaxCallBackStatusPosInv(data_inv, '/api/wtx/v1/pos-invoice-delivery-status', 'WTPTA003');
       }
       //console.log('jobCheckTradeCodePosInvoice rtnValue  ', rtnValue);
-      console.log('jobCheckTradeCodePosInvoice END ========================  ');
+      // console.log('jobCheckTradeCodePosInvoice END ========================  ');
     } catch (error) {
       console.log('jobCheckTradeCodePosInvoice  error', error);
     }

@@ -127,16 +127,6 @@ export default {
         dataField: "NO",
         caption: this.$t("stt"),
       },
-      // {
-      //   dataField: "DONVI",
-      //   caption: this.$t("don_vi"),
-      //   width: 80,
-      // },
-      // {
-      //   dataField: "DONVIMST",
-      //   caption: this.$t("dvi_mst"),
-      //   width: 80,
-      // },
       {
         dataField: "TRADE_CODE",
         caption: this.$t("ma_giao_dich"),
@@ -174,6 +164,8 @@ export default {
         caption: this.$t("qty"),
         type: "number",
         width: 150,
+        alignment: "right",
+
       },
       { dataField: "TITTLE", caption: "thao_tac", type: "html", width: 200, fixed: true, cellsrenderer: this.myCellHTML },
     ]

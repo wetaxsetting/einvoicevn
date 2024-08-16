@@ -9931,6 +9931,7 @@ class EInvoiceController {
             serial_no: inv.serial_no,
             invoice_no: inv.invoice_no,
             inform_code: inv.inform_code,
+            inform_name: inv.inform_name,
           };
 
           const r_data_inv = await DBService.ExecuteSQLBlob(
@@ -9941,6 +9942,7 @@ class EInvoiceController {
                               :serial_no,
                               :invoice_no,
                               :inform_code,
+                              :inform_name,
                               :p_language, 
                               :p_crt_by, 
                               :p_rtn_cur); 

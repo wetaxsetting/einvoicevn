@@ -47,6 +47,7 @@
                 select_mode="Single"
                 :max_height="limitHeight"
                 :header="headerGridLeft"
+                :pageable="true"
                 :filter_paras="[this.sellerTaxcode, this.form_date, this.to_date, this.trade_codde, this.invoice_no, this.serial_no, this.form_no ]"
               />
             </v-col>

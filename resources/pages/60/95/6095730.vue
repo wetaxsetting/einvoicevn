@@ -45,6 +45,8 @@
                 select_mode="Single"
                 :max_height="limitHeight"
                 :header="headerGridLeft"
+                :pageable="true"
+                @cellClick="getCellInfo"    
                 :filter_paras="[sellerTaxcode, form_date, to_date, trade_codde, invoice_no, serial_no, form_no]"
               />
             </v-col>
@@ -62,6 +64,7 @@
     ></view-einvoice-xml-dialog>
     <view-einvoice-xml-cqt-dialog ref="ViewEIXMLCQTDialog" @minimizeDialog="manualIsMinimized = true" @closeManualDialog="manualIsMinimized = false"></view-einvoice-xml-cqt-dialog>
     <view-einvoice-transaction-details-dialog ref="ViewTransaction" @minimizeDialog="manualIsMinimized = true" @closeManualDialog="manualIsMinimized = false"></view-einvoice-transaction-details-dialog>
+    <view-einvoice-details-dialog ref="ViewEInvoiceDetails" :typeHistory="typeCQTResult" :tradeCode="tradeCodePK"   @minimizeDialog="manualIsMinimized = true" @closeManualDialog="manualIsMinimized = false" ></view-einvoice-details-dialog>
     <view-einvoice-json-dialog
       ref="ViewEInvoiceJsonDialog"
       :data_json="dataJson"
@@ -87,6 +90,9 @@ import ViewEInvoiceJsonDialog from "@/components/dialog/ViewEInvoiceJsonDialog.v
 import ViewEInvoiceXMLDialog from "@/components/dialog/ViewEInvoiceXMLDialog.vue";
 import ViewEInvoiceXML_CQTDialog from "@/components/dialog/ViewEInvoiceXML_CQTDialog.vue";
 import ViewEInvoice_TransactionDetailsDailog from "@/components/dialog/ViewEInvoice_TransactionDetailsDailog.vue";
+import ViewEInvoiceDetailsDailog from "@/components/dialog/ViewEInvoiceDetailsDailog.vue";
+
+
 
 export default {
   layout: "default",
@@ -96,7 +102,9 @@ export default {
     "view-einvoice-json-dialog": ViewEInvoiceJsonDialog,
     "view-einvoice-xml-dialog": ViewEInvoiceXMLDialog,
     "view-einvoice-xml-cqt-dialog": ViewEInvoiceXML_CQTDialog,
-    "view-einvoice-transaction-details-dialog":ViewEInvoice_TransactionDetailsDailog
+    "view-einvoice-transaction-details-dialog":ViewEInvoice_TransactionDetailsDailog,
+    "view-einvoice-details-dialog":ViewEInvoiceDetailsDailog
+
   },
   data: () => ({
     form_date: "",
@@ -114,7 +122,9 @@ export default {
     xmlFileNm: "",
     currentRow: "",
     headerGridLeft:[],
-    dataJson:""
+    dataJson:"",
+    typeCQTResult:"",
+    tradeCodePK: ""
   }),
 
   async created() {
@@ -142,6 +152,7 @@ export default {
         caption: this.$t("mst"),
         type: "number",
         width: 150,
+        alignment: "center",
       },
       {
         dataField: "SEND_DT",
@@ -157,13 +168,15 @@ export default {
       {
         dataField: "CQT_RESULT",
         caption: this.$t("ph_cqt"),
-        width: 160,
+        width: 210,
+        alignment: "center",
+
       },
       {
         dataField: "INV_QTY",
         caption: this.$t("qty"),
         type: "number",
-        width: 150,
+        width: 100,
         alignment: "right",
 
       },
@@ -176,7 +189,7 @@ export default {
     },
     limitHeight() {
       if (this.$vuetify.breakpoint.smAndUp) {
-        return 750;
+        return this.windowHeight - this.windowHeight*0.215;
       }
     },
   },
@@ -188,6 +201,16 @@ export default {
     },
   },
   methods: {
+    onPageChanged(event) {
+        let args = event.args;
+        let pagenumber = args.pagenum;
+        let pagesize = args.pagesize;
+    },
+    onPageSizeChanged (event) {
+       let args = event.args;
+       let pagenumber = args.pagenum;
+       let pagesize = args.pagesize; 
+    },
     previewCellFile() {
       this.currentRow = document.getElementById("6095730-tempPK").value;
       const ds = this.$refs.grdCompany.getDataSource();
@@ -280,7 +303,17 @@ export default {
           break;
       }
     },
-
+    getCellInfo(data) {
+      //console.log("rowData", data.data);
+      //console.log("col", data.column.datafield);
+      this.selectedRow = data.data;
+      if(data.column.datafield == 'INV_QTY' || data.column.datafield == 'CQT_RESULT') {
+        this.typeCQTResult = data.column.datafield == 'INV_QTY' ? 'ALL' : data.data.CQT_RESULT_CD;
+        this.tradeCodePK = data.data.TRADE_CODE;
+        this.$refs.ViewEInvoiceDetails.dialogIsShow = true;
+      }
+    },
+   
     // async getListCodes() {
     //   const results = await this._getCommonCode2(["ACEI0010", "ACEI0040", "ACEI0120", "ACEI0190", "ACEI0140", "ACEIN010", "ACJS0460"], this.user.PK);
     //   this.statusList = results[0];

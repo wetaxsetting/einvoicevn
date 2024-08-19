@@ -9910,6 +9910,7 @@ class EInvoiceController {
                                       :p_maTBao,
                                       :p_tenTBao,
                                       :p_ngayCQTKy,
+                                      :p_count_error,
                                       :p_language, 
                                       :p_crt_by, 
                                       :p_rtn_cur); 

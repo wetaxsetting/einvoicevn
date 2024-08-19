@@ -9926,7 +9926,6 @@ class EInvoiceController {
 
         // data_inv insert data ==> tei_einvoice_m
         //console.log("weTaxSendPosInvoiceToTaxOffice data_inv  ", data_inv);
-
         for (const inv of data_inv) {
           const param_m = {
             mccqt: inv.mccqt,
@@ -19475,6 +19474,7 @@ class EInvoiceController {
                     maLoi: invoice.maLoi,
                     mtaLoi: invoice.mtaLoi,
                   });
+                  console.log('data_error  ', data_error);
                   const chars = invoice.mtaLoi.split(';');
 
                   // data_inv.forEach((element, index) => {
@@ -19483,34 +19483,6 @@ class EInvoiceController {
                   //     data_inv[index].inform_name = invoice.maLoi + ' - ' + invoice.mtaLoi;
                   //   }
                   // });
-
-                  const param_ltb_8 = {
-                    p_tei_history_m_pk: check_data.TEI_HISTORY_M_PK,
-                    p_CQT_Code: check_data.TRADE_CODE,
-                    p_soTBao: soTBao,
-                    p_maTBao: maTBao,
-                    p_tenTBao: tenTBao,
-                    p_ngayCQTKy: ngayCQTKy,
-                    p_count_error: data_error.length,
-                  };
-                  // console.log('jobCheckTradeCodePosInvoice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
-                  await DBService.ExecuteSQLBlob(
-                    `BEGIN WT_UPD_HISTORY_D_POS_TB8(
-                                        :p_tei_history_m_pk,
-                                        :p_CQT_Code,
-                                        :p_soTBao,
-                                        :p_maTBao,
-                                        :p_tenTBao,
-                                        :p_ngayCQTKy,
-                                        :p_count_error,
-                                        :p_language, 
-                                        :p_crt_by, 
-                                        :p_rtn_cur); 
-                        END;`,
-                    param_ltb_8,
-                    p_language,
-                    p_crt_by,
-                  );
                   const param_inv_error = {
                     p_seller_comp_seller: p_seller_comp_seller,
                     p_form_no: chars[0],
@@ -19550,6 +19522,34 @@ class EInvoiceController {
                     }
                   }
                 }
+                const param_ltb_8 = {
+                  p_tei_history_m_pk: check_data.TEI_HISTORY_M_PK,
+                  p_CQT_Code: check_data.TRADE_CODE,
+                  p_soTBao: soTBao,
+                  p_maTBao: maTBao,
+                  p_tenTBao: tenTBao,
+                  p_ngayCQTKy: ngayCQTKy,
+                  p_count_error: data_error.length,
+                };
+                // console.log('jobCheckTradeCodePosInvoice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
+                await DBService.ExecuteSQLBlob(
+                  `BEGIN WT_UPD_HISTORY_D_POS_TB8(
+                                        :p_tei_history_m_pk,
+                                        :p_CQT_Code,
+                                        :p_soTBao,
+                                        :p_maTBao,
+                                        :p_tenTBao,
+                                        :p_ngayCQTKy,
+                                        :p_count_error,
+                                        :p_language, 
+                                        :p_crt_by, 
+                                        :p_rtn_cur); 
+                        END;`,
+                  param_ltb_8,
+                  p_language,
+                  p_crt_by,
+                );
+
                 // console.log('data_inv ', JSON.stringify(data_inv));
                 data_inv.forEach((element, index) => {
                   if (element.inform_code == '' && element.inform_name == '') {
@@ -19563,6 +19563,8 @@ class EInvoiceController {
           }
         }
 
+        console.log('check_data ', check_data);
+
         for (const inv of data_inv) {
           const param_m = {
             mccqt: inv.mccqt,
@@ -19571,6 +19573,7 @@ class EInvoiceController {
             serial_no: inv.serial_no,
             invoice_no: inv.invoice_no,
             inform_code: inv.inform_code,
+            inform_name: inv.inform_name,
             tei_wt_invoice_pos_pk: check_data.TEI_WT_INVOICE_P_XML_PK,
           };
 
@@ -19582,6 +19585,7 @@ class EInvoiceController {
                               :serial_no,
                               :invoice_no,
                               :inform_code,
+                              :inform_name,
                               :tei_wt_invoice_pos_pk,
                               :p_language, 
                               :p_crt_by, 

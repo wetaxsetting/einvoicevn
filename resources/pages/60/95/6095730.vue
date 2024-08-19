@@ -170,6 +170,7 @@ export default {
         caption: this.$t("ph_cqt"),
         width: 210,
         alignment: "center",
+        fixed: true, cellsrenderer: this.myCellHTMLCQT
 
       },
       {
@@ -286,6 +287,21 @@ export default {
       return html;
     },
 
+    myCellHTMLCQT(row, column, value, cellhtml) {
+      let grid = this.$refs.grdCompany.getControl();
+      let rowData = grid.getrowdata(row);
+      //const updateTempPK = `document.getElementById('6095730-tempPK').value = ${rowData.PK}; document.getElementById('6095730-tempPK1').value = ''; document.getElementById('6095730-tempPK2').value = ''; document.getElementById('6095730-tempPK3').value = ''`;
+      //let previewFile = `document.getElementById('6095730-btnPrview').click()`;
+      let html = "";
+      if (rowData.CQT_RESULT_CD == "2")
+      {
+        html = `<div class="h-100 d-flex align-center justify-center"><span class="ma-2 v-chip theme--light v-size--small green lighten-3 green--text text--darken-3"><span class="v-chip__content">${rowData.CQT_RESULT}</span></span></div>`;
+      } else
+      {
+        html = `<div class="h-100 d-flex align-center justify-center"><span class="ma-2 v-chip theme--light v-size--small red lighten-3 red--text text--darken-3"><span class="v-chip__content">${rowData.CQT_RESULT}</span></span></div>`;
+      }
+      return html;
+    },
     async initDataList(pos) {
       switch (pos) {
         case "company":

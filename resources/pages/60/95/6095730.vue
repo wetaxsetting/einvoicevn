@@ -178,7 +178,8 @@ export default {
         caption: this.$t("qty"),
         type: "number",
         width: 100,
-        alignment: "right",
+        //alignment: "right",
+        fixed: true, cellsrenderer: this.myCellHTMLInv
 
       },
       { dataField: "TITTLE", caption: "thao_tac", type: "html", width: 200, fixed: true, cellsrenderer: this.myCellHTML },
@@ -302,6 +303,16 @@ export default {
       }
       return html;
     },
+
+    myCellHTMLInv(row, column, value, cellhtml) {
+      let grid = this.$refs.grdCompany.getControl();
+      let rowData = grid.getrowdata(row);
+
+      let html = `<div class="h-100 d-flex align-center justify-end"><span class=" pa-2 font-weight-black blue--text text--accent-4"><span class="v-chip__content">${rowData.INV_QTY} </span></span></div>`;
+      
+      return html;
+    },
+
     async initDataList(pos) {
       switch (pos) {
         case "company":

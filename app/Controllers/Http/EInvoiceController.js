@@ -9666,13 +9666,16 @@ class EInvoiceController {
       //console.log('check_data   ', check_data, 'data_inv  ', data_inv);
       if (check_data.STATUS == 'FAILE') {
         // return response.send(Utils.response(false, `Send invoice to Tax Office was failure!`, null));
-        return response.status(409).json(Utils.responseByRule({success: false, message: 'Send invoice to Tax Office failure!'}));
+        return response.status(409).json(Utils.responseByRule({success: false, message: 'Send invoice to Tax Office failure !'}));
       } else if (check_data.STATUS == 'EXIT') {
         // return response.send(Utils.response(false, `The sign xml was send Tax Office!`, null));
-        return response.status(409).json(Utils.responseByRule({success: false, message: 'This invoice has been sent for Tax Office!'}));
+        return response.status(409).json(Utils.responseByRule({success: false, message: 'This invoice has been sent for Tax Office !'}));
       } else if (check_data.STATUS == 'NOEXIT') {
         // return response.send(Utils.response(false, `Compay not yet register`, null));
-        return response.status(404).json(Utils.responseByRule({success: false, message: 'Compay not yet register!'}));
+        return response.status(404).json(Utils.responseByRule({success: false, message: 'Compay not yet register !'}));
+      } else if (check_data.STATUS == 'RESEND') {
+        // return response.send(Utils.response(false, `Compay not yet register`, null));
+        return response.status(404).json(Utils.responseByRule({success: false, message: 'Data has been duplicated !'}));
       }
 
       const agent = {
@@ -16868,10 +16871,9 @@ class EInvoiceController {
               check_data = {
                 PK: rtnValuePos.p_rtn_cur[0].PK,
                 TEI_HISTORY_M_PK: rtnValuePos.p_rtn_cur[0].TEI_HISTORY_M_PK,
-                STATUS: 'OK', // rtnValuePos.p_rtn_cur[0].STATUS,
+                STATUS: 'RESEND', ///  'OK', // rtnValuePos.p_rtn_cur[0].STATUS,
               };
-
-              // return {check_data, data_inv};
+              return {check_data, data_inv};
             } else {
               check_data = {
                 PK: null,

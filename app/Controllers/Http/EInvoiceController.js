@@ -9834,6 +9834,7 @@ class EInvoiceController {
                   p_maTBao: maTBao,
                   p_tenTBao: tenTBao,
                   p_ngayCQTKy: ngayCQTKy,
+                  p_count_error: '',
                 };
 
                 // console.log('weTaxSendPosInvoiceToTaxOffice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
@@ -9846,6 +9847,7 @@ class EInvoiceController {
                                       :p_maTBao,
                                       :p_tenTBao,
                                       :p_ngayCQTKy,
+                                      :p_count_error,
                                       :p_language, 
                                       :p_crt_by, 
                                       :p_rtn_cur); 
@@ -9868,33 +9870,6 @@ class EInvoiceController {
                 soTBao = items[k].ndungTBao.tbaoKTraDLieu.soTBao;
                 ngayCQTKy = items[k].ndungTBao.tbaoKTraDLieu.ngayCQTKy;
 
-                const param_ltb_8 = {
-                  p_tei_history_m_pk: check_data.TEI_HISTORY_M_PK,
-                  p_CQT_Code: trade_code,
-                  p_soTBao: soTBao,
-                  p_maTBao: maTBao,
-                  p_tenTBao: tenTBao,
-                  p_ngayCQTKy: ngayCQTKy,
-                };
-
-                // console.log('weTaxSendPosInvoiceToTaxOffice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
-                await DBService.ExecuteSQLBlob(
-                  `BEGIN WT_UPD_HISTORY_D_POS_TB8(
-                                      :p_tei_history_m_pk,
-                                      :p_CQT_Code,
-                                      :p_soTBao,
-                                      :p_maTBao,
-                                      :p_tenTBao,
-                                      :p_ngayCQTKy,
-                                      :p_language, 
-                                      :p_crt_by, 
-                                      :p_rtn_cur); 
-                      END;`,
-                  param_ltb_8,
-                  p_language,
-                  p_crt_by,
-                );
-
                 for (let invoice of items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu) {
                   data_error.push({
                     maLoi: invoice.maLoi,
@@ -9915,6 +9890,34 @@ class EInvoiceController {
                     data_inv[index].inform_name = 'Thông báo dữ liệu hóa đơn hợp lệ';
                   }
                 });
+
+                const param_ltb_8 = {
+                  p_tei_history_m_pk: check_data.TEI_HISTORY_M_PK,
+                  p_CQT_Code: trade_code,
+                  p_soTBao: soTBao,
+                  p_maTBao: maTBao,
+                  p_tenTBao: tenTBao,
+                  p_ngayCQTKy: ngayCQTKy,
+                  p_count_error: data_error.length,
+                };
+
+                // console.log('weTaxSendPosInvoiceToTaxOffice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
+                await DBService.ExecuteSQLBlob(
+                  `BEGIN WT_UPD_HISTORY_D_POS_TB8(
+                                      :p_tei_history_m_pk,
+                                      :p_CQT_Code,
+                                      :p_soTBao,
+                                      :p_maTBao,
+                                      :p_tenTBao,
+                                      :p_ngayCQTKy,
+                                      :p_language, 
+                                      :p_crt_by, 
+                                      :p_rtn_cur); 
+                      END;`,
+                  param_ltb_8,
+                  p_language,
+                  p_crt_by,
+                );
               }
             }
           }
@@ -19430,6 +19433,7 @@ class EInvoiceController {
                   p_maTBao: maTBao,
                   p_tenTBao: tenTBao,
                   p_ngayCQTKy: ngayCQTKy,
+                  p_count_error: '',
                 };
 
                 console.log('jobCheckTradeCodePosInvoice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
@@ -19442,6 +19446,7 @@ class EInvoiceController {
                                       :p_maTBao,
                                       :p_tenTBao,
                                       :p_ngayCQTKy,
+                                      :p_count_error,
                                       :p_language, 
                                       :p_crt_by, 
                                       :p_rtn_cur); 
@@ -19464,32 +19469,6 @@ class EInvoiceController {
                 soTBao = items[k].ndungTBao.tbaoKTraDLieu.soTBao;
                 ngayCQTKy = items[k].ndungTBao.tbaoKTraDLieu.ngayCQTKy;
 
-                const param_ltb_8 = {
-                  p_tei_history_m_pk: check_data.TEI_HISTORY_M_PK,
-                  p_CQT_Code: check_data.TRADE_CODE,
-                  p_soTBao: soTBao,
-                  p_maTBao: maTBao,
-                  p_tenTBao: tenTBao,
-                  p_ngayCQTKy: ngayCQTKy,
-                };
-                // console.log('jobCheckTradeCodePosInvoice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
-                await DBService.ExecuteSQLBlob(
-                  `BEGIN WT_UPD_HISTORY_D_POS_TB8(
-                                      :p_tei_history_m_pk,
-                                      :p_CQT_Code,
-                                      :p_soTBao,
-                                      :p_maTBao,
-                                      :p_tenTBao,
-                                      :p_ngayCQTKy,
-                                      :p_language, 
-                                      :p_crt_by, 
-                                      :p_rtn_cur); 
-                      END;`,
-                  param_ltb_8,
-                  p_language,
-                  p_crt_by,
-                );
-
                 for (let invoice of items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu) {
                   data_error.push({
                     maLoi: invoice.maLoi,
@@ -19503,6 +19482,34 @@ class EInvoiceController {
                   //     data_inv[index].inform_name = invoice.maLoi + ' - ' + invoice.mtaLoi;
                   //   }
                   // });
+
+                  const param_ltb_8 = {
+                    p_tei_history_m_pk: check_data.TEI_HISTORY_M_PK,
+                    p_CQT_Code: check_data.TRADE_CODE,
+                    p_soTBao: soTBao,
+                    p_maTBao: maTBao,
+                    p_tenTBao: tenTBao,
+                    p_ngayCQTKy: ngayCQTKy,
+                    p_count_error: data_error.length,
+                  };
+                  // console.log('jobCheckTradeCodePosInvoice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
+                  await DBService.ExecuteSQLBlob(
+                    `BEGIN WT_UPD_HISTORY_D_POS_TB8(
+                                        :p_tei_history_m_pk,
+                                        :p_CQT_Code,
+                                        :p_soTBao,
+                                        :p_maTBao,
+                                        :p_tenTBao,
+                                        :p_ngayCQTKy,
+                                        :p_count_error,
+                                        :p_language, 
+                                        :p_crt_by, 
+                                        :p_rtn_cur); 
+                        END;`,
+                    param_ltb_8,
+                    p_language,
+                    p_crt_by,
+                  );
                   const param_inv_error = {
                     p_seller_comp_seller: p_seller_comp_seller,
                     p_form_no: chars[0],

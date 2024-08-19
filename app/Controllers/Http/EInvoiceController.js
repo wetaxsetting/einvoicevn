@@ -16793,6 +16793,7 @@ class EInvoiceController {
               inform_name: '', //Dữ liệu hóa đơn hợp lệ
               lookup_code: '',
             });
+            console.log('weTaxExtractPosXMLContent  ', rtnValueMaster.p_rtn_cur[0]);
             if (rtnValueMaster.p_rtn_cur[0].STATUS == 'OK') {
               const invoice_detail = invoice.DLHDon.NDHDon.DSHHDVu.HHDVu;
               for (let inv_d of invoice_detail) {

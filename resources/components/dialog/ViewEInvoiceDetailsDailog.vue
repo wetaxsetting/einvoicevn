@@ -129,7 +129,7 @@ export default {
         },
         {
           dataField: "REMARK",
-          caption: this.$t("remark"),
+          caption: this.$t("result"),
           width:250
         },
         // { dataField: ("CQT_DATA_RESULT"),  caption: "thao_tac",  type: "html", width: 150, fixed: true, cellsrenderer: this.myCellHTML},

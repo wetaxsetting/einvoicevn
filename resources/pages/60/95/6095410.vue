@@ -3,7 +3,7 @@
     <v-card outlined>
       <v-row dense justify="space-between" class="pl-3 pr-3 pt-2">
         <v-col lg="4" cols="12">
-          <BaseSelect outlined :label="$t('company')" item-text="NAME" item-value="VAL" :lstData="company_list"
+          <BaseSelect outlined :label="$t('company')" item-text="NAME" item-value="CODE" :lstData="company_list"
             v-model="selected_company" filter_off />
         </v-col>
         <v-col lg="2">
@@ -13,11 +13,11 @@
           <BaseInput outlined v-model="txtToInvoiceNo" filter_off />
         </v-col>
         <v-col lg="2">
-          <BaseSelect outlined :label="$t('form_no')" item-text="NAME" item-value="VAL" filter_off :lstData="form_no_list"
+          <BaseSelect outlined :label="$t('form_no')" item-text="NAME" item-value="CODE" filter_off :lstData="form_no_list"
             v-model="selected_form_no" />
         </v-col>
         <v-col lg="2">
-          <BaseSelect outlined :label="$t('serial_no')" item-text="NAME" item-value="VAL" filter_off
+          <BaseSelect outlined :label="$t('serial_no')" item-text="NAME" item-value="CODE" filter_off
             :lstData="serial_no_list" v-model="selected_serial_no" />
         </v-col>
       </v-row>
@@ -31,15 +31,15 @@
         </v-col>
         <v-col lg="2">
           <BaseSelect outlined :label="$t('status')" v-model="selected_status" :lstData="status_list" item-text="NAME"
-            item-value="VAL" filter_off />
+            item-value="CODE" filter_off />
         </v-col>
         <v-col lg="2">
           <BaseSelect outlined :label="$t('etax_status')" v-model="selected_etaxStatus" :lstData="etaxStatus_list"
-            item-text="NAME" item-value="VAL" filter_off />
+            item-text="NAME" item-value="CODE" filter_off />
         </v-col>
         <v-col lg="2">
           <BaseSelect outlined :label="$t('etax_result')" v-model="selected_etaxResult" :lstData="etaxResult_list"
-            item-text="NAME" item-value="VAL" filter_off />
+            item-text="NAME" item-value="CODE" filter_off />
         </v-col>
         <v-col lg="2">
           <BaseSelect outlined :label="$t('trading_type')" v-model="selected_trading_type" :lstData="trading_type_list"
@@ -77,7 +77,7 @@
         </v-col>
         <v-col lg="2">
           <BaseSelect outlined :label="$t('directly_yn')" :lstData="yn_list" v-model="selected_yn" item-text="NAME"
-            item-value="VAL" filter_off />
+            item-value="CODE" filter_off />
         </v-col>
         <v-col lg="1">
           <!-- <BaseCheckbox :label="$t('check_all')" true-value="Y" false-value="N" v-model="check_all" /> -->
@@ -864,66 +864,75 @@ export default {
         }
       }
 
-      const dso_etaxStatus_list = {
-        type: "list",
-        selpro: "EI_SEL_6095090_ETAX_STATUS",
-        para: [this.selected_company],
-      };
-      const checkeTaxStatus = await this._dsoCall(dso_etaxStatus_list, "select", false);
-      if (checkeTaxStatus != null) {
-        if (checkeTaxStatus.length > 0) {
-          this.etaxStatus_list = checkeTaxStatus;
-          this.selected_etaxStatus = this.etaxStatus_list[0].VAL;
-        }
-      }
+      // const dso_etaxStatus_list = {
+      //   type: "list",
+      //   selpro: "EI_SEL_6095090_ETAX_STATUS",
+      //   para: [this.selected_company],
+      // };
+      // const checkeTaxStatus = await this._dsoCall(dso_etaxStatus_list, "select", false);
+      // if (checkeTaxStatus != null) {
+      //   if (checkeTaxStatus.length > 0) {
+      //     this.etaxStatus_list = checkeTaxStatus;
+      //     this.selected_etaxStatus = this.etaxStatus_list[0].VAL;
+      //   }
+      // }
 
-      const dso_etaxResult_list = {
-        type: "list",
-        selpro: "EI_SEL_6095090_ETAX_RESULT",
-        para: [this.selected_company],
-      };
-      const checkeTaxResult = await this._dsoCall(dso_etaxResult_list, "select", false);
-      if (checkeTaxResult != null) {
-        if (checkeTaxResult.length > 0) {
-          this.etaxResult_list = checkeTaxResult;
-          this.selected_etaxResult = this.etaxResult_list[0].VAL;
-        }
-      }
+      // const dso_etaxResult_list = {
+      //   type: "list",
+      //   selpro: "EI_SEL_6095090_ETAX_RESULT",
+      //   para: [this.selected_company],
+      // };
+      // const checkeTaxResult = await this._dsoCall(dso_etaxResult_list, "select", false);
+      // if (checkeTaxResult != null) {
+      //   if (checkeTaxResult.length > 0) {
+      //     this.etaxResult_list = checkeTaxResult;
+      //     this.selected_etaxResult = this.etaxResult_list[0].VAL;
+      //   }
+      // }
 
-      const dso_status_list = {
-        type: "list",
-        selpro: "EI_SEL_6095090_STATUS",
-      };
-      const checkStatus = await this._dsoCall(dso_status_list, "select", false);
-      if (checkStatus != null) {
-        if (checkStatus.length > 0) {
-          this.status_list = checkStatus;
-          this.selected_status = this.status_list[1].VAL;
+      // const dso_status_list = {
+      //   type: "list",
+      //   selpro: "EI_SEL_6095090_STATUS",
+      // };
+      // const checkStatus = await this._dsoCall(dso_status_list, "select", false);
+      // if (checkStatus != null) {
+      //   if (checkStatus.length > 0) {
+      //     this.status_list = checkStatus;
+      //     this.selected_status = this.status_list[1].VAL;
 
-        }
-      }
+      //   }
+      // }
 
+      // const dso_directly_list = {
+      //   type: "list",
+      //   selpro: "EI_SEL_6095090_YN",
+      //   para: [this.user.PK],
+      // };
+      // const checkDerictly = await this._dsoCall(
+      //   dso_directly_list,
+      //   "select",
+      //   false
+      // );
+      // if (checkDerictly != null) {
+      //   if (checkDerictly.length > 0) {
+      //     this.yn_list = checkDerictly;
+      //     this.selected_yn = this.yn_list[0].VAL;
+      //   }
+      // }
 
-      const TrandingTypeList = await this._getCommonCode2(["ACEI0040"], this.user.PK);
+      const TrandingTypeList = await this._getCommonCode2(["ACEI0040","ACEIT010","ACEIT020","ACEI0010","ACEIT030"], this.user.PK);
       this.trading_type_list = TrandingTypeList[0];
-      
-
-      const dso_directly_list = {
-        type: "list",
-        selpro: "EI_SEL_6095090_YN",
-        para: [this.user.PK],
-      };
-      const checkDerictly = await this._dsoCall(
-        dso_directly_list,
-        "select",
-        false
-      );
-      if (checkDerictly != null) {
-        if (checkDerictly.length > 0) {
-          this.yn_list = checkDerictly;
-          this.selected_yn = this.yn_list[0].VAL;
-        }
+      this.etaxStatus_list = TrandingTypeList[1];
+      if(TrandingTypeList[1])
+      {
+        this.selected_etaxStatus = this.etaxStatus_list[0].VAL;
       }
+      this.etaxResult_list = TrandingTypeList[2];
+      this.status_list = TrandingTypeList[3];
+      this.yn_list = TrandingTypeList[4];
+
+
+      
     },
 
     async getListCode(pos) {

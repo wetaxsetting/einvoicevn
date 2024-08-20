@@ -186,9 +186,12 @@ export default {
       if (rowData.STATUS_CD == "2")
       {
         html = `<div class="h-100 d-flex align-center justify-center"><span class="ma-2 v-chip theme--light v-size--small green lighten-3 green--text text--darken-3"><span class="v-chip__content">${rowData.STATUS}</span></span></div>`;
-      } else
+      } else if  (rowData.STATUS_CD == "7")
       {
         html = `<div class="h-100 d-flex align-center justify-center"><span class="ma-2 v-chip theme--light v-size--small red lighten-3 red--text text--darken-3"><span class="v-chip__content">${rowData.STATUS}</span></span></div>` //class="d-flex align-center justify-center h-100 error--text"
+      } else
+      {
+        html = `<div class="h-100 d-flex align-center justify-center"><span class="ma-2 v-chip theme--light v-size--small yellow lighten-3 yellow--text text--darken-3 text-decoration-underline"><span class="v-chip__content">Chờ kết quả</span></span></div>`;
       }
       return html;
     },

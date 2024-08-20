@@ -2,7 +2,7 @@
   <v-dialog id="view-einvoice-details-dialog" width="1000" v-model="dialogIsShow" overlay-opacity="0.1" :origin="origin" :transition="transition" :fullscreen="isMaximized">
     <v-card>
       <v-card-title class="headline primary-gradient white--text py-2">
-        <span>{{ $t("view-einvoice-dialog") }}</span>
+        <span>{{ $t("view-einvoice-details-dialog") }}</span>
         <v-spacer></v-spacer>
         <v-icon dark class="mr-2" @click="minimizeDialog">mdi-window-minimize</v-icon>
         <v-icon dark class="mr-2" @click="isMaximized = !isMaximized">{{ isMaximized ? "mdi-window-restore" : "mdi-window-maximize" }}</v-icon>

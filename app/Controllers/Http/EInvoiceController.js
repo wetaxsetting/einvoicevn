@@ -10951,66 +10951,8 @@ class EInvoiceController {
       //invoices = JSON.parse(invoices);
       let rtnXML = [];
       let count_inv = 0;
-      let objInvoice_M = {
-        HDon: {
-          DLHDon: {
-            TTChung: {
-              PBan: '',
-              THDon: '',
-              KHMSHDon: '',
-              KHHDon: '',
-              SHDon: '',
-              NLap: '',
-              DVTTe: '',
-              TGia: '',
-              HTTToan: '',
-              MSTTCGP: '',
-            },
-            NDHDon: {
-              NBan: {
-                Ten: '',
-                MST: '',
-                DChi: '',
-                SDThoai: '',
-                DCTDTu: '',
-                STKNHang: '',
-                TNHang: '',
-                Fax: '',
-                Website: '',
-                TTKhac: '',
-              },
-              NMua: {
-                Ten: '',
-                MST: '',
-                DChi: '',
-                MKHang: '',
-                SDThoai: '',
-                DCTDTu: '',
-                STKNHang: '',
-                HVTNMHang: '',
-                TNHang: '',
-                TTKhac: '',
-              },
-              DSHHDVu: {},
-              TToan: {
-                THTTLTSuat: {
-                  LTSuat: {
-                    TSuat: '',
-                    ThTien: '',
-                    TThue: '',
-                  },
-                },
-                TgTCThue: '',
-                TgTThue: '',
-                TTCKTMai: '',
-                TgTTTBSo: '',
-                TgTTTBChu: '',
-              },
-            },
-          },
-          DSCKS: {},
-        },
-      };
+      let objInvoice_M = {};
+
       if (invoices.length == undefined || invoices.length == 0) {
         // return response.send(Utils.response(false, `Invalid json format!`,null));
         return response.status(400).json(Utils.responseByRule({success: false, message: 'Invalid json format!'}));
@@ -11074,6 +11016,122 @@ class EInvoiceController {
               Utils.responseByRule({success: false, message: `invoice date cannot greater than ${tomorrow_date}.`, data: invoices[i].invoice_date}),
             );
         }
+
+        if (invoices[i].form_no != 2) {
+          objInvoice_M = {
+            HDon: {
+              DLHDon: {
+                TTChung: {
+                  PBan: '',
+                  THDon: '',
+                  KHMSHDon: '',
+                  KHHDon: '',
+                  SHDon: '',
+                  NLap: '',
+                  DVTTe: '',
+                  TGia: '',
+                  HTTToan: '',
+                  MSTTCGP: '',
+                },
+                NDHDon: {
+                  NBan: {
+                    Ten: '',
+                    MST: '',
+                    DChi: '',
+                    SDThoai: '',
+                    DCTDTu: '',
+                    STKNHang: '',
+                    TNHang: '',
+                    Fax: '',
+                    Website: '',
+                    TTKhac: '',
+                  },
+                  NMua: {
+                    Ten: '',
+                    MST: '',
+                    DChi: '',
+                    MKHang: '',
+                    SDThoai: '',
+                    DCTDTu: '',
+                    STKNHang: '',
+                    HVTNMHang: '',
+                    TNHang: '',
+                    TTKhac: '',
+                  },
+                  DSHHDVu: {},
+                  TToan: {
+                    THTTLTSuat: {
+                      LTSuat: {
+                        TSuat: '',
+                        ThTien: '',
+                        TThue: '',
+                      },
+                    },
+                    TgTCThue: '',
+                    TgTThue: '',
+                    TTCKTMai: '',
+                    TgTTTBSo: '',
+                    TgTTTBChu: '',
+                  },
+                },
+              },
+              DSCKS: {},
+            },
+          };
+        } else {
+          objInvoice_M = {
+            HDon: {
+              DLHDon: {
+                TTChung: {
+                  PBan: '',
+                  THDon: '',
+                  KHMSHDon: '',
+                  KHHDon: '',
+                  SHDon: '',
+                  NLap: '',
+                  DVTTe: '',
+                  TGia: '',
+                  HTTToan: '',
+                  MSTTCGP: '',
+                },
+                NDHDon: {
+                  NBan: {
+                    Ten: '',
+                    MST: '',
+                    DChi: '',
+                    SDThoai: '',
+                    DCTDTu: '',
+                    STKNHang: '',
+                    TNHang: '',
+                    Fax: '',
+                    Website: '',
+                    TTKhac: '',
+                  },
+                  NMua: {
+                    Ten: '',
+                    MST: '',
+                    DChi: '',
+                    MKHang: '',
+                    SDThoai: '',
+                    DCTDTu: '',
+                    STKNHang: '',
+                    HVTNMHang: '',
+                    TNHang: '',
+                    TTKhac: '',
+                  },
+                  DSHHDVu: {},
+                  TToan: {
+                    TTCKTMai: '',
+                    TgTTTBSo: '',
+                    TgTTTBChu: '',
+                  },
+                },
+              },
+              DSCKS: {},
+            },
+          };
+        }
+
         if (invoices[i].form_no == 1) {
           objInvoice_M.HDon.DLHDon.TTChung.THDon = 'Hóa đơn giá trị gia tăng';
         } else if (invoices[i].form_no == 2) {
@@ -11136,18 +11194,22 @@ class EInvoiceController {
 
         objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu = [];
 
-        objInvoice_M.HDon.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat = [];
+        if (invoices[i].form_no != 2) {
+          objInvoice_M.HDon.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat = [];
 
-        for (let k = 0; k < invoices[i].total_vat_list.length; k++) {
-          objInvoice_M.HDon.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat.push({
-            TSuat: invoices[i].total_vat_list[k].sub_vat_rate || '0%',
-            ThTien: invoices[i].total_vat_list[k].sub_amt || '0',
-            TThue: invoices[i].total_vat_list[k].sub_amt_vat || '0',
-          });
+          for (let k = 0; k < invoices[i].total_vat_list.length; k++) {
+            objInvoice_M.HDon.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat.push({
+              TSuat: invoices[i].total_vat_list[k].sub_vat_rate || '0%',
+              ThTien: invoices[i].total_vat_list[k].sub_amt || '0',
+              TThue: invoices[i].total_vat_list[k].sub_amt_vat || '0',
+            });
+          }
+
+          objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTCThue = invoices[i].total_amt || '0';
+          objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTThue = invoices[i].total_vat_amt || '0';
+        } else {
         }
 
-        objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTCThue = invoices[i].total_amt || '0';
-        objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTThue = invoices[i].total_vat_amt || '0';
         objInvoice_M.HDon.DLHDon.NDHDon.TToan.TTCKTMai = invoices[i].total_dc_amt || '0';
         objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = invoices[i].total_payment || '0';
         objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = invoices[i].total_payment_word_vie; //await Utils.Num2VNText2(invoices[i].total_payment.toString() || '0', invoices[i].currency);
@@ -11158,19 +11220,34 @@ class EInvoiceController {
 
         for (let j = 0; j < invoices[i].detail_invoice.length; j++) {
           //console.log("invoices[i].detail_invoice  ", invoices[i].detail_invoice);
-          objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
-            TChat: invoices[i].detail_invoice[j].feature,
-            STT: invoices[i].detail_invoice[j].seq,
-            MHHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_code),
-            THHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_name),
-            DVTinh: invoices[i].detail_invoice[j].item_uom,
-            SLuong: invoices[i].detail_invoice[j].quantity,
-            DGia: invoices[i].detail_invoice[j].uprice,
-            TLCKhau: invoices[i].detail_invoice[j].dc_rate,
-            STCKhau: invoices[i].detail_invoice[j].dc_amt,
-            ThTien: invoices[i].detail_invoice[j].amt,
-            TSuat: invoices[i].detail_invoice[j].vat_rate,
-          });
+          if (invoices[i].form_no != 2) {
+            objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
+              TChat: invoices[i].detail_invoice[j].feature,
+              STT: invoices[i].detail_invoice[j].seq,
+              MHHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_code),
+              THHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_name),
+              DVTinh: invoices[i].detail_invoice[j].item_uom,
+              SLuong: invoices[i].detail_invoice[j].quantity,
+              DGia: invoices[i].detail_invoice[j].uprice,
+              TLCKhau: invoices[i].detail_invoice[j].dc_rate,
+              STCKhau: invoices[i].detail_invoice[j].dc_amt,
+              ThTien: invoices[i].detail_invoice[j].amt,
+              TSuat: invoices[i].detail_invoice[j].vat_rate,
+            });
+          } else {
+            objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
+              TChat: invoices[i].detail_invoice[j].feature,
+              STT: invoices[i].detail_invoice[j].seq,
+              MHHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_code),
+              THHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_name),
+              DVTinh: invoices[i].detail_invoice[j].item_uom,
+              SLuong: invoices[i].detail_invoice[j].quantity,
+              DGia: invoices[i].detail_invoice[j].uprice,
+              TLCKhau: invoices[i].detail_invoice[j].dc_rate,
+              STCKhau: invoices[i].detail_invoice[j].dc_amt,
+              ThTien: invoices[i].detail_invoice[j].amt,
+            });
+          }
         }
         count_inv++;
         //const id = uuid.v4();

@@ -860,7 +860,7 @@ export default {
       if (checkCompany != null) {
         if (checkCompany.length > 0) {
           this.company_list = checkCompany;
-          this.selected_company = this.company_list[0].VAL;
+          this.selected_company = this.company_list[0].CODE;
         }
       }
 
@@ -873,7 +873,7 @@ export default {
       // if (checkeTaxStatus != null) {
       //   if (checkeTaxStatus.length > 0) {
       //     this.etaxStatus_list = checkeTaxStatus;
-      //     this.selected_etaxStatus = this.etaxStatus_list[0].VAL;
+      //     this.selected_etaxStatus = this.etaxStatus_list[0].CODE;
       //   }
       // }
 
@@ -886,7 +886,7 @@ export default {
       // if (checkeTaxResult != null) {
       //   if (checkeTaxResult.length > 0) {
       //     this.etaxResult_list = checkeTaxResult;
-      //     this.selected_etaxResult = this.etaxResult_list[0].VAL;
+      //     this.selected_etaxResult = this.etaxResult_list[0].CODE;
       //   }
       // }
 
@@ -898,7 +898,7 @@ export default {
       // if (checkStatus != null) {
       //   if (checkStatus.length > 0) {
       //     this.status_list = checkStatus;
-      //     this.selected_status = this.status_list[1].VAL;
+      //     this.selected_status = this.status_list[1].CODE;
 
       //   }
       // }
@@ -916,17 +916,13 @@ export default {
       // if (checkDerictly != null) {
       //   if (checkDerictly.length > 0) {
       //     this.yn_list = checkDerictly;
-      //     this.selected_yn = this.yn_list[0].VAL;
+      //     this.selected_yn = this.yn_list[0].CODE;
       //   }
       // }
 
       const TrandingTypeList = await this._getCommonCode2(["ACEI0040","ACEIT010","ACEIT020","ACEI0010","ACEIT030"], this.user.PK);
       this.trading_type_list = TrandingTypeList[0];
       this.etaxStatus_list = TrandingTypeList[1];
-      if(TrandingTypeList[1])
-      {
-        this.selected_etaxStatus = this.etaxStatus_list[0].VAL;
-      }
       this.etaxResult_list = TrandingTypeList[2];
       this.status_list = TrandingTypeList[3];
       this.yn_list = TrandingTypeList[4];
@@ -947,7 +943,7 @@ export default {
           if (checkFormNo != null) {
             if (checkFormNo.length > 0) {
               this.form_no_list = checkFormNo;
-              this.selected_form_no = this.form_no_list[0].VAL;
+              this.selected_form_no = this.form_no_list[0].CODE;
             }
           }
           break;
@@ -961,7 +957,7 @@ export default {
           if (checkSerialNo != null) {
             if (checkSerialNo.length > 0) {
               this.serial_no_list = checkSerialNo;
-              this.selected_serial_no = this.serial_no_list[0].VAL;
+              this.selected_serial_no = this.serial_no_list[0].CODE;
             }
           }
           break;

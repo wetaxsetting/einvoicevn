@@ -8846,6 +8846,8 @@ class EInvoiceController {
         }
       }
 
+      console.log('weTaxSendCompanyTemplate logo_height :', logo_height, ' logo_width ', logo_width);
+
       const para_value = {
         p_seller_comp_seller: seller_comp_taxcode,
         p_serial_no2: symbol_type,

@@ -173,7 +173,15 @@
       </v-btn>
     </v-scale-transition>
 
-  
+    <button type="button" v-show="false" id="6095410-btnPrview" @click="previewCellFile"></button>
+    <button type="button" v-show="false" id="6095410-btnPrview1" @click="previewCellFile1"></button>
+    <button type="button" v-show="false" id="6095410-btnPrview2" @click="previewCellFile2"></button>
+    <button type="button" v-show="false" id="6095410-btnPrview3" @click="previewCellFile3"></button>
+
+    <input type="textbox" id="6095410-tempPK" v-show="false" />
+    <input type="textbox" id="6095410-tempPK1" v-show="false" />
+    <input type="textbox" id="6095410-tempPK2" v-show="false" />
+    <input type="textbox" id="6095410-tempPK3" v-show="false" />
   </v-container>
 </template>
 
@@ -551,6 +559,12 @@ export default {
           alignment: "left",
           hidden:true
         },
+        {
+          dataField: "ACTION",
+          caption: this.$t("action"),
+          alignment: "left",
+          cellsrenderer: this.myCellHTML
+        },
       ];
 
       return _headerObj;
@@ -568,6 +582,84 @@ export default {
     },
     async onGridSelectionChanged(data) {
       this.selected_rows = data;
+    },
+
+    previewCellFile() {
+      this.currentRow = document.getElementById("6095730-tempPK").value;
+      console.log(this.currentRow);
+      // const ds = this.$refs.grdCompany.getDataSource();
+      // // console.log("this.currentRow  previewCellFile", this.currentRow);
+      // if (ds.length) {
+      //   const found = ds.find((item) => item.PK == this.currentRow);
+      //   // console.log("previewCellFile", found);
+      //   if (found) {
+      //     this.xmlUrl = found.CQT_DATA_RESULT;
+      //     this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
+      //   }
+      // }
+    },
+
+    previewCellFile1() {
+      this.currentRow = document.getElementById("6095730-tempPK1").value;
+      // console.log("this.currentRow  previewCellFile1", this.currentRow);
+      const ds = this.$refs.grdCompany.getDataSource();
+
+      if (ds.length) {
+        const found = ds.find((item) => item.PK == this.currentRow);
+        // console.log("previewCellFile1", found);
+        if (found) {
+          this.$refs.ViewEIXMLCQTDialog.pk = found.PK;
+          this.$refs.ViewEIXMLCQTDialog.dialogIsShow = true;
+        }
+      }
+    },
+
+    previewCellFile2() {
+      this.currentRow = document.getElementById("6095730-tempPK2").value;
+      // console.log("this.currentRow  previewCellFile2", this.currentRow);
+      const ds = this.$refs.grdCompany.getDataSource();
+
+      if (ds.length) {
+        const found = ds.find((item) => item.PK == this.currentRow);
+        // console.log("previewCellFile2", found);
+        if (found) {
+          this.$refs.ViewTransaction.pk = found.PK;
+          this.$refs.ViewTransaction.dialogIsShow = true;
+        }
+      }
+    },
+    previewCellFile3() {
+      this.currentRow = document.getElementById("6095730-tempPK3").value;
+      // console.log("this.currentRow  previewCellFile2", this.currentRow);
+      const ds = this.$refs.grdCompany.getDataSource();
+
+      if (ds.length) {
+        const found = ds.find((item) => item.PK == this.currentRow);
+        // console.log("previewCellFile3", found);
+        if (found) {
+          this.dataJson = found.TVAN_DATA_RESULT;
+          this.$refs.ViewEInvoiceJsonDialog.dialogIsShow = true;
+        }
+      }
+    },
+
+    myCellHTML(row, column, value, cellhtml) {
+      let grid = this.$refs.gridview.getControl();
+      let rowData = grid.getrowdata(row);
+      const updateTempPK = `document.getElementById('6095410-tempPK').value = ${rowData.PK}; document.getElementById('6095410-tempPK1').value = ''; document.getElementById('6095410-tempPK2').value = ''; document.getElementById('6095410-tempPK3').value = ''`;
+      const updateTempPK1 = `document.getElementById('6095410-tempPK').value = ''; document.getElementById('6095410-tempPK1').value = ${rowData.PK}; document.getElementById('6095410-tempPK2').value = ''; document.getElementById('6095410-tempPK3').value = ''`;
+      const updateTempPK2 = `document.getElementById('6095410-tempPK').value = ''; document.getElementById('6095410-tempPK1').value = ''; document.getElementById('6095410-tempPK2').value = ${rowData.PK}; document.getElementById('6095410-tempPK3').value = ''`;
+      const updateTempPK3 = `document.getElementById('6095410-tempPK').value = ''; document.getElementById('6095410-tempPK1').value = ''; document.getElementById('6095410-tempPK2').value = ''; document.getElementById('6095410-tempPK3').value = ${rowData.PK}`;
+      let previewFile = `document.getElementById('6095410-btnPrview').click()`;
+      let previewFile1 = `document.getElementById('6095410-btnPrview1').click()`;
+      let previewFile2 = `document.getElementById('6095410-btnPrview2').click()`;
+      let previewFile3 = `document.getElementById('6095410-btnPrview3').click()`;
+
+      let html = `<button class="v-icon mdi mdi-eye light-blue--text px-4" onclick="${updateTempPK};${previewFile}"></button>
+                  <button class="v-icon mdi mdi-file-document light-blue--text px-1" onclick="${updateTempPK1};${previewFile1}"></button>
+                  <button class="v-icon mdi mdi-checkbox-marked-circle-outline light-blue--text px-4" onclick="${updateTempPK2};${previewFile2}"></button>
+                  <button class="v-icon mdi mdi-code-json light-blue--text" onclick="${updateTempPK3};${previewFile3}"></button>`;
+      return html;
     },
 
     async checkingCQT(){
@@ -664,16 +756,6 @@ export default {
     async onSuccessissueXmlList(data) {
       console.log(data);
       let jsonXML = data.result;
-      // this.txtXMl_T = data.result[0].xml;
-      // this.txtSerial_Number = data.serial_number;
-      // this.txtNOTBEFORE = data.not_before;
-      // this.txtNOTAFTER = data.not_after;
-      // this.txtRAWDATA = data.raw_data;
-      // this.txtISSUER = data.issuer;
-      // this.txtISSUEBY = data.issue_by;
-      // this.txtISSUETO = data.issue_to;
-      // this.txtDN_NAME = data.dn_name;
-      // this.txtDN_MST = data.dn_mst;
 
       const dso_process_check_serialno = {
         type: "list",
@@ -923,9 +1005,25 @@ export default {
       const TrandingTypeList = await this._getCommonCode2(["ACEI0040","ACEIT010","ACEIT020","ACEI0010","ACEIT030"], this.user.PK);
       this.trading_type_list = TrandingTypeList[0];
       this.etaxStatus_list = TrandingTypeList[1];
+      if(TrandingTypeList[1])
+      {
+        this.selected_etaxStatus = 'ALL';
+      }
       this.etaxResult_list = TrandingTypeList[2];
+      if(TrandingTypeList[2])
+      {
+        this.selected_etaxResult = 'ALL'
+      }
       this.status_list = TrandingTypeList[3];
+      if(TrandingTypeList[3])
+      {
+        this.selected_status = '0';
+      }
       this.yn_list = TrandingTypeList[4];
+      if(TrandingTypeList[4])
+      {
+        this.selected_yn = 'ALL';
+      }
 
 
       

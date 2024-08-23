@@ -585,24 +585,14 @@ export default {
     },
 
     previewCellFile() {
-      this.currentRow = document.getElementById("6095730-tempPK").value;
-      console.log(this.currentRow);
-      // const ds = this.$refs.grdCompany.getDataSource();
-      // // console.log("this.currentRow  previewCellFile", this.currentRow);
-      // if (ds.length) {
-      //   const found = ds.find((item) => item.PK == this.currentRow);
-      //   // console.log("previewCellFile", found);
-      //   if (found) {
-      //     this.xmlUrl = found.CQT_DATA_RESULT;
-      //     this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
-      //   }
-      // }
+      this.tei_einvoice_m_pk_row = document.getElementById("6095410-tempPK").value;
+      this.onPreview();
     },
 
     previewCellFile1() {
-      this.currentRow = document.getElementById("6095730-tempPK1").value;
+      this.currentRow = document.getElementById("6095410-tempPK1").value;
       // console.log("this.currentRow  previewCellFile1", this.currentRow);
-      const ds = this.$refs.grdCompany.getDataSource();
+      const ds = this.$refs.gridview.getDataSource();
 
       if (ds.length) {
         const found = ds.find((item) => item.PK == this.currentRow);
@@ -615,9 +605,9 @@ export default {
     },
 
     previewCellFile2() {
-      this.currentRow = document.getElementById("6095730-tempPK2").value;
+      this.currentRow = document.getElementById("6095410-tempPK2").value;
       // console.log("this.currentRow  previewCellFile2", this.currentRow);
-      const ds = this.$refs.grdCompany.getDataSource();
+      const ds = this.$refs.gridview.getDataSource();
 
       if (ds.length) {
         const found = ds.find((item) => item.PK == this.currentRow);
@@ -629,9 +619,9 @@ export default {
       }
     },
     previewCellFile3() {
-      this.currentRow = document.getElementById("6095730-tempPK3").value;
+      this.currentRow = document.getElementById("6095410-tempPK3").value;
       // console.log("this.currentRow  previewCellFile2", this.currentRow);
-      const ds = this.$refs.grdCompany.getDataSource();
+      const ds = this.$refs.gridview.getDataSource();
 
       if (ds.length) {
         const found = ds.find((item) => item.PK == this.currentRow);

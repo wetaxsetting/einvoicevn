@@ -8119,7 +8119,6 @@ class EInvoiceController {
             sale_id: invoice.sale_id,
             msg_his_id: invoice.msg_his_id,
             link_invoice_preview: 'https://dev.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
-
             lookup_code: '',
             status_code: '0',
             status_name: 'Tax code has not been registered',
@@ -8127,16 +8126,7 @@ class EInvoiceController {
             form_no: invoice.form_no,
             serial_no: invoice.serial_no,
             invoice_no: invoice.invoice_no,
-            // user_name: '',
-            // send_date: '',
-            // send_time: '',
-            // mail_form: '',
-            // mail_to: '',
-            // mail_to_cc: '',
             etax_result: '',
-            // etax_status: "",
-            // title: '',
-            // content: '',
           });
           continue;
         }
@@ -8146,7 +8136,6 @@ class EInvoiceController {
             sale_id: invoice.sale_id,
             msg_his_id: invoice.msg_his_id,
             link_invoice_preview: 'https://dev.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
-
             lookup_code: '',
             status_code: '0',
             status_name: 'Not Sent',
@@ -8154,16 +8143,7 @@ class EInvoiceController {
             form_no: invoice.form_no,
             serial_no: invoice.serial_no,
             invoice_no: invoice.invoice_no,
-            // user_name: '',
-            // send_date: '',
-            // send_time: '',
-            // mail_form: '',
-            // mail_to: '',
-            // mail_to_cc: '',
             etax_result: '0',
-            // etax_status: "",
-            // title: '',
-            // content: '',
           });
         } else {
           data_rep.push({
@@ -8178,16 +8158,7 @@ class EInvoiceController {
             form_no: invoice.form_no,
             serial_no: invoice.serial_no,
             invoice_no: invoice.invoice_no,
-            // customer_name: invoice.buyer_comp_name,
-            // send_date: "",
-            // send_time: "",
-            // mail_form: "",
-            // mail_to: "",
-            // mail_to_cc: "",
             etax_result: '0',
-            // etax_status: "",
-            // title: "",
-            // content: "",
           });
         }
       }

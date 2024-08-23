@@ -9735,7 +9735,7 @@ class EInvoiceController {
 
                 ngayTBao = items[k].ndungTBao.ngayTBao;
                 ngayCQTKy = items[k].ndungTBao.ngayCQTKy;
-                maGDichDTu = items[k].ndungTBao.maGDichDTu;
+                maGDichDTu = items[k].ndungTBao.maGDichTNDLieu;
                 if (mLTDiep == '204') {
                   tenGDDTu = 'Thông báo về việc kết quả kiểm tra dữ liệu hóa đơn điện tử';
                   ord = '3';
@@ -19410,7 +19410,7 @@ class EInvoiceController {
 
                 ngayTBao = items[k].ndungTBao.ngayTBao;
                 ngayCQTKy = items[k].ndungTBao.ngayCQTKy;
-                maGDichDTu = items[k].ndungTBao.maGDichDTu;
+                maGDichDTu = items[k].ndungTBao.maGDichTNDLieu;
                 if (mLTDiep == '204') {
                   tenGDDTu = 'Thông báo về việc kết quả kiểm tra dữ liệu hóa đơn điện tử';
                   ord = '3';

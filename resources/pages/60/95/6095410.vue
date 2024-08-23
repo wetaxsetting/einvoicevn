@@ -197,7 +197,7 @@
 <script>
 import ViewEInvoicePDFDialog from "@/components/dialog/ViewEInvoicePDFDialog.vue";
 import ViewEInvoiceXMLDialog from "@/components/dialog/ViewEInvoiceXMLDialog.vue";
-import ViewEInvoiceHistoryDialog from "@/components/dialog/ViewEInvoiceHistoryDialog.vue";
+import ViewEInvoiceHistoryPOSDialog from "@/components/dialog/ViewEInvoiceHistoryPOSDialog.vue";
 
 import MethorSignXML from "@/components/dialog/MethorSignXML.vue";
 export default {
@@ -208,7 +208,7 @@ export default {
     DatePicker: () => import("@/components/control/DatePicker"),
     "view-einvoice-xml-dialog": ViewEInvoiceXMLDialog,
     "view-einvoice-pdf-dialog": ViewEInvoicePDFDialog,
-    "view-einvoice-history-dialog": ViewEInvoiceHistoryDialog,
+    "view-einvoice-history-dialog": ViewEInvoiceHistoryPOSDialog,
     "methor-sign-x-m-l-dialog": MethorSignXML,
   },
   data: () => ({
@@ -280,16 +280,6 @@ export default {
   }),
 
   async created() {
-    // let month = parseInt(new Date().getMonth() + 1);
-    // if (month.length == 1) {
-    //   month = "0" + month;
-    // }
-    // this.dt_from = "" + new Date().getFullYear() + month + "01";
-    // this.dt_to = "" + new Date().getFullYear() + month + "31";
-    // this.pdf_handler = require("./js/EiExcelHandler.js");
-    // if (!!this.pdf_handler) {
-    //   Object.assign(this, this.pdf_handler.default);
-    // }
     await this.getListCodes();
   },
   mounted() {

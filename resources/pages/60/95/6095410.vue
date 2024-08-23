@@ -146,6 +146,15 @@
       @closeManualDialog="manualIsMinimized = false"
     ></view-einvoice-xml-dialog>
 
+    <view-einvoice-history-dialog
+      ref="ViewEInvoiceHistoryDialog"
+      :src_xmlUrl="xmlUrl"
+      :xmlFileNm="xmlFileNm"
+      dwnFile
+      @minimizeDialog="manualIsMinimized = true"
+      @closeManualDialog="manualIsMinimized = false"
+    ></view-einvoice-history-dialog>
+
     <methor-sign-x-m-l-dialog
       ref="MethorSignXML"
       :src_pdfUrl="pdfUrl"
@@ -188,6 +197,8 @@
 <script>
 import ViewEInvoicePDFDialog from "@/components/dialog/ViewEInvoicePDFDialog.vue";
 import ViewEInvoiceXMLDialog from "@/components/dialog/ViewEInvoiceXMLDialog.vue";
+import ViewEInvoiceHistoryDialog from "@/components/dialog/ViewEInvoiceHistoryDialog.vue";
+
 import MethorSignXML from "@/components/dialog/MethorSignXML.vue";
 export default {
   layout: "default",
@@ -197,6 +208,7 @@ export default {
     DatePicker: () => import("@/components/control/DatePicker"),
     "view-einvoice-xml-dialog": ViewEInvoiceXMLDialog,
     "view-einvoice-pdf-dialog": ViewEInvoicePDFDialog,
+    "view-einvoice-history-dialog": ViewEInvoiceHistoryDialog,
     "methor-sign-x-m-l-dialog": MethorSignXML,
   },
   data: () => ({
@@ -589,34 +601,24 @@ export default {
       this.onPreview();
     },
 
-    previewCellFile1() {
-      this.currentRow = document.getElementById("6095410-tempPK1").value;
-      // console.log("this.currentRow  previewCellFile1", this.currentRow);
-      const ds = this.$refs.gridview.getDataSource();
-
-      if (ds.length) {
-        const found = ds.find((item) => item.PK == this.currentRow);
-        // console.log("previewCellFile1", found);
-        if (found) {
-          this.$refs.ViewEIXMLCQTDialog.pk = found.PK;
-          this.$refs.ViewEIXMLCQTDialog.dialogIsShow = true;
-        }
+    async previewCellFile1() {
+      this.tei_einvoice_m_pk_row = document.getElementById("6095410-tempPK1").value;
+      try {
+        var link = document.createElement('a');
+        link.href = await this.onGetUrlPDF();
+        link.download = `${this.invoiceInfo.buyer_taxcode + "_" + this.invoiceInfo.voucher_no}.pdf`;
+        link.dispatchEvent(new MouseEvent('click'));
+      } catch (error) {
+        this.showNotification("danger", "onDownload-catch exception:", error.message, "", 3000);
+        console.log("onDownload-catch exception:", error.message)
       }
     },
 
     previewCellFile2() {
       this.currentRow = document.getElementById("6095410-tempPK2").value;
-      // console.log("this.currentRow  previewCellFile2", this.currentRow);
-      const ds = this.$refs.gridview.getDataSource();
 
-      if (ds.length) {
-        const found = ds.find((item) => item.PK == this.currentRow);
-        // console.log("previewCellFile2", found);
-        if (found) {
-          this.$refs.ViewTransaction.pk = found.PK;
-          this.$refs.ViewTransaction.dialogIsShow = true;
-        }
-      }
+      this.$refs.ViewEInvoiceHistoryDialog.dialogIsShow = true;
+  
     },
     previewCellFile3() {
       this.currentRow = document.getElementById("6095410-tempPK3").value;
@@ -639,16 +641,13 @@ export default {
       const updateTempPK = `document.getElementById('6095410-tempPK').value = ${rowData.PK}; document.getElementById('6095410-tempPK1').value = ''; document.getElementById('6095410-tempPK2').value = ''; document.getElementById('6095410-tempPK3').value = ''`;
       const updateTempPK1 = `document.getElementById('6095410-tempPK').value = ''; document.getElementById('6095410-tempPK1').value = ${rowData.PK}; document.getElementById('6095410-tempPK2').value = ''; document.getElementById('6095410-tempPK3').value = ''`;
       const updateTempPK2 = `document.getElementById('6095410-tempPK').value = ''; document.getElementById('6095410-tempPK1').value = ''; document.getElementById('6095410-tempPK2').value = ${rowData.PK}; document.getElementById('6095410-tempPK3').value = ''`;
-      const updateTempPK3 = `document.getElementById('6095410-tempPK').value = ''; document.getElementById('6095410-tempPK1').value = ''; document.getElementById('6095410-tempPK2').value = ''; document.getElementById('6095410-tempPK3').value = ${rowData.PK}`;
       let previewFile = `document.getElementById('6095410-btnPrview').click()`;
       let previewFile1 = `document.getElementById('6095410-btnPrview1').click()`;
       let previewFile2 = `document.getElementById('6095410-btnPrview2').click()`;
-      let previewFile3 = `document.getElementById('6095410-btnPrview3').click()`;
 
       let html = `<button class="v-icon mdi mdi-eye light-blue--text px-4" onclick="${updateTempPK};${previewFile}"></button>
-                  <button class="v-icon mdi mdi-file-document light-blue--text px-1" onclick="${updateTempPK1};${previewFile1}"></button>
-                  <button class="v-icon mdi mdi-checkbox-marked-circle-outline light-blue--text px-4" onclick="${updateTempPK2};${previewFile2}"></button>
-                  <button class="v-icon mdi mdi-code-json light-blue--text" onclick="${updateTempPK3};${previewFile3}"></button>`;
+                  <button class="v-icon mdi mdi-download light-blue--text px-1" onclick="${updateTempPK1};${previewFile1}"></button>
+                  <button class="v-icon mdi mdi-reload light-blue--text px-4" onclick="${updateTempPK2};${previewFile2}"></button>`;
       return html;
     },
 
@@ -883,6 +882,39 @@ export default {
       }
     },
 
+    async onGetUrlPDF() {
+      let res_url = "";
+      if(this.tei_einvoice_m_pk_row != "")
+      {
+        if( Number(this.selected_company) < 943 )
+        {
+          let res_url = await this.$axios.$post("/einvoice/view-pdf", {
+              responseType: "json",
+              rep_key: this.tei_einvoice_m_pk_row,
+              type: "C"
+            });
+          if(res_url.success)
+          {
+            res_url = res_url.data;
+          }
+        }else
+        {
+          let res_url = await this.$axios.$post("/einvoice/general-url-pdf", {
+              responseType: "json",
+              tei_wt_sale_bill_pk: this.tei_einvoice_m_pk_row,
+            });
+          if(res_url.success)
+          {
+            res_url = res_url.data;
+          }
+        }
+      }else
+      {
+        this.showNotification("warning", this.$t("no_row_selected"), '');
+      }
+      return res_url;
+    },
+
     onAfterLoad() {
       let gridArray = [];
       this.tot_net_tr_amt = 0;
@@ -936,62 +968,6 @@ export default {
         }
       }
 
-      // const dso_etaxStatus_list = {
-      //   type: "list",
-      //   selpro: "EI_SEL_6095090_ETAX_STATUS",
-      //   para: [this.selected_company],
-      // };
-      // const checkeTaxStatus = await this._dsoCall(dso_etaxStatus_list, "select", false);
-      // if (checkeTaxStatus != null) {
-      //   if (checkeTaxStatus.length > 0) {
-      //     this.etaxStatus_list = checkeTaxStatus;
-      //     this.selected_etaxStatus = this.etaxStatus_list[0].CODE;
-      //   }
-      // }
-
-      // const dso_etaxResult_list = {
-      //   type: "list",
-      //   selpro: "EI_SEL_6095090_ETAX_RESULT",
-      //   para: [this.selected_company],
-      // };
-      // const checkeTaxResult = await this._dsoCall(dso_etaxResult_list, "select", false);
-      // if (checkeTaxResult != null) {
-      //   if (checkeTaxResult.length > 0) {
-      //     this.etaxResult_list = checkeTaxResult;
-      //     this.selected_etaxResult = this.etaxResult_list[0].CODE;
-      //   }
-      // }
-
-      // const dso_status_list = {
-      //   type: "list",
-      //   selpro: "EI_SEL_6095090_STATUS",
-      // };
-      // const checkStatus = await this._dsoCall(dso_status_list, "select", false);
-      // if (checkStatus != null) {
-      //   if (checkStatus.length > 0) {
-      //     this.status_list = checkStatus;
-      //     this.selected_status = this.status_list[1].CODE;
-
-      //   }
-      // }
-
-      // const dso_directly_list = {
-      //   type: "list",
-      //   selpro: "EI_SEL_6095090_YN",
-      //   para: [this.user.PK],
-      // };
-      // const checkDerictly = await this._dsoCall(
-      //   dso_directly_list,
-      //   "select",
-      //   false
-      // );
-      // if (checkDerictly != null) {
-      //   if (checkDerictly.length > 0) {
-      //     this.yn_list = checkDerictly;
-      //     this.selected_yn = this.yn_list[0].CODE;
-      //   }
-      // }
-
       const TrandingTypeList = await this._getCommonCode2(["ACEI0040","ACEIT010","ACEIT020","ACEI0010","ACEIT030"], this.user.PK);
       this.trading_type_list = TrandingTypeList[0];
       this.etaxStatus_list = TrandingTypeList[1];
@@ -1014,9 +990,6 @@ export default {
       {
         this.selected_yn = 'ALL';
       }
-
-
-      
     },
 
     async getListCode(pos) {

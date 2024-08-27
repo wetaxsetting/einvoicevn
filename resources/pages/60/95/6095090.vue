@@ -776,7 +776,7 @@ export default {
       try {
         var link = document.createElement('a');
         link.href = await this.onGetUrlPDF();
-        link.download = `${this.invoiceInfo.buyer_taxcode + "_" + this.invoiceInfo.voucher_no}.pdf`;
+        link.download = `${this.serialNoIndex + "_" + this.invoiceNoIndex}.pdf`;
         link.dispatchEvent(new MouseEvent('click'));
       } catch (error) {
         this.showNotification("danger", "onDownload-catch exception:", error.message, "", 3000);
@@ -905,6 +905,40 @@ export default {
         console.log("onDownload-catch exception:", error.message)
       }
     },
+
+    async onGetUrlPDF() {
+      let res_url = "";
+      if(this.tei_einvoice_m_pk_row != "")
+      {
+        if( Number(this.selected_company) < 943 )
+        {
+          let res_url = await this.$axios.$post("/einvoice/view-pdf", {
+              responseType: "json",
+              rep_key: this.tei_einvoice_m_pk_row,
+              type: "C"
+            });
+          if(res_url.success)
+          {
+            res_url = res_url.data;
+          }
+        }else
+        {
+          let res_url = await this.$axios.$post("/einvoice/general-url-pdf", {
+              responseType: "json",
+              tei_wt_sale_bill_pk: this.tei_einvoice_m_pk_row,
+            });
+          if(res_url.success)
+          {
+            res_url = res_url.data;
+          }
+        }
+      }else
+      {
+        this.showNotification("warning", this.$t("no_row_selected"), '');
+      }
+      return res_url;
+    },
+
     myCellHTML(row, column, value, cellhtml) {
       let grid = this.$refs.gridview.getControl();
       let rowData = grid.getrowdata(row);

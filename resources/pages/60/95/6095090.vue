@@ -780,7 +780,7 @@ export default {
         {
           this.maTDiepLine0 = "Mã thông điệp: "+ dataTAXResult[i].HIS_NAME;
           this.tenTDiepLine0 = `[${dataTAXResult[i].MESS_CD}] ${dataTAXResult[i].REMARK}`;
-          this.tenTCXuLy = "Webcash Việt Nam";
+          this.tenTCXuLy0 = "Webcash Việt Nam";
           this.tGianLine0 = `${dataTAXResult[i].RECV_TIME}`;
           this.ketQuaTraVeLine0 =  `${dataTAXResult[i].REMARK}`;
           this.dataXML0 = dataTAXResult[i].CQT_DATA_RESULT;

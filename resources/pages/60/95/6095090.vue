@@ -914,7 +914,7 @@ export default {
     },
 
     async onGetUrlPDF() {
-      let res_url = "";
+      let url = "";
       if(this.tei_einvoice_m_pk_row != "")
       {
         if( Number(this.selected_company) < 943 )
@@ -926,7 +926,7 @@ export default {
             });
           if(res_url.success)
           {
-            res_url = res_url.data;
+            url = res_url.data;
           }
         }else
         {
@@ -936,7 +936,7 @@ export default {
             });
           if(res_url.success)
           {
-            res_url = res_url.data;
+            url = res_url.data;
           }
         }
       }else
@@ -944,7 +944,7 @@ export default {
         this.showNotification("warning", this.$t("no_row_selected"), '');
       }
       console.log("onGetUrlPDF res_url  ", res_url);
-      return res_url;
+      return url;
     },
 
     myCellHTML(row, column, value, cellhtml) {

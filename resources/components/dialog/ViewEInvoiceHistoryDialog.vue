@@ -1,5 +1,5 @@
 <template>
-  <v-dialog id="view-einvoice-history-dialog" max-width="800" v-model="dialogIsShow" overlay-opacity="0.1" :origin="origin" :transition="transition" :fullscreen="isMaximized">
+   <v-dialog id="view-einvoice-history-dialog" max-width="800" v-model="dialogIsShow" overlay-opacity="0.1" :origin="origin" :transition="transition" :fullscreen="isMaximized">
     <v-card class="mx-auto" max-width="800" >
       <v-toolbar color="grey" >
         <v-btn icon="mdi-menu"></v-btn>
@@ -25,7 +25,7 @@
       <v-list lines="three" select-strategy="classic">
         <v-list-item value="notifications">
           <v-list-item-title><v-icon class="mdi mdi-arrow-down-bold-circle green--text"></v-icon> 22/08/2024 17:50:18</v-list-item-title> <!--mdi-arrow-up-bold-circle -->
-          <v-list-item-title>
+           <v-list-item-title>
             Cơ quan thuế
           </v-list-item-title>
         </v-list-item>
@@ -45,6 +45,34 @@
     </v-card>
   </v-dialog>
 </template>
+<!-- <template>
+  <v-card id="view-einvoice-history-dialog">
+    <v-layout>
+      <v-navigation-drawer
+        location="right"
+        permanent
+      >
+        <template v-slot:prepend>
+          <v-list-item
+            lines="two"
+            prepend-avatar="https://randomuser.me/api/portraits/women/81.jpg"
+            subtitle="Logged in"
+            title="Jane Smith"
+          ></v-list-item>
+        </template>
+
+        <v-divider></v-divider>
+
+        <v-list density="compact" nav>
+          <v-list-item prepend-icon="mdi-home-city" title="Home" value="home"></v-list-item>
+          <v-list-item prepend-icon="mdi-account" title="My Account" value="account"></v-list-item>
+          <v-list-item prepend-icon="mdi-account-group-outline" title="Users" value="users"></v-list-item>
+        </v-list>
+      </v-navigation-drawer>
+      <v-main style="height: 250px"></v-main>
+    </v-layout>
+  </v-card>
+</template> -->
 <script>
 import JsonViewer from 'vue-json-viewer'
 

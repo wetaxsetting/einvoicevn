@@ -6669,9 +6669,10 @@ class EInvoiceController {
                     message: resMess,
                   };
                 }
-              } else if ((invoice[key].length < 10 || invoice[key].length > 14) && invoice[key]) {
+              } else {
+                //if ((invoice[key].length < 10 || invoice[key].length > 14) && invoice[key]) {
                 status = false;
-                resMess = `${mess1} ${key}. length between 10 and 14}.`;
+                resMess = `${mess1} ${key}. length between 10 and 14.`;
                 return {
                   status,
                   message: resMess,
@@ -6979,9 +6980,10 @@ class EInvoiceController {
                     message: resMess,
                   };
                 }
-              } else if ((invoice[key].length < 10 || invoice[key].length > 14) && invoice[key]) {
+              } else {
+                //if ((invoice[key].length < 10 || invoice[key].length > 14) && invoice[key]) {
                 status = false;
-                resMess = `${mess1} ${key}. length between 10 and 14}.`;
+                resMess = `${mess1} ${key}. length between 10 and 14.`;
                 return {
                   status,
                   message: resMess,
@@ -10676,6 +10678,7 @@ class EInvoiceController {
             master_amount = invoice['total_amt'];
             master_total_amount = invoice['total_payment'];
             if (key == 'seller_taxcode' || key == 'buyer_taxcode') {
+              console.log(`"${invoice[key]}"`);
               if (invoice[key].length == 10) {
                 if (!errorList[`${key}`][10].test(invoice[key])) {
                   status = false;
@@ -10694,9 +10697,10 @@ class EInvoiceController {
                     message: resMess,
                   };
                 }
-              } else if ((invoice[key].length < 10 || invoice[key].length > 14) && invoice[key]) {
+              } else {
+                //if ((invoice[key].length < 10 || invoice[key].length > 14) && invoice[key]) {
                 status = false;
-                resMess = `${mess1} ${key}. length between 10 and 14}.`;
+                resMess = `${mess1} ${key}. length between 10 and 14.`;
                 return {
                   status,
                   message: resMess,

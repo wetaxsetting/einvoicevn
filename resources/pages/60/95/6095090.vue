@@ -83,11 +83,6 @@
           <!-- <BaseCheckbox :label="$t('check_all')" true-value="Y" false-value="N" v-model="check_all" /> -->
         </v-col>
         <v-col lg="7" class="pl-1 d-flex justify-end">
-          <v-btn
-          color="pink"
-          dark
-          @click.stop="drawer = !drawer"
-          ></v-btn>
           <BaseButton icon_type="search" :btn_text="$t('search')" :disabled="isProcessing" @onclick="funcSearch()" />
           <BaseButton icon_type="view" :btn_text="$t('preview')" :disabled="isProcessing" @onclick="onPreview" />
           <BaseButton icon_type="xml" :btn_text="$t('view_xml')" @onclick="onPreviewXml" />
@@ -221,7 +216,37 @@
       </v-list>
       <v-divider></v-divider>
       
-      <v-list lines="three">
+      <v-list lines="three-error" v-if="!showList">
+        <v-list-item value="notifications">
+          <v-list-item-title><v-icon class="mdi mdi-arrow-down-bold-circle green--text"></v-icon> <span v-text="tGianLine2" ></span></v-list-item-title> <!--mdi-arrow-up-bold-circle -->
+           <v-list-item-title v-text ="tenTCXuLy2" class="text-right align-self-center" >
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item value="sound">
+          <v-list-item-title v-text="tenTDiepLine2"></v-list-item-title>
+          <v-list-item-title  class="text-right align-self-center" >
+            <div class="h-100"><span class="ma-2 v-chip theme--light v-size--small red lighten-3 red--text text--darken-3"><span v-text="ketQuaTraVeLine2" class="v-chip__content"></span></span></div>
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item value="sound">
+          <v-list-item-title v-text="soThongBao2"></v-list-item-title>
+          <v-list-item-title  class="text-right align-self-center" >
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item value="sound">
+          <v-list-item-title v-text="moTaLoi2"></v-list-item-title>
+          <v-list-item-title  class="text-right align-self-center" >
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item value="widgets">
+          <v-list-item-title v-text="maTDiepLine2"> </v-list-item-title>
+          <v-list-item-subtitle  class="text-right align-self-center" >
+            <v-icon class="v-icon mdi mdi-download px-4" @click="onDownloadXML2"></v-icon>
+          </v-list-item-subtitle>
+        </v-list-item>
+      </v-list>
+
+      <v-list lines="three" v-if="showList">
         <v-list-item value="notifications">
           <v-list-item-title><v-icon class="mdi mdi-arrow-down-bold-circle green--text"></v-icon> <span v-text="tGianLine2" ></span></v-list-item-title> <!--mdi-arrow-up-bold-circle -->
            <v-list-item-title v-text ="tenTCXuLy2" class="text-right align-self-center" >
@@ -385,11 +410,14 @@ export default {
 
     maTDiepLine2: "",
     tenTDiepLine2: "",
-    tenTCXuLy2:"",
-    tGianLine2:"",
+    tenTCXuLy2: "",
+    tGianLine2: "",
     ketQuaTraVeLine2: "",
-    dataXML2:"",
-    nameXML2:"",
+    dataXML2: "",
+    nameXML2: "",
+    showList: true,
+    soThongBao2: "",
+    moTaLoi2: "",
 
     serialNoIndex:"",
     invoiceNoIndex:""
@@ -695,7 +723,6 @@ export default {
           cellsrenderer: this.myCellHTML
         },
       ];
-
       return _headerObj;
     }
   },

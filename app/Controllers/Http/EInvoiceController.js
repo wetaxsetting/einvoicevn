@@ -6669,7 +6669,7 @@ class EInvoiceController {
                     message: resMess,
                   };
                 }
-              } else {
+              } else if (invoice[key]) {
                 //if ((invoice[key].length < 10 || invoice[key].length > 14) && invoice[key]) {
                 status = false;
                 resMess = `${mess1} ${key}. length between 10 and 14.`;
@@ -6980,7 +6980,7 @@ class EInvoiceController {
                     message: resMess,
                   };
                 }
-              } else {
+              } else if (invoice[key]) {
                 //if ((invoice[key].length < 10 || invoice[key].length > 14) && invoice[key]) {
                 status = false;
                 resMess = `${mess1} ${key}. length between 10 and 14.`;
@@ -10697,7 +10697,7 @@ class EInvoiceController {
                     message: resMess,
                   };
                 }
-              } else {
+              } else if (invoice[key]) {
                 //if ((invoice[key].length < 10 || invoice[key].length > 14) && invoice[key]) {
                 status = false;
                 resMess = `${mess1} ${key}. length between 10 and 14.`;
@@ -10867,17 +10867,17 @@ class EInvoiceController {
             }
           }
         }
-
-        if (master_amount !== detail_amount && master_amount !== null) {
+        console.log('master_amount ', master_amount, 'detail_amount ', detail_amount);
+        if (master_amount != detail_amount && master_amount != null) {
           status = false;
-          resMess = `${mess1} amount xx is: ${master_amount}  !== ${detail_amount}`;
+          resMess = `${mess1} amount is: ${master_amount}  !== ${detail_amount}`;
           return {
             status,
             message: resMess,
           };
         }
 
-        if (master_amount_vat !== detail_amount_vat && master_amount_vat !== null) {
+        if (master_amount_vat != detail_amount_vat && master_amount_vat != null) {
           status = false;
           resMess = `${mess1} amount vat is: ${master_amount_vat} !== ${detail_amount_vat}`;
           return {
@@ -10888,7 +10888,7 @@ class EInvoiceController {
         //vat_total_amount = vat_amount_vat + vat_amout;
         detail_total_amount = detail_amount + detail_amount_vat;
 
-        if (master_total_amount !== detail_total_amount && master_total_amount !== null) {
+        if (master_total_amount != detail_total_amount && master_total_amount != null) {
           status = false;
           resMess = `${mess1} amount total is: ${master_total_amount}  !== ${detail_total_amount}`;
           return {

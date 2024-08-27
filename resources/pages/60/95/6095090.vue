@@ -236,7 +236,7 @@
         <v-list-item value="widgets">
           <v-list-item-title v-text="maTDiepLine2"> </v-list-item-title>
           <v-list-item-subtitle  class="text-right align-self-center" >
-            <v-icon class="v-icon mdi mdi-download px-4"></v-icon>
+            <v-icon class="v-icon mdi mdi-download px-4" @click="onDownloadXML2"></v-icon>
           </v-list-item-subtitle>
         </v-list-item>
       </v-list>
@@ -256,7 +256,7 @@
         <v-list-item value="widgets">
           <v-list-item-subtitle v-text="maTDiepLine1"></v-list-item-subtitle>
           <v-list-item-title  class="text-right align-self-center" >
-            <v-icon class="v-icon mdi mdi-download px-4"></v-icon>
+            <v-icon class="v-icon mdi mdi-download px-4" @click="onDownloadXML1"></v-icon>
           </v-list-item-title>
         </v-list-item>
       </v-list>
@@ -276,7 +276,7 @@
         <v-list-item value="widgets">
           <v-list-item-subtitle v-text="maTDiepLine0"></v-list-item-subtitle>
           <v-list-item-title  class="text-right align-self-center" >
-            <v-icon class="v-icon mdi mdi-download px-4" target="_blank" :href="dataXML0"></v-icon>
+            <v-icon class="v-icon mdi mdi-download px-4" @click="onDownloadXML0"></v-icon>
           </v-list-item-title>
         </v-list-item>
       </v-list>
@@ -373,6 +373,7 @@ export default {
     tGianLine0:"",
     ketQuaTraVeLine0: "",
     dataXML0:"",
+    nameXML0:"",
 
     maTDiepLine1: "",
     tenTDiepLine1: "",
@@ -380,6 +381,7 @@ export default {
     tGianLine1:"",
     ketQuaTraVeLine1: "",
     dataXML1:"",
+    nameXML1:"",
 
     maTDiepLine2: "",
     tenTDiepLine2: "",
@@ -387,6 +389,7 @@ export default {
     tGianLine2:"",
     ketQuaTraVeLine2: "",
     dataXML2:"",
+    nameXML2:"",
 
     serialNoIndex:"",
     invoiceNoIndex:""
@@ -775,29 +778,33 @@ export default {
 
         if(dataTAXResult[i].ORD == 1 )
         {
-          this.maTDiepLine0 = "Mã thông điệp "+ dataTAXResult[i].HIS_NAME;
+          this.maTDiepLine0 = "Mã thông điệp: "+ dataTAXResult[i].HIS_NAME;
           this.tenTDiepLine0 = `[${dataTAXResult[i].MESS_CD}] ${dataTAXResult[i].REMARK}`;
           this.tenTCXuLy = "Webcash Việt Nam";
           this.tGianLine0 = `${dataTAXResult[i].RECV_TIME}`;
           this.ketQuaTraVeLine0 =  `${dataTAXResult[i].REMARK}`;
           this.dataXML0 = dataTAXResult[i].CQT_DATA_RESULT;
+          this.nameXML0 = dataTAXResult[i].HIS_NAME;
         }else if(dataTAXResult[i].ORD == 2 )
         {
-          this.maTDiepLine1 = "Mã thông điệp "+ dataTAXResult[i].HIS_NAME;
+          this.maTDiepLine1 = "Mã thông điệp: "+ dataTAXResult[i].HIS_NAME;
           this.tenTDiepLine1 = `[${dataTAXResult[i].MESS_CD}] ${dataTAXResult[i].REMARK}`;
           this.tenTCXuLy1 = "Cơ quan Thuế";
           this.tGianLine1 = `${dataTAXResult[i].RECV_TIME}`;
           this.ketQuaTraVeLine1 = `${dataTAXResult[i].REMARK}`;
           this.dataXML1 = dataTAXResult[i].CQT_DATA_RESULT;
+          this.nameXML1 = dataTAXResult[i].HIS_NAME;
+
         }else if(dataTAXResult[i].ORD == 3 )
         {
-          this.maTDiepLine2 = "Mã thông điệp "+ dataTAXResult[i].HIS_NAME;
+          this.maTDiepLine2 = "Mã thông điệp: "+ dataTAXResult[i].HIS_NAME;
           this.tenTDiepLine2 = `[${dataTAXResult[i].MESS_CD}] ${dataTAXResult[i].REMARK}`;
           this.tenTCXuLy2 = "Cơ quan Thuế";
           this.tGianLine2 = `${dataTAXResult[i].RECV_TIME}`;
           this.ketQuaTraVeLine2 = `${dataTAXResult[i].REMARK}`;
           this.dataXML2 = dataTAXResult[i].CQT_DATA_RESULT;
-          
+          this.nameXML2 = dataTAXResult[i].HIS_NAME;
+
         }
       }
       this.drawer = !this.drawer;
@@ -820,9 +827,42 @@ export default {
 
     onDownloadXML0()
     {
-
+      try {
+        var link = document.createElement('a');
+        link.href = this.dataXML0;
+        link.download = `${this.nameXML0}.xml`;
+        link.dispatchEvent(new MouseEvent('click'));
+      } catch (error) {
+        this.showNotification("danger", "onDownload-catch exception:", error.message, "", 3000);
+        console.log("onDownload-catch exception:", error.message)
+      }
     },
 
+    onDownloadXML1()
+    {
+      try {
+        var link = document.createElement('a');
+        link.href = this.dataXML1;
+        link.download = `${this.nameXML1}.xml`;
+        link.dispatchEvent(new MouseEvent('click'));
+      } catch (error) {
+        this.showNotification("danger", "onDownload-catch exception:", error.message, "", 3000);
+        console.log("onDownload-catch exception:", error.message)
+      }
+    },
+
+    onDownloadXML2()
+    {
+      try {
+        var link = document.createElement('a');
+        link.href = this.dataXML2;
+        link.download = `${this.nameXML2}.xml`;
+        link.dispatchEvent(new MouseEvent('click'));
+      } catch (error) {
+        this.showNotification("danger", "onDownload-catch exception:", error.message, "", 3000);
+        console.log("onDownload-catch exception:", error.message)
+      }
+    },
     myCellHTML(row, column, value, cellhtml) {
       let grid = this.$refs.gridview.getControl();
       let rowData = grid.getrowdata(row);
@@ -1103,61 +1143,6 @@ export default {
         }
       }
 
-      // const dso_etaxStatus_list = {
-      //   type: "list",
-      //   selpro: "EI_SEL_6095090_ETAX_STATUS",
-      //   para: [this.selected_company],
-      // };
-      // const checkeTaxStatus = await this._dsoCall(dso_etaxStatus_list, "select", false);
-      // if (checkeTaxStatus != null) {
-      //   if (checkeTaxStatus.length > 0) {
-      //     this.etaxStatus_list = checkeTaxStatus;
-      //     this.selected_etaxStatus = this.etaxStatus_list[0].CODE;
-      //   }
-      // }
-
-      // const dso_etaxResult_list = {
-      //   type: "list",
-      //   selpro: "EI_SEL_6095090_ETAX_RESULT",
-      //   para: [this.selected_company],
-      // };
-      // const checkeTaxResult = await this._dsoCall(dso_etaxResult_list, "select", false);
-      // if (checkeTaxResult != null) {
-      //   if (checkeTaxResult.length > 0) {
-      //     this.etaxResult_list = checkeTaxResult;
-      //     this.selected_etaxResult = this.etaxResult_list[0].CODE;
-      //   }
-      // }
-
-      // const dso_status_list = {
-      //   type: "list",
-      //   selpro: "EI_SEL_6095090_STATUS",
-      // };
-      // const checkStatus = await this._dsoCall(dso_status_list, "select", false);
-      // if (checkStatus != null) {
-      //   if (checkStatus.length > 0) {
-      //     this.status_list = checkStatus;
-      //     this.selected_status = this.status_list[1].CODE;
-
-      //   }
-      // }
-
-      // const dso_directly_list = {
-      //   type: "list",
-      //   selpro: "EI_SEL_6095090_YN",
-      //   para: [this.user.PK],
-      // };
-      // const checkDerictly = await this._dsoCall(
-      //   dso_directly_list,
-      //   "select",
-      //   false
-      // );
-      // if (checkDerictly != null) {
-      //   if (checkDerictly.length > 0) {
-      //     this.yn_list = checkDerictly;
-      //     this.selected_yn = this.yn_list[0].CODE;
-      //   }
-      // }
       const TrandingTypeList = await this._getCommonCode2(["ACEI0040","ACEIT010","ACEIT020","ACEI0010","ACEIT030"], this.user.PK);
       this.trading_type_list = TrandingTypeList[0];
       this.etaxStatus_list = TrandingTypeList[1];

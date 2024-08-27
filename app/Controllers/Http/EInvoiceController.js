@@ -6669,7 +6669,8 @@ class EInvoiceController {
                     message: resMess,
                   };
                 }
-              } else if ((invoice[key].length < 10 || invoice[key].length > 14) && invoice[key]) {
+              } else if (invoice[key]) {
+                // ((invoice[key].length < 10 || invoice[key].length > 14) && invoice[key]) {
                 status = false;
                 resMess = `${mess1} ${key}. length between 10 and 14}.`;
                 return {
@@ -6843,20 +6844,20 @@ class EInvoiceController {
           }
         }
 
-        if (master_amount !== detail_amount && master_amount !== vat_amout) {
-          //master_amount !== vat_amout &&
+        if (master_amount != detail_amount && master_amount != vat_amout) {
+          //master_amount != vat_amout &&
           status = false;
-          resMess = `${mess1} amount is: ${master_amount} !== ${vat_amout} !== ${detail_amount}`; //
+          resMess = `${mess1} amount is: ${master_amount} != ${vat_amout} != ${detail_amount}`; //
           return {
             status,
             message: resMess,
           };
         }
 
-        if (master_amount_vat !== detail_amount_vat && master_amount_vat !== vat_amount_vat) {
-          //master_amount_vat !== vat_amount_vat &&
+        if (master_amount_vat != detail_amount_vat && master_amount_vat != vat_amount_vat) {
+          //master_amount_vat != vat_amount_vat &&
           status = false;
-          resMess = `${mess1} amount vat is: ${master_amount_vat} !== ${vat_amount_vat} !== ${detail_amount_vat}`; //
+          resMess = `${mess1} amount vat is: ${master_amount_vat} != ${vat_amount_vat} != ${detail_amount_vat}`; //
           return {
             status,
             message: resMess,
@@ -6865,10 +6866,10 @@ class EInvoiceController {
         vat_total_amount = vat_amount_vat + vat_amout;
         detail_total_amount = detail_amount + detail_amount_vat;
         //console.log('++++++++++++ ', master_total_amount, vat_total_amount, detail_total_amount);
-        if (master_total_amount !== detail_total_amount && master_total_amount !== vat_total_amount) {
-          //master_total_amount !== vat_total_amount &&
+        if (master_total_amount != detail_total_amount && master_total_amount != vat_total_amount) {
+          //master_total_amount != vat_total_amount &&
           status = false;
-          resMess = `${mess1} amount total is: ${master_total_amount} !== ${vat_total_amount} !== ${detail_total_amount}`; //
+          resMess = `${mess1} amount total is: ${master_total_amount} != ${vat_total_amount} != ${detail_total_amount}`; //
           return {
             status,
             message: resMess,
@@ -6979,7 +6980,8 @@ class EInvoiceController {
                     message: resMess,
                   };
                 }
-              } else if ((invoice[key].length < 10 || invoice[key].length > 14) && invoice[key]) {
+              } else if (invoice[key]) {
+                // ((invoice[key].length < 10 || invoice[key].length > 14) && invoice[key]) {
                 status = false;
                 resMess = `${mess1} ${key}. length between 10 and 14}.`;
                 return {
@@ -7145,10 +7147,10 @@ class EInvoiceController {
             }
           }
         }
-        if (master_amount !== detail_amount && master_amount !== null) {
-          //master_amount !== vat_amout &&
+        if (master_amount != detail_amount && master_amount != null) {
+          //master_amount != vat_amout &&
           status = false;
-          resMess = `${mess1} amount is: ${master_amount} !== ${vat_amout} !== ${detail_amount}`; //
+          resMess = `${mess1} amount is: ${master_amount} != ${vat_amout} != ${detail_amount}`; //
           return {
             status,
             message: resMess,
@@ -7159,7 +7161,7 @@ class EInvoiceController {
 
         if (master_amount_vat != detail_amount_vat && master_amount_vat != vat_amount_vat && master_amount_vat != null) {
           status = false;
-          resMess = `${mess1} amount vat is: ${master_amount_vat} !== ${vat_amount_vat} !== ${detail_amount_vat}`;
+          resMess = `${mess1} amount vat is: ${master_amount_vat} != ${vat_amount_vat} != ${detail_amount_vat}`;
           return {
             status,
             message: resMess,
@@ -7171,7 +7173,7 @@ class EInvoiceController {
 
         if (master_total_amount != detail_total_amount && master_total_amount != vat_total_amount && master_total_amount != null) {
           status = false;
-          resMess = `${mess1} amount total is: ${master_total_amount} !== ${vat_total_amount} !== ${detail_total_amount}`; //
+          resMess = `${mess1} amount total is: ${master_total_amount} != ${vat_total_amount} != ${detail_total_amount}`; //
           return {
             status,
             message: resMess,
@@ -10721,7 +10723,8 @@ class EInvoiceController {
                     message: resMess,
                   };
                 }
-              } else if ((invoice[key].length < 10 || invoice[key].length > 14) && invoice[key]) {
+              } else if (invoice[key]) {
+                // ((invoice[key].length < 10 || invoice[key].length > 14) && invoice[key]) {
                 status = false;
                 resMess = `${mess1} ${key}. length between 10 and 14}.`;
                 return {
@@ -10891,18 +10894,18 @@ class EInvoiceController {
           }
         }
 
-        if (master_amount !== detail_amount && master_amount !== null) {
+        if (master_amount != detail_amount && master_amount != null) {
           status = false;
-          resMess = `${mess1} amount xx is: ${master_amount}  !== ${detail_amount}`;
+          resMess = `${mess1} amount xx is: ${master_amount}  != ${detail_amount}`;
           return {
             status,
             message: resMess,
           };
         }
 
-        if (master_amount_vat !== detail_amount_vat && master_amount_vat !== null) {
+        if (master_amount_vat != detail_amount_vat && master_amount_vat != null) {
           status = false;
-          resMess = `${mess1} amount vat is: ${master_amount_vat} !== ${detail_amount_vat}`;
+          resMess = `${mess1} amount vat is: ${master_amount_vat} != ${detail_amount_vat}`;
           return {
             status,
             message: resMess,
@@ -10911,9 +10914,9 @@ class EInvoiceController {
         //vat_total_amount = vat_amount_vat + vat_amout;
         detail_total_amount = detail_amount + detail_amount_vat;
 
-        if (master_total_amount !== detail_total_amount && master_total_amount !== null) {
+        if (master_total_amount != detail_total_amount && master_total_amount != null) {
           status = false;
-          resMess = `${mess1} amount total is: ${master_total_amount}  !== ${detail_total_amount}`;
+          resMess = `${mess1} amount total is: ${master_total_amount}  != ${detail_total_amount}`;
           return {
             status,
             message: resMess,

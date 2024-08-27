@@ -305,7 +305,7 @@ export default {
           dataType: "text",
         },
         {
-          dataField: "TOTAL_AMT",
+          dataField: "TOT_TR_AMT",
           caption: this.$t("total_amount"),
           formatFloat: 2,
           dataType: "number",
@@ -323,7 +323,7 @@ export default {
           dataType: "number",
         },
         {
-          dataField: "TOTAL_VAT_AMT",
+          dataField: "TOT_VAT_TR_AMT",
           caption: this.$t("vat_amount"),
           formatFloat: 2,
           dataType: "number",

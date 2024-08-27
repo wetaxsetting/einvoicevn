@@ -776,11 +776,10 @@ export default {
       try {
 
         let url = await this.onGetUrlPDF();
-        console.log("url ", url);
         const link = document.createElement('a');
         link.href = url;
         link.target = '_blank';
-        link.download = 'my-pdf-file.pdf';
+        link.download = `${this.serialNoIndex.replace("Ký hiệu: ", "")}_${this.invoiceNoIndex.replace("Số: ","")}.pdf`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -943,7 +942,6 @@ export default {
       {
         this.showNotification("warning", this.$t("no_row_selected"), '');
       }
-      console.log("onGetUrlPDF res_url  ", url);
       return url;
     },
 

@@ -774,13 +774,14 @@ export default {
     async previewCellFile1() {
       this.tei_einvoice_m_pk_row = document.getElementById("6095090-tempPK1").value;
       try {
-        var a = document.createElement('a');
-        a.href = await this.onGetUrlPDF();
-        a.download = `${this.serialNoIndex.replace("Ký hiệu: ","") + "_" + this.invoiceNoIndex.replace("Số: ","")}.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        const link = document.createElement('a');
+        link.href = await this.onGetUrlPDF();
+        link.target = '_blank';
+        link.download = 'my-pdf-file.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
 
       } catch (error) {
         this.showNotification("danger", "onDownload-catch exception:", error.message, "", 3000);

@@ -17383,6 +17383,7 @@ class EInvoiceController {
         const jsonDSHHDVu = await transform(p_xml_content, templateDSHHDVu);
         //console.log(jsonDSHHDVu)
         for (let i = 0; i < jsonDSHHDVu.length; i++) {
+          console.log(JSON.stringify(jsonDSHHDVu[i]));
           const detailPara = [
             master[0].PK,
             jsonDSHHDVu[i].TChat,
@@ -17399,7 +17400,8 @@ class EInvoiceController {
             jsonDSHHDVu[i].TTKhac[0].DLieu,
             master[0].TEI_EINVOICE_M_PK,
           ];
-          const detail = await DBService.callProcCursor('WT_UPD_TEI_WT_INVOICE_D', detailPara, p_language, p_crt_by);
+
+          await DBService.callProcCursor('WT_UPD_TEI_WT_INVOICE_D', detailPara, p_language, p_crt_by);
           // console.log("detail", detail);
         }
 
@@ -17407,7 +17409,7 @@ class EInvoiceController {
         //   req_wt_key : ,
         // ]
 
-        const detail_vat = await DBService.callProcCursor('WT_UPD_TEI_WT_INVOICE_D_VAT', [master[0].PK], p_language, p_crt_by);
+        await DBService.callProcCursor('WT_UPD_TEI_WT_INVOICE_D_VAT', [master[0].PK], p_language, p_crt_by);
 
         return (result_extra = {
           PK: master[0].PK,

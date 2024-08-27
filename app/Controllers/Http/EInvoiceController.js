@@ -243,7 +243,7 @@ class EInvoiceController {
         };
         let body_binding = {
           EINVOICE_LOOKUP_URL:
-            '<a href="http://dev.einvoicepro.webcashvietnam.com/lookup-einvoice" rel="noopener noreferrer" target="_blank">http://dev.einvoicepro.webcashvietnam.com/lookup-einvoice</a>',
+            '<a href="http://test.einvoicepro.webcashvietnam.com/lookup-einvoice" rel="noopener noreferrer" target="_blank">http://test.einvoicepro.webcashvietnam.com/lookup-einvoice</a>',
 
           TRADE_CODE: trade_code,
         };
@@ -7696,7 +7696,7 @@ class EInvoiceController {
         else {
           //console.log("tei_wt_sale_bill_pk NOEXIT ", tei_wt_sale_bill_pk);
           data_rep.push({
-            link_invoice_preview: 'https://dev.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
+            link_invoice_preview: 'https://test.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
 
             security_code: '',
             status_code: '0',
@@ -7721,7 +7721,7 @@ class EInvoiceController {
 
         if (!invoice.buyer_email && !invoice.buyer_email_cc) {
           data_rep.push({
-            link_invoice_preview: 'https://dev.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
+            link_invoice_preview: 'https://test.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
 
             security_code: '',
             status_code: '0',
@@ -7763,7 +7763,7 @@ class EInvoiceController {
             );
 
             data_rep.push({
-              link_invoice_preview: 'https://dev.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
+              link_invoice_preview: 'https://test.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
 
               lookup_code: '1234567bac',
               status_code: '1',
@@ -7801,7 +7801,7 @@ class EInvoiceController {
               p_crt_by,
             );
             data_rep.push({
-              link_invoice_preview: 'https://dev.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
+              link_invoice_preview: 'https://test.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
 
               security_code: '1234567bac',
               status_code: '0',
@@ -8120,7 +8120,7 @@ class EInvoiceController {
           data_rep.push({
             sale_id: invoice.sale_id,
             msg_his_id: invoice.msg_his_id,
-            link_invoice_preview: 'https://dev.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
+            link_invoice_preview: 'https://test.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
 
             lookup_code: '',
             status_code: '0',
@@ -8147,7 +8147,7 @@ class EInvoiceController {
           data_rep.push({
             sale_id: invoice.sale_id,
             msg_his_id: invoice.msg_his_id,
-            link_invoice_preview: 'https://dev.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
+            link_invoice_preview: 'https://test.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
 
             lookup_code: '',
             status_code: '0',
@@ -8171,7 +8171,7 @@ class EInvoiceController {
           data_rep.push({
             sale_id: invoice.sale_id,
             msg_his_id: invoice.msg_his_id,
-            link_invoice_preview: 'https://dev.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
+            link_invoice_preview: 'https://test.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
 
             lookup_code: rtnValue.p_rtn_cur[0].LOOKUP_CODE,
             status_code: '3',
@@ -8273,7 +8273,7 @@ class EInvoiceController {
 
           if (!invoice.buyer_email && !invoice.buyer_email_cc && !rtnValue.p_rtn_cur[0].BUYER_EMAIL && !rtnValue.p_rtn_cur[0].BUYER_EMAIL_CC) {
             data_r.push({
-              link_invoice_preview: 'https://dev.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
+              link_invoice_preview: 'https://test.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
 
               lookup_code: '1234567bac',
               seller_taxcode: tax_code,
@@ -8328,7 +8328,7 @@ class EInvoiceController {
               //console.log("rtnValueSendMail  ", rtnValueSendMail);
 
               data_r.push({
-                link_invoice_preview: 'https://dev.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
+                link_invoice_preview: 'https://test.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
                 lookup_code: '1234567bac',
                 seller_taxcode: tax_code,
                 form_no: invoice.form_no,
@@ -8363,7 +8363,7 @@ class EInvoiceController {
               );
 
               data_r.push({
-                link_invoice_preview: 'https://dev.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
+                link_invoice_preview: 'https://test.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
 
                 lookup_code: '1234567bac',
                 seller_taxcode: tax_code,
@@ -8386,7 +8386,7 @@ class EInvoiceController {
         } else {
           //return response.send(Utils.response(false, 'Order einvoice not exit'));
           data_r.push({
-            link_invoice_preview: 'https://dev.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
+            link_invoice_preview: 'https://test.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
             lookup_code: '1234567bac',
             seller_taxcode: tax_code,
             form_no: invoice.form_no,
@@ -8499,7 +8499,7 @@ class EInvoiceController {
             data_r.push({
               sale_id: invoice.sale_id,
               msg_his_id: invoice.msg_his_id,
-              link_invoice_preview: 'https://dev.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
+              link_invoice_preview: 'https://test.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
               lookup_code: rtnValue?.p_rtn_cur?.[0]?.LOOKUP_CD,
               seller_taxcode: tax_code,
               form_no: invoice.form_no,
@@ -8523,7 +8523,7 @@ class EInvoiceController {
           data_r.push({
             sale_id: invoice.sale_id,
             msg_his_id: invoice.msg_his_id,
-            link_invoice_preview: 'https://dev.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
+            link_invoice_preview: 'https://test.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
 
             lookup_code: rtnValue?.p_rtn_cur?.[0]?.LOOKUP_CD,
             seller_taxcode: tax_code,
@@ -8547,7 +8547,7 @@ class EInvoiceController {
           data_r.push({
             sale_id: invoice.sale_id,
             msg_his_id: invoice.msg_his_id,
-            link_invoice_preview: 'https://dev.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
+            link_invoice_preview: 'https://test.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
 
             lookup_code: '',
             seller_taxcode: tax_code,
@@ -8661,7 +8661,7 @@ class EInvoiceController {
             data_r.push({
               sale_id: invoice.sale_id,
               msg_his_id: invoice.msg_his_id,
-              link_invoice_preview: 'https://dev.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
+              link_invoice_preview: 'https://test.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
 
               lookup_code: rtnValue?.p_rtn_cur?.[0]?.LOOKUP_CD,
               seller_taxcode: tax_code,
@@ -8686,7 +8686,7 @@ class EInvoiceController {
           data_r.push({
             sale_id: invoice.sale_id,
             msg_his_id: invoice.msg_his_id,
-            link_invoice_preview: 'https://dev.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
+            link_invoice_preview: 'https://test.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
 
             lookup_code: rtnValue?.p_rtn_cur?.[0]?.LOOKUP_CD,
             seller_taxcode: tax_code,
@@ -8710,7 +8710,7 @@ class EInvoiceController {
           data_r.push({
             sale_id: invoice.sale_id,
             msg_his_id: invoice.msg_his_id,
-            link_invoice_preview: 'https://dev.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
+            link_invoice_preview: 'https://test.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
             lookup_code: '',
             seller_taxcode: tax_code,
             form_no: invoice.form_no,
@@ -13208,7 +13208,7 @@ class EInvoiceController {
                                             <br/>- Mã CQT của hóa đơn: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link tra cứu: 
-								                            <a href='https://dev.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code=${lookup_code}'>Xem hóa đơn</a>
+								                            <a href='https://test.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code=${lookup_code}'>Xem hóa đơn</a>
 
                                             <br />- Link download file PDF: 
                                             <a href='${url_pdf}'>Tải file PDF</a>
@@ -13243,7 +13243,7 @@ class EInvoiceController {
                                             <br/>- CQT code of e-invoice: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link lookup: 
-								                            <a href='https://dev.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code=${lookup_code}'>View e-invoice</a>
+								                            <a href='https://test.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code=${lookup_code}'>View e-invoice</a>
 
                                             <br />- Download file PDF link:  
                                             <a href='${url_pdf}'>Download file PDF</a>
@@ -13329,7 +13329,7 @@ class EInvoiceController {
                                             <br/>- Mã CQT của hóa đơn: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link tra cứu: 
-								                            <a href='https://dev.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code=${lookup_code}'>Xem hóa đơn</a>
+								                            <a href='https://test.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code=${lookup_code}'>Xem hóa đơn</a>
 
                                             <br />- Link download file PDF: 
                                             <a href='${url_pdf}'>Tải file PDF</a>
@@ -13401,7 +13401,7 @@ class EInvoiceController {
                                             <br/>- CQT code of e-invoice: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link lookup: 
-								                            <a href='https://dev.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code=${lookup_code}'>View e-invoice</a>
+								                            <a href='https://test.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code=${lookup_code}'>View e-invoice</a>
 
                                             <br />- Download file PDF link:  
                                             <a href='${url_pdf}'>Download file PDF</a>
@@ -13514,7 +13514,7 @@ class EInvoiceController {
                                             <br/>- Mã CQT của hóa đơn: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link tra cứu: 
-								                            <a href='https://dev.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code=${lookup_code}'>Xem hóa đơn</a>
+								                            <a href='https://test.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code=${lookup_code}'>Xem hóa đơn</a>
 
                                             <br />- Link download file PDF: 
                                             <a href='${url_pdf}'>Tải file PDF</a>
@@ -13553,7 +13553,7 @@ class EInvoiceController {
                                             <br/>- CQT code of e-invoice: 
 								                            <b> ${data_invoice.mccqt}</b>
                                             <br/>- Link lookup: 
-								                            <a href='https://dev.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code=${lookup_code}'>View e-invoice</a>
+								                            <a href='https://test.einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code=${lookup_code}'>View e-invoice</a>
 
                                             <br />- Download file PDF link:  
                                             <a href='${url_pdf}'>Download file PDF</a>
@@ -14845,7 +14845,7 @@ class EInvoiceController {
     objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin.push({
       TTruong: 'PortalLink',
       KDLieu: 'string',
-      DLieu: 'https://dev.einvoicepro.webcashvietnam.com/login',
+      DLieu: 'https://test.einvoicepro.webcashvietnam.com/login',
     });
 
     if (dataObject.currency) {

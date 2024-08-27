@@ -775,8 +775,10 @@ export default {
       this.tei_einvoice_m_pk_row = document.getElementById("6095090-tempPK1").value;
       try {
 
+        let url = await this.onGetUrlPDF();
+        console.log("url ", url);
         const link = document.createElement('a');
-        link.href = await this.onGetUrlPDF();
+        link.href = url;
         link.target = '_blank';
         link.download = 'my-pdf-file.pdf';
         document.body.appendChild(link);

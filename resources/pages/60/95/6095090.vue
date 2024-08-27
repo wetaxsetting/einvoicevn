@@ -828,10 +828,6 @@ export default {
     onDownloadXML0()
     {
       try {
-        // var link = document.createElement('a');
-        // link.href = this.dataXML0;
-        // link.download = `${this.nameXML0}.xml`;
-        // link.dispatchEvent(new MouseEvent('click'));
         const blob = new Blob([this.dataXML0], { type: 'application/xml' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -850,10 +846,15 @@ export default {
     onDownloadXML1()
     {
       try {
-        var link = document.createElement('a');
-        link.href = this.dataXML1;
-        link.download = `${this.nameXML1}.xml`;
-        link.dispatchEvent(new MouseEvent('click'));
+        const blob = new Blob([this.dataXML1], { type: 'application/xml' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${this.nameXML1}.xml`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
       } catch (error) {
         this.showNotification("danger", "onDownload-catch exception:", error.message, "", 3000);
         console.log("onDownload-catch exception:", error.message)
@@ -863,10 +864,15 @@ export default {
     onDownloadXML2()
     {
       try {
-        var link = document.createElement('a');
-        link.href = this.dataXML2;
-        link.download = `${this.nameXML2}.xml`;
-        link.dispatchEvent(new MouseEvent('click'));
+        const blob = new Blob([this.dataXML2], { type: 'application/xml' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${this.nameXML2}.xml`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
       } catch (error) {
         this.showNotification("danger", "onDownload-catch exception:", error.message, "", 3000);
         console.log("onDownload-catch exception:", error.message)

@@ -943,7 +943,7 @@ export default {
       {
         this.showNotification("warning", this.$t("no_row_selected"), '');
       }
-      console.log("onGetUrlPDF res_url  ", res_url);
+      console.log("onGetUrlPDF res_url  ", url);
       return url;
     },
 

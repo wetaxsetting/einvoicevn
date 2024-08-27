@@ -774,6 +774,7 @@ export default {
     async previewCellFile1() {
       this.tei_einvoice_m_pk_row = document.getElementById("6095090-tempPK1").value;
       try {
+
         const link = document.createElement('a');
         link.href = await this.onGetUrlPDF();
         link.target = '_blank';
@@ -781,7 +782,6 @@ export default {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-
 
       } catch (error) {
         this.showNotification("danger", "onDownload-catch exception:", error.message, "", 3000);

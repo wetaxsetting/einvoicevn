@@ -9387,7 +9387,7 @@ class EInvoiceController {
                       p_tvan_data_result: JSON.stringify(res.data),
                     };
 
-                    console.log('weTaxSendInvoiceToTaxOffice  para_history  ', para_history);
+                    console.log('weTaxCheckInvoiceStatusFromTaxOffice  para_history  ', para_history);
 
                     const res_op = await DBService.ExecuteSQLBlob(
                       `BEGIN ei_upd_his_nor_inv(
@@ -11173,6 +11173,15 @@ class EInvoiceController {
             STCKhau: invoices[i].detail_invoice[j].dc_amt,
             ThTien: invoices[i].detail_invoice[j].amt,
             TSuat: invoices[i].detail_invoice[j].vat_rate,
+            TTKhac: [
+              {
+                TTin: {
+                  TTruong: 'VATAmount',
+                  KDLieu: 'decimal',
+                  DLieu: invoices[i].detail_invoice[j].amt_vat,
+                },
+              },
+            ],
           });
         }
         count_inv++;
@@ -17312,6 +17321,14 @@ class EInvoiceController {
           STCKhau: 'STCKhau',
           ThTien: 'ThTien',
           TSuat: 'TSuat',
+          TTKhac: [
+            'TTKhac/TTin',
+            {
+              TTruong: 'TTruong',
+              KDLieu: 'KDLieu',
+              DLieu: 'DLieu',
+            },
+          ],
         },
       ];
       let masterPara = arrTTChung.concat(arrNBan).concat(arrNMua).concat(arrLTSuat).concat(arrTToan).concat(arrMCCQT);
@@ -17379,6 +17396,7 @@ class EInvoiceController {
             jsonDSHHDVu[i].TLCKhau,
             jsonDSHHDVu[i].STCKhau,
             jsonDSHHDVu[i].TSuat,
+            jsonDSHHDVu[i].TTKhac[0].DLieu,
             master[0].TEI_EINVOICE_M_PK,
           ];
           const detail = await DBService.callProcCursor('WT_UPD_TEI_WT_INVOICE_D', detailPara, p_language, p_crt_by);
@@ -19699,7 +19717,7 @@ class EInvoiceController {
                     p_tvan_data_result: JSON.stringify(res.data),
                   };
 
-                  console.log('weTaxSendInvoiceToTaxOffice  para_history  ', para_history);
+                  //console.log('weTaxSendInvoiceToTaxOffice  para_history  ', para_history);
 
                   const res_op = await DBService.ExecuteSQLBlob(
                     `BEGIN ei_upd_his_nor_inv(

@@ -439,6 +439,12 @@ export default {
         },
         {
           dataField: "VAT_TR_AMT",
+          caption: this.$t("vat_amount"),
+          formatFloat: 2,
+          dataType: "number",
+        },
+        {
+          dataField: "NET_TR_AMT",
           caption: this.$t("amount"),
           formatFloat: 2,
           dataType: "number",

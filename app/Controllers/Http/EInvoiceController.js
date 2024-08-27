@@ -6863,8 +6863,8 @@ class EInvoiceController {
             message: resMess,
           };
         }
-        vat_total_amount = vat_amount_vat + vat_amout;
-        detail_total_amount = detail_amount + detail_amount_vat;
+        vat_total_amount = Number(vat_amount_vat) + Number(vat_amout);
+        detail_total_amount = Number(detail_amount) + Number(detail_amount_vat);
         //console.log('++++++++++++ ', master_total_amount, vat_total_amount, detail_total_amount);
         if (master_total_amount != detail_total_amount && master_total_amount != vat_total_amount) {
           //master_total_amount != vat_total_amount &&
@@ -7167,8 +7167,8 @@ class EInvoiceController {
             message: resMess,
           };
         }
-        vat_total_amount = vat_amount_vat + vat_amout;
-        detail_total_amount = detail_amount + detail_amount_vat;
+        vat_total_amount = Number(vat_amount_vat) + Number(vat_amout);
+        detail_total_amount = Number(detail_amount) + Number(detail_amount_vat);
         console.log('master_total_amount   => ', master_total_amount, detail_total_amount, vat_total_amount);
 
         if (master_total_amount != detail_total_amount && master_total_amount != vat_total_amount && master_total_amount != null) {
@@ -10912,7 +10912,7 @@ class EInvoiceController {
           };
         }
         //vat_total_amount = vat_amount_vat + vat_amout;
-        detail_total_amount = detail_amount + detail_amount_vat;
+        detail_total_amount = Number(detail_amount) + Number(detail_amount_vat);
 
         if (master_total_amount != detail_total_amount && master_total_amount != null) {
           status = false;

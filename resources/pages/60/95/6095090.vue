@@ -828,10 +828,19 @@ export default {
     onDownloadXML0()
     {
       try {
-        var link = document.createElement('a');
-        link.href = this.dataXML0;
-        link.download = `${this.nameXML0}.xml`;
-        link.dispatchEvent(new MouseEvent('click'));
+        // var link = document.createElement('a');
+        // link.href = this.dataXML0;
+        // link.download = `${this.nameXML0}.xml`;
+        // link.dispatchEvent(new MouseEvent('click'));
+        const blob = new Blob([this.dataXML0], { type: 'application/xml' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${this.nameXML0}.xml`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
       } catch (error) {
         this.showNotification("danger", "onDownload-catch exception:", error.message, "", 3000);
         console.log("onDownload-catch exception:", error.message)

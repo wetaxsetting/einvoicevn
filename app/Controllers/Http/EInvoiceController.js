@@ -8906,6 +8906,7 @@ class EInvoiceController {
             serial_no: inv.serial_no,
             invoice_no: inv.invoice_no,
             inform_code: inv.inform_code,
+            inform_name: inv.inform_name,
             tei_wt_invoice_pos_pk: check_data.PK,
           };
 
@@ -8917,6 +8918,7 @@ class EInvoiceController {
                               :serial_no,
                               :invoice_no,
                               :inform_code,
+                              :inform_name,
                               :tei_wt_invoice_pos_pk,
                               :p_language, 
                               :p_crt_by, 
@@ -19073,6 +19075,7 @@ class EInvoiceController {
             serial_no: inv.serial_no,
             invoice_no: inv.invoice_no,
             inform_code: inv.inform_code,
+            inform_name: inv.inform_name,
             tei_wt_invoice_pos_pk: check_data.TEI_WT_INVOICE_P_XML_PK,
           };
 
@@ -19084,6 +19087,7 @@ class EInvoiceController {
                               :serial_no,
                               :invoice_no,
                               :inform_code,
+                              :inform_name,
                               :tei_wt_invoice_pos_pk,
                               :p_language, 
                               :p_crt_by, 

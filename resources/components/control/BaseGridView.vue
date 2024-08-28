@@ -229,6 +229,8 @@
                     @rowselect="myGridOnRowSelect($event,'select')"
                     @rowunselect="myGridOnRowSelect($event,'unselect')"
                     @sort="myGridOnSort($event)"
+                    @pagechanged="onPageChanged($event)" 
+                    @pagesizechanged="onPageSizeChanged($event)"
                     :handlekeyboardnavigation="handlekeyboardnavigation"
                     :width="'100%'" :height="limitHeight-28"
                     :columns="columns" :columngroups="columngroups"
@@ -247,6 +249,8 @@
                     :autoshowfiltericon="true"
                     :autoselectallrows="autoselectallrows"
                     :columnsreorder="defaultcolumnsreorder"
+                    :pageable="pageable"
+                    :pagesizeoptions="['10', '25', '50', '100', '500']"
                     
             >
             </jqxgrid>
@@ -501,6 +505,10 @@
                 default: true,
             },
             hideHeader: {
+                type: Boolean,
+                default: false,
+            },
+            pageable:{
                 type: Boolean,
                 default: false,
             },
@@ -1320,6 +1328,17 @@
                 this.$refs.myMenuSetting.open(x, parseInt(event.y) + 5 + scrollTop);
             },
             
+            onPageChanged(event) {
+                let args = event.args;
+                let pagenumber = args.pagenum;
+                let pagesize = args.pagesize;
+            },
+
+            onPageSizeChanged (event) {
+            let args = event.args;
+            let pagenumber = args.pagenum;
+            let pagesize = args.pagesize; 
+            },
 
             myGridOnCellClick(e) {
                 //console.log(event)

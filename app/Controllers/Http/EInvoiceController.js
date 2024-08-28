@@ -9198,6 +9198,22 @@ class EInvoiceController {
         },
       };
 
+      const param_m = {
+        data_json: JSON.stringify(invoices),
+      };
+
+      await DBService.ExecuteSQLBlob(
+        `BEGIN WT_UPD_data_REQ(
+                          :data_json,
+                          :p_language, 
+                          :p_crt_by, 
+                          :p_rtn_cur); 
+          END;`,
+        param_m,
+        p_language,
+        p_crt_by,
+      );
+
       let rtnValue = [];
       let rtnValueTradecode = [];
       let masterInvoicePK;

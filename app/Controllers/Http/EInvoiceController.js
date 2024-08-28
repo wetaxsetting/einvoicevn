@@ -5876,7 +5876,6 @@ class EInvoiceController {
               KHMSHDon: '',
               KHHDon: '',
               SHDon: '',
-
               NLap: '',
               TTKhac: '',
             },
@@ -19132,14 +19131,10 @@ class EInvoiceController {
   }
 
   async jobCheckTradeCodeNorInvoice(check_data) {
-    // const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
-    // const authUserName = 'GENUWIN';
-    // const authPassword = 'genuwin123';
-
-    const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
-    const authUserName = 'GENUWIN';
-    const authPassword = 'e_GX4v@';
-
+    console.log('jobCheckTradeCodeNorInvoice BEGIN ========================  ');
+    const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+    const authUserName = 'GENUWIN'; // "GENUWIN";
+    const authPassword = 'genuwin123'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
     const p_language = 'ENG';
     const p_crt_by = 'system-scheduler';
 
@@ -19212,7 +19207,7 @@ class EInvoiceController {
                     p_tvan_data_result: JSON.stringify(res.data),
                   };
 
-                  console.log('weTaxSendInvoiceToTaxOffice  para_history  ', para_history);
+                  //console.log('weTaxSendInvoiceToTaxOffice  para_history  ', para_history);
 
                   const res_op = await DBService.ExecuteSQLBlob(
                     `BEGIN ei_upd_his_nor_inv(
@@ -19333,6 +19328,9 @@ class EInvoiceController {
           }
         }
       });
+
+      //console.log('jobCheckTradeCodePosInvoice rtnValue  ', rtnValue);
+      console.log('jobCheckTradeCodeNorInvoice END ========================  ');
     } catch (error) {
       console.log('jobCheckTradeCodeNorInvoice  error', error);
     }

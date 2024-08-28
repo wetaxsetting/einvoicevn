@@ -596,6 +596,210 @@ export default {
       console.log("sss",this.invoice );
     },
 
+<<<<<<< HEAD
+=======
+    previewCellFile() {
+      this.tei_einvoice_m_pk_row = document.getElementById("6095090-tempPK").value;
+      this.onPreview();
+    },
+
+    async previewCellFile1() {
+      this.tei_einvoice_m_pk_row = document.getElementById("6095090-tempPK1").value;
+      try {
+
+        let url = await this.onGetUrlPDF();
+        console.log("url ", url);
+        const link = document.createElement('a');
+        link.href = url;
+        link.target = '_blank';
+        link.download = 'my-pdf-file.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+      } catch (error) {
+        this.showNotification("danger", "onDownload-catch exception:", error.message, "", 3000);
+        console.log("onDownload-catch exception:", error.message)
+      }
+    },
+
+    async previewCellFile2() {
+      this.currentRow = document.getElementById("6095090-tempPK2").value;
+
+      const dso_company_list = {
+        type: "list",
+        selpro: "EI_SEL_6095090_KQCQT_NC",
+        para: [this.currentRow],
+      };
+      const dataTAXResult = await this._dsoCall(
+        dso_company_list,
+        "select",
+        false
+      );
+
+      console.log(dataTAXResult);
+      for(let i = 0; i < dataTAXResult.length; i++)
+      {
+        console.log(dataTAXResult[i]);
+
+        if(dataTAXResult[i].ORD == 1 )
+        {
+          this.maTDiepLine0 = "Mã thông điệp: "+ dataTAXResult[i].HIS_NAME;
+          this.tenTDiepLine0 = `[${dataTAXResult[i].MESS_CD}] ${dataTAXResult[i].REMARK}`;
+          this.tenTCXuLy0 = "Webcash Việt Nam";
+          this.tGianLine0 = `${dataTAXResult[i].RECV_TIME}`;
+          this.ketQuaTraVeLine0 =  `${dataTAXResult[i].REMARK}`;
+          this.dataXML0 = dataTAXResult[i].CQT_DATA_RESULT;
+          this.nameXML0 = dataTAXResult[i].HIS_NAME;
+        }else if(dataTAXResult[i].ORD == 2 )
+        {
+          this.maTDiepLine1 = "Mã thông điệp: "+ dataTAXResult[i].HIS_NAME;
+          this.tenTDiepLine1 = `[${dataTAXResult[i].MESS_CD}] ${dataTAXResult[i].REMARK}`;
+          this.tenTCXuLy1 = "Cơ quan Thuế";
+          this.tGianLine1 = `${dataTAXResult[i].RECV_TIME}`;
+          this.ketQuaTraVeLine1 = `${dataTAXResult[i].REMARK}`;
+          this.dataXML1 = dataTAXResult[i].CQT_DATA_RESULT;
+          this.nameXML1 = dataTAXResult[i].HIS_NAME;
+
+        }else if(dataTAXResult[i].ORD == 3 )
+        {
+          this.maTDiepLine2 = "Mã thông điệp: "+ dataTAXResult[i].HIS_NAME;
+          this.tenTDiepLine2 = `[${dataTAXResult[i].MESS_CD}] ${dataTAXResult[i].REMARK}`;
+          this.tenTCXuLy2 = "Cơ quan Thuế";
+          this.tGianLine2 = `${dataTAXResult[i].RECV_TIME}`;
+          this.ketQuaTraVeLine2 = `${dataTAXResult[i].REMARK}`;
+          this.dataXML2 = dataTAXResult[i].CQT_DATA_RESULT;
+          this.nameXML2 = dataTAXResult[i].HIS_NAME;
+
+        }
+      }
+      this.drawer = !this.drawer;
+  
+    },
+    previewCellFile3() {
+      this.currentRow = document.getElementById("6095090-tempPK3").value;
+      // console.log("this.currentRow  previewCellFile2", this.currentRow);
+      const ds = this.$refs.gridview.getDataSource();
+
+      if (ds.length) {
+        const found = ds.find((item) => item.PK == this.currentRow);
+        // console.log("previewCellFile3", found);
+        if (found) {
+          this.dataJson = found.TVAN_DATA_RESULT;
+          this.$refs.ViewEInvoiceJsonDialog.dialogIsShow = true;
+        }
+      }
+    },
+
+    onDownloadXML0()
+    {
+      try {
+        const blob = new Blob([this.dataXML0], { type: 'application/xml' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${this.nameXML0}.xml`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        this.showNotification("danger", "onDownload-catch exception:", error.message, "", 3000);
+        console.log("onDownload-catch exception:", error.message)
+      }
+    },
+
+    onDownloadXML1()
+    {
+      try {
+        const blob = new Blob([this.dataXML1], { type: 'application/xml' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${this.nameXML1}.xml`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        this.showNotification("danger", "onDownload-catch exception:", error.message, "", 3000);
+        console.log("onDownload-catch exception:", error.message)
+      }
+    },
+
+    onDownloadXML2()
+    {
+      try {
+        const blob = new Blob([this.dataXML2], { type: 'application/xml' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${this.nameXML2}.xml`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        this.showNotification("danger", "onDownload-catch exception:", error.message, "", 3000);
+        console.log("onDownload-catch exception:", error.message)
+      }
+    },
+
+    async onGetUrlPDF() {
+      let url = "";
+      if(this.tei_einvoice_m_pk_row != "")
+      {
+        if( Number(this.selected_company) < 943 )
+        {
+          let res_url = await this.$axios.$post("/einvoice/view-pdf", {
+              responseType: "json",
+              rep_key: this.tei_einvoice_m_pk_row,
+              type: "C"
+            });
+          if(res_url.success)
+          {
+            url = res_url.data;
+          }
+        }else
+        {
+          let res_url = await this.$axios.$post("/einvoice/general-url-pdf", {
+              responseType: "json",
+              tei_wt_sale_bill_pk: this.tei_einvoice_m_pk_row,
+            });
+          if(res_url.success)
+          {
+            url = res_url.data;
+          }
+        }
+      }else
+      {
+        this.showNotification("warning", this.$t("no_row_selected"), '');
+      }
+      console.log("onGetUrlPDF res_url  ", url);
+      return url;
+    },
+
+    myCellHTML(row, column, value, cellhtml) {
+      let grid = this.$refs.gridview.getControl();
+      let rowData = grid.getrowdata(row);
+      const updateTempPK = `document.getElementById('6095090-tempPK').value = ${rowData.PK}; document.getElementById('6095090-tempPK1').value = ''; document.getElementById('6095090-tempPK2').value = ''; document.getElementById('6095090-tempPK3').value = ''`;
+      const updateTempPK1 = `document.getElementById('6095090-tempPK').value = ''; document.getElementById('6095090-tempPK1').value = ${rowData.PK}; document.getElementById('6095090-tempPK2').value = ''; document.getElementById('6095090-tempPK3').value = ''`;
+      const updateTempPK2 = `document.getElementById('6095090-tempPK').value = ''; document.getElementById('6095090-tempPK1').value = ''; document.getElementById('6095090-tempPK2').value = ${rowData.PK}; document.getElementById('6095090-tempPK3').value = ''`;
+      let previewFile = `document.getElementById('6095090-btnPrview').click()`;
+      let previewFile1 = `document.getElementById('6095090-btnPrview1').click()`;
+      let previewFile2 = `document.getElementById('6095090-btnPrview2').click()`;
+
+      let html = `<button class="v-icon mdi mdi-eye light-blue--text px-4" onclick="${updateTempPK};${previewFile}"></button>
+                  <button class="v-icon mdi mdi-download light-blue--text px-1" onclick="${updateTempPK1};${previewFile1}"></button>
+                  <button class="v-icon mdi mdi-reload light-blue--text px-4" onclick="${updateTempPK2};${previewFile2}"></button>`;
+      return html;
+    },
+
+    onClose()
+    {
+      this.drawer = !this.drawer;
+    },
+>>>>>>> parent of 71c0d03 (sss)
     async InvoiceSign() {
 
       this.$refs.MethorSignXML.dialogIsShow = true;

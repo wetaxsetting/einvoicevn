@@ -10261,6 +10261,22 @@ class EInvoiceController {
       const {invoices, count_invoice, tax_code, order_date} = request.all();
 
       console.log('weTaxConvertInvoiceToXML BEGIN  ', JSON.stringify(invoices));
+      const param_m = {
+        data_json: JSON.stringify(invoices),
+      };
+
+      await DBService.ExecuteSQLBlob(
+        `BEGIN WT_UPD_data_REQ(
+                          :data_json,
+                          :p_language, 
+                          :p_crt_by, 
+                          :p_rtn_cur); 
+          END;`,
+        param_m,
+        p_language,
+        p_crt_by,
+      );
+
       // console.log("weTaxConvertInvoiceToXML BEGIN  ", invoices);
       //invoices = JSON.parse(invoices);
       let rtnXML = [];

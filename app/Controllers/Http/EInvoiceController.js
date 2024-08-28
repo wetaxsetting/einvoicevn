@@ -8817,7 +8817,7 @@ class EInvoiceController {
                 maGDichDTu = '';
               } else if (items[k].loaiTBao == '8') {
                 //trade_code = items[k].ndungTBao.maGDichTChieu;
-                maTBao = items[k].loaiTBao;
+                maTBao = items[k].ndungTBao.tbaoKTraDLieu.loaiTBao; //items[k].loaiTBao;
                 tenTBao = items[k].tenTBao;
                 soTBao = items[k].ndungTBao.tbaoKTraDLieu.soTBao;
                 ngayCQTKy = items[k].ndungTBao.tbaoKTraDLieu.ngayCQTKy;
@@ -8847,7 +8847,7 @@ class EInvoiceController {
                 );
               } else if (items[k].loaiTBao == '9' || items[k].loaiTBao == '7') {
                 //trade_code = items[k].ndungTBao.maGDichTChieu;
-                maTBao = items[k].loaiTBao;
+                maTBao = items[k].ndungTBao.tbaoKTraDLieu.loaiTBao;
                 tenTBao = items[k].tenTBao;
                 soTBao = items[k].ndungTBao.tbaoKTraDLieu.soTBao;
                 ngayCQTKy = items[k].ndungTBao.tbaoKTraDLieu.ngayCQTKy;
@@ -8885,7 +8885,7 @@ class EInvoiceController {
                   const chars = invoice.mtaLoi.split(';');
                   data_inv.forEach((element, index) => {
                     if (element.form_no === chars[0] && element.serial_no === chars[1] && element.invoice_no === chars[2]) {
-                      data_inv[index].inform_code = items[k].loaiTBao;
+                      data_inv[index].inform_code = maTBao; // items[k].loaiTBao;
                       data_inv[index].inform_name = invoice.maLoi + ' - ' + invoice.mtaLoi;
                     }
                   });

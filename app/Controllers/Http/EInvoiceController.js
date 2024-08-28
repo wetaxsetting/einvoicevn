@@ -8627,6 +8627,24 @@ class EInvoiceController {
       // let json =  this.parseXmlToJson(invoice_xml_signed);
       //console.log("weTaxSendPosInvoiceToTaxOffice BEGIN ================================   ");
 
+      const data_json = {tax_serial_number, seller_tax_code, sale_date, store_code, store_name, pos_no, invoice_xml_signed, req_key};
+
+      const param_m = {
+        data_json: JSON.stringify(data_json),
+      };
+
+      await DBService.ExecuteSQLBlob(
+        `BEGIN WT_UPD_data_REQ(
+                          :data_json,
+                          :p_language, 
+                          :p_crt_by, 
+                          :p_rtn_cur); 
+          END;`,
+        param_m,
+        p_language,
+        p_crt_by,
+      );
+
       const {check_data, data_inv} = await this.weTaxExtractPosXMLContent(
         invoice_xml_signed,
         seller_tax_code,

@@ -5865,7 +5865,7 @@ class EInvoiceController {
 
         objInvoice.DSCKS.NBan = '';
 
-        objInvoice.MCCQT = `M1-24-VZQYY-${Math.floor(10000000000 + Math.random() * 9000000000)}`; //invoices[i].mccqt;
+        objInvoice.MCCQT = invoices[i].mccqt; //`M1-24-VZQYY-${Math.floor(10000000000 + Math.random() * 9000000000)}`; //
 
         objData.TDiep.DLieu.HDon.push(objInvoice);
         objInvoice = {

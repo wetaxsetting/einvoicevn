@@ -8630,11 +8630,13 @@ class EInvoiceController {
 
       const param_m = {
         data_json: JSON.stringify(data_json),
+        api_name: "weTaxSendPosInvoiceToTaxOffice"
       };
 
       await DBService.ExecuteSQLBlob(
         `BEGIN WT_UPD_data_REQ(
                           :data_json,
+                          :api_name,
                           :p_language, 
                           :p_crt_by, 
                           :p_rtn_cur); 
@@ -9200,11 +9202,13 @@ class EInvoiceController {
 
       const param_m = {
         data_json: JSON.stringify(invoices),
+        api_name: "weTaxSendInvoiceToTaxOffice"
       };
 
       await DBService.ExecuteSQLBlob(
         `BEGIN WT_UPD_data_REQ(
                           :data_json,
+                          :api_name,
                           :p_language, 
                           :p_crt_by, 
                           :p_rtn_cur); 
@@ -10262,12 +10266,14 @@ class EInvoiceController {
 
       console.log('weTaxConvertInvoiceToXML BEGIN  ', JSON.stringify(invoices));
       const param_m = {
+        api_name: "weTaxConvertInvoiceToXML",
         data_json: JSON.stringify(invoices),
       };
 
       await DBService.ExecuteSQLBlob(
         `BEGIN WT_UPD_data_REQ(
                           :data_json,
+                          :api_name,
                           :p_language, 
                           :p_crt_by, 
                           :p_rtn_cur); 

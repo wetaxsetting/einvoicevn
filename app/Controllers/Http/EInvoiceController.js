@@ -6031,7 +6031,8 @@ class EInvoiceController {
                     message: resMess,
                   };
                 }
-              } else if ((invoice[key].length < 10 || invoice[key].length > 14) && invoice[key]) {
+              } else if (invoice[key]) {
+                // ((invoice[key].length < 10 || invoice[key].length > 14) && invoice[key]) {
                 status = false;
                 resMess = `${mess1} ${key}. length between 10 and 14}.`;
                 return {
@@ -8804,6 +8805,7 @@ class EInvoiceController {
                 ngayCQTKy = items[k].ndungTBao.tbaoKTraDLieu.ngayCQTKy;
 
                 const param_ltb_8 = {
+                  p_tei_history_m_pk: check_data.TEI_HISTORY_M_PK,
                   p_CQT_Code: trade_code,
                   p_soTBao: soTBao,
                   p_maTBao: maTBao,
@@ -8833,6 +8835,7 @@ class EInvoiceController {
                 ngayCQTKy = items[k].ndungTBao.tbaoKTraDLieu.ngayCQTKy;
 
                 const param_ltb_8 = {
+                  p_tei_history_m_pk: check_data.TEI_HISTORY_M_PK,
                   p_CQT_Code: trade_code,
                   p_soTBao: soTBao,
                   p_maTBao: maTBao,
@@ -8841,6 +8844,7 @@ class EInvoiceController {
                 };
                 await DBService.ExecuteSQLBlob(
                   `BEGIN WT_UPD_HISTORY_D_POS_TB8(
+                                    :p_tei_history_m_pk,
                                     :p_CQT_Code,
                                     :p_soTBao,
                                     :p_maTBao,

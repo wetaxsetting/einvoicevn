@@ -297,19 +297,30 @@ export default {
       if (rowData.CQT_RESULT_CD == "2")
       {
         html = `<div class="h-100 d-flex align-center justify-center"><span class="ma-2 v-chip theme--light v-size--small green lighten-3 green--text text--darken-3"><span class="v-chip__content">${rowData.CQT_RESULT}</span></span></div>`;
-      } 
-      else if (rowData.CQT_RESULT_CD == "7")
+
+      } else if (rowData.CQT_RESULT_CD == "7")
       {
         html = `<div class="h-100 d-flex align-center justify-center"><span class="ma-2 v-chip theme--light v-size--small red lighten-3 red--text text--darken-3 text-decoration-underline"><span class="v-chip__content">${rowData.CQT_RESULT}</span></span></div>`;
+      }else 
+      {
+        html = `<div class="h-100 d-flex align-center justify-center"><span class="ma-2 v-chip theme--light v-size--small yellow lighten-3 yellow--text text--darken-3 text-decoration-underline"><span class="v-chip__content">Chờ kết quả trả về từ Thuế</span></span></div>`;
+
       }
+
       return html;
     },
 
     myCellHTMLInv(row, column, value, cellhtml) {
       let grid = this.$refs.grdCompany.getControl();
       let rowData = grid.getrowdata(row);
-
-      let html = `<div class="h-100 d-flex align-center justify-end"><span class=" pa-2 font-weight-black blue--text text--accent-4"><span class="v-chip__content">${rowData.INV_QTY} </span></span></div>`;
+      let html = "";
+      if(rowData.INV_QTY)
+      {
+        html = `<div class="h-100 d-flex align-center justify-end"><span class=" pa-2 font-weight-black blue--text text--accent-4"><span class="v-chip__content">${rowData.INV_QTY} </span></span></div>`;
+      }else
+      {
+        html = `<div class="h-100 d-flex align-center justify-end"><span class=" pa-2 font-weight-black blue--text text--accent-4"><span class="v-chip__content"> </span></span></div>`;
+      }
       
       return html;
     },

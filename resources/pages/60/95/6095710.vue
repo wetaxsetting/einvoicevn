@@ -36,6 +36,7 @@
                 select_mode="Single"
                 :max_height="limitHeight"
                 :header="headerGridLeft"
+                :pageable="true"
                 :filter_paras="[this.sellerTaxcode, this.form_date, this.to_date, this.symbols]"
               />
             </v-col>
@@ -114,6 +115,7 @@ export default {
           dataField: "NO",
           caption: this.$t("stt"),
         },
+
         {
           dataField: "TRADE_CODE",
           caption: this.$t("ma_giao_dich"),

@@ -45,6 +45,8 @@
                 select_mode="Single"
                 :max_height="limitHeight"
                 :header="headerGridLeft"
+                :pageable="true"
+                @cellClick="getCellInfo"    
                 :filter_paras="[sellerTaxcode, form_date, to_date, trade_codde, invoice_no, serial_no, form_no]"
               />
             </v-col>
@@ -62,6 +64,7 @@
     ></view-einvoice-xml-dialog>
     <view-einvoice-xml-cqt-dialog ref="ViewEIXMLCQTDialog" @minimizeDialog="manualIsMinimized = true" @closeManualDialog="manualIsMinimized = false"></view-einvoice-xml-cqt-dialog>
     <view-einvoice-transaction-details-dialog ref="ViewTransaction" @minimizeDialog="manualIsMinimized = true" @closeManualDialog="manualIsMinimized = false"></view-einvoice-transaction-details-dialog>
+    <view-einvoice-details-dialog ref="ViewEInvoiceDetails" :typeHistory="typeCQTResult" :tradeCode="tradeCodePK"   @minimizeDialog="manualIsMinimized = true" @closeManualDialog="manualIsMinimized = false" ></view-einvoice-details-dialog>
     <view-einvoice-json-dialog
       ref="ViewEInvoiceJsonDialog"
       :data_json="dataJson"
@@ -87,6 +90,9 @@ import ViewEInvoiceJsonDialog from "@/components/dialog/ViewEInvoiceJsonDialog.v
 import ViewEInvoiceXMLDialog from "@/components/dialog/ViewEInvoiceXMLDialog.vue";
 import ViewEInvoiceXML_CQTDialog from "@/components/dialog/ViewEInvoiceXML_CQTDialog.vue";
 import ViewEInvoice_TransactionDetailsDailog from "@/components/dialog/ViewEInvoice_TransactionDetailsDailog.vue";
+import ViewEInvoiceDetailsDailog from "@/components/dialog/ViewEInvoiceDetailsDailog.vue";
+
+
 
 export default {
   layout: "default",
@@ -96,7 +102,9 @@ export default {
     "view-einvoice-json-dialog": ViewEInvoiceJsonDialog,
     "view-einvoice-xml-dialog": ViewEInvoiceXMLDialog,
     "view-einvoice-xml-cqt-dialog": ViewEInvoiceXML_CQTDialog,
-    "view-einvoice-transaction-details-dialog":ViewEInvoice_TransactionDetailsDailog
+    "view-einvoice-transaction-details-dialog":ViewEInvoice_TransactionDetailsDailog,
+    "view-einvoice-details-dialog":ViewEInvoiceDetailsDailog
+
   },
   data: () => ({
     form_date: "",
@@ -114,7 +122,9 @@ export default {
     xmlFileNm: "",
     currentRow: "",
     headerGridLeft:[],
-    dataJson:""
+    dataJson:"",
+    typeCQTResult:"",
+    tradeCodePK: ""
   }),
 
   async created() {
@@ -127,16 +137,6 @@ export default {
         dataField: "NO",
         caption: this.$t("stt"),
       },
-      // {
-      //   dataField: "DONVI",
-      //   caption: this.$t("don_vi"),
-      //   width: 80,
-      // },
-      // {
-      //   dataField: "DONVIMST",
-      //   caption: this.$t("dvi_mst"),
-      //   width: 80,
-      // },
       {
         dataField: "TRADE_CODE",
         caption: this.$t("ma_giao_dich"),
@@ -152,6 +152,7 @@ export default {
         caption: this.$t("mst"),
         type: "number",
         width: 150,
+        alignment: "center",
       },
       {
         dataField: "SEND_DT",
@@ -167,13 +168,19 @@ export default {
       {
         dataField: "CQT_RESULT",
         caption: this.$t("ph_cqt"),
-        width: 160,
+        width: 210,
+        alignment: "center",
+        fixed: true, cellsrenderer: this.myCellHTMLCQT
+
       },
       {
         dataField: "INV_QTY",
         caption: this.$t("qty"),
         type: "number",
-        width: 150,
+        width: 100,
+        //alignment: "right",
+        fixed: true, cellsrenderer: this.myCellHTMLInv
+
       },
       { dataField: "TITTLE", caption: "thao_tac", type: "html", width: 200, fixed: true, cellsrenderer: this.myCellHTML },
     ]
@@ -184,7 +191,7 @@ export default {
     },
     limitHeight() {
       if (this.$vuetify.breakpoint.smAndUp) {
-        return 750;
+        return this.windowHeight - this.windowHeight*0.215;
       }
     },
   },
@@ -196,6 +203,16 @@ export default {
     },
   },
   methods: {
+    onPageChanged(event) {
+        let args = event.args;
+        let pagenumber = args.pagenum;
+        let pagesize = args.pagesize;
+    },
+    onPageSizeChanged (event) {
+       let args = event.args;
+       let pagenumber = args.pagenum;
+       let pagesize = args.pagesize; 
+    },
     previewCellFile() {
       this.currentRow = document.getElementById("6095730-tempPK").value;
       const ds = this.$refs.grdCompany.getDataSource();
@@ -271,6 +288,42 @@ export default {
       return html;
     },
 
+    myCellHTMLCQT(row, column, value, cellhtml) {
+      let grid = this.$refs.grdCompany.getControl();
+      let rowData = grid.getrowdata(row);
+      //const updateTempPK = `document.getElementById('6095730-tempPK').value = ${rowData.PK}; document.getElementById('6095730-tempPK1').value = ''; document.getElementById('6095730-tempPK2').value = ''; document.getElementById('6095730-tempPK3').value = ''`;
+      //let previewFile = `document.getElementById('6095730-btnPrview').click()`;
+      let html = "";
+      if (rowData.CQT_RESULT_CD == "2")
+      {
+        html = `<div class="h-100 d-flex align-center justify-center"><span class="ma-2 v-chip theme--light v-size--small green lighten-3 green--text text--darken-3"><span class="v-chip__content">${rowData.CQT_RESULT}</span></span></div>`;
+      } else if (rowData.CQT_RESULT_CD == "7")
+      {
+        html = `<div class="h-100 d-flex align-center justify-center"><span class="ma-2 v-chip theme--light v-size--small red lighten-3 red--text text--darken-3 text-decoration-underline"><span class="v-chip__content">${rowData.CQT_RESULT}</span></span></div>`;
+      }else 
+      {
+        html = `<div class="h-100 d-flex align-center justify-center"><span class="ma-2 v-chip theme--light v-size--small yellow lighten-3 yellow--text text--darken-3 text-decoration-underline"><span class="v-chip__content">Chờ kết quả trả về từ Thuế</span></span></div>`;
+
+      }
+
+      return html;
+    },
+
+    myCellHTMLInv(row, column, value, cellhtml) {
+      let grid = this.$refs.grdCompany.getControl();
+      let rowData = grid.getrowdata(row);
+      let html = "";
+      if(rowData.INV_QTY)
+      {
+        html = `<div class="h-100 d-flex align-center justify-end"><span class=" pa-2 font-weight-black blue--text text--accent-4"><span class="v-chip__content">${rowData.INV_QTY} </span></span></div>`;
+      }else
+      {
+        html = `<div class="h-100 d-flex align-center justify-end"><span class=" pa-2 font-weight-black blue--text text--accent-4"><span class="v-chip__content"> </span></span></div>`;
+      }
+      
+      return html;
+    },
+
     async initDataList(pos) {
       switch (pos) {
         case "company":
@@ -288,7 +341,17 @@ export default {
           break;
       }
     },
-
+    getCellInfo(data) {
+      //console.log("rowData", data.data);
+      //console.log("col", data.column.datafield);
+      this.selectedRow = data.data;
+      if(data.column.datafield == 'INV_QTY' || data.column.datafield == 'CQT_RESULT') {
+        this.typeCQTResult = data.column.datafield == 'INV_QTY' ? 'ALL' : data.data.CQT_RESULT_CD;
+        this.tradeCodePK = data.data.TRADE_CODE;
+        this.$refs.ViewEInvoiceDetails.dialogIsShow = true;
+      }
+    },
+   
     // async getListCodes() {
     //   const results = await this._getCommonCode2(["ACEI0010", "ACEI0040", "ACEI0120", "ACEI0190", "ACEI0140", "ACEIN010", "ACJS0460"], this.user.PK);
     //   this.statusList = results[0];

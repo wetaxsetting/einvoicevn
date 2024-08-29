@@ -10209,7 +10209,7 @@ class EInvoiceController {
           }
         }
 
-        if (Number(master_amount) != Number(detail_amount) && master_amount != null) {
+        if (Number(master_amount.toFixed(6)) != Number(detail_amount.toFixed(6)) && master_amount != null) {
           status = false;
           resMess = `${mess1} amount xx is: ${master_amount}  != ${detail_amount}`;
           return {
@@ -10218,7 +10218,7 @@ class EInvoiceController {
           };
         }
 
-        if (Number(master_amount_vat) != Number(detail_amount_vat) && master_amount_vat != null) {
+        if (Number(master_amount_vat.toFixed(6)) != Number(detail_amount_vat.toFixed(6)) && master_amount_vat != null) {
           status = false;
           resMess = `${mess1} amount vat is: ${master_amount_vat} != ${detail_amount_vat}`;
           return {
@@ -10229,7 +10229,7 @@ class EInvoiceController {
         //vat_total_amount = vat_amount_vat + vat_amout;
         detail_total_amount = Number(detail_amount) + Number(detail_amount_vat);
 
-        if (Number(master_total_amount) != Number(detail_total_amount) && master_total_amount != null) {
+        if (Number(master_total_amount.toFixed(6)) != Number(detail_total_amount.toFixed(6)) && master_total_amount != null) {
           status = false;
           resMess = `${mess1} amount total is: ${master_total_amount}  != ${detail_total_amount}`;
           return {

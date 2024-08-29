@@ -10015,9 +10015,9 @@ class EInvoiceController {
 
         for (const key in invoice) {
           if (errorList[`${key}`] != undefined && !Array.isArray(invoice[key])) {
-            master_amount_vat = invoice['total_vat_amt'];
-            master_amount = invoice['total_amt'];
-            master_total_amount = invoice['total_payment'];
+            master_amount_vat = Number(invoice['total_vat_amt']);
+            master_amount = Number(invoice['total_amt']);
+            master_total_amount = Number(invoice['total_payment']);
             if (key == 'seller_taxcode' || key == 'buyer_taxcode') {
               if (invoice[key].length == 10) {
                 if (!errorList[`${key}`][10].test(invoice[key])) {
@@ -10068,8 +10068,8 @@ class EInvoiceController {
           } else {
             if (key == 'total_vat_list') {
               for (const sub_vat of invoice[key]) {
-                vat_amount_vat += sub_vat.sub_amt_vat;
-                vat_amout += sub_vat.sub_amt;
+                vat_amount_vat += Number(sub_vat.sub_amt_vat);
+                vat_amout += Number(sub_vat.sub_amt);
                 if (
                   !errorList[`${key}`].sub_vat_rate.test(sub_vat.sub_vat_rate) &&
                   sub_vat.sub_vat_rate != 'KCT' &&
@@ -10105,8 +10105,8 @@ class EInvoiceController {
 
             if (key == 'detail_invoice') {
               for (const inv of invoice[key]) {
-                detail_amount_vat += inv.amt_vat;
-                detail_amount += inv.amt;
+                detail_amount_vat += Number(inv.amt_vat);
+                detail_amount += Number(inv.amt);
                 if (!errorList[`${key}`].feature.test(inv.feature)) {
                   status = false;
                   resMess = `${mess1} feature is: ${inv.feature}.`;

@@ -10197,7 +10197,7 @@ class EInvoiceController {
 
       //console.log('weTaxSendInvoiceToTaxOffice  BEGIN ================================= ');
 
-      //console.log("weTaxSendInvoiceToTaxOffice  invoices  ",invoices);
+      console.log('weTaxSendInvoiceToTaxOffice  invoices  ', JSON.stringify(invoices));
       const agent = {
         Agent: {
           defaultPort: 443,

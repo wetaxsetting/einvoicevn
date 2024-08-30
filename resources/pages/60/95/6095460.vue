@@ -929,7 +929,7 @@ export default {
         },
         {
           dataField: 'KHMSHDON',
-          caption: this.$t('form_no_iv'),
+          caption: this.$t('form_no'),
           allowEditing: true,
           width: 80,
         },

@@ -2158,7 +2158,7 @@ class EInvoiceController {
             jsonHDon[i].LDo,
           ];
           const detail = await DBService.callProcCursor('WT_UPD_NOTICE_D', detailPara, p_language, p_crt_by);
-          //console.log("detail", detail);
+          console.log('detail', detail);
           if (detail[0].PK == -3) {
             return -3;
           }
@@ -3336,7 +3336,7 @@ class EInvoiceController {
 
       const matesNoticePK = await this.weTaxExtractXMLContentNotice(xml_signed, p_crt_by, p_language);
 
-      //console.log("weTaxSendInformAdjustToTaxOffice  valid  ", matesNoticePK);
+      console.log('weTaxSendInformAdjustToTaxOffice  valid  ', matesNoticePK);
 
       if (matesNoticePK == 0) {
         return response.send(
@@ -3483,11 +3483,11 @@ class EInvoiceController {
 
       //console.log("smbl_kind ", smbl_type);
       if (smbl_type == 'M') {
-        // url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/mttien/tbaossot';
-        url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/mttien/tbaossot';
+        url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/mttien/tbaossot';
+        //url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/mttien/tbaossot';
       } else {
-        // url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
-        url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
+        url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
+        //url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
       }
       // console.log("weTaxSendInformAdjustToTaxOffice  xml_signed  ", xml_signed);
 
@@ -3499,47 +3499,15 @@ class EInvoiceController {
 
       const matesNoticePK = await this.weTaxExtractXMLContentNotice(xml_signed, doc_no, p_crt_by, p_language);
 
-      //  console.log("weTaxSendInformAdjustToTaxOffice  valid  ", matesNoticePK);
+      console.log('weTaxSendInformAdjustToTaxOffice  valid  ', matesNoticePK, ' url ', url);
 
       if (matesNoticePK == 0) {
-        //  return response.send(
-        //    Utils.response(false, `Notice have not details`, {
-        //      req_key: req_key,
-        //      xml_signed: "",
-        //      trade_code: "",
-        //      tax_code: "",
-        //    })
-        //  );
         return response.status(400).json(Utils.responseByRule({success: false, message: 'Notice have no details', data: {req_key: req_key}}));
       } else if (matesNoticePK == -1) {
-        //  return response.send(
-        //    Utils.response(false, `Taxcode company not yet register! `, {
-        //      req_key: req_key,
-        //      xml_signed: "",
-        //      trade_code: "",
-        //      tax_code: "",
-        //    })
-        //  );
         return response.status(404).json(Utils.responseByRule({success: false, message: 'Company not yet register!', data: {req_key: req_key}}));
       } else if (matesNoticePK == -2) {
-        //  return response.send(
-        //    Utils.response(false, `The file xml is wrong! `, {
-        //      req_key: req_key,
-        //      xml_signed: "",
-        //      trade_code: "",
-        //      tax_code: "",
-        //    })
-        //  );
         return response.status(400).json(Utils.responseByRule({success: false, message: 'The file xml is wrong!', data: {req_key: req_key}}));
       } else if (matesNoticePK == -3) {
-        //  return response.send(
-        //    Utils.response(false, `The invoice registered !`, {
-        //      req_key: req_key,
-        //      xml_signed: "",
-        //      trade_code: "",
-        //      tax_code: "",
-        //    })
-        //  );
         return response.status(400).json(Utils.responseByRule({success: false, message: 'The invoice registered!', data: {req_key: req_key}}));
       }
 
@@ -3553,7 +3521,7 @@ class EInvoiceController {
           },
         },
       );
-      //console.log("trade_code ", trade_code);
+      console.log(' weTaxSendInformAdjustToTaxOffice2  trade_code ', trade_code);
       if (trade_code && trade_code.data.maGDich) {
         const para_value = {
           req_key: matesNoticePK,

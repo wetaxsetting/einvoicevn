@@ -11158,6 +11158,7 @@ class EInvoiceController {
                   TGia: '',
                   HTTToan: '',
                   MSTTCGP: '',
+                  HDDCKPTQuan: '',
                 },
                 NDHDon: {
                   NBan: {
@@ -11206,6 +11207,7 @@ class EInvoiceController {
           objInvoice_M.HDon.DLHDon.TTChung.TGia = invoices[i].ex_rate;
           objInvoice_M.HDon.DLHDon.TTChung.HTTToan = invoices[i].payment_method;
           objInvoice_M.HDon.DLHDon.TTChung.MSTTCGP = '1201496252'; //webcashgenuwin.com taxcode
+          objInvoice_M.HDon.DLHDon.TTChung.HDDCKPTQuan = '0'; //webcashgenuwin.com taxcode
 
           objInvoice_M.HDon.DLHDon.TTChung.TTHDLQuan = [];
           // console.log("invoices[i].invoice_feature  " ,invoices[i].invoice_feature)
@@ -17372,8 +17374,8 @@ class EInvoiceController {
         },
       ];
       const jsonLTSuat = await transform(p_xml_content, templateLTSuat);
-      // console.log("jsonLTSuat", jsonLTSuat)
-      const arrLTSuat = [jsonLTSuat[0].TSuat, jsonLTSuat[0].ThTien, jsonLTSuat[0].TThue];
+      console.log('jsonLTSuat', jsonLTSuat);
+      const arrLTSuat = [jsonLTSuat[0]?.TSuat || '', jsonLTSuat[0]?.ThTien || '', jsonLTSuat[0]?.TThue || ''];
       const templateTToan = [
         'HDon/DLHDon/NDHDon/TToan',
         {
@@ -17386,7 +17388,13 @@ class EInvoiceController {
       ];
       const jsonTToan = await transform(p_xml_content, templateTToan);
       // console.log("jsonTToan", jsonTToan)
-      const arrTToan = [jsonTToan[0].TgTCThue, jsonTToan[0].TgTThue, jsonTToan[0].TTCKTMai, jsonTToan[0].TgTTTBSo, jsonTToan[0].TgTTTBChu];
+      const arrTToan = [
+        jsonTToan[0].TgTCThue || '',
+        jsonTToan[0].TgTThue || '',
+        jsonTToan[0].TTCKTMai || 0,
+        jsonTToan[0].TgTTTBSo,
+        jsonTToan[0].TgTTTBChu,
+      ];
       let v_vn_amount = await Utils.Num2VNText2(jsonTToan[0].TgTTTBSo.toString(), jsonTTChung[0].DVTTe);
       // console.log("  v_vn_amount ", v_vn_amount);
       /*const templateMCCQT = ['HDon', {

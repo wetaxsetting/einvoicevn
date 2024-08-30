@@ -3452,6 +3452,27 @@ class EInvoiceController {
       //const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
       //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
       const {xml_signed, req_key, smbl_type, doc_no} = request.all();
+
+      const data_json = {xml_signed, req_key, smbl_type, doc_no};
+
+      const param_m = {
+        data_json: JSON.stringify(data_json),
+        api_name: 'weTaxSendInformAdjustToTaxOffice2',
+      };
+
+      await DBService.ExecuteSQLBlob(
+        `BEGIN WT_UPD_data_REQ(
+                          :data_json,
+                          :api_name,
+                          :p_language, 
+                          :p_crt_by, 
+                          :p_rtn_cur); 
+          END;`,
+        param_m,
+        p_language,
+        p_crt_by,
+      );
+
       const agent = {
         Agent: {
           defaultPort: 443,

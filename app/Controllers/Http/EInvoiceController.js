@@ -10940,6 +10940,24 @@ class EInvoiceController {
       let r_data_noti = [];
       const {seller_taxcode, noti_list} = request.all();
 
+      const param_m = {
+        data_json: JSON.stringify(invoices),
+        api_name: 'weTaxSendRecords',
+      };
+
+      await DBService.ExecuteSQLBlob(
+        `BEGIN WT_UPD_data_REQ(
+                          :data_json,
+                          :api_name,
+                          :p_language, 
+                          :p_crt_by, 
+                          :p_rtn_cur); 
+          END;`,
+        param_m,
+        p_language,
+        p_crt_by,
+      );
+
       for (const noti of noti_list) {
         // console.log("noti  ", noti);
         const res = await this.weTaxExtractRecordXMLContent(noti.xml_signed, noti.req_key, p_language, p_crt_by);

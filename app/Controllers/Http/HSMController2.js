@@ -1,7 +1,7 @@
 'use strict';
 const Utils = use('Utils');
 const Request = use('Request');
-const easysignUrl = 'https://sign.easyca.vn/api';// 'http://demosign.easyca.vn:8080/api/';// //https://sign.easyca.vn 540110c7d6d61b8f6474f5b993d3b979  12345678
+const easysignUrl = 'https://sign.easyca.vn/api'; // 'http://demosign.easyca.vn:8080/api/';// //https://sign.easyca.vn 540110c7d6d61b8f6474f5b993d3b979  12345678
 const axios = require('axios');
 const EINVOICE_ESIGN_XML = 'http://csharp-api.webcashvietnam.com/wseinvoice/BSService.asmx/SignXml';
 
@@ -168,8 +168,10 @@ class HSMController2 {
       }
 
       const {user_name, password, otp, serial_no, pin, organization, signing_xml} = request.all();
-      const url = 'http://demosign.easyca.vn:8080/api/'; //'https://sign.easyca.vn/api/'; //
-      const site = 'test'; //'real'; //
+      // const url = 'http://demosign.easyca.vn:8080/api/';
+      // const site = 'test';
+      const url = 'https://sign.easyca.vn/api/'; //
+      const site = 'real'; //
       if (!user_name || !password || !pin || !organization || !serial_no || !signing_xml) {
         return response.status(400).json(
           Utils.responseByRule({

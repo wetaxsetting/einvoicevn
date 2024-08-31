@@ -2136,7 +2136,7 @@ class ReportHelper {
     let imageBuffer = null;
     try {
       img = Helpers.resourcesPath(path);
-      console.log('insertPathImage ', img);
+      // console.log('insertPathImage ', img);
       imageBuffer = await Utils.readFile(img);
     } catch (e) {
       console.log('insertPathImage  e', e);
@@ -2146,7 +2146,7 @@ class ReportHelper {
 
     if (imageBuffer) {
       let tmp = Utils._arrayBufferToBase64(imageBuffer);
-      console.log('tmp', tmp);
+      // console.log('tmp', tmp);
       let imageBase64 = 'data:image/png;base64,' + tmp;
       imageID = this.workbook.addImage({
         base64: imageBase64,

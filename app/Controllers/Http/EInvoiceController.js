@@ -10940,8 +10940,10 @@ class EInvoiceController {
       let r_data_noti = [];
       const {seller_taxcode, noti_list} = request.all();
 
+      const parma_data = {seller_taxcode, noti_list};
+
       const param_m = {
-        data_json: JSON.stringify(noti_list),
+        data_json: JSON.stringify(parma_data),
         api_name: 'weTaxSendRecords',
       };
 

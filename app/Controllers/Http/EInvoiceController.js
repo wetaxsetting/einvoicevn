@@ -10941,7 +10941,7 @@ class EInvoiceController {
       const {seller_taxcode, noti_list} = request.all();
 
       const param_m = {
-        data_json: JSON.stringify(invoices),
+        data_json: JSON.stringify(noti_list),
         api_name: 'weTaxSendRecords',
       };
 

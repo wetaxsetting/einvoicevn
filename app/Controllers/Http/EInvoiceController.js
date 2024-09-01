@@ -19168,7 +19168,7 @@ class EInvoiceController {
     const p_language = 'ENG';
     const p_crt_by = 'system-scheduler';
 
-    const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+    const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
     const authUserName = 'GENUWIN';
     const authPassword = 'e_GX4v@';
     let SLuong = 0;

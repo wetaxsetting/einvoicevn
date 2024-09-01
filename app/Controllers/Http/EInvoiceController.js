@@ -19503,7 +19503,7 @@ class EInvoiceController {
           });
         }
       });
-      if (check_data.CRT_BY == 'wetax-test') {
+      if (check_data.CRT_BY == 'wetax') {
         this.weTaxCallBackStatusPosInv(data_inv, '/api/wtx/v1/pos-invoice-delivery-status', 'WTPTA003');
       }
       //console.log('jobCheckTradeCodePosInvoice rtnValue  ', rtnValue);

@@ -13810,7 +13810,7 @@ class EInvoiceController {
         url_xml = '';
       if (rtnValue.p_rtn_cur[0].TYPE == 'EP') {
         console.log(rtnValue.p_rtn_cur[0]);
-        if (Number(rtnValue.p_rtn_cur[0].TEI_COMPANY_PK) < 943) {
+        if (Number(rtnValue.p_rtn_cur[0].TEI_COMPANY_PK) < 943 && Number(rtnValue.p_rtn_cur[0].TEI_COMPANY_PK) != 201 && Number(rtnValue.p_rtn_cur[0].TEI_COMPANY_PK) != 462 ) {
           const screte_key = 'RVNJbjib65jkGKJB789';
           const key = Utils.md5(rtnValue.p_rtn_cur[0].TEI_EINVOICE_M_PK + screte_key);
           const type = 'C';

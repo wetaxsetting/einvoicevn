@@ -13810,7 +13810,7 @@ class EInvoiceController {
         url_xml = '';
       if (rtnValue.p_rtn_cur[0].TYPE == 'EP') {
         console.log(rtnValue.p_rtn_cur[0]);
-        if (Number(rtnValue.p_rtn_cur[0].TEI_COMPANY_PK) < 943) {
+        if (Number(rtnValue.p_rtn_cur[0].TEI_COMPANY_PK) < 943 && Number(rtnValue.p_rtn_cur[0].TEI_COMPANY_PK) != 201 && Number(rtnValue.p_rtn_cur[0].TEI_COMPANY_PK) != 462 ) {
           const screte_key = 'RVNJbjib65jkGKJB789';
           const key = Utils.md5(rtnValue.p_rtn_cur[0].TEI_EINVOICE_M_PK + screte_key);
           const type = 'C';
@@ -19168,7 +19168,7 @@ class EInvoiceController {
     const p_language = 'ENG';
     const p_crt_by = 'system-scheduler';
 
-    const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+    const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
     const authUserName = 'GENUWIN';
     const authPassword = 'e_GX4v@';
     let SLuong = 0;
@@ -19503,7 +19503,7 @@ class EInvoiceController {
           });
         }
       });
-      if (check_data.CRT_BY == 'wetax-test') {
+      if (check_data.CRT_BY == 'wetax') {
         this.weTaxCallBackStatusPosInv(data_inv, '/api/wtx/v1/pos-invoice-delivery-status', 'WTPTA003');
       }
       //console.log('jobCheckTradeCodePosInvoice rtnValue  ', rtnValue);

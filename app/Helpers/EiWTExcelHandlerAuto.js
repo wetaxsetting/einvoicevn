@@ -161,6 +161,7 @@ class EiExcelHandler {
               : '/data/einvoices_logo/0104128565-999/2024/07/1721906430005_1721906430005.png'`${einvoiceMasterData[0].URL_IMG_LOGO}`,
         },
       ];
+
       // console.log(" bgPath  ", bgPath, "logos  ", logos);
 
       for (let i = 0; i < einvoiceDetailsParam.length; i++) {

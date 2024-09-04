@@ -182,7 +182,7 @@ class EiExcelHandler {
       //   // { startCell: 21, endCell: 22, cellType: 1, cellBorder: "dotted", field: "BLANK" },//type 1: còn lại
       // ]
 
-      console.log('this.masterDataArray  ', this.masterDataArray);
+      //console.log('this.masterDataArray  ', this.masterDataArray);
       backgroundCell = einvoiceMasterData[0].BG_START_ROW;
       backgroundRow = einvoiceMasterData[0].BG_END_ROW;
       backgroundWidth = einvoiceMasterData[0].BG_WIDTH;

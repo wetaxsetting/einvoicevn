@@ -97,7 +97,7 @@ class EiExcelHandler {
         reportPath = einvoiceMasterData[0].URL_FILE_EXCEL_IMP; //'report/60/95/einvoices_template/Bornga/Bornga.xlsx'
         reportSheet = 'Invoice';
       }
-      console.log('this.masterDataArray  ', this.masterDataArray);
+      //console.log('this.masterDataArray  ', this.masterDataArray);
       //reportPath = einvoiceMasterData[0].URL_FILE_EXCEL_IMP;//'report/60/95/einvoices_template/Bornga/Bornga.xlsx'
       //reportSheet = "Invoice"
 
@@ -110,7 +110,7 @@ class EiExcelHandler {
         });
       }
       if (einvoiceMasterData.length && einvoiceMasterData[0].URL_IMG_BG) {
-        bgPath = '/../' + `${einvoiceMasterData[0].URL_IMG_BG}`;
+        bgPath = `${einvoiceMasterData[0].URL_IMG_BG}`;
       } else {
         bgPath = '';
       }

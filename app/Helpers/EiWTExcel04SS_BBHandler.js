@@ -133,8 +133,8 @@ class EiExcelHandler {
       //   logos = [];
       // }
 
-      console.log('bgPath  ', bgPath);
-      console.log('logos   ', logos);
+      //console.log('bgPath  ', bgPath);
+      //console.log('logos   ', logos);
 
       // backgroundCell = einvoiceMasterData[0].BG_START_ROW
       // backgroundRow = einvoiceMasterData[0].BG_END_ROW

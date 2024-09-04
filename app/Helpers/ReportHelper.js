@@ -811,7 +811,7 @@ class ReportHelper {
   }
 
   async writeFile() {
-    console.log('writeFile ', this.returnFile);
+    //console.log('writeFile ', this.returnFile);
     if (this.reportType === 'word') {
       await fs.writeFileSync(this.returnFile, this.docBuffer);
     } else if (this.reportType === 'excel') {
@@ -2139,7 +2139,7 @@ class ReportHelper {
       // console.log('insertPathImage ', img);
       imageBuffer = await Utils.readFile(img);
     } catch (e) {
-      console.log('insertPathImage  e', e);
+      //console.log('insertPathImage  e', e);
 
       Utils.Logger({LVL: 'error', MODULE: 'ReportController', FUNC: 'insertPathImage', CONTENT: e.message});
     }
@@ -2160,7 +2160,7 @@ class ReportHelper {
           extension: 'jpeg',
         });
       }
-      console.log('imageBase64', imageBase64);
+      //console.log('imageBase64', imageBase64);
     }
 
     return imageID;

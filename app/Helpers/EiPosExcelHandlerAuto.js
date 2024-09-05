@@ -148,22 +148,19 @@ class EiExcelHandler {
       //   logos = [];
       // }
       //console.log(" bgPath  ", bgPath, "logos  ", logos);
-
-      // logos = [
-      //   {
-      //     start: einvoiceMasterData[0].LOGO_START_ROW,
-      //     width: 0.99 * dpi,
-      //     height: 0.99 * dpi,
-      //     logoStartCount: einvoiceMasterData[0].LOGO_START_COL,
-      //     logoPath: `${
-      //       einvoiceMasterData[0] && einvoiceMasterData[0].URL_IMG_LOGO
-      //         ? einvoiceMasterData[0].URL_IMG_LOGO
-      //         : '/data/einvoices_logo/0104128565-999/2024/07/1721906430005_1721906430005.png'
-      //     }`,
-      //   },
-      // ];
-
-      logos = [];
+      logos = [
+        {
+          start: einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_START_COL ? einvoiceMasterData[0].LOGO_START_COL : 1,
+          logoStartCount: einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_START_ROW ? einvoiceMasterData[0].LOGO_START_ROW : 1,
+          width: einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_WIDTH ? einvoiceMasterData[0].LOGO_WIDTH : 1,
+          height: einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_HEIGHT ? einvoiceMasterData[0].LOGO_HEIGHT : 1,
+          logoPath: `${
+            einvoiceMasterData[0] && einvoiceMasterData[0].URL_IMG_LOGO
+              ? einvoiceMasterData[0].URL_IMG_LOGO
+              : '/data/einvoices_logo/0104128565-999/2024/07/1721906430005_1721906430005.png'
+          }`, ///assets/images/einvoices_logo/abc/
+        },
+      ];
 
       for (let i = 0; i < einvoiceDetailsParam.length; i++) {
         detailCellFormat.push({

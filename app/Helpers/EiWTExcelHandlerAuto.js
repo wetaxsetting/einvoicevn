@@ -163,7 +163,7 @@ class EiExcelHandler {
         },
       ];
 
-      logos = [];
+      //logos = [];
       // console.log(" bgPath  ", bgPath, "logos  ", logos);
 
       for (let i = 0; i < einvoiceDetailsParam.length; i++) {

@@ -149,19 +149,21 @@ class EiExcelHandler {
       // }
       //console.log(" bgPath  ", bgPath, "logos  ", logos);
 
-      logos = [
-        {
-          start: einvoiceMasterData[0].LOGO_START_ROW,
-          width: 0.99 * dpi,
-          height: 0.99 * dpi,
-          logoStartCount: einvoiceMasterData[0].LOGO_START_COL,
-          logoPath: `${
-            einvoiceMasterData[0] && einvoiceMasterData[0].URL_IMG_LOGO
-              ? einvoiceMasterData[0].URL_IMG_LOGO
-              : '/data/einvoices_logo/0104128565-999/2024/07/1721906430005_1721906430005.png'
-          }`,
-        },
-      ];
+      // logos = [
+      //   {
+      //     start: einvoiceMasterData[0].LOGO_START_ROW,
+      //     width: 0.99 * dpi,
+      //     height: 0.99 * dpi,
+      //     logoStartCount: einvoiceMasterData[0].LOGO_START_COL,
+      //     logoPath: `${
+      //       einvoiceMasterData[0] && einvoiceMasterData[0].URL_IMG_LOGO
+      //         ? einvoiceMasterData[0].URL_IMG_LOGO
+      //         : '/data/einvoices_logo/0104128565-999/2024/07/1721906430005_1721906430005.png'
+      //     }`,
+      //   },
+      // ];
+
+      logos = [];
 
       for (let i = 0; i < einvoiceDetailsParam.length; i++) {
         detailCellFormat.push({

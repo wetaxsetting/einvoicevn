@@ -5784,7 +5784,7 @@ class EInvoiceController {
           objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
             TTruong: 'DCTDTu',
             KDLieu: 'string',
-            DLieu: invoices[i].buyer_email,
+            DLieu: this.convertHtmlCode(invoices[i].buyer_email),
           });
         }
 
@@ -5792,7 +5792,7 @@ class EInvoiceController {
           objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
             TTruong: 'HVTNMHang',
             KDLieu: 'string',
-            DLieu: invoices[i].buyer_nm,
+            DLieu: this.convertHtmlCode(invoices[i].buyer_nm),
           });
         }
 
@@ -5808,7 +5808,7 @@ class EInvoiceController {
           objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
             TTruong: 'TNHang',
             KDLieu: 'string',
-            DLieu: invoices[i].buyer_bank_name,
+            DLieu: this.convertHtmlCode(invoices[i].buyer_bank_name),
           });
         }
         //if(invoices[i].buyer_tel)
@@ -14617,11 +14617,8 @@ class EInvoiceController {
 
   convertHtmlCode(sText) {
     if (sText != null || sText == '') {
-      return this.replaceAllExt(
-        this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '&', '&amp;'), '"', '&#34;'), '<', '&lt;'),
-        '>',
-        '&gt;',
-      );
+      return this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '"', '&#34;'), '<', '&lt;'), '>', '&gt;');
+      //this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '&', '&amp;'), '"', '&#34;'), '<', '&lt;'),'>','&gt;',); vng-199 tạm thời đóng đoạn này vì sửa lý ở C# khi ký
     } else {
       return '';
     }

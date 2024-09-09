@@ -15283,7 +15283,7 @@ class EInvoiceController {
 
   convertHtmlCode(sText) {
     if (sText != null || sText == '') {
-      return this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(STATUS_EXIT, '"', '&#34;'), '<', '&lt;'), '>', '&gt;');
+      return this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '"', '&#34;'), '<', '&lt;'), '>', '&gt;');
     } else {
       return '';
     }

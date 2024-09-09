@@ -5939,7 +5939,7 @@ class EInvoiceController {
           objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
             TTruong: 'HVTNMHang',
             KDLieu: 'string',
-            DLieu: invoices[i].buyer_nm,
+            DLieu: this.convertHtmlCode(invoices[i].buyer_nm),
           });
         }
 
@@ -6387,7 +6387,7 @@ class EInvoiceController {
             objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
               TTruong: 'HVTNMHang',
               KDLieu: 'string',
-              DLieu: invoices[i].buyer_nm,
+              DLieu: this.convertHtmlCode(invoices[i].buyer_nm),
             });
           }
 
@@ -15283,11 +15283,7 @@ class EInvoiceController {
 
   convertHtmlCode(sText) {
     if (sText != null || sText == '') {
-      return this.replaceAllExt(
-        this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '&', '&amp;'), '"', '&#34;'), '<', '&lt;'),
-        '>',
-        '&gt;',
-      );
+      return this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(STATUS_EXIT, '"', '&#34;'), '<', '&lt;'), '>', '&gt;');
     } else {
       return '';
     }

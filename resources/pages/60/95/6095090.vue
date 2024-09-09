@@ -595,6 +595,7 @@ export default {
 
       console.log("sss",this.invoice );
     },
+
     previewCellFile() {
       this.tei_einvoice_m_pk_row = document.getElementById("6095090-tempPK").value;
       this.onPreview();
@@ -796,7 +797,6 @@ export default {
     {
       this.drawer = !this.drawer;
     },
->>>>>>> parent of 71c0d03 (sss)
     async InvoiceSign() {
 
       this.$refs.MethorSignXML.dialogIsShow = true;

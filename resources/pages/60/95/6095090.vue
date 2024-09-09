@@ -595,9 +595,6 @@ export default {
 
       console.log("sss",this.invoice );
     },
-
-<<<<<<< HEAD
-=======
     previewCellFile() {
       this.tei_einvoice_m_pk_row = document.getElementById("6095090-tempPK").value;
       this.onPreview();

@@ -8971,7 +8971,6 @@ class EInvoiceController {
           inform_code: maTBao,
           inform_name: tenTBao,
           xml_tax_signed: xml_tax_signed,
-          seller_signatute_time: '',
         };
       });
 
@@ -16228,7 +16227,8 @@ class EInvoiceController {
               inform_code: '', //8
               inform_name: '', //Dữ liệu hóa đơn hợp lệ
               lookup_code: '',
-              seller_signatute_time: signingTime.SigningTime,
+              sign_datetime: signingTime.SigningTime,
+              sign_by: invoice.DLHDon.NDHDon.NBan.Ten,
             });
             if (rtnValueMaster.p_rtn_cur[0].STATUS == 'OK') {
               const invoice_detail = invoice.DLHDon.NDHDon.DSHHDVu.HHDVu;
@@ -19223,7 +19223,8 @@ class EInvoiceController {
             mccqt: inv.CQT_MCCQT,
             lookup_code: '',
             xml_tax_signed: '',
-            seller_signatute_time: inv.SIGN_DT,
+            sign_datetime: inv.SIGN_DT,
+            sign_by: m.SIGN_BY,
           });
         }
       }

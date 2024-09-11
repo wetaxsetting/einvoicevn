@@ -8971,6 +8971,7 @@ class EInvoiceController {
           inform_code: maTBao,
           inform_name: tenTBao,
           xml_tax_signed: xml_tax_signed,
+          seller_signatute_time: '',
         };
       });
 
@@ -16227,6 +16228,7 @@ class EInvoiceController {
               inform_code: '', //8
               inform_name: '', //Dữ liệu hóa đơn hợp lệ
               lookup_code: '',
+              seller_signatute_time: signingTime.SigningTime,
             });
             if (rtnValueMaster.p_rtn_cur[0].STATUS == 'OK') {
               const invoice_detail = invoice.DLHDon.NDHDon.DSHHDVu.HHDVu;
@@ -19221,6 +19223,7 @@ class EInvoiceController {
             mccqt: inv.CQT_MCCQT,
             lookup_code: '',
             xml_tax_signed: '',
+            seller_signatute_time: inv.SIGN_DT,
           });
         }
       }
@@ -19453,7 +19456,7 @@ class EInvoiceController {
                 // console.log('data_inv ', JSON.stringify(data_inv));
                 data_inv.forEach((element, index) => {
                   if (element.inform_code == '' && element.inform_name == '') {
-                    data_inv[index].inform_code = '2'; //items[k].loaiTBao;
+                    data_inv[index].inform_code = maTBao; //items[k].loaiTBao;
                     data_inv[index].inform_name = 'Thông báo dữ liệu hóa đơn hợp lệ';
                   }
                 });

@@ -19224,11 +19224,11 @@ class EInvoiceController {
             lookup_code: '',
             xml_tax_signed: '',
             sign_datetime: inv.SIGN_DT,
-            sign_by: m.SIGN_BY,
+            sign_by: inv.SIGN_BY,
           });
         }
       }
-      // console.log('jobCheckTradeCodePosInvoice data_inv  ', JSON.stringify(data_inv));
+      //console.log('jobCheckTradeCodePosInvoice data_inv  ', JSON.stringify(data_inv));
 
       const agent = {
         Agent: {

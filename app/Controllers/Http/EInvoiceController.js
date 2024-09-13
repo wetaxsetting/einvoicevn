@@ -16800,6 +16800,9 @@ class EInvoiceController {
               inform_code: '', //8
               inform_name: '', //Dữ liệu hóa đơn hợp lệ
               lookup_code: '',
+              xml_tax_signed: '',
+              sign_datetime: signingTime.SigningTime,
+              sign_by: invoice.DLHDon.NDHDon.NBan.Ten,
             });
             console.log('weTaxExtractPosXMLContent  ', rtnValueMaster.p_rtn_cur[0]);
             if (rtnValueMaster.p_rtn_cur[0].STATUS == 'OK') {
@@ -19343,6 +19346,8 @@ class EInvoiceController {
             mccqt: inv.CQT_MCCQT,
             lookup_code: '',
             xml_tax_signed: '',
+            sign_datetime: inv.SIGN_DT,
+            sign_by: inv.SIGN_BY,
           });
         }
       }

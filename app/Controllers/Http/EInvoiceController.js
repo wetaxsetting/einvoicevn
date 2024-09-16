@@ -2217,17 +2217,14 @@ class EInvoiceController {
       const master = await DBService.callProcCursor('WT_UPD_DECLARATION_M', masterPara, p_language, p_crt_by);
       // console.log("master", master);
       if (master && master[0].PK > 0) {
-        //const jsonDSHHDVu = await transform(p_xml_content, templateDSHHDVu);
-        //console.log(jsonDSHHDVu)
         for (let i = 0; i < jsonCTS.length; i++) {
           const detailPara = [master[0].PK, jsonCTS[i].STT, jsonCTS[i].TTChuc, jsonCTS[i].Seri, jsonCTS[i].TNgay, jsonCTS[i].DNgay, jsonCTS[i].HThuc];
           const detail = await DBService.callProcCursor('WT_UPD_DECLARATION_D', detailPara, p_language, p_crt_by);
           //console.log("detail", detail);
         }
-        return master[0].PK;
+        return {PK: master[0].PK, SIGN_DATETIME: signingTime.SigningTime, SIGN_BY: jsonTTChung[0].TNNT};
       } else {
-        // return 0;
-        return master[0].PK;
+        return {PK: master[0].PK};
       }
     } catch (e) {
       Utils.Logger({
@@ -2237,7 +2234,7 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       console.log('e   ', e);
-      return -2;
+      return {PK: -2};
     }
   }
 
@@ -2328,12 +2325,12 @@ class EInvoiceController {
           const detail = await DBService.callProcCursor('WT_UPD_NOTICE_D', detailPara, p_language, p_crt_by);
           //console.log("detail", detail);
           if (detail[0].PK == -3) {
-            return -3;
+            return {PK: -3};
           }
         }
-        return master[0].PK;
+        return {PK: master[0].PK, SIGN_DATETIME: signingTime.SigningTime, SIGN_BY: jsonTTChung[0].TNNT};
       } else {
-        return 0;
+        return {PK: 0};
       }
     } catch (e) {
       Utils.Logger({
@@ -3482,7 +3479,7 @@ class EInvoiceController {
             tax_code: '',
           }),
         );
-      } else if (matesNoticePK == -1) {
+      } else if (matesNoticePK.PK == -1) {
         return response.send(
           Utils.response(false, `Taxcode company not yet register! `, {
             req_key: req_key,
@@ -3491,7 +3488,7 @@ class EInvoiceController {
             tax_code: '',
           }),
         );
-      } else if (matesNoticePK == -2) {
+      } else if (matesNoticePK.PK == -2) {
         return response.send(
           Utils.response(false, `The file xml is wrong! `, {
             req_key: req_key,
@@ -3500,7 +3497,7 @@ class EInvoiceController {
             tax_code: '',
           }),
         );
-      } else if (matesNoticePK == -3) {
+      } else if (matesNoticePK.PK == -3) {
         return response.send(
           Utils.response(false, `The invoice registered !`, {
             req_key: req_key,
@@ -3524,7 +3521,7 @@ class EInvoiceController {
       //console.log("trade_code ", trade_code);
       if (trade_code && trade_code.data.maGDich) {
         const para_value = {
-          req_key: matesNoticePK,
+          req_key: matesNoticePK.PK,
           trade_code: trade_code.data.maGDich,
           xml_sign: xml_signed,
         };
@@ -3618,45 +3615,13 @@ class EInvoiceController {
 
       //  console.log("weTaxSendInformAdjustToTaxOffice  valid  ", matesNoticePK);
 
-      if (matesNoticePK == 0) {
-        //  return response.send(
-        //    Utils.response(false, `Notice have not details`, {
-        //      req_key: req_key,
-        //      xml_signed: "",
-        //      trade_code: "",
-        //      tax_code: "",
-        //    })
-        //  );
+      if (matesNoticePK.PK == 0) {
         return response.status(400).json(Utils.responseByRule({success: false, message: 'Notice have no details', data: {req_key: req_key}}));
-      } else if (matesNoticePK == -1) {
-        //  return response.send(
-        //    Utils.response(false, `Taxcode company not yet register! `, {
-        //      req_key: req_key,
-        //      xml_signed: "",
-        //      trade_code: "",
-        //      tax_code: "",
-        //    })
-        //  );
+      } else if (matesNoticePK.PK == -1) {
         return response.status(404).json(Utils.responseByRule({success: false, message: 'Company not yet register!', data: {req_key: req_key}}));
-      } else if (matesNoticePK == -2) {
-        //  return response.send(
-        //    Utils.response(false, `The file xml is wrong! `, {
-        //      req_key: req_key,
-        //      xml_signed: "",
-        //      trade_code: "",
-        //      tax_code: "",
-        //    })
-        //  );
+      } else if (matesNoticePK.PK == -2) {
         return response.status(400).json(Utils.responseByRule({success: false, message: 'The file xml is wrong!', data: {req_key: req_key}}));
-      } else if (matesNoticePK == -3) {
-        //  return response.send(
-        //    Utils.response(false, `The invoice registered !`, {
-        //      req_key: req_key,
-        //      xml_signed: "",
-        //      trade_code: "",
-        //      tax_code: "",
-        //    })
-        //  );
+      } else if (matesNoticePK.PK == -3) {
         return response.status(400).json(Utils.responseByRule({success: false, message: 'The invoice registered!', data: {req_key: req_key}}));
       }
 
@@ -3673,7 +3638,7 @@ class EInvoiceController {
       //console.log("trade_code ", trade_code);
       if (trade_code && trade_code.data.maGDich) {
         const para_value = {
-          req_key: matesNoticePK,
+          req_key: matesNoticePK.PK,
           trade_code: trade_code.data.maGDich,
           xml_sign: xml_signed,
         };
@@ -3690,28 +3655,20 @@ class EInvoiceController {
         );
 
         if (res.p_rtn_cur[0].STATUS == 'OK') {
-          // return Utils.response(true, `Call tax office api success.`, {
-          //     req_key: req_key,
-          //     trade_code: trade_code.data.maGDich,
-          // });
-
           console.log('weTaxSendInformAdjustToTaxOffice2  END');
           return response.status(200).json(
             Utils.responseByRule({
               success: true,
               message: 'Send announcement successfully.',
-              data: {req_key: req_key, trade_code: trade_code.data.maGDich},
+              data: {
+                req_key: req_key,
+                trade_code: trade_code.data.maGDich,
+                sign_datetime: matesNoticePK.SIGN_DATETIME,
+                sign_by: matesNoticePK.SIGN_BY,
+              },
             }),
           );
         } else {
-          // return response.send(
-          //     Utils.response(
-          //         false,
-          //         `Something went wrong, please try again later.
-          //         WT_UP_NOTICE_TRADE_CODE`,
-          //         para_value
-          //     )
-          // );
           return response.status(409).json(Utils.responseByRule({success: false, message: 'WT_UP_NOTICE_TRADE_CODE wrong!', data: para_value}));
         }
       } else {
@@ -10563,28 +10520,6 @@ class EInvoiceController {
           });
         }
 
-        /*const para_status = {
-          req_ep_key: tr_code.trade_code,
-          maCQT: maCQT,
-          xml_tax_signed: xml_tax_signed,
-          xml_length: xml_length,
-        };
-
-        await DBService.ExecuteSQLBlob(
-          `BEGIN WT_UPD_TEI_WT_INVOICE_UP(
-                                    :req_ep_key, 
-                                    :maCQT,
-                                    :xml_tax_signed,
-                                    :xml_length,
-                                    :p_language, 
-                                    :p_crt_by, 
-                                    :p_rtn_cur); 
-                    END;`,
-          para_status,
-          p_language,
-          p_crt_by,
-        );*/
-
         //  console.log("res_op   ", res_op);
         rtnValue.push({
           req_key: tr_code.sale_id,
@@ -10595,6 +10530,8 @@ class EInvoiceController {
           mccqt: maCQT,
           lookup_code: tr_code.lookup_code,
           data_error: data_error,
+          sign_datetime: masterInvoicePK.SIGN_DATETIME,
+          sign_by: masterInvoicePK.SIGN_BY,
         });
       }
       console.log('weTaxSendInvoiceToTaxOffice  rtnValue', rtnValue);
@@ -11624,6 +11561,8 @@ class EInvoiceController {
               mail_to_cc: data_mail.mail_to_cc,
               title: data_mail.title,
               content: data_mail.content,
+              sign_datetime: res.SIGN_DATETIME,
+              sign_by: res.SIGN_BY,
             });
           } else {
             r_data_noti.push({
@@ -11638,6 +11577,8 @@ class EInvoiceController {
               mail_to_cc: '',
               title: '',
               content: '',
+              sign_datetime: res.SIGN_DATETIME,
+              sign_by: res.SIGN_BY,
             });
           }
         } else {
@@ -11653,6 +11594,8 @@ class EInvoiceController {
             mail_to_cc: '',
             title: '',
             content: '',
+            sign_datetime: res.SIGN_DATETIME,
+            sign_by: res.SIGN_BY,
           });
         }
       }
@@ -17039,7 +16982,13 @@ class EInvoiceController {
         p_crt_by,
       );
 
-      return rtnValueNoti?.p_rtn_cur[0];
+      return {
+        TEI_EINVOICE_SS_D_PK: rtnValueNoti?.p_rtn_cur[0].TEI_EINVOICE_SS_D_PK,
+        SIGN_DATETIME: signingTime.SigningTime,
+        SIGN_BY: jsonInvoice[0].DLieu.NBan.Ten,
+        TEI_COMPANY_PK: rtnValueNoti?.p_rtn_cur[0].TEI_COMPANY_PK,
+        STATUS: rtnValueNoti?.p_rtn_cur[0].STATUS,
+      };
     } catch (e) {
       Utils.Logger({
         LVL: 'error',
@@ -17404,15 +17353,13 @@ class EInvoiceController {
           // console.log("detail", detail);
         }
 
-        // const para_detail_vat = [
-        //   req_wt_key : ,
-        // ]
-
         await DBService.callProcCursor('WT_UPD_TEI_WT_INVOICE_D_VAT', [master[0].PK], p_language, p_crt_by);
 
         return (result_extra = {
           PK: master[0].PK,
           TEI_EINVOICE_M_PK: master[0].TEI_EINVOICE_M_PK,
+          SIGN_DATETIME: signingTime.SigningTime,
+          SIGN_BY: jsonNBan[0].Ten,
         });
       } else {
         return (result_extra = {
@@ -19719,8 +19666,6 @@ class EInvoiceController {
                     p_ord: ord,
                     p_tvan_data_result: JSON.stringify(res.data),
                   };
-
-                  //console.log('weTaxSendInvoiceToTaxOffice  para_history  ', para_history);
 
                   const res_op = await DBService.ExecuteSQLBlob(
                     `BEGIN ei_upd_his_nor_inv(

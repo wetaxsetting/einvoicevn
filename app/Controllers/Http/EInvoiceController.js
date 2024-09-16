@@ -11599,7 +11599,7 @@ class EInvoiceController {
           });
         }
       }
-
+      console.log('weTaxSendRecords   r_data_noti ', r_data_noti);
       console.log('weTaxSendRecords   END =================================');
 
       // return response.send(Utils.response(true, `Sending records was successful. `,r_data_noti ));

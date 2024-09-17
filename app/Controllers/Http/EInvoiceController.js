@@ -18500,43 +18500,66 @@ class EInvoiceController {
         if (invoice.type == 'C') {
           url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon';
 
-          const trade_code = await Request.post(
-            url,
-            {base64XML: Buffer.from(invoice.xml).toString('base64')},
-            {
-              agent,
-              headers: {
-                Authorization: 'Basic ' + Buffer.from(`${authUserName}:${authPassword}`).toString('base64'),
-              },
-            },
-          );
-
-          const para_trade_code = {
+          const para_data_check = {
             req_ep_key: invoice.req_key,
-            trade_code: trade_code.data.maGDich,
-            xml_signed: invoice.xml,
-            serial_number: invoice.serial_number,
           };
 
-          await DBService.ExecuteSQLBlob(
-            `BEGIN EI_UPD_TRADECODE_INV(
+          const data_check = await DBService.ExecuteSQLBlob(
+            `BEGIN ei_pro_checking_send(
                                     :req_ep_key, 
-                                    :trade_code,
-                                    :xml_signed,
-                                    :serial_number,
                                     :p_language, 
                                     :p_crt_by, 
                                     :p_rtn_cur); 
                     END;`,
-            para_trade_code,
+            para_data_check,
             p_language,
             p_crt_by,
           );
 
-          data_r_tradecode.push({
-            req_ep_key: invoice.req_key,
-            trade_code: trade_code.data.maGDich,
-          });
+          if (data_check.p_rtn_cur[0].CQT_SEND_YN == 'N') {
+            const trade_code = await Request.post(
+              url,
+              {base64XML: Buffer.from(invoice.xml).toString('base64')},
+              {
+                agent,
+                headers: {
+                  Authorization: 'Basic ' + Buffer.from(`${authUserName}:${authPassword}`).toString('base64'),
+                },
+              },
+            );
+
+            const para_trade_code = {
+              req_ep_key: invoice.req_key,
+              trade_code: trade_code.data.maGDich,
+              xml_signed: invoice.xml,
+              serial_number: invoice.serial_number,
+            };
+
+            await DBService.ExecuteSQLBlob(
+              `BEGIN EI_UPD_TRADECODE_INV(
+                                        :req_ep_key, 
+                                        :trade_code,
+                                        :xml_signed,
+                                        :serial_number,
+                                        :p_language, 
+                                        :p_crt_by, 
+                                        :p_rtn_cur); 
+                        END;`,
+              para_trade_code,
+              p_language,
+              p_crt_by,
+            );
+
+            data_r_tradecode.push({
+              req_ep_key: invoice.req_key,
+              trade_code: trade_code.data.maGDich,
+            });
+          } else {
+            data_r_tradecode.push({
+              req_ep_key: invoice.req_key,
+              trade_code: data_check.p_rtn_cur[0].CQT_MAGD,
+            });
+          }
         } else if (invoice.type == 'S') {
           url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
 

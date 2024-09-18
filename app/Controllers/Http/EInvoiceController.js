@@ -13533,10 +13533,11 @@ class EInvoiceController {
         cc_to: data_invoice.buyer_email_cc,
         subject: subject,
         body: body,
-        attachfile1: url_xml,
+        // 2024-09-18 tam thời đóng do process
+        /*attachfile1: url_xml,
         attachfile2: url_pdf,
         filename1: data_invoice.form_no + '_' + data_invoice.serial_no + '_' + data_invoice.invoice_no + '.xml',
-        filename2: data_invoice.form_no + '_' + data_invoice.serial_no + '_' + data_invoice.invoice_no + '.pdf',
+        filename2: data_invoice.form_no + '_' + data_invoice.serial_no + '_' + data_invoice.invoice_no + '.pdf',*/
       });
       //console.log("res_send_mail  ", res_send_mail);
       return {res_send_mail, subject, body};

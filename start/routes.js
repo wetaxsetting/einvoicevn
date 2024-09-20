@@ -113,7 +113,7 @@ Route.group(() => {
   Route.get('readattachfile', 'DsoController.readAttachFile');
   Route.get('getfiletoken', 'DsoController.getFileToken');
   Route.get('getfiletoken2', 'DsoController.getFileToken2');
-  Route.get('getfiletokenrealtime', 'DsoController.getFileToken2');
+  Route.get('getfiletokenrealtime', 'DsoController.getFileTokenRealTime');
 
   Route.get('getfiledbtoken', 'DsoController.DownloadFileDBToken');
   Route.get('getlogo', 'DsoController.getLogo');

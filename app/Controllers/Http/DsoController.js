@@ -20,6 +20,7 @@ const oracledb = require('oracledb');
 const lineByLine = use('n-readlines');
 let _message_ids = [];
 let _user_last_called = [];
+const EiPosExcelHandlerAuto = use('App/Helpers/EiPosExcelHandlerAuto');
 
 class DsoController {
   async test({request, response, auth}) {
@@ -1212,6 +1213,49 @@ class DsoController {
       return response.send(Utils.response(false, e.message, null));
     }
   }
+
+  async getFileTokenRealTime({request, response}) {
+    try {
+      const {req_key} = request.get(['token', 'file_name']);
+
+      let EiExcels = new EiPosExcelHandlerAuto();
+      let url_pdf = await EiExcels.getEinvoice(tei_wt_sale_bill_pk, p_language, p_crt_by);
+
+      console.log('getFileTokenRealTime url_pdf ', url_pdf);
+
+      const searchParams = new URLSearchParams(url_pdf);
+      const file_name = searchParams.get('https://test.einvoicepro.webcashvietnam.com/api/dso/getfiletoken?file_name');
+      /*const {token, file_name} = request.get(['token', 'file_name']);
+      const token2 = token
+        .replace(/p1L2u3S/g, '+')
+        .replace(/s1L2a3S4h/g, '/')
+        .replace(/e1Q2u3A4l/g, '=');
+      const decodeToken = AES.decrypt(token2, APP_KEY);
+      const arrToken = decodeToken.split('|');
+      if (arrToken.length != 2) {
+        return response.send(Utils.response(false, 'Invalid token', null));
+      }
+      if (arrToken[0] !== file_name) {
+        return response.send(Utils.response(false, 'Invalid token', null));
+      }*/
+
+      let ip = request.header('x-real-ip');
+      if (ip == undefined) {
+        ip = request.ip();
+      }
+      if (HOST != ip && ip != '127.0.0.1') {
+        //const curDate = Utils.CurrentDate();
+        //if (arrToken[1].substring(0, 8) != curDate) {
+        //  return response.send(Utils.response(false, "Token was expired", null));
+        //}
+      }
+      const filePath = ROOT_DIR_FILES.replace('/', '') + file_name;
+      return response.download(filePath);
+    } catch (e) {
+      return response.send(Utils.response(false, e.message, null));
+    }
+  }
+
   async getFileToken2({request, response}) {
     try {
       const {token, file_name} = request.get(['token', 'file_name']);

@@ -1216,7 +1216,7 @@ class DsoController {
 
   async getFileTokenRealTime({request, response}) {
     try {
-      const {req_key} = request.get(['token', 'file_name']);
+      const {req_key} = request.get(['req_key']);
 
       let EiExcels = new EiPosExcelHandlerAuto();
       let url_pdf = await EiExcels.getEinvoice(req_key, 'ENG', 'user-abc');

@@ -9351,7 +9351,7 @@ class EInvoiceController {
                       p_tvan_data_result: JSON.stringify(res.data),
                     };
 
-                    console.log('weTaxCheckInvoiceStatusFromTaxOffice  para_history  ', para_history);
+                    //console.log('weTaxCheckInvoiceStatusFromTaxOffice  para_history  ', para_history);
                     //const res_op =
                     await DBService.ExecuteSQLBlob(
                       `BEGIN ei_upd_his_nor_inv(

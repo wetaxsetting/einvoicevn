@@ -9284,7 +9284,17 @@ class EInvoiceController {
         ngayCQTKy = '';
       let xml_length = 0;
       for (let i = 0; i < data.length; i++) {
-        ////console.log("SSS ", url + data[i].trade_code);
+        data_inv.push({
+          sale_id: data[i].req_key,
+          req_ep_key: '',
+          trade_code: data[i].trade_code,
+          msg_his_id: data[i].msg_his_id,
+          lookup_code: '',
+          buyer_email: data[i].mail_to,
+          buyer_email_cc: data[i].mail_cc,
+          mccqt: '',
+          send_mail_yn: 'N',
+        });
 
         const agent = {
           Agent: {
@@ -9301,10 +9311,7 @@ class EInvoiceController {
           },
         })
           .then(async res => {
-            // //console.log("res  ++===> ", res.data);
-
             if (!res.data.length) {
-              // return response.send(Utils.response(false, `No data found.`, null));
               return response.status(404).json(Utils.responseByRule({success: false, message: 'No data found.'}));
             }
             for (let j = 0; j < res.data.length; j++) {
@@ -9345,8 +9352,8 @@ class EInvoiceController {
                     };
 
                     console.log('weTaxCheckInvoiceStatusFromTaxOffice  para_history  ', para_history);
-
-                    const res_op = await DBService.ExecuteSQLBlob(
+                    //const res_op =
+                    await DBService.ExecuteSQLBlob(
                       `BEGIN ei_upd_his_nor_inv(
                                                   :p_CQT_Code, 
                                                   :p_xml_sign,
@@ -9382,12 +9389,6 @@ class EInvoiceController {
                   tenTBao = items[k].tenTBao;
                   ngayCQTKy = items[k].ndungTBao.tbaoCMa.ngayCQTKy;
 
-                  rtnValueTradecode.forEach((element, index) => {
-                    if (element.trade_code === tr_code.trade_code) {
-                      rtnValueTradecode[index].mccqt = maCQT;
-                    }
-                  });
-
                   const param_ltb_8 = {
                     p_tei_history_m_pk: null,
                     p_CQT_Code: data[i].trade_code,
@@ -9400,9 +9401,7 @@ class EInvoiceController {
                     p_xml_length: xml_length,
                   };
 
-                  console.log('jobCheckTradeCodeNorInvoice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
-
-                  await DBService.ExecuteSQLBlob(
+                  const data_update_inv = await DBService.ExecuteSQLBlob(
                     `BEGIN WT_UPD_HISTORY_D_NOR_TB8(
                                     :p_tei_history_m_pk,
                                     :p_CQT_Code,
@@ -9421,6 +9420,14 @@ class EInvoiceController {
                     p_language,
                     p_crt_by,
                   );
+
+                  data_inv.forEach((element, index) => {
+                    if (element.trade_code === data[i].trade_code) {
+                      data_inv[index].mccqt = maCQT;
+                      data_inv[index].req_ep_key = data_update_inv.p_rtn_cur[0].TEI_WT_INVOICE_M_PK;
+                      data_inv[index].lookup_code = data_update_inv.p_rtn_cur[0].LOOKUP_CODE;
+                    }
+                  });
                 } else if (items[k].loaiTBao == '9' || items[k].loaiTBao == '16' || items[k].loaiTBao == '15') {
                   maTBao = items[k].ndungTBao.tbaoKTraDLieu.loaiTBao;
                   tenTBao =
@@ -9511,7 +9518,7 @@ class EInvoiceController {
           data_error: data_error,
         });
       }
-      ////console.log("data_inv  ", data_inv)
+      console.log('weTaxCheckInvoiceStatusFromTaxOffice sendMailNormailWT  ', JSON.stringify(data_inv));
       this.sendMailNormailWT(data_inv, 'WTPTA003-1', p_language, p_crt_by);
       // return response.send(
       //   Utils.response(true, `${data.length} invoices was update status from tax office.`, rtnValue)

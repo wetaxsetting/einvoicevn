@@ -586,17 +586,17 @@ class EiWTExcelConverterAuto {
                         //console.log(error);
                       }
                       worksheet.getCell(`${excCols[e.startCell] + (_sourceRow_2 + totalRowCount_2)}`).style.border = {
-                        bottom: {style: detailCellFormat[i].cellBorder},
+                        bottom: {style: `${detailCellFormat[i].cellBorder}`},
                         left: {style: 'thin'},
                       };
                     }
                   });
 
-                  // worksheet.getCell(`${lastCell + (_sourceRow_2 + totalRowCount_2)}`).style.border = {
-                  //   right: {style: 'thin'},
-                  //   bottom: {style: detailCellFormat[0].cellBorder},
-                  //   left: {style: 'thin'},
-                  // };
+                  worksheet.getCell(`${lastCell + (_sourceRow_2 + totalRowCount_2)}`).style.border = {
+                    right: {style: 'thin'},
+                    bottom: {style: detailCellFormat[0].cellBorder},
+                    left: {style: 'thin'},
+                  };
 
                   //worksheet.getCell( `${nmCell + (_sourceRow_2 + totalRowCount_2 + item_name_lt)}`).style.border = { bottom: { style: detailCellFormat[0].cellBorder }, };
                   //	worksheet.getCell( `${sttCell + (_sourceRow_2 + totalRowCount_2 + item_name_lt)}`).style.border = { left: { style: 'thin' }, right: { style: 'thin' }, bottom: { style: detailCellFormat[0].cellBorder }, top: { style: 'thin' } };

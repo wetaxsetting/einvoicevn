@@ -546,15 +546,15 @@ class EiWTExcelConverterAuto {
           //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
           //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
 
-          console.log('e  ', e);
+          //console.log('e  ', e);
           if (e > 0) {
             for (let i = 0; i < e; i++) {
               const _e = einvoiceDetailData[i + count_2];
-              console.log('_e  ', _e);
+              //console.log('_e  ', _e);
               try {
                 let item_name_lt = this.countlength_v2(_e['ITEM_NAME']);
                 if (_e['ITEM_NAME'] !== null) {
-                  console.log(`_e["ITEM_NAME"]  ` + _e['ITEM_NAME']);
+                  // console.log(`_e["ITEM_NAME"]  ` + _e['ITEM_NAME']);
                   let longRow = _e['ITEM_NAME'].split('&#xA;');
                   for (let itl = 0; itl < item_name_lt; itl++) {
                     const _item_name = longRow[itl];
@@ -567,20 +567,50 @@ class EiWTExcelConverterAuto {
 
                 if (item_name_lt == 1) {
                   detailCellFormat.forEach((e, i) => {
-                    worksheet.mergeCells(_sourceRow_2 + totalRowCount_2, e.startCell, _sourceRow_2 + totalRowCount_2, e.endCell);
-                    worksheet.getCell(`${excCols[e.startCell] + (_sourceRow_2 + totalRowCount_2)}`).style.border = {
-                      bottom: {style: detailCellFormat[i].cellBorder},
-                      left: {style: 'thin'},
-                    };
+                    console.log(
+                      '_sourceRow_2  ',
+                      _sourceRow_2,
+                      'totalRowCount_2  ',
+                      totalRowCount_2,
+                      '  e.startCell ',
+                      e.startCell,
+                      ' e.endCell ',
+                      e.endCell,
+                      ' detailCellFormat[i].cellBorder ',
+                      detailCellFormat[i].cellBorder,
+                    );
+                    if (e.startCell != e.endCell) {
+                      try {
+                        worksheet.mergeCells(_sourceRow_2 + totalRowCount_2, e.startCell, _sourceRow_2 + totalRowCount_2, e.endCell);
+                      } catch (error) {
+                        //console.log(error);
+                      }
+                      worksheet.getCell(`${excCols[e.startCell] + (_sourceRow_2 + totalRowCount_2)}`).style.border = {
+                        bottom: {style: detailCellFormat[i].cellBorder},
+                        left: {style: 'thin'},
+                      };
+                    }
                   });
-                  worksheet.getCell(`${lastCell + (_sourceRow_2 + totalRowCount_2)}`).style.border = {
-                    right: {style: 'thin'},
-                    bottom: {style: detailCellFormat[0].cellBorder},
-                    left: {style: 'thin'},
-                  };
+
+                  // worksheet.getCell(`${lastCell + (_sourceRow_2 + totalRowCount_2)}`).style.border = {
+                  //   right: {style: 'thin'},
+                  //   bottom: {style: detailCellFormat[0].cellBorder},
+                  //   left: {style: 'thin'},
+                  // };
+
                   //worksheet.getCell( `${nmCell + (_sourceRow_2 + totalRowCount_2 + item_name_lt)}`).style.border = { bottom: { style: detailCellFormat[0].cellBorder }, };
                   //	worksheet.getCell( `${sttCell + (_sourceRow_2 + totalRowCount_2 + item_name_lt)}`).style.border = { left: { style: 'thin' }, right: { style: 'thin' }, bottom: { style: detailCellFormat[0].cellBorder }, top: { style: 'thin' } };
                 } else {
+                  console.log(
+                    '_sourceRow_2 if ',
+                    _sourceRow_2,
+                    'totalRowCount_2  ',
+                    totalRowCount_2,
+                    '  e.startCell ',
+                    e.startCell,
+                    ' e.endCell ',
+                    e.endCell,
+                  );
                   worksheet.mergeCells(
                     _sourceRow_2 + totalRowCount_2,
                     detailCellFormat[0].startCell,
@@ -842,7 +872,10 @@ class EiWTExcelConverterAuto {
           try {
             console.log(' totalRows + _sourceRow_3 - o  ++++===> ', totalRows + _sourceRow_3 - o);
             detailCellFormat.forEach((e, i) => {
-              worksheet.mergeCells(totalRows + _sourceRow_3 - o, e.startCell, totalRows + _sourceRow_3 - o, e.endCell);
+              try {
+                worksheet.mergeCells(totalRows + _sourceRow_3 - o, e.startCell, totalRows + _sourceRow_3 - o, e.endCell);
+              } catch (error) {}
+
               worksheet.getCell(`${excCols[e.startCell] + (totalRows + _sourceRow_3 - o)}`).style.border = {
                 left: {style: 'thin'},
                 bottom: {style: detailCellFormat[i].cellBorder},
@@ -864,8 +897,8 @@ class EiWTExcelConverterAuto {
               bottom: {style: detailCellFormat[0].cellBorder},
             };
           } catch (error) {
-            console.log('error', error);
-            console.log('error', totalRows + _sourceRow_3 - o);
+            //console.log('error', error);
+            //console.log('error', totalRows + _sourceRow_3 - o);
           }
         }
       } else {

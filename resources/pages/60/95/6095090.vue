@@ -365,7 +365,7 @@ export default {
 
     pdfUrl: "",
     tei_einvoice_m_pk_row: "",
-
+    tei_einvoice_date:"",
     selected_rows: [],
     xmlUrl:"",
     xmlFileNm:"",
@@ -1133,7 +1133,10 @@ export default {
     async onPreview() {
       if(this.tei_einvoice_m_pk_row != "")
       {
-        if( Number(this.selected_company) < 943 )
+        if( Number(this.selected_company) < 943 &&
+          Number(this.selected_company) != 201 &&
+          Number(this.selected_company) != 462 &&
+          Number(this.tei_einvoice_date) >= 20240901 )
         {
           let res_url = await this.$axios.$post("/einvoice/view-pdf", {
               responseType: "json",
@@ -1196,6 +1199,7 @@ export default {
 
     async onCellClick({ column, data, rowIndex, rowType }) {
       this.tei_einvoice_m_pk_row = data.PK;
+      this.tei_einvoice_date = data.INVOICEISSUEDDATE.replace("-","");
       this.maGD = data.CQT_MAGD;
       this.xml_signed = data.SIGN_XML;
       this.serialNoIndex = "Ký hiệu: " + data.FORM_NO + data.SERIAL_NO;

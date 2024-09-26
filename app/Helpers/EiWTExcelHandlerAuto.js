@@ -69,13 +69,13 @@ class EiExcelHandler {
       // console.log("file: EiWTExcelHandlerAuto.js:80 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceDetailsParam:", einvoiceDetailsParam)
 
       if (einvoiceMasterData.length <= 0) {
-        return this.showNotification('warning', this.$t("This Einvoice Doesn't Exist"), '', 5000);
+        return that.showNotification('warning', that.$t("This Einvoice Doesn't Exist"), '', 5000);
       } else {
         companyTaxcode = einvoiceMasterData[0].SELLER_TAXCODE.replace(/\s+/g, '');
         convertYn = einvoiceMasterData[0].CONVERT_YN == 'Y' ? 'Y' : 'N';
         cancelYn = einvoiceMasterData[0].CANCEL_YN == 'Y' ? 'Y' : 'N';
       }
-
+      //console.log('einvoiceMasterData[0].ETAX_STATUS ', einvoiceMasterData[0].ETAX_STATUS);
       if (einvoiceMasterData[0].ETAX_STATUS == '1') {
         cancelPath = 'assets/images/einvoices_logo/Cancle.png';
       } else if (einvoiceMasterData[0].ETAX_STATUS == '3') {
@@ -83,6 +83,7 @@ class EiExcelHandler {
       } else if (einvoiceMasterData[0].ETAX_STATUS == '2') {
         cancelPath = 'assets/images/einvoices_logo/Replace.png';
       }
+
       let msThueCutter = async (msothueArray, taxCode, taxRow) => {
         for (let i = 0; i < taxCode.length; i++) {
           const e = taxCode[i];
@@ -90,13 +91,22 @@ class EiExcelHandler {
         }
       };
       // console.log("companyTaxcode ", companyTaxcode);
-      // console.log("einvoiceMasterData ", einvoiceMasterData);
+
       //let url_file_excel = "report/60/95/einvoices_template/Bornga/Bornga.xlsx";
 
       this.masterDataArray = [];
-
-      reportPath = einvoiceMasterData[0].URL_FILE_EXCEL_IMP; //'report/60/95/einvoices_template/Bornga/Bornga.xlsx'
-      reportSheet = 'Invoice';
+      if (convertYn == 'Y') {
+        reportPath = einvoiceMasterData[0].URL_FILE_EXCEL_C_IMP; //  url_file_excel;//'report/60/95/einvoices_template/Bornga/Bornga.xlsx'
+        reportSheet = 'Invoice';
+        // this.masterDataArray.push(
+        //   { Cell: `H4`, Info: [`CONVERT_TITLE`], Type: '1' },
+        //   { Cell: `C39`, Info: [`CONVERT_NAME`], Type: '1' },
+        //   { Cell: `B40`, Info: [`CONVERT_DATE`], Type: '1' },
+        // )
+      } else {
+        reportPath = einvoiceMasterData[0].URL_FILE_EXCEL_IMP; //'report/60/95/einvoices_template/Bornga/Bornga.xlsx'
+        reportSheet = 'Invoice';
+      }
 
       for (let i = 0; i < einvoiceMasterParam.length; i++) {
         //console.log(" Cell: einvoiceMasterParam[i].CELL_CODE ", einvoiceMasterParam[i].CELL_CODE + " - " + einvoiceMasterParam[i].DATA_MAPPING + "  - " + einvoiceMasterParam[i].TYPE );
@@ -106,48 +116,46 @@ class EiExcelHandler {
           Type: einvoiceMasterParam[i].TYPE,
         });
       }
-      if (einvoiceMasterData.length && einvoiceMasterData[0].URL_IMG_BG) {
+      if (einvoiceMasterData[0].URL_IMG_BG != '' && einvoiceMasterData[0].URL_IMG_BG != null) {
         bgPath = `${einvoiceMasterData[0].URL_IMG_BG}`;
       } else {
         bgPath = '';
       }
 
-      let checkYN = 'N';
-      //console.log("EiPosExcelHandlerAuto ==> einvoiceMasterData[0].URL_IMG_LOGO  line 128", einvoiceMasterData[0].URL_IMG_LOGO)
-      try {
-        checkYN = 'Y';
-        //let savePath = await Helpers.appRoot(`resources/${einvoiceMasterData[0].URL_IMG_LOGO}`);
-        let savePath = await Helpers.appRoot(`${einvoiceMasterData[0].URL_IMG_LOGO}`);
-        //console.log(" einvoiceMasterData[0].URL_IMG_LOGO   ", einvoiceMasterData[0].URL_IMG_LOGO);
-        //console.log(" savePath   ", savePath);
-        if (fs.existsSync(savePath)) {
-          console.log('file exists');
-          checkYN = 'Y';
-        } else {
-          console.log('file not found!');
-          checkYN = 'N';
-        }
-      } catch (error) {
-        checkYN = 'N';
-        console.log('error  require url ', error);
-      }
+      // try {
+      //   let savePath = await Helpers.appRoot(`${einvoiceMasterData[0].URL_IMG_LOGO}`);
+      //   if (fs.existsSync(savePath)) {
+      //     logos = [
+      //       {
+      //         start: einvoiceMasterData[0].LOGO_START_COL,
+      //         width: einvoiceMasterData[0].LOGO_WIDTH, //   0.99 * dpi,
+      //         height: einvoiceMasterData[0].LOGO_HEIGHT, // 0.99 * dpi,
+      //         logoStartCount: einvoiceMasterData[0].LOGO_START_ROW,
+      //         logoPath: '/../' + `${einvoiceMasterData[0].URL_IMG_LOGO}`,
+      //       },
+      //     ];
+      //   } else {
+      //     logos = [];
+      //   }
+      // } catch (error) {
+      //   logos = [];
+      //   console.log('error  require url ', error);
+      // }
 
-      if (einvoiceMasterData.length && einvoiceMasterData[0].URL_IMG_LOGO && checkYN == 'Y') {
-        logos = [
-          {
-            start: einvoiceMasterData[0].LOGO_START_ROW,
-            width: 0.99 * dpi,
-            height: 0.99 * dpi,
-            logoStartCount: einvoiceMasterData[0].LOGO_START_COL,
-            logoPath: '/../' + `${einvoiceMasterData[0].URL_IMG_LOGO}`,
-          },
-        ];
-      } else {
-        logos = [];
-      }
-
-      // console.log(" bgPath  ", bgPath, "logos  ", logos);
-
+      logos = [
+        {
+          start: einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_START_COL ? einvoiceMasterData[0].LOGO_START_COL : 1,
+          logoStartCount: einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_START_ROW ? einvoiceMasterData[0].LOGO_START_ROW : 1,
+          width: einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_WIDTH ? einvoiceMasterData[0].LOGO_WIDTH : 1,
+          height: einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_HEIGHT ? einvoiceMasterData[0].LOGO_HEIGHT : 1,
+          logoPath: `${
+            einvoiceMasterData[0] && einvoiceMasterData[0].URL_IMG_LOGO
+              ? einvoiceMasterData[0].URL_IMG_LOGO
+              : '/data/einvoices_logo/0104128565-999/2024/07/1721906430005_1721906430005.png'
+          }`, ///assets/images/einvoices_logo/abc/
+        },
+      ];
+      logos = [];
       for (let i = 0; i < einvoiceDetailsParam.length; i++) {
         detailCellFormat.push({
           startCell: einvoiceDetailsParam[i].STARTCELL,
@@ -165,7 +173,6 @@ class EiExcelHandler {
       // detailCellFormat = [
       //   { startCell: 1, endCell: 2, cellType: 2, cellBorder: "dotted", field: "STT" },//từ cell bắt đầu tới cell kết thúc, type 2: cell đầu tiên
       //   { startCell: 3, endCell: 9, cellType: 3, cellBorder: "dotted", field: "ITEM_NAME" },//từ cell bắt đầu tới cell kết thúc, type 3: cell kế tiếp cell đầu tiên,
-
       //   { startCell: 10, endCell: 10, cellType: 1, cellBorder: "dotted", field: "ITEM_UOM" },//type 1: còn lại
       //   { startCell: 11, endCell: 13, cellType: 1, cellBorder: "dotted", field: "QTY" },//type 1: còn lại
       //   //{ startCell: 13, endCell: 14, cellType: 1, cellBorder: "dotted", field: "BLANK" },//type 1: còn lại
@@ -175,15 +182,16 @@ class EiExcelHandler {
       //   // { startCell: 21, endCell: 22, cellType: 1, cellBorder: "dotted", field: "BLANK" },//type 1: còn lại
       // ]
 
-      backgroundCell = einvoiceMasterData[0].BG_END_ROW;
-      backgroundRow = einvoiceMasterData[0].BG_START_ROW;
+      //console.log('this.masterDataArray  ', this.masterDataArray);
+      backgroundCell = einvoiceMasterData[0].BG_START_ROW;
+      backgroundRow = einvoiceMasterData[0].BG_END_ROW;
       backgroundWidth = einvoiceMasterData[0].BG_WIDTH;
       backgroundHeight = einvoiceMasterData[0].BG_HEIGHT;
 
       signCell = {start: einvoiceMasterData[0].SIGN_START_CELL, end: einvoiceMasterData[0].SIGN_END_CELL};
       signBoxCell = einvoiceMasterData[0].SIGN_CELL_BOX;
       signByCell = {start: einvoiceMasterData[0].SIGN_BY_START_CELL, end: einvoiceMasterData[0].SIGN_BY_END_CELL};
-      countFromEndDetailToSignBox = einvoiceMasterData[0].RANGE_DETAILS_SIGN;
+      countFromEndDetailToSignBox = einvoiceMasterData[0].SIGN_RANGE_DETAILS;
 
       _sourceRow = einvoiceMasterData[0].DETAILS_START_ROW; //26
       _sourceRow_2 = einvoiceMasterData[0].DETAILS_START_ROW; //26

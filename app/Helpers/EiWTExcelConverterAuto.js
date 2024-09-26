@@ -3,7 +3,7 @@ const Utils = use('Utils');
 const fs = use('fs');
 let regexCell = /([a-zA-Z]+)(\d+)/;
 const ReportHelper = use('App/Helpers/ReportHelper');
-class EiWTExcelConverterAuto {
+class EiExcelConverterAuto {
   constructor() {}
   async ExcelBuilder(
     p_crt_by,
@@ -33,14 +33,9 @@ class EiWTExcelConverterAuto {
     backgroundWidth,
     backgroundHeight,
   ) {
-    //(p_crt_by, einvoiceDetailData, einvoicePk, _sourceRow, _sourceRow_2, _sourceRow_3, headerRowCount, countFromEndDetailToSignBox, lastPageRowsHeight, reportPath, reportSheet, signPath, cancelPath, bgPath, masterDataArray, detailCellFormat, logos, signCell, signBoxCell, signByCell, cancelYn, backgroundCell,backgroundRow, backgroundWidth, backgroundHeight) {
-    // console.log('===> ', p_crt_by)
-    // console.log(einvoiceDetailData)
     let reportInfo = {CODE: '01', NAME: einvoiceMasterData[0]['PK'], PATH: reportPath}; //that is the report template path.
-    // console.log("reportInfo  ", reportInfo);
+    //console.log('reportInfo  ', reportInfo);
     try {
-      // console.log("reportSheet  ", reportSheet)
-
       let exceljs = new ReportHelper();
       //exceljs.reportType = "exc"
       await exceljs.createWorkbook(p_crt_by, reportInfo.PATH, 'excel', 'pdf');
@@ -98,7 +93,6 @@ class EiWTExcelConverterAuto {
       let excCols = exceljs.excelCols;
       let sttCell = '';
       let nmCell = '';
-
       let lastCell = excCols[detailCellFormat[detailCellFormat.length - 1].endCell]; // cái này update
       let startMergeRedundantRow = detailCellFormat[0].startCell;
       let endMergeRedundantRow = detailCellFormat[detailCellFormat.length - 1].endCell;
@@ -343,6 +337,8 @@ class EiWTExcelConverterAuto {
             lstNewMerge.push({row1: _row1 + totalRows - 1, col1: _col1, row2: _row2 + totalRows - 1, col2: _col2, range: x});
             worksheet.unMergeCells(startMergeCell);
           }
+          //console.log("_row1  ", _row1 ,  )
+          //console.log("lstNewMerge ", lstNewMerge)
         });
         for (let i = 1; i < totalRows; i++) {
           //console.log(" _sourceRow + i, _sourceRow  ++++===> ", _sourceRow + i, totalRows)
@@ -404,7 +400,6 @@ class EiWTExcelConverterAuto {
           if (e > 0) {
             for (let i = 0; i < e; i++) {
               const _e = einvoiceDetailData[i + count];
-
               try {
                 let item_name_lt = this.countlength_v2(_e['ITEM_NAME']);
                 totalRowCount += item_name_lt;
@@ -418,7 +413,6 @@ class EiWTExcelConverterAuto {
             }
 
             let _count_ = 0;
-
             if (j == 0) {
               _sourceRow = _sourceRow - 1;
 
@@ -546,11 +540,11 @@ class EiWTExcelConverterAuto {
           //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
           //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
 
-          //console.log('e  ', e);
+          console.log('e  ', e);
           if (e > 0) {
             for (let i = 0; i < e; i++) {
               const _e = einvoiceDetailData[i + count_2];
-              //console.log('_e  ', _e);
+              // console.log('_e  ', _e);
               try {
                 let item_name_lt = this.countlength_v2(_e['ITEM_NAME']);
                 if (_e['ITEM_NAME'] !== null) {
@@ -567,50 +561,22 @@ class EiWTExcelConverterAuto {
 
                 if (item_name_lt == 1) {
                   detailCellFormat.forEach((e, i) => {
-                    console.log(
-                      '_sourceRow_2  ',
-                      _sourceRow_2,
-                      'totalRowCount_2  ',
-                      totalRowCount_2,
-                      '  e.startCell ',
-                      e.startCell,
-                      ' e.endCell ',
-                      e.endCell,
-                      ' detailCellFormat[i].cellBorder ',
-                      detailCellFormat[i].cellBorder,
-                    );
-                    if (e.startCell != e.endCell) {
-                      try {
-                        worksheet.mergeCells(_sourceRow_2 + totalRowCount_2, e.startCell, _sourceRow_2 + totalRowCount_2, e.endCell);
-                      } catch (error) {
-                        //console.log(error);
-                      }
+                    try {
+                      worksheet.mergeCells(_sourceRow_2 + totalRowCount_2, e.startCell, _sourceRow_2 + totalRowCount_2, e.endCell);
                       worksheet.getCell(`${excCols[e.startCell] + (_sourceRow_2 + totalRowCount_2)}`).style.border = {
-                        bottom: {style: `${detailCellFormat[i].cellBorder}`},
+                        bottom: {style: detailCellFormat[i].cellBorder},
                         left: {style: 'thin'},
                       };
-                    }
+                    } catch (error) {}
                   });
-
                   worksheet.getCell(`${lastCell + (_sourceRow_2 + totalRowCount_2)}`).style.border = {
                     right: {style: 'thin'},
                     bottom: {style: detailCellFormat[0].cellBorder},
                     left: {style: 'thin'},
                   };
-
                   //worksheet.getCell( `${nmCell + (_sourceRow_2 + totalRowCount_2 + item_name_lt)}`).style.border = { bottom: { style: detailCellFormat[0].cellBorder }, };
                   //	worksheet.getCell( `${sttCell + (_sourceRow_2 + totalRowCount_2 + item_name_lt)}`).style.border = { left: { style: 'thin' }, right: { style: 'thin' }, bottom: { style: detailCellFormat[0].cellBorder }, top: { style: 'thin' } };
                 } else {
-                  console.log(
-                    '_sourceRow_2 if ',
-                    _sourceRow_2,
-                    'totalRowCount_2  ',
-                    totalRowCount_2,
-                    '  e.startCell ',
-                    e.startCell,
-                    ' e.endCell ',
-                    e.endCell,
-                  );
                   worksheet.mergeCells(
                     _sourceRow_2 + totalRowCount_2,
                     detailCellFormat[0].startCell,
@@ -679,7 +645,7 @@ class EiWTExcelConverterAuto {
               if (bgPath != '') {
                 console.log('backgroundCell  ' + backgroundCell + '  j  ' + j);
                 try {
-                  worksheet.addImage(await exceljs.insertPathImage(bgPath), {
+                  worksheet.addImage(await exceljs.insertPathImage2(bgPath), {
                     tl: {col: backgroundCell, row: backgroundRow - 1},
                     ext: {width: backgroundWidth, height: backgroundHeight},
                   });
@@ -718,7 +684,7 @@ class EiWTExcelConverterAuto {
                 if (j == v_countNumberOfPages - 1) {
                   console.log('backgroundCell  ' + backgroundRow + '  j  ' + j + ' totalRowCount_2 ' + totalRowCount_2 + ' pos_lv  ' + pos_lv);
                   try {
-                    worksheet.addImage(await exceljs.insertPathImage(bgPath), {
+                    worksheet.addImage(await exceljs.insertPathImage2(bgPath), {
                       // tl: { col: backgroundCell, row: backgroundRow + totalRowCount_2 - pos_lv - 1 },
                       tl: {col: backgroundCell, row: backgroundRow + pos_lv * j + headerRowCount * j - 1},
                       ext: {width: backgroundWidth, height: backgroundHeight},
@@ -728,7 +694,7 @@ class EiWTExcelConverterAuto {
                   }
                 } else {
                   try {
-                    worksheet.addImage(await exceljs.insertPathImage(bgPath), {
+                    worksheet.addImage(await exceljs.insertPathImage2(bgPath), {
                       // tl: { col: backgroundCell, row: _sourceRow_2 + totalRowCount_2 - pos_lv - 1 },
                       tl: {col: backgroundCell, row: backgroundRow + pos_lv * j + headerRowCount * j - 1},
                       ext: {width: backgroundWidth, height: backgroundHeight},
@@ -749,7 +715,7 @@ class EiWTExcelConverterAuto {
           const e = parseInt(page[j]);
           //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
           //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
-
+          //console.log("  e  " , e );
           if (e > 0) {
             for (let i = 0; i < e; i++) {
               const _e = einvoiceDetailData[i + count];
@@ -777,6 +743,7 @@ class EiWTExcelConverterAuto {
                       left: {style: 'thin'},
                     };
                   });
+                  console.log('lastCell  ', lastCell);
                   worksheet.getCell(`${lastCell + (_sourceRow + totalRowCount)}`).style.border = {
                     right: {style: 'thin'},
                     bottom: {style: detailCellFormat[0].cellBorder},
@@ -802,7 +769,7 @@ class EiWTExcelConverterAuto {
                         left: {style: 'thin'},
                       };
                     }
-
+                    console.log('lastCell  ', lastCell);
                     worksheet.getCell(`${lastCell + (_sourceRow + totalRowCount)}`).style.border = {
                       right: {style: 'thin'},
                       bottom: {style: detailCellFormat[0].cellBorder},
@@ -828,6 +795,7 @@ class EiWTExcelConverterAuto {
                 totalRowCount += item_name_lt;
 
                 if (i == 0) {
+                  console.log('cancelYn   ', cancelYn);
                   if (cancelYn == 'Y') {
                     try {
                       worksheet.addImage(await exceljs.insertPathImage(cancelPath), {
@@ -840,7 +808,7 @@ class EiWTExcelConverterAuto {
                   }
                   if (bgPath != '') {
                     try {
-                      worksheet.addImage(await exceljs.insertPathImage(bgPath), {
+                      worksheet.addImage(await exceljs.insertPathImage2(bgPath), {
                         tl: {col: backgroundCell, row: backgroundRow - 1},
                         ext: {width: backgroundWidth, height: backgroundHeight},
                       });
@@ -850,9 +818,9 @@ class EiWTExcelConverterAuto {
                   }
                 }
               } catch (error) {
-                console.log('err', error);
-                console.log(_sourceRow);
-                console.log(totalRowCount);
+                // console.log('err', error);
+                // console.log(_sourceRow);
+                // console.log(totalRowCount);
               }
             }
 
@@ -870,12 +838,19 @@ class EiWTExcelConverterAuto {
       if (v_countNumberOfPages > 1) {
         for (let o = 2; o < extendedRows; o++) {
           try {
-            console.log(' totalRows + _sourceRow_3 - o  ++++===> ', totalRows + _sourceRow_3 - o);
+            // console.log(' totalRows + _sourceRow_3 - o  ++++===> ', totalRows + _sourceRow_3 - o);
             detailCellFormat.forEach((e, i) => {
+              // console.log(
+              //   ' totalRows + _sourceRow_3 - o  ++++===> ',
+              //   totalRows + _sourceRow_3 - o,
+              //   ' e.startCell ',
+              //   e.startCell,
+              //   ' e.endCell ',
+              //   e.endCell,
+              // );
               try {
                 worksheet.mergeCells(totalRows + _sourceRow_3 - o, e.startCell, totalRows + _sourceRow_3 - o, e.endCell);
               } catch (error) {}
-
               worksheet.getCell(`${excCols[e.startCell] + (totalRows + _sourceRow_3 - o)}`).style.border = {
                 left: {style: 'thin'},
                 bottom: {style: detailCellFormat[i].cellBorder},
@@ -937,7 +912,7 @@ class EiWTExcelConverterAuto {
       //this part add more style to the rows that missing(optional) Other pages.
       //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
       //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
-
+      //console.log("extendedArray ++==>", extendedArray);
       for (let o = 0; o < extendedArray.length; o++) {
         let rowItem = extendedArray[o];
         worksheet.mergeCells(rowItem.loopStartRow, startMergeRedundantRow, rowItem.loopStartRow + rowItem.loop_row - 1, endMergeRedundantRow);
@@ -950,16 +925,14 @@ class EiWTExcelConverterAuto {
           }
         }
       }
-
       //END-this part add more style to the rows that missing(optional) Other pages.
 
       //this part insert logo for all the self gen header
-
-      //this part insert logo for all the self gen header
       let promises = logos.map(async (e, i) => {
+        // console.log(" e +++===> ", e);
         let imgRow = e.logoStartCount;
         //  let logoImage =  await createFile(e.logoPath);
-        let logoIconByteArray = await exceljs.insertPathImage(e.logoPath);
+        let logoIconByteArray = await exceljs.insertPathImage2(e.logoPath);
         try {
           worksheet.addImage(logoIconByteArray, {
             tl: {col: e.start, row: imgRow},
@@ -970,7 +943,7 @@ class EiWTExcelConverterAuto {
         }
       });
       await Promise.all(promises);
-
+      //console.log(" logoArray +++===> ", logoArray);
       for (let imgIdx = 0; imgIdx < logoArray.length; imgIdx++) {
         const logosAray = logoArray[imgIdx].logos;
         let imgPos = logoArray[imgIdx].logoPos;
@@ -978,7 +951,7 @@ class EiWTExcelConverterAuto {
           let promises = logosAray.map(async (e, i) => {
             let imgRow = imgPos + e.logoStartCount;
             //  let logoImage =  await createFile(e.logoPath);
-            let logoIconByteArray = await exceljs.insertPathImage(e.logoPath);
+            let logoIconByteArray = await exceljs.insertPathImage2(e.logoPath);
             try {
               worksheet.addImage(logoIconByteArray, {
                 tl: {col: e.start, row: imgRow},
@@ -1001,7 +974,7 @@ class EiWTExcelConverterAuto {
       //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
       if (einvoiceMasterData[0]['SIGN_YN'] == 'Y') {
         try {
-          //console.log("SIGN_YN  ++===>  ", signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
+          // console.log('SIGN_YN  ++===>  ', signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
           worksheet.unMergeCells(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
           worksheet.unMergeCells(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 1));
           worksheet.unMergeCells(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 2));
@@ -1013,7 +986,6 @@ class EiWTExcelConverterAuto {
           } catch (error) {
             console.log(error);
           }
-
           worksheet.mergeCells(
             totalRows + _sourceRow_3 + countFromEndDetailToSignBox,
             signByCell.start,
@@ -1036,7 +1008,20 @@ class EiWTExcelConverterAuto {
           console.log(error);
         }
       }
+      // else
+      // {
+      // 	try {
+      // 		console.log("SIGN_YN  ++===>  ", signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
+      // 		//worksheet.getCell(`${sttCell + (rowItem.loopStartRow)}`).style.border = { left: { style: 'thin' }, bottom: { style: 'thin' } };
 
+      // 		worksheet.getCell(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox)).style.border = { right: { style: 'thin' }};
+      // 		worksheet.getCell(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 1)).style.border = { right: { style: 'thin' }};
+      // 		worksheet.getCell(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 2)).style.border = { right: { style: 'thin' } };
+
+      // 	} catch (error) {
+      // 		console.log(error)
+      // 	}
+      // }
       //END-this part insert Signed image if the einvoice is signed.
 
       //this part add more style to missing part of the footer(optional).
@@ -1052,6 +1037,7 @@ class EiWTExcelConverterAuto {
             right: {style: 'thin'},
           };
         } else {
+          //console.log("XXXX  ++===>  ", signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
           worksheet.getCell(`${signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox)}`).style.border = {
             top: {style: 'thin'},
             right: {style: 'thin'},
@@ -1066,319 +1052,25 @@ class EiWTExcelConverterAuto {
         console.log(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
       }
 
+      //END-this part add more style to missing part of the footer(optional).
+
+      // const reportFilePdf = await exceljs.writeFile();
+      // let base64PDF =  await fs.readFileSync(reportFilePdf, {encoding: 'base64'}); //await Utils._blobFileToBase64(reportFilePdf)
+      // return base64PDF
+
+      // console.log("reportFilePdf ", reportFilePdf);
+      // const reportFilePdf =  await Utils.excelToPdf(reportFile);
+      // let url_pdf = exceljs.reportPath.replace("xlsx", "pdf");
       //let excelUrl = await exceljs.returnPdfFormExcel();
       // console.log(" base64PDF  " , base64PDF);
       //return base64PDF
       ////await exceljs.dowloadWorkbook(reportInfo.NAME + ".xlsx");
-
       let excelUrl = await exceljs.dowloadWorkbook();
       return excelUrl;
     } catch (error) {
       console.log(error);
       //Utils.Logger({ LVL: "error", MODULE: "ReportHelper", FUNC: "TestReport", CONTENT: error.message, });
     }
-  }
-
-  NumberToTextVN(total) {
-    try {
-      let rs = '';
-      if (total.toString().substr(0, 1) == '-') {
-        rs = 'Trừ ';
-      }
-
-      total = Math.round(Math.abs(total), 0);
-      let ch = ['không', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'];
-      let rch = ['lẻ', 'mốt', '', '', '', 'lăm'];
-      let u = ['', 'mươi', 'trăm', 'ngàn', '', '', 'triệu', '', '', 'tỷ', '', '', 'ngàn', '', '', 'triệu'];
-      let nstr = total.toString();
-
-      let n = [];
-      let len = nstr.length;
-
-      for (let i = 0; i < len; i++) {
-        n[len - 1 - i] = parseInt(nstr.substr(i, 1));
-      }
-      //console.log(n)
-      for (let i = len - 1; i >= 0; i--) {
-        if (i % 3 == 2) {
-          // số 0 ở hàng trăm
-          if (n[i] == 0 && n[i - 1] == 0 && n[i - 2] == 0) continue; //nếu cả 3 số là 0 thì bỏ qua không đọc
-        } else if (i % 3 == 1) {
-          // số ở hàng chục
-          if (n[i] == 0) {
-            if (n[i - 1] == 0) {
-              continue;
-            } // nếu hàng chục và hàng đơn vị đều là 0 thì bỏ qua.
-            else {
-              rs += ' ' + rch[n[i]];
-              continue; // hàng chục là 0 thì bỏ qua, đọc số hàng đơn vị
-            }
-          }
-          if (n[i] == 1) {
-            //nếu số hàng chục là 1 thì đọc là mười
-            rs += ' mười';
-            continue;
-          }
-        } else if (i != len - 1) {
-          // số ở hàng đơn vị (không phải là số đầu tiên)
-          if (n[i] == 0) {
-            // số hàng đơn vị là 0 thì chỉ đọc đơn vị
-            if (i + 2 <= len - 1 && n[i + 2] == 0 && n[i + 1] == 0) continue;
-            rs += ' ' + (i % 3 == 0 ? u[i] : u[i % 3]);
-            continue;
-          }
-          if (n[i] == 1) {
-            // nếu là 1 thì tùy vào số hàng chục mà đọc: 0,1: một / còn lại: mốt
-            rs += ' ' + (n[i + 1] == 1 || n[i + 1] == 0 ? ch[n[i]] : rch[n[i]]);
-            rs += ' ' + (i % 3 == 0 ? u[i] : u[i % 3]);
-            continue;
-          }
-          if (n[i] == 5) {
-            // cách đọc số 5
-            if (n[i + 1] != 0) {
-              //nếu số hàng chục khác 0 thì đọc số 5 là lăm
-              rs += ' ' + rch[n[i]]; // đọc số
-              rs += ' ' + (i % 3 == 0 ? u[i] : u[i % 3]); // đọc đơn vị
-              continue;
-            }
-          }
-        }
-
-        rs += (rs == '' ? ' ' : ', ') + ch[n[i]]; // đọc số
-        rs += ' ' + (i % 3 == 0 ? u[i] : u[i % 3]); // đọc đơn vị
-      }
-      if (rs[rs.length - 1] != ' ') rs += ' đồng';
-      else rs += 'đồng';
-
-      if (rs.length > 2) {
-        let rs1 = rs.substr(0, 2);
-        rs1 = rs1.toUpperCase();
-        rs = rs.substr(2);
-        rs = rs1 + rs;
-      }
-      //console.log(rs)
-      return rs.trim().replace('lẻ,', 'lẻ').replace('mươi,', 'mươi').replace('trăm,', 'trăm').replace('mười,', 'mười');
-    } catch (error) {
-      return '';
-    }
-  }
-
-  Num2VNText(s, ccy) {
-    //process minus case
-    let minus = '';
-    if (s.trim().substr(0, 1) == '-') {
-      s = s.replace('-', '').trim();
-      minus = 'Trừ ';
-    }
-
-    let rtnf = '';
-    let l = 0;
-    let i = 0;
-    let j = 0;
-    let dk = 0;
-    let A = [];
-    s = s.replace(',', '');
-    let s1 = '';
-    let strTmp = '';
-    if (s.includes('.')) {
-      s1 = s.substr(s.indexOf('.') + 1);
-      s = s.substr(0, s.indexOf('.'));
-    }
-    let B = [];
-    s = s.trim();
-    l = s.length;
-    //l = s1.length();
-    if (l > 32) {
-      rtnf = 'Number Very Large!';
-      return rtnf;
-    }
-    for (i = 0; i < l; i++) {
-      A[i] = s.substr(i, 1);
-    }
-    for (i = 0; i < l; i++) {
-      if ((l - i) % 3 == 0 && A[i] == '0' && (A[i + 1] != '0' || A[i + 2] != '0')) {
-        rtnf += ' Không';
-      }
-      if (A[i] == '2') {
-        rtnf += ' Hai';
-      } else if (A[i] == '3') {
-        rtnf += ' Ba';
-      } else if (A[i] == '4') {
-        rtnf += ' Bốn';
-      } else if (A[i] == '6') {
-        rtnf += ' Sáu';
-      } else if (A[i] == '7') {
-        rtnf += ' Bảy';
-      } else if (A[i] == '8') {
-        rtnf += ' Tám';
-      } else if (A[i] == '9') {
-        rtnf += ' Chín';
-      } else if (A[i] == '5') {
-        if (i > 0 && (l - i) % 3 == 1 && A[i - 1] != '0') {
-          rtnf += ' Lăm';
-        } else {
-          if (i > 0 && (l - i) % 3 == 1 && A[i - 1] != '0') {
-            rtnf += ' Lăm';
-          } else {
-            rtnf += ' Năm';
-          }
-        }
-      }
-
-      if (i > 2 && A[i] == '1' && (l - i) % 3 == 1 && parseInt(A[i - 1]) > 1) {
-        rtnf += ' Mốt';
-      } else if (A[i] == '1' && (l - i) % 3 != 2) {
-        if ((l - i) % 3 == 1) {
-          if ((i > 2 && A[i - 2] == '0') || (i < 2 && A[0] == '1') || (i > 2 && A[i - 1] == '0') || (i > 2 && A[i - 1] == '0')) {
-            rtnf += ' Một';
-          } else {
-            if (A[i - 1] == '1' || A[i - 1] == '0') {
-              rtnf += ' Một';
-            } else {
-              rtnf += ' Mốt';
-            }
-          }
-        } else {
-          rtnf += ' Một';
-        }
-      }
-
-      if ((l - i) % 3 == 2 && A[i] != '0' && A[i] != '1') {
-        rtnf += ' Mươi';
-      } else if ((l - i) % 3 == 2 && A[i] != '0') {
-        rtnf += ' Mười';
-      }
-      if (i == 0) {
-        if ((l - i) % 3 == 2 && A[i] == '0' && A[i + 1] != '0') {
-          rtnf += ' Không';
-        }
-      } else {
-        if ((l - i) % 3 == 2 && A[i] == '0' && A[i + 1] != '0') {
-          rtnf += ' Lẻ';
-        }
-      }
-      if ((l - i) % 3 == 0 && A[i + 1] != '0') {
-        //  || A[i + 2] == "0"
-        rtnf += ' Trăm';
-      } else if ((l - i) % 3 == 0 && A[i] != '0') {
-        rtnf += ' Trăm';
-      }
-
-      if (l - i == 4) {
-        rtnf += ' Nghìn';
-      }
-      if (l - i == 7) {
-        rtnf += ' Triệu';
-      }
-      if (l - i == 10) {
-        rtnf += ' Tỷ';
-      }
-      if (l - i == 13) {
-        rtnf += ' Nghìn Tỷ';
-      }
-      if (l - i == 16) {
-        rtnf += ' Triệu Tỷ';
-      }
-      if (l - i == 19) {
-        rtnf += ' Tỷ Tỷ';
-      }
-      if (l - i == 22) {
-        rtnf += ' Triệu Tỷ Tỷ';
-      }
-      if (l - i == 25) {
-        rtnf += ' Triệu Tỷ Tỷ';
-      }
-      if (l - i == 28) {
-        rtnf += ' Tỷ Tỷ Tỷ';
-      }
-      if ((l - i) % 3 == 0 && A[i] == '0' && A[i + 1] == '0' && A[i + 2] == '0') {
-        i = i + 2;
-      }
-      if ((l - i) % 3 == 1) {
-        dk = 1;
-        for (j = i; j < l; j++) {
-          if (A[j] != '0') {
-            dk = 0;
-          }
-        }
-      }
-      if (dk == 1) break;
-    }
-    if (ccy == 'USD') {
-      rtnf += ' Đô La Mỹ';
-      if (s1.length > 0) {
-        //Đọc số lẻ
-        l = s1.length;
-        if (l > 8) {
-          rtnf += ' ERROR!!!';
-          return rtnf;
-        }
-        for (i = 0; i < l; i++) {
-          B[i] = s1.substr(i, 1);
-        }
-        strTmp = '';
-        //Dịch Tạm
-        for (i = 0; i < 2; i++) {
-          if (i > 0 && B[0] != '0' && B[0] != '1') {
-            strTmp += ' Mươi';
-          }
-
-          if (B[i] == '1') {
-            if (i == 0) {
-              strTmp += ' Mười';
-            } else {
-              if (B[0] == '1') {
-                strTmp += ' Một';
-              } else {
-                strTmp += ' Mốt';
-              }
-            }
-          }
-
-          switch (parseInt(B[i])) {
-            case 2:
-              strTmp += ' Hai';
-              break;
-            case 3:
-              strTmp += ' Ba';
-              break;
-            case 4:
-              strTmp += ' Bốn';
-              break;
-            case 5:
-              if (i % 2 == 1 && parseInt(B[0]) > 0) {
-                strTmp += ' Lăm';
-              } else {
-                strTmp += ' Năm';
-              }
-              break;
-            case 6:
-              strTmp += ' Sáu';
-              break;
-            case 7:
-              strTmp += ' Bảy';
-              break;
-            case 8:
-              strTmp += ' Tám';
-              break;
-            case 9:
-              strTmp += ' Chín';
-              break;
-          }
-        }
-      }
-      if (strTmp != '') {
-        rtnf = rtnf + ' Và' + strTmp + ' Xu';
-      }
-    }
-
-    if (ccy == 'VND') {
-      rtnf += ' Đồng.';
-    }
-
-    rtnf = minus + rtnf; //process minus case
-
-    return rtnf;
   }
 
   addValueToCellsWithItemName(worksheet, rownum, detaildata, itemname, detailCellFormat, excCols) {
@@ -1422,4 +1114,4 @@ class EiWTExcelConverterAuto {
     return result;
   };
 }
-module.exports = EiWTExcelConverterAuto;
+module.exports = EiExcelConverterAuto;

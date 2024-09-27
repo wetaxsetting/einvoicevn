@@ -249,10 +249,8 @@ Route.group(() => {
   .middleware('user');
 
 Route.group(() => {
-  //iPOS
   Route.post('hsm-generate-qr', 'HSMController.HSMGeneralQRCode');
   Route.post('hsm-sign-pdf', 'HSMController.signPdf');
-
   Route.post('hsm-sign-xml', 'HSMController2.HsmSignXml');
 })
   .prefix('api/hsm')
@@ -277,6 +275,12 @@ Route.group(() => {
   Route.post('sendinformadjustinvoice', 'EInvoiceController.sendInformAdjustToTaxOffice2');
 })
   .prefix('api/einvoice/v2')
+  .middleware('user');
+
+Route.group(() => {
+  Route.post('report-to-tax', 'EInvoiceController2.weTaxPosReportToTax');
+})
+  .prefix('api/einvoice/pos')
   .middleware('user');
 
 Route.group(() => {

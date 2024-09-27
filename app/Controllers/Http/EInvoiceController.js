@@ -9801,6 +9801,7 @@ class EInvoiceController {
       };
     }
   }
+
   validateJsonDeclarationToXML(declaration) {
     let status = true;
     let resMess = '';
@@ -18721,6 +18722,7 @@ class EInvoiceController {
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
     }
   }
+
   // async GeneralInvoiceHsmXML({request, response, auth}) {
   //   try {
   //     var p_language = request.header('accept-language', 'ENG');
@@ -18990,6 +18992,7 @@ class EInvoiceController {
   //     return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
   //   }
   // }
+
   async GeneralInvalidInvoiceToHsmXML({request, response, auth}) {
     try {
       var p_language = request.header('accept-language', 'ENG');
@@ -20123,6 +20126,6 @@ class EInvoiceController {
       triesCounter++;
     }
   }
-}
 
+}
 module.exports = EInvoiceController;

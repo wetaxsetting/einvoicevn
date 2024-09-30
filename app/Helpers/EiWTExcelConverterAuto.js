@@ -563,11 +563,11 @@ class EiExcelConverterAuto {
                   detailCellFormat.forEach((e, i) => {
                     try {
                       worksheet.mergeCells(_sourceRow_2 + totalRowCount_2, e.startCell, _sourceRow_2 + totalRowCount_2, e.endCell);
-                      worksheet.getCell(`${excCols[e.startCell] + (_sourceRow_2 + totalRowCount_2)}`).style.border = {
-                        bottom: {style: detailCellFormat[i].cellBorder},
-                        left: {style: 'thin'},
-                      };
                     } catch (error) {}
+                    worksheet.getCell(`${excCols[e.startCell] + (_sourceRow_2 + totalRowCount_2)}`).style.border = {
+                      bottom: {style: detailCellFormat[i].cellBorder},
+                      left: {style: 'thin'},
+                    };
                   });
                   worksheet.getCell(`${lastCell + (_sourceRow_2 + totalRowCount_2)}`).style.border = {
                     right: {style: 'thin'},
@@ -835,6 +835,7 @@ class EiExcelConverterAuto {
       //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
       //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
       //	worksheet.getCell(`${excCols[e.startCell]+( _sourceRow_2 + totalRowCount_2)}`).style.border = {bottom: {style:detailCellFormat[i].cellBorder},left: { style: 'thin' }, };
+
       if (v_countNumberOfPages > 1) {
         for (let o = 2; o < extendedRows; o++) {
           try {
@@ -880,7 +881,13 @@ class EiExcelConverterAuto {
         for (let o = 1; o <= extendedRows; o++) {
           try {
             detailCellFormat.forEach((e, i) => {
-              worksheet.mergeCells(totalRows + _sourceRow_3 - o, e.startCell, totalRows + _sourceRow_3 - o, e.endCell);
+              if (e.startCell != e.endCell) {
+                try {
+                  worksheet.mergeCells(totalRows + _sourceRow_3 - o, e.startCell, totalRows + _sourceRow_3 - o, e.endCell);
+                } catch (error) {
+                  console.log('error ', error);
+                }
+              }
               worksheet.getCell(`${excCols[e.startCell] + (totalRows + _sourceRow_3 - o)}`).style.border = {
                 left: {style: 'thin'},
                 bottom: {style: detailCellFormat[i].cellBorder},

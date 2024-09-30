@@ -79,6 +79,7 @@ const WETAX_TOKEN_CALLBACK = Env.get('WETAX_API_KEY');
 const WETAX_API_URL = Env.get('WETAX_API_URL');
 
 const WEBSERVICE_C_SHARP = 'http://csharp-api.webcashvietnam.com/wseinvoice/BSService.asmx';
+
 // test site
 // const TAX_CHECK_TRADE_CODE = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=";
 
@@ -100,11 +101,18 @@ class EInvoiceController2 {
         p_crt_by = user.USER_ID;
       }
 
-      const {tax_code, store_code, store_name, count_invoice, process_type, list_invoice} = request.all();
+      const {tax_code, store_code, store_name, process_type, list_invoice, user_name, password, serial_no, pin, organization, otp} = request.all();
 
       const json_xml = await this.weTaxPosGeneralXML(tax_code, store_code, store_name, list_invoice, process_type || 'I', p_language, p_crt_by);
+      let json_xml_signed = '';
       console.log('json_xml ', json_xml);
-      return response.status(200).json(Utils.responseByRule({success: true, message: 'Send e-Record successfully.', data: json_xml}));
+      if (json_xml) {
+        json_xml_signed = await this.weTaxSignXMLHSM(user_name, password, serial_no, pin, organization, otp, json_xml);
+        console.log('weTaxPosReportToTax json_xml_signed ', json_xml_signed);
+      } else {
+      }
+
+      return response.status(200).json(Utils.responseByRule({success: true, message: 'Send e-Record successfully.', data: json_xml_signed}));
     } catch (e) {
       Utils.Logger({
         LVL: 'error',
@@ -115,6 +123,47 @@ class EInvoiceController2 {
       // console.log("error ", e);
       // return response.send(Utils.response(false, e.message, null));
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+    }
+  }
+
+  async weTaxSignXMLHSM(user_name, password, otp, serial_no, pin, organization, signing_xml) {
+    try {
+      const url = 'http://demosign.easyca.vn:8080/api';
+      const site = 'test';
+
+      // const url =  'https://sign.easyca.vn/api/'; //
+      // const site = 'real';
+      if (!user_name || !password || !pin || !organization || !serial_no || !signing_xml) {
+        return response.status(400).json(
+          Utils.responseByRule({
+            success: false,
+            message: 'Invalid: parameter',
+          }),
+        );
+      }
+
+      let data;
+      switch (organization) {
+        case 'easysign':
+          const res = await Request.post(WEBSERVICE_C_SHARP + '/SignXml', {
+            xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site}),
+          });
+          data = res.data.d;
+          break;
+        default:
+          data = {};
+          break;
+      }
+      return data;
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController2',
+        FUNC: 'weTaxSignXMLHSM',
+        CONTENT: e.message,
+      });
+      console.log(e);
+      return {};
     }
   }
 
@@ -503,13 +552,9 @@ class EInvoiceController2 {
         const xmlId = xml.toString().replace('<DLieu>', `<DLieu Id=\'${id}\'>`);
         const xmlRemoveLine = xmlId.toString().replace(/\n/g, '').replaceAll('"', "'");
         rtnXML = {
-          tax_code: tax_code,
-          store_code: store_code,
-          store_name: store_name,
-          count_invoice_convert: invoices.length,
           sign_id: id,
           signature_path: signature_path,
-          xml_data: xmlRemoveLine,
+          xml: xmlRemoveLine,
           req_key: req_key,
         };
       } else if (process_type == 'I') {
@@ -836,13 +881,9 @@ class EInvoiceController2 {
         const xmlStr = xml.toString().replace('<DLHDon>', `<DLHDon Id=\'${id}\'>`).replace(/\n/g, '').replaceAll('"', "'");
 
         rtnXML = {
-          tax_code: tax_code,
-          store_code: store_code,
-          store_name: store_name,
-          count_invoice_convert: invoices.length,
           sign_id: id,
           signature_path: signature_path,
-          xml_data: xmlStr,
+          xml: xmlStr,
           req_key: req_key,
         };
       }

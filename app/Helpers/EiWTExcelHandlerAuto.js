@@ -45,10 +45,16 @@ class EiExcelHandler {
       let backgroundRow = 0;
 
       const einvoiceMasterData = await DBService.callProcCursor('EI_SEL_WT_EINVOICE_M_PDF', [pk], p_language, p_crt_by, _db2);
-      // console.log("file: EiWTExcelHandlerAuto.js:57 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceMasterData:", einvoiceMasterData)
+      // console.log(
+      //   'file: EiWTExcelHandlerAuto.js:57 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceMasterData:',
+      //   einvoiceMasterData,
+      // );
 
       const einvoiceDetailData = await DBService.callProcCursor('EI_SEL_WT_EINVOICE_D_PDF', [pk], p_language, p_crt_by, _db2);
-      // console.log("file: EiWTExcelHandlerAuto.js:64 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceDetailData:", einvoiceDetailData)
+      // console.log(
+      //   'file: EiWTExcelHandlerAuto.js:64 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceDetailData:',
+      //   einvoiceDetailData,
+      // );
 
       const einvoiceMasterParam = await DBService.callProcCursor(
         'EI_SEL_WT_EINVOICE_M_PARAM',
@@ -57,7 +63,10 @@ class EiExcelHandler {
         p_crt_by,
         _db2,
       );
-      // console.log("file: EiWTExcelHandlerAuto.js:72 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceMasterParam:", einvoiceMasterParam)
+      // console.log(
+      //   'file: EiWTExcelHandlerAuto.js:72 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceMasterParam:',
+      //   einvoiceMasterParam,
+      // );
 
       const einvoiceDetailsParam = await DBService.callProcCursor(
         'EI_SEL_WT_EINVOICE_D_PARAM',
@@ -66,7 +75,10 @@ class EiExcelHandler {
         p_crt_by,
         _db2,
       );
-      // console.log("file: EiWTExcelHandlerAuto.js:80 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceDetailsParam:", einvoiceDetailsParam)
+      // console.log(
+      //   'file: EiWTExcelHandlerAuto.js:80 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceDetailsParam:',
+      //   einvoiceDetailsParam,
+      // );
 
       if (einvoiceMasterData.length <= 0) {
         return that.showNotification('warning', that.$t("This Einvoice Doesn't Exist"), '', 5000);
@@ -155,6 +167,7 @@ class EiExcelHandler {
           }`, ///assets/images/einvoices_logo/abc/
         },
       ];
+      logos = [];
       for (let i = 0; i < einvoiceDetailsParam.length; i++) {
         detailCellFormat.push({
           startCell: einvoiceDetailsParam[i].STARTCELL,

@@ -1243,6 +1243,36 @@ class DsoController {
       return response.send(Utils.response(false, e.message, null));
     }
   }
+
+  async getFileTokenRealTime({request, response}) {
+    try {
+      const {req_key} = request.get(['req_key']);
+
+      let EiExcels = new EiPosExcelHandlerAuto();
+      let url_pdf = await EiExcels.getEinvoice(req_key, 'ENG', 'adminwebcash');
+
+      //console.log('getFileTokenRealTime url_pdf ', url_pdf);
+
+      const searchParams = new URLSearchParams(url_pdf);
+      const file_name = searchParams.get('https://einvoicepro.webcashvietnam.com/api/dso/getfiletoken?file_name');
+
+      let ip = request.header('x-real-ip');
+      if (ip == undefined) {
+        ip = request.ip();
+      }
+      if (HOST != ip && ip != '127.0.0.1') {
+        //const curDate = Utils.CurrentDate();
+        //if (arrToken[1].substring(0, 8) != curDate) {
+        //  return response.send(Utils.response(false, "Token was expired", null));
+        //}
+      }
+      const filePath = ROOT_DIR_FILES.replace('/', '') + file_name;
+      return response.download(filePath);
+    } catch (e) {
+      return response.send(Utils.response(false, e.message, null));
+    }
+  }
+
   async getLogo({request, response}) {
     let ip = request.header('x-real-ip');
     try {

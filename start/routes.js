@@ -116,6 +116,7 @@ Route.group(() => {
   Route.get('getfiledbtoken', 'DsoController.DownloadFileDBToken');
   Route.get('getlogo', 'DsoController.getLogo');
   Route.post('sendmailhr', 'SendMailController.sendMailHR');
+  Route.get('getfiletokenrealtime', 'DsoController.getFileTokenRealTime');
 }).prefix('api/dso');
 
 Route.group(() => {

@@ -288,6 +288,12 @@ Route.group(() => {
   Route.get('ReceiveSmsStatus', 'EInvoiceController.receiveSmsStatus');
 }).prefix('api/callbackotp');
 
+Route.group(() => {
+  Route.post('report-to-tax', 'EInvoiceController2.weTaxPosReportToTax');
+})
+  .prefix('api/einvoice/pos')
+  .middleware('user');
+
 // ======== clone WeTax
 Route.group(() => {
   Route.post('login', 'UserController.cloneWeTaxlogIn');

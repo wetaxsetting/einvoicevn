@@ -169,14 +169,7 @@ class HSMController2 {
 
       const {user_name, password, otp, serial_no, pin, organization, signing_xml, client_id, client_secret} = request.all();
 
-      // console.log('HsmSignXml  BEGIN ===================================');
-      // console.log('HsmSignXml user_name ', user_name);
-      // console.log('HsmSignXml password ', password);
-      // console.log('HsmSignXml otp ', otp);
-      // console.log('HsmSignXml serial_no ', serial_no);
-      // console.log('HsmSignXml pin ', pin);
-      // console.log('HsmSignXml organization ', organization);
-      // console.log('HsmSignXml signing_xml ', signing_xml);
+      
       let type = 'C';
       if (!user_name || !password || !pin || !organization || !serial_no || !signing_xml) {
         return response.status(400).json(

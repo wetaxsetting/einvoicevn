@@ -118,7 +118,18 @@ class EInvoiceController2 {
         otp,
       } = request.all();
 
-      const json_xml = await this.weTaxPosGeneralXML(tax_code, store_code, store_name, list_invoice, process_type || 'I', p_language, p_crt_by);
+      const json_xml = await this.weTaxPosGeneralXML(
+        sale_date,
+        tax_code,
+        store_code,
+        store_name,
+        pos_no,
+        bill_no,
+        list_invoice,
+        process_type || 'I',
+        p_language,
+        p_crt_by,
+      );
       let str_xml_signed = '';
 
       if (json_xml) {
@@ -147,7 +158,7 @@ class EInvoiceController2 {
           return response.send(Utils.response(true, `Company not yet register`, check_data));
         }
 
-        const data_send_tax = await this.weTaxSendPosInvoice(json_xml_signed.data[0].signed_xml, check_data);
+        const data_send_tax = await this.weTaxSendPosInvoice(json_xml_signed.data[0].signed_xml, check_data, p_language, p_crt_by);
       } else {
       }
 
@@ -165,7 +176,7 @@ class EInvoiceController2 {
     }
   }
 
-  async weTaxPosGeneralXML(tax_code, store_code, store_name, invoices, process_type, p_language, p_crt_by) {
+  async weTaxPosGeneralXML(sale_date, tax_code, store_code, store_name, pos_no, bill_no, invoices, process_type, p_language, p_crt_by) {
     try {
       let rtnXML = [];
       let objInvoice = {};
@@ -179,7 +190,7 @@ class EInvoiceController2 {
       };
 
       let req_key = [];
-
+      let data_send_mail = [];
       const valid = this.weTaxValidatePosInvoiceToXML(invoices);
       if (!valid.status) {
         return response.status(400).json(Utils.responseByRule({success: false, message: valid.message}));
@@ -681,9 +692,9 @@ class EInvoiceController2 {
             total_payment: invoices[i].total_payment,
             total_payment_word_vie: invoices[i].total_payment_word_vie,
             mccqt: invoices[i].mccqt,
-            data_xml: data_xml,
-            count_length: count_length,
-            xml_type: xml_type,
+            data_xml: '',
+            count_length: '',
+            xml_type: '',
           };
           console.log(para_value);
           const rtnValue = await DBService.ExecuteSQLBlob(
@@ -739,14 +750,14 @@ class EInvoiceController2 {
             data_send_mail.push({
               tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
               lookup_code: rtnValue.p_rtn_cur[0].LOOKUP_CODE,
-              invoice: invoice,
+              invoice: invoices[i],
             });
-            for (let j = 0; j < invoice.total_vat_list.length; j++) {
+            for (let j = 0; j < invoices[i].total_vat_list.length; j++) {
               const para_amt_vat = {
                 tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
-                sub_amt: invoice.total_vat_list[j].sub_amt,
-                sub_vat_rate: invoice.total_vat_list[j].sub_vat_rate,
-                sub_vat_amt: invoice.total_vat_list[j].sub_vat_amt,
+                sub_amt: invoices[i].total_vat_list[j].sub_amt,
+                sub_vat_rate: invoices[i].total_vat_list[j].sub_vat_rate,
+                sub_vat_amt: invoices[i].total_vat_list[j].sub_vat_amt,
               };
               await DBService.ExecuteSQLBlob(
                 `BEGIN wt_upd_sale_bill_vat (          
@@ -763,20 +774,20 @@ class EInvoiceController2 {
               );
             }
 
-            for (let j = 0; j < invoice.detail_invoice.length; j++) {
+            for (let j = 0; j < invoices[i].detail_invoice.length; j++) {
               const para_prod_details = {
                 tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
-                feature: invoice.detail_invoice[j].feature,
-                seq: invoice.detail_invoice[j].seq,
-                item_code: invoice.detail_invoice[j].item_code,
-                item_name: invoice.detail_invoice[j].item_name,
-                unit: invoice.detail_invoice[j].unit,
-                quantity: invoice.detail_invoice[j].quantity,
-                unit_price: invoice.detail_invoice[j].unit_price,
-                dc_rate: invoice.detail_invoice[j].dc_rate,
-                dc_amt: invoice.detail_invoice[j].dc_amt,
-                amount: invoice.detail_invoice[j].amount,
-                vat_rate: invoice.detail_invoice[j].vat_rate,
+                feature: invoices[i].detail_invoice[j].feature,
+                seq: invoices[i].detail_invoice[j].seq,
+                item_code: invoices[i].detail_invoice[j].item_code,
+                item_name: invoices[i].detail_invoice[j].item_name,
+                unit: invoices[i].detail_invoice[j].unit,
+                quantity: invoices[i].detail_invoice[j].quantity,
+                unit_price: invoices[i].detail_invoice[j].unit_price,
+                dc_rate: invoices[i].detail_invoice[j].dc_rate,
+                dc_amt: invoices[i].detail_invoice[j].dc_amt,
+                amount: invoices[i].detail_invoice[j].amount,
+                vat_rate: invoices[i].detail_invoice[j].vat_rate,
               };
 
               await DBService.ExecuteSQLBlob(
@@ -1493,8 +1504,6 @@ class EInvoiceController2 {
                   p_language,
                   p_crt_by,
                 );
-
-                // console.log(' weTaxExtractPosXMLContent rtnValueDetail  ', rtnValueDetail);
               }
 
               const invoice_detail_vat = invoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat;
@@ -1579,7 +1588,7 @@ class EInvoiceController2 {
     }
   }
 
-  async weTaxSendPosInvoice(invoice_xml_signed, check_data) {
+  async weTaxSendPosInvoice(invoice_xml_signed, check_data, p_language, p_crt_by) {
     try {
       const authUserName = 'GENUWIN';
       const authPassword = 'genuwin123';

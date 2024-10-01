@@ -20,6 +20,7 @@ const oracledb = require('oracledb');
 const lineByLine = use('n-readlines');
 let _message_ids = [];
 let _user_last_called = [];
+const EiPosExcelHandlerAuto = use('App/Helpers/EiPosExcelHandlerAuto');
 
 class DsoController {
   async test({request, response, auth}) {

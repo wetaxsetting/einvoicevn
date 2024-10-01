@@ -8977,10 +8977,10 @@ class EInvoiceController {
         // return response.send(Utils.response(false, `The sign xml was send Tax Office!`, null));
         return response.status(409).json(Utils.responseByRule({success: false, message: 'This invoice has been sent for Tax Office !'}));
       } else if (check_data.STATUS == 'NOEXIT') {
-        // return response.send(Utils.response(false, `Compay not yet register`, null));
-        return response.status(404).json(Utils.responseByRule({success: false, message: 'Compay not yet register !'}));
+        // return response.send(Utils.response(false, `Company not yet register`, null));
+        return response.status(404).json(Utils.responseByRule({success: false, message: 'Company not yet register !'}));
       } else if (check_data.STATUS == 'RESEND') {
-        // return response.send(Utils.response(false, `Compay not yet register`, null));
+        // return response.send(Utils.response(false, `Company not yet register`, null));
         return response.status(404).json(Utils.responseByRule({success: false, message: 'Data has been duplicated !'}));
       }
 
@@ -9363,7 +9363,7 @@ class EInvoiceController {
           totalFail++;
           continue;
         } else if (check_data.STATUS == 'NOEXIT') {
-          resArr = [...resArr, {...element, status_name: `Compay not yet register`, status_code: '003'}];
+          resArr = [...resArr, {...element, status_name: `Company not yet register`, status_code: '003'}];
           totalFail++;
           continue;
         }
@@ -13199,88 +13199,87 @@ class EInvoiceController {
 
       let subject = `${data_invoice.seller_comp_name}[Thông báo phát hành HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
       let body = `<html>
-                            <body>
-                                <div id="page">
-                                    <div id="d2">
-                                        <p>Dear: ${data_invoice.buyer_comp_name}
-                                            <br />
-                                            <br />${data_invoice.seller_comp_name}.
-                                            <br />            Trân trọng cảm ơn Quý khách hàng đã sử dụng sản phẩm của chúng tôi.
-                                            <br/> Chúng tôi đã 
-                                            <b>PHÁT HÀNH </b> hóa đơn điện tử với các thông tin như sau:
-                                            <br/>- Mẫu số: ${data_invoice.form_no}
-                                            <br/>- Ký hiệu: 
-                                            <b>${data_invoice.serial_no}</b>
-                                            <br/>- Số hóa đơn: 
-                                            <b>${data_invoice.invoice_no}</b>
-                                            <br/>- Tổng thanh toán: 
-                                            <b>       ${
-                                              new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND', maximumFractionDigits: 9})
-                                                .format(Number(data_invoice.total_payment))
-                                                .replace('₫', '') +
-                                              ' ' +
-                                              data_invoice.currency
-                                            }</b>
-                                            <br/>- Mã CQT của hóa đơn: 
-								                            <b> ${data_invoice.mccqt}</b>
-                                            <br/>- Link tra cứu: 
-								                            <a href='https://einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code=${lookup_code}'>Xem hóa đơn</a>
-                                            <br />- Link download file PDF: 
-                                            <a href='${url_pdf}'>Tải file PDF</a>
-                                            <br />- Link download file XML: 
-                                            <a href='${url_xml}'>Tải file XML</a>
-                                            <br />
-                                        </div>
-                                        <br/>
-                                        <div id="d6">
-                                            <p>
-                                                <i>* Xin lưu ý: Đây là email gửi tự động từ hệ thống, vui lòng không trả lời về địa chỉ email này</i>
-                                                <br />
-                                                <i>Cám ơn sự hợp tác. </i>
-                                                <br />
-                                        --------------------------------------------------------------------------
-                                    
-                                            </p>
-                                        </div>
-                                        <div id="d7"> Would like to send you our warmest greetings and most sincere thanks for choosing our product. 
-                                            <br/> We 
-                                            <b>issued </b> your e-invoice with the information as below: 
-                                            <br/>- Form No: 
-                                            <b>${data_invoice.form_no}</b>
-                                            <br/>- Serial: 
-                                            <b>${data_invoice.serial_no}</b>
-                                            <br/>- Invoice No:  
-                                            <b>${data_invoice.invoice_no}</b>
-                                            <br/>- Total amount :  
-                                            <b>       ${
-                                              new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND', maximumFractionDigits: 9})
-                                                .format(Number(data_invoice.total_payment))
-                                                .replace('₫', '') +
-                                              ' ' +
-                                              data_invoice.currency
-                                            }</b>
-                                            <br/>- CQT code of e-invoice: 
-								                            <b> ${data_invoice.mccqt}</b>
-                                            <br/>- Link lookup: 
-								                            <a href='https://einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code=${lookup_code}'>View e-invoice</a>
-                                            <br />- Download file PDF link:  
-                                            <a href='${url_pdf}'>Download file PDF</a>
-                                            <br />- Download file XML link:  
-                                            <a href='${url_xml}'>Download file XML</a>
-                                            <br />
-                                        </p>
-                                    </div>
-                                    <div id="d8">
-                                        <p>
-                                            <br/>* Note: This is an automatic email. Please do not feedback to this email.
-                                            <br/>
-                                        Thank you for your corporation!
-                                        
-                                        </p>
-                                    </div>
-                                </body>
-                            </html>
-                            `;
+                    <body>
+                        <div id="page">
+                            <div id="d2">
+                                <p>Dear: ${data_invoice.buyer_comp_name}
+                                    <br />
+                                    <br />${data_invoice.seller_comp_name}.
+                                    <br />            Trân trọng cảm ơn Quý khách hàng đã sử dụng sản phẩm của chúng tôi.
+                                    <br/> Chúng tôi đã 
+                                    <b>PHÁT HÀNH </b> hóa đơn điện tử với các thông tin như sau:
+                                    <br/>- Mẫu số: ${data_invoice.form_no}
+                                    <br/>- Ký hiệu: 
+                                    <b>${data_invoice.serial_no}</b>
+                                    <br/>- Số hóa đơn: 
+                                    <b>${data_invoice.invoice_no}</b>
+                                    <br/>- Tổng thanh toán: 
+                                    <b>       ${
+                                      new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND', maximumFractionDigits: 9})
+                                        .format(Number(data_invoice.total_payment))
+                                        .replace('₫', '') +
+                                      ' ' +
+                                      data_invoice.currency
+                                    }</b>
+                                    <br/>- Mã CQT của hóa đơn: 
+                                    <b> ${data_invoice.mccqt}</b>
+                                    <br/>- Link tra cứu: 
+                                    <a href='https://einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code=${lookup_code}'>Xem hóa đơn</a>
+                                    <br />- Link download file PDF: 
+                                    <a href='${url_pdf}'>Tải file PDF</a>
+                                    <br />- Link download file XML: 
+                                    <a href='${url_xml}'>Tải file XML</a>
+                                    <br />
+                                </div>
+                                <br/>
+                                <div id="d6">
+                                    <p>
+                                        <i>* Xin lưu ý: Đây là email gửi tự động từ hệ thống, vui lòng không trả lời về địa chỉ email này</i>
+                                        <br />
+                                        <i>Cám ơn sự hợp tác. </i>
+                                        <br />
+                                --------------------------------------------------------------------------
+                                    </p>
+                                </div>
+                                <div id="d7"> Would like to send you our warmest greetings and most sincere thanks for choosing our product. 
+                                    <br/> We 
+                                    <b>issued </b> your e-invoice with the information as below: 
+                                    <br/>- Form No: 
+                                    <b>${data_invoice.form_no}</b>
+                                    <br/>- Serial: 
+                                    <b>${data_invoice.serial_no}</b>
+                                    <br/>- Invoice No:  
+                                    <b>${data_invoice.invoice_no}</b>
+                                    <br/>- Total amount :  
+                                    <b>       ${
+                                      new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND', maximumFractionDigits: 9})
+                                        .format(Number(data_invoice.total_payment))
+                                        .replace('₫', '') +
+                                      ' ' +
+                                      data_invoice.currency
+                                    }</b>
+                                    <br/>- CQT code of e-invoice: 
+                                    <b> ${data_invoice.mccqt}</b>
+                                    <br/>- Link lookup: 
+                                    <a href='https://einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code=${lookup_code}'>View e-invoice</a>
+                                    <br />- Download file PDF link:  
+                                    <a href='${url_pdf}'>Download file PDF</a>
+                                    <br />- Download file XML link:  
+                                    <a href='${url_xml}'>Download file XML</a>
+                                    <br />
+                                </p>
+                            </div>
+                            <div id="d8">
+                                <p>
+                                    <br/>* Note: This is an automatic email. Please do not feedback to this email.
+                                    <br/>
+                                Thank you for your corporation!
+                                
+                                </p>
+                            </div>
+                          </div>
+                        </body>
+                    </html>`;
 
       //console.log("sSSSS4 ", tei_wt_sale_bill_pk);
 
@@ -14012,7 +14011,7 @@ class EInvoiceController {
       } else if (check_data.STATUS == 'EXIT') {
         return response.send(Utils.response(true, `The sign xml was send Tax Offiec`, check_data));
       } else if (check_data.STATUS == 'NOEXIT') {
-        return response.send(Utils.response(true, `Compay not yet register`, check_data));
+        return response.send(Utils.response(true, `Company not yet register`, check_data));
       }
 
       const agent = {

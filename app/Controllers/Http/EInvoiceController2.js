@@ -308,7 +308,7 @@ class EInvoiceController2 {
                 Utils.responseByRule({success: false, message: `invoice date cannot greater than ${tomorrow_date}.`, data: invoices[i].invoice_date}),
               );
           }
-          req_key.push(invoices[i].req_key);
+          req_key.push(invoices[i].sale_id);
 
           if (invoices[i].form_no == 1) {
             objInvoice.DLHDon.TTChung.THDon = 'Hóa đơn giá trị gia tăng khởi tạo từ máy tính tiền';
@@ -677,7 +677,7 @@ class EInvoiceController2 {
                 Utils.responseByRule({success: false, message: `invoice date cannot greater than ${tomorrow_date}.`, data: invoices[i].invoice_date}),
               );
           }
-          req_key = invoices[i].req_key;
+          req_key = invoices[i].sale_id;
 
           const para_value = {
             sale_date: sale_date,
@@ -1940,7 +1940,8 @@ class EInvoiceController2 {
     try {
       const errorList = {
         version: /^(\d{1}\.\d{1}\.\d{1})$/, //6
-        req_key: /^-?\d+(\.\d{1,99})?$/, //99
+        sale_id: /^-?\d+(\.\d{1,99})?$/, //99
+        msg_his_id: /^-?\d+(\.\d{1,99})?$/, //99
         invoice_name: /^.{0,100}$/, //100
         form_no: /^.{0,1}$/, //1
         serial_no: /^.{0,6}$/, // 6

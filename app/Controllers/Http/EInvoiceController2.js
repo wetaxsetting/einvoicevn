@@ -811,6 +811,7 @@ class EInvoiceController2 {
                 vat_rate: invoices[i].detail_invoice[j].vat_rate,
               };
 
+              console.log('wt_upd_sale_prod  para_prod_details ', para_prod_details);
               await DBService.ExecuteSQLBlob(
                 `BEGIN wt_upd_sale_prod (          
                                                                   :tei_wt_sale_bill_pk,
@@ -1504,7 +1505,7 @@ class EInvoiceController2 {
                   tsuat: inv_d.TSuat,
                 };
 
-                // console.log('weTaxExtractPosXMLContent d param ===> ', paraDetails);
+                console.log('weTaxExtractPosXMLContent d param ===> ', paraDetails);
 
                 const rtnValueDetail = await DBService.ExecuteSQLBlob(
                   `BEGIN WT_UPD_SALE_BILL_D (          
@@ -1539,7 +1540,7 @@ class EInvoiceController2 {
                   sub_vat_amt: inv_d_vat.TThue,
                 };
 
-                // console.log('weTaxExtractPosXMLContent d vat param  ===> ', para_amt_vat);
+                console.log('weTaxExtractPosXMLContent d vat param  ===> ', para_amt_vat);
 
                 const rtnValue_VAT = await DBService.ExecuteSQLBlob(
                   `BEGIN WT_UPD_SALE_BILL_D_VAT (          

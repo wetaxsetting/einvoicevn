@@ -130,13 +130,11 @@ class EInvoiceController2 {
         p_language,
         p_crt_by,
       );
-      let str_xml_signed = '';
 
       if (json_xml) {
-        str_xml_signed = await this.weTaxSignXMLHSM(user_name, password, otp, serial_no, pin, organization, json_xml);
+        const json_xml_signed = await this.weTaxSignXMLHSM(user_name, password, otp, serial_no, pin, organization, json_xml, process_type || 'I');
 
-        const json_xml_signed = JSON.parse(str_xml_signed);
-
+        console.log('json_xml_signed  ', json_xml_signed);
         const {check_data, data_inv} = await this.weTaxExtractPosXMLContent(
           json_xml_signed.data[0].signed_xml,
           tax_code,
@@ -191,7 +189,7 @@ class EInvoiceController2 {
         FUNC: 'weTaxPosReportToTax',
         CONTENT: e.message,
       });
-      // console.log("error ", e);
+      console.log('error ', e);
       // return response.send(Utils.response(false, e.message, null));
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
     }
@@ -778,8 +776,11 @@ class EInvoiceController2 {
                 tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
                 sub_amt: invoices[i].total_vat_list[j].sub_amt,
                 sub_vat_rate: invoices[i].total_vat_list[j].sub_vat_rate,
-                sub_vat_amt: invoices[i].total_vat_list[j].sub_vat_amt,
+                sub_vat_amt: invoices[i].total_vat_list[j].sub_amt_vat,
               };
+
+              console.log('wt_upd_sale_bill_vat  para_amt_vat ', para_amt_vat);
+
               await DBService.ExecuteSQLBlob(
                 `BEGIN wt_upd_sale_bill_vat (          
                                                                   :tei_wt_sale_bill_pk,
@@ -804,10 +805,10 @@ class EInvoiceController2 {
                 item_name: invoices[i].detail_invoice[j].item_name,
                 unit: invoices[i].detail_invoice[j].unit,
                 quantity: invoices[i].detail_invoice[j].quantity,
-                unit_price: invoices[i].detail_invoice[j].unit_price,
+                unit_price: invoices[i].detail_invoice[j].uprice,
                 dc_rate: invoices[i].detail_invoice[j].dc_rate,
                 dc_amt: invoices[i].detail_invoice[j].dc_amt,
-                amount: invoices[i].detail_invoice[j].amount,
+                amount: invoices[i].detail_invoice[j].amt,
                 vat_rate: invoices[i].detail_invoice[j].vat_rate,
               };
 
@@ -1067,7 +1068,6 @@ class EInvoiceController2 {
           req_key: req_key,
         });
       }
-
       return {json_xml, data_send_mail};
     } catch (error) {
       console.log(error);
@@ -1082,7 +1082,7 @@ class EInvoiceController2 {
     }
   }
 
-  async weTaxSignXMLHSM(user_name, password, otp, serial_no, pin, organization, signing_xml) {
+  async weTaxSignXMLHSM(user_name, password, otp, serial_no, pin, organization, signing_xml, process_type) {
     try {
       const url = 'http://demosign.easyca.vn:8080/api';
       const site = 'test';
@@ -1095,14 +1095,52 @@ class EInvoiceController2 {
       }
 
       let data;
-      //console.log('organization  ', organization);
+
+      //console.log('organization  ', organization, ' process_type ', process_type);
 
       switch (organization) {
         case 'easysign':
-          const res = await Request.post(WEBSERVICE_C_SHARP + '/SignXml', {
-            xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site}),
-          });
-          data = res.data.d;
+          if (process_type == 'I') {
+            const res_1 = await Request.post(WEBSERVICE_C_SHARP + '/SignXml', {
+              xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site}),
+            });
+            data = res_1.data.d;
+
+            //console.log('weTaxSignXMLHSM  ', data);
+
+            let data_sign_xml = JSON.parse(data);
+
+            // let objData = {
+            //   TDiep: {
+            //     DLieu: [],
+            //     CKSNNT: {},
+            //   },
+            // };
+            // objData.TDiep.DLieu.push(data_sign_xml.data[0].signed_xml);
+
+            const id = uuid.v4();
+            const signature_path = 'TDiep/CKSNNT';
+            //const xml = this.OBJtoXML(objData);
+            //const xmlId = xml.toString().replace('<DLieu>', `<DLieu Id=\'${id}\'>`);
+            //const xmlRemoveLine = xmlId.toString().replace(/\n/g, '').replaceAll('"', "'");
+
+            const xmlRemoveLine = `<TDiep><DLieu Id=\'${id}\'>` + data_sign_xml.data[0].signed_xml + `</DLieu><CKSNNT></CKSNNT></TDiep>`;
+
+            signing_xml = [];
+            signing_xml.push({
+              sign_id: id,
+              signature_path: signature_path,
+              xml: xmlRemoveLine,
+              req_key: data_sign_xml.data[0].req_key,
+            });
+
+            //console.log('weTaxSignXMLHSM signing_xml  ', signing_xml);
+
+            const res_2 = await Request.post(WEBSERVICE_C_SHARP + '/SignXml', {
+              xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site}),
+            });
+            data = JSON.parse(res_2.data.d); //  data_sign_xml; //;
+          }
           break;
         default:
           data = {};
@@ -1138,7 +1176,7 @@ class EInvoiceController2 {
     let status = '';
     try {
       const template = [
-        'HDon',
+        '//HDon',
         {
           DLHDon: {
             TTChung: {
@@ -1243,7 +1281,7 @@ class EInvoiceController2 {
           MCCQT: 'MCCQT',
         },
       ];
-      //console.log('xml_content  ', xml_content);
+      console.log('xml_content  ', xml_content);
       const jsonInvoice = await transform(xml_content, template);
 
       console.log('jsonInvoice  ', JSON.stringify(jsonInvoice));
@@ -1255,7 +1293,7 @@ class EInvoiceController2 {
       var nodes = xpath.select('//HDon', doc);
 
       const templateSignTime = {
-        SigningTime: 'HDon/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
+        SigningTime: 'TDiep/DLieu/HDon/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
       };
       const signingTime = await transform(xml_content, templateSignTime);
 

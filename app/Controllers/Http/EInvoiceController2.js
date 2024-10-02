@@ -1254,7 +1254,7 @@ class EInvoiceController2 {
       var nodes = xpath.select('//HDon', doc);
 
       const templateSignTime = {
-        SigningTime: 'TDiep/CKSNNT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
+        SigningTime: 'HDon/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
       };
       const signingTime = await transform(xml_content, templateSignTime);
 

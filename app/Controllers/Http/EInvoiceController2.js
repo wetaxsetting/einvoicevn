@@ -1124,7 +1124,7 @@ class EInvoiceController2 {
             //const xmlId = xml.toString().replace('<DLieu>', `<DLieu Id=\'${id}\'>`);
             //const xmlRemoveLine = xmlId.toString().replace(/\n/g, '').replaceAll('"', "'");
 
-            const xmlRemoveLine = `<TDiep><DLieu Id=\'${id}\'>` + data_sign_xml.data[0].signed_xml + `</DLieu><CKSNNT></CKSNNT></TDiep>`;
+            const xmlRemoveLine = `<TDiep><DLieu Id=\'${id}\'> ` + data_sign_xml.data[0].signed_xml + `</DLieu><CKSNNT></CKSNNT></TDiep>`;
 
             signing_xml = [];
             signing_xml.push({

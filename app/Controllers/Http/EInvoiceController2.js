@@ -118,7 +118,7 @@ class EInvoiceController2 {
         otp,
       } = request.all();
 
-      const { json_xml, data_send_mail } = await this.weTaxPosGeneralXML(
+      const {json_xml, data_send_mail} = await this.weTaxPosGeneralXML(
         sale_date,
         tax_code,
         store_code,
@@ -137,7 +137,7 @@ class EInvoiceController2 {
 
         const json_xml_signed = JSON.parse(str_xml_signed);
 
-        const { check_data, data_inv } = await this.weTaxExtractPosXMLContent(
+        const {check_data, data_inv} = await this.weTaxExtractPosXMLContent(
           json_xml_signed.data[0].signed_xml,
           tax_code,
           sale_date,
@@ -150,6 +150,9 @@ class EInvoiceController2 {
           p_crt_by,
         );
 
+        console.log('check_data ', check_data);
+        console.log('data_inv ', data_inv);
+
         if (check_data.STATUS == 'FAILE') {
           return response.send(Utils.response(true, `Send invoice to Tax Office was Faile!`, check_data));
         } else if (check_data.STATUS == 'EXIT') {
@@ -158,20 +161,29 @@ class EInvoiceController2 {
           return response.send(Utils.response(true, `Company not yet register`, check_data));
         }
 
-        const data_send_tax = await this.weTaxSendPosInvoice(tax_code, sale_date, store_code, store_name, serial_no, pos_no, json_xml_signed.data[0].signed_xml, check_data, data_inv, p_language, p_crt_by);
-        if (data_send_tax)
-        { 
+        const data_send_tax = await this.weTaxSendPosInvoice(
+          tax_code,
+          sale_date,
+          store_code,
+          store_name,
+          serial_no,
+          pos_no,
+          json_xml_signed.data[0].signed_xml,
+          check_data,
+          data_inv,
+          p_language,
+          p_crt_by,
+        );
+        if (data_send_tax) {
           this.weTaxSendMail(data_send_mail, 'WTPTA002', tax_code, p_language, p_crt_by);
 
           return response.status(200).json(Utils.responseByRule({success: true, message: 'Sending invoice is successfully.', data: data_send_tax}));
-        }else
-        {
-          return response.status(409).json(Utils.responseByRule({success: false, message: "Sending invoice to TAX is error!!"}));
+        } else {
+          return response.status(409).json(Utils.responseByRule({success: false, message: 'Sending invoice to TAX is error!!'}));
         }
       } else {
-        return response.status(409).json(Utils.responseByRule({success: false, message: "Signing XML of invoice is error!!"}));
+        return response.status(409).json(Utils.responseByRule({success: false, message: 'Signing XML of invoice is error!!'}));
       }
-
     } catch (e) {
       Utils.Logger({
         LVL: 'error',
@@ -371,7 +383,7 @@ class EInvoiceController2 {
           objInvoice.DLHDon.NDHDon.NBan.Ten = this.convertHtmlCode(invoices[i].seller_comp_name);
           objInvoice.DLHDon.NDHDon.NBan.MST = invoices[i].seller_taxcode;
           objInvoice.DLHDon.NDHDon.NBan.DChi = this.convertHtmlCode(invoices[i].seller_address);
-          objInvoice.DLHDon.NDHDon.NBan.SDThoai = invoices[i].seller_tel;
+          objInvoice.DLHDon.NDHDon.NBan.SDThoai = invoices[i].seller_phone;
 
           objInvoice.DLHDon.NDHDon.NBan.TTKhac = {};
           objInvoice.DLHDon.NDHDon.NBan.TTKhac.TTin = [];
@@ -420,7 +432,7 @@ class EInvoiceController2 {
           objInvoice.DLHDon.NDHDon.NMua.MST = invoices[i].buyer_taxcode;
           objInvoice.DLHDon.NDHDon.NMua.DChi = this.convertHtmlCode(invoices[i].buyer_address);
           objInvoice.DLHDon.NDHDon.NMua.CCCDan = invoices[i].buyer_cccd;
-          objInvoice.DLHDon.NDHDon.NMua.SDThoai = invoices[i].buyer_tel;
+          objInvoice.DLHDon.NDHDon.NMua.SDThoai = invoices[i].buyer_phone;
 
           objInvoice.DLHDon.NDHDon.NMua.TTKhac = {};
           objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin = [];
@@ -464,7 +476,7 @@ class EInvoiceController2 {
               DLieu: this.convertHtmlCode(invoices[i].buyer_bank_name),
             });
           }
-          //if(invoices[i].buyer_tel)
+          //if(invoices[i].buyer_phone)
 
           objInvoice.DLHDon.NDHDon.DSHHDVu = [];
 
@@ -503,9 +515,9 @@ class EInvoiceController2 {
           }
 
           objInvoice.DLHDon.NDHDon.TToan.TgTCThue = invoices[i].total_amt;
-          objInvoice.DLHDon.NDHDon.TToan.TgTThue = invoices[i].total_vat_amt;
+          objInvoice.DLHDon.NDHDon.TToan.TgTThue = invoices[i].total_amt_vat;
 
-          objInvoice.DLHDon.NDHDon.TToan.TTCKTMai = invoices[i].total_dc_amt;
+          objInvoice.DLHDon.NDHDon.TToan.TTCKTMai = invoices[i].total_amt_dc;
           objInvoice.DLHDon.NDHDon.TToan.TgTTTBSo = invoices[i].total_payment;
           objInvoice.DLHDon.NDHDon.TToan.TgTTTBChu = invoices[i].total_payment_word_vie; // await Utils.Num2VNText2(invoices[i].total_payment.toString(), invoices[i].currency);
 
@@ -705,7 +717,7 @@ class EInvoiceController2 {
             count_length: '',
             xml_type: '',
           };
-          console.log(para_value);
+          //console.log(para_value);
           const rtnValue = await DBService.ExecuteSQLBlob(
             `BEGIN wt_upd_send_order_info (          
                                                             :sale_date,
@@ -899,7 +911,7 @@ class EInvoiceController2 {
           objInvoice.HDon.DLHDon.NDHDon.NBan.Ten = this.convertHtmlCode(invoices[i].seller_comp_name);
           objInvoice.HDon.DLHDon.NDHDon.NBan.MST = invoices[i].seller_taxcode;
           objInvoice.HDon.DLHDon.NDHDon.NBan.DChi = this.convertHtmlCode(invoices[i].seller_address);
-          objInvoice.HDon.DLHDon.NDHDon.NBan.SDThoai = invoices[i].seller_tel;
+          objInvoice.HDon.DLHDon.NDHDon.NBan.SDThoai = invoices[i].seller_phone;
 
           objInvoice.HDon.DLHDon.NDHDon.NBan.TTKhac = {};
           objInvoice.HDon.DLHDon.NDHDon.NBan.TTKhac.TTin = [];
@@ -948,7 +960,7 @@ class EInvoiceController2 {
           objInvoice.HDon.DLHDon.NDHDon.NMua.MST = invoices[i].buyer_taxcode;
           objInvoice.HDon.DLHDon.NDHDon.NMua.DChi = this.convertHtmlCode(invoices[i].buyer_address);
           objInvoice.HDon.DLHDon.NDHDon.NMua.CCCDan = invoices[i].buyer_cccd;
-          objInvoice.HDon.DLHDon.NDHDon.NMua.SDThoai = invoices[i].buyer_tel;
+          objInvoice.HDon.DLHDon.NDHDon.NMua.SDThoai = invoices[i].buyer_phone;
 
           objInvoice.HDon.DLHDon.NDHDon.NMua.TTKhac = {};
           objInvoice.HDon.DLHDon.NDHDon.NMua.TTKhac.TTin = [];
@@ -992,7 +1004,7 @@ class EInvoiceController2 {
               DLieu: this.convertHtmlCode(invoices[i].buyer_bank_name),
             });
           }
-          //if(invoices[i].buyer_tel)
+          //if(invoices[i].buyer_phone)
 
           objInvoice.HDon.DLHDon.NDHDon.DSHHDVu = [];
 
@@ -1031,9 +1043,9 @@ class EInvoiceController2 {
           }
 
           objInvoice.HDon.DLHDon.NDHDon.TToan.TgTCThue = invoices[i].total_amt;
-          objInvoice.HDon.DLHDon.NDHDon.TToan.TgTThue = invoices[i].total_vat_amt;
+          objInvoice.HDon.DLHDon.NDHDon.TToan.TgTThue = invoices[i].total_amt_vat;
 
-          objInvoice.HDon.DLHDon.NDHDon.TToan.TTCKTMai = invoices[i].total_dc_amt;
+          objInvoice.HDon.DLHDon.NDHDon.TToan.TTCKTMai = invoices[i].total_amt_dc;
           objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = invoices[i].total_payment;
           objInvoice.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = invoices[i].total_payment_word_vie; // await Utils.Num2VNText2(invoices[i].total_payment.toString(), invoices[i].currency);
 
@@ -1055,7 +1067,7 @@ class EInvoiceController2 {
         });
       }
 
-      return { json_xml , data_send_mail};
+      return {json_xml, data_send_mail};
     } catch (error) {
       console.log(error);
       Utils.Logger({
@@ -1230,8 +1242,10 @@ class EInvoiceController2 {
           MCCQT: 'MCCQT',
         },
       ];
-      console.log('xml_content  ', xml_content);
+      //console.log('xml_content  ', xml_content);
       const jsonInvoice = await transform(xml_content, template);
+
+      console.log('jsonInvoice  ', JSON.stringify(jsonInvoice));
 
       var xpath = require('xpath');
       var dom = require('@xmldom/xmldom').DOMParser;
@@ -1400,7 +1414,7 @@ class EInvoiceController2 {
               vat_rate: invoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat[0].TSuat,
             };
 
-            // console.log('weTaxExtractPosXMLContent m param ===> ', paraMaster);
+            console.log('weTaxExtractPosXMLContent m param ===> ', paraMaster);
 
             const rtnValueMaster = await DBService.ExecuteSQLBlob(
               `BEGIN WT_UPD_SALE_BILL (          
@@ -1597,7 +1611,19 @@ class EInvoiceController2 {
     }
   }
 
-  async weTaxSendPosInvoice(seller_tax_code, sale_date, store_code, store_name, tax_serial_number, pos_no, invoice_xml_signed, check_data, data_inv, p_language, p_crt_by) {
+  async weTaxSendPosInvoice(
+    seller_tax_code,
+    sale_date,
+    store_code,
+    store_name,
+    tax_serial_number,
+    pos_no,
+    invoice_xml_signed,
+    check_data,
+    data_inv,
+    p_language,
+    p_crt_by,
+  ) {
     try {
       const authUserName = 'GENUWIN';
       const authPassword = 'genuwin123';
@@ -1925,12 +1951,12 @@ class EInvoiceController2 {
         seller_comp_name: /^.{0,400}$/, //400,
         seller_taxcode: {10: /^(\d{10})$/, 14: /^(\d{10}\-\d{3})$/}, // 10
         seller_address: /^.{0,400}$/, //400,
-        seller_tel: /^.{0,50}$/, // 20
+        seller_phone: /^.{0,50}$/, // 20
         buyer_comp_name: /^.{0,400}$/, //400,
         buyer_taxcode: {10: /^(\d{10})$/, 14: /^(\d{10}\-\d{3})$/},
         buyer_address: /^.{0,400}$/, // 400
         buyer_nm: /^.{0,100}$/,
-        buyer_tel: /^.{0,20}$/, //20,
+        buyer_phone: /^.{0,20}$/, //20,
         buyer_cccd: /^.{0,12}$/, //12,
         detail_invoice: {
           feature: /^(1|2|3|4){1}$/, /// /^-?\d+(\.\d{1})?$/, //1,
@@ -1954,8 +1980,8 @@ class EInvoiceController2 {
         },
 
         total_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
-        total_vat_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
-        total_dc_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
+        total_amt_vat: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
+        total_amt_dc: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
         total_payment: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
         total_payment_word_vie: /^.{1,255}$/, // 255
       };

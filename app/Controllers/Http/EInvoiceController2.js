@@ -107,8 +107,6 @@ class EInvoiceController2 {
         store_code,
         store_name,
         process_type,
-        pos_no,
-        bill_no,
         list_invoice,
         user_name,
         password,
@@ -123,8 +121,6 @@ class EInvoiceController2 {
         tax_code,
         store_code,
         store_name,
-        pos_no,
-        bill_no,
         list_invoice,
         process_type || 'I',
         p_language,
@@ -152,7 +148,6 @@ class EInvoiceController2 {
           json_xml_signed.data[0].req_key,
           store_code,
           store_name,
-          pos_no,
           p_language,
           p_crt_by,
         );
@@ -174,7 +169,6 @@ class EInvoiceController2 {
           store_code,
           store_name,
           tax_serial_number,
-          pos_no,
           json_xml_signed.data[0].signed_xml,
           check_data,
           data_inv,
@@ -204,7 +198,7 @@ class EInvoiceController2 {
     }
   }
 
-  async weTaxPosGeneralXML(sale_date, tax_code, store_code, store_name, pos_no, bill_no, invoices, process_type, p_language, p_crt_by) {
+  async weTaxPosGeneralXML(sale_date, tax_code, store_code, store_name, invoices, process_type, p_language, p_crt_by) {
     try {
       let json_xml = [];
       let objInvoice = {};
@@ -690,8 +684,8 @@ class EInvoiceController2 {
             sale_date: sale_date,
             store_code: store_code,
             store_name: store_name,
-            pos_no: pos_no,
-            bill_no: bill_no,
+            pos_no: '',
+            bill_no: '',
             version: invoices[i].version,
             invoice_name: invoices[i].invoice_name,
             symbol_type: invoices[i].form_no, //invoices[i].symbol_type,
@@ -1176,7 +1170,6 @@ class EInvoiceController2 {
     req_key,
     store_code,
     store_name,
-    pos_no,
     p_language,
     p_crt_by,
   ) {
@@ -1454,7 +1447,7 @@ class EInvoiceController2 {
               store_code: store_code,
               store_name: store_name,
               tax_serial_number: tax_serial_number,
-              pos_no: pos_no,
+              pos_no: '',
               signing_time: signingTime.SigningTime,
               tei_wt_invoice_pos_pk: rtnValuePos.p_rtn_cur[0].PK,
               xml_content: xml_content,
@@ -1665,7 +1658,6 @@ class EInvoiceController2 {
     store_code,
     store_name,
     tax_serial_number,
-    pos_no,
     invoice_xml_signed,
     check_data,
     data_inv,
@@ -1957,7 +1949,6 @@ class EInvoiceController2 {
           store_code: store_code,
           store_name: store_name,
           tax_serial_number: tax_serial_number,
-          pos_no: pos_no,
           data_error: data_error,
           data_inv: data_inv,
           inform_code: maTBao,

@@ -173,7 +173,7 @@ class EInvoiceController2 {
           sale_date,
           store_code,
           store_name,
-          serial_no,
+          tax_serial_number,
           pos_no,
           json_xml_signed.data[0].signed_xml,
           check_data,
@@ -1091,7 +1091,7 @@ class EInvoiceController2 {
     }
   }
 
-  async weTaxSignXMLHSM(user_name, password, otp, serial_no, pin, organization, signing_xml, process_type) {
+  async weTaxSignXMLHSM(user_name, password, otp, tax_serial_number, pin, organization, signing_xml, process_type) {
     try {
       const url = 'http://demosign.easyca.vn:8080/api';
       const site = 'test';
@@ -1099,7 +1099,7 @@ class EInvoiceController2 {
       // const url =  'https://sign.easyca.vn/api/'; //
       // const site = 'real';
 
-      if (!user_name || !password || !pin || !organization || !serial_no || !signing_xml) {
+      if (!user_name || !password || !pin || !organization || !tax_serial_number || !signing_xml) {
         return {};
       }
 
@@ -1111,7 +1111,7 @@ class EInvoiceController2 {
         case 'easysign':
           if (process_type == 'I') {
             const res_1 = await Request.post(WEBSERVICE_C_SHARP + '/SignXml', {
-              xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site}),
+              xmlContent: JSON.stringify({user_name, password, tax_serial_number, pin, organization, otp, signing_xml, url, site}),
             });
             data = res_1.data.d;
 
@@ -1146,7 +1146,7 @@ class EInvoiceController2 {
             //console.log('weTaxSignXMLHSM signing_xml  ', signing_xml);
 
             const res_2 = await Request.post(WEBSERVICE_C_SHARP + '/SignXml', {
-              xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site}),
+              xmlContent: JSON.stringify({user_name, password, tax_serial_number, pin, organization, otp, signing_xml, url, site}),
             });
             data = JSON.parse(res_2.data.d); //  data_sign_xml; //;
           }

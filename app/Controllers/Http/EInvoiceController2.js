@@ -112,7 +112,7 @@ class EInvoiceController2 {
         list_invoice,
         user_name,
         password,
-        serial_no,
+        tax_serial_number,
         pin,
         organization,
         otp,
@@ -132,14 +132,23 @@ class EInvoiceController2 {
       );
 
       if (json_xml) {
-        const json_xml_signed = await this.weTaxSignXMLHSM(user_name, password, otp, serial_no, pin, organization, json_xml, process_type || 'I');
+        const json_xml_signed = await this.weTaxSignXMLHSM(
+          user_name,
+          password,
+          otp,
+          tax_serial_number,
+          pin,
+          organization,
+          json_xml,
+          process_type || 'I',
+        );
 
         console.log('json_xml_signed  ', json_xml_signed);
         const {check_data, data_inv} = await this.weTaxExtractPosXMLContent(
           json_xml_signed.data[0].signed_xml,
           tax_code,
           sale_date,
-          serial_no,
+          tax_serial_number,
           json_xml_signed.data[0].req_key,
           store_code,
           store_name,

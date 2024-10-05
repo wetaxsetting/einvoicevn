@@ -19880,7 +19880,7 @@ class EInvoiceController {
           });
         }
       });
-      if (check_data.CRT_BY == 'wetax' && data_inv) {
+      if (check_data.CRT_BY == 'wetax' && data_inv.length > 0) {
 
         const param_data_m= {
           data_json: JSON.stringify(data_inv),

@@ -19881,6 +19881,23 @@ class EInvoiceController {
         }
       });
       if (check_data.CRT_BY == 'wetax') {
+        const param_data_m= {
+          data_json: JSON.stringify(data_inv),
+          api_name: 'weTaxCallBackStatusPosInv',
+        };
+  
+        await DBService.ExecuteSQLBlob(
+          `BEGIN WT_UPD_data_REQ(
+                            :data_json,
+                            :api_name,
+                            :p_language, 
+                            :p_crt_by, 
+                            :p_rtn_cur); 
+            END;`,
+            param_data_m,
+          p_language,
+          p_crt_by,
+        );
         this.weTaxCallBackStatusPosInv(data_inv, '/api/wtx/v1/pos-invoice-delivery-status', 'WTPTA003');
       }
       //console.log('jobCheckTradeCodePosInvoice rtnValue  ', rtnValue);

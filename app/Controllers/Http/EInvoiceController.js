@@ -19600,7 +19600,7 @@ class EInvoiceController {
           });
         }
       }
-      //console.log('jobCheckTradeCodePosInvoice data_inv  ', JSON.stringify(data_inv));
+      console.log('jobCheckTradeCodePosInvoice data_inv  ', JSON.stringify(data_inv));
 
       const agent = {
         Agent: {
@@ -19880,7 +19880,8 @@ class EInvoiceController {
           });
         }
       });
-      if (check_data.CRT_BY == 'wetax') {
+      if (check_data.CRT_BY == 'wetax' && data_inv) {
+
         const param_data_m= {
           data_json: JSON.stringify(data_inv),
           api_name: 'weTaxCallBackStatusPosInv',
@@ -19898,7 +19899,7 @@ class EInvoiceController {
           p_language,
           p_crt_by,
         );
-        this.weTaxCallBackStatusPosInv(data_inv, '/api/wtx/v1/pos-invoice-delivery-status', 'WTPTA003');
+        //this.weTaxCallBackStatusPosInv(data_inv, '/api/wtx/v1/pos-invoice-delivery-status', 'WTPTA003');
       }
       //console.log('jobCheckTradeCodePosInvoice rtnValue  ', rtnValue);
       // console.log('jobCheckTradeCodePosInvoice END ========================  ');

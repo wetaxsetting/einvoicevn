@@ -19899,7 +19899,7 @@ class EInvoiceController {
           p_language,
           p_crt_by,
         );
-        //this.weTaxCallBackStatusPosInv(data_inv, '/api/wtx/v1/pos-invoice-delivery-status', 'WTPTA003');
+        this.weTaxCallBackStatusPosInv(data_inv, '/api/wtx/v1/pos-invoice-delivery-status', 'WTPTA003');
       }
       //console.log('jobCheckTradeCodePosInvoice rtnValue  ', rtnValue);
       // console.log('jobCheckTradeCodePosInvoice END ========================  ');

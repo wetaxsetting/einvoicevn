@@ -141,6 +141,7 @@ class EInvoiceController2 {
 
         console.log('json_xml_signed  ', json_xml_signed);
         const {check_data, data_inv} = await this.weTaxExtractPosXMLContent(
+          json_xml,
           json_xml_signed.data[0].signed_xml,
           tax_code,
           sale_date,
@@ -1163,6 +1164,7 @@ class EInvoiceController2 {
   }
 
   async weTaxExtractPosXMLContent(
+    xml_no_sign,
     xml_content,
     seller_tax_code,
     seller_date,
@@ -1525,6 +1527,9 @@ class EInvoiceController2 {
               lookup_code: '',
               sign_datetime: signingTime.SigningTime,
               sign_by: invoice.DLHDon.NDHDon.NBan.Ten,
+              xml_no_sign: xml_no_sign,
+              xml_signed: xml_content,
+              xml_tax_signed: '',
             });
             if (rtnValueMaster.p_rtn_cur[0].STATUS == 'OK') {
               const invoice_detail = invoice.DLHDon.NDHDon.DSHHDVu.HHDVu;
@@ -1842,7 +1847,8 @@ class EInvoiceController2 {
                 data_inv.forEach((element, index) => {
                   if (element.inform_code == '' && element.inform_name == '') {
                     (data_inv[index].inform_code = maTBao), //items[k].loaiTBao;
-                      (data_inv[index].inform_name = tenTBao); //'Dữ liệu hóa đơn hợp lệ';
+                      (data_inv[index].inform_name = tenTBao), //'Dữ liệu hóa đơn hợp lệ';
+                      (data_inv[index].xml_tax_signed = xml_tax_signed);
                   }
                 });
               } else if (items[k].loaiTBao == '9' || items[k].loaiTBao == '7') {
@@ -1861,6 +1867,7 @@ class EInvoiceController2 {
                     if (element.form_no === chars[0] && element.serial_no === chars[1] && element.invoice_no === chars[2]) {
                       data_inv[index].inform_code = '7'; //items[k].loaiTBao;
                       data_inv[index].inform_name = invoice.maLoi + ' - ' + invoice.mtaLoi;
+                      data_inv[index].xml_tax_signed = xml_tax_signed;
                     }
                   });
                 }
@@ -1869,6 +1876,7 @@ class EInvoiceController2 {
                   if (element.inform_code == '' && element.inform_name == '') {
                     data_inv[index].inform_code = '2'; //items[k].loaiTBao;
                     data_inv[index].inform_name = 'Thông báo dữ liệu hóa đơn hợp lệ';
+                    data_inv[index].xml_tax_signed = xml_tax_signed;
                   }
                 });
 
@@ -1951,9 +1959,9 @@ class EInvoiceController2 {
           tax_serial_number: tax_serial_number,
           data_error: data_error,
           data_inv: data_inv,
-          inform_code: maTBao,
-          inform_name: tenTBao,
-          xml_tax_signed: xml_tax_signed,
+          // inform_code: maTBao,
+          // inform_name: tenTBao,
+          // xml_tax_signed: xml_tax_signed,
         };
       });
 

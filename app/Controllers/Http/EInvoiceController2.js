@@ -127,7 +127,7 @@ class EInvoiceController2 {
         p_crt_by,
       );
 
-      if (json_xml.xml_process) {
+      if (json_xml[0].xml_process) {
         const json_xml_signed = await this.weTaxSignXMLHSM(
           user_name,
           password,
@@ -218,11 +218,20 @@ class EInvoiceController2 {
       let data_send_mail = [];
       const valid = this.weTaxValidatePosInvoiceToXML(invoices);
       if (!valid.status) {
-        return {error: valid.message, xml_process: false};
+        json_xml.push({
+          error: valid.message,
+          xml_process: false,
+        });
+        return {json_xml, data_send_mail};
       }
 
       if (invoices.length == undefined || invoices.length == 0) {
-        return {error: `Invalid: list_invoice`, xml_process: false};
+        json_xml.push({
+          error: `Invalid: list_invoice`,
+          xml_process: false,
+        });
+
+        return {json_xml, data_send_mail};
       }
 
       if (process_type == 'E') {

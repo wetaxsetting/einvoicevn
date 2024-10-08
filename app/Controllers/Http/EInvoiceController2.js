@@ -63,7 +63,7 @@ const sharp = require('sharp');
 const {Builder, parseString} = require('xml2js');
 const {X509Certificate, crypto} = require('crypto');
 const {create, createCB} = require('xmlbuilder2');
-const {log, Console} = require('console');
+const {log, Console, error} = require('console');
 
 const EINVOICE_API_SEND_MAIL = 'http://sendmail.webcashvietnam.com/api/user/sendmail';
 const EINVOICE_API_SEND_MAIL_SMTP = 'http://sendmail.webcashvietnam.com/api/user/sendmailsmtp';
@@ -221,11 +221,11 @@ class EInvoiceController2 {
 
       const valid = this.validatePosInvoiceToXML(invoices);
       if (!valid.status) {
-        return response.status(400).json(Utils.responseByRule({success: false, message: valid.message}));
+        return {error: valid.message, xml_process: false};
       }
 
       if (invoices.length == undefined || invoices.length == 0) {
-        return response.status(400).json(Utils.responseByRule({success: false, message: `Invalid: list_invoice`}));
+        return {error: `Invalid: list_invoice`, xml_process: false};
       }
 
       if (process_type == 'E') {
@@ -913,6 +913,7 @@ class EInvoiceController2 {
           signature_path: signature_path,
           xml: xmlStr,
           req_key: req_key,
+          xml_process: true,
         });
       }
 

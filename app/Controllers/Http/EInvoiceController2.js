@@ -127,7 +127,7 @@ class EInvoiceController2 {
         p_crt_by,
       );
 
-      if (json_xml) {
+      if (json_xml.xml_process) {
         const json_xml_signed = await this.weTaxSignXMLHSM(
           user_name,
           password,
@@ -157,11 +157,13 @@ class EInvoiceController2 {
         console.log('data_inv ', data_inv);
 
         if (check_data.STATUS == 'FAILE') {
-          return response.send(Utils.response(true, `Send invoice to Tax Office was Faile!`, check_data));
+          return response
+            .status(409)
+            .json(Utils.responseByRule({success: false, message: `Send invoice to Tax Office was Faile!`, data: check_data}));
         } else if (check_data.STATUS == 'EXIT') {
-          return response.send(Utils.response(true, `The sign xml was send Tax Office`, check_data));
+          return response.status(409).json(Utils.responseByRule({success: false, message: `The sign xml was send Tax Office`, data: check_data}));
         } else if (check_data.STATUS == 'NOEXIT') {
-          return response.send(Utils.response(true, `Company not yet register`, check_data));
+          return response.status(409).json(Utils.responseByRule({success: false, message: `Company not yet register`, data: check_data}));
         }
 
         const data_send_tax = await this.weTaxSendPosInvoice(
@@ -184,7 +186,7 @@ class EInvoiceController2 {
           return response.status(409).json(Utils.responseByRule({success: false, message: 'Sending invoice to TAX is error!!'}));
         }
       } else {
-        return response.status(409).json(Utils.responseByRule({success: false, message: 'Signing XML of invoice is error!!'}));
+        return response.status(409).json(Utils.responseByRule({success: false, message: 'General XML of invoice is error!!', data: json_xml}));
       }
     } catch (e) {
       Utils.Logger({
@@ -216,11 +218,11 @@ class EInvoiceController2 {
       let data_send_mail = [];
       const valid = this.weTaxValidatePosInvoiceToXML(invoices);
       if (!valid.status) {
-        return response.status(400).json(Utils.responseByRule({success: false, message: valid.message}));
+        return {error: valid.message, xml_process: false};
       }
 
       if (invoices.length == undefined || invoices.length == 0) {
-        return response.status(400).json(Utils.responseByRule({success: false, message: `Invalid: list_invoice`}));
+        return {error: `Invalid: list_invoice`, xml_process: false};
       }
 
       if (process_type == 'E') {
@@ -1070,6 +1072,7 @@ class EInvoiceController2 {
           signature_path: signature_path,
           xml: xmlStr,
           req_key: req_key,
+          xml_process: true,
         });
       }
       return {json_xml, data_send_mail};

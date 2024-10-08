@@ -149,6 +149,7 @@ class EInvoiceController2 {
           json_xml_signed.data[0].req_key,
           store_code,
           store_name,
+          data_send_mail[0].lookup_code,
           p_language,
           p_crt_by,
         );
@@ -1184,6 +1185,7 @@ class EInvoiceController2 {
     req_key,
     store_code,
     store_name,
+    lookup_code,
     p_language,
     p_crt_by,
   ) {
@@ -1562,7 +1564,7 @@ class EInvoiceController2 {
                   tsuat: inv_d.TSuat,
                 };
 
-                console.log('weTaxExtractPosXMLContent d param ===> ', paraDetails);
+                //console.log('weTaxExtractPosXMLContent d param ===> ', paraDetails);
 
                 const rtnValueDetail = await DBService.ExecuteSQLBlob(
                   `BEGIN WT_UPD_SALE_BILL_D (          
@@ -1597,7 +1599,7 @@ class EInvoiceController2 {
                   sub_vat_amt: inv_d_vat.TThue,
                 };
 
-                console.log('weTaxExtractPosXMLContent d vat param  ===> ', para_amt_vat);
+                //console.log('weTaxExtractPosXMLContent d vat param  ===> ', para_amt_vat);
 
                 const rtnValue_VAT = await DBService.ExecuteSQLBlob(
                   `BEGIN WT_UPD_SALE_BILL_D_VAT (          
@@ -1957,7 +1959,7 @@ class EInvoiceController2 {
 
           data_inv.forEach((element, index) => {
             if (element.form_no === inv.form_no && element.serial_no === inv.serial_no && element.invoice_no === inv.invoice_no) {
-              data_inv[index].lookup_code = r_data_inv.p_rtn_cur[0].LOOKUP_CODE;
+              data_inv[index].lookup_code = r_data_inv.p_rtn_cur[0].LOOKUP_CODE == null ? lookup_code : r_data_inv.p_rtn_cur[0].LOOKUP_CODE;
             }
           });
         }
@@ -1971,9 +1973,6 @@ class EInvoiceController2 {
           tax_serial_number: tax_serial_number,
           data_error: data_error,
           data_inv: data_inv,
-          // inform_code: maTBao,
-          // inform_name: tenTBao,
-          // xml_tax_signed: xml_tax_signed,
         };
       });
 

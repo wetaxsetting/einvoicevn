@@ -1680,6 +1680,7 @@ class EInvoiceController2 {
     invoice_xml_signed,
     check_data,
     data_inv,
+    lookup_code,
     p_language,
     p_crt_by,
   ) {

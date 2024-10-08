@@ -149,7 +149,6 @@ class EInvoiceController2 {
           json_xml_signed.data[0].req_key,
           store_code,
           store_name,
-          data_send_mail[0].lookup_code,
           p_language,
           p_crt_by,
         );
@@ -176,6 +175,7 @@ class EInvoiceController2 {
           json_xml_signed.data[0].signed_xml,
           check_data,
           data_inv,
+          data_send_mail[0].lookup_code,
           p_language,
           p_crt_by,
         );

@@ -13796,6 +13796,36 @@ class EInvoiceController {
             name: name,
           }),
         );
+      } else if (type == 'P') {
+        const dir = ROOT_DIR_FILES + '/pdf/' + year + '/' + month;
+        if (!fs.existsSync(dir)) {
+          fs.mkdirSync(dir, {recursive: true}, err => {
+            console.log(err);
+          });
+        }
+        const unixtime = Date.now();
+        const fileName = '/pdf/' + year + '/' + month + '/rpt-' + unixtime + '-' + rep_key + '.pdf';
+        let token = AES.encrypt(fileName + '|' + year + month + day, APP_KEY);
+        token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
+
+        await axios({
+          method: 'get',
+          url: url,
+          responseType: 'stream',
+        })
+          .then(async res => {
+            await res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES + fileName));
+          })
+          .catch(error => {
+            console.error(error);
+          });
+
+        return response.send(
+          Utils.response(true, 'general url pdf success', {
+            url: APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token,
+            name: name,
+          }),
+        );
       }
     } catch (e) {
       Utils.Logger({
@@ -18168,12 +18198,16 @@ class EInvoiceController {
       }
       const {p_tei_einvoice_m_pk} = request.all(); //data:6030
 
+      console.log('p_tei_einvoice_m_pk ', p_tei_einvoice_m_pk);
+
       let url = WEBSERVICE_C_SHARP + '/GeneralXmlPITHSMList';
       let data;
       const res = await Request.post(url, {
         p_tei_einvoice_m_pk: p_tei_einvoice_m_pk,
       });
       data = res.data.d;
+
+      console.log('data ', data);
 
       return response.status(200).json(
         Utils.responseByRule({
@@ -19407,8 +19441,8 @@ class EInvoiceController {
 
       const file = request.file('excel_data');
 
-      //console.log(file);
-      //console.log(file.tmpPath);
+      console.log(file);
+      console.log(file.tmpPath);
       const fileContent = await Utils.readFile(file.tmpPath);
 
       let buffer = fileContent;
@@ -19424,7 +19458,7 @@ class EInvoiceController {
       let table_nm = '';
       const import_info = {
         proc: '',
-        start_row: '6',
+        start_row: '7',
         start_col: '2',
         end_col: '28',
         add_params: '',
@@ -19881,12 +19915,11 @@ class EInvoiceController {
         }
       });
       if (check_data.CRT_BY == 'wetax' && data_inv.length > 0) {
-
-        const param_data_m= {
+        const param_data_m = {
           data_json: JSON.stringify(data_inv),
           api_name: 'weTaxCallBackStatusPosInv',
         };
-  
+
         await DBService.ExecuteSQLBlob(
           `BEGIN WT_UPD_data_REQ(
                             :data_json,
@@ -19895,7 +19928,7 @@ class EInvoiceController {
                             :p_crt_by, 
                             :p_rtn_cur); 
             END;`,
-            param_data_m,
+          param_data_m,
           p_language,
           p_crt_by,
         );

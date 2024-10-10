@@ -112,7 +112,7 @@ class ImportHelper {
     try {
       //console.log('importDBData',_tablepk+" - "+_tablenm)
       this.setActiveSheet(0);
-      console.log(this.activeSheet);
+      //console.log(this.activeSheet);
       //console.log('import_info', import_info);
       let info = JSON.parse(import_info);
       let count = 0;
@@ -133,7 +133,7 @@ class ImportHelper {
       const arr_result = [];
 
       const sheetModel = this.activeSheet.model;
-
+      console.log('start_col  ', start_col);
       let rows = this.activeSheet.getColumn(start_col);
       let rowsCount = rows['_worksheet']['_rows'].length;
       //console.log('sheetModel::',sheetModel.rows.length)

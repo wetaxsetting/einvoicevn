@@ -19460,40 +19460,41 @@ class EInvoiceController {
       // };
       // Chuyển đổi sheet thành JSON
       const jsonData = xlsx.utils.sheet_to_json(sheet);
-      console.log('jsonData ', jsonData);
+      // console.log('jsonData ', jsonData);
 
       for (let i = 4; i < jsonData.length; i++) {
         console.log('jsonData  i ', i, jsonData[i]);
         const param_pit = {
-          tei_company_pk: tei_company_pk,
-          form_no: jsonData[i].form_no,
-          serial_no: jsonData[i].serial_no,
-          invoice_no: jsonData[i].invoice_no,
-          invoice_date: jsonData[i].invoice_date,
-          company_name: jsonData[i].company_name,
-          address: jsonData[i].address,
-          tax_code: jsonData[i].tax_code,
-          tel: jsonData[i].tel,
-          payer_name: jsonData[i].payer_name,
-          payer_address: jsonData[i].payer_address,
-          payer_taxcode: jsonData[i].payer_taxcode,
-          payer_nation: jsonData[i].payer_nation,
-          payer_resident_yn: jsonData[i].payer_resident_yn,
-          non_resident_individual: jsonData[i].non_resident_individual,
-          payer_address_contract: jsonData[i].payer_address_contract,
-          payer_tel_contract: jsonData[i].payer_tel_contract,
-          payer_mail: jsonData[i].payer_mail,
-          id_passport_number: jsonData[i].id_passport_number,
-          place_of_issue: jsonData[i].place_of_issue,
-          date_of_issue: jsonData[i].date_of_issue,
-          income_type: jsonData[i].income_type,
-          income_amt: jsonData[i].income_amt,
-          imcome_time: jsonData[i].imcome_time,
-          imcome_time_yyyy: jsonData[i].imcome_time_yyyy,
-          income_amt_total: jsonData[i].income_amt_total,
-          income_amt_total_defuct: jsonData[i].income_amt_total_defuct,
-          income_amt_recv: jsonData[i].income_amt_recv,
+          p_tei_company_pk: tei_company_pk,
+          p_form_no: jsonData[i].form_no,
+          p_serial_no: jsonData[i].serial_no,
+          p_invoice_no: jsonData[i].invoice_no,
+          p_invoice_date: jsonData[i].invoice_date,
+          p_company_name: jsonData[i].company_name,
+          p_address: jsonData[i].address,
+          p_tax_code: jsonData[i].tax_code,
+          p_tel: jsonData[i].tel,
+          p_payer_name: jsonData[i].payer_name,
+          p_payer_address: jsonData[i].payer_address,
+          p_payer_taxcode: jsonData[i].payer_taxcode,
+          p_payer_nation: jsonData[i].payer_nation,
+          p_payer_resident_yn: jsonData[i].payer_resident_yn,
+          p_non_resident_individual: jsonData[i].non_resident_individual,
+          p_payer_address_contract: jsonData[i].payer_address_contract,
+          p_payer_tel_contract: jsonData[i].payer_tel_contract,
+          p_payer_mail: jsonData[i].payer_mail,
+          p_id_passport_number: jsonData[i].id_passport_number,
+          p_place_of_issue: jsonData[i].place_of_issue,
+          p_date_of_issue: jsonData[i].date_of_issue,
+          p_income_type: jsonData[i].income_type,
+          p_income_amt: jsonData[i].income_amt,
+          p_imcome_time: jsonData[i].imcome_time,
+          p_imcome_time_yyyy: jsonData[i].imcome_time_yyyy,
+          p_income_amt_total: jsonData[i].income_amt_total,
+          p_income_amt_total_defuct: jsonData[i].income_amt_total_defuct,
+          p_income_amt_recv: jsonData[i].income_amt_recv,
         };
+      
         const data_inv_m = await DBService.ExecuteSQLBlob(
           `BEGIN stacfrstac710041_u_03_api_nodej(
                                     :p_tei_company_pk,
@@ -19532,14 +19533,17 @@ class EInvoiceController {
           p_language,
           p_crt_by,
         );
+      } 
+      let result_data = {
+        count : jsonData.length - 4,
+        mess : "Imported " + (jsonData.length - 4) + " rec.!"
       }
-
       //console.log('res  ', res);
       return response.status(200).json(
         Utils.responseByRule({
           success: true,
           message: 'success.',
-          data: JSON.parse(jsonData),
+          data: result_data,
         }),
       );
     } catch (e) {

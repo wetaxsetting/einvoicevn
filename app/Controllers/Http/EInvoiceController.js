@@ -19437,7 +19437,7 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      const {tei_company_pk, p_ctr_by} = request.all(); //data:6030
+      const {tei_company_pk} = request.all(); //data:6030
 
       const file = request.file('excel_data');
 
@@ -19445,94 +19445,101 @@ class EInvoiceController {
       console.log(file.tmpPath);
       const fileContent = await Utils.readFile(file.tmpPath);
 
-      let buffer = fileContent;
-      let tmp_file = Helpers.tmpPath(file.clientName);
+      const xlsx = require('xlsx');
 
-      //excel load buffer bi loi nen phai save lai ra file temp
-      let rtnFileExcel = await fs.writeFileSync(tmp_file, buffer);
+      //const filePath = path.join(__dirname, req.file.path);
+      const workbook = xlsx.readFile(file.tmpPath);
 
-      var imp = new ImportHelper(p_language, p_crt_by);
-      await imp.loadFile(tmp_file);
+      // Giả sử file Excel có một sheet, lấy sheet đầu tiên
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
 
-      let table_pk = '';
-      let table_nm = '';
-      const import_info = {
-        proc: '',
-        start_row: '7',
-        start_col: '2',
-        end_col: '28',
-        add_params: '',
-        impValidCol: '',
-        impValidValue: '',
-        impConfigRowCall: '100',
-      };
+      // Chọn dữ liệu từ dòng 2 (chỉ định dòng bắt đầu, không cần dòng kết thúc)
+      // const options = {
+      //   range: 'B5', // Bắt đầu từ dòng 2 và cột A
+      // };
+      // Chuyển đổi sheet thành JSON
+      const jsonData = xlsx.utils.sheet_to_json(sheet);
+      console.log('jsonData ', jsonData);
 
-      await imp.importDBData(JSON.stringify(import_info), p_language, p_crt_by, tmp_file, file.clientName, table_pk, table_nm);
-
-      return response.attachment(imp.returnFile, file.clientName);
-
-      // console.log('fileContent  ', fileContent);
-
-      // let url = WEBSERVICE_C_SHARP + '/UploadFileExcel?tei_company_pk=' + tei_company_pk + '&p_ctr_by=' + p_ctr_by;
-      // let data_res;
-
-      // const form_data = new FormData();
-      // await form_data.append(file.clientName, file);
-
-      // // console.log('form_data  ', form_data);
-      // const axios = use('axios');
-
-      // axios
-      //   .post(url, [{form_data}], {
-      //     headers: {
-      //       'Content-Type': 'multipart/form-data',
-      //     },
-      //   })
-      //   .then(function (data) {
-      //     console.log('SUCCESS!!', data);
-      //   })
-      //   .catch(function (err) {
-      //     console.log('FAILURE!!', err);
-      //   });
-
-      // const res = await Request.post(
-      //   url,
-      //   {data: form_data},
-      //   {
-      //     headers: {
-      //       'Content-Type': 'multipart/form-data',
-      //     },
-      //   },
-      // );
-      // data_res = res.data.d;
-
-      //const form = new FormData();
-      //const stream = fs.createReadStream(file.tmpPath);
-
-      //form.append('image', stream);
-
-      // In Node.js environment you need to set boundary in the header field 'Content-Type' by calling method `getHeaders`
-      // const formHeaders = form.getHeaders();
-
-      // axios
-      //   .post(url, form, {
-      //     headers: {
-      //       'Content-Type': 'multipart/form-data',
-      //     },
-      //   })
-      //   .then(function (data) {
-      //     console.log('SUCCESS!!', data);
-      //   })
-      //   .catch(function (err) {
-      //     console.log('FAILURE!!', err);
-      //   });
+      for (let i = 4; i < jsonData.length; i++) {
+        console.log('jsonData  i ', i, jsonData[i]);
+        const param_pit = {
+          tei_company_pk: tei_company_pk,
+          form_no: jsonData[i].form_no,
+          serial_no: jsonData[i].serial_no,
+          invoice_no: jsonData[i].invoice_no,
+          invoice_date: jsonData[i].invoice_date,
+          company_name: jsonData[i].company_name,
+          address: jsonData[i].address,
+          tax_code: jsonData[i].tax_code,
+          tel: jsonData[i].tel,
+          payer_name: jsonData[i].payer_name,
+          payer_address: jsonData[i].payer_address,
+          payer_taxcode: jsonData[i].payer_taxcode,
+          payer_nation: jsonData[i].payer_nation,
+          payer_resident_yn: jsonData[i].payer_resident_yn,
+          non_resident_individual: jsonData[i].non_resident_individual,
+          payer_address_contract: jsonData[i].payer_address_contract,
+          payer_tel_contract: jsonData[i].payer_tel_contract,
+          payer_mail: jsonData[i].payer_mail,
+          id_passport_number: jsonData[i].id_passport_number,
+          place_of_issue: jsonData[i].place_of_issue,
+          date_of_issue: jsonData[i].date_of_issue,
+          income_type: jsonData[i].income_type,
+          income_amt: jsonData[i].income_amt,
+          imcome_time: jsonData[i].imcome_time,
+          imcome_time_yyyy: jsonData[i].imcome_time_yyyy,
+          income_amt_total: jsonData[i].income_amt_total,
+          income_amt_total_defuct: jsonData[i].income_amt_total_defuct,
+          income_amt_recv: jsonData[i].income_amt_recv,
+        };
+        const data_inv_m = await DBService.ExecuteSQLBlob(
+          `BEGIN stacfrstac710041_u_03_api_nodej(
+                                    :p_tei_company_pk,
+                                    :p_form_no,
+                                    :p_serial_no,
+                                    :p_invoice_no,
+                                    :p_invoice_date,
+                                    :p_company_name,
+                                    :p_address,
+                                    :p_tax_code,
+                                    :p_tel,
+                                    :p_payer_name,
+                                    :p_payer_address,
+                                    :p_payer_taxcode,
+                                    :p_payer_nation,
+                                    :p_payer_resident_yn,
+                                    :p_non_resident_individual,
+                                    :p_payer_address_contract,
+                                    :p_payer_tel_contract,
+                                    :p_payer_mail,
+                                    :p_id_passport_number,
+                                    :p_place_of_issue,
+                                    :p_date_of_issue,
+                                    :p_income_type,
+                                    :p_income_amt,
+                                    :p_imcome_time,
+                                    :p_imcome_time_yyyy,
+                                    :p_income_amt_total,
+                                    :p_income_amt_total_defuct,
+                                    :p_income_amt_recv,
+                                    :p_language,
+                                    :p_crt_by,
+                                    :p_rtn_cur);
+                    END;`,
+          param_pit,
+          p_language,
+          p_crt_by,
+        );
+      }
 
       //console.log('res  ', res);
       return response.status(200).json(
         Utils.responseByRule({
           success: true,
           message: 'success.',
-          data: JSON.parse(data_res),
+          data: JSON.parse(jsonData),
         }),
       );
     } catch (e) {

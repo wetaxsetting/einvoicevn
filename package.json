@@ -109,6 +109,7 @@
         "vue-server-renderer": "^2.6.11",
         "vue-template-compiler": "^2.6.11",
         "vue-webcam": "^2.0.4",
+        "xlsx": "^0.18.5",
         "xml-crypto": "^2.1.4",
         "xml-js": "^1.6.11",
         "xml2html": "^1.0.1",

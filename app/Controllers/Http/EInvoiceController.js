@@ -6537,9 +6537,6 @@ class EInvoiceController {
     let status = true;
     let resMess = '';
     const mess1 = 'Invalid field';
-
-    let data_suscess = [],
-      data_error = [];
     //console.log("invoice  ", invoice)
     try {
       const errorList = {
@@ -6601,12 +6598,14 @@ class EInvoiceController {
         let detail_amount_vat = 0,
           detail_amount = 0,
           detail_total_amount = 0;
+
         for (const key in invoice) {
           if (errorList[`${key}`] != undefined && !Array.isArray(invoice[key])) {
             //console.log('weTaxConvertPosInvoiceToXML key  ', key, ' invoice[key] ', invoice[key]);
-            master_amount_vat = invoice['total_vat_amt'];
-            master_amount = invoice['total_amt'];
-            master_total_amount = invoice['total_payment'];
+            master_amount_vat = Number(invoice['total_vat_amt']);
+            master_amount = Number(invoice['total_amt']);
+            master_total_amount = Number(invoice['total_payment']);
+
             if (key == 'seller_taxcode' || key == 'buyer_taxcode') {
               if (invoice[key].length == 10) {
                 if (!errorList[`${key}`][10].test(invoice[key])) {
@@ -6657,10 +6656,9 @@ class EInvoiceController {
           } else {
             if (key == 'total_vat_list') {
               //console.log('key  ', key);
-
               for (const sub_vat of invoice[key]) {
-                vat_amount_vat += sub_vat.sub_amt_vat;
-                vat_amout += sub_vat.sub_amt;
+                vat_amount_vat += Number(sub_vat.sub_amt_vat);
+                vat_amout += Number(sub_vat.sub_amt);
                 //console.log('sub_vat   ', sub_vat);
                 if (
                   !errorList[`${key}`].sub_vat_rate.test(sub_vat.sub_vat_rate) &&
@@ -6698,11 +6696,11 @@ class EInvoiceController {
 
             if (key == 'detail_invoice') {
               for (const inv of invoice[key]) {
-                detail_amount_vat += inv.amt_vat;
-                detail_amount += inv.amt;
+                detail_amount_vat += Number(inv.amt_vat);
+                detail_amount += Number(inv.amt);
                 if (!errorList[`${key}`].feature.test(inv.feature)) {
                   status = false;
-                  resMess = `${mess1} feature is: ${inv.feature}.`;
+                  resMess = `${mess1} feature is:  ${inv.feature}.`;
                   return {
                     status,
                     message: resMess,
@@ -6710,7 +6708,7 @@ class EInvoiceController {
                 }
                 if (!errorList[`${key}`].seq.test(inv.seq)) {
                   status = false;
-                  resMess = `${mess1} seq is: ${inv.seq}.`;
+                  resMess = `${mess1} seq is:  ${inv.seq}.`;
                   return {
                     status,
                     message: resMess,
@@ -6718,7 +6716,7 @@ class EInvoiceController {
                 }
                 if (!errorList[`${key}`].item_code.test(inv.item_code) && inv.item_code) {
                   status = false;
-                  resMess = `${mess1} item_code is: ${inv.item_code}.`;
+                  resMess = `${mess1} item_code is:  ${inv.item_code}.`;
                   return {
                     status,
                     message: resMess,
@@ -6726,7 +6724,7 @@ class EInvoiceController {
                 }
                 if (!errorList[`${key}`].item_name.test(inv.item_name)) {
                   status = false;
-                  resMess = `${mess1} item_name is: ${inv.item_name}.`;
+                  resMess = `${mess1} item_name is:  ${inv.item_name}.`;
                   return {
                     status,
                     message: resMess,
@@ -6734,7 +6732,7 @@ class EInvoiceController {
                 }
                 if (!errorList[`${key}`].item_uom.test(inv.item_uom)) {
                   status = false;
-                  resMess = `${mess1} item_uom is: ${inv.item_uom}.`;
+                  resMess = `${mess1} item_uom is:  ${inv.item_uom}.`;
                   return {
                     status,
                     message: resMess,
@@ -6742,7 +6740,7 @@ class EInvoiceController {
                 }
                 if (!errorList[`${key}`].quantity.test(inv.quantity)) {
                   status = false;
-                  resMess = `${mess1} quantity is: ${inv.quantity}.`;
+                  resMess = `${mess1} quantity is:  ${inv.quantity}.`;
                   return {
                     status,
                     message: resMess,
@@ -6750,7 +6748,7 @@ class EInvoiceController {
                 }
                 if (!errorList[`${key}`].uprice.test(inv.uprice)) {
                   status = false;
-                  resMess = `${mess1} uprice is: ${inv.uprice}.`;
+                  resMess = `${mess1} uprice is:  ${inv.uprice}.`;
                   return {
                     status,
                     message: resMess,
@@ -6758,7 +6756,7 @@ class EInvoiceController {
                 }
                 if (!errorList[`${key}`].dc_amt.test(inv.dc_amt)) {
                   status = false;
-                  resMess = `${mess1} dc_amt is: ${inv.dc_amt}.`;
+                  resMess = `${mess1} dc_amt is:  ${inv.dc_amt}.`;
                   return {
                     status,
                     message: resMess,
@@ -6766,7 +6764,7 @@ class EInvoiceController {
                 }
                 if (!errorList[`${key}`].dc_rate.test(inv.dc_rate) && inv.dc_rate && inv.dc_rate != 'KCT' && inv.dc_rate != 'KKKNT') {
                   status = false;
-                  resMess = `${mess1} dc_rate is: ${inv.dc_rate}.`;
+                  resMess = `${mess1} dc_rate is:  ${inv.dc_rate}.`;
                   return {
                     status,
                     message: resMess,
@@ -6774,7 +6772,7 @@ class EInvoiceController {
                 }
                 if (!errorList[`${key}`].amt.test(inv.amt)) {
                   status = false;
-                  resMess = `${mess1} amt is: ${inv.amt}.`;
+                  resMess = `${mess1} amt is:  ${inv.amt}.`;
                   return {
                     status,
                     message: resMess,
@@ -6782,7 +6780,7 @@ class EInvoiceController {
                 }
                 if (!errorList[`${key}`].vat_rate.test(inv.vat_rate) && inv.vat_rate != 'KCT' && inv.vat_rate != 'KKKNT') {
                   status = false;
-                  resMess = `${mess1} vat_rate is: ${inv.vat_rate}.`;
+                  resMess = `${mess1} vat_rate is:  ${inv.vat_rate}.`;
                   return {
                     status,
                     message: resMess,
@@ -6790,7 +6788,7 @@ class EInvoiceController {
                 }
                 if (!errorList[`${key}`].amt_vat.test(inv.amt_vat)) {
                   status = false;
-                  resMess = `${mess1} amt_vat is: ${inv.amt_vat}.`;
+                  resMess = `${mess1} amt_vat is:  ${inv.amt_vat}.`;
                   return {
                     status,
                     message: resMess,
@@ -6800,33 +6798,71 @@ class EInvoiceController {
             }
           }
         }
-
-        if (master_amount != detail_amount && master_amount != vat_amout) {
-          //master_amount != vat_amout &&
+        // console.log(
+        //   'master_amount.toFixed(6)  ',
+        //   master_amount.toFixed(6),
+        //   'detail_amount.toFixed(6) ',
+        //   detail_amount.toFixed(6),
+        //   '  master_amount ',
+        //   vat_amout,
+        //   '  vat_amout ',
+        //   master_amount,
+        // );
+        if (
+          (Number(master_amount.toFixed(6)) != Number(detail_amount.toFixed(6)) ||
+            Number(vat_amout.toFixed(6)) != Number(master_amount.toFixed(6))) &&
+          master_amount != null
+        ) {
           status = false;
-          resMess = `${mess1} amount is: ${master_amount} != ${vat_amout} != ${detail_amount}`; //
+          resMess = `${mess1} amount no vat is: ${master_amount}  != ${detail_amount} != ${vat_amout}`;
           return {
             status,
             message: resMess,
           };
         }
 
-        if (master_amount_vat != detail_amount_vat && master_amount_vat != vat_amount_vat) {
-          //master_amount_vat != vat_amount_vat &&
+        // console.log(
+        //   'master_amount_vat.toFixed(6)  ',
+        //   master_amount_vat.toFixed(6),
+        //   'detail_amount_vat.toFixed(6) ',
+        //   detail_amount_vat.toFixed(6),
+        //   '  master_amount_vat ',
+        //   master_amount_vat,
+        //   '  vat_amount_vat ',
+        //   vat_amount_vat,
+        // );
+        if (
+          (Number(master_amount_vat.toFixed(6)) != Number(detail_amount_vat.toFixed(6)) ||
+            Number(vat_amount_vat.toFixed(6)) != Number(master_amount_vat.toFixed(6))) &&
+          master_amount_vat != null
+        ) {
           status = false;
-          resMess = `${mess1} amount vat is: ${master_amount_vat} != ${vat_amount_vat} != ${detail_amount_vat}`; //
+          resMess = `${mess1} amount vat is: ${master_amount_vat} != ${detail_amount_vat}  != ${vat_amount_vat}`;
           return {
             status,
             message: resMess,
           };
         }
-        vat_total_amount = Number(vat_amount_vat) + Number(vat_amout);
+        vat_total_amount = Number(vat_amount_vat.toFixed(6)) + Number(vat_amout.toFixed(6));
         detail_total_amount = Number(detail_amount) + Number(detail_amount_vat);
-        //console.log('++++++++++++ ', master_total_amount, vat_total_amount, detail_total_amount);
-        if (master_total_amount != detail_total_amount && master_total_amount != vat_total_amount) {
-          //master_total_amount != vat_total_amount &&
+
+        // console.log(
+        //   'master_total_amount.toFixed(6)  ',
+        //   master_total_amount.toFixed(6),
+        //   'detail_total_amount.toFixed(6) ',
+        //   detail_total_amount.toFixed(6),
+        //   '  master_total_amount ',
+        //   master_total_amount,
+        //   '  vat_total_amount ',
+        //   vat_total_amount,
+        // );
+        if (
+          (Number(master_total_amount.toFixed(6)) != Number(detail_total_amount.toFixed(6)) ||
+            Number(vat_total_amount.toFixed(6)) != Number(master_total_amount.toFixed(6))) &&
+          master_total_amount != null
+        ) {
           status = false;
-          resMess = `${mess1} amount total is: ${master_total_amount} != ${vat_total_amount} != ${detail_total_amount}`; //
+          resMess = `${mess1} amount total is: ${master_total_amount}  != ${detail_total_amount} != ${vat_total_amount}`;
           return {
             status,
             message: resMess,

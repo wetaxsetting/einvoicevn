@@ -6316,9 +6316,23 @@ class EInvoiceController {
       };
 
       for (const invoice of invoices) {
+        let vat_amount_vat = 0,
+          vat_amout = 0,
+          vat_total_amount = 0;
+        let master_amount_vat = 0,
+          master_amount = 0,
+          master_total_amount = 0;
+        let detail_amount_vat = 0,
+          detail_amount = 0,
+          detail_total_amount = 0;
+
         for (const key in invoice) {
           if (errorList[`${key}`] != undefined && !Array.isArray(invoice[key])) {
             //console.log('weTaxConvertPosInvoiceToXML key  ', key, ' invoice[key] ', invoice[key]);
+            master_amount_vat = Number(invoice['total_vat_amt']);
+            master_amount = Number(invoice['total_amt']);
+            master_total_amount = Number(invoice['total_payment']);
+
             if (key == 'seller_taxcode' || key == 'buyer_taxcode') {
               if (invoice[key].length == 10) {
                 if (!errorList[`${key}`][10].test(invoice[key])) {
@@ -6369,8 +6383,9 @@ class EInvoiceController {
           } else {
             if (key == 'total_vat_list') {
               //console.log('key  ', key);
-
               for (const sub_vat of invoice[key]) {
+                vat_amount_vat += Number(sub_vat.sub_amt_vat);
+                vat_amout += Number(sub_vat.sub_amt);
                 //console.log('sub_vat   ', sub_vat);
                 if (
                   !errorList[`${key}`].sub_vat_rate.test(sub_vat.sub_vat_rate) &&
@@ -6408,6 +6423,8 @@ class EInvoiceController {
 
             if (key == 'detail_invoice') {
               for (const inv of invoice[key]) {
+                detail_amount_vat += Number(inv.amt_vat);
+                detail_amount += Number(inv.amt);
                 if (!errorList[`${key}`].feature.test(inv.feature)) {
                   status = false;
                   resMess = `${mess1} feature is:  ${inv.feature}.`;
@@ -6507,6 +6524,76 @@ class EInvoiceController {
               }
             }
           }
+        }
+        // console.log(
+        //   'master_amount.toFixed(6)  ',
+        //   master_amount.toFixed(6),
+        //   'detail_amount.toFixed(6) ',
+        //   detail_amount.toFixed(6),
+        //   '  master_amount ',
+        //   vat_amout,
+        //   '  vat_amout ',
+        //   master_amount,
+        // );
+        if (
+          (Number(master_amount.toFixed(6)) != Number(detail_amount.toFixed(6)) ||
+            Number(vat_amout.toFixed(6)) != Number(master_amount.toFixed(6))) &&
+          master_amount != null
+        ) {
+          status = false;
+          resMess = `${mess1} amount no vat is: ${master_amount}  != ${detail_amount} != ${vat_amout}`;
+          return {
+            status,
+            message: resMess,
+          };
+        }
+
+        // console.log(
+        //   'master_amount_vat.toFixed(6)  ',
+        //   master_amount_vat.toFixed(6),
+        //   'detail_amount_vat.toFixed(6) ',
+        //   detail_amount_vat.toFixed(6),
+        //   '  master_amount_vat ',
+        //   master_amount_vat,
+        //   '  vat_amount_vat ',
+        //   vat_amount_vat,
+        // );
+        if (
+          (Number(master_amount_vat.toFixed(6)) != Number(detail_amount_vat.toFixed(6)) ||
+            Number(vat_amount_vat.toFixed(6)) != Number(master_amount_vat.toFixed(6))) &&
+          master_amount_vat != null
+        ) {
+          status = false;
+          resMess = `${mess1} amount vat is: ${master_amount_vat} != ${detail_amount_vat}  != ${vat_amount_vat}`;
+          return {
+            status,
+            message: resMess,
+          };
+        }
+        vat_total_amount = Number(vat_amount_vat.toFixed(6)) + Number(vat_amout.toFixed(6));
+        detail_total_amount = Number(detail_amount) + Number(detail_amount_vat);
+
+        // console.log(
+        //   'master_total_amount.toFixed(6)  ',
+        //   master_total_amount.toFixed(6),
+        //   'detail_total_amount.toFixed(6) ',
+        //   detail_total_amount.toFixed(6),
+        //   '  master_total_amount ',
+        //   master_total_amount,
+        //   '  vat_total_amount ',
+        //   vat_total_amount,
+        // );
+        if (
+          (Number(master_total_amount.toFixed(6)) != Number(detail_total_amount.toFixed(6)) ||
+            Number(vat_total_amount.toFixed(6)) != Number(master_total_amount.toFixed(6))) &&
+          master_total_amount != null
+        ) {
+          status = false;
+          resMess = `${mess1} amount total is: ${master_total_amount}  != ${detail_total_amount} != ${vat_total_amount}`;
+          return {
+            status,
+            message: resMess,
+          };
         }
       }
       // if dont have any problem
@@ -19494,7 +19581,7 @@ class EInvoiceController {
           p_income_amt_total_defuct: jsonData[i].income_amt_total_defuct,
           p_income_amt_recv: jsonData[i].income_amt_recv,
         };
-      
+
         const data_inv_m = await DBService.ExecuteSQLBlob(
           `BEGIN stacfrstac710041_u_03_api_nodej(
                                     :p_tei_company_pk,
@@ -19533,11 +19620,11 @@ class EInvoiceController {
           p_language,
           p_crt_by,
         );
-      } 
-      let result_data = {
-        count : jsonData.length - 4,
-        mess : "Imported " + (jsonData.length - 4) + " rec.!"
       }
+      let result_data = {
+        count: jsonData.length - 4,
+        mess: 'Imported ' + (jsonData.length - 4) + ' rec.!',
+      };
       //console.log('res  ', res);
       return response.status(200).json(
         Utils.responseByRule({

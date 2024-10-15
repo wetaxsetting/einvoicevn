@@ -5,6 +5,8 @@ const easysignUrl = 'http://demosign.easyca.vn:8080/api'; //https://sign.easyca.
 const axios = require('axios');
 const EINVOICE_ESIGN_XML = 'http://csharp-api.webcashvietnam.com/wseinvoice/BSService.asmx/SignXml';
 
+//const EINVOICE_ESIGN_XML = 'http://localhost:39234/wseinvoice/BSService.asmx/SignXml';
+
 class HSMController2 {
   async verifyCertificate({request, response, auth}) {
     try {
@@ -160,7 +162,7 @@ class HSMController2 {
 
   async HsmSignXml({request, response, auth}) {
     try {
-      var p_language = request.header('accept-language', 'ENG');
+      var p_language = request.header('accept-lanwguage', 'ENG');
       var p_crt_by = '';
       const user = await auth.getUser();
       if (user) {
@@ -169,7 +171,8 @@ class HSMController2 {
 
       const {user_name, password, otp, serial_no, pin, organization, signing_xml, client_id, client_secret} = request.all();
 
-      
+      console.log('HsmSignXml client_id ', client_id);
+
       let type = 'C';
       if (!user_name || !password || !pin || !organization || !serial_no || !signing_xml) {
         return response.status(400).json(

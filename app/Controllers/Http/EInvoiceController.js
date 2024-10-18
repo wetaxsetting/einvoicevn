@@ -2904,7 +2904,7 @@ class EInvoiceController {
                       data_inv[index].lookup_code = data_update_inv.p_rtn_cur[0].LOOKUP_CODE;
                     }
                   });
-                  console.log('data_update_inv', data_update_inv);
+                  //console.log('data_update_inv', data_update_inv);
                   signTime = data_update_inv.p_rtn_cur[0].SIGN_DT;
                   signBy = data_update_inv.p_rtn_cur[0].SIGN_BY;
                 } else if (items[k].loaiTBao == '9' || items[k].loaiTBao == '16' || items[k].loaiTBao == '15') {

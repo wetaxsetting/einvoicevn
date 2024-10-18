@@ -2755,7 +2755,9 @@ class EInvoiceController {
         tenGDDTu = '',
         ord = '',
         soTBao = '',
-        ngayCQTKy = '';
+        ngayCQTKy = '',
+        signTime = '',
+        signBy = '';
       let xml_length = 0;
       for (let i = 0; i < data.length; i++) {
         data_inv.push({
@@ -2902,7 +2904,12 @@ class EInvoiceController {
                       data_inv[index].lookup_code = data_update_inv.p_rtn_cur[0].LOOKUP_CODE;
                     }
                   });
+                  console.log('data_update_inv', data_update_inv);
+                  signTime = data_update_inv.p_rtn_cur[0].SIGN_DT;
+                  signBy = data_update_inv.p_rtn_cur[0].SIGN_BY;
                 } else if (items[k].loaiTBao == '9' || items[k].loaiTBao == '16' || items[k].loaiTBao == '15') {
+                  signTime = '';
+                  signBy = '';
                   maTBao = items[k].ndungTBao.tbaoKTraDLieu.loaiTBao;
                   tenTBao =
                     items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].maLoi +
@@ -2990,6 +2997,8 @@ class EInvoiceController {
           tax_code: data[i].tax_code,
           req_key: data[i].req_key,
           data_error: data_error,
+          sign_datetime: signTime,
+          sign_by: signBy,
         });
       }
       //console.log('weTaxCheckInvoiceStatusFromTaxOffice sendMailNormailWT  ', JSON.stringify(data_inv));

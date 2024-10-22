@@ -11575,7 +11575,7 @@ class EInvoiceController {
       const {seller_taxcode, noti_list} = request.all();
 
       for (const noti of noti_list) {
-        // console.log("noti  ", noti);
+        console.log('noti  ', noti);
         const res = await this.weTaxExtractRecordXMLContent(noti.xml_signed, noti.req_key, p_language, p_crt_by);
 
         console.log('weTaxSendRecords   details res', res);

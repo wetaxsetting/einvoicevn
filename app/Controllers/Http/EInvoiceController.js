@@ -18088,7 +18088,7 @@ class EInvoiceController {
         p_language,
         p_crt_by,
       );
-      console.log(data_mail.p_rtn_cur);
+      console.log('weTaxSendMailRecords ', data_mail.p_rtn_cur);
       // console.log(data_mail.p_rtn_cur.length);
 
       if (data_mail.p_rtn_cur.length > 0) {
@@ -18104,7 +18104,8 @@ class EInvoiceController {
           attachfile1: url_pdf,
           filename1: data_mail.p_rtn_cur[0].FILENAME1,
         });
-        //console.log("res_send_mail  ", res_send_mail);
+
+        console.log('weTaxSendMailRecords res_send_mail  ', res_send_mail);
 
         if (res_send_mail.data.success) {
           let rtnValue = {

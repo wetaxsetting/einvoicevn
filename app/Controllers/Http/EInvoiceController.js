@@ -3779,11 +3779,11 @@ class EInvoiceController {
           };
           const data_d = await await DBService.ExecuteSQLBlob(
             `BEGIN wt_sel_hd04ss_d(
-                                                                                    :trade_code, 
-                                                                                    :p_language, 
-                                                                                    :p_crt_by, 
-                                                                                    :p_rtn_cur
-                                                                                ); END;`,
+                                    :trade_code, 
+                                    :p_language, 
+                                    :p_crt_by, 
+                                    :p_rtn_cur
+                                ); END;`,
             param_d,
             p_language,
             p_crt_by,
@@ -4113,13 +4113,7 @@ class EInvoiceController {
       const authUserName = 'GENUWIN'; // "GENUWIN";
       const authPassword = 'genuwin123'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
 
-      const {proc, para} = request.all();
-
-      //console.log("para", para);
-      //@TODO: remove return
-      //return response.send(Utils.response(true, `checking_declare_success`, para));
-      //console.log(para.trade_code.length)
-
+      const {proc, para} = request.all();\
       let rtnValue = [];
       //for (let i = 0; i < para.length; i++) {
       for (let i = 0; i < para.trade_code.length; i++) {
@@ -4156,7 +4150,7 @@ class EInvoiceController {
               tenTBao = items[k].tenTBao;
               maTBao = items[k].loaiTBao;
               for (const invoice of items[k].ndungTBao.tbaoTNhanSSotDoc.dsachHDonLoi) {
-                (cqt_result = ''), (cqt_status = '');
+                cqt_result = '',  cqt_status = '';
                 if (invoice.dsachLoi.length == 0) {
                   cqt_result = 'Thành công';
                   cqt_status = invoice.tthaiTNCQT;

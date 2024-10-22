@@ -17038,6 +17038,8 @@ class EInvoiceController {
         p_crt_by,
       );
 
+      console.log('rtnValueNoti  ', rtnValueNoti);
+
       return {
         TEI_EINVOICE_SS_D_PK: rtnValueNoti?.p_rtn_cur[0].TEI_EINVOICE_SS_D_PK,
         SIGN_DATETIME: signingTime.SigningTime,

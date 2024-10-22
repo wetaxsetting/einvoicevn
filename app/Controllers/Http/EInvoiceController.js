@@ -4150,7 +4150,7 @@ class EInvoiceController {
               tenTBao = items[k].tenTBao;
               maTBao = items[k].loaiTBao;
               for (const invoice of items[k].ndungTBao.tbaoTNhanSSotDoc.dsachHDonLoi) {
-                cqt_result = '',  cqt_status = '';
+                (cqt_result = ''), (cqt_status = '');
                 if (invoice.dsachLoi.length == 0) {
                   cqt_result = 'Thành công';
                   cqt_status = invoice.tthaiTNCQT;
@@ -18094,7 +18094,7 @@ class EInvoiceController {
 
         const res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {
           mail_to: p_buyer_mail,
-          cc_to: p_buyer_mail_cc,
+          cc_to: p_buyer_mail_cc || '',
           subject: data_mail.p_rtn_cur[0].SUBJECT,
           body: data_mail.p_rtn_cur[0].BODY_1_MAIL,
           attachfile1: url_pdf,

@@ -4113,7 +4113,7 @@ class EInvoiceController {
       const authUserName = 'GENUWIN'; // "GENUWIN";
       const authPassword = 'genuwin123'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
 
-      const {proc, para} = request.all();\
+      const {proc, para} = request.all();
       let rtnValue = [];
       //for (let i = 0; i < para.length; i++) {
       for (let i = 0; i < para.trade_code.length; i++) {

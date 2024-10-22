@@ -11585,7 +11585,7 @@ class EInvoiceController {
             res.TEI_EINVOICE_SS_D_PK,
             res.TEI_COMPANY_PK,
             noti.buyer_email,
-            noti.buyer_email_cc,
+            noti.buyer_email_cc || '',
             p_language,
             p_crt_by,
           );

@@ -116,6 +116,38 @@ class EInvoiceController2 {
         otp,
       } = request.all();
 
+      const data_json = {
+        tax_code,
+        sale_date,
+        store_code,
+        store_name,
+        process_type,
+        list_invoice,
+        user_name,
+        password,
+        tax_serial_number,
+        pin,
+        organization,
+        otp,
+      };
+      const param_m = {
+        data_json: JSON.stringify(data_json),
+        api_name: 'weTaxPosReportToTax',
+      };
+
+      await DBService.ExecuteSQLBlob(
+        `BEGIN WT_UPD_data_REQ(
+                          :data_json,
+                          :api_name,
+                          :p_language, 
+                          :p_crt_by, 
+                          :p_rtn_cur); 
+          END;`,
+        param_m,
+        p_language,
+        p_crt_by,
+      );
+
       const {json_xml, data_send_mail} = await this.weTaxPosGeneralXML(
         sale_date,
         tax_code,

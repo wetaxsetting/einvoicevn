@@ -139,7 +139,7 @@ class EInvoiceController2 {
           process_type || 'I',
         );
 
-        console.log('json_xml_signed  ', json_xml_signed);
+        //console.log('json_xml_signed  ', json_xml_signed);
         const {check_data, data_inv} = await this.weTaxExtractPosXMLContent(
           json_xml[0].xml,
           json_xml_signed.data[0].signed_xml,
@@ -153,8 +153,8 @@ class EInvoiceController2 {
           p_crt_by,
         );
 
-        console.log('check_data ', check_data);
-        console.log('data_inv ', data_inv);
+        //console.log('check_data ', check_data);
+        //console.log('data_inv ', data_inv);
 
         if (check_data.STATUS == 'FAILE') {
           return response
@@ -734,50 +734,51 @@ class EInvoiceController2 {
           //console.log(para_value);
           const rtnValue = await DBService.ExecuteSQLBlob(
             `BEGIN wt_upd_send_order_info (          
-                                                            :sale_date,
-                                                            :store_code,
-                                                            :store_name,
-                                                            :pos_no,
-                                                            :bill_no,
-                                                            :version,
-                                                            :invoice_name,
-                                                            :symbol_type,
-                                                            :form_no,
-                                                            :serial_no,
-                                                            :invoice_date,
-                                                            :invoice_no,
-                                                            :currency,
-                                                            :ex_rate,
-                                                            :payment_method,
-                                                            :seller_comp_name,
-                                                            :seller_taxcode,
-                                                            :seller_address,
-                                                            :seller_phone,
-                                                            :buyer_nm,
-                                                            :buyer_comp_name,
-                                                            :buyer_taxcode,
-                                                            :buyer_phone,
-                                                            :buyer_address,
-                                                            :buyer_cccd,
-                                                            :buyer_email,
-                                                            :buyer_email_cc,
-                                                            :total_amt_no_vat,
-                                                            :total_amt_dc,
-                                                            :total_amt_vat,
-                                                            :total_payment,
-                                                            :total_payment_word_vie,
-                                                            :mccqt,
-                                                            :data_xml,
-                                                            :count_length,
-                                                            :xml_type,
-                                                            :p_language, 
-                                                            :p_crt_by, 
-                                                            :p_rtn_cur); END;`,
+                                            :sale_date,
+                                            :store_code,
+                                            :store_name,
+                                            :pos_no,
+                                            :bill_no,
+                                            :version,
+                                            :invoice_name,
+                                            :symbol_type,
+                                            :form_no,
+                                            :serial_no,
+                                            :invoice_date,
+                                            :invoice_no,
+                                            :currency,
+                                            :ex_rate,
+                                            :payment_method,
+                                            :seller_comp_name,
+                                            :seller_taxcode,
+                                            :seller_address,
+                                            :seller_phone,
+                                            :buyer_nm,
+                                            :buyer_comp_name,
+                                            :buyer_taxcode,
+                                            :buyer_phone,
+                                            :buyer_address,
+                                            :buyer_cccd,
+                                            :buyer_email,
+                                            :buyer_email_cc,
+                                            :total_amt_no_vat,
+                                            :total_amt_dc,
+                                            :total_amt_vat,
+                                            :total_payment,
+                                            :total_payment_word_vie,
+                                            :mccqt,
+                                            :data_xml,
+                                            :count_length,
+                                            :xml_type,
+                                            :p_language, 
+                                            :p_crt_by, 
+                                            :p_rtn_cur); END;`,
             para_value,
             p_language,
             p_crt_by,
           );
-          console.log(rtnValue);
+
+          //console.log(rtnValue);
 
           let tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
 
@@ -795,17 +796,17 @@ class EInvoiceController2 {
                 sub_vat_amt: invoices[i].total_vat_list[j].sub_amt_vat,
               };
 
-              console.log('wt_upd_sale_bill_vat  para_amt_vat ', para_amt_vat);
+              //console.log('wt_upd_sale_bill_vat  para_amt_vat ', para_amt_vat);
 
               await DBService.ExecuteSQLBlob(
                 `BEGIN wt_upd_sale_bill_vat (          
-                                                                  :tei_wt_sale_bill_pk,
-                                                                  :sub_amt,
-                                                                  :sub_vat_rate,
-                                                                  :sub_vat_amt,
-                                                                  :p_language, 
-                                                                  :p_crt_by, 
-                                                                  :p_rtn_cur); END;`,
+                                              :tei_wt_sale_bill_pk,
+                                              :sub_amt,
+                                              :sub_vat_rate,
+                                              :sub_vat_amt,
+                                              :p_language, 
+                                              :p_crt_by, 
+                                              :p_rtn_cur); END;`,
                 para_amt_vat,
                 p_language,
                 p_crt_by,
@@ -828,24 +829,25 @@ class EInvoiceController2 {
                 vat_rate: invoices[i].detail_invoice[j].vat_rate,
               };
 
-              console.log('wt_upd_sale_prod  para_prod_details ', para_prod_details);
+              //console.log('wt_upd_sale_prod  para_prod_details ', para_prod_details);
+
               await DBService.ExecuteSQLBlob(
                 `BEGIN wt_upd_sale_prod (          
-                                                                  :tei_wt_sale_bill_pk,
-                                                                  :feature,
-                                                                  :seq,
-                                                                  :item_code,
-                                                                  :item_name,
-                                                                  :unit,
-                                                                  :quantity,
-                                                                  :unit_price,
-                                                                  :dc_rate,
-                                                                  :dc_amt,
-                                                                  :amount,
-                                                                  :vat_rate,
-                                                                  :p_language, 
-                                                                  :p_crt_by, 
-                                                                  :p_rtn_cur); END;`,
+                                          :tei_wt_sale_bill_pk,
+                                          :feature,
+                                          :seq,
+                                          :item_code,
+                                          :item_name,
+                                          :unit,
+                                          :quantity,
+                                          :unit_price,
+                                          :dc_rate,
+                                          :dc_amt,
+                                          :amount,
+                                          :vat_rate,
+                                          :p_language, 
+                                          :p_crt_by, 
+                                          :p_rtn_cur); END;`,
                 para_prod_details,
                 p_language,
                 p_crt_by,
@@ -1024,8 +1026,7 @@ class EInvoiceController2 {
           }
           //if(invoices[i].buyer_phone)
 
-          objInvoice.HDon.DLHDon.NDHDon.DSHHDVu = [];
-
+          //objInvoice.HDon.DLHDon.NDHDon.DSHHDVu = [];
           objInvoice.HDon.DLHDon.NDHDon.DSHHDVu = {};
           objInvoice.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu = [];
 
@@ -1101,11 +1102,11 @@ class EInvoiceController2 {
 
   async weTaxSignXMLHSM(user_name, password, otp, tax_serial_number, pin, organization, signing_xml, process_type) {
     try {
-      const url = 'http://demosign.easyca.vn:8080/api';
-      const site = 'test';
+      //const url = 'http://demosign.easyca.vn:8080/api';
+      //const site = 'test';
 
-      // const url =  'https://sign.easyca.vn/api/'; //
-      // const site = 'real';
+      const url = 'https://sign.easyca.vn/api/'; //
+      const site = 'real';
 
       if (!user_name || !password || !pin || !organization || !tax_serial_number || !signing_xml) {
         return {};
@@ -1123,24 +1124,10 @@ class EInvoiceController2 {
             });
             data = res_1.data.d;
 
-            //console.log('weTaxSignXMLHSM  ', data);
-
             let data_sign_xml = JSON.parse(data);
-
-            // let objData = {
-            //   TDiep: {
-            //     DLieu: [],
-            //     CKSNNT: {},
-            //   },
-            // };
-            // objData.TDiep.DLieu.push(data_sign_xml.data[0].signed_xml);
 
             const id = uuid.v4();
             const signature_path = 'TDiep/CKSNNT';
-            //const xml = this.OBJtoXML(objData);
-            //const xmlId = xml.toString().replace('<DLieu>', `<DLieu Id=\'${id}\'>`);
-            //const xmlRemoveLine = xmlId.toString().replace(/\n/g, '').replaceAll('"', "'");
-
             const xmlRemoveLine = `<TDiep><DLieu Id=\'${id}\'> ` + data_sign_xml.data[0].signed_xml + `</DLieu><CKSNNT></CKSNNT></TDiep>`;
 
             signing_xml = [];
@@ -1157,6 +1144,11 @@ class EInvoiceController2 {
               xmlContent: JSON.stringify({user_name, password, tax_serial_number, pin, organization, otp, signing_xml, url, site}),
             });
             data = JSON.parse(res_2.data.d); //  data_sign_xml; //;
+          } else {
+            const res = await Request.post(EINVOICE_ESIGN_XML, {
+              xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site}),
+            });
+            data = res.data.d;
           }
           break;
         default:
@@ -1471,7 +1463,7 @@ class EInvoiceController2 {
               vat_rate: invoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat[0].TSuat,
             };
 
-            console.log('weTaxExtractPosXMLContent m param ===> ', paraMaster);
+            //console.log('weTaxExtractPosXMLContent m param ===> ', paraMaster);
 
             const rtnValueMaster = await DBService.ExecuteSQLBlob(
               `BEGIN WT_UPD_SALE_BILL (          
@@ -1529,7 +1521,7 @@ class EInvoiceController2 {
             );
             // console.log('weTaxExtractPosXMLContent rtnValueMaster  ', rtnValueMaster);
             status = rtnValueMaster.p_rtn_cur[0].STATUS;
-            // tao json hd va trann thai các kiểu để sau này trả về cho WeTax dễ update
+            // tao json hd va trang thai các kiểu để sau này trả về cho WeTax dễ update
             data_inv.push({
               mccqt: invoice.MCCQT,
               tax_code: invoice.DLHDon.NDHDon.NBan.MST,
@@ -1548,7 +1540,7 @@ class EInvoiceController2 {
             if (rtnValueMaster.p_rtn_cur[0].STATUS == 'OK') {
               const invoice_detail = invoice.DLHDon.NDHDon.DSHHDVu.HHDVu;
               for (let inv_d of invoice_detail) {
-                console.log(' invoice_detail  ', invoice_detail);
+                //console.log(' invoice_detail  ', invoice_detail);
                 const paraDetails = {
                   tei_wt_invoice_m_pk: rtnValueMaster.p_rtn_cur[0].PK,
                   tchat: inv_d.TChat,
@@ -1652,8 +1644,6 @@ class EInvoiceController2 {
           STATUS: rtnValuePos.p_rtn_cur[0].STATUS,
         };
 
-        // console.log('weTaxExtractPosXMLContent END ===> check_data ', check_data, ' data_inv ', data_inv);
-
         return {check_data, data_inv};
       }
     } catch (e) {
@@ -1685,10 +1675,15 @@ class EInvoiceController2 {
     p_crt_by,
   ) {
     try {
+      // const authUserName = 'GENUWIN';
+      // const authPassword = 'genuwin123';
+      // const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien';
+      // const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+
+      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
       const authUserName = 'GENUWIN';
-      const authPassword = 'genuwin123';
-      const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien';
-      const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      const authPassword = 'e_GX4v@';
 
       const agent = {
         Agent: {
@@ -2276,11 +2271,11 @@ class EInvoiceController2 {
           // const rtnValueSendMail =
           await DBService.ExecuteSQLBlob(
             `BEGIN wt_upd_sale_bill_status (          
-                                                               :tei_wt_sale_bill_pk,
-                                                               :status,
-                                                               :p_language, 
-                                                               :p_crt_by, 
-                                                               :p_rtn_cur); END;`,
+                                            :tei_wt_sale_bill_pk,
+                                            :status,
+                                            :p_language, 
+                                            :p_crt_by, 
+                                            :p_rtn_cur); END;`,
             para_inv_st,
             p_language,
             p_crt_by,
@@ -2340,9 +2335,10 @@ class EInvoiceController2 {
             options: {maxVersion: 'TLSv1.2', minVersion: 'TLSv1.2', path: null},
           },
         };
-        console.log('sendMailWT   service_id ', ipa_name);
-        console.log('sendMailWT   seller_tax_code ', tax_code);
-        console.log('sendMailWT   info_send_email ', data_rep);
+
+        //console.log('sendMailWT   service_id ', ipa_name);
+        //console.log('sendMailWT   seller_tax_code ', tax_code);
+        //console.log('sendMailWT   info_send_email ', data_rep);
 
         let triesCounter = 0;
         while (triesCounter < 3) {

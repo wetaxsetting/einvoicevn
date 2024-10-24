@@ -6060,6 +6060,13 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
 
+      let ip = request.header('x-real-ip');
+      if (ip == undefined) {
+        ip = request.ip();
+      }
+
+      console.log(' weTaxConvertPosInvoiceToXML2 ip ', ip);
+
       const {tax_code, store_code, store_name, count_invoice, list_invoice} = request.all();
 
       // console.log(' weTaxConvertPosInvoiceToXML2  BEGIN ==================================================');

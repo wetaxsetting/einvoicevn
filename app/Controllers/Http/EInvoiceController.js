@@ -6060,15 +6060,15 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
 
-      let ip = request.header('x-real-ip');
-      if (ip == undefined) {
-        ip = request.ip();
-      }
+      // let ip = request.header('x-real-ip');
+      // if (ip == undefined) {
+      //   ip = request.ip();
+      // }
+      // if (ip == '18.140.179.68') {
+      //   return response.status(400).json(Utils.responseByRule({success: false, message: `Can't call API with this IP ${ip}`}));
+      // }
 
-      if (ip == '18.140.179.68') {
-        return response.status(400).json(Utils.responseByRule({success: false, message: `Can't call API with this IP ${ip}`}));
-      }
-      console.log(' weTaxConvertPosInvoiceToXML2 ip ', ip);
+      //console.log(' weTaxConvertPosInvoiceToXML2 ip ', ip);
 
       const {tax_code, store_code, store_name, count_invoice, list_invoice} = request.all();
 

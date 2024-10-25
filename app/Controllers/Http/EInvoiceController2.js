@@ -1666,10 +1666,10 @@ class EInvoiceController2 {
       // const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/mttien';
       // const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
 
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
-      const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
       const authUserName = 'GENUWIN';
       const authPassword = 'e_GX4v@';
+      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/mttien';
+      const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
 
       const agent = {
         Agent: {
@@ -1704,6 +1704,8 @@ class EInvoiceController2 {
         },
       );
       trade_code = res.data.maGDich;
+
+      console.log('weTaxSendPosInvoice  trade_code', trade_code);
 
       if (trade_code) {
         const para_value = {

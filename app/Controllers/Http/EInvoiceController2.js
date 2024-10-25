@@ -1145,7 +1145,7 @@ class EInvoiceController2 {
             });
             data = JSON.parse(res_1.data.d);
           } else {
-            const res = await Request.post(WEBSERVICE_C_SHARP, {
+            const res = await Request.post(WEBSERVICE_C_SHARP + '/SignXml', {
               xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site}),
             });
             data = JSON.parse(res.data.d);

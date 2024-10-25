@@ -1069,7 +1069,7 @@ class EInvoiceController2 {
         const id = uuid.v4();
         const signature_path = 'TDiep/CKSNNT';
         const xml = this.OBJtoXML(objData);
-        const xmlId = xml.toString().replace('<DLieu>', `<DLieu Id=\'${id}\'>`).replace(/\n/g, '').replaceAll('"', "'");
+        const xmlStr = xml.toString().replace('<DLieu>', `<DLieu Id=\'${id}\'>`).replace(/\n/g, '').replaceAll('"', "'");
 
         json_xml.push({
           sign_id: id,

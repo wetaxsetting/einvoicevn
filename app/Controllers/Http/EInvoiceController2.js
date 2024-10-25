@@ -1123,7 +1123,7 @@ class EInvoiceController2 {
             //console.log('weTaxSignXMLHSM signing_xml  ', signing_xml);
 
             const res_2 = await Request.post(WEBSERVICE_C_SHARP + '/SignXml', {
-              xmlContent: JSON.stringify({user_name, password, tax_serial_number, pin, organization, otp, signing_xml, url, site}),
+              xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site}),
             });
             data = JSON.parse(res_2.data.d); //  data_sign_xml; //;
           } else {

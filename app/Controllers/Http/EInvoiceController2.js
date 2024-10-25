@@ -1069,7 +1069,7 @@ class EInvoiceController2 {
         const id = uuid.v4();
         const signature_path = 'TDiep/CKSNNT';
         const xml = this.OBJtoXML(objInvoice);
-        const xmlStr = xml.toString().replace('<DLieu>', `<DLieu Id=\'${id}\'>`).replace(/\n/g, '').replaceAll('"', "'");
+        const xmlStr = `<TDiep><DLieu Id=\'${id}\'>` + xml + `</DLieu><CKSNNT></CKSNNT></TDiep>`;
 
         json_xml.push({
           sign_id: id,
@@ -1140,15 +1140,15 @@ class EInvoiceController2 {
             // data = JSON.parse(res_2.data.d); //  data_sign_xml; //;
             // end
 
-            const res = await Request.post(EINVOICE_ESIGN_XML, {
+            const res_1 = await Request.post(WEBSERVICE_C_SHARP + '/SignXml', {
               xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site}),
             });
-            data = res.data.d;
+            data = JSON.parse(res_1.data.d);
           } else {
-            const res = await Request.post(EINVOICE_ESIGN_XML, {
+            const res = await Request.post(WEBSERVICE_C_SHARP, {
               xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site}),
             });
-            data = res.data.d;
+            data = JSON.parse(res.data.d);
           }
           break;
         default:

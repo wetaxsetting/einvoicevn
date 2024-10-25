@@ -1059,12 +1059,12 @@ class EInvoiceController2 {
           objInvoice.HDon.MCCQT = invoices[i].mccqt; //`M1-24-VZQYY-${Math.floor(10000000000 + Math.random() * 9000000000)}`; //
         }
 
-        // tạm thời đóng chờ Easy POS
+        // tạm thời đóng chờ Easy HSM
         // const id = uuid.v4();
         // const signature_path = 'HDon/DSCKS/NBan';
         // const xml = this.OBJtoXML(objInvoice);
         // const xmlStr = xml.toString().replace('<DLHDon>', `<DLHDon Id=\'${id}\'>`).replace(/\n/g, '').replaceAll('"', "'");
-        // tạm thời đóng chờ Easy POS
+        // tạm thời đóng chờ Easy HSM
 
         const id = uuid.v4();
         const signature_path = 'TDiep/CKSNNT';
@@ -1138,7 +1138,7 @@ class EInvoiceController2 {
             //   xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site}),
             // });
             // data = JSON.parse(res_2.data.d); //  data_sign_xml; //;
-            // end
+            // tam thời đóng đoan này chờ Easy HSM
 
             const res_1 = await Request.post(WEBSERVICE_C_SHARP + '/SignXml', {
               xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site}),
@@ -1302,8 +1302,15 @@ class EInvoiceController2 {
       var doc = new dom().parseFromString(xml_content, 'text/xml');
       var nodes = xpath.select('//HDon', doc);
 
+      // tạm thời đóng chờ Easy HSM
+      // const templateSignTime = {
+      //   SigningTime: 'TDiep/DLieu/HDon/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
+      // };
+      // const signingTime = await transform(xml_content, templateSignTime);
+      // tạm thời đóng chờ Easy HSM
+
       const templateSignTime = {
-        SigningTime: 'TDiep/DLieu/HDon/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
+        SigningTime: 'TDiep/CKSNNT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
       };
       const signingTime = await transform(xml_content, templateSignTime);
 

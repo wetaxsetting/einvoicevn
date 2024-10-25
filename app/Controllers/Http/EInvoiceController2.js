@@ -135,8 +135,8 @@ class EInvoiceController2 {
           p_crt_by,
         );
 
-        //console.log('check_data ', check_data);
-        //console.log('data_inv ', data_inv);
+        console.log('check_data ', check_data);
+        console.log('data_inv ', data_inv);
 
         if (check_data.STATUS == 'FAILE') {
           return response
@@ -1082,7 +1082,7 @@ class EInvoiceController2 {
     }
   }
 
-  async weTaxSignXMLHSM(user_name, password, otp, tax_serial_number, pin, organization, signing_xml, process_type) {
+  async weTaxSignXMLHSM(user_name, password, otp, serial_no, pin, organization, signing_xml, process_type) {
     try {
       //const url = 'http://demosign.easyca.vn:8080/api';
       //const site = 'test';
@@ -1090,19 +1090,19 @@ class EInvoiceController2 {
       const url = 'https://sign.easyca.vn/api/'; //
       const site = 'real';
 
-      if (!user_name || !password || !pin || !organization || !tax_serial_number || !signing_xml) {
+      if (!user_name || !password || !pin || !organization || !serial_no || !signing_xml) {
         return {};
       }
 
       let data;
 
-      //console.log('organization  ', organization, ' process_type ', process_type);
+      console.log('organization  ', organization, ' process_type ', process_type);
 
       switch (organization) {
         case 'easysign':
           if (process_type == 'I') {
             const res_1 = await Request.post(WEBSERVICE_C_SHARP + '/SignXml', {
-              xmlContent: JSON.stringify({user_name, password, tax_serial_number, pin, organization, otp, signing_xml, url, site}),
+              xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site}),
             });
             data = res_1.data.d;
 

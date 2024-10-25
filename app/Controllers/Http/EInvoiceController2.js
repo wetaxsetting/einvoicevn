@@ -108,6 +108,8 @@ class EInvoiceController2 {
         p_language,
         p_crt_by,
       );
+      console.log('weTaxPosGeneralXML json_xml ', json_xml);
+      console.log('weTaxPosGeneralXML data_send_mail ', data_send_mail);
 
       if (json_xml[0].xml_process) {
         const json_xml_signed = await this.weTaxSignXMLHSM(
@@ -121,7 +123,8 @@ class EInvoiceController2 {
           process_type || 'I',
         );
 
-        //console.log('json_xml_signed  ', json_xml_signed);
+        console.log('json_xml_signed  ', json_xml_signed);
+
         const {check_data, data_inv} = await this.weTaxExtractPosXMLContent(
           json_xml[0].xml,
           json_xml_signed.data[0].signed_xml,
@@ -148,6 +151,7 @@ class EInvoiceController2 {
           return response.status(409).json(Utils.responseByRule({success: false, message: `Company not yet register`, data: check_data}));
         }
 
+        //return response.status(409).json(Utils.responseByRule({success: false, message: `Send invoice to Tax Office was Faile!`, data: check_data}));
         const data_send_tax = await this.weTaxSendPosInvoice(
           tax_code,
           sale_date,

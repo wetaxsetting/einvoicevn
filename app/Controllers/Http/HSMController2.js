@@ -285,6 +285,87 @@ class HSMController2 {
       return null;
     }
   }
+
+  async HsmSignXmlTwice({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-lanwguage', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+
+      const {user_name, password, otp, serial_no, pin, organization, signing_xml, client_id, client_secret} = request.all();
+
+      console.log('HsmSignXml client_id ', client_id);
+
+      let type = 'C';
+      if (!user_name || !password || !pin || !organization || !serial_no || !signing_xml) {
+        return response.status(400).json(
+          Utils.responseByRule({
+            success: false,
+            message: 'Invalid: parameter',
+          }),
+        );
+      }
+      const {transform, prettyPrint} = require('camaro');
+      const templateKHHDon = {
+        KHHDon: 'HDon/DLHDon/TTChung/KHHDon',
+      };
+      const KHHDon = await transform(signing_xml?.[0]?.xml, templateKHHDon);
+      // console.log('HsmSignXml KHHDon ', KHHDon);
+      if (KHHDon.KHHDon) {
+        type = KHHDon.KHHDon.toString().substring(0, 1);
+      }
+      let data;
+      let res;
+      let url;
+      let site = 'test';
+      switch (organization) {
+        case 'easysign':
+          url = 'http://demosign.easyca.vn:8080/api/';
+          res = await Request.post(EINVOICE_ESIGN_XML, {
+            xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site}),
+          });
+          data = res.data.d;
+          break;
+        case 'vnpt':
+          url = 'https://rmgateway.vnptit.vn/sca/sp769';
+          res = await Request.post(EINVOICE_ESIGN_XML, {
+            xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site, client_id, client_secret}),
+          });
+          data = res.data.d;
+          // console.log('HsmSignXml data ', data);
+          break;
+        default:
+          return response.status(404).json(
+            Utils.responseByRule({
+              success: false,
+              message: 'not found organization.',
+            }),
+          );
+      }
+      // console.log('HsmSignXml  END ========================');
+
+      return response.status(200).json(
+        Utils.responseByRule({
+          success: true,
+          message: 'success.',
+          data: JSON.parse(data),
+        }),
+      );
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'HSMController',
+        FUNC: 'HsmSignXml',
+        CONTENT: e.message,
+      });
+      console.log('HsmSignXml  ', e);
+      console.log('HsmSignXml  END ========================');
+      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+    }
+  }
 }
 
 module.exports = HSMController2;

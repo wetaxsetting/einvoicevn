@@ -1060,16 +1060,16 @@ class EInvoiceController2 {
         }
 
         // tạm thời đóng chờ Easy HSM
-        // const id = uuid.v4();
-        // const signature_path = 'HDon/DSCKS/NBan';
-        // const xml = this.OBJtoXML(objInvoice);
-        // const xmlStr = xml.toString().replace('<DLHDon>', `<DLHDon Id=\'${id}\'>`).replace(/\n/g, '').replaceAll('"', "'");
+        const id = uuid.v4();
+        const signature_path = 'HDon/DSCKS/NBan';
+        const xml = this.OBJtoXML(objInvoice);
+        const xmlStr = xml.toString().replace('<DLHDon>', `<DLHDon Id=\'${id}\'>`).replace(/\n/g, '').replaceAll('"', "'");
         // tạm thời đóng chờ Easy HSM
 
-        const id = uuid.v4();
-        const signature_path = 'TDiep/CKSNNT';
-        const xml = this.OBJtoXML(objInvoice);
-        const xmlStr = `<TDiep><DLieu Id=\'${id}\'>` + xml + `</DLieu><CKSNNT></CKSNNT></TDiep>`;
+        // const id = uuid.v4();
+        // const signature_path = 'TDiep/CKSNNT';
+        // const xml = this.OBJtoXML(objInvoice);
+        // const xmlStr = `<TDiep><DLieu Id=\'${id}\'>` + xml + `</DLieu><CKSNNT></CKSNNT></TDiep>`;
 
         json_xml.push({
           sign_id: id,
@@ -1113,37 +1113,37 @@ class EInvoiceController2 {
         case 'easysign':
           if (process_type == 'I') {
             // tam thời đóng đoan này chờ Easy HSM
-            // const res_1 = await Request.post(WEBSERVICE_C_SHARP + '/SignXml', {
-            //   xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site}),
-            // });
-            // data = res_1.data.d;
-
-            // let data_sign_xml = JSON.parse(data);
-
-            // const id = uuid.v4();
-            // const signature_path = 'TDiep/CKSNNT';
-            // const xmlRemoveLine = `<TDiep><DLieu Id=\'${id}\'> ` + data_sign_xml.data[0].signed_xml + `</DLieu><CKSNNT></CKSNNT></TDiep>`;
-
-            // signing_xml = [];
-            // signing_xml.push({
-            //   sign_id: id,
-            //   signature_path: signature_path,
-            //   xml: xmlRemoveLine,
-            //   req_key: data_sign_xml.data[0].req_key,
-            // });
-
-            // //console.log('weTaxSignXMLHSM signing_xml  ', signing_xml);
-
-            // const res_2 = await Request.post(WEBSERVICE_C_SHARP + '/SignXml', {
-            //   xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site}),
-            // });
-            // data = JSON.parse(res_2.data.d); //  data_sign_xml; //;
-            // tam thời đóng đoan này chờ Easy HSM
-
             const res_1 = await Request.post(WEBSERVICE_C_SHARP + '/SignXml', {
               xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site}),
             });
-            data = JSON.parse(res_1.data.d);
+            data = res_1.data.d;
+
+            let data_sign_xml = JSON.parse(data);
+
+            const id = uuid.v4();
+            const signature_path = 'TDiep/CKSNNT';
+            const xmlRemoveLine = `<TDiep><DLieu Id=\'${id}\'> ` + data_sign_xml.data[0].signed_xml + `</DLieu><CKSNNT></CKSNNT></TDiep>`;
+
+            signing_xml = [];
+            signing_xml.push({
+              sign_id: id,
+              signature_path: signature_path,
+              xml: xmlRemoveLine,
+              req_key: data_sign_xml.data[0].req_key,
+            });
+
+            //console.log('weTaxSignXMLHSM signing_xml  ', signing_xml);
+
+            const res_2 = await Request.post(WEBSERVICE_C_SHARP + '/SignXml', {
+              xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site}),
+            });
+            data = JSON.parse(res_2.data.d); //  data_sign_xml; //;
+            // tam thời đóng đoan này chờ Easy HSM
+
+            // const res_1 = await Request.post(WEBSERVICE_C_SHARP + '/SignXml', {
+            //   xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site}),
+            // });
+            // data = JSON.parse(res_1.data.d);
           } else {
             const res = await Request.post(WEBSERVICE_C_SHARP + '/SignXml', {
               xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site}),
@@ -1303,16 +1303,16 @@ class EInvoiceController2 {
       var nodes = xpath.select('//HDon', doc);
 
       // tạm thời đóng chờ Easy HSM
-      // const templateSignTime = {
-      //   SigningTime: 'TDiep/DLieu/HDon/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
-      // };
-      // const signingTime = await transform(xml_content, templateSignTime);
-      // tạm thời đóng chờ Easy HSM
-
       const templateSignTime = {
-        SigningTime: 'TDiep/CKSNNT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
+        SigningTime: 'TDiep/DLieu/HDon/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
       };
       const signingTime = await transform(xml_content, templateSignTime);
+      // tạm thời đóng chờ Easy HSM
+
+      // const templateSignTime = {
+      //   SigningTime: 'TDiep/CKSNNT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
+      // };
+      // const signingTime = await transform(xml_content, templateSignTime);
 
       //return jsonInvoice;
       if (jsonInvoice) {

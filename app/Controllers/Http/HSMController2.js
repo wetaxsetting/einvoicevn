@@ -4,8 +4,9 @@ const Request = use('Request');
 const easysignUrl = 'http://demosign.easyca.vn:8080/api'; //https://sign.easyca.vn 540110c7d6d61b8f6474f5b993d3b979  12345678
 const axios = require('axios');
 const EINVOICE_ESIGN_XML = 'http://csharp-api.webcashvietnam.com/wseinvoice/BSService.asmx/SignXml';
+const uuid = require('uuid');
 
-//const EINVOICE_ESIGN_XML = 'http://localhost:39234/wseinvoice/BSService.asmx/SignXml';
+//const EINVOICE_ESIGN_XML = 'http://localhost:39234/BSService.asmx/SignXml';
 
 class HSMController2 {
   async verifyCertificate({request, response, auth}) {
@@ -295,12 +296,12 @@ class HSMController2 {
         p_crt_by = user.USER_ID;
       }
 
-      const {user_name, password, otp, serial_no, pin, organization, signing_xml, client_id, client_secret} = request.all();
+      const {user_name, password, otp, serial_no, pin, organization, signing_xml1, client_id, client_secret} = request.all();
 
-      console.log('HsmSignXml client_id ', client_id);
+      console.log('HsmSignXml client_id ', client_id, ' organization ', organization);
 
       let type = 'C';
-      if (!user_name || !password || !pin || !organization || !serial_no || !signing_xml) {
+      if (!user_name || !password || !pin || !organization || !serial_no || !signing_xml1) {
         return response.status(400).json(
           Utils.responseByRule({
             success: false,
@@ -312,7 +313,7 @@ class HSMController2 {
       const templateKHHDon = {
         KHHDon: 'HDon/DLHDon/TTChung/KHHDon',
       };
-      const KHHDon = await transform(signing_xml?.[0]?.xml, templateKHHDon);
+      const KHHDon = await transform(signing_xml1?.[0]?.xml, templateKHHDon);
       // console.log('HsmSignXml KHHDon ', KHHDon);
       if (KHHDon.KHHDon) {
         type = KHHDon.KHHDon.toString().substring(0, 1);
@@ -320,7 +321,7 @@ class HSMController2 {
       let data;
       let res;
       let url;
-      let site = 'test';
+      let site = 'testt';
       switch (organization) {
         case 'easysign':
           url = 'http://demosign.easyca.vn:8080/api/';
@@ -331,6 +332,8 @@ class HSMController2 {
           // data = res.data.d;
 
           // tam thời đóng đoan này chờ Easy HSM
+          let signing_xml = signing_xml1;
+
           const res_1 = await Request.post(EINVOICE_ESIGN_XML, {
             xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site}),
           });
@@ -338,11 +341,12 @@ class HSMController2 {
 
           let data_sign_xml = JSON.parse(data);
 
+          console.log('data_sign_xml  ', data_sign_xml);
+
           const id = uuid.v4();
           const signature_path = 'TDiep/CKSNNT';
           const xmlRemoveLine = `<TDiep><DLieu Id=\'${id}\'> ` + data_sign_xml.data[0].signed_xml + `</DLieu><CKSNNT></CKSNNT></TDiep>`;
 
-          signing_xml = [];
           signing_xml.push({
             sign_id: id,
             signature_path: signature_path,
@@ -355,7 +359,7 @@ class HSMController2 {
           const res_2 = await Request.post(EINVOICE_ESIGN_XML, {
             xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site}),
           });
-          data = JSON.parse(res_2.data.d); //  data_sign_xml; //;
+          data = res_2.data.d; //JSON.parse(res_2.data.d); //  data_sign_xml; //;
           // tam thời đóng đoan này chờ Easy HSM
           break;
         case 'vnpt':

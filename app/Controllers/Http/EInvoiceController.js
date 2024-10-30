@@ -6312,7 +6312,7 @@ class EInvoiceController {
         },
 
         total_vat_list: {
-          sub_vat_rate: /^(0%|5%|8%|10%)$/, //  /^-?\d+(\.\d{1,4})?[%]/, //11,
+          sub_vat_rate: /^(0%|5%|8%|10%|KCT|KKKNT)$/,//sub_vat_rate: /^(0%|5%|8%|10%)$/, //  /^-?\d+(\.\d{1,4})?[%]/, //11,
           sub_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
           sub_amt_vat: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
         },
@@ -6663,7 +6663,7 @@ class EInvoiceController {
         },
 
         total_vat_list: {
-          sub_vat_rate: /^(0%|5%|8%|10%)$/, //  /^-?\d+(\.\d{1,4})?[%]/, //11,
+          sub_vat_rate: /^(0%|5%|8%|10%|KCT|KKKNT)$/,//sub_vat_rate: /^(0%|5%|8%|10%)$/, //  /^-?\d+(\.\d{1,4})?[%]/, //11,
           sub_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
           sub_vat_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
         },
@@ -10425,7 +10425,7 @@ class EInvoiceController {
         },
 
         total_vat_list: {
-          sub_vat_rate: /^(0%|5%|8%|10%)$/, //  /^-?\d+(\.\d{1,4})?[%]/, //11,
+          sub_vat_rate: /^(0%|5%|8%|10%|KCT|KKKNT)$/,//sub_vat_rate: /^(0%|5%|8%|10%)$/, //  /^-?\d+(\.\d{1,4})?[%]/, //11,
           sub_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
           sub_amt_vat: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
         },
@@ -15083,7 +15083,11 @@ class EInvoiceController {
   convertHtmlCode(sText) {
     if (sText != null || sText == '') {
       //return this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '"', '&#34;'), '<', '&lt;'), '>', '&gt;'); vng-199 tạm thời đóng đoạn này vì sửa lý ở C# khi ký
-      return this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '&', '&amp;'), '"', '&#34;'), '<', '&lt;'),'>','&gt;'); 
+      return this.replaceAllExt(
+        this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '&', '&amp;'), '"', '&#34;'), '<', '&lt;'),
+        '>',
+        '&gt;',
+      );
     } else {
       return '';
     }
@@ -19738,6 +19742,8 @@ class EInvoiceController {
             xml_tax_signed: '',
             sign_datetime: inv.SIGN_DT,
             sign_by: inv.SIGN_BY,
+            xml_no_sign: '',
+            xml_signed: inv.XML_SIGNED,
           });
         }
       }

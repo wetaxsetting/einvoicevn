@@ -157,8 +157,9 @@ export default {
       {
         dataField: "SEND_DT",
         caption: this.$t("nlap"),
-        dataType: "date",
-        width: 120,
+        dataType: "string",
+        width: 200,
+        alignment: "center",
       },
       {
         dataField: "STATUS",

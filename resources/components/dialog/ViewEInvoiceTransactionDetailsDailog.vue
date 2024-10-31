@@ -108,9 +108,7 @@ export default {
 
   methods: {
     previewCellFileD() {
-      console.log("this.currentRow  previewCellFileD 22222");
       this.currentRow = document.getElementById("tempPK_HDD").value;
-      console.log("this.currentRow  previewCellFileD ", this.currentRow);
       const ds = this.$refs.grdKQCQT_D.getDataSource();
       if (ds.length) {
         const found = ds.find((item) => item.PK == this.currentRow);

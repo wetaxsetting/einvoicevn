@@ -89,7 +89,7 @@
 import ViewEInvoiceJsonDialog from "@/components/dialog/ViewEInvoiceJsonDialog.vue";
 import ViewEInvoiceXMLDialog from "@/components/dialog/ViewEInvoiceXMLDialog.vue";
 import ViewEInvoiceXML_CQTDialog from "@/components/dialog/ViewEInvoiceXML_CQTDialog.vue";
-import ViewEInvoice_TransactionDetailsDailog from "@/components/dialog/ViewEInvoice_TransactionDetailsDailog.vue";
+import NORInvoiceTransactionDetailsDailog from "@/components/dialog/NORInvoiceTransactionDetailsDailog.vue";
 
 export default {
   layout: "default",
@@ -99,7 +99,7 @@ export default {
     "view-einvoice-json-dialog": ViewEInvoiceJsonDialog,
     "view-einvoice-xml-dialog": ViewEInvoiceXMLDialog,
     "view-einvoice-xml-cqt-dialog": ViewEInvoiceXML_CQTDialog,
-    "view-einvoice-transaction-details-dialog":ViewEInvoice_TransactionDetailsDailog
+    "view-einvoice-transaction-details-dialog": NORInvoiceTransactionDetailsDailog
   },
   data: () => ({
     form_date: "",

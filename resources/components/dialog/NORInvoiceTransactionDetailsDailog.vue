@@ -33,7 +33,7 @@
       @closeManualDialog="manualIsMinimized = false"
     ></view-einvoice-xml-dialog>
     <button type="button" v-show="false" :id="`btnPrviewHDD`" @click="previewCellFileD"></button>
-    <input type="textbox" id="tempPK_HDD" v-show="false" />
+    <input type="textbox" id="NORInvoice-tempPK" v-show="false" />
 
   </v-dialog>
 </template>
@@ -108,9 +108,7 @@ export default {
 
   methods: {
     previewCellFileD() {
-      console.log("this.currentRow  previewCellFileD 22222");
-      this.currentRow = document.getElementById("tempPK_HDD").value;
-      console.log("this.currentRow  previewCellFileD ", this.currentRow);
+      this.currentRow = document.getElementById("NORInvoice-tempPK").value;
       const ds = this.$refs.grdKQCQT_D.getDataSource();
       if (ds.length) {
         const found = ds.find((item) => item.PK == this.currentRow);
@@ -126,7 +124,7 @@ export default {
       let rowData = gridC.getrowdata(row);
       let previewXML = `document.getElementById('btnPrviewHDD').click()`;
 
-      let html = `<button class="v-icon mdi mdi-eye light-blue--text px-16" onclick="document.getElementById('tempPK_HDD').value = '${rowData.PK}';${previewXML}"></button>`;
+      let html = `<button class="v-icon mdi mdi-eye light-blue--text px-16" onclick="document.getElementById('NORInvoice-tempPK').value = '${rowData.PK}';${previewXML}"></button>`;
       return html;
     },
 

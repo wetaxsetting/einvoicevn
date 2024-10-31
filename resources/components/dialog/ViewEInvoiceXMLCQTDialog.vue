@@ -13,9 +13,9 @@
         </v-btn>
         <v-row no-gutters>
           <BaseGridView
-            ref="grdKQCQT_D"
+            ref="grdKQCQT"
             :auto_load="true"
-            sel_procedure="EI_SEL_6095720_KQCQT_D_NC"
+            sel_procedure="EI_SEL_6095710_KQCQT_NC"
             select_mode="Single"
             :max_height="limitHeight"
             :header="headerGrid"
@@ -32,8 +32,8 @@
       @minimizeDialog="manualIsMinimized = true"
       @closeManualDialog="manualIsMinimized = false"
     ></view-einvoice-xml-dialog>
-    <button type="button" v-show="false" :id="`btnPrviewHDD`" @click="previewCellFileD"></button>
-    <input type="textbox" id="tempPK_HDD" v-show="false" />
+    <button type="button" v-show="false" :id="`btnPrviewHD`" @click="previewCellFile"></button>
+    <input type="textbox" id="tempPK_HD" v-show="false" />
 
   </v-dialog>
 </template>
@@ -57,7 +57,7 @@ export default {
   }),
   created() {
     //console.clear();
-    //this.onSearch();
+    // this.onSearch();
   },
   computed: {
     limitHeight() { 
@@ -73,24 +73,23 @@ export default {
           caption: this.$t("stt"),
         },
         {
-          dataField: "MESS_CD",
-          caption: this.$t("mess_cd"),
-          width:100
-        },
-        {
-          dataField: "RECV_TIME",
-          caption: this.$t("receiving_time"),
-          type: "date",
+          dataField: "NOTI_NO",
+          caption: this.$t("noti_no"),
           width:200
         },
         {
-          dataField: "HIS_NAME",
-          caption: this.$t("history_name"),
-          width:250
+          dataField: "NOTE_TIME",
+          caption: this.$t("note_time"),
+          type: "number",
+          width:100
         },
         {
-          dataField: "REMARK",
-          caption: this.$t("remark"),
+          dataField: "NOTE_SIGN",
+          caption: this.$t("note_sign"),
+        },
+        {
+          dataField: "CQT_RESULT",
+          caption: this.$t("cqt_result"),
           width:250
         },
         { dataField: ("CQT_DATA_RESULT"),  caption: "thao_tac",  type: "html", width: 150, fixed: true, cellsrenderer: this.myCellHTML},
@@ -107,28 +106,31 @@ export default {
   },
 
   methods: {
-    previewCellFileD() {
-      console.log("this.currentRow  previewCellFileD 22222");
-      this.currentRow = document.getElementById("tempPK_HDD").value;
-      console.log("this.currentRow  previewCellFileD ", this.currentRow);
-      const ds = this.$refs.grdKQCQT_D.getDataSource();
-      if (ds.length) {
-        const found = ds.find((item) => item.PK == this.currentRow);
-        console.log("found", found);
-        if (found) {
-          this.xmlUrl = found.CQT_DATA_RESULT;
-          this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
-        }
-      }
+    previewCellFile() {
+      this.currentRow = document.getElementById("tempPK").value;
+
+      const ds = this.$refs.grdKQCQT.getDataSource();
+        this.xmlUrl = ds[0].CQT_DATA_RESULT;
+        this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
+      // if (ds.length) {
+      //   const found = ds.find((item) => item.PK == this.currentRow);
+      //   console.log("found", found);
+      //   if (found) {
+      //     this.xmlUrl = found.CQT_DATA_RESULT;
+      //     this.$refs.ViewEInvoiceXMLDialog.dialogIsShow = true;
+      //   }
+      // }
     },
     myCellHTML(row, column, value, cellhtml) {
-      let gridC = this.$refs.grdKQCQT_D.getControl();
+      let gridC = this.$refs.grdKQCQT.getControl();
       let rowData = gridC.getrowdata(row);
-      let previewXML = `document.getElementById('btnPrviewHDD').click()`;
+      let previewXML = `document.getElementById('btnPrviewHD').click()`;
 
-      let html = `<button class="v-icon mdi mdi-eye light-blue--text px-16" onclick="document.getElementById('tempPK_HDD').value = '${rowData.PK}';${previewXML}"></button>`;
+      let html = `<button class="v-icon mdi mdi-eye light-blue--text px-16" onclick="document.getElementById('tempPK_HD').value = '${rowData.PK}';${previewXML}"></button>`;
       return html;
     },
+
+
 
     async search() {
             setTimeout(() => {
@@ -136,7 +138,7 @@ export default {
             }, 500); 
         },
     async onSearch() {
-      await  this.$refs.grdKQCQT_D.loadData();
+      await  this.$refs.grdKQCQT.loadData();
     },
     minimizeDialog() {
       this.origin = "right bottom";

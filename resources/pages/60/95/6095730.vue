@@ -88,8 +88,8 @@
 
 import ViewEInvoiceJsonDialog from "@/components/dialog/ViewEInvoiceJsonDialog.vue";
 import ViewEInvoiceXMLDialog from "@/components/dialog/ViewEInvoiceXMLDialog.vue";
-import ViewEInvoiceXML_CQTDialog from "@/components/dialog/ViewEInvoiceXML_CQTDialog.vue";
-import ViewEInvoice_TransactionDetailsDailog from "@/components/dialog/ViewEInvoice_TransactionDetailsDailog.vue";
+import ViewEInvoiceXMLCQTDialog from "@/components/dialog/ViewEInvoiceXMLCQTDialog.vue";
+import POSInvoiceTransactionDetailsDailog from "@/components/dialog/POSInvoiceTransactionDetailsDailog.vue";
 import ViewEInvoiceDetailsDailog from "@/components/dialog/ViewEInvoiceDetailsDailog.vue";
 
 
@@ -101,8 +101,8 @@ export default {
   components: {
     "view-einvoice-json-dialog": ViewEInvoiceJsonDialog,
     "view-einvoice-xml-dialog": ViewEInvoiceXMLDialog,
-    "view-einvoice-xml-cqt-dialog": ViewEInvoiceXML_CQTDialog,
-    "view-einvoice-transaction-details-dialog":ViewEInvoice_TransactionDetailsDailog,
+    "view-einvoice-xml-cqt-dialog": ViewEInvoiceXMLCQTDialog,
+    "view-einvoice-transaction-details-dialog":POSInvoiceTransactionDetailsDailog,
     "view-einvoice-details-dialog":ViewEInvoiceDetailsDailog
 
   },

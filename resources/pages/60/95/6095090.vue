@@ -3,7 +3,7 @@
     <v-card outlined>
       <v-row dense justify="space-between" class="pl-3 pr-3 pt-2">
         <v-col lg="4" cols="12">
-          <BaseSelect outlined :label="$t('company')" item-text="NAME" item-value="VAL" :lstData="company_list"
+          <BaseSelect outlined :label="$t('company')" item-text="NAME" item-value="CODE" :lstData="company_list"
             v-model="selected_company" filter_off />
         </v-col>
         <v-col lg="2">
@@ -13,11 +13,11 @@
           <BaseInput outlined v-model="txtToInvoiceNo" filter_off />
         </v-col>
         <v-col lg="2">
-          <BaseSelect outlined :label="$t('form_no')" item-text="NAME" item-value="VAL" filter_off :lstData="form_no_list"
+          <BaseSelect outlined :label="$t('form_no')" item-text="NAME" item-value="CODE" filter_off :lstData="form_no_list"
             v-model="selected_form_no" />
         </v-col>
         <v-col lg="2">
-          <BaseSelect outlined :label="$t('serial_no')" item-text="NAME" item-value="VAL" filter_off
+          <BaseSelect outlined :label="$t('serial_no')" item-text="NAME" item-value="CODE" filter_off
             :lstData="serial_no_list" v-model="selected_serial_no" />
         </v-col>
       </v-row>
@@ -31,15 +31,15 @@
         </v-col>
         <v-col lg="2">
           <BaseSelect outlined :label="$t('status')" v-model="selected_status" :lstData="status_list" item-text="NAME"
-            item-value="VAL" filter_off />
+            item-value="CODE" filter_off />
         </v-col>
         <v-col lg="2">
           <BaseSelect outlined :label="$t('etax_status')" v-model="selected_etaxStatus" :lstData="etaxStatus_list"
-            item-text="NAME" item-value="VAL" filter_off />
+            item-text="NAME" item-value="CODE" filter_off />
         </v-col>
         <v-col lg="2">
           <BaseSelect outlined :label="$t('etax_result')" v-model="selected_etaxResult" :lstData="etaxResult_list"
-            item-text="NAME" item-value="VAL" filter_off />
+            item-text="NAME" item-value="CODE" filter_off />
         </v-col>
         <v-col lg="2">
           <BaseSelect outlined :label="$t('trading_type')" v-model="selected_trading_type" :lstData="trading_type_list"
@@ -77,7 +77,7 @@
         </v-col>
         <v-col lg="2">
           <BaseSelect outlined :label="$t('directly_yn')" :lstData="yn_list" v-model="selected_yn" item-text="NAME"
-            item-value="VAL" filter_off />
+            item-value="CODE" filter_off />
         </v-col>
         <v-col lg="1">
           <!-- <BaseCheckbox :label="$t('check_all')" true-value="Y" false-value="N" v-model="check_all" /> -->
@@ -145,7 +145,14 @@
       @minimizeDialog="manualIsMinimized = true"
       @closeManualDialog="manualIsMinimized = false"
     ></view-einvoice-xml-dialog>
-
+    <view-einvoice-history-dialog
+      ref="ViewEInvoiceHistoryDialog"
+      :src_xmlUrl="xmlUrl"
+      :xmlFileNm="xmlFileNm"
+      dwnFile
+      @minimizeDialog="manualIsMinimized = true"
+      @closeManualDialog="manualIsMinimized = false"
+    ></view-einvoice-history-dialog>
     <methor-sign-x-m-l-dialog
       ref="MethorSignXML"
       :src_pdfUrl="pdfUrl"
@@ -172,14 +179,141 @@
         <v-icon>mdi-window-restore</v-icon>
       </v-btn>
     </v-scale-transition>
+    <button type="button" v-show="false" id="6095090-btnPrview" @click="previewCellFile"></button>
+    <button type="button" v-show="false" id="6095090-btnPrview1" @click="previewCellFile1"></button>
+    <button type="button" v-show="false" id="6095090-btnPrview2" @click="previewCellFile2"></button>
+    <button type="button" v-show="false" id="6095090-btnPrview3" @click="previewCellFile3"></button>
 
-  
+    <input type="textbox" id="6095090-tempPK" v-show="false" />
+    <input type="textbox" id="6095090-tempPK1" v-show="false" />
+    <input type="textbox" id="6095090-tempPK2" v-show="false" />
+    <input type="textbox" id="6095090-tempPK3" v-show="false" />
+    <v-navigation-drawer
+      v-model="drawer"
+      absolute
+      temporary
+      right 
+      width="550px"
+    >
+    <v-card class="mx-auto" max-width="800" >
+      <v-toolbar color="white" >
+        <v-toolbar-title>Nhật ký truyền nhận dữ liệu</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-icon class="mdi mdi-close-circle" @click="onClose"></v-icon>
+      </v-toolbar>
+
+      <v-list lines="four">
+        <v-list-item>
+          <v-list-item-title>Gửi hóa đơn đến cơ quan thuế để cấp mã hóa đơn</v-list-item-title>
+          <v-list-item-subtitle  class="text-right align-self-center" >
+            <v-icon class="mdi mdi-eye px-4" @click="onPreview"></v-icon>
+          </v-list-item-subtitle>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-title v-text="serialNoIndex"></v-list-item-title>
+          <v-list-item-title v-text="invoiceNoIndex"></v-list-item-title>
+        </v-list-item>
+      </v-list>
+      <v-divider></v-divider>
+      
+      <v-list lines="three-error" v-if="!showList">
+        <v-list-item value="notifications">
+          <v-list-item-title><v-icon class="mdi mdi-arrow-down-bold-circle green--text"></v-icon> <span v-text="tGianLine2" ></span></v-list-item-title> <!--mdi-arrow-up-bold-circle -->
+           <v-list-item-title v-text ="tenTCXuLy2" class="text-right align-self-center" >
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item value="sound">
+          <v-list-item-title v-text="tenTDiepLine2"></v-list-item-title>
+          <v-list-item-title  class="text-right align-self-center" >
+            <div class="h-100"><span class="ma-2 v-chip theme--light v-size--small red lighten-3 red--text text--darken-3"><span v-text="ketQuaTraVeLine2" class="v-chip__content"></span></span></div>
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item value="sound">
+          <v-list-item-title v-text="soThongBao2"></v-list-item-title>
+          <v-list-item-title  class="text-right align-self-center" >
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item value="sound">
+          <v-list-item-title v-text="moTaLoi2"></v-list-item-title>
+          <v-list-item-title  class="text-right align-self-center" >
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item value="widgets">
+          <v-list-item-title v-text="maTDiepLine2"> </v-list-item-title>
+          <v-list-item-subtitle  class="text-right align-self-center" >
+            <v-icon class="v-icon mdi mdi-download px-4" @click="onDownloadXML2"></v-icon>
+          </v-list-item-subtitle>
+        </v-list-item>
+      </v-list>
+
+      <v-list lines="three" v-if="showList">
+        <v-list-item value="notifications">
+          <v-list-item-title><v-icon class="mdi mdi-arrow-down-bold-circle green--text"></v-icon> <span v-text="tGianLine2" ></span></v-list-item-title> <!--mdi-arrow-up-bold-circle -->
+           <v-list-item-title v-text ="tenTCXuLy2" class="text-right align-self-center" >
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item value="sound">
+          <v-list-item-title v-text="tenTDiepLine2"></v-list-item-title>
+          <v-list-item-title  class="text-right align-self-center" >
+            <div class="h-100"><span class="ma-2 v-chip theme--light v-size--small green lighten-3 green--text text--darken-3"><span v-text="ketQuaTraVeLine2" class="v-chip__content"></span></span></div>
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item value="widgets">
+          <v-list-item-title v-text="maTDiepLine2"> </v-list-item-title>
+          <v-list-item-subtitle  class="text-right align-self-center" >
+            <v-icon class="v-icon mdi mdi-download px-4" @click="onDownloadXML2"></v-icon>
+          </v-list-item-subtitle>
+        </v-list-item>
+      </v-list>
+      <v-divider></v-divider>
+
+      <v-list lines="two">
+        <v-list-item value="notifications">
+          <v-list-item-title><v-icon class="mdi mdi-arrow-down-bold-circle green--text"></v-icon> <span v-text="tGianLine1" ></span></v-list-item-title> <!-- -->
+           <v-list-item-title v-text ="tenTCXuLy1"  class="text-right align-self-center" ></v-list-item-title>
+        </v-list-item>
+        <v-list-item value="sound">
+          <v-list-item-title v-text="tenTDiepLine1" ></v-list-item-title>
+          <v-list-item-title  class="text-right align-self-center" >
+            <div class="h-100"><span class="ma-2 v-chip theme--light v-size--small green lighten-3 green--text text--darken-3"><span v-text="ketQuaTraVeLine1" class="v-chip__content"></span></span></div>
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item value="widgets">
+          <v-list-item-subtitle v-text="maTDiepLine1"></v-list-item-subtitle>
+          <v-list-item-title  class="text-right align-self-center" >
+            <v-icon class="v-icon mdi mdi-download px-4" @click="onDownloadXML1"></v-icon>
+          </v-list-item-title>
+        </v-list-item>
+      </v-list>
+      <v-divider></v-divider>
+
+      <v-list lines="one">
+        <v-list-item value="notifications">
+          <v-list-item-title ><v-icon class="mdi mdi-arrow-up-bold-circle blue--text"> </v-icon><span v-text="tGianLine0" ></span></v-list-item-title>
+          <v-list-item-title v-text ="tenTCXuLy0"  class="text-right align-self-center" ></v-list-item-title>
+        </v-list-item>
+        <v-list-item value="sound">
+          <v-list-item-title v-text="tenTDiepLine0"></v-list-item-title>
+          <v-list-item-title  class="text-right align-self-center" >
+            <div class="h-100"><span class="ma-2 v-chip theme--light v-size--small green lighten-3 green--text text--darken-3"><span v-text="ketQuaTraVeLine0" class="v-chip__content"></span></span></div>
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item value="widgets">
+          <v-list-item-subtitle v-text="maTDiepLine0"></v-list-item-subtitle>
+          <v-list-item-title  class="text-right align-self-center" >
+            <v-icon class="v-icon mdi mdi-download px-4" @click="onDownloadXML0"></v-icon>
+          </v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-card>
+    </v-navigation-drawer>
   </v-container>
 </template>
 
 <script>
 import ViewEInvoicePDFDialog from "@/components/dialog/ViewEInvoicePDFDialog.vue";
 import ViewEInvoiceXMLDialog from "@/components/dialog/ViewEInvoiceXMLDialog.vue";
+import ViewEInvoiceHistoryDialog from "@/components/dialog/ViewEInvoiceHistoryDialog.vue";
 import MethorSignXML from "@/components/dialog/MethorSignXML.vue";
 export default {
   layout: "default",
@@ -190,6 +324,7 @@ export default {
     "view-einvoice-xml-dialog": ViewEInvoiceXMLDialog,
     "view-einvoice-pdf-dialog": ViewEInvoicePDFDialog,
     "methor-sign-x-m-l-dialog": MethorSignXML,
+    "view-einvoice-history-dialog": ViewEInvoiceHistoryDialog,
   },
   data: () => ({
     company_list: [],
@@ -255,7 +390,37 @@ export default {
     maGD:"",
     xml_signed : "",
     showPDF: false,
-    urlPDF:""
+    urlPDF:"",
+    drawer: null,
+    maTDiepLine0: "",
+    tenTDiepLine0: "",
+    tenTCXuLy0:"",
+    tGianLine0:"",
+    ketQuaTraVeLine0: "",
+    dataXML0:"",
+    nameXML0:"",
+
+    maTDiepLine1: "",
+    tenTDiepLine1: "",
+    tenTCXuLy1:"",
+    tGianLine1:"",
+    ketQuaTraVeLine1: "",
+    dataXML1:"",
+    nameXML1:"",
+
+    maTDiepLine2: "",
+    tenTDiepLine2: "",
+    tenTCXuLy2: "",
+    tGianLine2: "",
+    ketQuaTraVeLine2: "",
+    dataXML2: "",
+    nameXML2: "",
+    showList: true,
+    soThongBao2: "",
+    moTaLoi2: "",
+
+    serialNoIndex:"",
+    invoiceNoIndex:""
 
   }),
 
@@ -551,8 +716,13 @@ export default {
           alignment: "left",
           hidden:true
         },
+        {
+          dataField: "ACTION",
+          caption: this.$t("action"),
+          alignment: "left",
+          cellsrenderer: this.myCellHTML
+        },
       ];
-
       return _headerObj;
     }
   },
@@ -606,11 +776,10 @@ export default {
       try {
 
         let url = await this.onGetUrlPDF();
-        console.log("url ", url);
         const link = document.createElement('a');
         link.href = url;
         link.target = '_blank';
-        link.download = 'my-pdf-file.pdf';
+        link.download = `${this.serialNoIndex.replace("Ký hiệu: ", "")}_${this.invoiceNoIndex.replace("Số: ","")}.pdf`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -773,7 +942,6 @@ export default {
       {
         this.showNotification("warning", this.$t("no_row_selected"), '');
       }
-      console.log("onGetUrlPDF res_url  ", url);
       return url;
     },
 
@@ -865,16 +1033,6 @@ export default {
     async onSuccessissueXmlList(data) {
       console.log(data);
       let jsonXML = data.result;
-      // this.txtXMl_T = data.result[0].xml;
-      // this.txtSerial_Number = data.serial_number;
-      // this.txtNOTBEFORE = data.not_before;
-      // this.txtNOTAFTER = data.not_after;
-      // this.txtRAWDATA = data.raw_data;
-      // this.txtISSUER = data.issuer;
-      // this.txtISSUEBY = data.issue_by;
-      // this.txtISSUETO = data.issue_to;
-      // this.txtDN_NAME = data.dn_name;
-      // this.txtDN_MST = data.dn_mst;
 
       const dso_process_check_serialno = {
         type: "list",
@@ -1040,6 +1198,8 @@ export default {
       this.tei_einvoice_m_pk_row = data.PK;
       this.maGD = data.CQT_MAGD;
       this.xml_signed = data.SIGN_XML;
+      this.serialNoIndex = "Ký hiệu: " + data.FORM_NO + data.SERIAL_NO;
+      this.invoiceNoIndex = "Số: " + data.INVOICE_NO;
     },
 
     onClickExport(obj) {
@@ -1057,74 +1217,37 @@ export default {
         "select",
         false
       );
-      console.log(checkCompany);
+      // console.log(checkCompany);
       if (checkCompany != null) {
         if (checkCompany.length > 0) {
           this.company_list = checkCompany;
-          this.selected_company = this.company_list[0].VAL;
+          this.selected_company = this.company_list[0].CODE;
         }
       }
 
-      const dso_etaxStatus_list = {
-        type: "list",
-        selpro: "EI_SEL_6095090_ETAX_STATUS",
-        para: [this.selected_company],
-      };
-      const checkeTaxStatus = await this._dsoCall(dso_etaxStatus_list, "select", false);
-      if (checkeTaxStatus != null) {
-        if (checkeTaxStatus.length > 0) {
-          this.etaxStatus_list = checkeTaxStatus;
-          this.selected_etaxStatus = this.etaxStatus_list[0].VAL;
-        }
-      }
-
-      const dso_etaxResult_list = {
-        type: "list",
-        selpro: "EI_SEL_6095090_ETAX_RESULT",
-        para: [this.selected_company],
-      };
-      const checkeTaxResult = await this._dsoCall(dso_etaxResult_list, "select", false);
-      if (checkeTaxResult != null) {
-        if (checkeTaxResult.length > 0) {
-          this.etaxResult_list = checkeTaxResult;
-          this.selected_etaxResult = this.etaxResult_list[0].VAL;
-        }
-      }
-
-      const dso_status_list = {
-        type: "list",
-        selpro: "EI_SEL_6095090_STATUS",
-      };
-      const checkStatus = await this._dsoCall(dso_status_list, "select", false);
-      if (checkStatus != null) {
-        if (checkStatus.length > 0) {
-          this.status_list = checkStatus;
-          this.selected_status = this.status_list[1].VAL;
-
-        }
-      }
-
-
-      const TrandingTypeList = await this._getCommonCode2(["ACEI0040"], this.user.PK);
+      const TrandingTypeList = await this._getCommonCode2(["ACEI0040","ACEIT010","ACEIT020","ACEI0010","ACEIT030"], this.user.PK);
       this.trading_type_list = TrandingTypeList[0];
-      
-
-      const dso_directly_list = {
-        type: "list",
-        selpro: "EI_SEL_6095090_YN",
-        para: [this.user.PK],
-      };
-      const checkDerictly = await this._dsoCall(
-        dso_directly_list,
-        "select",
-        false
-      );
-      if (checkDerictly != null) {
-        if (checkDerictly.length > 0) {
-          this.yn_list = checkDerictly;
-          this.selected_yn = this.yn_list[0].VAL;
-        }
+      this.etaxStatus_list = TrandingTypeList[1];
+      if(TrandingTypeList[1])
+      {
+        this.selected_etaxStatus = 'ALL';
       }
+      this.etaxResult_list = TrandingTypeList[2];
+      if(TrandingTypeList[2])
+      {
+        this.selected_etaxResult = 'ALL'
+      }
+      this.status_list = TrandingTypeList[3];
+      if(TrandingTypeList[3])
+      {
+        this.selected_status = '0';
+      }
+      this.yn_list = TrandingTypeList[4];
+      if(TrandingTypeList[4])
+      {
+        this.selected_yn = 'ALL';
+      }
+      
     },
 
     async getListCode(pos) {
@@ -1139,7 +1262,7 @@ export default {
           if (checkFormNo != null) {
             if (checkFormNo.length > 0) {
               this.form_no_list = checkFormNo;
-              this.selected_form_no = this.form_no_list[0].VAL;
+              this.selected_form_no = this.form_no_list[0].CODE;
             }
           }
           break;
@@ -1153,7 +1276,7 @@ export default {
           if (checkSerialNo != null) {
             if (checkSerialNo.length > 0) {
               this.serial_no_list = checkSerialNo;
-              this.selected_serial_no = this.serial_no_list[0].VAL;
+              this.selected_serial_no = this.serial_no_list[0].CODE;
             }
           }
           break;

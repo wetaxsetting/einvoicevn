@@ -3,7 +3,7 @@
     <v-card outlined>
       <v-row dense justify="space-between" class="pl-3 pr-3 pt-2">
         <v-col lg="4" cols="12">
-          <BaseSelect outlined :label="$t('company')" item-text="NAME" item-value="VAL" :lstData="company_list"
+          <BaseSelect outlined :label="$t('company')" item-text="NAME" item-value="CODE" :lstData="company_list"
             v-model="selected_company" filter_off />
         </v-col>
         <v-col lg="2">
@@ -13,11 +13,11 @@
           <BaseInput outlined v-model="txtToInvoiceNo" filter_off />
         </v-col>
         <v-col lg="2">
-          <BaseSelect outlined :label="$t('form_no')" item-text="NAME" item-value="VAL" filter_off :lstData="form_no_list"
+          <BaseSelect outlined :label="$t('form_no')" item-text="NAME" item-value="CODE" filter_off :lstData="form_no_list"
             v-model="selected_form_no" />
         </v-col>
         <v-col lg="2">
-          <BaseSelect outlined :label="$t('serial_no')" item-text="NAME" item-value="VAL" filter_off
+          <BaseSelect outlined :label="$t('serial_no')" item-text="NAME" item-value="CODE" filter_off
             :lstData="serial_no_list" v-model="selected_serial_no" />
         </v-col>
       </v-row>
@@ -31,15 +31,15 @@
         </v-col>
         <v-col lg="2">
           <BaseSelect outlined :label="$t('status')" v-model="selected_status" :lstData="status_list" item-text="NAME"
-            item-value="VAL" filter_off />
+            item-value="CODE" filter_off />
         </v-col>
         <v-col lg="2">
           <BaseSelect outlined :label="$t('etax_status')" v-model="selected_etaxStatus" :lstData="etaxStatus_list"
-            item-text="NAME" item-value="VAL" filter_off />
+            item-text="NAME" item-value="CODE" filter_off />
         </v-col>
         <v-col lg="2">
           <BaseSelect outlined :label="$t('etax_result')" v-model="selected_etaxResult" :lstData="etaxResult_list"
-            item-text="NAME" item-value="VAL" filter_off />
+            item-text="NAME" item-value="CODE" filter_off />
         </v-col>
         <v-col lg="2">
           <BaseSelect outlined :label="$t('trading_type')" v-model="selected_trading_type" :lstData="trading_type_list"
@@ -77,7 +77,7 @@
         </v-col>
         <v-col lg="2">
           <BaseSelect outlined :label="$t('directly_yn')" :lstData="yn_list" v-model="selected_yn" item-text="NAME"
-            item-value="VAL" filter_off />
+            item-value="CODE" filter_off />
         </v-col>
         <v-col lg="1">
           <!-- <BaseCheckbox :label="$t('check_all')" true-value="Y" false-value="N" v-model="check_all" /> -->
@@ -146,6 +146,15 @@
       @closeManualDialog="manualIsMinimized = false"
     ></view-einvoice-xml-dialog>
 
+    <view-einvoice-history-dialog
+      ref="ViewEInvoiceHistoryDialog"
+      :src_xmlUrl="xmlUrl"
+      :xmlFileNm="xmlFileNm"
+      dwnFile
+      @minimizeDialog="manualIsMinimized = true"
+      @closeManualDialog="manualIsMinimized = false"
+    ></view-einvoice-history-dialog>
+
     <methor-sign-x-m-l-dialog
       ref="MethorSignXML"
       :src_pdfUrl="pdfUrl"
@@ -173,13 +182,23 @@
       </v-btn>
     </v-scale-transition>
 
-  
+    <button type="button" v-show="false" id="6095410-btnPrview" @click="previewCellFile"></button>
+    <button type="button" v-show="false" id="6095410-btnPrview1" @click="previewCellFile1"></button>
+    <button type="button" v-show="false" id="6095410-btnPrview2" @click="previewCellFile2"></button>
+    <button type="button" v-show="false" id="6095410-btnPrview3" @click="previewCellFile3"></button>
+
+    <input type="textbox" id="6095410-tempPK" v-show="false" />
+    <input type="textbox" id="6095410-tempPK1" v-show="false" />
+    <input type="textbox" id="6095410-tempPK2" v-show="false" />
+    <input type="textbox" id="6095410-tempPK3" v-show="false" />
   </v-container>
 </template>
 
 <script>
 import ViewEInvoicePDFDialog from "@/components/dialog/ViewEInvoicePDFDialog.vue";
 import ViewEInvoiceXMLDialog from "@/components/dialog/ViewEInvoiceXMLDialog.vue";
+import ViewEInvoiceHistoryPOSDialog from "@/components/dialog/ViewEInvoiceHistoryPOSDialog.vue";
+
 import MethorSignXML from "@/components/dialog/MethorSignXML.vue";
 export default {
   layout: "default",
@@ -189,6 +208,7 @@ export default {
     DatePicker: () => import("@/components/control/DatePicker"),
     "view-einvoice-xml-dialog": ViewEInvoiceXMLDialog,
     "view-einvoice-pdf-dialog": ViewEInvoicePDFDialog,
+    "view-einvoice-history-dialog": ViewEInvoiceHistoryPOSDialog,
     "methor-sign-x-m-l-dialog": MethorSignXML,
   },
   data: () => ({
@@ -260,16 +280,6 @@ export default {
   }),
 
   async created() {
-    // let month = parseInt(new Date().getMonth() + 1);
-    // if (month.length == 1) {
-    //   month = "0" + month;
-    // }
-    // this.dt_from = "" + new Date().getFullYear() + month + "01";
-    // this.dt_to = "" + new Date().getFullYear() + month + "31";
-    // this.pdf_handler = require("./js/EiExcelHandler.js");
-    // if (!!this.pdf_handler) {
-    //   Object.assign(this, this.pdf_handler.default);
-    // }
     await this.getListCodes();
   },
   mounted() {
@@ -551,6 +561,12 @@ export default {
           alignment: "left",
           hidden:true
         },
+        {
+          dataField: "ACTION",
+          caption: this.$t("action"),
+          alignment: "left",
+          cellsrenderer: this.myCellHTML
+        },
       ];
 
       return _headerObj;
@@ -568,6 +584,61 @@ export default {
     },
     async onGridSelectionChanged(data) {
       this.selected_rows = data;
+    },
+
+    previewCellFile() {
+      this.tei_einvoice_m_pk_row = document.getElementById("6095410-tempPK").value;
+      this.onPreview();
+    },
+
+    async previewCellFile1() {
+      this.tei_einvoice_m_pk_row = document.getElementById("6095410-tempPK1").value;
+      try {
+        var link = document.createElement('a');
+        link.href = await this.onGetUrlPDF();
+        link.download = `${this.invoiceInfo.buyer_taxcode + "_" + this.invoiceInfo.voucher_no}.pdf`;
+        link.dispatchEvent(new MouseEvent('click'));
+      } catch (error) {
+        this.showNotification("danger", "onDownload-catch exception:", error.message, "", 3000);
+        console.log("onDownload-catch exception:", error.message)
+      }
+    },
+
+    previewCellFile2() {
+      this.currentRow = document.getElementById("6095410-tempPK2").value;
+
+      this.$refs.ViewEInvoiceHistoryDialog.dialogIsShow = true;
+  
+    },
+    previewCellFile3() {
+      this.currentRow = document.getElementById("6095410-tempPK3").value;
+      // console.log("this.currentRow  previewCellFile2", this.currentRow);
+      const ds = this.$refs.gridview.getDataSource();
+
+      if (ds.length) {
+        const found = ds.find((item) => item.PK == this.currentRow);
+        // console.log("previewCellFile3", found);
+        if (found) {
+          this.dataJson = found.TVAN_DATA_RESULT;
+          this.$refs.ViewEInvoiceJsonDialog.dialogIsShow = true;
+        }
+      }
+    },
+
+    myCellHTML(row, column, value, cellhtml) {
+      let grid = this.$refs.gridview.getControl();
+      let rowData = grid.getrowdata(row);
+      const updateTempPK = `document.getElementById('6095410-tempPK').value = ${rowData.PK}; document.getElementById('6095410-tempPK1').value = ''; document.getElementById('6095410-tempPK2').value = ''; document.getElementById('6095410-tempPK3').value = ''`;
+      const updateTempPK1 = `document.getElementById('6095410-tempPK').value = ''; document.getElementById('6095410-tempPK1').value = ${rowData.PK}; document.getElementById('6095410-tempPK2').value = ''; document.getElementById('6095410-tempPK3').value = ''`;
+      const updateTempPK2 = `document.getElementById('6095410-tempPK').value = ''; document.getElementById('6095410-tempPK1').value = ''; document.getElementById('6095410-tempPK2').value = ${rowData.PK}; document.getElementById('6095410-tempPK3').value = ''`;
+      let previewFile = `document.getElementById('6095410-btnPrview').click()`;
+      let previewFile1 = `document.getElementById('6095410-btnPrview1').click()`;
+      let previewFile2 = `document.getElementById('6095410-btnPrview2').click()`;
+
+      let html = `<button class="v-icon mdi mdi-eye light-blue--text px-4" onclick="${updateTempPK};${previewFile}"></button>
+                  <button class="v-icon mdi mdi-download light-blue--text px-1" onclick="${updateTempPK1};${previewFile1}"></button>
+                  <button class="v-icon mdi mdi-reload light-blue--text px-4" onclick="${updateTempPK2};${previewFile2}"></button>`;
+      return html;
     },
 
     async checkingCQT(){
@@ -664,16 +735,6 @@ export default {
     async onSuccessissueXmlList(data) {
       console.log(data);
       let jsonXML = data.result;
-      // this.txtXMl_T = data.result[0].xml;
-      // this.txtSerial_Number = data.serial_number;
-      // this.txtNOTBEFORE = data.not_before;
-      // this.txtNOTAFTER = data.not_after;
-      // this.txtRAWDATA = data.raw_data;
-      // this.txtISSUER = data.issuer;
-      // this.txtISSUEBY = data.issue_by;
-      // this.txtISSUETO = data.issue_to;
-      // this.txtDN_NAME = data.dn_name;
-      // this.txtDN_MST = data.dn_mst;
 
       const dso_process_check_serialno = {
         type: "list",
@@ -811,6 +872,39 @@ export default {
       }
     },
 
+    async onGetUrlPDF() {
+      let res_url = "";
+      if(this.tei_einvoice_m_pk_row != "")
+      {
+        if( Number(this.selected_company) < 943 )
+        {
+          let res_url = await this.$axios.$post("/einvoice/view-pdf", {
+              responseType: "json",
+              rep_key: this.tei_einvoice_m_pk_row,
+              type: "C"
+            });
+          if(res_url.success)
+          {
+            res_url = res_url.data;
+          }
+        }else
+        {
+          let res_url = await this.$axios.$post("/einvoice/general-url-pdf", {
+              responseType: "json",
+              tei_wt_sale_bill_pk: this.tei_einvoice_m_pk_row,
+            });
+          if(res_url.success)
+          {
+            res_url = res_url.data;
+          }
+        }
+      }else
+      {
+        this.showNotification("warning", this.$t("no_row_selected"), '');
+      }
+      return res_url;
+    },
+
     onAfterLoad() {
       let gridArray = [];
       this.tot_net_tr_amt = 0;
@@ -860,69 +954,31 @@ export default {
       if (checkCompany != null) {
         if (checkCompany.length > 0) {
           this.company_list = checkCompany;
-          this.selected_company = this.company_list[0].VAL;
+          this.selected_company = this.company_list[0].CODE;
         }
       }
 
-      const dso_etaxStatus_list = {
-        type: "list",
-        selpro: "EI_SEL_6095090_ETAX_STATUS",
-        para: [this.selected_company],
-      };
-      const checkeTaxStatus = await this._dsoCall(dso_etaxStatus_list, "select", false);
-      if (checkeTaxStatus != null) {
-        if (checkeTaxStatus.length > 0) {
-          this.etaxStatus_list = checkeTaxStatus;
-          this.selected_etaxStatus = this.etaxStatus_list[0].VAL;
-        }
-      }
-
-      const dso_etaxResult_list = {
-        type: "list",
-        selpro: "EI_SEL_6095090_ETAX_RESULT",
-        para: [this.selected_company],
-      };
-      const checkeTaxResult = await this._dsoCall(dso_etaxResult_list, "select", false);
-      if (checkeTaxResult != null) {
-        if (checkeTaxResult.length > 0) {
-          this.etaxResult_list = checkeTaxResult;
-          this.selected_etaxResult = this.etaxResult_list[0].VAL;
-        }
-      }
-
-      const dso_status_list = {
-        type: "list",
-        selpro: "EI_SEL_6095090_STATUS",
-      };
-      const checkStatus = await this._dsoCall(dso_status_list, "select", false);
-      if (checkStatus != null) {
-        if (checkStatus.length > 0) {
-          this.status_list = checkStatus;
-          this.selected_status = this.status_list[1].VAL;
-
-        }
-      }
-
-
-      const TrandingTypeList = await this._getCommonCode2(["ACEI0040"], this.user.PK);
+      const TrandingTypeList = await this._getCommonCode2(["ACEI0040","ACEIT010","ACEIT020","ACEI0010","ACEIT030"], this.user.PK);
       this.trading_type_list = TrandingTypeList[0];
-      
-
-      const dso_directly_list = {
-        type: "list",
-        selpro: "EI_SEL_6095090_YN",
-        para: [this.user.PK],
-      };
-      const checkDerictly = await this._dsoCall(
-        dso_directly_list,
-        "select",
-        false
-      );
-      if (checkDerictly != null) {
-        if (checkDerictly.length > 0) {
-          this.yn_list = checkDerictly;
-          this.selected_yn = this.yn_list[0].VAL;
-        }
+      this.etaxStatus_list = TrandingTypeList[1];
+      if(TrandingTypeList[1])
+      {
+        this.selected_etaxStatus = 'ALL';
+      }
+      this.etaxResult_list = TrandingTypeList[2];
+      if(TrandingTypeList[2])
+      {
+        this.selected_etaxResult = 'ALL'
+      }
+      this.status_list = TrandingTypeList[3];
+      if(TrandingTypeList[3])
+      {
+        this.selected_status = '0';
+      }
+      this.yn_list = TrandingTypeList[4];
+      if(TrandingTypeList[4])
+      {
+        this.selected_yn = 'ALL';
       }
     },
 
@@ -938,7 +994,7 @@ export default {
           if (checkFormNo != null) {
             if (checkFormNo.length > 0) {
               this.form_no_list = checkFormNo;
-              this.selected_form_no = this.form_no_list[0].VAL;
+              this.selected_form_no = this.form_no_list[0].CODE;
             }
           }
           break;
@@ -952,7 +1008,7 @@ export default {
           if (checkSerialNo != null) {
             if (checkSerialNo.length > 0) {
               this.serial_no_list = checkSerialNo;
-              this.selected_serial_no = this.serial_no_list[0].VAL;
+              this.selected_serial_no = this.serial_no_list[0].CODE;
             }
           }
           break;

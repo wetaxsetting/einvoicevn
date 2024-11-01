@@ -942,7 +942,7 @@ export default {
     async getListCodes(pos) {
       const dso_company_list = {
         type: "list",
-        selpro: "EI_SEL_6095090_COMPANY",
+        selpro: "EI_SEL_6095410_COMPANY",
         para: [this.user.PK],
       };
       const checkCompany = await this._dsoCall(
@@ -958,7 +958,7 @@ export default {
         }
       }
 
-      const TrandingTypeList = await this._getCommonCode2(["ACEI0040","ACEIT010","ACEIT020","ACEI0010","ACEIT030"], this.user.PK);
+      const TrandingTypeList = await this._getCommonCode2(["ACEI0040","ACEIT010","ACEIT020","ACEI0010","ACEIT040"], this.user.PK);
       this.trading_type_list = TrandingTypeList[0];
       this.etaxStatus_list = TrandingTypeList[1];
       if(TrandingTypeList[1])
@@ -987,7 +987,7 @@ export default {
         case "form_no":
           const dso_form_list = {
             type: "list",
-            selpro: "AC_SEL_609541_FORM_NO_NC",
+            selpro: "AC_SEL_6095410_FORM_NO_NC",
             para: [this.selected_company, this.dt_from, this.dt_to],
           };
           const checkFormNo = await this._dsoCall(dso_form_list, "select", false);

@@ -32,8 +32,8 @@
       @minimizeDialog="manualIsMinimized = true"
       @closeManualDialog="manualIsMinimized = false"
     ></view-einvoice-xml-dialog>
-    <button type="button" v-show="false" :id="`btnPrviewHD`" @click="previewCellFile"></button>
-    <input type="textbox" id="tempPK_HD" v-show="false" />
+    <button type="button" v-show="false" :id="`04SS-btnPrviewHD`" @click="previewCellFile"></button>
+    <input type="textbox" id="04SS-tempPK_HD" v-show="false" />
 
   </v-dialog>
 </template>
@@ -102,12 +102,11 @@ export default {
           this.search();
         }
       },
-      
   },
 
   methods: {
     previewCellFile() {
-      this.currentRow = document.getElementById("tempPK").value;
+      this.currentRow = document.getElementById("04SS-tempPK_HD").value;
 
       const ds = this.$refs.grdKQCQT.getDataSource();
         this.xmlUrl = ds[0].CQT_DATA_RESULT;
@@ -124,9 +123,9 @@ export default {
     myCellHTML(row, column, value, cellhtml) {
       let gridC = this.$refs.grdKQCQT.getControl();
       let rowData = gridC.getrowdata(row);
-      let previewXML = `document.getElementById('btnPrviewHD').click()`;
+      let previewXML = `document.getElementById('04SS-btnPrviewHD').click()`;
 
-      let html = `<button class="v-icon mdi mdi-eye light-blue--text px-16" onclick="document.getElementById('tempPK_HD').value = '${rowData.PK}';${previewXML}"></button>`;
+      let html = `<button class="v-icon mdi mdi-eye light-blue--text px-16" onclick="document.getElementById('04SS-tempPK_HD').value = '${rowData.PK}';${previewXML}"></button>`;
       return html;
     },
 

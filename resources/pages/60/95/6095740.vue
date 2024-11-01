@@ -77,7 +77,7 @@
 <script>
 import ViewEInvoiceJsonDialog from "@/components/dialog/ViewEInvoiceJsonDialog.vue";
 import ViewEInvoiceXMLDialog from "@/components/dialog/ViewEInvoiceXMLDialog.vue";
-import ViewEInvoiceXML_CQTDialog from "@/components/dialog/ViewEInvoiceXML_CQTDialog.vue";
+import SSXMLCQTDialog from "@/components/dialog/04SSXMLCQTDialog.vue";
 import SSTransactionDetailsDailog from "@/components/dialog/04SSTransactionDetailsDailog.vue";
 
 export default {
@@ -87,7 +87,7 @@ export default {
   components: {
     "view-einvoice-json-dialog": ViewEInvoiceJsonDialog,
     "view-einvoice-xml-dialog": ViewEInvoiceXMLDialog,
-    "view-einvoice-xml-cqt-dialog": ViewEInvoiceXML_CQTDialog,
+    "view-einvoice-xml-cqt-dialog": SSXMLCQTDialog,
     "view-einvoice-transaction-details-dialog": SSTransactionDetailsDailog
   },
   data: () => ({

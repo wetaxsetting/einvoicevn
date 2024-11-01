@@ -76,8 +76,8 @@
 <script>
 import ViewEInvoiceJsonDialog from "@/components/dialog/ViewEInvoiceJsonDialog.vue";
 import ViewEInvoiceXMLDialog from "@/components/dialog/ViewEInvoiceXMLDialog.vue";
-import ViewEInvoiceXML_CQTDialog from "@/components/dialog/ViewEInvoiceXML_CQTDialog.vue";
-import DelarationTransactionDetailsDailog from "@/components/dialog/DelarationTransactionDetailsDailog.vue";
+import DeclarationXMLCQTDialog from "@/components/dialog/DeclarationXMLCQTDialog.vue";
+import DeclarationTransactionDetailsDailog from "@/components/dialog/DeclarationTransactionDetailsDailog.vue";
 
 export default {
   layout: "default",
@@ -86,8 +86,8 @@ export default {
   components: {
     "view-einvoice-json-dialog": ViewEInvoiceJsonDialog,
     "view-einvoice-xml-dialog": ViewEInvoiceXMLDialog,
-    "view-einvoice-xml-cqt-dialog": ViewEInvoiceXML_CQTDialog,
-    "view-einvoice-transaction-details-dialog": DelarationTransactionDetailsDailog
+    "view-einvoice-xml-cqt-dialog": DeclarationXMLCQTDialog,
+    "view-einvoice-transaction-details-dialog": DeclarationTransactionDetailsDailog
   },
   data: () => ({
     form_date: "",

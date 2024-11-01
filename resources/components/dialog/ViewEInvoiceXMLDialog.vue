@@ -68,6 +68,7 @@ export default {
     watch: {
         src_xmlUrl(val) {
             if (val) {
+                console.log("src_xmlUrl  ",val);
                 //const xml = this.StringToXMLDom(val) 
             }
         },

@@ -63,7 +63,7 @@
       @minimizeDialog="manualIsMinimized = true"
       @closeManualDialog="manualIsMinimized = false"
     ></view-einvoice-xml-dialog>
-    <view-einvoice-xml-cqt-dialog ref="ViewEIXMLCQTDialog" @minimizeDialog="manualIsMinimized = true" @closeManualDialog="manualIsMinimized = false"></view-einvoice-xml-cqt-dialog>
+    <view-einvoice-xml-cqt-dialog ref="View6095720CQTDialog" @minimizeDialog="manualIsMinimized = true" @closeManualDialog="manualIsMinimized = false"></view-einvoice-xml-cqt-dialog>
     <view-einvoice-transaction-details-dialog ref="ViewTransaction" @minimizeDialog="manualIsMinimized = true" @closeManualDialog="manualIsMinimized = false"></view-einvoice-transaction-details-dialog>
     <view-einvoice-json-dialog
       ref="ViewEInvoiceJsonDialog"
@@ -88,7 +88,7 @@
 <script>
 import ViewEInvoiceJsonDialog from "@/components/dialog/ViewEInvoiceJsonDialog.vue";
 import ViewEInvoiceXMLDialog from "@/components/dialog/ViewEInvoiceXMLDialog.vue";
-import ViewEInvoiceXML_CQTDialog from "@/components/dialog/ViewEInvoiceXML_CQTDialog.vue";
+import NORInvoiceXMLCQTDialog from "@/components/dialog/NORInvoiceXMLCQTDialog.vue";
 import NORInvoiceTransactionDetailsDailog from "@/components/dialog/NORInvoiceTransactionDetailsDailog.vue";
 
 export default {
@@ -98,7 +98,7 @@ export default {
   components: {
     "view-einvoice-json-dialog": ViewEInvoiceJsonDialog,
     "view-einvoice-xml-dialog": ViewEInvoiceXMLDialog,
-    "view-einvoice-xml-cqt-dialog": ViewEInvoiceXML_CQTDialog,
+    "view-einvoice-xml-cqt-dialog": NORInvoiceXMLCQTDialog,
     "view-einvoice-transaction-details-dialog": NORInvoiceTransactionDetailsDailog
   },
   data: () => ({
@@ -152,21 +152,25 @@ export default {
         {
           dataField: "FORM_NO",
           caption: this.$t("form_no"),
+          alignment: "right",
         },
         {
           dataField: "SERIAL_NO",
           caption: this.$t("serial_no"),
+          alignment: "center",
         },
         {
           dataField: "INVOICE_NO",
           caption: this.$t("invoice_no"),
           width: 100,
+          alignment: "right",
         },
         {
           dataField: "SEND_DT",
           caption: this.$t("nlap"),
-          dataType: "date",
-          width: 150,
+          dataType: "string",
+          width: 200,
+          alignment: "center",
         },
         {
           dataField: "STATUS",
@@ -223,8 +227,8 @@ export default {
         const found = ds.find((item) => item.PK == this.currentRow);
         // console.log("found", found);
         if (found) {
-          this.$refs.ViewEIXMLCQTDialog.pk = found.PK;
-          this.$refs.ViewEIXMLCQTDialog.dialogIsShow = true;
+          this.$refs.View6095720CQTDialog.pk = found.PK;
+          this.$refs.View6095720CQTDialog.dialogIsShow = true;
         }
       }
     },

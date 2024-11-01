@@ -62,7 +62,7 @@
       @minimizeDialog="manualIsMinimized = true"
       @closeManualDialog="manualIsMinimized = false"
     ></view-einvoice-xml-dialog>
-    <view-einvoice-xml-cqt-dialog ref="ViewEIXMLCQTDialog" @minimizeDialog="manualIsMinimized = true" @closeManualDialog="manualIsMinimized = false"></view-einvoice-xml-cqt-dialog>
+    <view-6095730-xml-cqt-dialog ref="View6092730CQTDialog" @minimizeDialog="manualIsMinimized = true" @closeManualDialog="manualIsMinimized = false"></view-6095730-xml-cqt-dialog>
     <view-einvoice-transaction-details-dialog ref="ViewTransaction" @minimizeDialog="manualIsMinimized = true" @closeManualDialog="manualIsMinimized = false"></view-einvoice-transaction-details-dialog>
     <view-einvoice-details-dialog ref="ViewEInvoiceDetails" :typeHistory="typeCQTResult" :tradeCode="tradeCodePK"   @minimizeDialog="manualIsMinimized = true" @closeManualDialog="manualIsMinimized = false" ></view-einvoice-details-dialog>
     <view-einvoice-json-dialog
@@ -88,7 +88,7 @@
 
 import ViewEInvoiceJsonDialog from "@/components/dialog/ViewEInvoiceJsonDialog.vue";
 import ViewEInvoiceXMLDialog from "@/components/dialog/ViewEInvoiceXMLDialog.vue";
-import ViewEInvoiceXMLCQTDialog from "@/components/dialog/ViewEInvoiceXMLCQTDialog.vue";
+import POSInvoiceXMLCQTDialog from "@/components/dialog/POSInvoiceXMLCQTDialog.vue";
 import POSInvoiceTransactionDetailsDailog from "@/components/dialog/POSInvoiceTransactionDetailsDailog.vue";
 import ViewEInvoiceDetailsDailog from "@/components/dialog/ViewEInvoiceDetailsDailog.vue";
 
@@ -101,10 +101,9 @@ export default {
   components: {
     "view-einvoice-json-dialog": ViewEInvoiceJsonDialog,
     "view-einvoice-xml-dialog": ViewEInvoiceXMLDialog,
-    "view-einvoice-xml-cqt-dialog": ViewEInvoiceXMLCQTDialog,
+    "view-6095730-xml-cqt-dialog": POSInvoiceXMLCQTDialog,
     "view-einvoice-transaction-details-dialog":POSInvoiceTransactionDetailsDailog,
-    "view-einvoice-details-dialog":ViewEInvoiceDetailsDailog
-
+    "view-einvoice-details-dialog":ViewEInvoiceDetailsDailog,
   },
   data: () => ({
     form_date: "",
@@ -228,6 +227,7 @@ export default {
       }
     },
     previewCellFile1() {
+      console.log("AAAAAA ")
       this.currentRow = document.getElementById("6095730-tempPK1").value;
       // console.log("this.currentRow  previewCellFile1", this.currentRow);
       const ds = this.$refs.grdCompany.getDataSource();
@@ -236,8 +236,8 @@ export default {
         const found = ds.find((item) => item.PK == this.currentRow);
         // console.log("previewCellFile1", found);
         if (found) {
-          this.$refs.ViewEIXMLCQTDialog.pk = found.PK;
-          this.$refs.ViewEIXMLCQTDialog.dialogIsShow = true;
+          this.$refs.View6092730CQTDialog.pk = found.PK;
+          this.$refs.View6092730CQTDialog.dialogIsShow = true;
         }
       }
     },

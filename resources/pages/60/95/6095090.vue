@@ -391,6 +391,7 @@ export default {
     xml_signed : "",
     showPDF: false,
     urlPDF:"",
+    
     drawer: null,
     maTDiepLine0: "",
     tenTDiepLine0: "",

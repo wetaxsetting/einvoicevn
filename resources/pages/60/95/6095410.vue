@@ -52,23 +52,12 @@
         <v-col lg="4">
           <BaseInput outlined :label="$t('tot_net_tr_amt')" v-model="tot_net_tr_amt" number />
         </v-col>
-        <!-- <v-col lg="2">
-          <BaseInput outlined :label="$t('tot_net_bk_amt')" v-model="tot_net_bk_amt" number />
-        </v-col> -->
-       
         <v-col lg="4">
           <BaseInput outlined :label="$t('tot_net_tr_vat_amt')" v-model="tot_net_tr_vat_amt" number />
         </v-col>
-
-        <!-- <v-col lg="2">
-          <BaseInput outlined :label="$t('tot_net_bk_vat_amt')" v-model="tot_net_bk_vat_amt" number />
-        </v-col> -->
         <v-col lg="4">
           <BaseInput outlined :label="$t('total')" v-model="total" number />
         </v-col>
-        <!-- <v-col lg="2">
-          <BaseInput outlined :label="$t('total_bk')" v-model="total_bk" number />
-        </v-col> -->
       </v-row>
 
       <v-row dense justify="space-between" class="pl-3 pr-3 pt-2">
@@ -160,6 +149,8 @@
       :src_pdfUrl="pdfUrl"
     ></methor-sign-x-m-l-dialog>
 
+    <view-einvoice-details-dialog ref="ViewEInvoiceDetails" :typeHistory="typeCQTResult" :tradeCode="tradeCodePK"   @minimizeDialog="manualIsMinimized = true" @closeManualDialog="manualIsMinimized = false" ></view-einvoice-details-dialog>
+
     <div class="squareBox" v-if="false">
       <v-tooltip bottom>
         <template v-slot:activator="{ on }">
@@ -191,6 +182,128 @@
     <input type="textbox" id="6095410-tempPK1" v-show="false" />
     <input type="textbox" id="6095410-tempPK2" v-show="false" />
     <input type="textbox" id="6095410-tempPK3" v-show="false" />
+
+    <v-navigation-drawer
+      v-model="drawer"
+      absolute
+      temporary
+      right 
+      width="550px"
+    >
+    <v-card class="mx-auto" max-width="800" >
+      <v-toolbar color="white" >
+        <v-toolbar-title>Nhật ký truyền nhận dữ liệu</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-icon class="mdi mdi-close-circle" @click="onClose"></v-icon>
+      </v-toolbar>
+
+      <v-list lines="four">
+        <v-list-item>
+          <v-list-item-title>Gửi hóa đơn đến cơ quan thuế để cấp mã hóa đơn</v-list-item-title>
+          <!-- <v-list-item-subtitle  class="text-right align-self-center" >
+            <v-icon class="mdi mdi-eye px-4" @click="onPreview"></v-icon>
+          </v-list-item-subtitle> -->
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-title v-text="serialNoIndex"></v-list-item-title>
+          <v-list-item-subtitle  class="text-right align-self-center" >
+            <v-icon class="mdi mdi-eye px-4" @click="onViewInvoiceDetail"></v-icon>
+          </v-list-item-subtitle>
+        </v-list-item>
+      </v-list>
+      <v-divider></v-divider>
+      
+      <v-list lines="three-error" v-if="!showList">
+        <v-list-item value="notifications">
+          <v-list-item-title><v-icon class="mdi mdi-arrow-down-bold-circle green--text"></v-icon> <span v-text="tGianLine2" ></span></v-list-item-title> <!--mdi-arrow-up-bold-circle -->
+           <v-list-item-title v-text ="tenTCXuLy2" class="text-right align-self-center" >
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item value="sound">
+          <v-list-item-title v-text="tenTDiepLine2"></v-list-item-title>
+          <v-list-item-title  class="text-right align-self-center" >
+            <div class="h-100"><span class="ma-2 v-chip theme--light v-size--small red lighten-3 red--text text--darken-3"><span v-text="ketQuaTraVeLine2" class="v-chip__content"></span></span></div>
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item value="sound">
+          <v-list-item-title v-text="soThongBao2"></v-list-item-title>
+          <v-list-item-title  class="text-right align-self-center" >
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item value="sound">
+          <v-list-item-title v-text="moTaLoi2"></v-list-item-title>
+          <v-list-item-title  class="text-right align-self-center" >
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item value="widgets">
+          <v-list-item-title v-text="maTDiepLine2"> </v-list-item-title>
+          <v-list-item-subtitle  class="text-right align-self-center" >
+            <v-icon class="v-icon mdi mdi-download px-4" @click="onDownloadXML2"></v-icon>
+          </v-list-item-subtitle>
+        </v-list-item>
+      </v-list>
+
+      <v-list lines="three" v-if="showList">
+        <v-list-item value="notifications">
+          <v-list-item-title><v-icon class="mdi mdi-arrow-down-bold-circle green--text"></v-icon> <span v-text="tGianLine2" ></span></v-list-item-title> <!--mdi-arrow-up-bold-circle -->
+           <v-list-item-title v-text ="tenTCXuLy2" class="text-right align-self-center" >
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item value="sound">
+          <v-list-item-title v-text="tenTDiepLine2"></v-list-item-title>
+          <v-list-item-title  class="text-right align-self-center" >
+            <div class="h-100"><span class="ma-2 v-chip theme--light v-size--small green lighten-3 green--text text--darken-3"><span v-text="ketQuaTraVeLine2" class="v-chip__content"></span></span></div>
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item value="widgets">
+          <v-list-item-title v-text="maTDiepLine2"> </v-list-item-title>
+          <v-list-item-subtitle  class="text-right align-self-center" >
+            <v-icon class="v-icon mdi mdi-download px-4" @click="onDownloadXML2"></v-icon>
+          </v-list-item-subtitle>
+        </v-list-item>
+      </v-list>
+      <v-divider></v-divider>
+
+      <v-list lines="two">
+        <v-list-item value="notifications">
+          <v-list-item-title><v-icon class="mdi mdi-arrow-down-bold-circle green--text"></v-icon> <span v-text="tGianLine1" ></span></v-list-item-title> <!-- -->
+           <v-list-item-title v-text ="tenTCXuLy1"  class="text-right align-self-center" ></v-list-item-title>
+        </v-list-item>
+        <v-list-item value="sound">
+          <v-list-item-title v-text="tenTDiepLine1" ></v-list-item-title>
+          <v-list-item-title  class="text-right align-self-center" >
+            <div class="h-100"><span class="ma-2 v-chip theme--light v-size--small green lighten-3 green--text text--darken-3"><span v-text="ketQuaTraVeLine1" class="v-chip__content"></span></span></div>
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item value="widgets">
+          <v-list-item-subtitle v-text="maTDiepLine1"></v-list-item-subtitle>
+          <v-list-item-title  class="text-right align-self-center" >
+            <v-icon class="v-icon mdi mdi-download px-4" @click="onDownloadXML1"></v-icon>
+          </v-list-item-title>
+        </v-list-item>
+      </v-list>
+      <v-divider></v-divider>
+
+      <v-list lines="one">
+        <v-list-item value="notifications">
+          <v-list-item-title ><v-icon class="mdi mdi-arrow-up-bold-circle blue--text"> </v-icon><span v-text="tGianLine0" ></span></v-list-item-title>
+          <v-list-item-title v-text ="tenTCXuLy0"  class="text-right align-self-center" ></v-list-item-title>
+        </v-list-item>
+        <v-list-item value="sound">
+          <v-list-item-title v-text="tenTDiepLine0"></v-list-item-title>
+          <v-list-item-title  class="text-right align-self-center" >
+            <div class="h-100"><span class="ma-2 v-chip theme--light v-size--small green lighten-3 green--text text--darken-3"><span v-text="ketQuaTraVeLine0" class="v-chip__content"></span></span></div>
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item value="widgets">
+          <v-list-item-subtitle v-text="maTDiepLine0"></v-list-item-subtitle>
+          <v-list-item-title  class="text-right align-self-center" >
+            <v-icon class="v-icon mdi mdi-download px-4" @click="onDownloadXML0"></v-icon>
+          </v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-card>
+    </v-navigation-drawer>
   </v-container>
 </template>
 
@@ -198,6 +311,7 @@
 import ViewEInvoicePDFDialog from "@/components/dialog/ViewEInvoicePDFDialog.vue";
 import ViewEInvoiceXMLDialog from "@/components/dialog/ViewEInvoiceXMLDialog.vue";
 import ViewEInvoiceHistoryPOSDialog from "@/components/dialog/ViewEInvoiceHistoryPOSDialog.vue";
+import ViewEInvoiceDetailsDailog from "@/components/dialog/ViewEInvoiceDetailsDailog.vue";
 
 import MethorSignXML from "@/components/dialog/MethorSignXML.vue";
 export default {
@@ -210,6 +324,7 @@ export default {
     "view-einvoice-pdf-dialog": ViewEInvoicePDFDialog,
     "view-einvoice-history-dialog": ViewEInvoiceHistoryPOSDialog,
     "methor-sign-x-m-l-dialog": MethorSignXML,
+    "view-einvoice-details-dialog":ViewEInvoiceDetailsDailog
   },
   data: () => ({
     company_list: [],
@@ -275,8 +390,40 @@ export default {
     maGD:"",
     xml_signed : "",
     showPDF: false,
-    urlPDF:""
+    urlPDF:"",
 
+    drawer: null,
+    maTDiepLine0: "",
+    tenTDiepLine0: "",
+    tenTCXuLy0:"",
+    tGianLine0:"",
+    ketQuaTraVeLine0: "",
+    dataXML0:"",
+    nameXML0:"",
+
+    maTDiepLine1: "",
+    tenTDiepLine1: "",
+    tenTCXuLy1:"",
+    tGianLine1:"",
+    ketQuaTraVeLine1: "",
+    dataXML1:"",
+    nameXML1:"",
+
+    maTDiepLine2: "",
+    tenTDiepLine2: "",
+    tenTCXuLy2: "",
+    tGianLine2: "",
+    ketQuaTraVeLine2: "",
+    dataXML2: "",
+    nameXML2: "",
+    showList: true,
+    soThongBao2: "",
+    moTaLoi2: "",
+
+    serialNoIndex:"",
+    invoiceNoIndex:"",
+    typeCQTResult:"",
+    tradeCodePK:"",
   }),
 
   async created() {
@@ -604,10 +751,62 @@ export default {
       }
     },
 
-    previewCellFile2() {
+    async previewCellFile2() {
+      //this.currentRow = document.getElementById("6095410-tempPK2").value;
+      //this.$refs.ViewEInvoiceHistoryDialog.dialogIsShow = true;
       this.currentRow = document.getElementById("6095410-tempPK2").value;
 
-      this.$refs.ViewEInvoiceHistoryDialog.dialogIsShow = true;
+      const dso_company_list = {
+        type: "list",
+        selpro: "EI_SEL_6095410_KQCQT_NC",
+        para: [this.currentRow],
+      };
+      const dataTAXResult = await this._dsoCall(
+        dso_company_list,
+        "select",
+        false
+      );
+
+      console.log(dataTAXResult);
+      for(let i = 0; i < dataTAXResult.length; i++)
+      {
+        console.log(dataTAXResult[i]);
+        this.serialNoIndex = "Số lượng hóa đơn: " + dataTAXResult[i].INV_QTY;
+        this.typeCQTResult = "ALL";
+        this.tradeCodePK = dataTAXResult[i].TRADE_CODE;
+        
+        if(dataTAXResult[i].ORD == 1 )
+        {
+          this.maTDiepLine0 = "Mã thông điệp: "+ dataTAXResult[i].HIS_NAME;
+          this.tenTDiepLine0 = `[${dataTAXResult[i].MESS_CD}] ${dataTAXResult[i].REMARK}`;
+          this.tenTCXuLy0 = "Webcash Việt Nam";
+          this.tGianLine0 = `${dataTAXResult[i].RECV_TIME}`;
+          this.ketQuaTraVeLine0 =  `${dataTAXResult[i].REMARK}`;
+          this.dataXML0 = dataTAXResult[i].CQT_DATA_RESULT;
+          this.nameXML0 = dataTAXResult[i].HIS_NAME;
+        }else if(dataTAXResult[i].ORD == 2 )
+        {
+          this.maTDiepLine1 = "Mã thông điệp: "+ dataTAXResult[i].HIS_NAME;
+          this.tenTDiepLine1 = `[${dataTAXResult[i].MESS_CD}] ${dataTAXResult[i].REMARK}`;
+          this.tenTCXuLy1 = "Cơ quan Thuế";
+          this.tGianLine1 = `${dataTAXResult[i].RECV_TIME}`;
+          this.ketQuaTraVeLine1 = `${dataTAXResult[i].REMARK}`;
+          this.dataXML1 = dataTAXResult[i].CQT_DATA_RESULT;
+          this.nameXML1 = dataTAXResult[i].HIS_NAME;
+
+        }else if(dataTAXResult[i].ORD == 3 )
+        {
+          this.maTDiepLine2 = "Mã thông điệp: "+ dataTAXResult[i].HIS_NAME;
+          this.tenTDiepLine2 = `[${dataTAXResult[i].MESS_CD}] ${dataTAXResult[i].REMARK}`;
+          this.tenTCXuLy2 = "Cơ quan Thuế";
+          this.tGianLine2 = `${dataTAXResult[i].RECV_TIME}`;
+          this.ketQuaTraVeLine2 = `${dataTAXResult[i].REMARK}`;
+          this.dataXML2 = dataTAXResult[i].CQT_DATA_RESULT;
+          this.nameXML2 = dataTAXResult[i].HIS_NAME;
+
+        }
+      }
+      this.drawer = !this.drawer;
   
     },
     previewCellFile3() {
@@ -784,7 +983,65 @@ export default {
       } else {
         alert("Token not suitable !!!");
       }
-      
+    },
+
+    onClose()
+    {
+      this.drawer = !this.drawer;
+    },
+
+    onDownloadXML0()
+    {
+      try {
+        const blob = new Blob([this.dataXML0], { type: 'application/xml' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${this.nameXML0}.xml`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        this.showNotification("danger", "onDownload-catch exception:", error.message, "", 3000);
+        console.log("onDownload-catch exception:", error.message)
+      }
+    },
+
+    onDownloadXML1()
+    {
+      try {
+        const blob = new Blob([this.dataXML1], { type: 'application/xml' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${this.nameXML1}.xml`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        this.showNotification("danger", "onDownload-catch exception:", error.message, "", 3000);
+        console.log("onDownload-catch exception:", error.message)
+      }
+    },
+
+    onDownloadXML2()
+    {
+      try {
+        const blob = new Blob([this.dataXML2], { type: 'application/xml' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${this.nameXML2}.xml`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        this.showNotification("danger", "onDownload-catch exception:", error.message, "", 3000);
+        console.log("onDownload-catch exception:", error.message)
+      }
     },
 
     async onPreviewXml(){
@@ -870,6 +1127,13 @@ export default {
       {
         this.showNotification("warning", this.$t("no_row_selected"), '');
       }
+    },
+
+    async onViewInvoiceDetail()
+    {
+      //this.typeCQTResult = 'ALL';
+      //this.tradeCodePK = data.data.TRADE_CODE;
+      this.$refs.ViewEInvoiceDetails.dialogIsShow = true;
     },
 
     async onGetUrlPDF() {

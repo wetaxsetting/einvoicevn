@@ -10788,8 +10788,13 @@ class EInvoiceController {
 
             if (key == 'detail_invoice') {
               for (const inv of invoice[key]) {
-                detail_amount_vat += inv.amt_vat;
-                detail_amount += inv.amt;
+                if (inv.feature == 3) {
+                  detail_amount_vat -= Number(inv.amt_vat);
+                  detail_amount -= Number(inv.amt);
+                } else {
+                  detail_amount_vat += Number(inv.amt_vat);
+                  detail_amount += Number(inv.amt);
+                }
                 if (!errorList[`${key}`].feature.test(inv.feature)) {
                   status = false;
                   resMess = `${mess1} feature is: ${inv.feature}.`;

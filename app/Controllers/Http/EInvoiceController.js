@@ -11278,7 +11278,7 @@ class EInvoiceController {
         );
         //const res = await this.weTaxExtractRecordXMLContent(noti.xml_signed, p_language, p_crt_by)
 
-        //console.log("weTaxReSendRecords  res", res)
+        console.log("weTaxReSendRecords  res", res)
 
         if (res?.p_rtn_cur?.[0]?.STATUS == 'OK') {
           const data_mail = await this.weTaxSendMailRecords(

@@ -6312,7 +6312,7 @@ class EInvoiceController {
         },
 
         total_vat_list: {
-          sub_vat_rate: /^(0%|5%|8%|10%|KCT|KKKNT)$/,//sub_vat_rate: /^(0%|5%|8%|10%)$/, //  /^-?\d+(\.\d{1,4})?[%]/, //11,
+          sub_vat_rate: /^(0%|5%|8%|10%|KCT|KKKNT)$/, //sub_vat_rate: /^(0%|5%|8%|10%)$/, //  /^-?\d+(\.\d{1,4})?[%]/, //11,
           sub_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
           sub_amt_vat: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
         },
@@ -6663,7 +6663,7 @@ class EInvoiceController {
         },
 
         total_vat_list: {
-          sub_vat_rate: /^(0%|5%|8%|10%|KCT|KKKNT)$/,//sub_vat_rate: /^(0%|5%|8%|10%)$/, //  /^-?\d+(\.\d{1,4})?[%]/, //11,
+          sub_vat_rate: /^(0%|5%|8%|10%|KCT|KKKNT)$/, //sub_vat_rate: /^(0%|5%|8%|10%)$/, //  /^-?\d+(\.\d{1,4})?[%]/, //11,
           sub_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
           sub_vat_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
         },
@@ -10425,7 +10425,7 @@ class EInvoiceController {
         },
 
         total_vat_list: {
-          sub_vat_rate: /^(0%|5%|8%|10%|KCT|KKKNT)$/,//sub_vat_rate: /^(0%|5%|8%|10%)$/, //  /^-?\d+(\.\d{1,4})?[%]/, //11,
+          sub_vat_rate: /^(0%|5%|8%|10%|KCT|KKKNT)$/, //sub_vat_rate: /^(0%|5%|8%|10%)$/, //  /^-?\d+(\.\d{1,4})?[%]/, //11,
           sub_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
           sub_amt_vat: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
         },
@@ -11290,7 +11290,7 @@ class EInvoiceController {
             p_crt_by,
           );
           //console.log("data_mail  ", data_mail)
-          if (data_mail && data_mail.length > 0) {
+          if (data_mail) {
             r_data_noti.push({
               sale_id: noti.req_key,
               msg_his_id: noti.msg_his_id,

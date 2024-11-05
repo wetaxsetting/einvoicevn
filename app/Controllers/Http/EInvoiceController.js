@@ -11502,7 +11502,7 @@ class EInvoiceController {
 
       // console.log()
       for (const noti of noti_list) {
-        //console.log("noti  ", noti);
+        console.log("noti  ", noti);
         const param_noti = {
           form_no: noti.form_no,
           serial_no: noti.serial_no,
@@ -11526,7 +11526,7 @@ class EInvoiceController {
         );
         //const res = await this.weTaxExtractRecordXMLContent(noti.xml_signed, p_language, p_crt_by)
 
-        //console.log('weTaxReSendRecords  res', res);
+        console.log('weTaxReSendRecords  res', res);
 
         if (res?.p_rtn_cur?.[0]?.STATUS == 'OK') {
           const data_mail = await this.weTaxSendMailRecords(
@@ -11583,7 +11583,7 @@ class EInvoiceController {
           });
         }
       }
-      //console.log('weTaxReSendRecords  r_data_noti ', r_data_noti);
+      console.log('weTaxReSendRecords  r_data_noti ', r_data_noti);
       // return response.send(Utils.response(true, `Send e-Record successfully.`,r_data_noti ));
       return response.status(200).json(Utils.responseByRule({success: true, message: 'Send e-Record successfully.', data: r_data_noti}));
     } catch (e) {

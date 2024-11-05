@@ -7062,8 +7062,13 @@ class EInvoiceController {
 
             if (key == 'detail_invoice') {
               for (const inv of invoice[key]) {
-                detail_amount_vat += inv.vat_amount;
-                detail_amount += inv.amount;
+                if (inv.feature == 3) {
+                  detail_amount_vat -= inv.vat_amount;
+                  detail_amount -= inv.amount;
+                } else {
+                  detail_amount_vat += inv.vat_amount;
+                  detail_amount += inv.amount;
+                }
                 console.log('detail_invoice  inv ', inv);
                 if (!errorList[`${key}`].feature.test(inv.feature)) {
                   status = false;
@@ -7157,33 +7162,42 @@ class EInvoiceController {
             }
           }
         }
-        if (master_amount != detail_amount && master_amount != null) {
-          //master_amount != vat_amout &&
+
+        if (
+          (Number(master_amount.toFixed(6)) != Number(detail_amount.toFixed(6)) ||
+            Number(vat_amout.toFixed(6)) != Number(master_amount.toFixed(6))) &&
+          master_amount != null
+        ) {
           status = false;
-          resMess = `${mess1} amount is: ${master_amount} != ${vat_amout} != ${detail_amount}`; //
+          resMess = `${mess1} amount no vat is: ${master_amount}  != ${detail_amount} != ${vat_amout}`;
           return {
             status,
             message: resMess,
           };
         }
 
-        console.log('master_amount_vat   => ', master_amount_vat, detail_amount_vat, vat_amount_vat);
-
-        if (master_amount_vat != detail_amount_vat && master_amount_vat != vat_amount_vat && master_amount_vat != null) {
+        if (
+          (Number(master_amount_vat.toFixed(6)) != Number(detail_amount_vat.toFixed(6)) ||
+            Number(vat_amount_vat.toFixed(6)) != Number(master_amount_vat.toFixed(6))) &&
+          master_amount_vat != null
+        ) {
           status = false;
-          resMess = `${mess1} amount vat is: ${master_amount_vat} != ${vat_amount_vat} != ${detail_amount_vat}`;
+          resMess = `${mess1} amount vat is: ${master_amount_vat} != ${detail_amount_vat}  != ${vat_amount_vat}`;
           return {
             status,
             message: resMess,
           };
         }
-        vat_total_amount = Number(vat_amount_vat) + Number(vat_amout);
+        vat_total_amount = Number(vat_amount_vat.toFixed(6)) + Number(vat_amout.toFixed(6));
         detail_total_amount = Number(detail_amount) + Number(detail_amount_vat);
-        console.log('master_total_amount   => ', master_total_amount, detail_total_amount, vat_total_amount);
 
-        if (master_total_amount != detail_total_amount && master_total_amount != vat_total_amount && master_total_amount != null) {
+        if (
+          (Number(master_total_amount.toFixed(6)) != Number(detail_total_amount.toFixed(6)) ||
+            Number(vat_total_amount.toFixed(6)) != Number(master_total_amount.toFixed(6))) &&
+          master_total_amount != null
+        ) {
           status = false;
-          resMess = `${mess1} amount total is: ${master_total_amount} != ${vat_total_amount} != ${detail_total_amount}`; //
+          resMess = `${mess1} amount total is: ${master_total_amount}  != ${detail_total_amount} != ${vat_total_amount}`;
           return {
             status,
             message: resMess,

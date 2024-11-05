@@ -10016,8 +10016,8 @@ class EInvoiceController {
         };
       });
 
-      // console.log('weTaxSendPosInvoiceToTaxOffice rtnValue  ', rtnValue);
-      // console.log('weTaxSendPosInvoiceToTaxOffice END ========================  ');
+      console.log('weTaxSendPosInvoiceToTaxOffice rtnValue  ', rtnValue);
+      console.log('weTaxSendPosInvoiceToTaxOffice END ========================  ');
       return response.status(200).json(Utils.responseByRule({success: true, message: 'Sent POS invoice successfully.', data: rtnValue}));
       //return response.status(200).json(Utils.responseByRule({success: true, message: 'Sent POS invoice successfully.'}));
     } catch (e) {

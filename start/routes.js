@@ -168,7 +168,6 @@ Route.group(() => {
   Route.post('check-status-invoice', 'EInvoiceController.weTaxCheckInvoiceStatusFromTaxOffice');
   Route.post('generate-invoice-xml', 'EInvoiceController.weTaxConvertInvoiceToXML');
   Route.post('send-company-info', 'EInvoiceController.weTaxSendCompanyInfo');
-
   Route.post('re-send-order-info', 'EInvoiceController.weTaxReSendOrderInfoV2');
   Route.post('re-send-normal-invoice', 'EInvoiceController.weTaxReSendNormalInvoice');
   Route.post('send-company-template', 'EInvoiceController.weTaxSendCompanyTemplate');

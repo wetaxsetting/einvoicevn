@@ -19673,11 +19673,13 @@ class EInvoiceController {
           });
         }
       });
+      console.log('weTaxCallBackStatusPosInv rtnValue  ', rtnValue);
+
       if (check_data.CRT_BY == 'wetax-test') {
         this.weTaxCallBackStatusPosInv(data_inv, '/api/wtx/v1/pos-invoice-delivery-status', 'WTPTA003');
       }
-      //console.log('jobCheckTradeCodePosInvoice rtnValue  ', rtnValue);
-      // console.log('jobCheckTradeCodePosInvoice END ========================  ');
+      console.log('jobCheckTradeCodePosInvoice rtnValue  ', rtnValue);
+      console.log('jobCheckTradeCodePosInvoice END ========================  ');
     } catch (error) {
       console.log('jobCheckTradeCodePosInvoice  error', error);
     }

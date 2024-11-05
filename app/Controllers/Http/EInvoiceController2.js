@@ -2063,7 +2063,7 @@ class EInvoiceController2 {
         for (const key in invoice) {
           if (errorList[`${key}`] != undefined && !Array.isArray(invoice[key])) {
             //console.log('weTaxConvertPosInvoiceToXML key  ', key, ' invoice[key] ', invoice[key]);
-            master_amount_vat = Number(invoice['total_vat_amt']);
+            master_amount_vat = Number(invoice['total_amt_vat']);
             master_amount = Number(invoice['total_amt']);
             master_total_amount = Number(invoice['total_payment']);
 

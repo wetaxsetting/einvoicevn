@@ -11583,7 +11583,7 @@ class EInvoiceController {
           });
         }
       }
-
+      console.log('weTaxReSendRecords  r_data_noti ', r_data_noti);
       // return response.send(Utils.response(true, `Send e-Record successfully.`,r_data_noti ));
       return response.status(200).json(Utils.responseByRule({success: true, message: 'Send e-Record successfully.', data: r_data_noti}));
     } catch (e) {

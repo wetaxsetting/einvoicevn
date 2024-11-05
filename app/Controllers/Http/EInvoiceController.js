@@ -11538,7 +11538,7 @@ class EInvoiceController {
             p_crt_by,
           );
           console.log('data_mail  ', data_mail);
-          if (data_mail && data_mail.length > 0) {
+          if (data_mail) {
             r_data_noti.push({
               sale_id: noti.req_key,
               msg_his_id: noti.msg_his_id,

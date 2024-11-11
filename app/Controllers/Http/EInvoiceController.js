@@ -3211,120 +3211,34 @@ class EInvoiceController {
         So = '',
         TTXNCQT = '',
         MCCQT = '',
-        contentNotice = {};
+        contentNotice = {},
+        jsonData = [];
       if (!ress.data.length) {
-        // return response.send(Utils.response(false, 'Checking Tax Status Failure. No data found.', null));
-        return response.status(404).json(Utils.responseByRule({success: false, message: 'No data found!'}));
-      } else {
-        for (let item of ress.data) {
-          for (let child of item) {
-            if (child.loaiTBao == '1') {
-              base64XML = Buffer.from(child.ndungTBao.base64XML, 'base64').toString('utf8');
-              const temp_of_tax = {
-                MLTDiep: 'TDiep/TTChung/MLTDiep',
-                THop: 'TDiep/DLieu/TBao/DLTBao/THop',
-                So: 'TDiep/DLieu/TBao/DLTBao/So',
-                TGGui: 'TDiep/DLieu/TBao/DLTBao/TGGui',
-                TTXNCQT: 'TDiep/DLieu/TBao/DLTBao/TTXNCQT',
-                MCCQT: 'TDiep/DLieu/TBao/DLTBao/MCCQT',
-                STBao: {
-                  So: 'TDiep/DLieu/TBao/STBao/So',
-                  NTBao: 'TDiep/DLieu/TBao/STBao/NTBao',
-                },
-              };
-              const data_of_tax = await transform(base64XML, temp_of_tax);
-              TTXNCQT = data_of_tax.TTXNCQT;
-              THop = data_of_tax.THop;
-              maTD = data_of_tax.MLTDiep;
-              maGDDTu = child.ndungTBao.maGDichTNDLieu;
-              ngayTaoTBao = child.ngayTaoTBao;
-              ngayTBao = child.ndungTBao.ngayTBao;
-              ngayCQTKy = child.ndungTBao.ngayCQTKy;
-              ord = '3';
-
-              if (maTD == '999') {
-                tenGDDTu = 'gói tin hợp lệ';
-                ord = '2';
-              } else if (maTD == '102') {
-                So = data_of_tax.So;
-                if (THop == 2 || THop == 4) {
-                  tenGDDTu = 'không tiếp nhận tờ khai đăng ký';
-                } else {
-                  tenGDDTu = 'tiếp nhận tờ khai đăng ký';
-                }
-              } else if (maTD == '103') {
-                So = data_of_tax.STBao.So;
-                ngayTBao = data_of_tax.STBao.NTBao;
-                MCCQT = data_of_tax.MCCQT;
-
-                if (TTXNCQT == 1) {
-                  tenGDDTu = 'chấp nhận tờ khai đăng ký';
-                } else {
-                  tenGDDTu = 'không chấp nhận tờ khai đăng ký';
-                }
-                ord = '4';
-              }
-
-              if (base64XML) {
-                const para_history = {
-                  p_CQT_Code: trade_code, // {  // tradeCode.data.maGDich tradeCode.data.maGDich,
-                  p_xml_sign: base64XML,
-                  p_maTDiep: maTD,
-                  p_maGDDTu: maGDDTu,
-                  p_tenGDDTu: tenGDDTu,
-                  p_ngayTaoTBao: ngayTaoTBao,
-                  p_ngayTBao: ngayTBao,
-                  p_ngayCQTKy: ngayCQTKy,
-                  p_ord: ord,
-                  p_THop: THop,
-                  p_So: So,
-                  p_TTXNCQT: TTXNCQT,
-                  p_MCCQT: MCCQT,
-                  p_tvan_data_result: JSON.stringify(ress.data),
-                };
-
-                //console.log('weTaxSendDeclarationToTaxOffice  para_history  ', para_history);
-
-                const res_op = await DBService.ExecuteSQLBlob(
-                  `BEGIN ei_upd_his_dec_inv(
-                                            :p_CQT_Code, 
-                                            :p_xml_sign,
-                                            :p_maTDiep,
-                                            :p_maGDDTu,
-                                            :p_tenGDDTu,
-                                            :p_ngayTaoTBao,
-                                            :p_ngayTBao,
-                                            :p_ngayCQTKy,
-                                            :p_ord,
-                                            :p_THop,
-                                            :p_So,
-                                            :p_TTXNCQT,
-                                            :p_MCCQT,
-                                            :p_tvan_data_result,
-                                            :p_language, 
-                                            :p_crt_by, 
-                                            :p_rtn_cur); 
-                            END;`,
-                  para_history,
-                  p_language,
-                  p_crt_by,
-                );
-              }
-            } else if (child.loaiTBao == '5') {
-              contentNotice = child.ndungTBao.tbaoDKyDTu;
-              loaiTBao = child.loaiTBao;
-              tenTBao = child.tenTBao;
-            } else if (child.loaiTBao == '4') {
-              contentNotice = child.ndungTBao.tbaoTNhanDTu;
-              loaiTBao = child.loaiTBao;
-              tenTBao = '';
-
-              child.ndungTBao.tbaoTNhanDTu.dsachLoiTNhanDTu.forEach((element, index) => {
-                tenTBao = element.maLoi + ' - ' + element.mtaLoi;
-              });
-            }
-          }
+        if (DB_CONNECTION == 'oracle') {
+          oracledb.fetchAsBuffer = [oracledb.BLOB];
+          oracledb.fetchAsString = [oracledb.CLOB];
         }
+
+        const paraTradeCode = {
+          p_trade_code: trade_code,
+        };
+        const dataCheckTradeCode = await DBService.ExecuteSQLBlob(
+          `BEGIN ei_sel_check_trade_code_dec(
+                            :p_trade_code, 
+                            :p_language, :p_crt_by, :p_rtn_cur
+                        ); END;`,
+          paraTradeCode,
+          p_language,
+          p_crt_by,
+        );
+        // console.log('dataCheckTradeCode ', dataCheckTradeCode);
+        if (dataCheckTradeCode) {
+          jsonData = JSON.parse(dataCheckTradeCode.p_rtn_cur[0].TVAN_DATA_RESULT);
+        } else {
+          return response.status(404).json(Utils.responseByRule({success: false, message: 'No data found!'}));
+        }
+      } else {
+        jsonData = ress.data;
         // para_value = {
         //   p_trade_code: trade_code,
         //   p_xml_sign: base64XML,
@@ -3359,6 +3273,115 @@ class EInvoiceController {
         // );
       }
 
+      for (let item of jsonData) {
+        for (let child of item) {
+          if (child.loaiTBao == '1') {
+            base64XML = Buffer.from(child.ndungTBao.base64XML, 'base64').toString('utf8');
+            const temp_of_tax = {
+              MLTDiep: 'TDiep/TTChung/MLTDiep',
+              THop: 'TDiep/DLieu/TBao/DLTBao/THop',
+              So: 'TDiep/DLieu/TBao/DLTBao/So',
+              TGGui: 'TDiep/DLieu/TBao/DLTBao/TGGui',
+              TTXNCQT: 'TDiep/DLieu/TBao/DLTBao/TTXNCQT',
+              MCCQT: 'TDiep/DLieu/TBao/DLTBao/MCCQT',
+              STBao: {
+                So: 'TDiep/DLieu/TBao/STBao/So',
+                NTBao: 'TDiep/DLieu/TBao/STBao/NTBao',
+              },
+            };
+            const data_of_tax = await transform(base64XML, temp_of_tax);
+            TTXNCQT = data_of_tax.TTXNCQT;
+            THop = data_of_tax.THop;
+            maTD = data_of_tax.MLTDiep;
+            maGDDTu = child.ndungTBao.maGDichTNDLieu;
+            ngayTaoTBao = child.ngayTaoTBao;
+            ngayTBao = child.ndungTBao.ngayTBao;
+            ngayCQTKy = child.ndungTBao.ngayCQTKy;
+            ord = '3';
+
+            if (maTD == '999') {
+              tenGDDTu = 'gói tin hợp lệ';
+              ord = '2';
+            } else if (maTD == '102') {
+              So = data_of_tax.So;
+              if (THop == 2 || THop == 4) {
+                tenGDDTu = 'không tiếp nhận tờ khai đăng ký';
+              } else {
+                tenGDDTu = 'tiếp nhận tờ khai đăng ký';
+              }
+            } else if (maTD == '103') {
+              So = data_of_tax.STBao.So;
+              ngayTBao = data_of_tax.STBao.NTBao;
+              MCCQT = data_of_tax.MCCQT;
+
+              if (TTXNCQT == 1) {
+                tenGDDTu = 'chấp nhận tờ khai đăng ký';
+              } else {
+                tenGDDTu = 'không chấp nhận tờ khai đăng ký';
+              }
+              ord = '4';
+            }
+
+            if (base64XML) {
+              const para_history = {
+                p_CQT_Code: trade_code, // {  // tradeCode.data.maGDich tradeCode.data.maGDich,
+                p_xml_sign: base64XML,
+                p_maTDiep: maTD,
+                p_maGDDTu: maGDDTu,
+                p_tenGDDTu: tenGDDTu,
+                p_ngayTaoTBao: ngayTaoTBao,
+                p_ngayTBao: ngayTBao,
+                p_ngayCQTKy: ngayCQTKy,
+                p_ord: ord,
+                p_THop: THop,
+                p_So: So,
+                p_TTXNCQT: TTXNCQT,
+                p_MCCQT: MCCQT,
+                p_tvan_data_result: JSON.stringify(jsonData),
+              };
+
+              //console.log('weTaxSendDeclarationToTaxOffice  para_history  ', para_history);
+
+              const res_op = await DBService.ExecuteSQLBlob(
+                `BEGIN ei_upd_his_dec_inv(
+                                          :p_CQT_Code, 
+                                          :p_xml_sign,
+                                          :p_maTDiep,
+                                          :p_maGDDTu,
+                                          :p_tenGDDTu,
+                                          :p_ngayTaoTBao,
+                                          :p_ngayTBao,
+                                          :p_ngayCQTKy,
+                                          :p_ord,
+                                          :p_THop,
+                                          :p_So,
+                                          :p_TTXNCQT,
+                                          :p_MCCQT,
+                                          :p_tvan_data_result,
+                                          :p_language, 
+                                          :p_crt_by, 
+                                          :p_rtn_cur); 
+                          END;`,
+                para_history,
+                p_language,
+                p_crt_by,
+              );
+            }
+          } else if (child.loaiTBao == '5') {
+            contentNotice = child.ndungTBao.tbaoDKyDTu;
+            loaiTBao = child.loaiTBao;
+            tenTBao = child.tenTBao;
+          } else if (child.loaiTBao == '4') {
+            contentNotice = child.ndungTBao.tbaoTNhanDTu;
+            loaiTBao = child.loaiTBao;
+            tenTBao = '';
+
+            child.ndungTBao.tbaoTNhanDTu.dsachLoiTNhanDTu.forEach((element, index) => {
+              tenTBao = element.maLoi + ' - ' + element.mtaLoi;
+            });
+          }
+        }
+      }
       return response.status(200).json(
         Utils.responseByRule({
           success: true,
@@ -11278,7 +11301,7 @@ class EInvoiceController {
         );
         //const res = await this.weTaxExtractRecordXMLContent(noti.xml_signed, p_language, p_crt_by)
 
-        console.log("weTaxReSendRecords  res", res)
+        console.log('weTaxReSendRecords  res', res);
 
         if (res?.p_rtn_cur?.[0]?.STATUS == 'OK') {
           const data_mail = await this.weTaxSendMailRecords(

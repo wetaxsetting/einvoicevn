@@ -5625,12 +5625,12 @@ class EInvoiceController {
         ip = request.ip();
       }
 
-      console.log(' weTaxConvertPosInvoiceToXML ip ', ip);
+      //console.log(' weTaxConvertPosInvoiceToXML ip ', ip);
 
       const {tax_code, store_code, store_name, count_invoice, list_invoice} = request.all();
 
-      // console.log(' weTaxConvertPosInvoiceToXML  BEGIN ==================================================');
-      // console.log(' weTaxConvertPosInvoiceToXML  list_invoice   ', JSON.list_invoice);
+      console.log(' weTaxConvertPosInvoiceToXML  BEGIN ==================================================');
+      console.log(' weTaxConvertPosInvoiceToXML  list_invoice   ', JSON.stringify(list_invoice));
 
       //invoices = JSON.parse(invoices);
       let rtnXML = [];
@@ -11502,7 +11502,7 @@ class EInvoiceController {
 
       // console.log()
       for (const noti of noti_list) {
-        console.log("noti  ", noti);
+        console.log('noti  ', noti);
         const param_noti = {
           form_no: noti.form_no,
           serial_no: noti.serial_no,

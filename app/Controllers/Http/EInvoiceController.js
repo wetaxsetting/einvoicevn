@@ -6073,8 +6073,8 @@ class EInvoiceController {
 
       const {tax_code, store_code, store_name, count_invoice, list_invoice} = request.all();
 
-      // console.log(' weTaxConvertPosInvoiceToXML2  BEGIN ==================================================');
-      // console.log(' weTaxConvertPosInvoiceToXML2  list_invoice   ', JSON.stringify(list_invoice));
+      console.log(' weTaxConvertPosInvoiceToXML2  BEGIN ==================================================');
+      console.log(' weTaxConvertPosInvoiceToXML2  list_invoice   ', JSON.stringify(list_invoice));
 
       //invoices = JSON.parse(invoices);
 

@@ -5631,6 +5631,7 @@ class EInvoiceController {
 
       console.log(' weTaxConvertPosInvoiceToXML  BEGIN ==================================================');
       console.log(' weTaxConvertPosInvoiceToXML  list_invoice   ', JSON.stringify(list_invoice));
+      console.log(' weTaxConvertPosInvoiceToXML  tax_code   ', tax_code);
 
       //invoices = JSON.parse(invoices);
       let rtnXML = [];

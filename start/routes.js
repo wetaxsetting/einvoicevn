@@ -273,6 +273,9 @@ Route.group(() => {
   //e-invoice
   Route.post('invalidinvoice2xml', 'EInvoiceController.convertInvaliInvoiceToXML2');
   Route.post('sendinformadjustinvoice', 'EInvoiceController.sendInformAdjustToTaxOffice2');
+
+  Route.post('send-declare', 'EInvoiceController.weTaxSendDeclarationToTaxOffice');
+  Route.post('check-status-declare', 'EInvoiceController.weTaxCheckingDeclarations');
 })
   .prefix('api/einvoice/v2')
   .middleware('user');

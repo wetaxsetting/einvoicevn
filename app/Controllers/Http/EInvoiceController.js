@@ -6193,7 +6193,7 @@ class EInvoiceController {
           CKSNNT: {},
         },
       };
-      // //console.log(" data.list_invoice  ", data.list_invoice);
+      //console.log(" data.list_invoice  ", data.list_invoice);
       let req_key = [];
       const invoices = list_invoice;
       const valid = this.validateJsonInvalidPosInvoiceToXML(invoices);
@@ -6205,7 +6205,7 @@ class EInvoiceController {
                             {master:{},detail:[{}]},
                             {master:{},detail:[{}]},
                         ];*/
-      ////console.log("invoices1:", invoices)
+      //console.log("invoices1:", invoices)
       if (invoices.length == undefined || invoices.length == 0) {
         return response.status(400).json(Utils.responseByRule({success: false, message: `Invalid: list_invoice`}));
       }
@@ -6247,6 +6247,26 @@ class EInvoiceController {
               Utils.responseByRule({success: false, message: `invoice date cannot greater than ${tomorrow_date}.`, data: invoices[i].invoice_date}),
             );
         }
+
+        const data_raw_param = {
+          p_req_key: invoices[i].req_key,
+          p_data_raw: JSON.stringify(invoices[i]),
+        };
+
+        // console.log('weTaxSendPosInvoiceToTaxOffice param_pos  ', param_pos);
+        await DBService.ExecuteSQLBlob(
+          `BEGIN WT_UPD_DATA_RAW(
+                              :p_req_key,
+                              :p_data_raw,
+                              :p_language, 
+                              :p_crt_by, 
+                              :p_rtn_cur); 
+              END;`,
+          data_raw_param,
+          p_language,
+          p_crt_by,
+        );
+
         req_key.push(invoices[i].req_key);
         if (invoices[i].form_no == 1) {
           objInvoice.DLHDon.TTChung.THDon = 'Hóa đơn giá trị gia tăng khởi tạo từ máy tính tiền';

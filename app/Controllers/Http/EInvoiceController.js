@@ -11598,7 +11598,7 @@ class EInvoiceController {
         }
 
         const data_raw_param = {
-          p_req_key: invoices[i].req_key,
+          p_req_key: invoices[i].master_pk,
           p_data_raw: JSON.stringify(invoices[i]),
         };
 

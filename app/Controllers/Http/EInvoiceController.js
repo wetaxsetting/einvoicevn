@@ -18260,7 +18260,7 @@ class EInvoiceController {
           PK: master.p_rtn_cur[0].PK,
           TEI_EINVOICE_M_PK: master.p_rtn_cur[0].TEI_EINVOICE_M_PK,
           SIGN_DATETIME: signingTime.SigningTime,
-          SIGN_BY: jsonNBan[0].Ten,
+          SIGN_BY: data_invoice.seller_comp_name,
         });
       } else {
         return (result_extra = {

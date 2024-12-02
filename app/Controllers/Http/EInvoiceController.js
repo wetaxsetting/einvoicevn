@@ -18134,7 +18134,7 @@ class EInvoiceController {
         p_tax_serial_number: p_tax_serial_number,
         p_tac_crca_pk: p_req_key,
         p_invoice_form_symbol: p_invoice_form_symbol,
-        p_sign_time: templateSignTime.SigningTime,
+        p_sign_time: signingTime.SigningTime,
       };
       console.log('para_data_master ', para_data_master);
       const master = await DBService.ExecuteSQLBlob(

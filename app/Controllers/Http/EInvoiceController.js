@@ -10771,7 +10771,7 @@ class EInvoiceController {
       let rtnValueTradecode = [];
       let masterInvoicePK;
       for (let i = 0; i < invoices.length; i++) {
-        masterInvoicePK = await this.weTaxExtractXMLContent(
+        masterInvoicePK = await this.weTaxExtractXMLContent2(
           invoices[i].xml_signed,
           invoices[i].mail_to || '',
           invoices[i].mail_cc || '',
@@ -10783,6 +10783,7 @@ class EInvoiceController {
           p_language,
           p_crt_by,
         );
+        //return JSON.stringify(masterInvoicePK);
         if (masterInvoicePK.PK == -1) {
           console.log(`The issuer invoice has not register [${invoices[i].req_key}]`, invoices[i].xml_signed);
           rtnValue.push({
@@ -17987,6 +17988,287 @@ class EInvoiceController {
           REQ_KEY_PK: master[0].REQ_KEY_PK,
           LOOKUP_CODE: master[0].LOOKUP_CODE,
         }); //master[0].PK;
+      }
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'weTaxExtractXMLContent',
+        CONTENT: e.message,
+      });
+      console.log(e);
+      return (result_extra = {
+        PK: -2,
+        TEI_EINVOICE_M_PK: 0,
+      }); //master[0].PK;;
+    }
+  }
+
+  async weTaxExtractXMLContent2(
+    p_xml_content,
+    p_mail_to,
+    p_mail_cc,
+    p_invoice_type,
+    p_tr_type,
+    p_tax_serial_number,
+    p_req_key,
+    p_invoice_form_symbol,
+    p_language,
+    p_crt_by,
+  ) {
+    let result_extra = {};
+    try {
+      if (DB_CONNECTION == 'oracle') {
+        oracledb.fetchAsBuffer = [oracledb.BLOB];
+        oracledb.fetchAsString = [oracledb.CLOB];
+      }
+
+      const para_data_raw = {
+        p_req_key: p_req_key,
+      };
+
+      const data_raw = await DBService.ExecuteSQLBlob(
+        `BEGIN WT_SEL_DATA_RAW(
+                                :p_req_key, 
+                                :p_language, 
+                                :p_crt_by, 
+                                :p_rtn_cur); 
+                END;`,
+        para_data_raw,
+        p_language,
+        p_crt_by,
+      );
+      console.log('data_raw ', data_raw);
+      const data_invoice = JSON.parse(data_raw.p_rtn_cur[0].DATA_RAW);
+      const templateSignTime = {
+        SigningTime: 'HDon/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
+      };
+      const signingTime = await transform(p_xml_content, templateSignTime);
+
+      let l_thdon = '';
+      if (data_invoice.form_no == 1) {
+        l_thdon = 'Hóa đơn giá trị gia tăng';
+      } else if (data_invoice.form_no == 2) {
+        l_thdon = 'Hóa đơn bán hàng';
+      } else if (data_invoice.form_no == 3) {
+        l_thdon = 'Hóa đơn bán tài sản công';
+      } else if (data_invoice.form_no == 4) {
+        l_thdon = 'Hóa đơn bán hàng dự trữ quốc gia';
+      } else if (data_invoice.form_no == 5) {
+        l_thdon = 'Tem điện tử, vé điện tử, thẻ điện tử, phiếu thu điện tử, chứng từ thu phí DV ngân hàng';
+      } else if (data_invoice.form_no == 6) {
+        l_thdon = 'Phiếu xuất kho kiêm vận chuyển nội bộ, phiếu xuất kho hàng gửi bán đại lý';
+      }
+      const para_data_master = {
+        p_pban: data_invoice.version,
+        p_thdon: l_thdon,
+        p_khmshdon: data_invoice.form_no,
+        p_khhdon: data_invoice.serial_no,
+        p_shdon: data_invoice.invoice_no,
+        p_mhso: '',
+        p_nlap: data_invoice.invoice_date,
+        p_sbke: '',
+        p_nbke: '',
+        p_dvtte: data_invoice.currency,
+        p_tgia: data_invoice.ex_rate,
+        p_htttoan: data_invoice.payment_method,
+        p_msttcgp: '1201496252',
+        p_mstdvnunlhdon: '',
+        p_tdvnunlhdon: '',
+        p_dcdvnunlhdon: '',
+        p_nban_ten: data_invoice.seller_comp_name,
+        p_nban_mst: data_invoice.seller_taxcode,
+        p_nban_dchi: data_invoice.seller_address,
+        p_nban_sdthoai: data_invoice.seller_phone,
+        p_nban_dctdtu: data_invoice.seller_email,
+        p_nban_stknhang: data_invoice.seller_bank_no,
+        p_nban_tnhang: data_invoice.seller_bank_name,
+        p_nban_fax: data_invoice.seller_fax,
+        p_nban_website: data_invoice.seller_website,
+        p_nban_ttkhac: '',
+        p_nmua_ten: data_invoice.buyer_comp_name,
+        p_nmua_mst: data_invoice.buyer_taxcode,
+        p_nmua_dchi: data_invoice.buyer_address,
+        p_nmua_sdthoai: data_invoice.buyer_phone,
+        p_nmua_dctdtu: data_invoice.buyer_email,
+        p_nmua_mkhang: data_invoice.buyer_code,
+        p_nmua_hvtnmhang: data_invoice.buyer_name,
+        p_nmua_stknhang: data_invoice.buyer_bank_no,
+        p_nmua_tnhang: data_invoice.buyer_bank_name,
+        p_nmua_ttkhac: '',
+        p_tsuat: '',
+        p_thtien: '',
+        p_tthue: '',
+        p_tgtcthue: data_invoice.total_amt_no_vat,
+        p_tgtthue: data_invoice.total_amt_vat,
+        p_ttcktmai: 0,
+        p_tgtttbso: data_invoice.total_payment,
+        p_tgtttbchu: data_invoice.total_payment_word_vie,
+        p_mccqt: '',
+        p_pdf_url: '',
+        p_xml_url: '',
+        p_pdf_cloud_url: '',
+        p_xml_cloud_url: '',
+        p_tchdon: data_invoice.invoice_feature,
+        p_lhdclquan: data_invoice.invoice_feature,
+        p_khmshdclquan: data_invoice.form_no_relative,
+        p_khhdclquan: data_invoice.serial_no_relative,
+        p_shdclquan: data_invoice.invoice_no_relative,
+        p_nlhdclquan: data_invoice.invoice_type_relative,
+        p_gchu: data_invoice.description_relative,
+        p_customfield1: data_invoice.attr01,
+        p_customfield2: data_invoice.attr02,
+        p_customfield3: data_invoice.attr03,
+        p_customfield4: data_invoice.attr04,
+        p_customfield5: data_invoice.attr05,
+        p_customfield6: data_invoice.attr06,
+        p_customfield7: data_invoice.attr07,
+        p_customfield8: data_invoice.attr08,
+        p_customfield9: data_invoice.attr09,
+        p_customfield10: data_invoice.attr10,
+        p_mail_to: p_mail_to,
+        p_mail_cc: p_mail_cc,
+        p_invoice_type: p_invoice_type,
+        p_words_amt: data_invoice.total_payment_word_vie,
+        p_tr_type: p_tr_type,
+        p_tax_serial_number: p_tax_serial_number,
+        p_tac_crca_pk: p_req_key,
+        p_invoice_form_symbol: p_invoice_form_symbol,
+        p_sign_time: templateSignTime.SigningTime,
+      };
+
+      const master = await DBService.ExecuteSQLBlob(
+        `BEGIN WT_UPD_TEI_WT_INVOICE_M(
+                                :p_pban,
+                                :p_thdon,
+                                :p_khmshdon,
+                                :p_khhdon,
+                                :p_shdon,
+                                :p_mhso,
+                                :p_nlap,
+                                :p_sbke,
+                                :p_nbke,
+                                :p_dvtte,
+                                :p_tgia,
+                                :p_htttoan,
+                                :p_msttcgp,
+                                :p_mstdvnunlhdon,
+                                :p_tdvnunlhdon,
+                                :p_dcdvnunlhdon,
+                                :p_nban_ten,
+                                :p_nban_mst,
+                                :p_nban_dchi,
+                                :p_nban_sdthoai,
+                                :p_nban_dctdtu,
+                                :p_nban_stknhang,
+                                :p_nban_tnhang,
+                                :p_nban_fax,
+                                :p_nban_website,
+                                :p_nban_ttkhac,
+                                :p_nmua_ten,
+                                :p_nmua_mst,
+                                :p_nmua_dchi,
+                                :p_nmua_sdthoai,
+                                :p_nmua_dctdtu,
+                                :p_nmua_mkhang,
+                                :p_nmua_hvtnmhang,
+                                :p_nmua_stknhang,
+                                :p_nmua_tnhang,
+                                :p_nmua_ttkhac,
+                                :p_tsuat,
+                                :p_thtien,
+                                :p_tthue,
+                                :p_tgtcthue,
+                                :p_tgtthue,
+                                :p_ttcktmai,
+                                :p_tgtttbso,
+                                :p_tgtttbchu,
+                                :p_mccqt,
+                                :p_pdf_url,
+                                :p_xml_url,
+                                :p_pdf_cloud_url,
+                                :p_xml_cloud_url,
+                                :p_tchdon,
+                                :p_lhdclquan,
+                                :p_khmshdclquan,
+                                :p_khhdclquan,
+                                :p_shdclquan,
+                                :p_nlhdclquan,
+                                :p_gchu,
+                                :p_customfield1,
+                                :p_customfield2,
+                                :p_customfield3,
+                                :p_customfield4,
+                                :p_customfield5,
+                                :p_customfield6,
+                                :p_customfield7,
+                                :p_customfield8,
+                                :p_customfield9,
+                                :p_customfield10,
+                                :p_mail_to,
+                                :p_mail_cc,
+                                :p_invoice_type,
+                                :p_words_amt,
+                                :p_tr_type,
+                                :p_tax_serial_number,
+                                :p_tac_crca_pk,
+                                :p_invoice_form_symbol,
+                                :p_sign_time,
+                                :p_language, 
+                                :p_crt_by, 
+                                :p_rtn_cur); 
+                END;`,
+        para_data_master,
+        p_language,
+        p_crt_by,
+      );
+      console.log(master.p_rtn_cur[0]);
+      if (master.p_rtn_cur[0] && master.p_rtn_cur[0].PK > 0) {
+        data_invoice;
+
+        for (let i = 0; i < data_invoice.detail_invoice.length; i++) {
+          console.log(JSON.stringify(jsonDSHHDVu[i]));
+          const detailPara = [
+            master.p_rtn_cur[0].PK,
+            data_invoice.detail_invoice[i].feature,
+            data_invoice.detail_invoice[i].seq,
+            data_invoice.detail_invoice[i].item_code,
+            data_invoice.detail_invoice[i].item_name,
+            data_invoice.detail_invoice[i].unit,
+            data_invoice.detail_invoice[i].quantity,
+            data_invoice.detail_invoice[i].uprice,
+            data_invoice.detail_invoice[i].amt,
+            data_invoice.detail_invoice[i].dc_rate,
+            data_invoice.detail_invoice[i].dc_amt,
+            data_invoice.detail_invoice[i].vat_rate,
+            data_invoice.detail_invoice[i].attr01,
+            data_invoice.detail_invoice[i].attr02,
+            data_invoice.detail_invoice[i].attr03,
+            data_invoice.detail_invoice[i].attr04,
+            data_invoice.detail_invoice[i].attr05,
+            '',
+          ];
+
+          await DBService.callProcCursor('WT_UPD_TEI_WT_INVOICE_D_2', detailPara, p_language, p_crt_by);
+          // console.log("detail", detail);
+        }
+
+        await DBService.callProcCursor('WT_UPD_TEI_WT_INVOICE_D_VAT', [master.p_rtn_cur[0].PK], p_language, p_crt_by);
+
+        return (result_extra = {
+          PK: master.p_rtn_cur[0].PK,
+          TEI_EINVOICE_M_PK: master.p_rtn_cur[0].TEI_EINVOICE_M_PK,
+          SIGN_DATETIME: signingTime.SigningTime,
+          SIGN_BY: jsonNBan[0].Ten,
+        });
+      } else {
+        return (result_extra = {
+          PK: master.p_rtn_cur[0].PK,
+          MA_TRACUU: master.p_rtn_cur[0].MA_TRACUU,
+          CQT_MCCQT: master.p_rtn_cur[0].CQT_MCCQT,
+          REQ_KEY_PK: master.p_rtn_cur[0].REQ_KEY_PK,
+          LOOKUP_CODE: master.p_rtn_cur[0].LOOKUP_CODE,
+        });
       }
     } catch (e) {
       Utils.Logger({

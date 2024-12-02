@@ -18227,7 +18227,7 @@ class EInvoiceController {
         data_invoice;
 
         for (let i = 0; i < data_invoice.detail_invoice.length; i++) {
-          console.log(JSON.stringify(jsonDSHHDVu[i]));
+          //console.log(JSON.stringify(jsonDSHHDVu[i]));
           const detailPara = [
             master.p_rtn_cur[0].PK,
             data_invoice.detail_invoice[i].feature,

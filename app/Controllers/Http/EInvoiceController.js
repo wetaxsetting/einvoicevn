@@ -18136,7 +18136,7 @@ class EInvoiceController {
         p_invoice_form_symbol: p_invoice_form_symbol,
         p_sign_time: templateSignTime.SigningTime,
       };
-
+      console.log('para_data_master ', para_data_master);
       const master = await DBService.ExecuteSQLBlob(
         `BEGIN WT_UPD_TEI_WT_INVOICE_M(
                                 :p_pban,

@@ -11128,21 +11128,21 @@ class EInvoiceController {
         objInvoice.BBan.DLieu.PBan = version;
         objInvoice.BBan.DLieu.MSo = form_no;
         objInvoice.BBan.DLieu.NTBao = inform_date;
-        objInvoice.BBan.DLieu.SBBan = noti.voucher_no;
+        objInvoice.BBan.DLieu.SBBan = this.convertHtmlCode(noti.voucher_no);
 
-        objInvoice.BBan.DLieu.NBan.Ten = seller_company_name;
+        objInvoice.BBan.DLieu.NBan.Ten = this.convertHtmlCode(seller_company_name);
         objInvoice.BBan.DLieu.NBan.MST = seller_taxcode;
-        objInvoice.BBan.DLieu.NBan.DChi = seller_address;
+        objInvoice.BBan.DLieu.NBan.DChi = this.convertHtmlCode(seller_address);
         objInvoice.BBan.DLieu.NBan.NDDien = seller_representative;
         objInvoice.BBan.DLieu.NBan.CVu = seller_position;
-        objInvoice.BBan.DLieu.NBan.DTLHe = seller_tel;
+        objInvoice.BBan.DLieu.NBan.DTLHe = this.convertHtmlCode(seller_tel);
 
-        objInvoice.BBan.DLieu.NMua.Ten = noti.buyer_company_name;
+        objInvoice.BBan.DLieu.NMua.Ten = this.convertHtmlCode(noti.buyer_company_name);
         objInvoice.BBan.DLieu.NMua.MST = noti.buyer_taxcode;
-        objInvoice.BBan.DLieu.NMua.DChi = noti.buyer_address;
+        objInvoice.BBan.DLieu.NMua.DChi = this.convertHtmlCode(noti.buyer_address);
         objInvoice.BBan.DLieu.NMua.NDDien = noti.buyer_representative;
         objInvoice.BBan.DLieu.NMua.CVu = noti.buyer_position;
-        objInvoice.BBan.DLieu.NMua.DTLHe = noti.buyer_tel;
+        objInvoice.BBan.DLieu.NMua.DTLHe = this.convertHtmlCode(noti.buyer_tel);
 
         objInvoice.BBan.DLieu.HDon.KHMSHDon = noti.form_no;
         objInvoice.BBan.DLieu.HDon.KHHDon = noti.serial_no;
@@ -11150,7 +11150,7 @@ class EInvoiceController {
         objInvoice.BBan.DLieu.HDon.NLap = noti.invoice_dt;
         objInvoice.BBan.DLieu.HDon.MCCQT = noti.mccqt;
 
-        objInvoice.BBan.DLieu.LDo = noti.reason;
+        objInvoice.BBan.DLieu.LDo = this.convertHtmlCode(noti.reason);
 
         const id = 'ID1'; //uuid.v4();
         const xml = this.OBJtoXML(objInvoice);

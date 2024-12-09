@@ -1023,7 +1023,7 @@ class EInvoiceController {
           Ngay: invoices[i].invoice_date,
           LADHDDT: invoices[i].invoice_type,
           TCTBao: invoices[i].inform_type,
-          LDo: invoices[i].reason,
+          LDo: this.convertHtmlCode(invoices[i].reason),
         });
       }
       const id = 'ID1'; // uuid.v4();

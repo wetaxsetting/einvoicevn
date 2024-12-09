@@ -604,7 +604,7 @@ class EInvoiceController {
       jsonDeclare.TKhai.DLTKhai.TTChung.MSo = declare_form_no;
       jsonDeclare.TKhai.DLTKhai.TTChung.Ten = declare_name;
       jsonDeclare.TKhai.DLTKhai.TTChung.HThuc = declare_type;
-      jsonDeclare.TKhai.DLTKhai.TTChung.TNNT = seller_company_name;
+      jsonDeclare.TKhai.DLTKhai.TTChung.TNNT = this.convertHtmlCode(seller_company_name);
       jsonDeclare.TKhai.DLTKhai.TTChung.MST = seller_taxcode;
       jsonDeclare.TKhai.DLTKhai.TTChung.CQTQLy = tax_office_name;
       jsonDeclare.TKhai.DLTKhai.TTChung.MCQTQLy = tax_office_code;
@@ -635,7 +635,7 @@ class EInvoiceController {
       for (let i = 0; i < digital_certificates.length; i++) {
         jsonDeclare.TKhai.DLTKhai.NDTKhai.DSCTSSDung.CTS.push({
           STT: digital_certificates[i].sequence || i + 1,
-          TTChuc: digital_certificates[i].organization_name,
+          TTChuc: this.convertHtmlCode(digital_certificates[i].organization_name),
           Seri: digital_certificates[i].serial_no,
           TNgay: digital_certificates[i].from_date,
           DNgay: digital_certificates[i].to_date,

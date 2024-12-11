@@ -203,7 +203,12 @@ class EInvoiceController2 {
 
       let req_key = [];
       let data_send_mail = [];
-      const valid = this.weTaxValidatePosInvoiceToXML(invoices);
+      let valid = '';
+      if (process_type == 'E' || process_type == 'I') {
+        valid = this.weTaxValidatePosInvoiceToXML(invoices);
+      } else if (process_type == 'N') {
+      }
+
       if (!valid.status) {
         json_xml.push({
           error: valid.message,
@@ -1078,6 +1083,247 @@ class EInvoiceController2 {
           req_key: req_key,
           xml_process: true,
         });
+      } else if (process_type == 'N') {
+        objInvoice_M = {
+          HDon: {
+            DLHDon: {
+              TTChung: {
+                PBan: '',
+                THDon: '',
+                KHMSHDon: '',
+                KHHDon: '',
+                SHDon: '',
+                NLap: '',
+                DVTTe: '',
+                TGia: '',
+                HTTToan: '',
+                MSTTCGP: '',
+              },
+              NDHDon: {
+                NBan: {
+                  Ten: '',
+                  MST: '',
+                  DChi: '',
+                  SDThoai: '',
+                  DCTDTu: '',
+                  STKNHang: '',
+                  TNHang: '',
+                  Fax: '',
+                  Website: '',
+                  TTKhac: '',
+                },
+                NMua: {
+                  Ten: '',
+                  MST: '',
+                  DChi: '',
+                  MKHang: '',
+                  SDThoai: '',
+                  DCTDTu: '',
+                  STKNHang: '',
+                  HVTNMHang: '',
+                  TNHang: '',
+                  TTKhac: '',
+                },
+                DSHHDVu: {},
+                TToan: {
+                  THTTLTSuat: {
+                    LTSuat: {
+                      TSuat: '',
+                      ThTien: '',
+                      TThue: '',
+                    },
+                  },
+                  TgTCThue: '',
+                  TgTThue: '',
+                  TTCKTMai: '',
+                  TgTTTBSo: '',
+                  TgTTTBChu: '',
+                },
+              },
+            },
+            DSCKS: {},
+          },
+        };
+
+        for (let i = 0; i < invoices.length; i++) {
+          //console.log("invoices:", invoices[i])
+          const lastInvoiceNo = await DBService.callProcCursor(
+            'wt_sel_last_invoice_no',
+            [invoices[i].seller_taxcode, invoices[i].serial_no, invoices[i].form_no],
+            'ENG',
+            p_crt_by,
+            'N',
+          );
+          let last_invoice_no = lastInvoiceNo[0].INVOICE_NO;
+          const last_invoice_date = lastInvoiceNo[0].INVOICE_DATE;
+          const tomorrow_date = lastInvoiceNo[0].TOMORROW_DATE;
+          if (isNaN(last_invoice_no)) {
+            return response.status(409).json(
+              Utils.responseByRule({
+                success: false,
+                message: `Failed to create invoice no. Please contact administrator for helping.`,
+                data: null,
+              }),
+            );
+          }
+
+          if (invoices[i].invoice_date < last_invoice_date && !invoices[i].invoice_no) {
+            return response.status(409).json(
+              Utils.responseByRule({
+                success: false,
+                message: `invoice date cannot smaller than ${last_invoice_date}.`,
+                data: invoices[i].invoice_date,
+              }),
+            );
+          }
+          if (invoices[i].invoice_date >= tomorrow_date) {
+            return response
+              .status(409)
+              .json(
+                Utils.responseByRule({success: false, message: `invoice date cannot greater than ${tomorrow_date}.`, data: invoices[i].invoice_date}),
+              );
+          }
+
+          if (invoices[i].invoice_date < last_invoice_date && !invoices[i].invoice_no) {
+            return response.status(409).json(
+              Utils.responseByRule({
+                success: false,
+                message: `invoice date cannot smaller than ${last_invoice_date}.`,
+                data: invoices[i].invoice_date,
+              }),
+            );
+          }
+          if (invoices[i].invoice_date >= tomorrow_date) {
+            return response
+              .status(409)
+              .json(
+                Utils.responseByRule({success: false, message: `invoice date cannot greater than ${tomorrow_date}.`, data: invoices[i].invoice_date}),
+              );
+          }
+          if (invoices[i].form_no == 1) {
+            objInvoice_M.HDon.DLHDon.TTChung.THDon = 'Hóa đơn giá trị gia tăng';
+          } else if (invoices[i].form_no == 2) {
+            objInvoice_M.HDon.DLHDon.TTChung.THDon = 'Hóa đơn bán hàng';
+          } else if (invoices[i].form_no == 3) {
+            objInvoice_M.HDon.DLHDon.TTChung.THDon = 'Hóa đơn bán tài sản công';
+          } else if (invoices[i].form_no == 4) {
+            objInvoice_M.HDon.DLHDon.TTChung.THDon = 'Hóa đơn bán hàng dự trữ quốc gia';
+          } else if (invoices[i].form_no == 5) {
+            objInvoice_M.HDon.DLHDon.TTChung.THDon = 'Tem điện tử, vé điện tử, thẻ điện tử, phiếu thu điện tử, chứng từ thu phí DV ngân hàng';
+          } else if (invoices[i].form_no == 6) {
+            objInvoice_M.HDon.DLHDon.TTChung.THDon = 'Phiếu xuất kho kiêm vận chuyển nội bộ, phiếu xuất kho hàng gửi bán đại lý';
+          }
+          objInvoice_M.HDon.DLHDon.TTChung.PBan = invoices[i].version;
+          objInvoice_M.HDon.DLHDon.TTChung.KHMSHDon = invoices[i].form_no;
+          objInvoice_M.HDon.DLHDon.TTChung.KHHDon = invoices[i].serial_no;
+          objInvoice_M.HDon.DLHDon.TTChung.SHDon = invoices[i].invoice_no;
+          objInvoice_M.HDon.DLHDon.TTChung.NLap = invoices[i].invoice_date;
+          objInvoice_M.HDon.DLHDon.TTChung.DVTTe = invoices[i].currency;
+          objInvoice_M.HDon.DLHDon.TTChung.TGia = invoices[i].ex_rate;
+          objInvoice_M.HDon.DLHDon.TTChung.HTTToan = invoices[i].payment_method;
+          objInvoice_M.HDon.DLHDon.TTChung.MSTTCGP = '1201496252'; //webcashgenuwin.com taxcode
+
+          objInvoice_M.HDon.DLHDon.TTChung.TTHDLQuan = [];
+          // console.log("invoices[i].invoice_feature  " ,invoices[i].invoice_feature)
+          if (invoices[i].invoice_feature != 0 && invoices[i].invoice_feature != null) {
+            //
+            objInvoice_M.HDon.DLHDon.TTChung.TTHDLQuan.push({
+              TCHDon: invoices[i].invoice_feature,
+              LHDCLQuan: invoices[i].invoice_type_relative,
+              KHMSHDCLQuan: invoices[i].form_no_relative,
+              KHHDCLQuan: invoices[i].serial_no_relative,
+              SHDCLQuan: invoices[i].invoice_no_relative,
+              NLHDCLQuan: invoices[i].invoice_date_relative,
+              GChu: invoices[i].description,
+            });
+          }
+
+          objInvoice_M.HDon.DLHDon.NDHDon.NBan.Ten = this.convertHtmlCode(invoices[i].seller_comp_name) || '';
+          objInvoice_M.HDon.DLHDon.NDHDon.NBan.MST = invoices[i].seller_taxcode || '';
+          objInvoice_M.HDon.DLHDon.NDHDon.NBan.DChi = this.convertHtmlCode(invoices[i].seller_address) || '';
+          objInvoice_M.HDon.DLHDon.NDHDon.NBan.SDThoai = invoices[i].seller_phone || '';
+          objInvoice_M.HDon.DLHDon.NDHDon.NBan.DCTDTu = invoices[i].seller_email || '';
+          objInvoice_M.HDon.DLHDon.NDHDon.NBan.STKNHang = invoices[i].seller_bank_no || '';
+          objInvoice_M.HDon.DLHDon.NDHDon.NBan.TNHang = this.convertHtmlCode(invoices[i].seller_bank_name) || '';
+          objInvoice_M.HDon.DLHDon.NDHDon.NBan.Fax = invoices[i].seller_fax || '';
+          objInvoice_M.HDon.DLHDon.NDHDon.NBan.Website = invoices[i].seller_website || '';
+          objInvoice_M.HDon.DLHDon.NDHDon.NBan.TTKhac = '';
+
+          objInvoice_M.HDon.DLHDon.NDHDon.NMua.Ten = this.convertHtmlCode(invoices[i].buyer_comp_name) || '';
+          objInvoice_M.HDon.DLHDon.NDHDon.NMua.MST = invoices[i].buyer_taxcode || '';
+          objInvoice_M.HDon.DLHDon.NDHDon.NMua.SDThoai = invoices[i].buyer_phone || '';
+          objInvoice_M.HDon.DLHDon.NDHDon.NMua.DChi = this.convertHtmlCode(invoices[i].buyer_address) || '';
+          objInvoice_M.HDon.DLHDon.NDHDon.NMua.MKHang = invoices[i].buyer_code || '';
+          objInvoice_M.HDon.DLHDon.NDHDon.NMua.HVTNMHang = this.convertHtmlCode(invoices[i].buyer_name) || '';
+          objInvoice_M.HDon.DLHDon.NDHDon.NMua.DCTDTu = invoices[i].buyer_email || '';
+          objInvoice_M.HDon.DLHDon.NDHDon.NMua.STKNHang = invoices[i].buyer_bank_no || '';
+          objInvoice_M.HDon.DLHDon.NDHDon.NMua.TNHang = this.convertHtmlCode(invoices[i].buyer_bank_name) || '';
+          objInvoice_M.HDon.DLHDon.NDHDon.NMua.TTKhac = '';
+
+          objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu = [];
+
+          objInvoice_M.HDon.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat = [];
+
+          for (let k = 0; k < invoices[i].total_vat_list.length; k++) {
+            objInvoice_M.HDon.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat.push({
+              TSuat: invoices[i].total_vat_list[k].sub_vat_rate || '0%',
+              ThTien: invoices[i].total_vat_list[k].sub_amt || '0',
+              TThue: invoices[i].total_vat_list[k].sub_amt_vat || '0',
+            });
+          }
+
+          objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTCThue = invoices[i].total_amt || '0';
+          objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTThue = invoices[i].total_vat_amt || '0';
+          objInvoice_M.HDon.DLHDon.NDHDon.TToan.TTCKTMai = invoices[i].total_dc_amt || '0';
+          objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = invoices[i].total_payment || '0';
+          objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = invoices[i].total_payment_word_vie; //await Utils.Num2VNText2(invoices[i].total_payment.toString() || '0', invoices[i].currency);
+
+          objInvoice_M.HDon.DSCKS.NBan = '';
+          objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu = {};
+          objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu = [];
+
+          for (let j = 0; j < invoices[i].detail_invoice.length; j++) {
+            //console.log("invoices[i].detail_invoice  ", invoices[i].detail_invoice);
+            objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
+              TChat: invoices[i].detail_invoice[j].feature,
+              STT: invoices[i].detail_invoice[j].seq,
+              MHHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_code),
+              THHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_name),
+              DVTinh: invoices[i].detail_invoice[j].item_uom,
+              SLuong: invoices[i].detail_invoice[j].quantity,
+              DGia: invoices[i].detail_invoice[j].uprice,
+              TLCKhau: invoices[i].detail_invoice[j].dc_rate,
+              STCKhau: invoices[i].detail_invoice[j].dc_amt,
+              ThTien: invoices[i].detail_invoice[j].amt,
+              TSuat: invoices[i].detail_invoice[j].vat_rate,
+              TTKhac: [
+                {
+                  TTin: {
+                    TTruong: 'VATAmount',
+                    KDLieu: 'decimal',
+                    DLieu: invoices[i].detail_invoice[j].amt_vat,
+                  },
+                },
+              ],
+            });
+          }
+          count_inv++;
+          const id = uuid.v4();
+          const signature_path = 'HDon/DSCKS/NBan';
+          const xml = this.OBJtoXML(objInvoice_M);
+          const xmlStr = xml.toString().replace('<DLHDon>', `<DLHDon Id=\'${id}\'>`);
+
+          //console.log("xmlStr", xmlStr)
+          //console.log("weTaxConvertInvoiceToXML END");
+          //rtnXML.push({req_key: invoices[i].master_pk, xml_data: xmlStr, sign_id: id, signature_path: signature_path});
+          json_xml.push({
+            sign_id: id,
+            signature_path: signature_path,
+            xml: xmlStr,
+            req_key: req_key,
+            xml_process: true,
+          });
+        }
       }
       return {json_xml, data_send_mail};
     } catch (error) {
@@ -2316,6 +2562,321 @@ class EInvoiceController2 {
         ) {
           status = false;
           resMess = `${mess1} amount total is: ${master_total_amount}  != ${detail_total_amount} != ${vat_total_amount}`;
+          return {
+            status,
+            message: resMess,
+          };
+        }
+      }
+      // if dont have any problem
+      return {
+        status,
+        message: resMess,
+      };
+    } catch (error) {
+      console.log('error  ', error);
+      //let status = false;
+      return {
+        status,
+        message: resMess,
+      };
+    }
+  }
+
+  validateJsonInvalidNormalInvoiceToXML(invoices) {
+    let status = true;
+    let resMess = '';
+    const mess1 = 'Invalid field';
+    //console.log("invoice  ", invoice)
+    try {
+      const errorList = {
+        version: /^(\d{1}\.\d{1}\.\d{1})$/, //6
+        master_pk: /^-?\d+(\.\d{1,99})?$/, //99
+        invoice_name: /^.{0,100}$/, //100
+        form_no: /^.{0,1}$/, //1
+        serial_no: /^.{0,6}$/, // 6
+        invoice_no: /^.{0,9}$/, // 8
+        invoice_date: /^(\d{4}\-\d{2}\-\d{2})$/, //10,
+        currency: /^.{0,3}$/, //3,
+        ex_rate: /^-?[0-9]{1,7}(?:\.[0-9]{1,2})?$/, //7.2
+        payment_method: /^.{0,50}$/, //50,
+        seller_comp_name: /^.{0,400}$/, //400,
+        seller_taxcode: {10: /^(\d{10})$/, 14: /^(\d{10}\-\d{3})$/}, // 10
+        seller_address: /^.{0,400}$/, //400,
+        seller_phone: /^.{0,20}$/, // 20
+        seller_email: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, ///^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/gm, // 20
+        seller_bank_no: /^.{0,30}$/, // 20
+        seller_bank_name: /^.{0,400}$/, // 20
+        seller_fax: /^.{0,20}$/, // 20
+        seller_website: /^.{0,50}$/, // 20
+        buyer_comp_name: /^.{0,400}$/, //400,
+        buyer_name: /^.{0,100}$/,
+        buyer_code: /^.{0,50}$/,
+        buyer_taxcode: {10: /^(\d{10})$/, 14: /^(\d{10}\-\d{3})$/},
+        buyer_address: /^.{0,400}$/, // 400
+        buyer_phone: /^.{0,20}$/, //20,
+        buyer_email: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, //  /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/gm,
+        buyer_email_cc: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, // /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/gm,
+        buyer_bank_no: /^.{0,30}$/,
+        buyer_bank_name: /^.{0,400}$/,
+        detail_invoice: {
+          feature: /^(1|2|3|4){1}$/, //  /^-?\d+(\.\d{1})?$/, //1,
+          seq: /^-?\d+(\.\d{0,4})?$/, //4 ,
+          item_code: /^[\s\S]{0,50}$/, //50,
+          item_name: /^[\s\S]{1,500}$/, //500,
+          item_uom: /^.{0,50}$/, //50,
+          quantity: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/, //21.6,
+          uprice: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/, // 21.6,
+          dc_rate: /^-?\d+(\.\d{1,4})?[%]/, // 6,4
+          dc_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
+          amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
+          vat_rate: /^(0%|5%|8%|10%)$/, //  /^-?\d+(\.\d{1,4})?[%]/,
+          amt_vat: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/, //21, 6
+        },
+
+        total_vat_list: {
+          sub_vat_rate: /^(0%|5%|8%|10%|KCT|KKKNT)$/, //sub_vat_rate: /^(0%|5%|8%|10%)$/, //  /^-?\d+(\.\d{1,4})?[%]/, //11,
+          sub_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
+          sub_amt_vat: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
+        },
+
+        total_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
+        total_vat_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
+        total_dc_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
+        total_payment: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
+        total_payment_word_vie: /^.{1,255}$/, // 255
+      };
+
+      for (const invoice of invoices) {
+        let vat_amount_vat = 0,
+          vat_amout = 0,
+          vat_total_amount = 0;
+        let master_amount_vat = 0,
+          master_amount = 0,
+          master_total_amount = 0;
+        let detail_amount_vat = 0,
+          detail_amount = 0,
+          detail_total_amount = 0;
+
+        for (const key in invoice) {
+          if (errorList[`${key}`] != undefined && !Array.isArray(invoice[key])) {
+            master_amount_vat = Number(invoice['total_vat_amt']);
+            master_amount = Number(invoice['total_amt']);
+            master_total_amount = Number(invoice['total_payment']);
+            if (key == 'seller_taxcode' || key == 'buyer_taxcode') {
+              if (invoice[key].length == 10) {
+                if (!errorList[`${key}`][10].test(invoice[key])) {
+                  status = false;
+                  resMess = `${mess1} ${key}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+              } else if (invoice[key].length == 14) {
+                if (!errorList[`${key}`][14].test(invoice[key])) {
+                  status = false;
+                  resMess = `${mess1} ${key}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+              } else if (invoice[key]) {
+                // ((invoice[key].length < 10 || invoice[key].length > 14) && invoice[key]) {
+                status = false;
+                resMess = `${mess1} ${key}. length between 10 and 14}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+            } else if (key == 'buyer_email' || key == 'buyer_email_cc' || key == 'seller_email') {
+              //console.log('validateJsonInvalidNormalInvoiceToXML  key   ', key, ' - ', invoice[key]);
+              if (!errorList[`${key}`].test(invoice[key]) && invoice[key]) {
+                // && invoice[key]
+                status = false;
+                resMess = `${mess1} ${key}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+            } else if (!errorList[`${key}`].test(invoice[key])) {
+              status = false;
+              resMess = `${mess1} ${key}.`;
+              return {
+                status,
+                message: resMess,
+              };
+            }
+          } else {
+            if (key == 'total_vat_list') {
+              for (const sub_vat of invoice[key]) {
+                vat_amount_vat += Number(sub_vat.sub_amt_vat);
+                vat_amout += Number(sub_vat.sub_amt);
+                if (
+                  !errorList[`${key}`].sub_vat_rate.test(sub_vat.sub_vat_rate) &&
+                  sub_vat.sub_vat_rate != 'KCT' &&
+                  sub_vat.sub_vat_rate != 'KKKNT'
+                ) {
+                  status = false;
+                  resMess = `${mess1} ${key}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+
+                if (!errorList[`${key}`].sub_amt.test(sub_vat.sub_amt)) {
+                  status = false;
+                  resMess = `${mess1} ${key}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+
+                if (!errorList[`${key}`].sub_amt_vat.test(sub_vat.sub_amt_vat)) {
+                  status = false;
+                  resMess = `${mess1} ${key}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+              }
+            }
+
+            if (key == 'detail_invoice') {
+              for (const inv of invoice[key]) {
+                detail_amount_vat += Number(inv.amt_vat);
+                detail_amount += Number(inv.amt);
+                if (!errorList[`${key}`].feature.test(inv.feature)) {
+                  status = false;
+                  resMess = `${mess1} feature is: ${inv.feature}.`;
+
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                if (!errorList[`${key}`].seq.test(inv.seq)) {
+                  status = false;
+                  resMess = `${mess1} seq is: ${inv.seq}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                if (!errorList[`${key}`].item_code.test(inv.item_code) && inv.item_code) {
+                  status = false;
+                  resMess = `${mess1} item_code is: ${inv.item_code}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                if (!errorList[`${key}`].item_name.test(inv.item_name)) {
+                  status = false;
+                  resMess = `${mess1} item_name is: ${inv.item_name}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                if (!errorList[`${key}`].item_uom.test(inv.item_uom)) {
+                  status = false;
+                  resMess = `${mess1} item_uom is: ${inv.item_uom}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                if (!errorList[`${key}`].quantity.test(inv.quantity)) {
+                  status = false;
+                  resMess = `${mess1} quantity is: ${inv.quantity}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                if (!errorList[`${key}`].uprice.test(inv.uprice)) {
+                  status = false;
+                  resMess = `${mess1} uprice is: ${inv.uprice}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                if (!errorList[`${key}`].dc_amt.test(inv.dc_amt)) {
+                  status = false;
+                  resMess = `${mess1} dc_amt is: ${inv.dc_amt}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                if (!errorList[`${key}`].dc_rate.test(inv.dc_rate) && inv.dc_rate && inv.dc_rate != 'KCT' && inv.dc_rate != 'KKKNT') {
+                  status = false;
+                  resMess = `${mess1} dc_rate is: ${inv.dc_rate}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                if (!errorList[`${key}`].amt.test(inv.amt)) {
+                  status = false;
+                  resMess = `${mess1} amt is: ${inv.amt}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                if (!errorList[`${key}`].vat_rate.test(inv.vat_rate) && inv.vat_rate != 'KCT' && inv.vat_rate != 'KKKNT') {
+                  status = false;
+                  resMess = `${mess1} vat_rate is: ${inv.vat_rate}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                if (!errorList[`${key}`].amt_vat.test(inv.amt_vat)) {
+                  status = false;
+                  resMess = `${mess1} amt_vat is: ${inv.amt_vat}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+              }
+            }
+          }
+        }
+
+        if (Number(master_amount.toFixed(6)) != Number(detail_amount.toFixed(6)) && master_amount != null) {
+          status = false;
+          resMess = `${mess1} amount xx is: ${master_amount}  != ${detail_amount}`;
+          return {
+            status,
+            message: resMess,
+          };
+        }
+
+        if (Number(master_amount_vat.toFixed(6)) != Number(detail_amount_vat.toFixed(6)) && master_amount_vat != null) {
+          status = false;
+          resMess = `${mess1} amount vat is: ${master_amount_vat} != ${detail_amount_vat}`;
+          return {
+            status,
+            message: resMess,
+          };
+        }
+        //vat_total_amount = vat_amount_vat + vat_amout;
+        detail_total_amount = Number(detail_amount) + Number(detail_amount_vat);
+
+        if (Number(master_total_amount.toFixed(6)) != Number(detail_total_amount.toFixed(6)) && master_total_amount != null) {
+          status = false;
+          resMess = `${mess1} amount total is: ${master_total_amount}  != ${detail_total_amount}`;
           return {
             status,
             message: resMess,

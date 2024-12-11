@@ -127,8 +127,8 @@ class EInvoiceController2 {
         p_language,
         p_crt_by,
       );
-      console.log('weTaxGeneralXML json_xml ', json_xml);
-      console.log('weTaxGeneralXML data_send_mail ', data_send_mail);
+      // console.log('weTaxGeneralXML json_xml ', json_xml);
+      // console.log('weTaxGeneralXML data_send_mail ', data_send_mail);
       if (json_xml[0].xml_process) {
         const json_xml_signed = await this.weTaxSignXMLHSM(
           user_name,
@@ -1571,21 +1571,35 @@ class EInvoiceController2 {
     let data_inv = [];
     let status = '';
     try {
-      if (process_type == 'I' || process_type == 'P') {
-        const template = [
-          '//HDon',
-          {
-            DLHDon: {
-              TTChung: {
-                PBan: 'DLHDon/TTChung/PBan',
-                THDon: 'DLHDon/TTChung/THDon',
-                KHMSHDon: 'DLHDon/TTChung/KHMSHDon',
-                KHHDon: 'DLHDon/TTChung/KHHDon',
-                SHDon: 'DLHDon/TTChung/SHDon',
+      const template = [
+        '//HDon',
+        {
+          DLHDon: {
+            TTChung: {
+              PBan: 'DLHDon/TTChung/PBan',
+              THDon: 'DLHDon/TTChung/THDon',
+              KHMSHDon: 'DLHDon/TTChung/KHMSHDon',
+              KHHDon: 'DLHDon/TTChung/KHHDon',
+              SHDon: 'DLHDon/TTChung/SHDon',
 
-                NLap: 'DLHDon/TTChung/NLap',
+              NLap: 'DLHDon/TTChung/NLap',
+              TTKhac: [
+                'DLHDon/TTChung/TTKhac/TTin',
+                {
+                  TTruong: 'TTruong',
+                  KDLieu: 'KDLieu',
+                  DLieu: 'DLieu',
+                },
+              ],
+            },
+            NDHDon: {
+              NBan: {
+                Ten: 'DLHDon/NDHDon/NBan/Ten',
+                MST: 'DLHDon/NDHDon/NBan/MST',
+                DChi: 'DLHDon/NDHDon/NBan/DChi',
+                SDThoai: 'DLHDon/NDHDon/NBan/SDThoai',
                 TTKhac: [
-                  'DLHDon/TTChung/TTKhac/TTin',
+                  'DLHDon/NDHDon/NBan/TTKhac/TTin',
                   {
                     TTruong: 'TTruong',
                     KDLieu: 'KDLieu',
@@ -1593,121 +1607,106 @@ class EInvoiceController2 {
                   },
                 ],
               },
-              NDHDon: {
-                NBan: {
-                  Ten: 'DLHDon/NDHDon/NBan/Ten',
-                  MST: 'DLHDon/NDHDon/NBan/MST',
-                  DChi: 'DLHDon/NDHDon/NBan/DChi',
-                  SDThoai: 'DLHDon/NDHDon/NBan/SDThoai',
-                  TTKhac: [
-                    'DLHDon/NDHDon/NBan/TTKhac/TTin',
+              NMua: {
+                Ten: 'DLHDon/NDHDon/NMua/Ten',
+                MST: 'DLHDon/NDHDon/NMua/MST',
+                DChi: 'DLHDon/NDHDon/NMua/DChi',
+                SDThoai: 'DLHDon/NDHDon/NMua/SDThoai',
+                CCCDan: 'DLHDon/NDHDon/NMua/CCCDan',
+                TTKhac: [
+                  'DLHDon/NDHDon/NMua/TTKhac/TTin',
+                  {
+                    TTruong: 'TTruong',
+                    KDLieu: 'KDLieu',
+                    DLieu: 'DLieu',
+                  },
+                ],
+              },
+              DSHHDVu: {
+                HHDVu: [
+                  'DLHDon/NDHDon/DSHHDVu/HHDVu',
+                  {
+                    TChat: 'TChat',
+                    STT: 'STT',
+                    MHHDVu: 'MHHDVu',
+                    THHDVu: 'THHDVu',
+                    DVTinh: 'DVTinh',
+                    SLuong: 'SLuong',
+                    DGia: 'DGia',
+                    TLCKhau: 'TLCKhau',
+                    STCKhau: 'STCKhau',
+                    ThTien: 'ThTien',
+                    TSuat: 'TSuat',
+                  },
+                ],
+              },
+              TToan: {
+                THTTLTSuat: {
+                  LTSuat: [
+                    'DLHDon/NDHDon/TToan/THTTLTSuat/LTSuat',
                     {
-                      TTruong: 'TTruong',
-                      KDLieu: 'KDLieu',
-                      DLieu: 'DLieu',
-                    },
-                  ],
-                },
-                NMua: {
-                  Ten: 'DLHDon/NDHDon/NMua/Ten',
-                  MST: 'DLHDon/NDHDon/NMua/MST',
-                  DChi: 'DLHDon/NDHDon/NMua/DChi',
-                  SDThoai: 'DLHDon/NDHDon/NMua/SDThoai',
-                  CCCDan: 'DLHDon/NDHDon/NMua/CCCDan',
-                  TTKhac: [
-                    'DLHDon/NDHDon/NMua/TTKhac/TTin',
-                    {
-                      TTruong: 'TTruong',
-                      KDLieu: 'KDLieu',
-                      DLieu: 'DLieu',
-                    },
-                  ],
-                },
-                DSHHDVu: {
-                  HHDVu: [
-                    'DLHDon/NDHDon/DSHHDVu/HHDVu',
-                    {
-                      TChat: 'TChat',
-                      STT: 'STT',
-                      MHHDVu: 'MHHDVu',
-                      THHDVu: 'THHDVu',
-                      DVTinh: 'DVTinh',
-                      SLuong: 'SLuong',
-                      DGia: 'DGia',
-                      TLCKhau: 'TLCKhau',
-                      STCKhau: 'STCKhau',
-                      ThTien: 'ThTien',
                       TSuat: 'TSuat',
+                      ThTien: 'ThTien',
+                      TThue: 'TThue',
                     },
                   ],
                 },
-                TToan: {
-                  THTTLTSuat: {
-                    LTSuat: [
-                      'DLHDon/NDHDon/TToan/THTTLTSuat/LTSuat',
-                      {
-                        TSuat: 'TSuat',
-                        ThTien: 'ThTien',
-                        TThue: 'TThue',
-                      },
-                    ],
-                  },
-                  DSLPhi: {
-                    LPhi: [
-                      'DLHDon/NDHDon/TToan/DSLPhi/LPhi',
-                      {
-                        TLPhi: 'TLPhi',
-                        TPhi: 'TPhi',
-                      },
-                    ],
-                  },
-                  TgTCThue: 'DLHDon/NDHDon/TToan/TgTCThue',
-                  TgTThue: 'DLHDon/NDHDon/TToan/TgTThue',
-                  TTCKTMai: 'DLHDon/NDHDon/TToan/TTCKTMai',
-                  TgTTTBSo: 'DLHDon/NDHDon/TToan/TgTTTBSo',
-                  TgTTTBChu: 'DLHDon/NDHDon/TToan/TgTTTBChu',
+                DSLPhi: {
+                  LPhi: [
+                    'DLHDon/NDHDon/TToan/DSLPhi/LPhi',
+                    {
+                      TLPhi: 'TLPhi',
+                      TPhi: 'TPhi',
+                    },
+                  ],
                 },
+                TgTCThue: 'DLHDon/NDHDon/TToan/TgTCThue',
+                TgTThue: 'DLHDon/NDHDon/TToan/TgTThue',
+                TTCKTMai: 'DLHDon/NDHDon/TToan/TTCKTMai',
+                TgTTTBSo: 'DLHDon/NDHDon/TToan/TgTTTBSo',
+                TgTTTBChu: 'DLHDon/NDHDon/TToan/TgTTTBChu',
               },
             },
-            DSCKS: [
-              'DSCKS',
-              {
-                NBan: 'NBan',
-              },
-            ],
-            MCCQT: 'MCCQT',
           },
-        ];
-        console.log('xml_content  ', xml_content);
-        const jsonInvoice = await transform(xml_content, template);
+          DSCKS: [
+            'DSCKS',
+            {
+              NBan: 'NBan',
+            },
+          ],
+          MCCQT: 'MCCQT',
+        },
+      ];
+      console.log('xml_content  ', xml_content);
+      const jsonInvoice = await transform(xml_content, template);
 
-        console.log('jsonInvoice  ', JSON.stringify(jsonInvoice));
+      console.log('jsonInvoice  ', JSON.stringify(jsonInvoice));
 
-        var xpath = require('xpath');
-        var dom = require('@xmldom/xmldom').DOMParser;
+      var xpath = require('xpath');
+      var dom = require('@xmldom/xmldom').DOMParser;
 
-        var doc = new dom().parseFromString(xml_content, 'text/xml');
-        var nodes = xpath.select('//HDon', doc);
+      var doc = new dom().parseFromString(xml_content, 'text/xml');
+      var nodes = xpath.select('//HDon', doc);
 
-        const templateSignTime = {
-          SigningTime: 'TDiep/DLieu/HDon/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
+      const templateSignTime = {
+        SigningTime: 'TDiep/DLieu/HDon/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
+      };
+      const signingTime = await transform(xml_content, templateSignTime);
+
+      //return jsonInvoice;
+      if (jsonInvoice) {
+        const paraPos = {
+          invoice_date: seller_date,
+          seller_tax_code: seller_tax_code,
+          tax_serial_number: tax_serial_number,
+          pos_xml: xml_content,
+          req_key: req_key,
+          signing_time: signingTime.SigningTime,
+          qty: jsonInvoice.length,
         };
-        const signingTime = await transform(xml_content, templateSignTime);
 
-        //return jsonInvoice;
-        if (jsonInvoice) {
-          const paraPos = {
-            invoice_date: seller_date,
-            seller_tax_code: seller_tax_code,
-            tax_serial_number: tax_serial_number,
-            pos_xml: xml_content,
-            req_key: req_key,
-            signing_time: signingTime.SigningTime,
-            qty: jsonInvoice.length,
-          };
-
-          const rtnValuePos = await DBService.ExecuteSQLBlob(
-            `BEGIN wt_upd_pos_xml_box (          
+        const rtnValuePos = await DBService.ExecuteSQLBlob(
+          `BEGIN wt_upd_pos_xml_box (          
                                           :invoice_date,
                                           :seller_tax_code,
                                           :tax_serial_number,
@@ -1718,140 +1717,140 @@ class EInvoiceController2 {
                                           :p_language, 
                                           :p_crt_by, 
                                           :p_rtn_cur); END;`,
-            paraPos,
-            p_language,
-            p_crt_by,
-          );
+          paraPos,
+          p_language,
+          p_crt_by,
+        );
 
-          status = rtnValuePos.p_rtn_cur[0].STATUS;
-          if (rtnValuePos.p_rtn_cur[0].STATUS == 'OK') {
-            //console.log("jsonInvoice  ", jsonInvoice);
-            let index_node_xml = 0;
-            for (const invoice of jsonInvoice) {
-              let xml_content = nodes[index_node_xml].toString(); // '<HDon>' + this.OBJtoXML(invoice) + '</HDon>';
-              var getLength = require('utf8-byte-length');
-              let xml_length = getLength(xml_content);
-              // console.log('weTaxExtractPosXMLContent m xml_content ===> ', xml_content);
-              let p_DVTTe = '',
-                p_TGia = '',
-                p_HTTToan = '';
-              invoice.DLHDon.TTChung.TTKhac.forEach((element, index) => {
-                if (element.TTruong == 'DVTTe') {
-                  p_DVTTe = element.DLieu;
-                }
-                if (element.TTruong == 'TGia') {
-                  p_TGia = element.DLieu;
-                }
-                if (element.TTruong == 'HTTToan') {
-                  p_HTTToan = element.DLieu;
-                }
-              });
+        status = rtnValuePos.p_rtn_cur[0].STATUS;
+        if (rtnValuePos.p_rtn_cur[0].STATUS == 'OK') {
+          //console.log("jsonInvoice  ", jsonInvoice);
+          let index_node_xml = 0;
+          for (const invoice of jsonInvoice) {
+            let xml_content = nodes[index_node_xml].toString(); // '<HDon>' + this.OBJtoXML(invoice) + '</HDon>';
+            var getLength = require('utf8-byte-length');
+            let xml_length = getLength(xml_content);
+            // console.log('weTaxExtractPosXMLContent m xml_content ===> ', xml_content);
+            let p_DVTTe = '',
+              p_TGia = '',
+              p_HTTToan = '';
+            invoice.DLHDon.TTChung.TTKhac.forEach((element, index) => {
+              if (element.TTruong == 'DVTTe') {
+                p_DVTTe = element.DLieu;
+              }
+              if (element.TTruong == 'TGia') {
+                p_TGia = element.DLieu;
+              }
+              if (element.TTruong == 'HTTToan') {
+                p_HTTToan = element.DLieu;
+              }
+            });
 
-              let p_DCTDTu = '',
-                p_STKNHang = '',
-                p_TNHang = '',
-                p_Fax = '',
-                p_Website = '';
-              invoice.DLHDon.NDHDon.NBan.TTKhac.forEach((element, index) => {
-                if (element.TTruong == 'DCTDTu') {
-                  p_DCTDTu = element.DLieu;
-                }
-                if (element.TTruong == 'STKNHang') {
-                  p_STKNHang = element.DLieu;
-                }
-                if (element.TTruong == 'TNHang') {
-                  p_TNHang = element.DLieu;
-                }
+            let p_DCTDTu = '',
+              p_STKNHang = '',
+              p_TNHang = '',
+              p_Fax = '',
+              p_Website = '';
+            invoice.DLHDon.NDHDon.NBan.TTKhac.forEach((element, index) => {
+              if (element.TTruong == 'DCTDTu') {
+                p_DCTDTu = element.DLieu;
+              }
+              if (element.TTruong == 'STKNHang') {
+                p_STKNHang = element.DLieu;
+              }
+              if (element.TTruong == 'TNHang') {
+                p_TNHang = element.DLieu;
+              }
 
-                if (element.TTruong == 'Fax') {
-                  p_Fax = element.DLieu;
-                }
+              if (element.TTruong == 'Fax') {
+                p_Fax = element.DLieu;
+              }
 
-                if (element.TTruong == 'Website') {
-                  p_Website = element.DLieu;
-                }
-              });
+              if (element.TTruong == 'Website') {
+                p_Website = element.DLieu;
+              }
+            });
 
-              let p_nm_DCTDTu = '',
-                p_nm_MKHang = '',
-                p_nm_HVTNMHang = '',
-                p_nm_STKNHang = '',
-                p_nm_TNHang = '';
-              invoice.DLHDon.NDHDon.NMua.TTKhac.forEach((element, index) => {
-                if (element.TTruong == 'DCTDTu') {
-                  p_nm_DCTDTu = element.DLieu;
-                }
-                if (element.TTruong == 'MKHang') {
-                  p_nm_MKHang = element.DLieu;
-                }
-                if (element.TTruong == 'HVTNMHang') {
-                  p_nm_HVTNMHang = element.DLieu;
-                }
+            let p_nm_DCTDTu = '',
+              p_nm_MKHang = '',
+              p_nm_HVTNMHang = '',
+              p_nm_STKNHang = '',
+              p_nm_TNHang = '';
+            invoice.DLHDon.NDHDon.NMua.TTKhac.forEach((element, index) => {
+              if (element.TTruong == 'DCTDTu') {
+                p_nm_DCTDTu = element.DLieu;
+              }
+              if (element.TTruong == 'MKHang') {
+                p_nm_MKHang = element.DLieu;
+              }
+              if (element.TTruong == 'HVTNMHang') {
+                p_nm_HVTNMHang = element.DLieu;
+              }
 
-                if (element.TTruong == 'STKNHang') {
-                  p_nm_STKNHang = element.DLieu;
-                }
+              if (element.TTruong == 'STKNHang') {
+                p_nm_STKNHang = element.DLieu;
+              }
 
-                if (element.TTruong == 'TNHang') {
-                  p_nm_TNHang = element.DLieu;
-                }
-              });
-              const paraMaster = {
-                pban: invoice.DLHDon.TTChung.PBan,
-                thdon: invoice.DLHDon.TTChung.THDon,
-                khmshdon: invoice.DLHDon.TTChung.KHMSHDon,
-                khhdon: invoice.DLHDon.TTChung.KHHDon,
-                shdon: invoice.DLHDon.TTChung.SHDon,
-                nlap: invoice.DLHDon.TTChung.NLap,
+              if (element.TTruong == 'TNHang') {
+                p_nm_TNHang = element.DLieu;
+              }
+            });
+            const paraMaster = {
+              pban: invoice.DLHDon.TTChung.PBan,
+              thdon: invoice.DLHDon.TTChung.THDon,
+              khmshdon: invoice.DLHDon.TTChung.KHMSHDon,
+              khhdon: invoice.DLHDon.TTChung.KHHDon,
+              shdon: invoice.DLHDon.TTChung.SHDon,
+              nlap: invoice.DLHDon.TTChung.NLap,
 
-                dvtte: p_DVTTe, //invoice.DLHDon.TTChung.DVTTe,
-                tgia: p_TGia, //invoice.DLHDon.TTChung.TGia,
-                htttoan: p_HTTToan, //invoice.DLHDon.TTChung.HTTToan,
+              dvtte: p_DVTTe, //invoice.DLHDon.TTChung.DVTTe,
+              tgia: p_TGia, //invoice.DLHDon.TTChung.TGia,
+              htttoan: p_HTTToan, //invoice.DLHDon.TTChung.HTTToan,
 
-                nban_ten: invoice.DLHDon.NDHDon.NBan.Ten,
-                nban_mst: invoice.DLHDon.NDHDon.NBan.MST,
-                nban_dchi: invoice.DLHDon.NDHDon.NBan.DChi,
-                nban_sdthoai: invoice.DLHDon.NDHDon.NBan.SDThoai,
-                nban_dctdtu: p_DCTDTu,
-                nban_stknhang: p_STKNHang,
-                nban_tnhang: p_TNHang,
-                nban_fax: p_Fax,
-                nban_website: p_Website,
+              nban_ten: invoice.DLHDon.NDHDon.NBan.Ten,
+              nban_mst: invoice.DLHDon.NDHDon.NBan.MST,
+              nban_dchi: invoice.DLHDon.NDHDon.NBan.DChi,
+              nban_sdthoai: invoice.DLHDon.NDHDon.NBan.SDThoai,
+              nban_dctdtu: p_DCTDTu,
+              nban_stknhang: p_STKNHang,
+              nban_tnhang: p_TNHang,
+              nban_fax: p_Fax,
+              nban_website: p_Website,
 
-                nmua_ten: invoice.DLHDon.NDHDon.NMua.Ten,
-                nmua_mst: invoice.DLHDon.NDHDon.NMua.MST,
-                nmua_dchi: invoice.DLHDon.NDHDon.NMua.DChi,
-                nmua_sdthoai: invoice.DLHDon.NDHDon.NMua.SDThoai,
-                nmua_cccdan: invoice.DLHDon.NDHDon.NMua.CCCDan,
-                nmua_dctdtu: p_nm_DCTDTu,
-                nmua_mkhang: p_nm_MKHang,
-                nmua_hvten: p_nm_HVTNMHang,
-                nmua_stknhang: p_nm_STKNHang,
-                nmua_tnhang: p_nm_TNHang,
+              nmua_ten: invoice.DLHDon.NDHDon.NMua.Ten,
+              nmua_mst: invoice.DLHDon.NDHDon.NMua.MST,
+              nmua_dchi: invoice.DLHDon.NDHDon.NMua.DChi,
+              nmua_sdthoai: invoice.DLHDon.NDHDon.NMua.SDThoai,
+              nmua_cccdan: invoice.DLHDon.NDHDon.NMua.CCCDan,
+              nmua_dctdtu: p_nm_DCTDTu,
+              nmua_mkhang: p_nm_MKHang,
+              nmua_hvten: p_nm_HVTNMHang,
+              nmua_stknhang: p_nm_STKNHang,
+              nmua_tnhang: p_nm_TNHang,
 
-                tgtcthue: invoice.DLHDon.NDHDon.TToan.TgTCThue,
-                tgtthue: invoice.DLHDon.NDHDon.TToan.TgTThue,
-                ttcktmai: invoice.DLHDon.NDHDon.TToan.TTCKTMai,
-                tgtttbso: invoice.DLHDon.NDHDon.TToan.TgTTTBSo,
-                tgtttbchu: invoice.DLHDon.NDHDon.TToan.TgTTTBChu,
-                mccqt: invoice.MCCQT,
-                seller_tax_code: seller_tax_code,
-                seller_date: seller_date,
-                store_code: store_code,
-                store_name: store_name,
-                tax_serial_number: tax_serial_number,
-                pos_no: '',
-                signing_time: signingTime.SigningTime,
-                tei_wt_invoice_pos_pk: rtnValuePos.p_rtn_cur[0].PK,
-                xml_content: xml_content,
-                xml_length: xml_length,
-                vat_rate: invoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat[0].TSuat,
-              };
+              tgtcthue: invoice.DLHDon.NDHDon.TToan.TgTCThue,
+              tgtthue: invoice.DLHDon.NDHDon.TToan.TgTThue,
+              ttcktmai: invoice.DLHDon.NDHDon.TToan.TTCKTMai,
+              tgtttbso: invoice.DLHDon.NDHDon.TToan.TgTTTBSo,
+              tgtttbchu: invoice.DLHDon.NDHDon.TToan.TgTTTBChu,
+              mccqt: invoice.MCCQT,
+              seller_tax_code: seller_tax_code,
+              seller_date: seller_date,
+              store_code: store_code,
+              store_name: store_name,
+              tax_serial_number: tax_serial_number,
+              pos_no: '',
+              signing_time: signingTime.SigningTime,
+              tei_wt_invoice_pos_pk: rtnValuePos.p_rtn_cur[0].PK,
+              xml_content: xml_content,
+              xml_length: xml_length,
+              vat_rate: invoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat[0].TSuat,
+            };
 
-              console.log('weTaxExtractPosXMLContent m param ===> ', paraMaster);
+            console.log('weTaxExtractPosXMLContent m param ===> ', paraMaster);
 
-              const rtnValueMaster = await DBService.ExecuteSQLBlob(
-                `BEGIN WT_UPD_SALE_BILL (          
+            const rtnValueMaster = await DBService.ExecuteSQLBlob(
+              `BEGIN WT_UPD_SALE_BILL (          
                                                 :pban,
                                                 :thdon,
                                                 :khmshdon,
@@ -1900,51 +1899,51 @@ class EInvoiceController2 {
                                                 :p_language, 
                                                 :p_crt_by, 
                                                 :p_rtn_cur); END;`,
-                paraMaster,
-                p_language,
-                p_crt_by,
-              );
-              // console.log('weTaxExtractPosXMLContent rtnValueMaster  ', rtnValueMaster);
-              status = rtnValueMaster.p_rtn_cur[0].STATUS;
-              // tao json hd va trann thai các kiểu để sau này trả về cho WeTax dễ update
-              data_inv.push({
-                mccqt: invoice.MCCQT,
-                tax_code: invoice.DLHDon.NDHDon.NBan.MST,
-                form_no: invoice.DLHDon.TTChung.KHMSHDon,
-                serial_no: invoice.DLHDon.TTChung.KHHDon,
-                invoice_no: invoice.DLHDon.TTChung.SHDon,
-                inform_code: '', //8
-                inform_name: '', //Dữ liệu hóa đơn hợp lệ
-                lookup_code: '',
-                sign_datetime: signingTime.SigningTime,
-                sign_by: invoice.DLHDon.NDHDon.NBan.Ten,
-                xml_no_sign: xml_no_sign,
-                xml_signed: xml_content,
-                xml_tax_signed: '',
-              });
-              if (rtnValueMaster.p_rtn_cur[0].STATUS == 'OK') {
-                const invoice_detail = invoice.DLHDon.NDHDon.DSHHDVu.HHDVu;
-                for (let inv_d of invoice_detail) {
-                  console.log(' invoice_detail  ', invoice_detail);
-                  const paraDetails = {
-                    tei_wt_invoice_m_pk: rtnValueMaster.p_rtn_cur[0].PK,
-                    tchat: inv_d.TChat,
-                    stt: inv_d.STT,
-                    mhhdvu: inv_d.MHHDVu,
-                    thhdvu: inv_d.THHDVu,
-                    dvtinh: inv_d.DVTinh,
-                    sluong: inv_d.SLuong,
-                    dgia: inv_d.DGia,
-                    tlckhau: inv_d.TLCKhau,
-                    stckhau: inv_d.STCKhau,
-                    thtien: inv_d.ThTien,
-                    tsuat: inv_d.TSuat,
-                  };
+              paraMaster,
+              p_language,
+              p_crt_by,
+            );
+            // console.log('weTaxExtractPosXMLContent rtnValueMaster  ', rtnValueMaster);
+            status = rtnValueMaster.p_rtn_cur[0].STATUS;
+            // tao json hd va trann thai các kiểu để sau này trả về cho WeTax dễ update
+            data_inv.push({
+              mccqt: invoice.MCCQT,
+              tax_code: invoice.DLHDon.NDHDon.NBan.MST,
+              form_no: invoice.DLHDon.TTChung.KHMSHDon,
+              serial_no: invoice.DLHDon.TTChung.KHHDon,
+              invoice_no: invoice.DLHDon.TTChung.SHDon,
+              inform_code: '', //8
+              inform_name: '', //Dữ liệu hóa đơn hợp lệ
+              lookup_code: '',
+              sign_datetime: signingTime.SigningTime,
+              sign_by: invoice.DLHDon.NDHDon.NBan.Ten,
+              xml_no_sign: xml_no_sign,
+              xml_signed: xml_content,
+              xml_tax_signed: '',
+            });
+            if (rtnValueMaster.p_rtn_cur[0].STATUS == 'OK') {
+              const invoice_detail = invoice.DLHDon.NDHDon.DSHHDVu.HHDVu;
+              for (let inv_d of invoice_detail) {
+                console.log(' invoice_detail  ', invoice_detail);
+                const paraDetails = {
+                  tei_wt_invoice_m_pk: rtnValueMaster.p_rtn_cur[0].PK,
+                  tchat: inv_d.TChat,
+                  stt: inv_d.STT,
+                  mhhdvu: inv_d.MHHDVu,
+                  thhdvu: inv_d.THHDVu,
+                  dvtinh: inv_d.DVTinh,
+                  sluong: inv_d.SLuong,
+                  dgia: inv_d.DGia,
+                  tlckhau: inv_d.TLCKhau,
+                  stckhau: inv_d.STCKhau,
+                  thtien: inv_d.ThTien,
+                  tsuat: inv_d.TSuat,
+                };
 
-                  //console.log('weTaxExtractPosXMLContent d param ===> ', paraDetails);
+                //console.log('weTaxExtractPosXMLContent d param ===> ', paraDetails);
 
-                  const rtnValueDetail = await DBService.ExecuteSQLBlob(
-                    `BEGIN WT_UPD_SALE_BILL_D (          
+                const rtnValueDetail = await DBService.ExecuteSQLBlob(
+                  `BEGIN WT_UPD_SALE_BILL_D (          
                                                       :tei_wt_invoice_m_pk,
                                                       :tchat,
                                                       :stt,
@@ -1960,26 +1959,26 @@ class EInvoiceController2 {
                                                       :p_language, 
                                                       :p_crt_by, 
                                                       :p_rtn_cur); END;`,
-                    paraDetails,
-                    p_language,
-                    p_crt_by,
-                  );
-                }
+                  paraDetails,
+                  p_language,
+                  p_crt_by,
+                );
+              }
 
-                const invoice_detail_vat = invoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat;
-                for (const inv_d_vat of invoice_detail_vat) {
-                  //console.log(" inv_d_vat  ", inv_d_vat);
-                  const para_amt_vat = {
-                    tei_wt_sale_bill_pk: rtnValueMaster.p_rtn_cur[0].PK,
-                    sub_amt: inv_d_vat.ThTien,
-                    sub_vat_rate: inv_d_vat.TSuat,
-                    sub_vat_amt: inv_d_vat.TThue,
-                  };
+              const invoice_detail_vat = invoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat;
+              for (const inv_d_vat of invoice_detail_vat) {
+                //console.log(" inv_d_vat  ", inv_d_vat);
+                const para_amt_vat = {
+                  tei_wt_sale_bill_pk: rtnValueMaster.p_rtn_cur[0].PK,
+                  sub_amt: inv_d_vat.ThTien,
+                  sub_vat_rate: inv_d_vat.TSuat,
+                  sub_vat_amt: inv_d_vat.TThue,
+                };
 
-                  //console.log('weTaxExtractPosXMLContent d vat param  ===> ', para_amt_vat);
+                //console.log('weTaxExtractPosXMLContent d vat param  ===> ', para_amt_vat);
 
-                  const rtnValue_VAT = await DBService.ExecuteSQLBlob(
-                    `BEGIN WT_UPD_SALE_BILL_D_VAT (          
+                const rtnValue_VAT = await DBService.ExecuteSQLBlob(
+                  `BEGIN WT_UPD_SALE_BILL_D_VAT (          
                                                                         :tei_wt_sale_bill_pk,
                                                                         :sub_amt,
                                                                         :sub_vat_rate,
@@ -1987,411 +1986,50 @@ class EInvoiceController2 {
                                                                         :p_language, 
                                                                         :p_crt_by, 
                                                                         :p_rtn_cur); END;`,
-                    para_amt_vat,
-                    p_language,
-                    p_crt_by,
-                  );
+                  para_amt_vat,
+                  p_language,
+                  p_crt_by,
+                );
 
-                  // console.log(' weTaxExtractPosXMLContent invoice_detail_vat  ', rtnValue_VAT);
-                }
-              } else if (rtnValueMaster.p_rtn_cur[0].STATUS == 'RESEND') {
-                check_data = {
-                  PK: rtnValuePos.p_rtn_cur[0].PK,
-                  TEI_HISTORY_M_PK: rtnValuePos.p_rtn_cur[0].TEI_HISTORY_M_PK,
-                  STATUS: 'OK', // rtnValuePos.p_rtn_cur[0].STATUS,
-                };
-
-                // return {check_data, data_inv};
-              } else {
-                check_data = {
-                  PK: null,
-                  //TEI_HISTORY_M_PK: null,
-                  STATUS: 'FAILE',
-                };
-
-                return {check_data, data_inv};
+                // console.log(' weTaxExtractPosXMLContent invoice_detail_vat  ', rtnValue_VAT);
               }
-              index_node_xml++;
-            }
-          } else {
-            check_data = {
-              PK: null,
-              TEI_HISTORY_M_PK: null,
-              STATUS: 'FAILE',
-            };
+            } else if (rtnValueMaster.p_rtn_cur[0].STATUS == 'RESEND') {
+              check_data = {
+                PK: rtnValuePos.p_rtn_cur[0].PK,
+                TEI_HISTORY_M_PK: rtnValuePos.p_rtn_cur[0].TEI_HISTORY_M_PK,
+                STATUS: 'OK', // rtnValuePos.p_rtn_cur[0].STATUS,
+              };
 
-            return {check_data, data_inv};
+              // return {check_data, data_inv};
+            } else {
+              check_data = {
+                PK: null,
+                //TEI_HISTORY_M_PK: null,
+                STATUS: 'FAILE',
+              };
+
+              return {check_data, data_inv};
+            }
+            index_node_xml++;
           }
-          console.log('rtnValuePos.p_rtn_cur[0] ', rtnValuePos.p_rtn_cur[0]);
+        } else {
           check_data = {
-            PK: rtnValuePos.p_rtn_cur[0].PK,
-            TEI_HISTORY_M_PK: rtnValuePos.p_rtn_cur[0].TEI_HISTORY_M_PK,
-            STATUS: rtnValuePos.p_rtn_cur[0].STATUS,
+            PK: null,
+            TEI_HISTORY_M_PK: null,
+            STATUS: 'FAILE',
           };
-          console.log('check_data ', check_data);
-          console.log('data_inv ', data_inv);
 
           return {check_data, data_inv};
         }
-      } else if (process_type == 'N') {
-        const templateTTChung = [
-          'HDon/DLHDon/TTChung',
-          {
-            PBan: 'PBan',
-            THDon: 'THDon',
-            KHMSHDon: 'KHMSHDon',
-            KHHDon: 'KHHDon',
-            SHDon: 'SHDon',
-            MHSo: 'MHSo',
-            NLap: 'NLap',
-            SBKe: 'SBKe',
-            NBKe: 'NBKe',
-            DVTTe: 'DVTTe',
-            TGia: 'TGia',
-            HTTToan: 'HTTToan',
-            MSTTCGP: 'MSTTCGP',
-            MSTDVNUNLHDon: 'MSTDVNUNLHDon',
-            TDVNUNLHDon: 'TDVNUNLHDon',
-            DCDVNUNLHDon: 'DCDVNUNLHDon',
-          },
-        ];
-        const jsonTTChung = await transform(p_xml_content, templateTTChung);
-        //console.log("jsonTTChung", jsonTTChung)
-        const templateTTKhac = [
-          'HDon/DLHDon/TTChung/TTKhac/TTin',
-          {
-            TTruong: 'TTruong',
-            DLieu: 'DLieu',
-          },
-        ];
-        let jsonTTKhac = null;
-        try {
-          jsonTTKhac = await transform(p_xml_content, templateTTKhac);
-        } catch (e) {}
-        // console.log("jsonTTKhac", jsonTTKhac)
-        let customField1 = '',
-          customField2 = '',
-          customField3 = '',
-          customField4 = '',
-          customField5 = '',
-          customField6 = '',
-          customField7 = '',
-          customField8 = '',
-          customField9 = '',
-          customField10 = '';
-        if (jsonTTKhac && jsonTTKhac.length > 0) {
-          customField1 = jsonTTKhac[0].TTruong + ': ' + jsonTTKhac[0].DLieu;
-          if (jsonTTKhac.length > 1) {
-            customField2 = jsonTTKhac[1].TTruong + ': ' + jsonTTKhac[1].DLieu;
-          }
-          if (jsonTTKhac.length > 2) {
-            customField2 = jsonTTKhac[1].TTruong + ': ' + jsonTTKhac[1].DLieu;
-            customField3 = jsonTTKhac[2].TTruong + ': ' + jsonTTKhac[2].DLieu;
-          }
-          if (jsonTTKhac.length > 3) {
-            customField2 = jsonTTKhac[1].TTruong + ': ' + jsonTTKhac[1].DLieu;
-            customField3 = jsonTTKhac[2].TTruong + ': ' + jsonTTKhac[2].DLieu;
-            customField4 = jsonTTKhac[3].TTruong + ': ' + jsonTTKhac[3].DLieu;
-          }
-          if (jsonTTKhac.length > 4) {
-            customField2 = jsonTTKhac[1].TTruong + ': ' + jsonTTKhac[1].DLieu;
-            customField3 = jsonTTKhac[2].TTruong + ': ' + jsonTTKhac[2].DLieu;
-            customField4 = jsonTTKhac[3].TTruong + ': ' + jsonTTKhac[3].DLieu;
-            customField5 = jsonTTKhac[4].TTruong + ': ' + jsonTTKhac[4].DLieu;
-          }
-          if (jsonTTKhac.length > 5) {
-            customField2 = jsonTTKhac[1].TTruong + ': ' + jsonTTKhac[1].DLieu;
-            customField3 = jsonTTKhac[2].TTruong + ': ' + jsonTTKhac[2].DLieu;
-            customField4 = jsonTTKhac[3].TTruong + ': ' + jsonTTKhac[3].DLieu;
-            customField5 = jsonTTKhac[4].TTruong + ': ' + jsonTTKhac[4].DLieu;
-            customField6 = jsonTTKhac[5].TTruong + ': ' + jsonTTKhac[5].DLieu;
-          }
-          if (jsonTTKhac.length > 6) {
-            customField2 = jsonTTKhac[1].TTruong + ': ' + jsonTTKhac[1].DLieu;
-            customField3 = jsonTTKhac[2].TTruong + ': ' + jsonTTKhac[2].DLieu;
-            customField4 = jsonTTKhac[3].TTruong + ': ' + jsonTTKhac[3].DLieu;
-            customField5 = jsonTTKhac[4].TTruong + ': ' + jsonTTKhac[4].DLieu;
-            customField6 = jsonTTKhac[5].TTruong + ': ' + jsonTTKhac[5].DLieu;
-            customField7 = jsonTTKhac[6].TTruong + ': ' + jsonTTKhac[6].DLieu;
-          }
-          if (jsonTTKhac.length > 7) {
-            customField2 = jsonTTKhac[1].TTruong + ': ' + jsonTTKhac[1].DLieu;
-            customField3 = jsonTTKhac[2].TTruong + ': ' + jsonTTKhac[2].DLieu;
-            customField4 = jsonTTKhac[3].TTruong + ': ' + jsonTTKhac[3].DLieu;
-            customField5 = jsonTTKhac[4].TTruong + ': ' + jsonTTKhac[4].DLieu;
-            customField6 = jsonTTKhac[5].TTruong + ': ' + jsonTTKhac[5].DLieu;
-            customField7 = jsonTTKhac[6].TTruong + ': ' + jsonTTKhac[6].DLieu;
-            customField8 = jsonTTKhac[7].TTruong + ': ' + jsonTTKhac[7].DLieu;
-          }
-          if (jsonTTKhac.length > 8) {
-            customField2 = jsonTTKhac[1].TTruong + ': ' + jsonTTKhac[1].DLieu;
-            customField3 = jsonTTKhac[2].TTruong + ': ' + jsonTTKhac[2].DLieu;
-            customField4 = jsonTTKhac[3].TTruong + ': ' + jsonTTKhac[3].DLieu;
-            customField5 = jsonTTKhac[4].TTruong + ': ' + jsonTTKhac[4].DLieu;
-            customField6 = jsonTTKhac[5].TTruong + ': ' + jsonTTKhac[5].DLieu;
-            customField7 = jsonTTKhac[6].TTruong + ': ' + jsonTTKhac[6].DLieu;
-            customField8 = jsonTTKhac[7].TTruong + ': ' + jsonTTKhac[7].DLieu;
-            customField9 = jsonTTKhac[8].TTruong + ': ' + jsonTTKhac[8].DLieu;
-          }
-          if (jsonTTKhac.length > 9) {
-            customField2 = jsonTTKhac[1].TTruong + ': ' + jsonTTKhac[1].DLieu;
-            customField3 = jsonTTKhac[2].TTruong + ': ' + jsonTTKhac[2].DLieu;
-            customField4 = jsonTTKhac[3].TTruong + ': ' + jsonTTKhac[3].DLieu;
-            customField5 = jsonTTKhac[4].TTruong + ': ' + jsonTTKhac[4].DLieu;
-            customField6 = jsonTTKhac[5].TTruong + ': ' + jsonTTKhac[5].DLieu;
-            customField7 = jsonTTKhac[6].TTruong + ': ' + jsonTTKhac[6].DLieu;
-            customField8 = jsonTTKhac[7].TTruong + ': ' + jsonTTKhac[7].DLieu;
-            customField9 = jsonTTKhac[8].TTruong + ': ' + jsonTTKhac[8].DLieu;
-            customField10 = jsonTTKhac[9].TTruong + ': ' + jsonTTKhac[9].DLieu;
-          }
-        }
-
-        const templateTTHDLQuan = [
-          'HDon/DLHDon/TTChung/TTHDLQuan',
-          {
-            TCHDon: 'TCHDon',
-            LHDCLQuan: 'LHDCLQuan',
-            KHMSHDCLQuan: 'KHMSHDCLQuan',
-            KHHDCLQuan: 'KHHDCLQuan',
-            SHDCLQuan: 'SHDCLQuan',
-            NLHDCLQuan: 'NLHDCLQuan',
-            GChu: 'GChu',
-          },
-        ];
-        const jsonTTHDLQuan = await transform(p_xml_content, templateTTHDLQuan);
-        // console.log("templateTTHDLQuan", jsonTTHDLQuan)
-
-        const arrTTChung = [
-          jsonTTChung[0].PBan,
-          jsonTTChung[0].THDon,
-          jsonTTChung[0].KHMSHDon,
-          jsonTTChung[0].KHHDon,
-          jsonTTChung[0].SHDon,
-          jsonTTChung[0].MHSo,
-          jsonTTChung[0].NLap,
-          jsonTTChung[0].SBKe,
-          jsonTTChung[0].NBKe,
-          jsonTTChung[0].DVTTe,
-          jsonTTChung[0].TGia,
-          jsonTTChung[0].HTTToan,
-          jsonTTChung[0].MSTTCGP,
-          jsonTTChung[0].MSTDVNUNLHDon,
-          jsonTTChung[0].TDVNUNLHDon,
-          jsonTTChung[0].DCDVNUNLHDon,
-        ];
-        const templateNBan = [
-          'HDon/DLHDon/NDHDon/NBan',
-          {
-            Ten: 'Ten',
-            MST: 'MST',
-            DChi: 'DChi',
-            SDThoai: 'SDThoai',
-            DCTDTu: 'DCTDTu',
-            STKNHang: 'STKNHang',
-            TNHang: 'TNHang',
-            Fax: 'Fax',
-            Website: 'Website',
-            TTKhac: 'TTKhac',
-          },
-        ];
-        const jsonNBan = await transform(p_xml_content, templateNBan);
-        const arrNBan = [
-          jsonNBan[0].Ten,
-          jsonNBan[0].MST,
-          jsonNBan[0].DChi,
-          jsonNBan[0].SDThoai,
-          jsonNBan[0].DCTDTu,
-          jsonNBan[0].STKNHang,
-          jsonNBan[0].TNHang,
-          jsonNBan[0].Fax,
-          jsonNBan[0].Website,
-          jsonNBan[0].TTKhac,
-        ];
-        // console.log("jsonNBan", jsonNBan)
-        const templateNMua = [
-          'HDon/DLHDon/NDHDon/NMua',
-          {
-            Ten: 'Ten',
-            MST: 'MST',
-            DChi: 'DChi',
-            SDThoai: 'SDThoai',
-            DCTDTu: 'DCTDTu',
-            MKHang: 'MKHang',
-            HVTNMHang: 'HVTNMHang',
-            STKNHang: 'STKNHang',
-            TNHang: 'TNHang',
-            TTKhac: 'TTKhac',
-          },
-        ];
-        const jsonNMua = await transform(p_xml_content, templateNMua);
-        // console.log("jsonNMua", jsonNMua)
-        const arrNMua = [
-          jsonNMua[0].Ten,
-          jsonNMua[0].MST,
-          jsonNMua[0].DChi,
-          jsonNMua[0].SDThoai,
-          jsonNMua[0].DCTDTu,
-          jsonNMua[0].MKHang,
-          jsonNMua[0].HVTNMHang,
-          jsonNMua[0].STKNHang,
-          jsonNMua[0].TNHang,
-          jsonNMua[0].TTKhac,
-        ];
-        const templateLTSuat = [
-          'HDon/DLHDon/NDHDon/TToan/THTTLTSuat/LTSuat',
-          {
-            TSuat: 'TSuat',
-            ThTien: 'ThTien',
-            TThue: 'TThue',
-          },
-        ];
-        const jsonLTSuat = await transform(p_xml_content, templateLTSuat);
-        // console.log("jsonLTSuat", jsonLTSuat)
-        const arrLTSuat = [jsonLTSuat[0].TSuat, jsonLTSuat[0].ThTien, jsonLTSuat[0].TThue];
-        const templateTToan = [
-          'HDon/DLHDon/NDHDon/TToan',
-          {
-            TgTCThue: 'TgTCThue',
-            TgTThue: 'TgTThue',
-            TTCKTMai: 'TTCKTMai',
-            TgTTTBSo: 'TgTTTBSo',
-            TgTTTBChu: 'TgTTTBChu',
-          },
-        ];
-        const jsonTToan = await transform(p_xml_content, templateTToan);
-        // console.log("jsonTToan", jsonTToan)
-        const arrTToan = [jsonTToan[0].TgTCThue, jsonTToan[0].TgTThue, jsonTToan[0].TTCKTMai, jsonTToan[0].TgTTTBSo, jsonTToan[0].TgTTTBChu];
-        let v_vn_amount = await Utils.Num2VNText2(jsonTToan[0].TgTTTBSo.toString(), jsonTTChung[0].DVTTe);
-
-        const arrMCCQT = ''; //[jsonMCCQT[0].MCCQT];
-
-        const templateDSHHDVu = [
-          'HDon/DLHDon/NDHDon/DSHHDVu/HHDVu',
-          {
-            TChat: 'TChat',
-            STT: 'STT',
-            MHHDVu: 'MHHDVu',
-            THHDVu: 'THHDVu',
-            DVTinh: 'DVTinh',
-            SLuong: 'SLuong',
-            DGia: 'DGia',
-            TLCKhau: 'TLCKhau',
-            STCKhau: 'STCKhau',
-            ThTien: 'ThTien',
-            TSuat: 'TSuat',
-            TTKhac: [
-              'TTKhac/TTin',
-              {
-                TTruong: 'TTruong',
-                KDLieu: 'KDLieu',
-                DLieu: 'DLieu',
-              },
-            ],
-          },
-        ];
-        let masterPara = arrTTChung.concat(arrNBan).concat(arrNMua).concat(arrLTSuat).concat(arrTToan).concat(arrMCCQT);
-        //const xmlRelativePath = p_xml_path.replace(ROOT_DIR_FILES, "");
-        masterPara = masterPara.concat(['', '', '', '']);
-        if (jsonTTHDLQuan && jsonTTHDLQuan.length > 0) {
-          masterPara = masterPara.concat([
-            jsonTTHDLQuan[0].TCHDon,
-            jsonTTHDLQuan[0].LHDCLQuan,
-            jsonTTHDLQuan[0].KHMSHDCLQuan,
-            jsonTTHDLQuan[0].KHHDCLQuan,
-            jsonTTHDLQuan[0].SHDCLQuan,
-            jsonTTHDLQuan[0].NLHDCLQuan,
-            jsonTTHDLQuan[0].GChu,
-          ]);
-        } else {
-          masterPara = masterPara.concat(['', '', '', '', '', '', '']);
-        }
-
-        const templateSignTime = {
-          SigningTime: 'HDon/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
+        console.log('rtnValuePos.p_rtn_cur[0] ', rtnValuePos.p_rtn_cur[0]);
+        check_data = {
+          PK: rtnValuePos.p_rtn_cur[0].PK,
+          TEI_HISTORY_M_PK: rtnValuePos.p_rtn_cur[0].TEI_HISTORY_M_PK,
+          STATUS: rtnValuePos.p_rtn_cur[0].STATUS,
         };
-        const signingTime = await transform(p_xml_content, templateSignTime);
+        console.log('check_data ', check_data);
+        console.log('data_inv ', data_inv);
 
-        masterPara = masterPara.concat([
-          customField1,
-          customField2,
-          customField3,
-          customField4,
-          customField5,
-          customField6,
-          customField7,
-          customField8,
-          customField9,
-          customField10,
-          p_mail_to,
-          p_mail_cc,
-          p_invoice_type,
-          v_vn_amount,
-          p_tr_type,
-          p_tax_serial_number,
-          p_tac_crca_pk,
-          p_invoice_form_symbol,
-          signingTime.SigningTime,
-        ]);
-
-        //const master = await callAPI(_jwtToken, { proc: 'ei_upd_tei_einvoice_cloud', para: masterPara });
-        const master = await DBService.callProcCursor('WT_UPD_TEI_WT_INVOICE_M', masterPara, p_language, p_crt_by);
-        // console.log("master", master);
-        data_inv.push({
-          mccqt: '',
-          tax_code: jsonNBan[0].MST,
-          form_no: jsonTTChung[0].KHMSHDon,
-          serial_no: jsonTTChung[0].KHHDon,
-          invoice_no: jsonTTChung[0].SHDon,
-          inform_code: '', //8
-          inform_name: '', //Dữ liệu hóa đơn hợp lệ
-          lookup_code: '',
-          sign_datetime: signingTime.SigningTime,
-          sign_by: jsonNBan[0].Ten,
-          xml_no_sign: xml_no_sign,
-          xml_signed: xml_content,
-          xml_tax_signed: '',
-        });
-
-        if (master && master[0].PK > 0) {
-          const jsonDSHHDVu = await transform(p_xml_content, templateDSHHDVu);
-          //console.log(jsonDSHHDVu)
-          for (let i = 0; i < jsonDSHHDVu.length; i++) {
-            console.log(JSON.stringify(jsonDSHHDVu[i]));
-            const detailPara = [
-              master[0].PK,
-              jsonDSHHDVu[i].TChat,
-              jsonDSHHDVu[i].STT,
-              jsonDSHHDVu[i].MHHDVu,
-              jsonDSHHDVu[i].THHDVu,
-              jsonDSHHDVu[i].DVTinh,
-              jsonDSHHDVu[i].SLuong,
-              jsonDSHHDVu[i].DGia,
-              jsonDSHHDVu[i].ThTien,
-              jsonDSHHDVu[i].TLCKhau,
-              jsonDSHHDVu[i].STCKhau,
-              jsonDSHHDVu[i].TSuat,
-              jsonDSHHDVu[i].TTKhac[0].DLieu,
-              master[0].TEI_EINVOICE_M_PK,
-            ];
-
-            await DBService.callProcCursor('WT_UPD_TEI_WT_INVOICE_D', detailPara, p_language, p_crt_by);
-            // console.log("detail", detail);
-          }
-
-          await DBService.callProcCursor('WT_UPD_TEI_WT_INVOICE_D_VAT', [master[0].PK], p_language, p_crt_by);
-
-          check_data = {
-            PK: rtnValuePos.p_rtn_cur[0].PK,
-            TEI_HISTORY_M_PK: '', //rtnValuePos.p_rtn_cur[0].TEI_HISTORY_M_PK,
-            STATUS: 'OK',
-          };
-        } else {
-          check_data = {
-            PK: rtnValuePos.p_rtn_cur[0].PK,
-            TEI_HISTORY_M_PK: '', //rtnValuePos.p_rtn_cur[0].TEI_HISTORY_M_PK,
-            STATUS: 'FAILE',
-          };
-        }
         return {check_data, data_inv};
       }
     } catch (e) {

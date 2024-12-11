@@ -206,7 +206,7 @@ class EInvoiceController2 {
             p_language,
             p_crt_by,
           );
-          console.log('masterInvoicePK ', masterInvoicePK);
+          //console.log('masterInvoicePK ', masterInvoicePK);
           if (masterInvoicePK.PK == -1) {
             console.log(`The issuer invoice has not register [${invoices[i].req_key}]`, invoices[i].xml_signed);
             rtnValue.push({
@@ -279,13 +279,35 @@ class EInvoiceController2 {
             p_language,
             p_crt_by,
           );
-          console.log('data_send_tax ', data_send_tax);
+          //console.log('data_send_tax ', data_send_tax);
           if (data_send_tax) {
-            //this.weTaxSendMailPos(data_send_mail, 'WTPTA002', tax_code, p_language, p_crt_by);
-
-            return response
-              .status(200)
-              .json(Utils.responseByRule({success: true, message: 'Sending invoice is successfully.', data: data_send_tax.rtnValue}));
+            let res_data = {
+              trade_code: data_send_tax.rtnValue[0].trade_code,
+              seller_tax_code: list_invoice[0].seller_taxcode,
+              sale_date: list_invoice[0].sale_date,
+              store_code: list_invoice[0].store_code,
+              store_name: list_invoice[0].store_name,
+              tax_serial_number: list_invoice[0].tax_serial_number,
+              data_error: [],
+              data_inv: [
+                {
+                  mccqt: data_send_tax.rtnValue[0].mccqt,
+                  tax_code: list_invoice[0].seller_taxcode,
+                  form_no: list_invoice[0].form_no,
+                  serial_no: list_invoice[0].serial_no,
+                  invoice_no: list_invoice[0].serial_no,
+                  inform_code: data_send_tax.rtnValue[0].inform_code,
+                  inform_name: data_send_tax.rtnValue[0].inform_name,
+                  lookup_code: data_send_tax.rtnValue[0].lookup_code,
+                  sign_datetime: data_send_tax.rtnValue[0].sign_datetime,
+                  sign_by: data_send_tax.rtnValue[0].sign_by,
+                  xml_no_sign: json_xml[0].xml,
+                  xml_signed: json_xml_signed.data[0].signed_xml,
+                  xml_tax_signed: data_send_tax.rtnValue[0].xml_tax_signed,
+                },
+              ],
+            };
+            return response.status(200).json(Utils.responseByRule({success: true, message: 'Sending invoice is successfully.', data: res_data}));
           } else {
             return response.status(409).json(Utils.responseByRule({success: false, message: 'Sending invoice to TAX is error!!'}));
           }

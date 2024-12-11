@@ -157,8 +157,8 @@ class EInvoiceController2 {
             p_crt_by,
           );
 
-          console.log('check_data ', check_data);
-          console.log('data_inv ', data_inv);
+          //console.log('check_data ', check_data);
+          //console.log('data_inv ', data_inv);
 
           if (check_data.STATUS == 'FAILE') {
             return response
@@ -2028,6 +2028,8 @@ class EInvoiceController2 {
             TEI_HISTORY_M_PK: rtnValuePos.p_rtn_cur[0].TEI_HISTORY_M_PK,
             STATUS: rtnValuePos.p_rtn_cur[0].STATUS,
           };
+          console.log('check_data ', check_data);
+          console.log('data_inv ', data_inv);
 
           return {check_data, data_inv};
         }

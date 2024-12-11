@@ -11776,17 +11776,17 @@ class EInvoiceController {
         seller_tel,
         noti_list,
       } = request.all();
-      console.log('weTaxGenerateRecordsXml  BEGIN ============================');
-      console.log('weTaxGenerateRecordsXml noti_list ', noti_list);
-      console.log('weTaxGenerateRecordsXml form_no ', form_no);
-      console.log('weTaxGenerateRecordsXml inform_date ', inform_date);
-      console.log('weTaxGenerateRecordsXml version ', version);
-      console.log('weTaxGenerateRecordsXml seller_company_name ', seller_company_name);
-      console.log('weTaxGenerateRecordsXml seller_taxcode ', seller_taxcode);
-      console.log('weTaxGenerateRecordsXml seller_address ', seller_address);
-      console.log('weTaxGenerateRecordsXml seller_position ', seller_position);
-      console.log('weTaxGenerateRecordsXml seller_representative ', seller_representative);
-      console.log('weTaxGenerateRecordsXml seller_tel ', seller_tel);
+      // console.log('weTaxGenerateRecordsXml  BEGIN ============================');
+      // console.log('weTaxGenerateRecordsXml noti_list ', noti_list);
+      // console.log('weTaxGenerateRecordsXml form_no ', form_no);
+      // console.log('weTaxGenerateRecordsXml inform_date ', inform_date);
+      // console.log('weTaxGenerateRecordsXml version ', version);
+      // console.log('weTaxGenerateRecordsXml seller_company_name ', seller_company_name);
+      // console.log('weTaxGenerateRecordsXml seller_taxcode ', seller_taxcode);
+      // console.log('weTaxGenerateRecordsXml seller_address ', seller_address);
+      // console.log('weTaxGenerateRecordsXml seller_position ', seller_position);
+      // console.log('weTaxGenerateRecordsXml seller_representative ', seller_representative);
+      // console.log('weTaxGenerateRecordsXml seller_tel ', seller_tel);
 
       if (!form_no) {
         // return response.send(Utils.response(false, `form no is not null`, null));
@@ -11877,16 +11877,16 @@ class EInvoiceController {
         objInvoice.BBan.DLieu.NTBao = inform_date;
         objInvoice.BBan.DLieu.SBBan = noti.voucher_no;
 
-        objInvoice.BBan.DLieu.NBan.Ten = seller_company_name;
+        objInvoice.BBan.DLieu.NBan.Ten = this.convertHtmlCode(seller_company_name);
         objInvoice.BBan.DLieu.NBan.MST = seller_taxcode;
-        objInvoice.BBan.DLieu.NBan.DChi = seller_address;
+        objInvoice.BBan.DLieu.NBan.DChi = this.convertHtmlCode(seller_address);
         objInvoice.BBan.DLieu.NBan.NDDien = seller_representative;
         objInvoice.BBan.DLieu.NBan.CVu = seller_position;
         objInvoice.BBan.DLieu.NBan.DTLHe = seller_tel;
 
-        objInvoice.BBan.DLieu.NMua.Ten = noti.buyer_company_name;
+        objInvoice.BBan.DLieu.NMua.Ten = this.convertHtmlCode(noti.buyer_company_name);
         objInvoice.BBan.DLieu.NMua.MST = noti.buyer_taxcode;
-        objInvoice.BBan.DLieu.NMua.DChi = noti.buyer_address;
+        objInvoice.BBan.DLieu.NMua.DChi = this.convertHtmlCode(noti.buyer_address);
         objInvoice.BBan.DLieu.NMua.NDDien = noti.buyer_representative;
         objInvoice.BBan.DLieu.NMua.CVu = noti.buyer_position;
         objInvoice.BBan.DLieu.NMua.DTLHe = noti.buyer_tel;
@@ -11897,7 +11897,7 @@ class EInvoiceController {
         objInvoice.BBan.DLieu.HDon.NLap = noti.invoice_dt;
         objInvoice.BBan.DLieu.HDon.MCCQT = noti.mccqt;
 
-        objInvoice.BBan.DLieu.LDo = noti.reason;
+        objInvoice.BBan.DLieu.LDo = this.convertHtmlCode(noti.reason);
 
         const id = 'ID1'; //uuid.v4();
         const xml = this.OBJtoXML(objInvoice);

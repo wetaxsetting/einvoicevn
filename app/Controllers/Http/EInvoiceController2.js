@@ -904,7 +904,7 @@ class EInvoiceController2 {
                 sub_vat_amt: invoices[i].total_vat_list[j].sub_amt_vat,
               };
 
-              console.log('wt_upd_sale_bill_vat  para_amt_vat ', para_amt_vat);
+              //console.log('wt_upd_sale_bill_vat  para_amt_vat ', para_amt_vat);
 
               await DBService.ExecuteSQLBlob(
                 `BEGIN wt_upd_sale_bill_vat (          
@@ -937,7 +937,7 @@ class EInvoiceController2 {
                 vat_rate: invoices[i].detail_invoice[j].vat_rate,
               };
 
-              console.log('wt_upd_sale_prod  para_prod_details ', para_prod_details);
+              //console.log('wt_upd_sale_prod  para_prod_details ', para_prod_details);
               await DBService.ExecuteSQLBlob(
                 `BEGIN wt_upd_sale_prod (          
                                                                   :tei_wt_sale_bill_pk,
@@ -2022,7 +2022,7 @@ class EInvoiceController2 {
 
             return {check_data, data_inv};
           }
-
+          console.log('rtnValuePos.p_rtn_cur[0] ', rtnValuePos.p_rtn_cur[0]);
           check_data = {
             PK: rtnValuePos.p_rtn_cur[0].PK,
             TEI_HISTORY_M_PK: rtnValuePos.p_rtn_cur[0].TEI_HISTORY_M_PK,

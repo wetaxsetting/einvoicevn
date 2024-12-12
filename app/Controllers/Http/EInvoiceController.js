@@ -10859,7 +10859,7 @@ class EInvoiceController {
           trade_code: trade_code.data.maGDich,
           xml_signed: invoices[i].xml_signed,
         };
-        console.log('weTaxSendInvoiceToTaxOffice para_trade_code  ', para_trade_code);
+        //console.log('weTaxSendInvoiceToTaxOffice para_trade_code  ', para_trade_code);
 
         const data_r_tradecode = await DBService.ExecuteSQLBlob(
           `BEGIN WT_UPD_TEI_INV_TRADECODE(
@@ -10889,7 +10889,7 @@ class EInvoiceController {
           send_mail_yn: 'N',
         });
       }
-      console.log('weTaxSendInvoiceToTaxOffice befor check status e-invoice ', rtnValueTradecode);
+      //console.log('weTaxSendInvoiceToTaxOffice befor check status e-invoice ', rtnValueTradecode);
 
       await Utils._sleep(5);
 
@@ -15749,7 +15749,23 @@ class EInvoiceController {
 
   convertHtmlCode(sText) {
     if (sText != null || sText == '') {
-      return this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '"', '&#34;'), '<', '&lt;'), '>', '&gt;');
+      return this.replaceAllExt(
+        this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '"', '&#34;'), '<', '&lt;'), '>', '&gt;'),
+        '&',
+        '&amp;',
+      );
+    } else {
+      return '';
+    }
+  }
+
+  encoreHtmlCode(sText) {
+    if (sText != null || sText == '') {
+      return this.replaceAllExt(
+        this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '&#34;', '"'), '&lt;', '<'), '&gt;', '>'),
+        '&amp;',
+        '&',
+      );
     } else {
       return '';
     }
@@ -17798,13 +17814,13 @@ class EInvoiceController {
       ];
       const jsonNBan = await transform(p_xml_content, templateNBan);
       const arrNBan = [
-        jsonNBan[0].Ten,
+        this.encoreHtmlCode(jsonNBan[0].Ten),
         jsonNBan[0].MST,
         jsonNBan[0].DChi,
         jsonNBan[0].SDThoai,
         jsonNBan[0].DCTDTu,
         jsonNBan[0].STKNHang,
-        jsonNBan[0].TNHang,
+        this.encoreHtmlCode(jsonNBan[0].TNHang),
         jsonNBan[0].Fax,
         jsonNBan[0].Website,
         jsonNBan[0].TTKhac,
@@ -17828,15 +17844,15 @@ class EInvoiceController {
       const jsonNMua = await transform(p_xml_content, templateNMua);
       // console.log("jsonNMua", jsonNMua)
       const arrNMua = [
-        jsonNMua[0].Ten,
+        this.encoreHtmlCode(jsonNMua[0].Ten),
         jsonNMua[0].MST,
-        jsonNMua[0].DChi,
+        this.encoreHtmlCode(jsonNMua[0].DChi),
         jsonNMua[0].SDThoai,
         jsonNMua[0].DCTDTu,
         jsonNMua[0].MKHang,
-        jsonNMua[0].HVTNMHang,
+        this.encoreHtmlCode(jsonNMua[0].HVTNMHang),
         jsonNMua[0].STKNHang,
-        jsonNMua[0].TNHang,
+        this.encoreHtmlCode(jsonNMua[0].TNHang),
         jsonNMua[0].TTKhac,
       ];
       const templateLTSuat = [
@@ -17920,16 +17936,16 @@ class EInvoiceController {
       const signingTime = await transform(p_xml_content, templateSignTime);
 
       masterPara = masterPara.concat([
-        customField1,
-        customField2,
-        customField3,
-        customField4,
-        customField5,
-        customField6,
-        customField7,
-        customField8,
-        customField9,
-        customField10,
+        this.encoreHtmlCode(customField1),
+        this.encoreHtmlCode(customField2),
+        this.encoreHtmlCode(customField3),
+        this.encoreHtmlCode(customField4),
+        this.encoreHtmlCode(customField5),
+        this.encoreHtmlCode(customField6),
+        this.encoreHtmlCode(customField7),
+        this.encoreHtmlCode(customField8),
+        this.encoreHtmlCode(customField9),
+        this.encoreHtmlCode(customField10),
         p_mail_to,
         p_mail_cc,
         p_invoice_type,
@@ -17954,8 +17970,8 @@ class EInvoiceController {
             master[0].PK,
             jsonDSHHDVu[i].TChat,
             jsonDSHHDVu[i].STT,
-            jsonDSHHDVu[i].MHHDVu,
-            jsonDSHHDVu[i].THHDVu,
+            this.this.encoreHtmlCode(jsonDSHHDVu[i].MHHDVu),
+            this.this.encoreHtmlCode(jsonDSHHDVu[i].THHDVu),
             jsonDSHHDVu[i].DVTinh,
             jsonDSHHDVu[i].SLuong,
             jsonDSHHDVu[i].DGia,
@@ -18076,23 +18092,23 @@ class EInvoiceController {
         p_mstdvnunlhdon: '',
         p_tdvnunlhdon: '',
         p_dcdvnunlhdon: '',
-        p_nban_ten: data_invoice.seller_comp_name,
+        p_nban_ten: this.encoreHtmlCode(data_invoice.seller_comp_name),
         p_nban_mst: data_invoice.seller_taxcode,
-        p_nban_dchi: data_invoice.seller_address,
+        p_nban_dchi: this.encoreHtmlCode(data_invoice.seller_address),
         p_nban_sdthoai: data_invoice.seller_phone,
         p_nban_dctdtu: data_invoice.seller_email,
         p_nban_stknhang: data_invoice.seller_bank_no,
-        p_nban_tnhang: data_invoice.seller_bank_name,
+        p_nban_tnhang: this.encoreHtmlCode(data_invoice.seller_bank_name),
         p_nban_fax: data_invoice.seller_fax,
         p_nban_website: data_invoice.seller_website,
         p_nban_ttkhac: '',
-        p_nmua_ten: data_invoice.buyer_comp_name,
+        p_nmua_ten: this.encoreHtmlCode(data_invoice.buyer_comp_name),
         p_nmua_mst: data_invoice.buyer_taxcode,
-        p_nmua_dchi: data_invoice.buyer_address,
+        p_nmua_dchi: this.encoreHtmlCode(data_invoice.buyer_address),
         p_nmua_sdthoai: data_invoice.buyer_phone,
-        p_nmua_dctdtu: data_invoice.buyer_email,
-        p_nmua_mkhang: data_invoice.buyer_code,
-        p_nmua_hvtnmhang: data_invoice.buyer_name,
+        p_nmua_dctdtu: this.encoreHtmlCode(data_invoice.buyer_email),
+        p_nmua_mkhang: this.encoreHtmlCode(data_invoice.buyer_code),
+        p_nmua_hvtnmhang: this.encoreHtmlCode(data_invoice.buyer_name),
         p_nmua_stknhang: data_invoice.buyer_bank_no,
         p_nmua_tnhang: data_invoice.buyer_bank_name,
         p_nmua_ttkhac: '',
@@ -18116,16 +18132,16 @@ class EInvoiceController {
         p_shdclquan: data_invoice.invoice_no_relative,
         p_nlhdclquan: data_invoice.invoice_type_relative,
         p_gchu: data_invoice.description_relative,
-        p_customfield1: data_invoice.attr01 || '',
-        p_customfield2: data_invoice.attr02 || '',
-        p_customfield3: data_invoice.attr03 || '',
-        p_customfield4: data_invoice.attr04 || '',
-        p_customfield5: data_invoice.attr05 || '',
-        p_customfield6: data_invoice.attr06 || '',
-        p_customfield7: data_invoice.attr07 || '',
-        p_customfield8: data_invoice.attr08 || '',
-        p_customfield9: data_invoice.attr09 || '',
-        p_customfield10: data_invoice.attr10 || '',
+        p_customfield1: this.encoreHtmlCode(data_invoice.attr01) || '',
+        p_customfield2: this.encoreHtmlCode(data_invoice.attr02) || '',
+        p_customfield3: this.encoreHtmlCode(data_invoice.attr03) || '',
+        p_customfield4: this.encoreHtmlCode(data_invoice.attr04) || '',
+        p_customfield5: this.encoreHtmlCode(data_invoice.attr05) || '',
+        p_customfield6: this.encoreHtmlCode(data_invoice.attr06) || '',
+        p_customfield7: this.encoreHtmlCode(data_invoice.attr07) || '',
+        p_customfield8: this.encoreHtmlCode(data_invoice.attr08) || '',
+        p_customfield9: this.encoreHtmlCode(data_invoice.attr09) || '',
+        p_customfield10: this.encoreHtmlCode(data_invoice.attr10) || '',
         p_mail_to: p_mail_to,
         p_mail_cc: p_mail_cc,
         p_invoice_type: p_invoice_type,
@@ -18232,9 +18248,9 @@ class EInvoiceController {
             master.p_rtn_cur[0].PK,
             data_invoice.detail_invoice[i].feature,
             data_invoice.detail_invoice[i].seq,
-            data_invoice.detail_invoice[i].item_code,
-            data_invoice.detail_invoice[i].item_name,
-            data_invoice.detail_invoice[i].unit,
+            this.encoreHtmlCode(data_invoice.detail_invoice[i].item_code),
+            this.encoreHtmlCode(data_invoice.detail_invoice[i].item_name),
+            this.encoreHtmlCode(data_invoice.detail_invoice[i].unit),
             data_invoice.detail_invoice[i].quantity,
             data_invoice.detail_invoice[i].uprice,
             data_invoice.detail_invoice[i].amt,
@@ -18242,11 +18258,11 @@ class EInvoiceController {
             data_invoice.detail_invoice[i].dc_amt,
             data_invoice.detail_invoice[i].vat_rate,
             data_invoice.detail_invoice[i].vat_amt,
-            data_invoice.detail_invoice[i].attr01 || '',
-            data_invoice.detail_invoice[i].attr02 || '',
-            data_invoice.detail_invoice[i].attr03 || '',
-            data_invoice.detail_invoice[i].attr04 || '',
-            data_invoice.detail_invoice[i].attr05 || '',
+            this.encoreHtmlCode(data_invoice.detail_invoice[i].attr01) || '',
+            this.encoreHtmlCode(data_invoice.detail_invoice[i].attr02) || '',
+            this.encoreHtmlCode(data_invoice.detail_invoice[i].attr03) || '',
+            this.encoreHtmlCode(data_invoice.detail_invoice[i].attr04) || '',
+            this.encoreHtmlCode(data_invoice.detail_invoice[i].attr05) || '',
             '',
           ];
 

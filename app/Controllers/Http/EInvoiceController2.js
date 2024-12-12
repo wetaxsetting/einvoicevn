@@ -295,7 +295,7 @@ class EInvoiceController2 {
                   tax_code: list_invoice[0].seller_taxcode,
                   form_no: list_invoice[0].form_no,
                   serial_no: list_invoice[0].serial_no,
-                  invoice_no: list_invoice[0].serial_no,
+                  invoice_no: list_invoice[0].invoice_no,
                   inform_code: data_send_tax.rtnValue[0].inform_code,
                   inform_name: data_send_tax.rtnValue[0].inform_name,
                   lookup_code: data_send_tax.rtnValue[0].lookup_code,

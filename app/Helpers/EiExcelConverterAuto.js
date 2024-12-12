@@ -234,14 +234,6 @@ class EiExcelConverterAuto {
 
                 // console.log(e.Cell+"+"+e.Info)
                 break;
-              // case "read_priceV":
-              // 	worksheet.getCell( `${e.Cell}`).value = read_priceV != null ? read_priceV.substr(0, 2) + read_priceV.substr(2, read_priceV.length - 2).toLowerCase() + '.' : '';
-              // 	//console.log(e.Cell+"+"+e.Info)
-              // 	break;
-              // case "read_priceU":
-              // 	worksheet.getCell( `${e.Cell}`).value = read_priceU != null ? read_priceU.substr(0, 2) + read_priceU.substr(2, read_priceU.length - 2).toLowerCase() + '.' : '';
-              // 	//console.log(e.Cell+"+"+e.Info)
-              // 	break;
               case 'convert':
                 worksheet.getCell(`${e.Cell}`).value = convertStr != null ? convertStr : '';
                 //console.log(e.Cell+"+"+e.Info)
@@ -249,6 +241,14 @@ class EiExcelConverterAuto {
               case 'footer':
                 worksheet.getCell(`${e.Cell}`).value = footerStr != null ? footerStr : '';
                 //console.log(e.Cell+"+"+e.Info)
+                break;
+              case 'BUYER_ADDRESS':
+                console.log('BUYER_ADDRESS  ', e.Cell);
+                console.log('einvoiceMasterData[0][BUYER_ADDRESS]  ', einvoiceMasterData[0]['BUYER_ADDRESS']);
+
+                worksheet.getCell(`${e.Cell}`).value = einvoiceMasterData[0]['BUYER_ADDRESS'];
+                worksheet.getRow(`${e.Cell.toString().substr(1, e.Cell.length - 1)}`).height =
+                  Math.ceil(einvoiceMasterData[0]['BUYER_ADDRESS'].toString().length / 99) * 15; //Math.ceil
                 break;
               default:
                 worksheet.getCell(`${e.Cell}`).value = e.Info[0] != null ? e.Info[0] : '';

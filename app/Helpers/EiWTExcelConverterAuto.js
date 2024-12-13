@@ -258,7 +258,7 @@ class EiWTExcelConverterAuto {
                 //console.log('einvoiceMasterData[0][BUYER_ADDRESS]  ', einvoiceMasterData[0]['BUYER_ADDRESS']);
                 worksheet.getCell(`${e.Cell}`).value = einvoiceMasterData[0]['BUYER_ADDRESS'];
                 worksheet.getRow(`${e.Cell.toString().substr(1, e.Cell.length - 1)}`).height =
-                  Math.ceil(einvoiceMasterData[0]['BUYER_ADDRESS'].toString().length / 99) * 14; //Math.ceil
+                  einvoiceMasterData[0]['BUYER_ADDRESS'] == null ? 14 : Math.ceil(einvoiceMasterData[0]['BUYER_ADDRESS'].toString().length / 99) * 14; //Math.ceil
                 break;
               default:
                 worksheet.getCell(`${e.Cell}`).value = e.Info[0] != null ? e.Info[0] : '';

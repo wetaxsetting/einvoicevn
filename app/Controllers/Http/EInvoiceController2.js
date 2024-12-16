@@ -182,7 +182,7 @@ class EInvoiceController2 {
         FUNC: 'weTaxPosReportToTax',
         CONTENT: e.message,
       });
-      console.log('error ', e);
+      console.log('weTaxPosReportToTax error ', e);
       // return response.send(Utils.response(false, e.message, null));
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
     }

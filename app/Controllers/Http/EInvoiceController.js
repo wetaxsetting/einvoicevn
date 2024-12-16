@@ -3928,6 +3928,7 @@ class EInvoiceController {
         CONTENT: e.message,
       });
       // return response.send(Utils.response(false, e.message, null));
+      console.log('weTaxPosReportToTax ERROR :', e);
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
     }
   }
@@ -10062,7 +10063,7 @@ class EInvoiceController {
         FUNC: 'weTaxSendInvoiceToTaxOffice',
         CONTENT: e.message,
       });
-      //console.log("weTaxSendInvoiceToTaxOffice error  ", e);
+      console.log('weTaxSendInvoiceToTaxOffice error  ', e);
       // return response.send(Utils.response(false, e.message, null));
       return response.status(409).json(Utils.responseByRule({success: true, message: e.message}));
     }

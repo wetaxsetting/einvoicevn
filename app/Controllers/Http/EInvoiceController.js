@@ -5200,9 +5200,10 @@ class EInvoiceController {
       Utils.Logger({
         LVL: 'error',
         MODULE: 'EInvoiceController',
-        FUNC: 'sendPITToTaxOffice',
+        FUNC: 'getTaxCode',
         CONTENT: e.message,
       });
+      console.log('getTaxCode ', e);
       return response.send(Utils.response(false, 'error', e.message));
     }
   }

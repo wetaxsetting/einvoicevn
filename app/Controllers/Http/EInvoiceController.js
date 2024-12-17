@@ -17417,15 +17417,15 @@ class EInvoiceController {
             if (rtnValueMaster.p_rtn_cur[0].STATUS == 'OK') {
               const invoice_detail = invoice.DLHDon.NDHDon.DSHHDVu.HHDVu;
               for (let inv_d of invoice_detail) {
-                //console.log(" invoice_detail  ", invoice_detail);
+                console.log(' invoice_detail  inv_d', inv_d);
 
                 let p_vat_amt = 0;
-                   
+
                 inv_d.TTKhac.forEach((element, index) => {
-                    if (element.TTruong == 'VATAmount') {
-                      p_vat_amt = element.DLieu;
-                    }
-                  });
+                  if (element.TTruong == 'VATAmount') {
+                    p_vat_amt = element.DLieu;
+                  }
+                });
                 const paraDetails = {
                   tei_wt_invoice_m_pk: rtnValueMaster.p_rtn_cur[0].PK,
                   tchat: inv_d.TChat,

@@ -6912,19 +6912,44 @@ class EInvoiceController {
 
           for (let j = 0; j < invoices[i].detail_invoice.length; j++) {
             //console.log("invoices[i].detail_invoice  ", invoices[i].detail_invoice);
-            objInvoice.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
-              TChat: invoices[i].detail_invoice[j].feature,
-              STT: invoices[i].detail_invoice[j].seq,
-              MHHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_code),
-              THHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_name),
-              DVTinh: invoices[i].detail_invoice[j].item_uom,
-              SLuong: invoices[i].detail_invoice[j].quantity,
-              DGia: invoices[i].detail_invoice[j].uprice,
-              TLCKhau: invoices[i].detail_invoice[j].dc_rate,
-              STCKhau: invoices[i].detail_invoice[j].dc_amt,
-              ThTien: invoices[i].detail_invoice[j].amt,
-              TSuat: invoices[i].detail_invoice[j].vat_rate,
-            });
+            if (invoices[i].detail_invoice[j].amt_vat) {
+              let TTKhac = {};
+              TTKhac.TTin = [];
+              TTKhac.TTin.push({
+                TTruong: 'VATAmount',
+                KDLieu: 'decimal',
+                DLieu: invoices[i].detail_invoice[j].amt_vat,
+              });
+
+              objInvoice.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
+                TChat: invoices[i].detail_invoice[j].feature,
+                STT: invoices[i].detail_invoice[j].seq,
+                MHHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_code),
+                THHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_name),
+                DVTinh: invoices[i].detail_invoice[j].item_uom,
+                SLuong: invoices[i].detail_invoice[j].quantity,
+                DGia: invoices[i].detail_invoice[j].uprice,
+                TLCKhau: invoices[i].detail_invoice[j].dc_rate,
+                STCKhau: invoices[i].detail_invoice[j].dc_amt,
+                ThTien: invoices[i].detail_invoice[j].amt,
+                TSuat: invoices[i].detail_invoice[j].vat_rate,
+                TTKhac: TTKhac,
+              });
+            } else {
+              objInvoice.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
+                TChat: invoices[i].detail_invoice[j].feature,
+                STT: invoices[i].detail_invoice[j].seq,
+                MHHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_code),
+                THHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_name),
+                DVTinh: invoices[i].detail_invoice[j].item_uom,
+                SLuong: invoices[i].detail_invoice[j].quantity,
+                DGia: invoices[i].detail_invoice[j].uprice,
+                TLCKhau: invoices[i].detail_invoice[j].dc_rate,
+                STCKhau: invoices[i].detail_invoice[j].dc_amt,
+                ThTien: invoices[i].detail_invoice[j].amt,
+                TSuat: invoices[i].detail_invoice[j].vat_rate,
+              });
+            }
           }
 
           objInvoice.DLHDon.NDHDon.TToan = {};

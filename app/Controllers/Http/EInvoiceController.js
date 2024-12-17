@@ -17150,7 +17150,7 @@ class EInvoiceController {
                     ThTien: 'ThTien',
                     TSuat: 'TSuat',
                     TTKhac: [
-                      'DLHDon/NDHDon/DSHHDVu/HHDVu/TTKhac/TTin',
+                      'TTKhac/TTin',
                       {
                         TTruong: 'TTruong',
                         KDLieu: 'KDLieu',

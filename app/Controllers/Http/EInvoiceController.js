@@ -6429,19 +6429,44 @@ class EInvoiceController {
 
         for (let j = 0; j < invoices[i].detail_invoice.length; j++) {
           //console.log("invoices[i].detail_invoice  ", invoices[i].detail_invoice);
-          objInvoice.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
-            TChat: invoices[i].detail_invoice[j].feature,
-            STT: invoices[i].detail_invoice[j].seq,
-            MHHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_code),
-            THHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_name),
-            DVTinh: invoices[i].detail_invoice[j].item_uom,
-            SLuong: invoices[i].detail_invoice[j].quantity,
-            DGia: invoices[i].detail_invoice[j].uprice,
-            TLCKhau: invoices[i].detail_invoice[j].dc_rate,
-            STCKhau: invoices[i].detail_invoice[j].dc_amt,
-            ThTien: invoices[i].detail_invoice[j].amt,
-            TSuat: invoices[i].detail_invoice[j].vat_rate,
-          });
+          if (invoices[i].detail_invoice[j].amt_vat) {
+            let TTKhac = {};
+            TTKhac.TTin = [];
+            TTKhac.TTin.push({
+              TTruong: 'VATAmount',
+              KDLieu: 'decimal',
+              DLieu: invoices[i].detail_invoice[j].amt_vat,
+            });
+
+            objInvoice.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
+              TChat: invoices[i].detail_invoice[j].feature,
+              STT: invoices[i].detail_invoice[j].seq,
+              MHHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_code),
+              THHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_name),
+              DVTinh: invoices[i].detail_invoice[j].item_uom,
+              SLuong: invoices[i].detail_invoice[j].quantity,
+              DGia: invoices[i].detail_invoice[j].uprice,
+              TLCKhau: invoices[i].detail_invoice[j].dc_rate,
+              STCKhau: invoices[i].detail_invoice[j].dc_amt,
+              ThTien: invoices[i].detail_invoice[j].amt,
+              TSuat: invoices[i].detail_invoice[j].vat_rate,
+              TTKhac: TTKhac,
+            });
+          } else {
+            objInvoice.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
+              TChat: invoices[i].detail_invoice[j].feature,
+              STT: invoices[i].detail_invoice[j].seq,
+              MHHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_code),
+              THHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_name),
+              DVTinh: invoices[i].detail_invoice[j].item_uom,
+              SLuong: invoices[i].detail_invoice[j].quantity,
+              DGia: invoices[i].detail_invoice[j].uprice,
+              TLCKhau: invoices[i].detail_invoice[j].dc_rate,
+              STCKhau: invoices[i].detail_invoice[j].dc_amt,
+              ThTien: invoices[i].detail_invoice[j].amt,
+              TSuat: invoices[i].detail_invoice[j].vat_rate,
+            });
+          }
         }
 
         objInvoice.DLHDon.NDHDon.TToan = {};
@@ -17099,6 +17124,14 @@ class EInvoiceController {
                     STCKhau: 'STCKhau',
                     ThTien: 'ThTien',
                     TSuat: 'TSuat',
+                    TTKhac: [
+                      'DLHDon/NDHDon/DSHHDVu/HHDVu/TTKhac/TTin',
+                      {
+                        TTruong: 'TTruong',
+                        KDLieu: 'KDLieu',
+                        DLieu: 'DLieu',
+                      },
+                    ],
                   },
                 ],
               },
@@ -17385,6 +17418,14 @@ class EInvoiceController {
               const invoice_detail = invoice.DLHDon.NDHDon.DSHHDVu.HHDVu;
               for (let inv_d of invoice_detail) {
                 //console.log(" invoice_detail  ", invoice_detail);
+
+                let p_vat_amt = 0;
+                   
+                inv_d.TTKhac.forEach((element, index) => {
+                    if (element.TTruong == 'VATAmount') {
+                      p_vat_amt = element.DLieu;
+                    }
+                  });
                 const paraDetails = {
                   tei_wt_invoice_m_pk: rtnValueMaster.p_rtn_cur[0].PK,
                   tchat: inv_d.TChat,
@@ -17398,6 +17439,7 @@ class EInvoiceController {
                   stckhau: inv_d.STCKhau,
                   thtien: inv_d.ThTien,
                   tsuat: inv_d.TSuat,
+                  tthue: p_vat_amt,
                 };
 
                 //console.log('weTaxExtractPosXMLContent d param ===> ', paraDetails);
@@ -17416,6 +17458,7 @@ class EInvoiceController {
                                                     :stckhau,
                                                     :thtien,
                                                     :tsuat,
+                                                    :tthue,
                                                     :p_language, 
                                                     :p_crt_by, 
                                                     :p_rtn_cur); END;`,

@@ -10213,6 +10213,7 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
+      console.log('weTaxSendPosInvoiceToTaxOffice user ', user);
 
       const authUserName = 'GENUWIN'; // "GENUWIN";
       const authPassword = 'genuwin123'; // "e_GX4v@";

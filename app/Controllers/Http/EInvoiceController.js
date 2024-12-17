@@ -10201,7 +10201,7 @@ class EInvoiceController {
       // console.log('weTaxSendPosInvoiceToTaxOffice   sale_date ', sale_date);
       // console.log('weTaxSendPosInvoiceToTaxOffice   store_code ', store_code);
       // console.log('weTaxSendPosInvoiceToTaxOffice   pos_no ', pos_no);
-      // console.log('weTaxSendPosInvoiceToTaxOffice   invoice_xml_signed ', invoice_xml_signed);
+      console.log('weTaxSendPosInvoiceToTaxOffice   invoice_xml_signed ', invoice_xml_signed);
       // console.log('weTaxSendPosInvoiceToTaxOffice   req_key ', req_key);
       // console.log('weTaxSendPosInvoiceToTaxOffice   =========================== END =======================');
 

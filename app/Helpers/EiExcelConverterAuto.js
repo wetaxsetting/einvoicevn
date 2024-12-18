@@ -271,7 +271,7 @@ class EiExcelConverterAuto {
 
       // BEGIN - gom các VAT khọng có giá trị của loại nhiều VAT
       //worksheet.getRow(`${e.Cell.toString().substr(1, e.Cell.length - 1)}`).height =
-      if (einvoiceMasterData[0]['ORHER_VAT_RATE_YN'].toString() == '2') {
+      if (einvoiceMasterData[0]['TEMPLATE_CD'].toString() == '2') {
         // loại HD nhiều VAT
         let rowNoVat = _sourceRow + 1;
         let row0Vat = _sourceRow + 2;
@@ -279,7 +279,6 @@ class EiExcelConverterAuto {
         let row8Vat = _sourceRow + 4;
         let row10Vat = _sourceRow + 5;
         let rowOtherVat = _sourceRow + 6;
-
         if (einvoiceMasterData[0]['NOTVAT_DEL_YN'].toString() == 'Y') {
           worksheet.getRow(`${rowNoVat}`).height = 0;
         } else if (einvoiceMasterData[0]['VAT_RATE0_YN'].toString() == 'Y') {

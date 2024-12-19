@@ -1057,40 +1057,29 @@ class EiExcelConverterAuto {
         let row8Vat = totalRows + _sourceRow_3 + 4;
         let row10Vat = totalRows + _sourceRow_3 + 5;
         let rowOtherVat = totalRows + _sourceRow_3 + 6;
-        // console.log('rowNoVat ', rowNoVat, " einvoiceMasterData[0]['NOTVAT_DEL_YN'] ", einvoiceMasterData[0]['NOTVAT_DEL_YN']);
-        // console.log('row0Vat ', row0Vat, " einvoiceMasterData[0]['VAT_RATE0_YN'] ", einvoiceMasterData[0]['VAT_RATE0_YN']);
-        // console.log('row5Vat ', row5Vat, " einvoiceMasterData[0]['VAT_RATE5_YN'] ", einvoiceMasterData[0]['VAT_RATE5_YN']);
-        // console.log('row8Vat ', row8Vat, " einvoiceMasterData[0]['VAT_RATE8_YN'] ", einvoiceMasterData[0]['VAT_RATE8_YN']);
-        // console.log('row10Vat ', row10Vat, " einvoiceMasterData[0]['VAT_RATE10_YN'] ", einvoiceMasterData[0]['VAT_RATE10_YN']);
-        // console.log('rowOtherVat ', rowNoVat, " einvoiceMasterData[0]['ORHER_VAT_RATE_YN'] ", einvoiceMasterData[0]['ORHER_VAT_RATE_YN']);
 
         if (einvoiceMasterData[0]['NOTVAT_DEL_YN'].toString() == 'Y') {
-          // console.log('rowNoVat ', rowNoVat, " einvoiceMasterData[0]['NOTVAT_DEL_YN'] ", einvoiceMasterData[0]['NOTVAT_DEL_YN']);
           worksheet.getRow(rowNoVat).hidden = true;
         }
         if (einvoiceMasterData[0]['VAT_RATE0_YN'].toString() == 'Y') {
-          // console.log('row0Vat ', row0Vat, " einvoiceMasterData[0]['NOTVAT_DEL_YN'] ", einvoiceMasterData[0]['NOTVAT_DEL_YN']);
           worksheet.getRow(`${row0Vat}`).hidden = true;
         }
         if (einvoiceMasterData[0]['VAT_RATE5_YN'].toString() == 'Y') {
-          // console.log('row5Vat ', row5Vat, " einvoiceMasterData[0]['NOTVAT_DEL_YN'] ", einvoiceMasterData[0]['NOTVAT_DEL_YN']);
           worksheet.getRow(`${row5Vat}`).hidden = true;
         }
         if (einvoiceMasterData[0]['VAT_RATE8_YN'].toString() == 'Y') {
-          // console.log('row8Vat ', row8Vat, " einvoiceMasterData[0]['NOTVAT_DEL_YN'] ", einvoiceMasterData[0]['NOTVAT_DEL_YN']);
           worksheet.getRow(`${row8Vat}`).hidden = true;
         }
         if (einvoiceMasterData[0]['VAT_RATE10_YN'].toString() == 'Y') {
-          // console.log('rowNoVat ', row10Vat, " einvoiceMasterData[0]['NOTVAT_DEL_YN'] ", einvoiceMasterData[0]['NOTVAT_DEL_YN']);
           worksheet.getRow(`${row10Vat}`).hidden = true;
         }
         if (einvoiceMasterData[0]['ORHER_VAT_RATE_YN'].toString() == 'Y') {
-          // console.log('rowOtherVat ', rowOtherVat, " einvoiceMasterData[0]['NOTVAT_DEL_YN'] ", einvoiceMasterData[0]['NOTVAT_DEL_YN']);
           worksheet.getRow(`${rowOtherVat}`).hidden = true;
         }
       }
 
       // END - gom các VAT khọng có giá trị của loại nhiều VAT
+
       //END-this part add more style to missing part of the footer(optional).
 
       // const reportFilePdf = await exceljs.writeFile();

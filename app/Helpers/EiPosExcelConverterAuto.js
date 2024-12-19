@@ -1109,6 +1109,40 @@ class EiExcelConverterAuto {
         console.log(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
       }
 
+      // BEGIN - gom các VAT khọng có giá trị của loại nhiều VAT
+      //worksheet.getRow(`${e.Cell.toString().substr(1, e.Cell.length - 1)}`).height =
+      //console.log("einvoiceMasterData[0]['TEMPLATE_CD']  ", einvoiceMasterData[0]['TEMPLATE_CD']);
+      if (einvoiceMasterData[0]['TEMPLATE_CD'].toString() == '2') {
+        // loại HD nhiều VAT
+        let rowNoVat = totalRows + _sourceRow_3 + 1;
+        let row0Vat = totalRows + _sourceRow_3 + 2;
+        let row5Vat = totalRows + _sourceRow_3 + 3;
+        let row8Vat = totalRows + _sourceRow_3 + 4;
+        let row10Vat = totalRows + _sourceRow_3 + 5;
+        let rowOtherVat = totalRows + _sourceRow_3 + 6;
+
+        if (einvoiceMasterData[0]['NOTVAT_DEL_YN'].toString() == 'Y') {
+          worksheet.getRow(rowNoVat).hidden = true;
+        }
+        if (einvoiceMasterData[0]['VAT_RATE0_YN'].toString() == 'Y') {
+          worksheet.getRow(`${row0Vat}`).hidden = true;
+        }
+        if (einvoiceMasterData[0]['VAT_RATE5_YN'].toString() == 'Y') {
+          worksheet.getRow(`${row5Vat}`).hidden = true;
+        }
+        if (einvoiceMasterData[0]['VAT_RATE8_YN'].toString() == 'Y') {
+          worksheet.getRow(`${row8Vat}`).hidden = true;
+        }
+        if (einvoiceMasterData[0]['VAT_RATE10_YN'].toString() == 'Y') {
+          worksheet.getRow(`${row10Vat}`).hidden = true;
+        }
+        if (einvoiceMasterData[0]['ORHER_VAT_RATE_YN'].toString() == 'Y') {
+          worksheet.getRow(`${rowOtherVat}`).hidden = true;
+        }
+      }
+
+      // END - gom các VAT khọng có giá trị của loại nhiều VAT
+
       let excelUrl = await exceljs.dowloadWorkbook();
       return excelUrl;
       //END-this part add more style to missing part of the footer(optional).

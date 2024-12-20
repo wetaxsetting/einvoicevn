@@ -11300,7 +11300,7 @@ class EInvoiceController {
                 };
               }
             } else if (key == 'buyer_email' || key == 'buyer_email_cc' || key == 'seller_email') {
-              console.log('validateJsonInvalidNormalInvoiceToXML  key   ', key, ' - ', invoice[key]);
+              //console.log('validateJsonInvalidNormalInvoiceToXML  key   ', key, ' - ', invoice[key]);
               if (!errorList[`${key}`].test(invoice[key]) && invoice[key]) {
                 // && invoice[key]
                 status = false;
@@ -11483,6 +11483,269 @@ class EInvoiceController {
             message: resMess,
           };
         }
+        //vat_total_amount = vat_amount_vat + vat_amout;
+        detail_total_amount = Number(detail_amount) + Number(detail_amount_vat);
+
+        if (master_total_amount != detail_total_amount && master_total_amount != null) {
+          status = false;
+          resMess = `${mess1} amount total is: ${master_total_amount}  != ${detail_total_amount}`;
+          return {
+            status,
+            message: resMess,
+          };
+        }
+      }
+      // if dont have any problem
+      return {
+        status,
+        message: resMess,
+      };
+    } catch (error) {
+      console.log('error  ', error);
+      //let status = false;
+      return {
+        status,
+        message: resMess,
+      };
+    }
+  }
+
+  validateJsonInvalidDeliveryNoteToXML(invoices) {
+    let status = true;
+    let resMess = '';
+    const mess1 = 'Invalid field';
+    //console.log("invoice  ", invoice)
+    try {
+      const errorList = {
+        req_key: /^-?\d+(\.\d{1,99})?$/, //99
+        version: /^(\d{1}\.\d{1}\.\d{1})$/, //6
+        invoice_name: /^.{0,100}$/, //100
+        form_no: /^.{1,1}$/, //1
+        serial_no: /^.{1,6}$/, // 6
+        invoice_no: /^.{1,9}$/, // 8
+        invoice_date: /^(\d{4}\-\d{2}\-\d{2})$/, //10,
+        currency: /^.{0,3}$/, //3,
+        exchange_rate: /^-?[0-9]{1,7}(?:\.[0-9]{1,2})?$/, //7.2
+        payment_method: /^.{1,50}$/, //50,
+        internal_order_no: /^.{1,255}$/, //255,
+        internal_order_date: /^.{0,400}$/, //400,
+        internal_order_by: /^.{0,400}$/, //400,
+        internal_order_purpose: /^.{0,400}$/, //400,
+        transporter_name: /^.{0,100}$/, //100,
+        transport_agreement_no: /^.{0,255}$/, //255,
+        transport_means: /^.{1,50}$/, //50,
+        shipping_address: /^.{1,400}$/, //400,
+        delivery_address: /^.{1,400}$/, //400,
+        shipper_name: /^.{0,100}$/, //100,
+        seller_comp_name: /^.{1,400}$/, //400,
+        seller_taxcode: {10: /^(\d{10})$/, 14: /^(\d{10}\-\d{3})$/}, // 10
+        seller_address: /^.{1,400}$/, //400,
+        seller_phone: /^.{0,20}$/, // 20
+        seller_email: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, ///^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/gm, // 20
+        seller_bank_no: /^.{0,30}$/, // 20
+        seller_bank_name: /^.{0,400}$/, // 20
+        seller_fax: /^.{0,20}$/, // 20
+        seller_website: /^.{0,50}$/, // 20
+        buyer_comp_name: /^.{0,400}$/, //400,
+        buyer_name: /^.{0,100}$/,
+        buyer_code: /^.{0,50}$/,
+        buyer_taxcode: {10: /^(\d{10})$/, 14: /^(\d{10}\-\d{3})$/},
+        buyer_address: /^.{0,400}$/, // 400
+        buyer_phone: /^.{0,20}$/, //20,
+        buyer_email: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, //  /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/gm,
+        buyer_email_cc: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, // /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/gm,
+        buyer_bank_no: /^.{0,30}$/,
+        buyer_bank_name: /^.{0,400}$/,
+        detail_invoice: {
+          feature: /^(1|2|3|4){1}$/, //  /^-?\d+(\.\d{1})?$/, //1,
+          seq: /^-?\d+(\.\d{0,4})?$/, //4 ,
+          item_code: /^[\s\S]{0,50}$/, //50,
+          item_name: /^[\s\S]{1,500}$/, //500,
+          unit: /^.{0,50}$/, //50,
+          quantity: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/, //21.6,
+          unit_price: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/, // 21.6,
+          amount: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
+        },
+        total_payment: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
+        total_payment_word_vie: /^.{1,255}$/, // 255
+      };
+
+      for (const invoice of invoices) {
+        let vat_amount_vat = 0,
+          vat_amout = 0,
+          vat_total_amount = 0;
+        let master_amount_vat = 0,
+          master_amount = 0,
+          master_total_amount = 0;
+        let detail_amount_vat = 0,
+          detail_amount = 0,
+          detail_total_amount = 0;
+
+        for (const key in invoice) {
+          if (errorList[`${key}`] != undefined && !Array.isArray(invoice[key])) {
+            master_total_amount = invoice['total_payment'];
+            if (key == 'seller_taxcode' || key == 'buyer_taxcode') {
+              if (invoice[key].length == 10) {
+                if (!errorList[`${key}`][10].test(invoice[key])) {
+                  status = false;
+                  resMess = `${mess1} ${key}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+              } else if (invoice[key].length == 14) {
+                if (!errorList[`${key}`][14].test(invoice[key])) {
+                  status = false;
+                  resMess = `${mess1} ${key}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+              } else if (invoice[key]) {
+                // ((invoice[key].length < 10 || invoice[key].length > 14) && invoice[key]) {
+                status = false;
+                resMess = `${mess1} ${key}. length between 10 and 14}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+            } else if (key == 'buyer_email' || key == 'buyer_email_cc' || key == 'seller_email') {
+              console.log('validateJsonInvalidNormalInvoiceToXML  key   ', key, ' - ', invoice[key]);
+              if (!errorList[`${key}`].test(invoice[key]) && invoice[key]) {
+                // && invoice[key]
+                status = false;
+                resMess = `${mess1} ${key}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+            } else if (!errorList[`${key}`].test(invoice[key])) {
+              status = false;
+              resMess = `${mess1} ${key}.`;
+              return {
+                status,
+                message: resMess,
+              };
+            }
+          } else {
+            if (key == 'total_vat_list') {
+              for (const sub_vat of invoice[key]) {
+                vat_amount_vat += sub_vat.sub_amt_vat;
+                vat_amout += sub_vat.sub_amt;
+                if (
+                  !errorList[`${key}`].sub_vat_rate.test(sub_vat.sub_vat_rate) &&
+                  sub_vat.sub_vat_rate != 'KCT' &&
+                  sub_vat.sub_vat_rate != 'KKKNT'
+                ) {
+                  status = false;
+                  resMess = `${mess1} ${key}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+
+                if (!errorList[`${key}`].sub_amt.test(sub_vat.sub_amt)) {
+                  status = false;
+                  resMess = `${mess1} ${key}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+
+                if (!errorList[`${key}`].sub_amt_vat.test(sub_vat.sub_amt_vat)) {
+                  status = false;
+                  resMess = `${mess1} ${key}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+              }
+            }
+
+            if (key == 'detail_invoice') {
+              for (const inv of invoice[key]) {
+                if (inv.feature == 3) {
+                  detail_amount -= Number(inv.amount);
+                } else {
+                  detail_amount += Number(inv.amount);
+                }
+                if (!errorList[`${key}`].feature.test(inv.feature)) {
+                  status = false;
+                  resMess = `${mess1} feature is: ${inv.feature}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                if (!errorList[`${key}`].seq.test(inv.seq)) {
+                  status = false;
+                  resMess = `${mess1} seq is: ${inv.seq}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                if (!errorList[`${key}`].item_code.test(inv.item_code) && inv.item_code) {
+                  status = false;
+                  resMess = `${mess1} item_code is: ${inv.item_code}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                if (!errorList[`${key}`].item_name.test(inv.item_name)) {
+                  status = false;
+                  resMess = `${mess1} item_name is: ${inv.item_name}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                if (!errorList[`${key}`].unit.test(inv.unit)) {
+                  status = false;
+                  resMess = `${mess1} unit is: ${inv.unit}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                if (!errorList[`${key}`].quantity.test(inv.quantity)) {
+                  status = false;
+                  resMess = `${mess1} quantity is: ${inv.quantity}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+                if (!errorList[`${key}`].unit_price.test(inv.unit_price)) {
+                  status = false;
+                  resMess = `${mess1} uprice is: ${inv.unit_price}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+
+                if (!errorList[`${key}`].amount.test(inv.amount)) {
+                  status = false;
+                  resMess = `${mess1} amount is: ${inv.amount}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+              }
+            }
+          }
+        }
+
         //vat_total_amount = vat_amount_vat + vat_amout;
         detail_total_amount = Number(detail_amount) + Number(detail_amount_vat);
 
@@ -11799,6 +12062,318 @@ class EInvoiceController {
         LVL: 'error',
         MODULE: 'EInvoiceController',
         FUNC: 'weTaxConvertInvoiceToXML',
+        CONTENT: e.message,
+      });
+      // console.log(e);
+      // return response.send(Utils.response(false, e.message, null));
+      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+    }
+  }
+
+  async weTaxConvertDeliveryNoteXML({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+
+      const {invoices, count_invoice, tax_code, order_date} = request.all();
+
+      //console.log('weTaxConvertDeliveryNoteXML BEGIN  ', JSON.stringify(invoices));
+
+      let rtnXML = [];
+      let count_inv = 0;
+      let objInvoice_M = {
+        HDon: {
+          DLHDon: {
+            TTChung: {
+              PBan: '',
+              THDon: '',
+              KHMSHDon: '',
+              KHHDon: '',
+              SHDon: '',
+              NLap: '',
+              DVTTe: '',
+              TGia: '',
+              HTTToan: '',
+              MSTTCGP: '',
+            },
+            NDHDon: {
+              NBan: {
+                Ten: '',
+                MST: '',
+                SDThoai: '',
+                DCTDTu: '',
+                STKNHang: '',
+                TNHang: '',
+                Fax: '',
+                Website: '',
+                LDDNBo: '',
+                DChi: '',
+                HDSoL: '',
+                HVTNXHang: '',
+                TNVChuyen: '',
+                PTVChuyen: '',
+                TTKhac: '',
+              },
+              NMua: {
+                Ten: '',
+                MST: '',
+                DChi: '',
+                MKHang: '',
+                SDThoai: '',
+                DCTDTu: '',
+                STKNHang: '',
+                HVTNMHang: '',
+                TNHang: '',
+                TTKhac: '',
+              },
+              DSHHDVu: {},
+              TToan: {
+                THTTLTSuat: {
+                  LTSuat: {
+                    TSuat: '',
+                    ThTien: '',
+                    TThue: '',
+                  },
+                },
+                TgTCThue: '',
+                TgTThue: '',
+                TTCKTMai: '',
+                TgTTTBSo: '',
+                TgTTTBChu: '',
+              },
+            },
+          },
+          DSCKS: {},
+        },
+      };
+      if (invoices.length == undefined || invoices.length == 0) {
+        return response.status(400).json(Utils.responseByRule({success: false, message: 'Invalid json format!'}));
+      }
+      const valid = await this.validateJsonInvalidDeliveryNoteToXML(invoices);
+      if (!valid.status) {
+        return response.status(400).json(Utils.responseByRule({success: false, message: valid.message}));
+      }
+      for (let i = 0; i < invoices.length; i++) {
+        //console.log("invoices:", invoices[i])
+        const lastInvoiceNo = await DBService.callProcCursor(
+          'wt_sel_last_invoice_no',
+          [invoices[i].seller_taxcode, invoices[i].serial_no, invoices[i].form_no],
+          'ENG',
+          p_crt_by,
+          'N',
+        );
+        let last_invoice_no = lastInvoiceNo[0].INVOICE_NO;
+        const last_invoice_date = lastInvoiceNo[0].INVOICE_DATE;
+        const tomorrow_date = lastInvoiceNo[0].TOMORROW_DATE;
+        if (isNaN(last_invoice_no)) {
+          return response.status(409).json(
+            Utils.responseByRule({
+              success: false,
+              message: `Failed to create invoice no. Please contact administrator for helping.`,
+              data: null,
+            }),
+          );
+        }
+
+        if (invoices[i].invoice_date < last_invoice_date && !invoices[i].invoice_no) {
+          return response.status(409).json(
+            Utils.responseByRule({
+              success: false,
+              message: `invoice date cannot smaller than ${last_invoice_date}.`,
+              data: invoices[i].invoice_date,
+            }),
+          );
+        }
+        if (invoices[i].invoice_date >= tomorrow_date) {
+          return response
+            .status(409)
+            .json(
+              Utils.responseByRule({success: false, message: `invoice date cannot greater than ${tomorrow_date}.`, data: invoices[i].invoice_date}),
+            );
+        }
+
+        if (invoices[i].invoice_date < last_invoice_date && !invoices[i].invoice_no) {
+          return response.status(409).json(
+            Utils.responseByRule({
+              success: false,
+              message: `invoice date cannot smaller than ${last_invoice_date}.`,
+              data: invoices[i].invoice_date,
+            }),
+          );
+        }
+        if (invoices[i].invoice_date >= tomorrow_date) {
+          return response
+            .status(409)
+            .json(
+              Utils.responseByRule({success: false, message: `invoice date cannot greater than ${tomorrow_date}.`, data: invoices[i].invoice_date}),
+            );
+        }
+
+        // const data_raw_param = {
+        //   p_req_key: invoices[i].master_pk,
+        //   p_data_raw: JSON.stringify(invoices[i]),
+        // };
+
+        // // console.log('weTaxSendPosInvoiceToTaxOffice param_pos  ', param_pos);
+        // await DBService.ExecuteSQLBlob(
+        //   `BEGIN WT_UPD_DATA_RAW(
+        //                       :p_req_key,
+        //                       :p_data_raw,
+        //                       :p_language,
+        //                       :p_crt_by,
+        //                       :p_rtn_cur);
+        //       END;`,
+        //   data_raw_param,
+        //   p_language,
+        //   p_crt_by,
+        // );
+        if (invoices[i].form_no == 1) {
+          objInvoice_M.HDon.DLHDon.TTChung.THDon = 'Hóa đơn giá trị gia tăng';
+        } else if (invoices[i].form_no == 2) {
+          objInvoice_M.HDon.DLHDon.TTChung.THDon = 'Hóa đơn bán hàng';
+        } else if (invoices[i].form_no == 3) {
+          objInvoice_M.HDon.DLHDon.TTChung.THDon = 'Hóa đơn bán tài sản công';
+        } else if (invoices[i].form_no == 4) {
+          objInvoice_M.HDon.DLHDon.TTChung.THDon = 'Hóa đơn bán hàng dự trữ quốc gia';
+        } else if (invoices[i].form_no == 5) {
+          objInvoice_M.HDon.DLHDon.TTChung.THDon = 'Tem điện tử, vé điện tử, thẻ điện tử, phiếu thu điện tử, chứng từ thu phí DV ngân hàng';
+        } else if (invoices[i].form_no == 6) {
+          objInvoice_M.HDon.DLHDon.TTChung.THDon = 'Phiếu xuất kho kiêm vận chuyển nội bộ, phiếu xuất kho hàng gửi bán đại lý';
+        }
+        objInvoice_M.HDon.DLHDon.TTChung.PBan = invoices[i].version;
+        objInvoice_M.HDon.DLHDon.TTChung.KHMSHDon = invoices[i].form_no;
+        objInvoice_M.HDon.DLHDon.TTChung.KHHDon = invoices[i].serial_no;
+        objInvoice_M.HDon.DLHDon.TTChung.SHDon = invoices[i].invoice_no;
+        objInvoice_M.HDon.DLHDon.TTChung.NLap = invoices[i].invoice_date;
+        objInvoice_M.HDon.DLHDon.TTChung.DVTTe = invoices[i].currency;
+        objInvoice_M.HDon.DLHDon.TTChung.TGia = invoices[i].ex_rate;
+        objInvoice_M.HDon.DLHDon.TTChung.HTTToan = invoices[i].payment_method;
+        objInvoice_M.HDon.DLHDon.TTChung.MSTTCGP = '1201496252'; //webcashgenuwin.com taxcode
+
+        objInvoice_M.HDon.DLHDon.TTChung.TTHDLQuan = [];
+        // console.log("invoices[i].invoice_feature  " ,invoices[i].invoice_feature)
+        if (invoices[i].invoice_feature != 0 && invoices[i].invoice_feature != null) {
+          //
+          objInvoice_M.HDon.DLHDon.TTChung.TTHDLQuan.push({
+            TCHDon: invoices[i].invoice_feature,
+            LHDCLQuan: invoices[i].invoice_type_relative,
+            KHMSHDCLQuan: invoices[i].form_no_relative,
+            KHHDCLQuan: invoices[i].serial_no_relative,
+            SHDCLQuan: invoices[i].invoice_no_relative,
+            NLHDCLQuan: invoices[i].invoice_date_relative,
+            GChu: invoices[i].description_relative,
+          });
+        }
+
+        objInvoice_M.HDon.DLHDon.NDHDon.NBan.Ten = this.convertHtmlCode(invoices[i].seller_comp_name) || '';
+        objInvoice_M.HDon.DLHDon.NDHDon.NBan.MST = invoices[i].seller_taxcode || '';
+        //objInvoice_M.HDon.DLHDon.NDHDon.NBan.DChi = this.convertHtmlCode(invoices[i].seller_address) || '';
+        objInvoice_M.HDon.DLHDon.NDHDon.NBan.SDThoai = invoices[i].seller_phone || '';
+        objInvoice_M.HDon.DLHDon.NDHDon.NBan.DCTDTu = invoices[i].seller_email || '';
+        objInvoice_M.HDon.DLHDon.NDHDon.NBan.STKNHang = invoices[i].seller_bank_no || '';
+        objInvoice_M.HDon.DLHDon.NDHDon.NBan.TNHang = this.convertHtmlCode(invoices[i].seller_bank_name) || '';
+        objInvoice_M.HDon.DLHDon.NDHDon.NBan.Fax = invoices[i].seller_fax || '';
+        objInvoice_M.HDon.DLHDon.NDHDon.NBan.Website = invoices[i].seller_website || '';
+        objInvoice_M.HDon.DLHDon.NDHDon.NBan.LDDNBo = this.convertHtmlCode(invoices[i].internal_order_no) || '';
+        objInvoice_M.HDon.DLHDon.NDHDon.NBan.DChi = this.convertHtmlCode(invoices[i].shipping_address) || '';
+        objInvoice_M.HDon.DLHDon.NDHDon.NBan.HDSoL = this.convertHtmlCode(invoices[i].transport_agreement_no) || '';
+        objInvoice_M.HDon.DLHDon.NDHDon.NBan.HVTNXHang = this.convertHtmlCode(invoices[i].internal_order_by) || '';
+        objInvoice_M.HDon.DLHDon.NDHDon.NBan.TNVChuyen = this.convertHtmlCode(invoices[i].transporter_name) || '';
+        objInvoice_M.HDon.DLHDon.NDHDon.NBan.PTVChuyen = this.convertHtmlCode(invoices[i].transport_means) || '';
+
+        objInvoice_M.HDon.DLHDon.NDHDon.NBan.TTKhac = {};
+        objInvoice_M.HDon.DLHDon.NDHDon.NBan.TTKhac.TTin = [];
+
+        if (invoices[i].internal_order_date) {
+          objInvoice_M.HDon.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
+            TTruong: 'NDDong',
+            KDLieu: 'string',
+            DLieu: this.convertHtmlCode(invoices[i].internal_order_date),
+          });
+        }
+
+        if (invoices[i].internal_order_purpose) {
+          objInvoice_M.HDon.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
+            TTruong: 'MDDDong',
+            KDLieu: 'string',
+            DLieu: this.convertHtmlCode(invoices[i].internal_order_purpose),
+          });
+        }
+
+        if (invoices[i].shipper_name) {
+          objInvoice_M.HDon.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
+            TTruong: 'TNXHang',
+            KDLieu: 'string',
+            DLieu: this.convertHtmlCode(invoices[i].shipper_name),
+          });
+        }
+
+        if (invoices[i].delivery_address) {
+          objInvoice_M.HDon.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
+            TTruong: 'DDNHang',
+            KDLieu: 'string',
+            DLieu: this.convertHtmlCode(invoices[i].delivery_address),
+          });
+        }
+
+        objInvoice_M.HDon.DLHDon.NDHDon.NMua.Ten = this.convertHtmlCode(invoices[i].buyer_comp_name) || '';
+        objInvoice_M.HDon.DLHDon.NDHDon.NMua.MST = invoices[i].buyer_taxcode || '';
+        objInvoice_M.HDon.DLHDon.NDHDon.NMua.SDThoai = invoices[i].buyer_phone || '';
+        objInvoice_M.HDon.DLHDon.NDHDon.NMua.DChi = this.convertHtmlCode(invoices[i].buyer_address) || '';
+        objInvoice_M.HDon.DLHDon.NDHDon.NMua.MKHang = invoices[i].buyer_code || '';
+        objInvoice_M.HDon.DLHDon.NDHDon.NMua.HVTNMHang = this.convertHtmlCode(invoices[i].buyer_name) || '';
+        objInvoice_M.HDon.DLHDon.NDHDon.NMua.DCTDTu = invoices[i].buyer_email || '';
+        objInvoice_M.HDon.DLHDon.NDHDon.NMua.STKNHang = invoices[i].buyer_bank_no || '';
+        objInvoice_M.HDon.DLHDon.NDHDon.NMua.TNHang = this.convertHtmlCode(invoices[i].buyer_bank_name) || '';
+        objInvoice_M.HDon.DLHDon.NDHDon.NMua.TTKhac = '';
+
+        objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu = [];
+
+        objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBSo = invoices[i].total_payment || '0';
+        objInvoice_M.HDon.DLHDon.NDHDon.TToan.TgTTTBChu = invoices[i].total_payment_word_vie; //await Utils.Num2VNText2(invoices[i].total_payment.toString() || '0', invoices[i].currency);
+
+        objInvoice_M.HDon.DSCKS.NBan = '';
+        objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu = {};
+        objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu = [];
+
+        for (let j = 0; j < invoices[i].detail_invoice.length; j++) {
+          //console.log("invoices[i].detail_invoice  ", invoices[i].detail_invoice);
+          objInvoice_M.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
+            TChat: invoices[i].detail_invoice[j].feature,
+            STT: invoices[i].detail_invoice[j].seq,
+            MHHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_code),
+            THHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_name),
+            DVTinh: invoices[i].detail_invoice[j].unit,
+            SLuong: invoices[i].detail_invoice[j].quantity,
+            DGia: invoices[i].detail_invoice[j].unit_price,
+            ThTien: invoices[i].detail_invoice[j].amount,
+          });
+        }
+        count_inv++;
+        //const id = uuid.v4();
+        const id = 'ID1';
+        const signature_path = 'HDon/DSCKS/NBan';
+        const xml = this.OBJtoXML(objInvoice_M);
+        const xmlStr = xml.toString().replace('<DLHDon>', `<DLHDon Id=\'${id}\'>`);
+
+        rtnXML.push({req_key: invoices[i].master_pk, xml_data: xmlStr, sign_id: id, signature_path: signature_path});
+      }
+
+      // return response.send(
+      //   Utils.response(true, `Convert json to xml was successful. ${count_inv}/${invoices.length} `, rtnXML)
+      // );
+      return response
+        .status(200)
+        .json(Utils.responseByRule({success: true, message: `Convert json to xml was successful. ${count_inv}/${invoices.length}`, data: rtnXML}));
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'weTaxConvertDeliveryNoteXML',
         CONTENT: e.message,
       });
       // console.log(e);

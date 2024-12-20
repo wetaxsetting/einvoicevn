@@ -239,9 +239,23 @@ class EiExcelConverterAuto {
                 //console.log(e.Cell+"+"+e.Info)
                 break;
               case 'BUYER_ADDRESS':
+                let range_string = 0,
+                  height_row = 0;
+                if (this.isVietnameseUpperCase(einvoiceMasterData[0]['BUYER_ADDRESS'].toString())) {
+                  range_string = 75;
+                  height_row = 15;
+                } else {
+                  range_string = 84;
+                  height_row = 14;
+                }
+                //console.log('BUYER_ADDRESS ', einvoiceMasterData[0]['BUYER_ADDRESS'].toString());
+                //console.log('isVietnameseUpperCase ', this.isVietnameseUpperCase(einvoiceMasterData[0]['BUYER_ADDRESS'].toString()));
+                //console.log('isVietnameseUpperCase ', range_string, 'length  ', einvoiceMasterData[0]['BUYER_ADDRESS'].toString().length);
                 worksheet.getCell(`${e.Cell}`).value = einvoiceMasterData[0]['BUYER_ADDRESS'];
                 worksheet.getRow(`${e.Cell.toString().substr(1, e.Cell.length - 1)}`).height =
-                  einvoiceMasterData[0]['BUYER_ADDRESS'] == null ? 14 : Math.ceil(einvoiceMasterData[0]['BUYER_ADDRESS'].toString().length / 84) * 14; //Math.ceil
+                  einvoiceMasterData[0]['BUYER_ADDRESS'] == null
+                    ? 14
+                    : Math.ceil(einvoiceMasterData[0]['BUYER_ADDRESS'].toString().length / range_string) * height_row; //Math.ceil
                 break;
               default:
                 worksheet.getCell(`${e.Cell}`).value = e.Info[0] != null ? e.Info[0] : '';
@@ -1109,5 +1123,16 @@ class EiExcelConverterAuto {
     }
     return result;
   };
+
+  // isVietnameseUpperCase(str) {
+  //   const vietnameseRegex = /^[\p{Lu}\s]+$/u; // Chỉ kiểm tra chữ hoa và khoảng trắng
+  //   return vietnameseRegex.test(str.normalize('NFC'));
+  // }
+
+  isVietnameseUpperCase(str) {
+    // Chuẩn hóa chuỗi và chuyển toàn bộ sang chữ hoa
+    const normalizedStr = str.normalize('NFC');
+    return normalizedStr === normalizedStr.toUpperCase();
+  }
 }
 module.exports = EiExcelConverterAuto;

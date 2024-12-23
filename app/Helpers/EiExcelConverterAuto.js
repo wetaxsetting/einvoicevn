@@ -1446,7 +1446,7 @@ class EiExcelConverterAuto {
   };
 
   countlength = s => {
-    let rangeWord = 43;
+    let rangeWord = 40;
     let result = 0;
     result = Math.ceil(s.length / rangeWord);
     return result;

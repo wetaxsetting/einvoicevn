@@ -879,6 +879,7 @@ class EiExcelConverterAuto {
               };
             });
             worksheet.getCell(`${lastCell + (totalRows + _sourceRow_3 - o)}`).style.border = {
+              left: {style: 'thin'},
               right: {style: 'thin'},
               bottom: {style: detailCellFormat[0].cellBorder},
             };

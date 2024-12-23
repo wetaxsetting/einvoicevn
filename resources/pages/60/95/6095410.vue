@@ -744,7 +744,7 @@ export default {
       try {
         var link = document.createElement('a');
         link.href = await this.onGetUrlPDF();
-        link.download = `${this.fileName}.xml`;
+        link.download = `${this.fileName}.pdf`;
         link.dispatchEvent(new MouseEvent('click'));
       } catch (error) {
         this.showNotification("danger", "onDownload-catch exception:", error.message, "", 3000);

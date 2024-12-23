@@ -111,7 +111,7 @@ class EiExcelConverterAuto {
         count_col_index = 0;
         total_countLenght = 0;
         for (let j = count_col; j < v_count; j++) {
-          let count_row = this.countlength_v2(einvoiceDetailData[j]['ITEM_NAME']);
+          let count_row = this.countlength(einvoiceDetailData[j]['ITEM_NAME']);
           if (count_row > 0) {
             total_countLenght += count_row;
           } else {
@@ -282,7 +282,7 @@ class EiExcelConverterAuto {
           let lastPagelength = 0;
           let pageRowCount = 0;
           for (let i = 0; i < page[j]; i++) {
-            let item_length = this.countlength_v2(einvoiceDetailData[countPerPage]['ITEM_NAME']);
+            let item_length = this.countlength(einvoiceDetailData[countPerPage]['ITEM_NAME']);
             if (page[j] > 0 && page[j + 1] == 0) {
               lastPagelength += item_length;
             }
@@ -308,7 +308,7 @@ class EiExcelConverterAuto {
         for (let j = 0; j < page.length; j++) {
           let lastPagelength = 0;
           for (let i = 0; i < page[j]; i++) {
-            let item_length = this.countlength_v2(einvoiceDetailData[countPerPage]['ITEM_NAME']);
+            let item_length = this.countlength(einvoiceDetailData[countPerPage]['ITEM_NAME']);
             if (page[j] > 0 && page[j + 1] == 0) {
               lastPagelength += item_length;
             }
@@ -412,7 +412,7 @@ class EiExcelConverterAuto {
               const _e = einvoiceDetailData[i + count];
 
               try {
-                let item_name_lt = this.countlength_v2(_e['ITEM_NAME']);
+                let item_name_lt = this.countlength(_e['ITEM_NAME']);
                 totalRowCount += item_name_lt;
                 countCheck += item_name_lt;
                 //console.log(totalRowCount + "+" + item_name_lt)
@@ -558,7 +558,7 @@ class EiExcelConverterAuto {
               const _e = einvoiceDetailData[i + count_2];
               //console.log('_e  ', _e);
               try {
-                let item_name_lt = this.countlength_v2(_e['ITEM_NAME']);
+                let item_name_lt = this.countlength(_e['ITEM_NAME']);
                 if (_e['ITEM_NAME'] !== null) {
                   //console.log(`_e["ITEM_NAME"]  ` + _e['ITEM_NAME']);
                   let longRow = _e['ITEM_NAME'].split('&#xA;');
@@ -733,7 +733,7 @@ class EiExcelConverterAuto {
               const _e = einvoiceDetailData[i + count];
               //console.log("  _e  " , _e);
               try {
-                let item_name_lt = this.countlength_v2(_e['ITEM_NAME']);
+                let item_name_lt = this.countlength(_e['ITEM_NAME']);
 
                 //console.log("  item_name_lt  " , item_name_lt);
                 if (_e['ITEM_NAME'] !== null) {
@@ -1124,6 +1124,12 @@ class EiExcelConverterAuto {
     return result;
   };
 
+  countlength = s => {
+    let rangeWord = 40;
+    let result = 0;
+    result = Math.ceil(s.length / rangeWord);
+    return result;
+  };
   // isVietnameseUpperCase(str) {
   //   const vietnameseRegex = /^[\p{Lu}\s]+$/u; // Chỉ kiểm tra chữ hoa và khoảng trắng
   //   return vietnameseRegex.test(str.normalize('NFC'));

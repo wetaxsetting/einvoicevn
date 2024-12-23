@@ -424,6 +424,7 @@ export default {
     invoiceNoIndex:"",
     typeCQTResult:"",
     tradeCodePK:"",
+    fileName:"",
   }),
 
   async created() {
@@ -743,7 +744,7 @@ export default {
       try {
         var link = document.createElement('a');
         link.href = await this.onGetUrlPDF();
-        link.download = `${this.invoiceInfo.buyer_taxcode + "_" + this.invoiceInfo.voucher_no}.pdf`;
+        link.download = `${this.fileName}.xml`;
         link.dispatchEvent(new MouseEvent('click'));
       } catch (error) {
         this.showNotification("danger", "onDownload-catch exception:", error.message, "", 3000);
@@ -1194,6 +1195,7 @@ export default {
     },
 
     async onCellClick({ column, data, rowIndex, rowType }) {
+      this.fileName = data.FORM_NO + "_" + data.SERIAL_NO + "_" + data.INVOICE_NO;
       this.tei_einvoice_m_pk_row = data.PK;
       this.maGD = data.CQT_MAGD;
       this.xml_signed = data.SIGN_XML;

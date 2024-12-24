@@ -48,7 +48,7 @@ class EiExcelHandler {
 
       const einvoiceMasterData = await DBService.callProcCursor('ei_sel_einvoice_m_pdf', [tradecode], p_language, p_crt_by, _db2);
 
-      console.log('einvoiceMasterData ', einvoiceMasterData);
+      //console.log('einvoiceMasterData ', einvoiceMasterData);
       const einvoiceDetailData = await DBService.callProcCursor('ei_sel_einvoice_d_pdf', [tradecode], p_language, p_crt_by, _db2);
 
       const einvoiceMasterParam = await DBService.callProcCursor(
@@ -155,7 +155,8 @@ class EiExcelHandler {
           }`, ///assets/images/einvoices_logo/abc/
         },
       ];
-      //logos = [];
+      logos = [];
+      console.log('einvoiceDetailsParam 1 ', einvoiceDetailsParam);
       for (let i = 0; i < einvoiceDetailsParam.length; i++) {
         detailCellFormat.push({
           startCell: einvoiceDetailsParam[i].STARTCELL,
@@ -167,6 +168,7 @@ class EiExcelHandler {
       }
       // // //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
       // // //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
+      console.log('einvoiceDetailsParam 2 ', einvoiceDetailsParam);
 
       //cấu trúc dòng detail
       // thin//dotted//dashDot//hair//dashDotDot//slantDashDot//mediumDashed//mediumDashDotDot//mediumDashDot//medium//double//thick

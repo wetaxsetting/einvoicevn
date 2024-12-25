@@ -295,7 +295,7 @@ class EiExcelConverterAuto {
           for (let i = 0; i < page[j]; i++) {
             let item_length = this.countlength_v2(einvoiceDetailData[countPerPage]['ITEM_NAME']);
             if (page[j] > 0 && page[j + 1] == 0) {
-              lastPagelength += item_length;
+              lastPagelength += item_length; // dòng cuối cùng của trang cuối
             }
             totalRows += item_length;
             pageRowCount += item_length;

@@ -118,7 +118,7 @@ class EiExcelConverterAuto {
         count_col_index = 0;
         total_countLenght = 0;
         for (let j = count_col; j < v_count; j++) {
-          let count_row = this.countlength_v2(einvoiceDetailData[j]['ITEM_NAME']);
+          let count_row = this.countlength(einvoiceDetailData[j]['ITEM_NAME']);
           if (count_row > 0) {
             total_countLenght += count_row;
           } else {
@@ -286,31 +286,19 @@ class EiExcelConverterAuto {
           let lastPagelength = 0;
           let pageRowCount = 0;
           for (let i = 0; i < page[j]; i++) {
-            let item_length = this.countlength_v2(einvoiceDetailData[countPerPage]['ITEM_NAME']);
+            let item_length = this.countlength(einvoiceDetailData[countPerPage]['ITEM_NAME']);
             if (page[j] > 0 && page[j + 1] == 0) {
               lastPagelength += item_length;
             }
             totalRows += item_length;
             pageRowCount += item_length;
             countPerPage++;
-            console.log('totalRows  ', totalRows);
-            console.log('pageRowCount  ', pageRowCount);
-            console.log('countPerPage  ', countPerPage);
           }
 
           if ((page[j] > 0 && page[j + 1] == 0) || (page[j] > 0 && page[j + 1] == undefined)) {
-            // console.log('v_countNumberOfPages  ', j, 'page[j] ', page[j], 'page[j + 1] ', page[j + 1]);
-            // console.log('totalRows  ', totalRows, '(pos_lv - lastPagelength) ', pos_lv - lastPagelength);
-            // console.log('totalRows  ', totalRows, 'headerRowCount ', headerRowCount);
-
             totalRows = totalRows + (pos_lv - lastPagelength);
             extendedRows = pos_lv - lastPagelength;
-            totalRows += headerRowCount;
-
-            console.log('lastPagelength  ', lastPagelength);
-            console.log('extendedRows  ', extendedRows);
-            console.log('headerRowCount  ', headerRowCount);
-
+            //totalRows += headerRowCount;
             break;
           } else {
             //console.log("page[j]+",page[j])
@@ -325,7 +313,7 @@ class EiExcelConverterAuto {
         for (let j = 0; j < page.length; j++) {
           let lastPagelength = 0;
           for (let i = 0; i < page[j]; i++) {
-            let item_length = this.countlength_v2(einvoiceDetailData[countPerPage]['ITEM_NAME']);
+            let item_length = this.countlength(einvoiceDetailData[countPerPage]['ITEM_NAME']);
             if (page[j] > 0 && page[j + 1] == 0) {
               lastPagelength += item_length;
             }
@@ -424,7 +412,7 @@ class EiExcelConverterAuto {
               const _e = einvoiceDetailData[i + count];
 
               try {
-                let item_name_lt = this.countlength_v2(_e['ITEM_NAME']);
+                let item_name_lt = this.countlength(_e['ITEM_NAME']);
                 totalRowCount += item_name_lt;
                 countCheck += item_name_lt;
                 //console.log(totalRowCount + "+" + item_name_lt)
@@ -570,7 +558,7 @@ class EiExcelConverterAuto {
               const _e = einvoiceDetailData[i + count_2];
               //console.log('_e  ', _e);
               try {
-                let item_name_lt = this.countlength_v2(_e['ITEM_NAME']);
+                let item_name_lt = this.countlength(_e['ITEM_NAME']);
                 const _item_name = _e['ITEM_NAME'];
                 this.addValueToCellsWithItemName(worksheet, _sourceRow_2 + totalRowCount_2, _e, _item_name, detailCellFormat, excCols);
 
@@ -701,7 +689,7 @@ class EiExcelConverterAuto {
               const _e = einvoiceDetailData[i + count];
               //console.log('_e  ', _e);
               try {
-                let item_name_lt = this.countlength_v2(_e['ITEM_NAME']);
+                let item_name_lt = this.countlength(_e['ITEM_NAME']);
                 if (item_name_lt == 1) {
                   detailCellFormat.forEach((e, i) => {
                     try {

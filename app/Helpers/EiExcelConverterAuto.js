@@ -690,6 +690,7 @@ class EiExcelConverterAuto {
               //console.log('_e  ', _e);
               try {
                 let item_name_lt = this.countlength(_e['ITEM_NAME']);
+                this.addValueToCellsWithItemName(worksheet, _sourceRow_2 + totalRowCount_2, _e, _item_name, detailCellFormat, excCols);
                 if (item_name_lt == 1) {
                   detailCellFormat.forEach((e, i) => {
                     try {

@@ -303,7 +303,7 @@ class EiExcelConverterAuto {
           }
 
           if (page[j] > 0 && page[j + 1] == 0) {
-            totalRows = totalRows + (pos_lv - lastPagelength);
+            //totalRows = totalRows + (pos_lv - lastPagelength);
             extendedRows = pos_lv - lastPagelength;
             totalRows += headerRowCount;
             break;

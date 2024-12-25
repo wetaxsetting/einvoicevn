@@ -118,7 +118,7 @@ class EiExcelConverterAuto {
         count_col_index = 0;
         total_countLenght = 0;
         for (let j = count_col; j < v_count; j++) {
-          let count_row = this.countlength(einvoiceDetailData[j]['ITEM_NAME']);
+          let count_row = this.countlength_v2(einvoiceDetailData[j]['ITEM_NAME']);
           if (count_row > 0) {
             total_countLenght += count_row;
           } else {
@@ -286,7 +286,7 @@ class EiExcelConverterAuto {
           let lastPagelength = 0;
           let pageRowCount = 0;
           for (let i = 0; i < page[j]; i++) {
-            let item_length = this.countlength(einvoiceDetailData[countPerPage]['ITEM_NAME']);
+            let item_length = this.countlength_v2(einvoiceDetailData[countPerPage]['ITEM_NAME']);
             if (page[j] > 0 && page[j + 1] == 0) {
               lastPagelength += item_length;
             }
@@ -325,7 +325,7 @@ class EiExcelConverterAuto {
         for (let j = 0; j < page.length; j++) {
           let lastPagelength = 0;
           for (let i = 0; i < page[j]; i++) {
-            let item_length = this.countlength(einvoiceDetailData[countPerPage]['ITEM_NAME']);
+            let item_length = this.countlength_v2(einvoiceDetailData[countPerPage]['ITEM_NAME']);
             if (page[j] > 0 && page[j + 1] == 0) {
               lastPagelength += item_length;
             }
@@ -424,7 +424,7 @@ class EiExcelConverterAuto {
               const _e = einvoiceDetailData[i + count];
 
               try {
-                let item_name_lt = this.countlength(_e['ITEM_NAME']);
+                let item_name_lt = this.countlength_v2(_e['ITEM_NAME']);
                 totalRowCount += item_name_lt;
                 countCheck += item_name_lt;
                 //console.log(totalRowCount + "+" + item_name_lt)
@@ -570,7 +570,7 @@ class EiExcelConverterAuto {
               const _e = einvoiceDetailData[i + count_2];
               //console.log('_e  ', _e);
               try {
-                let item_name_lt = this.countlength(_e['ITEM_NAME']);
+                let item_name_lt = this.countlength_v2(_e['ITEM_NAME']);
                 const _item_name = _e['ITEM_NAME'];
                 this.addValueToCellsWithItemName(worksheet, _sourceRow_2 + totalRowCount_2, _e, _item_name, detailCellFormat, excCols);
 
@@ -701,7 +701,7 @@ class EiExcelConverterAuto {
               const _e = einvoiceDetailData[i + count];
               //console.log('_e  ', _e);
               try {
-                let item_name_lt = this.countlength(_e['ITEM_NAME']);
+                let item_name_lt = this.countlength_v2(_e['ITEM_NAME']);
                 if (item_name_lt == 1) {
                   detailCellFormat.forEach((e, i) => {
                     try {
@@ -774,72 +774,72 @@ class EiExcelConverterAuto {
       //	worksheet.getCell(`${excCols[e.startCell]+( _sourceRow_2 + totalRowCount_2)}`).style.border = {bottom: {style:detailCellFormat[i].cellBorder},left: { style: 'thin' }, };
 
       //-----@@@@@@@@@@@@@@@@@@@@@@-----------------------------
-      // if (v_countNumberOfPages > 1) {
-      //   //console.log(' extendedRows ', extendedRows);
-      //   for (let o = 2; o < extendedRows; o++) {
-      //     try {
-      //       //console.log(' extendedRows ', extendedRows, ' o ', o);
-      //       detailCellFormat.forEach((e, i) => {
-      //         try {
-      //           worksheet.mergeCells(totalRows + _sourceRow_3 - o, e.startCell, totalRows + _sourceRow_3 - o, e.endCell);
-      //         } catch (error) {}
-      //         worksheet.getCell(`${excCols[e.startCell] + (totalRows + _sourceRow_3 - o)}`).style.border = {
-      //           left: {style: 'thin'},
-      //           bottom: {style: detailCellFormat[i].cellBorder},
-      //         };
-      //       });
-      //       worksheet.getRow(totalRows + _sourceRow_3 - o).height = lastPageRowsHeight;
-      //       worksheet.getCell(`${lastCell + (totalRows + _sourceRow_3 - o)}`).style.border = {
-      //         right: {style: 'thin'},
-      //         bottom: {style: detailCellFormat[0].cellBorder},
-      //       };
-      //       worksheet.getCell(`${sttCell + (totalRows + _sourceRow_3 - o)}`).style.border = {
-      //         left: {style: 'thin'},
-      //         right: {style: 'thin'},
-      //         bottom: {style: detailCellFormat[0].cellBorder},
-      //       };
-      //       // worksheet.getCell(`${nmCell + (totalRows + _sourceRow_3 - o)}`).style.border = {
-      //       //   left: {style: 'thin'},
-      //       //   right: {style: 'thin'},
-      //       //   bottom: {style: detailCellFormat[0].cellBorder},
-      //       // };
-      //     } catch (error) {
-      //       console.log('error', error);
-      //       console.log('error', totalRows + _sourceRow_3 - o);
-      //     }
-      //   }
-      // } else {
-      //   for (let o = 1; o <= extendedRows; o++) {
-      //     try {
-      //       detailCellFormat.forEach((e, i) => {
-      //         try {
-      //           worksheet.mergeCells(totalRows + _sourceRow_3 - o, e.startCell, totalRows + _sourceRow_3 - o, e.endCell);
-      //         } catch (error) {}
-      //         worksheet.getCell(`${excCols[e.startCell] + (totalRows + _sourceRow_3 - o)}`).style.border = {
-      //           left: {style: 'thin'},
-      //           bottom: {style: detailCellFormat[i].cellBorder},
-      //         };
-      //       });
-      //       worksheet.getCell(`${lastCell + (totalRows + _sourceRow_3 - o)}`).style.border = {
-      //         right: {style: 'thin'},
-      //         bottom: {style: detailCellFormat[0].cellBorder},
-      //       };
-      //       worksheet.getRow(totalRows + _sourceRow_3 - o).height = lastPageRowsHeight;
-      //       worksheet.getCell(`${sttCell + (totalRows + _sourceRow_3 - o)}`).style.border = {
-      //         left: {style: 'thin'},
-      //         right: {style: 'thin'},
-      //         bottom: {style: detailCellFormat[0].cellBorder},
-      //       };
-      //       worksheet.getCell(`${nmCell + (totalRows + _sourceRow_3 - o)}`).style.border = {
-      //         left: {style: 'thin'},
-      //         right: {style: 'thin'},
-      //         bottom: {style: detailCellFormat[0].cellBorder},
-      //       };
-      //     } catch (error) {
-      //       console.log('error', totalRows + _sourceRow_3 - o);
-      //     }
-      //   }
-      // }
+      if (v_countNumberOfPages > 1) {
+        //console.log(' extendedRows ', extendedRows);
+        for (let o = 2; o < extendedRows; o++) {
+          try {
+            //console.log(' extendedRows ', extendedRows, ' o ', o);
+            detailCellFormat.forEach((e, i) => {
+              try {
+                worksheet.mergeCells(totalRows + _sourceRow_3 - o, e.startCell, totalRows + _sourceRow_3 - o, e.endCell);
+              } catch (error) {}
+              worksheet.getCell(`${excCols[e.startCell] + (totalRows + _sourceRow_3 - o)}`).style.border = {
+                left: {style: 'thin'},
+                bottom: {style: detailCellFormat[i].cellBorder},
+              };
+            });
+            worksheet.getRow(totalRows + _sourceRow_3 - o).height = lastPageRowsHeight;
+            worksheet.getCell(`${lastCell + (totalRows + _sourceRow_3 - o)}`).style.border = {
+              right: {style: 'thin'},
+              bottom: {style: detailCellFormat[0].cellBorder},
+            };
+            worksheet.getCell(`${sttCell + (totalRows + _sourceRow_3 - o)}`).style.border = {
+              left: {style: 'thin'},
+              right: {style: 'thin'},
+              bottom: {style: detailCellFormat[0].cellBorder},
+            };
+            // worksheet.getCell(`${nmCell + (totalRows + _sourceRow_3 - o)}`).style.border = {
+            //   left: {style: 'thin'},
+            //   right: {style: 'thin'},
+            //   bottom: {style: detailCellFormat[0].cellBorder},
+            // };
+          } catch (error) {
+            console.log('error', error);
+            console.log('error', totalRows + _sourceRow_3 - o);
+          }
+        }
+      } else {
+        for (let o = 1; o <= extendedRows; o++) {
+          try {
+            detailCellFormat.forEach((e, i) => {
+              try {
+                worksheet.mergeCells(totalRows + _sourceRow_3 - o, e.startCell, totalRows + _sourceRow_3 - o, e.endCell);
+              } catch (error) {}
+              worksheet.getCell(`${excCols[e.startCell] + (totalRows + _sourceRow_3 - o)}`).style.border = {
+                left: {style: 'thin'},
+                bottom: {style: detailCellFormat[i].cellBorder},
+              };
+            });
+            worksheet.getCell(`${lastCell + (totalRows + _sourceRow_3 - o)}`).style.border = {
+              right: {style: 'thin'},
+              bottom: {style: detailCellFormat[0].cellBorder},
+            };
+            worksheet.getRow(totalRows + _sourceRow_3 - o).height = lastPageRowsHeight;
+            worksheet.getCell(`${sttCell + (totalRows + _sourceRow_3 - o)}`).style.border = {
+              left: {style: 'thin'},
+              right: {style: 'thin'},
+              bottom: {style: detailCellFormat[0].cellBorder},
+            };
+            worksheet.getCell(`${nmCell + (totalRows + _sourceRow_3 - o)}`).style.border = {
+              left: {style: 'thin'},
+              right: {style: 'thin'},
+              bottom: {style: detailCellFormat[0].cellBorder},
+            };
+          } catch (error) {
+            console.log('error', totalRows + _sourceRow_3 - o);
+          }
+        }
+      }
       //-----@@@@@@@@@@@@@@@@@@@@@@-----------------------------
 
       //END-this part add more style to the rows that missing(optional) Last Page.
@@ -849,25 +849,25 @@ class EiExcelConverterAuto {
       //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
       //console.log('extendedArray ++==>', extendedArray);
       //-----@@@@@@@@@@@@@@@@@@@@@@-----------------------------
-      // for (let o = 0; o < extendedArray.length; o++) {
-      //   let rowItem = extendedArray[o];
+      for (let o = 0; o < extendedArray.length; o++) {
+        let rowItem = extendedArray[o];
 
-      //   worksheet.mergeCells(rowItem.loopStartRow, startMergeRedundantRow, rowItem.loopStartRow + rowItem.loop_row - 1, endMergeRedundantRow);
-      //   worksheet.getCell(`${sttCell + rowItem.loopStartRow}`).style.border = {
-      //     left: {style: 'thin'},
-      //     bottom: {style: 'thin'},
-      //     top: {style: 'thin'},
-      //     bottom: {right: 'thin'},
-      //   };
-      //   for (let _omg = 0; _omg < rowItem.loop_row; _omg++) {
-      //     try {
-      //       console.log('rowItem.loopStartRow + _omg', rowItem.loopStartRow + _omg);
-      //       worksheet.getCell(`${lastCell + (rowItem.loopStartRow + _omg)}`).style.border = {right: {style: 'thin'}};
-      //     } catch (error) {
-      //       console.log('error', rowItem.loopStartRow + _omg);
-      //     }
-      //   }
-      // }
+        worksheet.mergeCells(rowItem.loopStartRow, startMergeRedundantRow, rowItem.loopStartRow + rowItem.loop_row - 1, endMergeRedundantRow);
+        worksheet.getCell(`${sttCell + rowItem.loopStartRow}`).style.border = {
+          left: {style: 'thin'},
+          bottom: {style: 'thin'},
+          top: {style: 'thin'},
+          bottom: {right: 'thin'},
+        };
+        for (let _omg = 0; _omg < rowItem.loop_row; _omg++) {
+          try {
+            console.log('rowItem.loopStartRow + _omg', rowItem.loopStartRow + _omg);
+            worksheet.getCell(`${lastCell + (rowItem.loopStartRow + _omg)}`).style.border = {right: {style: 'thin'}};
+          } catch (error) {
+            console.log('error', rowItem.loopStartRow + _omg);
+          }
+        }
+      }
       //-----@@@@@@@@@@@@@@@@@@@@@@-----------------------------
       //END-this part add more style to the rows that missing(optional) Other pages.
 

@@ -252,7 +252,7 @@ class EiExcelConverterAuto {
               case 'BUYER_ADDRESS':
                 let range_string = 0,
                   height_row = 0;
-                if (this.isVietnameseUpperCase(einvoiceMasterData[0]['BUYER_ADDRESS'])) {
+                if (einvoiceMasterData[0]['BUYER_ADDRESS'] && this.isVietnameseUpperCase(einvoiceMasterData[0]['BUYER_ADDRESS'])) {
                   range_string = 75;
                   height_row = 15;
                 } else {

@@ -308,12 +308,11 @@ class EiExcelConverterAuto {
             totalRows += headerRowCount;
             break;
           } else {
-            //console.log("page[j]+",page[j])
             if (j > 0) {
               totalRows += headerRowCount;
             }
           }
-          totalRows += pos_lv - pageRowCount;
+          //totalRows += pos_lv - pageRowCount;
         }
       } else {
         for (let j = 0; j < page.length; j++) {

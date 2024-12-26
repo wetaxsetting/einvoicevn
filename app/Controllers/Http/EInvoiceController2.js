@@ -3139,8 +3139,8 @@ class EInvoiceController2 {
                     </html>`;
 
       //console.log("sSSSS4 ", tei_wt_sale_bill_pk);
-
-      const res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {
+      let res_send_mail = {};
+      res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {
         mail_to: data_invoice.buyer_email,
         cc_to: data_invoice.buyer_email_cc,
         subject: subject,

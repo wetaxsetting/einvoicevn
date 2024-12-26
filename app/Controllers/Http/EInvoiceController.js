@@ -18043,7 +18043,7 @@ class EInvoiceController {
                   tthue: p_vat_amt,
                 };
 
-                //console.log('weTaxExtractPosXMLContent d param ===> ', paraDetails);
+                console.log('weTaxExtractPosXMLContent d param ===> ', JSON.stringify(paraDetails));
 
                 const rtnValueDetail = await DBService.ExecuteSQLBlob(
                   `BEGIN WT_UPD_SALE_BILL_d (          

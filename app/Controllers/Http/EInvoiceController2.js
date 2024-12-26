@@ -1196,7 +1196,7 @@ class EInvoiceController2 {
                 DLieu: invoices[i].detail_invoice[j].amt_vat,
               });
 
-              objInvoice.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
+              objInvoice.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
                 TChat: invoices[i].detail_invoice[j].feature,
                 STT: invoices[i].detail_invoice[j].seq,
                 MHHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_code),
@@ -1211,7 +1211,7 @@ class EInvoiceController2 {
                 TTKhac: TTKhac,
               });
             } else {
-              objInvoice.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
+              objInvoice.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
                 TChat: invoices[i].detail_invoice[j].feature,
                 STT: invoices[i].detail_invoice[j].seq,
                 MHHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_code),

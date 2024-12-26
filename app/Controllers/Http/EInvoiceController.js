@@ -18907,7 +18907,7 @@ class EInvoiceController {
             data_invoice.detail_invoice[i].dc_rate,
             data_invoice.detail_invoice[i].dc_amt,
             data_invoice.detail_invoice[i].vat_rate,
-            data_invoice.detail_invoice[i].vat_amt,
+            data_invoice.detail_invoice[i].amt_vat,
             this.encoreHtmlCode(data_invoice.detail_invoice[i].attr01) || '',
             this.encoreHtmlCode(data_invoice.detail_invoice[i].attr02) || '',
             this.encoreHtmlCode(data_invoice.detail_invoice[i].attr03) || '',

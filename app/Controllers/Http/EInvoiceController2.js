@@ -1960,6 +1960,7 @@ class EInvoiceController2 {
                   stckhau: inv_d.STCKhau,
                   thtien: inv_d.ThTien,
                   tsuat: inv_d.TSuat,
+                  tthue: '',
                 };
 
                 //console.log('weTaxExtractPosXMLContent d param ===> ', paraDetails);
@@ -1978,6 +1979,7 @@ class EInvoiceController2 {
                                                       :stckhau,
                                                       :thtien,
                                                       :tsuat,
+                                                      :tthue,
                                                       :p_language, 
                                                       :p_crt_by, 
                                                       :p_rtn_cur); END;`,

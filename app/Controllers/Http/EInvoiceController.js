@@ -18915,7 +18915,7 @@ class EInvoiceController {
             this.encoreHtmlCode(data_invoice.detail_invoice[i].attr05) || '',
             '',
           ];
-          console.log('WT_UPD_TEI_WT_INVOICE_D_2 detail', detail);
+          console.log('WT_UPD_TEI_WT_INVOICE_D_2 detail', detailPara);
           await DBService.callProcCursor('WT_UPD_TEI_WT_INVOICE_D_2', detailPara, p_language, p_crt_by);
           // console.log("detail", detail);
         }

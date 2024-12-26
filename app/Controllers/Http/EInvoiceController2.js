@@ -2025,7 +2025,7 @@ class EInvoiceController2 {
                   stckhau: inv_d.STCKhau,
                   thtien: inv_d.ThTien,
                   tsuat: inv_d.TSuat,
-                  tthue: '',
+                  tthue: p_vat_amt,
                 };
 
                 //console.log('weTaxExtractPosXMLContent d param ===> ', paraDetails);

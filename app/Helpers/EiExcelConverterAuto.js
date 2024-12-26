@@ -118,7 +118,7 @@ class EiExcelConverterAuto {
       });
 
       for (let i = 0; i < 99; i++) {
-        //console.log(page)
+        //console.log(page);
         count_col_index = 0;
         total_countLenght = 0;
         for (let j = count_col; j < v_count; j++) {
@@ -287,6 +287,7 @@ class EiExcelConverterAuto {
           }
         });
       }
+      console.log('v_countNumberOfPages  ', v_countNumberOfPages, 'totalRows ', totalRows, 'headerRowCount ', headerRowCount);
 
       if (v_countNumberOfPages > 1) {
         for (let j = 0; j < page.length; j++) {
@@ -300,12 +301,13 @@ class EiExcelConverterAuto {
             totalRows += item_length;
             pageRowCount += item_length;
             countPerPage++;
+            console.log('totalRows ======>', totalRows, 'pageRowCount ', pageRowCount);
           }
-
           if (page[j] > 0 && page[j + 1] == 0) {
             //totalRows = totalRows + (pos_lv - lastPagelength);
             extendedRows = pos_lv - lastPagelength;
-            totalRows += headerRowCount;
+            totalRows += headerRowCount - 3; // éo bik sao phải trừ 3
+            console.log('page ==>', j, 'extendedRows  ', extendedRows, 'totalRows ', totalRows);
             break;
           } else {
             if (j > 0) {
@@ -313,6 +315,8 @@ class EiExcelConverterAuto {
             }
           }
           //totalRows += pos_lv - pageRowCount;
+          console.log(' ======================== page  ', j);
+          console.log('pageRowCount  ', pageRowCount, 'totalRows ', totalRows);
         }
       } else {
         for (let j = 0; j < page.length; j++) {
@@ -334,6 +338,7 @@ class EiExcelConverterAuto {
           }
         }
       }
+      console.log('totalRows  ', totalRows);
       //END-this part calculate the total row needed for the einvoice.
 
       //this part coppy merge information of the page before add more row.
@@ -392,13 +397,7 @@ class EiExcelConverterAuto {
           worksheet.getCell(`C${_sourceRow + i}`).style.border = {};
         }
       }
-      //console.log(lstMerge)
-      // //ADDING rows
-      // for (let i = 1; i < totalRows; i++) {
-      // 	exceljs.copyRow(_sourceRow + i, _sourceRow, 'c');
-      // 	worksheet.getCell( `C${_sourceRow + i}`).style.border = {};
-      // }
-      // //END-ADDING rows
+
       lstNewMerge.sort((a, b) => parseFloat(a.row1) - parseFloat(b.row1));
       lstNewMerge.forEach(x => {
         try {
@@ -413,6 +412,7 @@ class EiExcelConverterAuto {
       //this part insert range header for each page
       //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
       //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
+      //=======================================================================================================
       if (v_countNumberOfPages > 1) {
         for (let j = 0; j < page.length; j++) {
           const e = parseInt(page[j]);
@@ -420,7 +420,6 @@ class EiExcelConverterAuto {
           if (e > 0) {
             for (let i = 0; i < e; i++) {
               const _e = einvoiceDetailData[i + count];
-
               try {
                 let item_name_lt = this.countlength_v2(_e['ITEM_NAME']);
                 totalRowCount += item_name_lt;
@@ -434,10 +433,8 @@ class EiExcelConverterAuto {
             }
 
             let _count_ = 0;
-
             if (j == 0) {
               _sourceRow = _sourceRow - 1;
-
               if (pos_lv - totalRowCount > 0) {
                 let tmpObj = {loop_row: pos_lv - totalRowCount, loopStartRow: totalRowCount + _sourceRow + 1};
                 extendedArray.push(tmpObj);
@@ -462,7 +459,8 @@ class EiExcelConverterAuto {
 
                 logoArray.push({logoPos: totalRowCount + _sourceRow + leftCount, logos: logos});
               } else {
-                for (let index = 1; index <= pos_lv - pos; index++) {
+                //for (let index = 1; index <= pos_lv - pos; index++) {
+                for (let index = 1; index <= pos; index++) {
                   worksheet.getRow(totalRowCount + _sourceRow + leftCount + index).hidden = true;
                 }
               }
@@ -515,8 +513,6 @@ class EiExcelConverterAuto {
               return b;
             });
 
-            //console.log(_lstMerge)
-
             for (let idx = 0; idx < data.length - 1; idx++) {
               _lstMerge.forEach(q => {
                 const startMergeCell = q['range'].split(':').shift();
@@ -562,7 +558,7 @@ class EiExcelConverterAuto {
           //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
           //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
 
-          console.log('e  ', e);
+          //console.log('e  ', e);
           if (e > 0) {
             for (let i = 0; i < e; i++) {
               const _e = einvoiceDetailData[i + count_2];
@@ -861,7 +857,6 @@ class EiExcelConverterAuto {
           } else break;
         }
       }
-
       //END-this part insert range header for each page
 
       //this part add more style to the rows that missing(optional) Last Page.
@@ -952,6 +947,7 @@ class EiExcelConverterAuto {
           }
         }
       }
+      //=======================================================================================================
       //END-this part add more style to the rows that missing(optional) Other pages.
 
       //this part insert logo for all the self gen header

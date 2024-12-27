@@ -810,7 +810,9 @@ class EInvoiceController2 {
           },
         };
 
+        console.log('invoices ', invoices);
         for (let i = 0; i < invoices.length; i++) {
+          console.log('invoices ', invoices[i]);
           const lastInvoiceNo = await DBService.callProcCursor(
             'wt_sel_last_invoice_no',
             [invoices[i].seller_taxcode, invoices[i].serial_no, invoices[i].form_no],

@@ -1192,7 +1192,7 @@ class EInvoiceController2 {
           objInvoice.HDon.DLHDon.NDHDon.DSHHDVu.HHDVu = [];
 
           for (let j = 0; j < invoices[i].detail_invoice.length; j++) {
-            //console.log("invoices[i].detail_invoice  ", invoices[i].detail_invoice);
+            console.log('invoices[i].detail_invoice  ', invoices[i].detail_invoice);
             if (invoices[i].detail_invoice[j].amt_vat) {
               let TTKhac = {};
               TTKhac.TTin = [];
@@ -1264,6 +1264,8 @@ class EInvoiceController2 {
         const xml = this.OBJtoXML(objInvoice);
         const xmlStr = xml.toString().replace('<DLHDon>', `<DLHDon Id=\'${id}\'>`).replace(/\n/g, '').replaceAll('"', "'");
 
+        console.log('json_xml objInvoice', objInvoice);
+
         json_xml.push({
           sign_id: id,
           signature_path: signature_path,
@@ -1271,7 +1273,7 @@ class EInvoiceController2 {
           req_key: req_key,
           xml_process: true,
         });
-        //console.log('json_xml', json_xml);
+
         //return;
       } else if (process_type == 'N') {
         objInvoice = {

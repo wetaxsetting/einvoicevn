@@ -887,7 +887,7 @@ class EInvoiceController2 {
             count_length: '',
             xml_type: '',
           };
-          //console.log(para_value);
+          console.log(para_value);
           const rtnValue = await DBService.ExecuteSQLBlob(
             `BEGIN wt_upd_send_order_info (          
                                                             :sale_date,

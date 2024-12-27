@@ -935,7 +935,7 @@ class EInvoiceController2 {
             p_language,
             p_crt_by,
           );
-          console.log(' weTaxGeneralXML rtnValue ', rtnValue);
+          //console.log(' weTaxGeneralXML rtnValue ', rtnValue);
 
           let tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
 
@@ -1010,6 +1010,8 @@ class EInvoiceController2 {
               );
             }
           } else {
+            console.log('invoices[i].form_no continue', invoices[i].form_no);
+
             continue;
           }
 

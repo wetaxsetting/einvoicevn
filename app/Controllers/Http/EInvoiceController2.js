@@ -188,7 +188,9 @@ class EInvoiceController2 {
 
             return response.status(200).json(Utils.responseByRule({success: true, message: 'Sending invoice is successfully.', data: data_send_tax}));
           } else {
-            return response.status(409).json(Utils.responseByRule({success: false, message: 'Sending invoice to TAX is error!!'}));
+            return response
+              .status(409)
+              .json(Utils.responseByRule({success: false, message: 'Sending invoice to TAX is error!!', data: data_send_tax}));
           }
         } else {
           let masterInvoicePK = '',
@@ -2439,6 +2441,7 @@ class EInvoiceController2 {
           tax_serial_number: tax_serial_number,
           data_error: data_error,
           data_inv: data_inv,
+          send_mail: send_mail,
         };
       });
 

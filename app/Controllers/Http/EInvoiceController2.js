@@ -1272,6 +1272,7 @@ class EInvoiceController2 {
           xml_process: true,
         });
         console.log('json_xml', json_xml);
+        return;
       } else if (process_type == 'N') {
         objInvoice = {
           HDon: {
@@ -3163,7 +3164,7 @@ class EInvoiceController2 {
     let status = true;
     let resMess = '';
     const mess1 = 'Invalid field';
-    console.log('weTaxValidatePosInvoiceToXML invoice  ', invoices);
+    //console.log('weTaxValidatePosInvoiceToXML invoice  ', invoices);
     try {
       const errorList = {
         version: /^(\d{1}\.\d{1}\.\d{1})$/, //6

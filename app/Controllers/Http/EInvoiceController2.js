@@ -3156,7 +3156,7 @@ class EInvoiceController2 {
     let status = true;
     let resMess = '';
     const mess1 = 'Invalid field';
-    //console.log("invoice  ", invoice)
+    console.log('weTaxValidatePosInvoiceToXML invoice  ', invoice);
     try {
       const errorList = {
         version: /^(\d{1}\.\d{1}\.\d{1})$/, //6

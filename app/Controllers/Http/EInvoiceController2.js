@@ -183,7 +183,7 @@ class EInvoiceController2 {
             p_crt_by,
           );
           console.log('weTaxSendPosInvoice data_send_tax ', data_send_tax);
-          if (data_send_tax) {
+          if (data_send_tax && data_send_tax.send_mail) {
             this.weTaxSendMailPos(data_send_mail, 'WTPTA002', tax_code, p_language, p_crt_by);
 
             return response.status(200).json(Utils.responseByRule({success: true, message: 'Sending invoice is successfully.', data: data_send_tax}));
@@ -1258,7 +1258,7 @@ class EInvoiceController2 {
 
           objInvoice.HDon.MCCQT = invoices[i].mccqt; //`M1-24-VZQYY-${Math.floor(10000000000 + Math.random() * 9000000000)}`; //
         }
-        console.log('json_xml objInvoice', JSON.stringify(objInvoice));
+        //console.log('json_xml objInvoice', JSON.stringify(objInvoice));
 
         const id = uuid.v4();
         const signature_path = 'HDon/DSCKS/NBan';
@@ -1579,19 +1579,8 @@ class EInvoiceController2 {
 
             let data_sign_xml = JSON.parse(data);
 
-            // let objData = {
-            //   TDiep: {
-            //     DLieu: [],
-            //     CKSNNT: {},
-            //   },
-            // };
-            // objData.TDiep.DLieu.push(data_sign_xml.data[0].signed_xml);
-
             const id = uuid.v4();
             const signature_path = 'TDiep/CKSNNT';
-            //const xml = this.OBJtoXML(objData);
-            //const xmlId = xml.toString().replace('<DLieu>', `<DLieu Id=\'${id}\'>`);
-            //const xmlRemoveLine = xmlId.toString().replace(/\n/g, '').replaceAll('"', "'");
 
             const xmlRemoveLine = `<TDiep><DLieu Id=\'${id}\'> ` + data_sign_xml.data[0].signed_xml + `</DLieu><CKSNNT></CKSNNT></TDiep>`;
 
@@ -1613,7 +1602,7 @@ class EInvoiceController2 {
             const res = await Request.post(WEBSERVICE_C_SHARP + '/SignXml', {
               xmlContent: JSON.stringify({user_name, password, tax_serial_number, pin, organization, otp, signing_xml, url, site}),
             });
-            console.log('res.data.d  ', res.data.d);
+            //console.log('res.data.d  ', res.data.d);
             data = JSON.parse(res.data.d);
           }
           break;
@@ -1766,10 +1755,10 @@ class EInvoiceController2 {
           MCCQT: 'MCCQT',
         },
       ];
-      console.log('xml_content  ', xml_content);
+      //console.log('xml_content  ', xml_content);
       const jsonInvoice = await transform(xml_content, template);
 
-      console.log('jsonInvoice  ', JSON.stringify(jsonInvoice));
+      //console.log('jsonInvoice  ', JSON.stringify(jsonInvoice));
 
       var xpath = require('xpath');
       var dom = require('@xmldom/xmldom').DOMParser;
@@ -1936,7 +1925,7 @@ class EInvoiceController2 {
               vat_rate: invoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat[0].TSuat,
             };
 
-            console.log('weTaxExtractPosXMLContent m param ===> ', paraMaster);
+            //console.log('weTaxExtractPosXMLContent m param ===> ', paraMaster);
 
             const rtnValueMaster = await DBService.ExecuteSQLBlob(
               `BEGIN WT_UPD_SALE_BILL (          
@@ -2013,7 +2002,7 @@ class EInvoiceController2 {
             if (rtnValueMaster.p_rtn_cur[0].STATUS == 'OK') {
               const invoice_detail = invoice.DLHDon.NDHDon.DSHHDVu.HHDVu;
               for (let inv_d of invoice_detail) {
-                console.log(' invoice_detail  ', invoice_detail);
+                //console.log(' invoice_detail  ', invoice_detail);
                 let p_vat_amt = 0;
 
                 inv_d.TTKhac.forEach((element, index) => {
@@ -2119,14 +2108,14 @@ class EInvoiceController2 {
 
           return {check_data, data_inv};
         }
-        console.log('rtnValuePos.p_rtn_cur[0] ', rtnValuePos.p_rtn_cur[0]);
+        //console.log('rtnValuePos.p_rtn_cur[0] ', rtnValuePos.p_rtn_cur[0]);
         check_data = {
           PK: rtnValuePos.p_rtn_cur[0].PK,
           TEI_HISTORY_M_PK: rtnValuePos.p_rtn_cur[0].TEI_HISTORY_M_PK,
           STATUS: rtnValuePos.p_rtn_cur[0].STATUS,
         };
-        console.log('check_data ', check_data);
-        console.log('data_inv ', data_inv);
+        //console.log('check_data ', check_data);
+        //console.log('data_inv ', data_inv);
 
         return {check_data, data_inv};
       }
@@ -2186,6 +2175,7 @@ class EInvoiceController2 {
         tenGDDTu = '',
         ord = '',
         soTBao = '';
+      let send_mail = false;
       const res = await Request.post(
         url,
         {base64XML: Buffer.from(invoice_xml_signed).toString('base64')},
@@ -2300,6 +2290,7 @@ class EInvoiceController2 {
                 ngayCQTKy = '';
                 maGDichDTu = '';
               } else if (items[k].loaiTBao == '8') {
+                send_mail = true;
                 maTBao = items[k].ndungTBao.tbaoKTraDLieu.loaiTBao; //  '2'; //items[k].loaiTBao;
                 tenTBao = items[k].tenTBao;
                 soTBao = items[k].ndungTBao.tbaoKTraDLieu.soTBao;
@@ -2600,7 +2591,7 @@ class EInvoiceController2 {
                         p_tvan_data_result: JSON.stringify(res.data),
                       };
 
-                      console.log('weTaxSendInvoiceToTaxOffice  para_history  ', para_history);
+                      //console.log('weTaxSendInvoiceToTaxOffice  para_history  ', para_history);
 
                       const res_op = await DBService.ExecuteSQLBlob(
                         `BEGIN ei_upd_his_nor_inv(
@@ -2759,7 +2750,7 @@ class EInvoiceController2 {
       }
       //console.log('weTaxSendInvoiceToTaxOffice  rtnValue', rtnValue);
       //console.log('weTaxSendInvoiceToTaxOffice  END ================================= ');
-      console.log('rtnValueTradecode ', rtnValueTradecode);
+      //console.log('rtnValueTradecode ', rtnValueTradecode);
 
       this.weTaxSendMailNor(rtnValueTradecode, 'WTPTA003N', p_language, p_crt_by);
 
@@ -3908,9 +3899,9 @@ class EInvoiceController2 {
             options: {maxVersion: 'TLSv1.2', minVersion: 'TLSv1.2', path: null},
           },
         };
-        console.log('sendMailWT   service_id ', ipa_name);
-        console.log('sendMailWT   seller_tax_code ', tax_code);
-        console.log('sendMailWT   info_send_email ', data_rep);
+        //console.log('sendMailWT   service_id ', ipa_name);
+        //console.log('sendMailWT   seller_tax_code ', tax_code);
+        //console.log('sendMailWT   info_send_email ', data_rep);
 
         let triesCounter = 0;
         while (triesCounter < 3) {
@@ -4447,11 +4438,12 @@ class EInvoiceController2 {
 
   convertHtmlCode(sText) {
     if (sText != null || sText == '') {
-      return this.replaceAllExt(
+      return this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '"', '&#34;'), '<', '&lt;'), '>', '&gt;');
+      /*this.replaceAllExt(
         this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '"', '&#34;'), '<', '&lt;'), '>', '&gt;'),
         '&',
         '&amp;',
-      );
+      );*/
     } else {
       return '';
     }

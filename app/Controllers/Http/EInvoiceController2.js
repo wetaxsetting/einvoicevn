@@ -1887,24 +1887,24 @@ class EInvoiceController2 {
               tgia: p_TGia, //invoice.DLHDon.TTChung.TGia,
               htttoan: p_HTTToan, //invoice.DLHDon.TTChung.HTTToan,
 
-              nban_ten: invoice.DLHDon.NDHDon.NBan.Ten,
+              nban_ten: this.encoreHtmlCode(invoice.DLHDon.NDHDon.NBan.Ten),
               nban_mst: invoice.DLHDon.NDHDon.NBan.MST,
-              nban_dchi: invoice.DLHDon.NDHDon.NBan.DChi,
+              nban_dchi: this.encoreHtmlCode(invoice.DLHDon.NDHDon.NBan.DChi),
               nban_sdthoai: invoice.DLHDon.NDHDon.NBan.SDThoai,
               nban_dctdtu: p_DCTDTu,
-              nban_stknhang: p_STKNHang,
+              nban_stknhang: this.encoreHtmlCode(p_STKNHang),
               nban_tnhang: p_TNHang,
               nban_fax: p_Fax,
               nban_website: p_Website,
 
-              nmua_ten: invoice.DLHDon.NDHDon.NMua.Ten,
-              nmua_mst: invoice.DLHDon.NDHDon.NMua.MST,
-              nmua_dchi: invoice.DLHDon.NDHDon.NMua.DChi,
+              nmua_ten: this.encoreHtmlCode(invoice.DLHDon.NDHDon.NMua.Ten),
+              nmua_mst: this.encoreHtmlCode(invoice.DLHDon.NDHDon.NMua.MST),
+              nmua_dchi: this.encoreHtmlCode(invoice.DLHDon.NDHDon.NMua.DChi),
               nmua_sdthoai: invoice.DLHDon.NDHDon.NMua.SDThoai,
               nmua_cccdan: invoice.DLHDon.NDHDon.NMua.CCCDan,
               nmua_dctdtu: p_nm_DCTDTu,
               nmua_mkhang: p_nm_MKHang,
-              nmua_hvten: p_nm_HVTNMHang,
+              nmua_hvten: this.encoreHtmlCode(p_nm_HVTNMHang),
               nmua_stknhang: p_nm_STKNHang,
               nmua_tnhang: p_nm_TNHang,
 
@@ -2016,9 +2016,9 @@ class EInvoiceController2 {
                   tei_wt_invoice_m_pk: rtnValueMaster.p_rtn_cur[0].PK,
                   tchat: inv_d.TChat,
                   stt: inv_d.STT,
-                  mhhdvu: inv_d.MHHDVu,
-                  thhdvu: inv_d.THHDVu,
-                  dvtinh: inv_d.DVTinh,
+                  mhhdvu: this.encoreHtmlCode(inv_d.MHHDVu),
+                  thhdvu: this.encoreHtmlCode(inv_d.THHDVu),
+                  dvtinh: inv_d.DVTinh || '',
                   sluong: inv_d.SLuong,
                   dgia: inv_d.DGia,
                   tlckhau: inv_d.TLCKhau,
@@ -4454,6 +4454,18 @@ class EInvoiceController2 {
   replaceAllExt(strOgr, search, replacement) {
     var target = strOgr.toString();
     return target.replace(new RegExp(search, 'g'), replacement);
+  }
+
+  encoreHtmlCode(sText) {
+    if (sText != null || sText == '') {
+      return this.replaceAllExt(
+        this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '&#34;', '"'), '&lt;', '<'), '&gt;', '>'),
+        '&amp;',
+        '&',
+      );
+    } else {
+      return '';
+    }
   }
 
   OBJtoXML(obj) {

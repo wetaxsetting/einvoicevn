@@ -127,7 +127,7 @@ class EInvoiceController2 {
         p_language,
         p_crt_by,
       );
-      console.log('weTaxGeneralXML data_send_mail ', data_send_mail, ' json_xml ', json_xml);
+      //console.log('weTaxGeneralXML data_send_mail ', data_send_mail, ' json_xml ', json_xml);
       if (json_xml[0].xml_process) {
         const json_xml_signed = await this.weTaxSignXMLHSM(
           user_name,
@@ -810,9 +810,9 @@ class EInvoiceController2 {
           },
         };
 
-        console.log('invoices ', invoices);
+        //console.log('invoices ', invoices);
         for (let i = 0; i < invoices.length; i++) {
-          console.log('invoices ', invoices[i]);
+          //console.log('invoices ', invoices[i]);
           const lastInvoiceNo = await DBService.callProcCursor(
             'wt_sel_last_invoice_no',
             [invoices[i].seller_taxcode, invoices[i].serial_no, invoices[i].form_no],
@@ -889,7 +889,7 @@ class EInvoiceController2 {
             count_length: '',
             xml_type: '',
           };
-          console.log(para_value);
+          //console.log(para_value);
           const rtnValue = await DBService.ExecuteSQLBlob(
             `BEGIN wt_upd_send_order_info (          
                                                             :sale_date,
@@ -1012,6 +1012,8 @@ class EInvoiceController2 {
           } else {
             continue;
           }
+
+          console.log('invoices[i].form_no xxxxx', invoices[i].form_no);
 
           if (invoices[i].form_no == 1) {
             objInvoice.HDon.DLHDon.TTChung.THDon = 'Hóa đơn giá trị gia tăng khởi tạo từ máy tính tiền';

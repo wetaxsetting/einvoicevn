@@ -935,7 +935,7 @@ class EInvoiceController2 {
             p_language,
             p_crt_by,
           );
-          //console.log(rtnValue);
+          console.log(' weTaxGeneralXML rtnValue ', rtnValue);
 
           let tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
 
@@ -1535,7 +1535,7 @@ class EInvoiceController2 {
       }
       return {json_xml, data_send_mail};
     } catch (error) {
-      console.log(error);
+      console.log('EInvoiceController2 weTaxPosReportToTax error', error);
       Utils.Logger({
         LVL: 'error',
         MODULE: 'EInvoiceController2',

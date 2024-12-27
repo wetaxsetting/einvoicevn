@@ -127,8 +127,7 @@ class EInvoiceController2 {
         p_language,
         p_crt_by,
       );
-      // console.log('weTaxGeneralXML json_xml ', json_xml);
-      // console.log('weTaxGeneralXML data_send_mail ', data_send_mail);
+      console.log('weTaxGeneralXML data_send_mail ', data_send_mail, ' json_xml ', json_xml);
       if (json_xml[0].xml_process) {
         const json_xml_signed = await this.weTaxSignXMLHSM(
           user_name,
@@ -183,6 +182,7 @@ class EInvoiceController2 {
             p_language,
             p_crt_by,
           );
+          console.log('weTaxSendPosInvoice data_send_tax ', data_send_tax);
           if (data_send_tax) {
             this.weTaxSendMailPos(data_send_mail, 'WTPTA002', tax_code, p_language, p_crt_by);
 

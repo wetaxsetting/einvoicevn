@@ -156,8 +156,8 @@ class EInvoiceController2 {
             p_crt_by,
           );
 
-          //console.log('check_data ', check_data);
-          //console.log('data_inv ', data_inv);
+          console.log('check_data ', check_data);
+          console.log('data_inv ', data_inv);
 
           if (check_data.STATUS == 'FAILE') {
             return response

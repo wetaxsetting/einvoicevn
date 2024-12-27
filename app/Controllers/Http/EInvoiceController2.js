@@ -1271,8 +1271,8 @@ class EInvoiceController2 {
           req_key: req_key,
           xml_process: true,
         });
-        console.log('json_xml', json_xml);
-        return;
+        //console.log('json_xml', json_xml);
+        //return;
       } else if (process_type == 'N') {
         objInvoice = {
           HDon: {

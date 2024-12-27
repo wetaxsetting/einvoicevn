@@ -4476,6 +4476,7 @@ class EInvoiceController2 {
       xml += obj[prop] instanceof Array ? '' : '</' + prop + '>';
     }
     var xml = xml.replace(/<\/?[0-9]{1,}>/g, '');
+    console.log('xml  ', xml);
     return xml;
   }
 }

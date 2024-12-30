@@ -132,7 +132,7 @@ class EiExcelHandler {
               width: einvoiceMasterData[0].LOGO_WIDTH, //   0.99 * dpi,
               height: einvoiceMasterData[0].LOGO_HEIGHT, // 0.99 * dpi,
               logoStartCount: einvoiceMasterData[0].LOGO_START_ROW,
-              logoPath: '/../' + `${einvoiceMasterData[0].URL_IMG_LOGO}`,
+              logoPath: `${einvoiceMasterData[0].URL_IMG_LOGO}`, //logoPath: '/../' + `${einvoiceMasterData[0].URL_IMG_LOGO}`,
             },
           ];
         } else {

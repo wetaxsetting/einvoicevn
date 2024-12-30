@@ -569,8 +569,11 @@ class EiExcelConverterAuto {
               const _e = einvoiceDetailData[i + count_2];
               //console.log('_e  ', _e);
               try {
+                const _item_name = _e['ITEM_NAME'];
+                this.addValueToCellsWithItemName(worksheet, _sourceRow_2 + totalRowCount_2, _e, _item_name, detailCellFormat, excCols);
                 let item_name_lt = this.countlength(_e['ITEM_NAME']);
-                if (_e['ITEM_NAME'] !== null) {
+
+                /*if (_e['ITEM_NAME'] !== null) {
                   //console.log(`_e["ITEM_NAME"]  ` + _e['ITEM_NAME']);
                   let longRow = _e['ITEM_NAME'].split('&#xA;');
                   for (let itl = 0; itl < item_name_lt; itl++) {
@@ -580,7 +583,7 @@ class EiExcelConverterAuto {
                 } else {
                   const _item_name = _e['ITEM_NAME'];
                   this.addValueToCellsWithItemName(worksheet, _sourceRow_2 + totalRowCount_2, _e, _item_name, detailCellFormat, excCols);
-                }
+                }*/
 
                 if (item_name_lt == 1) {
                   detailCellFormat.forEach((e, i) => {

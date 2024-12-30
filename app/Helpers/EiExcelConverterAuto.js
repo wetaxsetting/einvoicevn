@@ -242,9 +242,14 @@ class EiExcelConverterAuto {
                 worksheet.getCell(`${e.Cell}`).value = footerStr != null ? footerStr : '';
                 //console.log(e.Cell+"+"+e.Info)
                 break;
+              case 'SELLER_ADDRESS':
+                worksheet.getCell(`${e.Cell}`).value = einvoiceMasterData[0]['SELLER_ADDRESS'];
+                worksheet.getRow(`${e.Cell.toString().substr(1, e.Cell.length - 1)}`).height =
+                  einvoiceMasterData[0]['SELLER_ADDRESS'] == null
+                    ? 14
+                    : Math.ceil(einvoiceMasterData[0]['SELLER_ADDRESS'].toString().length / 99) * 14; //Math.ceil
+                break;
               case 'BUYER_ADDRESS':
-                //console.log('BUYER_ADDRESS  ', e.Cell);
-                //console.log('einvoiceMasterData[0][BUYER_ADDRESS]  ', einvoiceMasterData[0]['BUYER_ADDRESS']);
                 worksheet.getCell(`${e.Cell}`).value = einvoiceMasterData[0]['BUYER_ADDRESS'];
                 worksheet.getRow(`${e.Cell.toString().substr(1, e.Cell.length - 1)}`).height =
                   einvoiceMasterData[0]['BUYER_ADDRESS'] == null ? 14 : Math.ceil(einvoiceMasterData[0]['BUYER_ADDRESS'].toString().length / 99) * 14; //Math.ceil

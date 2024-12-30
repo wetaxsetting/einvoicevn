@@ -31,6 +31,7 @@ class EiExcelHandler {
       let logos = [];
       let qrPath = 'assets/images/einvoices_logo/qr.png'; //đường dẫn của dấu tick xanh
       let signPath = 'assets/images/einvoices_logo/greentick.png'; //đường dẫn của dấu tick xanh
+
       let cancelPath = 'assets/images/einvoices_logo/Cancle.png'; //đường dẫn của hình cancel
       let adjustPath = 'assets/images/einvoices_logo/Adjust.png'; //đường dẫn của hình cancel
       let replacePath = 'assets/images/einvoices_logo/Replace.png'; //đường dẫn của hình cancel
@@ -122,41 +123,26 @@ class EiExcelHandler {
         bgPath = '';
       }
 
-      // try {
-      //   let savePath = await Helpers.appRoot(`${einvoiceMasterData[0].URL_IMG_LOGO}`);
-      //   if (fs.existsSync(savePath)) {
-      //     logos = [
-      //       {
-      //         start: einvoiceMasterData[0].LOGO_START_COL,
-      //         width: einvoiceMasterData[0].LOGO_WIDTH, //   0.99 * dpi,
-      //         height: einvoiceMasterData[0].LOGO_HEIGHT, // 0.99 * dpi,
-      //         logoStartCount: einvoiceMasterData[0].LOGO_START_ROW,
-      //         logoPath: '/../' + `${einvoiceMasterData[0].URL_IMG_LOGO}`,
-      //       },
-      //     ];
-      //   } else {
-      //     logos = [];
-      //   }
-      // } catch (error) {
-      //   logos = [];
-      //   console.log('error  require url ', error);
-      // }
+      try {
+        let savePath = await Helpers.appRoot(`${einvoiceMasterData[0].URL_IMG_LOGO}`);
+        if (fs.existsSync(savePath)) {
+          logos = [
+            {
+              start: einvoiceMasterData[0].LOGO_START_COL,
+              width: einvoiceMasterData[0].LOGO_WIDTH, //   0.99 * dpi,
+              height: einvoiceMasterData[0].LOGO_HEIGHT, // 0.99 * dpi,
+              logoStartCount: einvoiceMasterData[0].LOGO_START_ROW,
+              logoPath: '/../' + `${einvoiceMasterData[0].URL_IMG_LOGO}`,
+            },
+          ];
+        } else {
+          logos = [];
+        }
+      } catch (error) {
+        logos = [];
+        console.log('error  require url ', error);
+      }
 
-      logos = [
-        {
-          start: einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_START_COL ? einvoiceMasterData[0].LOGO_START_COL : 1,
-          logoStartCount: einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_START_ROW ? einvoiceMasterData[0].LOGO_START_ROW : 1,
-          width: einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_WIDTH ? einvoiceMasterData[0].LOGO_WIDTH : 1,
-          height: einvoiceMasterData[0] && einvoiceMasterData[0].LOGO_HEIGHT ? einvoiceMasterData[0].LOGO_HEIGHT : 1,
-          logoPath: `${
-            einvoiceMasterData[0] && einvoiceMasterData[0].URL_IMG_LOGO
-              ? einvoiceMasterData[0].URL_IMG_LOGO
-              : '/data/einvoices_logo/0104128565-999/2024/07/1721906430005_1721906430005.png'
-          }`, ///assets/images/einvoices_logo/abc/
-        },
-      ];
-      logos = [];
-      //console.log('einvoiceDetailsParam 1 ', einvoiceDetailsParam);
       for (let i = 0; i < einvoiceDetailsParam.length; i++) {
         detailCellFormat.push({
           startCell: einvoiceDetailsParam[i].STARTCELL,
@@ -168,7 +154,6 @@ class EiExcelHandler {
       }
       // // //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
       // // //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
-      //console.log('einvoiceDetailsParam 2 ', einvoiceDetailsParam);
 
       //cấu trúc dòng detail
       // thin//dotted//dashDot//hair//dashDotDot//slantDashDot//mediumDashed//mediumDashDotDot//mediumDashDot//medium//double//thick

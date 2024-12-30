@@ -3,7 +3,6 @@
 const AES = use('AES');
 const Env = use('Env');
 const Helpers = use('Helpers');
-const path = use('path');
 const fs = use('fs');
 const Utils = use('Utils');
 const DB_CONNECTION = Env.get('DB_CONNECTION');
@@ -811,11 +810,10 @@ class ReportHelper {
   }
 
   async writeFile() {
-    //console.log('writeFile ', this.returnFile);
     if (this.reportType === 'word') {
       await fs.writeFileSync(this.returnFile, this.docBuffer);
     } else if (this.reportType === 'excel') {
-      await this.workbook.xlsx.writeFile(this.returnFile.replace(/\\/g, '/'));
+      await this.workbook.xlsx.writeFile(this.returnFile);
     }
 
     // convert file
@@ -2130,42 +2128,6 @@ class ReportHelper {
     return imageID;
   }
 
-  async insertPathImage(path) {
-    let imageID = null;
-    let img = null;
-    let imageBuffer = null;
-    try {
-      img = Helpers.resourcesPath(path);
-      // console.log('insertPathImage ', img);
-      imageBuffer = await Utils.readFile(img);
-    } catch (e) {
-      //console.log('insertPathImage  e', e);
-
-      Utils.Logger({LVL: 'error', MODULE: 'ReportController', FUNC: 'insertPathImage', CONTENT: e.message});
-    }
-
-    if (imageBuffer) {
-      let tmp = Utils._arrayBufferToBase64(imageBuffer);
-      // console.log('tmp', tmp);
-      let imageBase64 = 'data:image/png;base64,' + tmp;
-      imageID = this.workbook.addImage({
-        base64: imageBase64,
-        extension: 'png',
-      });
-
-      if (imageID === '' || !imageID) {
-        imageBase64 = 'data:image/jpeg;base64, ' + tmp;
-        imageID = this.workbook.addImage({
-          base64: imageBase64,
-          extension: 'jpeg',
-        });
-      }
-      //console.log('imageBase64', imageBase64);
-    }
-
-    return imageID;
-  }
-
   async insertPathImage2(path) {
     let imageID = null;
     let img = null;
@@ -2192,6 +2154,37 @@ class ReportHelper {
         });
       }
     }
+    return imageID;
+  }
+
+  async insertPathImage(path) {
+    let imageID = null;
+    let img = null;
+    let imageBuffer = null;
+    try {
+      img = Helpers.resourcesPath(path);
+      imageBuffer = await Utils.readFile(img);
+    } catch (e) {
+      Utils.Logger({LVL: 'error', MODULE: 'ReportController', FUNC: 'insertPathImage', CONTENT: e.message});
+    }
+
+    if (imageBuffer) {
+      let tmp = Utils._arrayBufferToBase64(imageBuffer);
+      let imageBase64 = 'data:image/png;base64,' + tmp;
+      imageID = this.workbook.addImage({
+        base64: imageBase64,
+        extension: 'png',
+      });
+
+      if (imageID === '' || !imageID) {
+        imageBase64 = 'data:image/jpeg;base64, ' + tmp;
+        imageID = this.workbook.addImage({
+          base64: imageBase64,
+          extension: 'jpeg',
+        });
+      }
+    }
+
     return imageID;
   }
 
@@ -2444,7 +2437,7 @@ class ReportHelper {
       month = '0' + month;
     }
 
-    const dir = ROOT_DIR_FILES + '/pdf/' + year + '/' + month;
+    const dir = ROOT_DIR_FILES.replace('/', '') + '/pdf/' + year + '/' + month;
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, {recursive: true}, err => {
         console.log(err);

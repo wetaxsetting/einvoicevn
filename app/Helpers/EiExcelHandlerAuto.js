@@ -49,7 +49,7 @@ class EiExcelHandler {
 
       const einvoiceMasterData = await DBService.callProcCursor('ei_sel_einvoice_m_pdf', [tradecode], p_language, p_crt_by, _db2);
 
-      //console.log('einvoiceMasterData ', einvoiceMasterData);
+      console.log('einvoiceMasterData ', einvoiceMasterData);
       const einvoiceDetailData = await DBService.callProcCursor('ei_sel_einvoice_d_pdf', [tradecode], p_language, p_crt_by, _db2);
 
       const einvoiceMasterParam = await DBService.callProcCursor(
@@ -169,7 +169,7 @@ class EiExcelHandler {
       //   // { startCell: 21, endCell: 22, cellType: 1, cellBorder: "dotted", field: "BLANK" },//type 1: còn lại
       // ]
 
-      //console.log('this.masterDataArray  ', this.masterDataArray);
+      console.log('this.masterDataArray  ', this.masterDataArray);
       backgroundCell = einvoiceMasterData[0].BG_START_ROW;
       backgroundRow = einvoiceMasterData[0].BG_END_ROW;
       backgroundWidth = einvoiceMasterData[0].BG_WIDTH;

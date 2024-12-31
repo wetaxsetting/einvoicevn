@@ -63,7 +63,6 @@ const sharp = require('sharp');
 const {Builder, parseString} = require('xml2js');
 const {X509Certificate, crypto} = require('crypto');
 const {create, createCB} = require('xmlbuilder2');
-const {log, Console} = require('console');
 
 const EINVOICE_API_SEND_MAIL = 'http://sendmail.webcashvietnam.com/api/user/sendmail';
 const EINVOICE_API_SEND_MAIL_SMTP = 'http://sendmail.webcashvietnam.com/api/user/sendmailsmtp';
@@ -10837,11 +10836,13 @@ class EInvoiceController {
         );
         //return JSON.stringify(masterInvoicePK);
         if (masterInvoicePK.PK == -1) {
-          console.log(`The issuer invoice has not register [${invoices[i].req_key}]`, invoices[i].xml_signed);
+          //console.log(`The issuer invoice has not register [${invoices[i].req_key}]`, invoices[i].xml_signed);
           rtnValue.push({
             req_key: invoices[i].req_key,
             trade_code: '',
             errmsg: 'The issuer invoice has not register',
+            error_code: '300007',
+            error_name: 'The issuer invoice has not register',
           });
           continue;
         } else if (masterInvoicePK.PK == -2) {
@@ -10850,6 +10851,8 @@ class EInvoiceController {
             req_key: invoices[i].req_key,
             trade_code: '',
             errmsg: 'invoice date current < invoice date max ',
+            error_code: '300008',
+            error_name: 'invoice date current < invoice date max ',
           });
           continue;
         } else if (masterInvoicePK.PK == 0) {
@@ -10864,6 +10867,8 @@ class EInvoiceController {
               buyer_email_cc: invoices[i].mail_cc,
               mccqt: '',
               send_mail_yn: 'N',
+              error_code: '30011',
+              error_name: 'Duplicated data. This invoice already sent',
             });
           } else {
             rtnValueTradecode.push({
@@ -10876,6 +10881,8 @@ class EInvoiceController {
               buyer_email_cc: invoices[i].mail_cc,
               mccqt: '',
               send_mail_yn: 'N',
+              error_code: '30011',
+              error_name: 'Duplicated data. This invoice already sent',
             });
           }
           // rtnValue.push({
@@ -10890,6 +10897,8 @@ class EInvoiceController {
             req_key: invoices[i].req_key,
             trade_code: '',
             errmsg: 'Invalid xml format',
+            error_code: '300001',
+            error_name: 'Invalid xml format',
           });
           continue;
         }
@@ -11093,6 +11102,11 @@ class EInvoiceController {
                     data_error.push({
                       maLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].maLoi,
                       mtaLoi: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].mtaLoi,
+                      error_code: items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].maLoi,
+                      error_name:
+                        items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].maLoi +
+                        ' - ' +
+                        items[k].ndungTBao.tbaoKTraDLieu.dsachLoiKTraDLieu[0].mtaLoi,
                     });
 
                     soTBao = items[k].ndungTBao.tbaoKTraDLieu.soTBao;
@@ -11143,7 +11157,10 @@ class EInvoiceController {
                 xml_tax_signed: '',
                 mccqt: '',
                 lookup_code: tr_code.lookup_code,
-                data_error: null,
+                data_error: {
+                  error_code: '300009',
+                  error_name: 'The invoice has not been sent to the tax office',
+                },
               });
               return response.status(200).json(Utils.responseByRule({success: true, message: 'Sent Normal invoice successfully.', data: rtnValue}));
             }
@@ -11851,11 +11868,19 @@ class EInvoiceController {
       };
       if (invoices.length == undefined || invoices.length == 0) {
         // return response.send(Utils.response(false, `Invalid json format!`,null));
-        return response.status(400).json(Utils.responseByRule({success: false, message: 'Invalid json format!'}));
+        let res_data = {
+          error_code: '300001',
+          error_name: 'Invalid json format!',
+        };
+        return response.status(400).json(Utils.responseByRule({success: false, message: 'Invalid json format!', data: res_data}));
       }
       const valid = await this.validateJsonInvalidNormalInvoiceToXML(invoices);
       if (!valid.status) {
-        return response.status(400).json(Utils.responseByRule({success: false, message: valid.message}));
+        let res_data = {
+          error_code: '300002',
+          error_name: valid.message,
+        };
+        return response.status(400).json(Utils.responseByRule({success: false, message: valid.message, data: res_data}));
       }
       for (let i = 0; i < invoices.length; i++) {
         //console.log("invoices:", invoices[i])
@@ -11870,47 +11895,64 @@ class EInvoiceController {
         const last_invoice_date = lastInvoiceNo[0].INVOICE_DATE;
         const tomorrow_date = lastInvoiceNo[0].TOMORROW_DATE;
         if (isNaN(last_invoice_no)) {
+          let res_data = {
+            error_code: '300003',
+            error_name: 'Failed to create invoice no. Please contact administrator for helping.',
+          };
           return response.status(409).json(
             Utils.responseByRule({
               success: false,
               message: `Failed to create invoice no. Please contact administrator for helping.`,
-              data: null,
+              data: res_data,
             }),
           );
         }
 
         if (invoices[i].invoice_date < last_invoice_date && !invoices[i].invoice_no) {
+          let res_data = {
+            error_code: '300004',
+            error_name: `Invoice date cannot smaller than ${last_invoice_date}.`,
+          };
           return response.status(409).json(
             Utils.responseByRule({
               success: false,
-              message: `invoice date cannot smaller than ${last_invoice_date}.`,
-              data: invoices[i].invoice_date,
+              message: `Invoice date cannot smaller than ${last_invoice_date}.`,
+              //data: invoices[i].invoice_date,
+              data: res_data,
             }),
           );
         }
         if (invoices[i].invoice_date >= tomorrow_date) {
+          let res_data = {
+            error_code: '300005',
+            error_name: `Invoice date cannot greater than ${tomorrow_date}. Current date is ${invoices[i].invoice_date}`,
+          };
           return response
             .status(409)
-            .json(
-              Utils.responseByRule({success: false, message: `invoice date cannot greater than ${tomorrow_date}.`, data: invoices[i].invoice_date}),
-            );
+            .json(Utils.responseByRule({success: false, message: `invoice date cannot greater than ${tomorrow_date}.`, data: res_data}));
         }
 
         if (invoices[i].invoice_date < last_invoice_date && !invoices[i].invoice_no) {
+          let res_data = {
+            error_code: '300004',
+            error_name: `Invoice date cannot smaller than ${last_invoice_date}. Current date is ${invoices[i].invoice_date}`,
+          };
           return response.status(409).json(
             Utils.responseByRule({
               success: false,
-              message: `invoice date cannot smaller than ${last_invoice_date}.`,
-              data: invoices[i].invoice_date,
+              message: `Invoice date cannot smaller than ${last_invoice_date}.`,
+              data: res_data,
             }),
           );
         }
         if (invoices[i].invoice_date >= tomorrow_date) {
+          let res_data = {
+            error_code: '300005',
+            error_name: `invoice date cannot greater than ${tomorrow_date}. Current date is ${invoices[i].invoice_date}`,
+          };
           return response
             .status(409)
-            .json(
-              Utils.responseByRule({success: false, message: `invoice date cannot greater than ${tomorrow_date}.`, data: invoices[i].invoice_date}),
-            );
+            .json(Utils.responseByRule({success: false, message: `invoice date cannot greater than ${tomorrow_date}.`, data: res_data}));
         }
 
         const data_raw_param = {
@@ -12066,7 +12108,11 @@ class EInvoiceController {
       });
       // console.log(e);
       // return response.send(Utils.response(false, e.message, null));
-      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+      let res_data = {
+        error_code: '300006',
+        error_name: e.message,
+      };
+      return response.status(409).json(Utils.responseByRule({success: false, message: e.message, data: res_data}));
     }
   }
 

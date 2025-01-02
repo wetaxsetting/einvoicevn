@@ -165,7 +165,7 @@ class EInvoiceController2 {
           p_language,
           p_crt_by,
         );
-        if (data_send_tax) {
+        if (data_send_tax && data_send_tax.send_mail) {
           this.weTaxSendMail(data_send_mail, 'WTPTA002', tax_code, p_language, p_crt_by);
 
           return response.status(200).json(Utils.responseByRule({success: true, message: 'Sending invoice is successfully.', data: data_send_tax}));
@@ -1960,6 +1960,7 @@ class EInvoiceController2 {
         tenGDDTu = '',
         ord = '',
         soTBao = '';
+      let send_mail = false;
       const res = await Request.post(
         url,
         {base64XML: Buffer.from(invoice_xml_signed).toString('base64')},
@@ -2076,6 +2077,7 @@ class EInvoiceController2 {
                 ngayCQTKy = '';
                 maGDichDTu = '';
               } else if (items[k].loaiTBao == '8') {
+                send_mail = true;
                 maTBao = items[k].ndungTBao.tbaoKTraDLieu.loaiTBao; //  '2'; //items[k].loaiTBao;
                 tenTBao = items[k].tenTBao;
                 soTBao = items[k].ndungTBao.tbaoKTraDLieu.soTBao;
@@ -2224,6 +2226,7 @@ class EInvoiceController2 {
           tax_serial_number: tax_serial_number,
           data_error: data_error,
           data_inv: data_inv,
+          send_mail: send_mail,
         };
       });
 

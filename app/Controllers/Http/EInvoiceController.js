@@ -11055,7 +11055,7 @@ class EInvoiceController {
                       TaxSignedBy: 'TDiep/DLieu/HDon/DSCKS/CQT/Signature/KeyInfo/X509Data/X509SubjectName',
                       TaxSignedDate: 'TDiep/DLieu/HDon/DSCKS/CQT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
                     };
-                    const signingTime = await transform(xml_content, templateSignTime);
+                    const signingTime = await transform(xml_tax_signed, templateSignTime);
 
                     tax_sign_by = signingTime.TaxSignedBy;
                     tax_sign_date = signingTime.TaxSignedDate;

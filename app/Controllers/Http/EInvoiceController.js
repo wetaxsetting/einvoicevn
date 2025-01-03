@@ -20874,7 +20874,7 @@ class EInvoiceController {
     let rtnValue = {};
     let data_error = [],
       data_inv = [],
-      date_send_mail = [];
+      data_send_mail = [];
     let mLTDiep = '',
       maCQT = '',
       maTBao = '',

@@ -21248,7 +21248,7 @@ class EInvoiceController {
             p_crt_by,
           );
 
-          if (rtnValue?.p_rtn_cur?.[0]?.STATUS == 'OK') {
+          if (rtnValue?.p_rtn_cur?.[0]?.STATUS == 'OK' && rtnValue?.p_rtn_cur?.[0]?.PROCESS_TYPE == 'I') {
             //tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
             data_send_mail.push({
               tei_wt_sale_bill_pk: rtnValue?.p_rtn_cur?.[0]?.PK,

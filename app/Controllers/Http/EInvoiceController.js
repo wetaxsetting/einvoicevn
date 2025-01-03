@@ -21209,7 +21209,7 @@ class EInvoiceController {
 
       if (check_data.CRT_BY == 'wetax-test') {
         this.weTaxCallBackStatusPosInv(data_inv, '/api/wtx/v1/pos-invoice-delivery-status', 'WTPTA003');
-        let tax_code = inv.tax_code;  
+        let tax_code = data_inv[0].tax_code;  
         for (const inv of data_inv) {
           const para_value = {
             tax_code: inv.tax_code,

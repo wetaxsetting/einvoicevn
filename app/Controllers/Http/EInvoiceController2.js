@@ -890,6 +890,8 @@ class EInvoiceController2 {
             data_xml: '',
             count_length: '',
             xml_type: '',
+            sale_id: invoices[i].sale_id,
+            msg_his_id: invoices[i].msg_his_id,
           };
           //console.log(para_value);
           const rtnValue = await DBService.ExecuteSQLBlob(
@@ -930,6 +932,8 @@ class EInvoiceController2 {
                                                             :data_xml,
                                                             :count_length,
                                                             :xml_type,
+                                                            :sale_id,
+                                                            :msg_his_id,
                                                             :p_language, 
                                                             :p_crt_by, 
                                                             :p_rtn_cur); END;`,

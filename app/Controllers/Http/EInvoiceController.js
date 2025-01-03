@@ -8154,6 +8154,8 @@ class EInvoiceController {
           data_xml: data_xml,
           count_length: count_length,
           xml_type: xml_type,
+          sale_id: invoice.sale_id,
+          msg_his_id: invoice.msg_his_id,
         };
 
         const rtnValue = await DBService.ExecuteSQLBlob(
@@ -8193,6 +8195,8 @@ class EInvoiceController {
                                                           :data_xml,
                                                           :count_length,
                                                           :xml_type,
+                                                          :sale_id,
+                                                          :msg_his_id,
                                                           :p_language, 
                                                           :p_crt_by, 
                                                           :p_rtn_cur); END;`,
@@ -8568,6 +8572,8 @@ class EInvoiceController {
           data_xml: data_xml,
           count_length: count_length,
           xml_type: xml_type,
+          sale_id: sale_id,
+          msg_his_id: msg_his_id,
         };
         console.log(para_value);
         const rtnValue = await DBService.ExecuteSQLBlob(
@@ -8608,6 +8614,8 @@ class EInvoiceController {
                                                           :data_xml,
                                                           :count_length,
                                                           :xml_type,
+                                                          :sale_id,
+                                                          :msg_his_id,
                                                           :p_language, 
                                                           :p_crt_by, 
                                                           :p_rtn_cur); END;`,

@@ -892,6 +892,7 @@ class EInvoiceController2 {
             xml_type: '',
             sale_id: invoices[i].sale_id,
             msg_his_id: invoices[i].msg_his_id,
+            process_type: process_type,
           };
           //console.log(para_value);
           const rtnValue = await DBService.ExecuteSQLBlob(
@@ -934,6 +935,7 @@ class EInvoiceController2 {
                                                             :xml_type,
                                                             :sale_id,
                                                             :msg_his_id,
+                                                            :process_type,
                                                             :p_language, 
                                                             :p_crt_by, 
                                                             :p_rtn_cur); END;`,

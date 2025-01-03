@@ -165,9 +165,10 @@ class EInvoiceController2 {
           p_language,
           p_crt_by,
         );
-        if (data_send_tax && data_send_tax.send_mail) {
-          this.weTaxSendMail(data_send_mail, 'WTPTA002', tax_code, p_language, p_crt_by);
-
+        if (data_send_tax) {
+          if (data_send_tax.send_mail) {
+            this.weTaxSendMail(data_send_mail, 'WTPTA002', tax_code, p_language, p_crt_by);
+          }
           return response.status(200).json(Utils.responseByRule({success: true, message: 'Sending invoice is successfully.', data: data_send_tax}));
         } else {
           return response.status(409).json(Utils.responseByRule({success: false, message: 'Sending invoice to TAX is error!!'}));

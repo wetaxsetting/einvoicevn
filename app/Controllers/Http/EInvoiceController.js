@@ -8572,8 +8572,8 @@ class EInvoiceController {
           data_xml: data_xml,
           count_length: count_length,
           xml_type: xml_type,
-          sale_id: sale_id,
-          msg_his_id: msg_his_id,
+          sale_id: invoice.sale_id,
+          msg_his_id: invoice.msg_his_id,
         };
         console.log(para_value);
         const rtnValue = await DBService.ExecuteSQLBlob(

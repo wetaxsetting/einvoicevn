@@ -10969,6 +10969,8 @@ class EInvoiceController {
         let ord = '';
         let ngayCQTKy = '';
         let soTBao = '';
+        let tax_sign_by = '';
+        let tax_sign_date = '';
         if (tr_code.trade_code) {
           await Request.get(urlCheck + tr_code.trade_code, {
             agent,
@@ -11048,6 +11050,15 @@ class EInvoiceController {
                     xml_tax_signed = '<?xml version="1.0" encoding="UTF-8"?>' + xml_draft[1].replace('</DLieu></TDiep>', '');
                     var getLength = require('utf8-byte-length');
                     xml_length = getLength(xml_tax_signed);
+
+                    const templateSignTime = {
+                      TaxSignedBy: 'TDiep/DLieu/HDon/DSCKS/CQT/Signature/KeyInfo/X509Data/X509SubjectName',
+                      TaxSignedDate: 'TDiep/DLieu/HDon/DSCKS/CQT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
+                    };
+                    const signingTime = await transform(xml_content, templateSignTime);
+
+                    tax_sign_by = signingTime.TaxSignedBy;
+                    tax_sign_date = signingTime.TaxSignedDate;
 
                     maCQT = items[k].ndungTBao.maCQT;
                     maTBao = items[k].loaiTBao;
@@ -11179,6 +11190,8 @@ class EInvoiceController {
           data_error: data_error,
           sign_datetime: masterInvoicePK.SIGN_DATETIME,
           sign_by: masterInvoicePK.SIGN_BY,
+          tax_sign_by: tax_sign_by,
+          tax_sign_date: tax_sign_date,
         });
       }
       console.log('weTaxSendInvoiceToTaxOffice  rtnValue', rtnValue);

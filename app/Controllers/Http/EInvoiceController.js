@@ -455,7 +455,7 @@ class EInvoiceController {
         contact_email: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
         contact_phone: /^.{0,20}$/,
         location_name: /^.{0,50}$/,
-        created_date: /^.{0,8}$/,
+        created_date: /^.{0,10}$/,
         has_code: /^(1|0){1}$/,
         no_code: /^(1|0){1}$/,
         pos_code: /^(1|0){1}$/,

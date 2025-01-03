@@ -21209,7 +21209,7 @@ class EInvoiceController {
 
       if (check_data.CRT_BY == 'wetax-test') {
         this.weTaxCallBackStatusPosInv(data_inv, '/api/wtx/v1/pos-invoice-delivery-status', 'WTPTA003');
-        let tax_code = data_inv[0].tax_code;  
+        let tax_code = data_inv[0].tax_code;
         for (const inv of data_inv) {
           const para_value = {
             tax_code: inv.tax_code,
@@ -21235,11 +21235,11 @@ class EInvoiceController {
             p_language,
             p_crt_by,
           );
-    
+
           if (rtnValue?.p_rtn_cur?.[0]?.STATUS == 'OK') {
-            tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
+            //tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
             data_send_mail.push({
-              tei_wt_sale_bill_pk: tei_wt_sale_bill_pk,
+              tei_wt_sale_bill_pk: rtnValue?.p_rtn_cur?.[0]?.PK,
               lookup_code: rtnValue?.p_rtn_cur?.[0]?.LOOKUP_CD,
               invoice: {
                 buyer_comp_name: rtnValue.p_rtn_cur[0].BUYER_COMP_NAME,
@@ -21260,7 +21260,6 @@ class EInvoiceController {
         }
 
         this.sendMailWT(data_send_mail, 'WTPTA002', tax_code, p_language, p_crt_by);
-
       }
       console.log('jobCheckTradeCodePosInvoice rtnValue  ', rtnValue);
       console.log('jobCheckTradeCodePosInvoice END ========================  ');

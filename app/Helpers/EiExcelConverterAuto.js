@@ -292,36 +292,8 @@ class EiExcelConverterAuto {
       //console.log('v_countNumberOfPages  ', v_countNumberOfPages, 'totalRows ', totalRows, 'headerRowCount ', headerRowCount);
 
       if (v_countNumberOfPages > 1) {
-        totalRows = pos_lv + (v_countNumberOfPages - 1) * (pos_lv + headerRowCount - 1);
+        totalRows = pos_lv + (v_countNumberOfPages - 1) * (pos_lv + headerRowCount - 1) + (v_countNumberOfPages - 1);
         extendedRows = pos_lv - page[v_countNumberOfPages - 1];
-        /*for (let j = 0; j < page.length; j++) {
-          let lastPagelength = 0;
-          let pageRowCount = 0;
-          for (let i = 0; i < page[j]; i++) {
-            let item_length = this.countlength(einvoiceDetailData[countPerPage]['ITEM_NAME']);
-            if (page[j] > 0 && page[j + 1] == 0) {
-              lastPagelength += item_length; // dòng cuối cùng của trang cuối
-            }
-            totalRows += item_length;
-            pageRowCount += item_length;
-            countPerPage++;
-            console.log('totalRows ======>', totalRows, 'pageRowCount ', pageRowCount);
-          }
-          if (page[j] > 0 && page[j + 1] == 0) {
-            //totalRows = totalRows + (pos_lv - lastPagelength);
-            extendedRows = pos_lv - lastPagelength;
-            totalRows += headerRowCount - 3; // éo bik sao phải trừ 3
-            console.log('page ==>', j, 'extendedRows  ', extendedRows, 'totalRows ', totalRows);
-            break;
-          } else {
-            if (j > 0) {
-              totalRows += headerRowCount;
-            }
-          }
-          //totalRows += pos_lv - pageRowCount;
-          console.log(' ======================== page  ', j);
-          console.log('pageRowCount  ', pageRowCount, 'totalRows ', totalRows);
-        }*/
       } else {
         for (let j = 0; j < page.length; j++) {
           let lastPagelength = 0;
@@ -448,14 +420,14 @@ class EiExcelConverterAuto {
               _count_ = totalRowCount + _sourceRow + (pos_lv - totalRowCount);
               totalRowCount += pos_lv - totalRowCount;
 
-              worksheet.getRow(totalRowCount + _sourceRow + (pos_lv - totalRowCount)).addPageBreak();
+              worksheet.getRow(totalRowCount + _sourceRow + (pos_lv - totalRowCount) + 1).addPageBreak();
               logoArray.push({logoPos: totalRowCount + _sourceRow + (pos_lv - totalRowCount), logos: logos});
             } else {
               let leftCount = 0;
 
               if (page[j + 1] != 0) {
                 leftCount = pos_lv - countCheck;
-                worksheet.getRow(totalRowCount + _sourceRow + leftCount).addPageBreak();
+                worksheet.getRow(totalRowCount + _sourceRow + leftCount + 1).addPageBreak();
 
                 if (leftCount > 0) {
                   let tmpObj = {loop_row: leftCount, loopStartRow: totalRowCount + _sourceRow + 1};
@@ -572,18 +544,6 @@ class EiExcelConverterAuto {
                 const _item_name = _e['ITEM_NAME'];
                 this.addValueToCellsWithItemName(worksheet, _sourceRow_2 + totalRowCount_2, _e, _item_name, detailCellFormat, excCols);
                 let item_name_lt = this.countlength(_e['ITEM_NAME']);
-
-                /*if (_e['ITEM_NAME'] !== null) {
-                  //console.log(`_e["ITEM_NAME"]  ` + _e['ITEM_NAME']);
-                  let longRow = _e['ITEM_NAME'].split('&#xA;');
-                  for (let itl = 0; itl < item_name_lt; itl++) {
-                    const _item_name = longRow[itl];
-                    this.addValueToCellsWithItemName(worksheet, itl + _sourceRow_2 + totalRowCount_2, _e, _item_name, detailCellFormat, excCols);
-                  }
-                } else {
-                  const _item_name = _e['ITEM_NAME'];
-                  this.addValueToCellsWithItemName(worksheet, _sourceRow_2 + totalRowCount_2, _e, _item_name, detailCellFormat, excCols);
-                }*/
 
                 if (item_name_lt == 1) {
                   detailCellFormat.forEach((e, i) => {

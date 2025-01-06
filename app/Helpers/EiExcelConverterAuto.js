@@ -751,18 +751,6 @@ class EiExcelConverterAuto {
                 const _item_name = _e['ITEM_NAME']; //longRow[itl];
                 this.addValueToCellsWithItemName(worksheet, _sourceRow + totalRowCount, _e, _item_name, detailCellFormat, excCols);
 
-                //console.log('item_name_lt  ', item_name_lt);
-                /*if (_e['ITEM_NAME'] !== null) {
-                  let longRow = _e['ITEM_NAME'].split('&#xA;');
-                  for (let itl = 0; itl < item_name_lt; itl++) {
-                    const _item_name = longRow[itl];
-                    this.addValueToCellsWithItemName(worksheet, itl + _sourceRow + totalRowCount, _e, _item_name, detailCellFormat, excCols);
-                  }
-                } else {
-                  const _item_name = _e['ITEM_NAME']; //longRow[itl];
-                  this.addValueToCellsWithItemName(worksheet, _sourceRow + totalRowCount, _e, _item_name, detailCellFormat, excCols);
-                }*/
-
                 if (item_name_lt == 1) {
                   detailCellFormat.forEach((e, i) => {
                     try {
@@ -784,16 +772,6 @@ class EiExcelConverterAuto {
                   //console.log('detailCellFormat  ', detailCellFormat);
                   detailCellFormat.forEach((e, i) => {
                     if (e.cellType == 2 || e.cellType == 1) {
-                      // console.log(
-                      //   '_sourceRow + totalRowCount ',
-                      //   _sourceRow + totalRowCount,
-                      //   'e.startCell ',
-                      //   e.startCell,
-                      //   'e.endCell ',
-                      //   e.endCell,
-                      //   ' _sourceRow + totalRowCount + item_name_lt - 1 ',
-                      //   _sourceRow + totalRowCount + item_name_lt - 1,
-                      // );
                       nmCell = excCols[e.startCell];
                       worksheet.mergeCells(_sourceRow + totalRowCount, e.startCell, _sourceRow + totalRowCount + item_name_lt - 1, e.endCell);
                       worksheet.getCell(`${excCols[e.startCell] + (_sourceRow + totalRowCount)}`).style.border = {
@@ -876,7 +854,7 @@ class EiExcelConverterAuto {
       //	worksheet.getCell(`${excCols[e.startCell]+( _sourceRow_2 + totalRowCount_2)}`).style.border = {bottom: {style:detailCellFormat[i].cellBorder},left: { style: 'thin' }, };
       if (v_countNumberOfPages > 1) {
         console.log('extendedRows  ', extendedRows);
-        for (let o = 2; o < extendedRows; o++) {
+        for (let o = 1; o <= extendedRows; o++) {
           try {
             // console.log(' totalRows + _sourceRow_3 - o  ++++===> ', totalRows + _sourceRow_3 - o);
             detailCellFormat.forEach((e, i) => {
@@ -946,19 +924,19 @@ class EiExcelConverterAuto {
       //this part add more style to the rows that missing(optional) Other pages.
       //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
       //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
-      // console.log("extendedArray ++==>", extendedArray);
-      // for (let o = 0; o < extendedArray.length; o++) {
-      //   let rowItem = extendedArray[o];
-      //   worksheet.mergeCells(rowItem.loopStartRow, startMergeRedundantRow, rowItem.loopStartRow + rowItem.loop_row - 1, endMergeRedundantRow);
-      //   worksheet.getCell(`${sttCell + rowItem.loopStartRow}`).style.border = {left: {style: 'thin'}, bottom: {style: 'thin'}};
-      //   for (let _omg = 0; _omg < rowItem.loop_row; _omg++) {
-      //     try {
-      //       worksheet.getCell(`${lastCell + (rowItem.loopStartRow + _omg)}`).style.border = {right: {style: 'thin'}};
-      //     } catch (error) {
-      //       console.log('error', rowItem.loopStartRow + _omg);
-      //     }
-      //   }
-      // }
+      console.log('extendedArray ++==>', extendedArray);
+      for (let o = 0; o < extendedArray.length; o++) {
+        let rowItem = extendedArray[o];
+        worksheet.mergeCells(rowItem.loopStartRow, startMergeRedundantRow, rowItem.loopStartRow + rowItem.loop_row - 1, endMergeRedundantRow);
+        worksheet.getCell(`${sttCell + rowItem.loopStartRow}`).style.border = {left: {style: 'thin'}, bottom: {style: 'thin'}};
+        for (let _omg = 0; _omg < rowItem.loop_row; _omg++) {
+          try {
+            worksheet.getCell(`${lastCell + (rowItem.loopStartRow + _omg)}`).style.border = {right: {style: 'thin'}};
+          } catch (error) {
+            console.log('error', rowItem.loopStartRow + _omg);
+          }
+        }
+      }
       //=======================================================================================================
       //END-this part add more style to the rows that missing(optional) Other pages.
 

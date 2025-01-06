@@ -395,8 +395,8 @@ class EiExcelConverterAuto {
           }
         });
 
-        for (let i = 0; i < totalRows - 1; i++) {
-          console.log(' _sourceRow + i, _sourceRow  ++++===> ', _sourceRow + i, _sourceRow);
+        for (let i = 1; i < totalRows; i++) {
+          //console.log(' _sourceRow + i, _sourceRow  ++++===> ', _sourceRow + i, _sourceRow);
           exceljs.copyRow(_sourceRow + i, _sourceRow, 'c');
           worksheet.getCell(`C${_sourceRow + i}`).style.border = {};
         }
@@ -875,38 +875,39 @@ class EiExcelConverterAuto {
       //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
       //	worksheet.getCell(`${excCols[e.startCell]+( _sourceRow_2 + totalRowCount_2)}`).style.border = {bottom: {style:detailCellFormat[i].cellBorder},left: { style: 'thin' }, };
       if (v_countNumberOfPages > 1) {
-        // for (let o = 2; o < extendedRows; o++) {
-        //   try {
-        //     // console.log(' totalRows + _sourceRow_3 - o  ++++===> ', totalRows + _sourceRow_3 - o);
-        //     detailCellFormat.forEach((e, i) => {
-        //       try {
-        //         worksheet.mergeCells(totalRows + _sourceRow_3 - o, e.startCell, totalRows + _sourceRow_3 - o, e.endCell);
-        //       } catch (error) {}
-        //       worksheet.getCell(`${excCols[e.startCell] + (totalRows + _sourceRow_3 - o)}`).style.border = {
-        //         left: {style: 'thin'},
-        //         bottom: {style: detailCellFormat[i].cellBorder},
-        //       };
-        //     });
-        //     worksheet.getRow(totalRows + _sourceRow_3 - o).height = lastPageRowsHeight;
-        //     worksheet.getCell(`${lastCell + (totalRows + _sourceRow_3 - o)}`).style.border = {
-        //       right: {style: 'thin'},
-        //       bottom: {style: detailCellFormat[0].cellBorder},
-        //     };
-        //     worksheet.getCell(`${sttCell + (totalRows + _sourceRow_3 - o)}`).style.border = {
-        //       left: {style: 'thin'},
-        //       right: {style: 'thin'},
-        //       bottom: {style: detailCellFormat[0].cellBorder},
-        //     };
-        //     worksheet.getCell(`${nmCell + (totalRows + _sourceRow_3 - o)}`).style.border = {
-        //       left: {style: 'thin'},
-        //       right: {style: 'thin'},
-        //       bottom: {style: detailCellFormat[0].cellBorder},
-        //     };
-        //   } catch (error) {
-        //     console.log('error', error);
-        //     console.log('error', totalRows + _sourceRow_3 - o);
-        //   }
-        // }
+        console.log('extendedRows  ', extendedRows);
+        for (let o = 2; o < extendedRows; o++) {
+          try {
+            // console.log(' totalRows + _sourceRow_3 - o  ++++===> ', totalRows + _sourceRow_3 - o);
+            detailCellFormat.forEach((e, i) => {
+              try {
+                worksheet.mergeCells(totalRows + _sourceRow_3 - o, e.startCell, totalRows + _sourceRow_3 - o, e.endCell);
+              } catch (error) {}
+              worksheet.getCell(`${excCols[e.startCell] + (totalRows + _sourceRow_3 - o)}`).style.border = {
+                left: {style: 'thin'},
+                bottom: {style: detailCellFormat[i].cellBorder},
+              };
+            });
+            worksheet.getRow(totalRows + _sourceRow_3 - o).height = lastPageRowsHeight;
+            worksheet.getCell(`${lastCell + (totalRows + _sourceRow_3 - o)}`).style.border = {
+              right: {style: 'thin'},
+              bottom: {style: detailCellFormat[0].cellBorder},
+            };
+            worksheet.getCell(`${sttCell + (totalRows + _sourceRow_3 - o)}`).style.border = {
+              left: {style: 'thin'},
+              right: {style: 'thin'},
+              bottom: {style: detailCellFormat[0].cellBorder},
+            };
+            worksheet.getCell(`${nmCell + (totalRows + _sourceRow_3 - o)}`).style.border = {
+              left: {style: 'thin'},
+              right: {style: 'thin'},
+              bottom: {style: detailCellFormat[0].cellBorder},
+            };
+          } catch (error) {
+            console.log('error', error);
+            console.log('error', totalRows + _sourceRow_3 - o);
+          }
+        }
       } else {
         for (let o = 1; o <= extendedRows; o++) {
           try {
@@ -945,19 +946,19 @@ class EiExcelConverterAuto {
       //this part add more style to the rows that missing(optional) Other pages.
       //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
       //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
-      //console.log("extendedArray ++==>", extendedArray);
-      for (let o = 0; o < extendedArray.length; o++) {
-        let rowItem = extendedArray[o];
-        worksheet.mergeCells(rowItem.loopStartRow, startMergeRedundantRow, rowItem.loopStartRow + rowItem.loop_row - 1, endMergeRedundantRow);
-        worksheet.getCell(`${sttCell + rowItem.loopStartRow}`).style.border = {left: {style: 'thin'}, bottom: {style: 'thin'}};
-        for (let _omg = 0; _omg < rowItem.loop_row; _omg++) {
-          try {
-            worksheet.getCell(`${lastCell + (rowItem.loopStartRow + _omg)}`).style.border = {right: {style: 'thin'}};
-          } catch (error) {
-            console.log('error', rowItem.loopStartRow + _omg);
-          }
-        }
-      }
+      // console.log("extendedArray ++==>", extendedArray);
+      // for (let o = 0; o < extendedArray.length; o++) {
+      //   let rowItem = extendedArray[o];
+      //   worksheet.mergeCells(rowItem.loopStartRow, startMergeRedundantRow, rowItem.loopStartRow + rowItem.loop_row - 1, endMergeRedundantRow);
+      //   worksheet.getCell(`${sttCell + rowItem.loopStartRow}`).style.border = {left: {style: 'thin'}, bottom: {style: 'thin'}};
+      //   for (let _omg = 0; _omg < rowItem.loop_row; _omg++) {
+      //     try {
+      //       worksheet.getCell(`${lastCell + (rowItem.loopStartRow + _omg)}`).style.border = {right: {style: 'thin'}};
+      //     } catch (error) {
+      //       console.log('error', rowItem.loopStartRow + _omg);
+      //     }
+      //   }
+      // }
       //=======================================================================================================
       //END-this part add more style to the rows that missing(optional) Other pages.
 

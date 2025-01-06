@@ -10982,7 +10982,7 @@ class EInvoiceController {
         let ngayCQTKy = '';
         let soTBao = '';
         let tax_sign_by = '';
-        let tax_sign_date = '';
+        let tax_sign_datetime = '';
         if (tr_code.trade_code) {
           await Request.get(urlCheck + tr_code.trade_code, {
             agent,
@@ -11070,7 +11070,7 @@ class EInvoiceController {
                     const signingTime = await transform(xml_tax_signed, templateSignTime);
 
                     tax_sign_by = signingTime.TaxSignedBy;
-                    tax_sign_date = signingTime.TaxSignedDate;
+                    tax_sign_datetime = signingTime.TaxSignedDate;
 
                     maCQT = items[k].ndungTBao.maCQT;
                     maTBao = items[k].loaiTBao;
@@ -11203,10 +11203,10 @@ class EInvoiceController {
           sign_datetime: masterInvoicePK.SIGN_DATETIME,
           sign_by: masterInvoicePK.SIGN_BY,
           tax_sign_by: tax_sign_by,
-          tax_sign_date: tax_sign_date,
+          tax_sign_datetime: tax_sign_datetime,
         });
       }
-      console.log('weTaxSendInvoiceToTaxOffice  rtnValue', rtnValue);
+      console.log('weTaxSendInvoiceToTaxOffice  rtnValue', JSON.stringify(rtnValue));
       console.log('weTaxSendInvoiceToTaxOffice  END ================================= ');
 
       // rtnValueTradecode.push({

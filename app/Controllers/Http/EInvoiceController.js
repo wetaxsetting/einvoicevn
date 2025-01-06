@@ -11064,8 +11064,8 @@ class EInvoiceController {
                     xml_length = getLength(xml_tax_signed);
 
                     const templateSignTime = {
-                      TaxSignedBy: 'TDiep/DLieu/HDon/DSCKS/CQT/Signature/KeyInfo/X509Data/X509SubjectName',
-                      TaxSignedDate: 'TDiep/DLieu/HDon/DSCKS/CQT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
+                      TaxSignedBy: 'HDon/DSCKS/CQT/Signature/KeyInfo/X509Data/X509SubjectName',
+                      TaxSignedDate: 'HDon/DSCKS/CQT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
                     };
                     const signingTime = await transform(xml_tax_signed, templateSignTime);
 

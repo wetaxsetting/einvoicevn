@@ -1641,7 +1641,11 @@ class ReportHelper {
       mergeLength = lstMerge.length;
 
       for (let idx = 0; idx < datas.length - 1; idx++) {
-        for (let i = 0; i < rowCount; i++) {
+        for (
+          let i = 0;
+          i < rowCount - 1;
+          i++ // vng-199.
+        ) {
           let target = rowCount * (1 + idx) + startRow + i;
           let src = startRow + rowCount * idx + i;
           if (isReplace) {
@@ -1653,7 +1657,6 @@ class ReportHelper {
       }
 
       for (let idx = 0; idx < datas.length - 1; idx++) {
-        //addmerge
         for (var idxMerge = lstMerge.length - 1; idxMerge >= lstMerge.length - mergeLength; idxMerge--) {
           const mergeRange = lstMerge[idxMerge];
           const startMergeCell = mergeRange.split(':').shift();
@@ -1663,8 +1666,10 @@ class ReportHelper {
           const _col1 = this.excelCols.findIndex(x => x == startMergeCell.match(this.regexCell)[1]); //regex: string - character - number///
           const _row2 = Number(endMergeCell.match(this.regexCell)[2]); //regex: string - character - number
           const _col2 = this.excelCols.findIndex(x => x == endMergeCell.match(this.regexCell)[1]); //regex: string - character - number///
+          //console.log('_row1', _row1, '_col1', _col1, '_row2', _row2, '_col2', _col2);
           try {
             if (_row1 >= startRow && _col1 >= startColumn && _col2 <= endColumn) {
+              //console.log('_row1', _row1, '_col1', _col1, '_row2', _row2, '_col2', _col2);
               let c1 = startMergeCell.match(this.regexCell)[1] + (_row1 + rowCount * (1 + idx));
               let c2 = endMergeCell.match(this.regexCell)[1] + (_row2 + rowCount * (1 + idx));
               lstNewMerge.push({
@@ -1675,13 +1680,14 @@ class ReportHelper {
                 range: `${c1}:${c2}`,
               });
             }
+            //console.log('lstNewMerge', lstNewMerge);
           } catch (eee) {
             console.log(eee.message);
           }
         }
 
         //add lai style do merge cell bi mat
-        for (let _ = 0; _ < rowCount; _++) {
+        for (let _ = 0; _ < rowCount - 1; _++) {
           this._copyStyle(startRow + _, rowCount * (1 + idx) + startRow + _);
         }
       }

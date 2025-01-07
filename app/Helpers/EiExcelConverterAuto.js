@@ -306,8 +306,6 @@ class EiExcelConverterAuto {
             countPerPage++;
           }
           if (page[j] > 0 && page[j + 1] == 0) {
-            //console.log("page[j]",page[j])
-            //console.log("lastPagelength",lastPagelength)
             totalRows = totalRows + (10 - lastPagelength);
             extendedRows = 10 - lastPagelength;
             break;
@@ -384,6 +382,7 @@ class EiExcelConverterAuto {
           console.log('err', ee);
         }
       });
+      ///===============================================??>>>>> OK
       //END-this part coppy merge information of the page before add more row.
 
       //this part insert range header for each page
@@ -401,7 +400,6 @@ class EiExcelConverterAuto {
                 let item_name_lt = this.countlength(_e['ITEM_NAME']);
                 totalRowCount += item_name_lt;
                 countCheck += item_name_lt;
-                //console.log(totalRowCount + "+" + item_name_lt)
               } catch (error) {
                 console.log('err', error);
                 console.log(_sourceRow);
@@ -416,8 +414,19 @@ class EiExcelConverterAuto {
                 let tmpObj = {loop_row: pos_lv - totalRowCount, loopStartRow: totalRowCount + _sourceRow + 1};
                 extendedArray.push(tmpObj);
               }
-
-              _count_ = totalRowCount + _sourceRow + (pos_lv - totalRowCount);
+              /*console.log(
+                'totalRowCount  ',
+                totalRowCount,
+                '_sourceRow  ',
+                _sourceRow,
+                'pos_lv  ',
+                pos_lv,
+                'totalRowCount  ',
+                totalRowCount,
+                '(pos_lv - totalRowCount) ',
+                pos_lv - totalRowCount,
+              );*/
+              _count_ = totalRowCount + _sourceRow + (pos_lv - totalRowCount) + 1; //
               totalRowCount += pos_lv - totalRowCount;
 
               worksheet.getRow(totalRowCount + _sourceRow + (pos_lv - totalRowCount) + 1).addPageBreak();
@@ -437,7 +446,7 @@ class EiExcelConverterAuto {
                 logoArray.push({logoPos: totalRowCount + _sourceRow + leftCount, logos: logos});
               } else {
                 //for (let index = 1; index <= pos_lv - pos; index++) {
-                for (let index = 1; index <= pos; index++) {
+                for (let index = pos + 1; index <= pos_lv; index++) {
                   worksheet.getRow(totalRowCount + _sourceRow + leftCount + index).hidden = true;
                 }
               }
@@ -490,6 +499,7 @@ class EiExcelConverterAuto {
               return b;
             });
 
+            //console.log('data.length  ', data, data.length);
             for (let idx = 0; idx < data.length - 1; idx++) {
               _lstMerge.forEach(q => {
                 const startMergeCell = q['range'].split(':').shift();
@@ -507,10 +517,14 @@ class EiExcelConverterAuto {
               });
             }
 
-            exceljs.insertRange3(`A1:R${_count_}`, data, true, false);
+            _lstNewMerge.sort((a, b) => parseFloat(a.row1) - parseFloat(b.row1));
+            //console.log('_count_  ', _count_);
+            exceljs.insertRange3(`A1:R${_count_}`, data, true, true);
             _lstNewMerge.forEach(x => {
+              //console.log(x);
               try {
                 const startMergeCell = x['range'].split(':').shift();
+                //console.log('startMergeCell  ', startMergeCell);
                 worksheet.unMergeCells(startMergeCell);
               } catch (ee) {
                 console.log(ee.message);
@@ -532,14 +546,13 @@ class EiExcelConverterAuto {
         for (let j = 0; j < page.length; j++) {
           const e = parseInt(page[j]);
           let countCheck_2 = 0;
-          //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
-          //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
-
-          //console.log('e  ', e);
           if (e > 0) {
             for (let i = 0; i < e; i++) {
               const _e = einvoiceDetailData[i + count_2];
               //console.log('_e  ', _e);
+              if (j != 0) {
+                totalRowCount_2++; // cộng thêm 1 dòng do có 1 dòng cuối trang trước
+              }
               try {
                 const _item_name = _e['ITEM_NAME'];
                 this.addValueToCellsWithItemName(worksheet, _sourceRow_2 + totalRowCount_2, _e, _item_name, detailCellFormat, excCols);
@@ -561,7 +574,7 @@ class EiExcelConverterAuto {
                     left: {style: 'thin'},
                   };
                   //worksheet.getCell( `${nmCell + (_sourceRow_2 + totalRowCount_2 + item_name_lt)}`).style.border = { bottom: { style: detailCellFormat[0].cellBorder }, };
-                  //	worksheet.getCell( `${sttCell + (_sourceRow_2 + totalRowCount_2 + item_name_lt)}`).style.border = { left: { style: 'thin' }, right: { style: 'thin' }, bottom: { style: detailCellFormat[0].cellBorder }, top: { style: 'thin' } };
+                  //worksheet.getCell( `${sttCell + (_sourceRow_2 + totalRowCount_2 + item_name_lt)}`).style.border = { left: { style: 'thin' }, right: { style: 'thin' }, bottom: { style: detailCellFormat[0].cellBorder }, top: { style: 'thin' } };
                 } else {
                   worksheet.mergeCells(
                     _sourceRow_2 + totalRowCount_2,
@@ -691,7 +704,6 @@ class EiExcelConverterAuto {
                 }
               }
             }
-
             _sourceRow_2 += headerRowCount - 1;
             count_2 += e;
           } else break;
@@ -699,18 +711,14 @@ class EiExcelConverterAuto {
       } else {
         for (let j = 0; j < page.length; j++) {
           const e = parseInt(page[j]);
-          //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
-          //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
-          //console.log("  e  " , e );
           if (e > 0) {
             for (let i = 0; i < e; i++) {
               const _e = einvoiceDetailData[i + count];
-              //console.log('_e  ', _e);
+              console.log('_e  ', _e);
               try {
                 let item_name_lt = this.countlength(_e['ITEM_NAME']);
                 const _item_name = _e['ITEM_NAME']; //longRow[itl];
                 this.addValueToCellsWithItemName(worksheet, _sourceRow + totalRowCount, _e, _item_name, detailCellFormat, excCols);
-
                 if (item_name_lt == 1) {
                   detailCellFormat.forEach((e, i) => {
                     try {
@@ -753,12 +761,10 @@ class EiExcelConverterAuto {
                       left: {style: 'thin'},
                     };
                   });
-
                   for (let u = 0; u < item_name_lt; u++) {
                     //worksheet.getCell(`${nmCell+(_sourceRow+totalRowCount+u}`).style.border = {left: {style:'thin'}};
                     //console.log(`${nmCell+(_sourceRow+totalRowCount+u)}`)
                   }
-
                   console.log('nmCell  ', nmCell, '(_sourceRow + totalRowCount + item_name_lt - 1) ', _sourceRow + totalRowCount + item_name_lt - 1);
                   worksheet.getCell(`${nmCell + (_sourceRow + totalRowCount + item_name_lt - 1)}`).style.border = {
                     bottom: {style: detailCellFormat[0].cellBorder},
@@ -771,7 +777,6 @@ class EiExcelConverterAuto {
                   };
                 }
                 totalRowCount += item_name_lt;
-
                 if (i == 0) {
                   console.log('cancelYn   ', cancelYn);
                   if (cancelYn == 'Y') {
@@ -801,7 +806,6 @@ class EiExcelConverterAuto {
                 console.log(totalRowCount);
               }
             }
-
             count += e;
           } else break;
         }
@@ -816,7 +820,6 @@ class EiExcelConverterAuto {
         console.log('extendedRows  ', extendedRows);
         for (let o = 1; o <= extendedRows; o++) {
           try {
-            // console.log(' totalRows + _sourceRow_3 - o  ++++===> ', totalRows + _sourceRow_3 - o);
             detailCellFormat.forEach((e, i) => {
               try {
                 worksheet.mergeCells(totalRows + _sourceRow_3 - o, e.startCell, totalRows + _sourceRow_3 - o, e.endCell);
@@ -832,11 +835,6 @@ class EiExcelConverterAuto {
               bottom: {style: detailCellFormat[0].cellBorder},
             };
             worksheet.getCell(`${sttCell + (totalRows + _sourceRow_3 - o)}`).style.border = {
-              left: {style: 'thin'},
-              right: {style: 'thin'},
-              bottom: {style: detailCellFormat[0].cellBorder},
-            };
-            worksheet.getCell(`${nmCell + (totalRows + _sourceRow_3 - o)}`).style.border = {
               left: {style: 'thin'},
               right: {style: 'thin'},
               bottom: {style: detailCellFormat[0].cellBorder},
@@ -868,11 +866,6 @@ class EiExcelConverterAuto {
               right: {style: 'thin'},
               bottom: {style: detailCellFormat[0].cellBorder},
             };
-            worksheet.getCell(`${nmCell + (totalRows + _sourceRow_3 - o)}`).style.border = {
-              left: {style: 'thin'},
-              right: {style: 'thin'},
-              bottom: {style: detailCellFormat[0].cellBorder},
-            };
           } catch (error) {
             console.log('error', totalRows + _sourceRow_3 - o);
           }
@@ -882,8 +875,7 @@ class EiExcelConverterAuto {
       //END-this part add more style to the rows that missing(optional) Last Page.
 
       //this part add more style to the rows that missing(optional) Other pages.
-      //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
-      //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
+
       console.log('extendedArray ++==>', extendedArray);
       for (let o = 0; o < extendedArray.length; o++) {
         let rowItem = extendedArray[o];
@@ -891,11 +883,25 @@ class EiExcelConverterAuto {
         worksheet.getCell(`${sttCell + rowItem.loopStartRow}`).style.border = {left: {style: 'thin'}, bottom: {style: 'thin'}};
         for (let _omg = 0; _omg < rowItem.loop_row; _omg++) {
           try {
-            worksheet.getCell(`${lastCell + (rowItem.loopStartRow + _omg)}`).style.border = {right: {style: 'thin'}};
+            worksheet.getCell(`${lastCell + (rowItem.loopStartRow + _omg)}`).style.border = {right: {style: 'thin'}, bottom: {style: 'thin'}};
           } catch (error) {
             console.log('error', rowItem.loopStartRow + _omg);
           }
         }
+        // const startMergeCell = x['range'].split(':').shift();
+
+        // worksheet.unMergeCells(rowItem.loopStartRow + rowItem.loop_row);
+
+        // worksheet.mergeCells(
+        //   rowItem.loopStartRow + rowItem.loop_row,
+        //   startMergeRedundantRow,
+        //   rowItem.loopStartRow + rowItem.loop_row,
+        //   endMergeRedundantRow,
+        // );
+        // console.log('rowItem.loopStartRow + rowItem.loop_row ++==>', rowItem.loopStartRow + rowItem.loop_row, 'sttCell ', sttCell);
+
+        // worksheet.getCell(`${sttCell + rowItem.loopStartRow + rowItem.loop_row}`).style.border = {}; //bottom: {style: 'thick', color: {argb: 'FF0070C0'}},
+        //worksheet.getCell(`C${_sourceRow + i}`).style.border = {};
       }
       //=======================================================================================================
       //END-this part add more style to the rows that missing(optional) Other pages.
@@ -947,6 +953,7 @@ class EiExcelConverterAuto {
       //this part insert Signed image if the einvoice is signed.
       //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
       //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
+
       if (einvoiceMasterData[0]['SIGN_YN'] == 'Y') {
         try {
           console.log('SIGN_YN  ++===>  ', signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
@@ -1032,7 +1039,6 @@ class EiExcelConverterAuto {
       // const reportFilePdf = await exceljs.writeFile();
       // let base64PDF =  await fs.readFileSync(reportFilePdf, {encoding: 'base64'}); //await Utils._blobFileToBase64(reportFilePdf)
       // return base64PDF
-
       // console.log("reportFilePdf ", reportFilePdf);
       // const reportFilePdf =  await Utils.excelToPdf(reportFile);
       // let url_pdf = exceljs.reportPath.replace("xlsx", "pdf");

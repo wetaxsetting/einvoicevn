@@ -63,8 +63,6 @@ const sharp = require('sharp');
 const {Builder, parseString} = require('xml2js');
 const {X509Certificate, crypto} = require('crypto');
 const {create, createCB} = require('xmlbuilder2');
-const {log, Console} = require('console');
-
 const EINVOICE_API_SEND_MAIL = 'http://sendmail.webcashvietnam.com/api/user/sendmail';
 const EINVOICE_API_SEND_MAIL_SMTP = 'http://sendmail.webcashvietnam.com/api/user/sendmailsmtp';
 const moment = require('moment');
@@ -92,6 +90,31 @@ if (REDIS_CONNECTION != 'NO_REDIS') {
 }
 
 class EInvoiceController {
+  async removeSignXML(xml) {
+    let jsonXML;
+    let updatedXml = '';
+    try {
+      var xml2js = require('xml2js');
+      parseString(xml, function (err, result) {
+        delete result.HDon.DLHDon[0].$;
+        delete result.HDon.DSCKS[0].NBan;
+        //console.log(JSON.stringify(result));
+        jsonXML = result;
+      });
+
+      updatedXml = this.OBJtoXML(jsonXML);
+      return updatedXml;
+    } catch (error) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'removeSignXML',
+        FUNC: 'removeSignXML',
+        CONTENT: error.message,
+      });
+      console.log('testFunction  ', error);
+    }
+  }
+
   async einvoicePdfConvert({request, response, auth}) {
     var p_language = request.header('accept-language', 'ENG');
     var p_crt_by = '';
@@ -19805,7 +19828,7 @@ class EInvoiceController {
             xml_tax_signed: '',
             sign_datetime: inv.SIGN_DT,
             sign_by: inv.SIGN_BY,
-            xml_no_sign: '',
+            xml_no_sign: await this.removeSignXML(inv.XML_SIGNED),
             xml_signed: inv.XML_SIGNED,
           });
         }

@@ -7307,6 +7307,9 @@ class EInvoiceController {
           data_xml: data_xml,
           count_length: count_length,
           xml_type: xml_type,
+          sale_id: invoice.sale_id,
+          msg_his_id: invoice.msg_his_id,
+          process_type: '',
         };
 
         const rtnValue = await DBService.ExecuteSQLBlob(
@@ -7346,6 +7349,9 @@ class EInvoiceController {
                                                           :data_xml,
                                                           :count_length,
                                                           :xml_type,
+                                                          :sale_id,
+                                                          :msg_his_id,
+                                                          :process_type,
                                                           :p_language, 
                                                           :p_crt_by, 
                                                           :p_rtn_cur); END;`,
@@ -7713,6 +7719,9 @@ class EInvoiceController {
           data_xml: data_xml,
           count_length: count_length,
           xml_type: xml_type,
+          sale_id: invoice.sale_id,
+          msg_his_id: invoice.msg_his_id,
+          process_type: '',
         };
 
         const rtnValue = await DBService.ExecuteSQLBlob(
@@ -7753,6 +7762,9 @@ class EInvoiceController {
                                                           :data_xml,
                                                           :count_length,
                                                           :xml_type,
+                                                          :sale_id,
+                                                          :msg_his_id,
+                                                          :process_type,
                                                           :p_language, 
                                                           :p_crt_by, 
                                                           :p_rtn_cur); END;`,
@@ -20097,6 +20109,58 @@ class EInvoiceController {
           p_crt_by,
         );
         this.weTaxCallBackStatusPosInv(data_inv, '/api/wtx/v1/pos-invoice-delivery-status', 'WTPTA003');
+
+        let tax_code = data_inv[0].tax_code;
+        for (const inv of data_inv) {
+          const para_value = {
+            tax_code: inv.tax_code,
+            sale_date: inv.invoice_date,
+            store_code: '',
+            store_name: '',
+            form_no: inv.form_no,
+            serial_no: inv.serial_no,
+            invoice_no: inv.invoice_no,
+          };
+          const rtnValue = await DBService.ExecuteSQLBlob(
+            `BEGIN WT_SEL_RE_ORDER_INFO (                   :tax_code,
+                                                            :sale_date,
+                                                            :store_code,
+                                                            :store_name,
+                                                            :form_no,
+                                                            :serial_no,
+                                                            :invoice_no,
+                                                            :p_language, 
+                                                            :p_crt_by, 
+                                                            :p_rtn_cur); END;`,
+            para_value,
+            p_language,
+            p_crt_by,
+          );
+
+          if (rtnValue?.p_rtn_cur?.[0]?.STATUS == 'OK' && rtnValue?.p_rtn_cur?.[0]?.PROCESS_TYPE == 'I') {
+            //tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
+            data_send_mail.push({
+              tei_wt_sale_bill_pk: rtnValue?.p_rtn_cur?.[0]?.PK,
+              lookup_code: rtnValue?.p_rtn_cur?.[0]?.LOOKUP_CD,
+              invoice: {
+                buyer_comp_name: rtnValue.p_rtn_cur[0].BUYER_COMP_NAME,
+                seller_comp_name: rtnValue.p_rtn_cur[0].SELLER_COMP_NAME,
+                form_no: rtnValue.p_rtn_cur[0].FORM_NO,
+                serial_no: rtnValue.p_rtn_cur[0].SERIAL_NO,
+                invoice_no: rtnValue.p_rtn_cur[0].INVOICE_NO,
+                total_payment: rtnValue.p_rtn_cur[0].TOTAL_PAYMENT,
+                mccqt: rtnValue.p_rtn_cur[0].MCCQT,
+                buyer_email: rtnValue.p_rtn_cur[0].BUYER_EMAIL,
+                buyer_email_cc: rtnValue.p_rtn_cur[0].BUYER_EMAIL_CC,
+                sale_id: rtnValue.p_rtn_cur[0].SALE_ID,
+                msg_his_id: rtnValue.p_rtn_cur[0].MSG_HIS_ID,
+                currency: rtnValue.p_rtn_cur[0].CURRENCY,
+              },
+            });
+          }
+        }
+
+        this.sendMailWT(data_send_mail, 'WTPTA002', tax_code, p_language, p_crt_by);
       }
       //console.log('jobCheckTradeCodePosInvoice rtnValue  ', rtnValue);
       // console.log('jobCheckTradeCodePosInvoice END ========================  ');

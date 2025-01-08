@@ -10050,6 +10050,8 @@ class EInvoiceController {
                     p_mccqt: maCQT,
                     p_xml_tax_signed: xml_tax_signed,
                     p_xml_length: xml_length,
+                    p_tax_sign_by: tax_sign_by,
+                    p_tax_sign_datetime: tax_sign_datetime,
                   };
 
                   const data_update_inv = await DBService.ExecuteSQLBlob(
@@ -10063,6 +10065,8 @@ class EInvoiceController {
                                     :p_mccqt,
                                     :p_xml_tax_signed,
                                     :p_xml_length,
+                                    :p_tax_sign_by,
+                                    :p_tax_sign_datetime,
                                     :p_language, 
                                     :p_crt_by, 
                                     :p_rtn_cur); 
@@ -10103,6 +10107,8 @@ class EInvoiceController {
                     p_mccqt: '',
                     p_xml_tax_signed: '',
                     p_xml_length: '',
+                    p_tax_sign_by: '',
+                    p_tax_sign_datetime: '',
                   };
 
                   console.log('jobCheckTradeCodeNorInvoice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
@@ -10118,6 +10124,8 @@ class EInvoiceController {
                                     :p_mccqt,
                                     :p_xml_tax_signed,
                                     :p_xml_length,
+                                    :p_tax_sign_by,
+                                    :p_tax_sign_datetime,
                                     :p_language, 
                                     :p_crt_by, 
                                     :p_rtn_cur); 
@@ -11021,6 +11029,8 @@ class EInvoiceController {
                     base64XML = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8');
                     const temp_of_tax = {
                       MLTDiep: 'TDiep/TTChung/MLTDiep',
+                      TaxSignedBy: 'TDiep/DLieu/HDon/DSCKS/CQT/Signature/KeyInfo/X509Data/X509SubjectName',
+                      TaxSignedDate: 'TDiep/DLieu/HDon/DSCKS/CQT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
                     };
                     const data_of_tax = await transform(base64XML, temp_of_tax);
 
@@ -11114,6 +11124,8 @@ class EInvoiceController {
                       p_mccqt: maCQT,
                       p_xml_tax_signed: xml_tax_signed,
                       p_xml_length: xml_length,
+                      p_tax_sign_by: tax_sign_by,
+                      p_tax_sign_datetime: tax_sign_datetime,
                     };
 
                     console.log('jobCheckTradeCodeNorInvoice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
@@ -11129,6 +11141,8 @@ class EInvoiceController {
                                       :p_mccqt,
                                       :p_xml_tax_signed,
                                       :p_xml_length,
+                                      :p_tax_sign_by,
+                                      :p_tax_sign_datetime,
                                       :p_language, 
                                       :p_crt_by, 
                                       :p_rtn_cur); 
@@ -11166,6 +11180,8 @@ class EInvoiceController {
                       p_mccqt: '',
                       p_xml_tax_signed: '',
                       p_xml_length: '',
+                      p_tax_sign_by: '',
+                      p_tax_sign_datetime: '',
                     };
 
                     console.log('jobCheckTradeCodeNorInvoice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
@@ -11181,6 +11197,8 @@ class EInvoiceController {
                                       :p_mccqt,
                                       :p_xml_tax_signed,
                                       :p_xml_length,
+                                      :p_tax_sign_by,
+                                      :p_tax_sign_datetime,
                                       :p_language, 
                                       :p_crt_by, 
                                       :p_rtn_cur); 
@@ -21426,6 +21444,8 @@ class EInvoiceController {
                   p_mccqt: maCQT,
                   p_xml_tax_signed: xml_tax_signed,
                   p_xml_length: xml_length,
+                  p_tax_sign_by: tax_sign_by,
+                  p_tax_sign_datetime: tax_sign_datetime,
                 };
 
                 console.log('jobCheckTradeCodeNorInvoice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
@@ -21441,6 +21461,8 @@ class EInvoiceController {
                                       :p_mccqt,
                                       :p_xml_tax_signed,
                                       :p_xml_length,
+                                      :p_tax_sign_by,
+                                      :p_tax_sign_datetime,
                                       :p_language, 
                                       :p_crt_by, 
                                       :p_rtn_cur); 
@@ -21471,6 +21493,8 @@ class EInvoiceController {
                   p_mccqt: '',
                   p_xml_tax_signed: '',
                   p_xml_length: '',
+                  p_tax_sign_by: '',
+                  p_tax_sign_datetime: '',
                 };
 
                 console.log('jobCheckTradeCodeNorInvoice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
@@ -21486,6 +21510,8 @@ class EInvoiceController {
                                       :p_mccqt,
                                       :p_xml_tax_signed,
                                       :p_xml_length,
+                                      :p_tax_sign_by,
+                                      :p_tax_sign_datetime,
                                       :p_language, 
                                       :p_crt_by, 
                                       :p_rtn_cur); 

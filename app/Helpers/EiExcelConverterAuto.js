@@ -32,8 +32,8 @@ class EiExcelConverterAuto {
     backgroundRow,
     backgroundWidth,
     backgroundHeight,
-    num_of_pages,
-    num_of_more_pages,
+    l_num_of_pages,
+    l_num_of_more_pages,
   ) {
     let reportInfo = {CODE: '01', NAME: einvoiceMasterData[0]['PK'], PATH: reportPath}; //that is the report template path.
     //console.log('reportInfo  ', reportInfo);
@@ -67,9 +67,9 @@ class EiExcelConverterAuto {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       ];
-
-      let pos_lv = num_of_more_pages || 20; //giới hạn row một trang
-      let pos = num_of_pages || 10; //giới hạn row trang cuối
+      const num_of_more_pages_max = 20; //giới hạn tối đa quy định trong 1 trang nhằm tạo ra trang đẹp
+      const num_of_more_pages = l_num_of_more_pages || 20; //giới hạn row một trang
+      const num_of_pages = l_num_of_pages || 10; //giới hạn row trang cuối
       let v_countNumberOfPages = 0;
       let total_countLenght = 0;
       let count_col = 0;
@@ -130,8 +130,8 @@ class EiExcelConverterAuto {
           }
 
           if (count_col == v_count - 1) {
-            if (total_countLenght > pos) {
-              //console.log("total_countLenght>pos",total_countLenght)
+            if (total_countLenght > num_of_pages) {
+              //console.log("total_countLenght>num_of_pages",total_countLenght)
               page[i] = count_col_index;
               page_index[i] = total_countLenght - 1;
               page[i + 1] = 1;
@@ -141,7 +141,7 @@ class EiExcelConverterAuto {
               count_col_index++;
               break;
             } else {
-              //console.log("total_countLenght<pos",total_countLenght)
+              //console.log("total_countLenght<num_of_pages",total_countLenght)
               let abc = 0;
               page.forEach(e => {
                 abc += e;
@@ -153,15 +153,15 @@ class EiExcelConverterAuto {
               count_col_index++;
               break;
             }
-          } else if (total_countLenght > pos_lv) {
-            if (total_countLenght - pos_lv < 2) {
+          } else if (total_countLenght > num_of_more_pages) {
+            if (total_countLenght - num_of_more_pages < 2) {
               page[i] = count_col_index;
               page_index[i] = total_countLenght;
               //count_col++;
               count_col_index++;
               break; //continue;
             }
-          } else if (total_countLenght == pos_lv) {
+          } else if (total_countLenght == num_of_more_pages) {
             page[i] = count_col_index + 1;
             page_index[i] = total_countLenght;
             count_col++;
@@ -291,11 +291,12 @@ class EiExcelConverterAuto {
           }
         });
       }
-      //console.log('v_countNumberOfPages  ', v_countNumberOfPages, 'totalRows ', totalRows, 'headerRowCount ', headerRowCount);
 
       if (v_countNumberOfPages > 1) {
-        totalRows = pos_lv + (v_countNumberOfPages - 1) * (pos_lv + headerRowCount - 1) + (v_countNumberOfPages - 1);
-        extendedRows = pos_lv - page[v_countNumberOfPages - 1];
+        /*totalRows = num_of_more_pages + (v_countNumberOfPages - 1) * (num_of_more_pages + headerRowCount - 1) + (v_countNumberOfPages - 1);
+        extendedRows = num_of_more_pages - page[v_countNumberOfPages - 1];*/
+        totalRows = num_of_more_pages_max + (v_countNumberOfPages - 1) * (num_of_more_pages_max + headerRowCount - 1) + (v_countNumberOfPages - 1);
+        extendedRows = num_of_more_pages_max - page[v_countNumberOfPages - 1];
       } else {
         for (let j = 0; j < page.length; j++) {
           let lastPagelength = 0;
@@ -391,6 +392,7 @@ class EiExcelConverterAuto {
       //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
       //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
       //=======================================================================================================
+      console.log('page  ', JSON.stringify(page));
       if (v_countNumberOfPages > 1) {
         for (let j = 0; j < page.length; j++) {
           const e = parseInt(page[j]);
@@ -412,18 +414,18 @@ class EiExcelConverterAuto {
             let _count_ = 0;
             if (j == 0) {
               _sourceRow = _sourceRow - 1;
-              if (pos_lv - totalRowCount > 0) {
-                let tmpObj = {loop_row: pos_lv - totalRowCount, loopStartRow: totalRowCount + _sourceRow + 1};
+              if (num_of_more_pages - totalRowCount > 0) {
+                let tmpObj = {loop_row: num_of_more_pages - totalRowCount, loopStartRow: totalRowCount + _sourceRow + 1};
                 extendedArray.push(tmpObj);
               }
 
-              _count_ = totalRowCount + _sourceRow + (pos_lv - totalRowCount) + 1; //
-              totalRowCount += pos_lv - totalRowCount;
+              _count_ = totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + 1; //
+              totalRowCount += num_of_more_pages - totalRowCount;
 
               let _startCell = '';
               let _midCell = '';
-              let _endCell = totalRowCount + _sourceRow + (pos_lv - totalRowCount) + 1;
-              const rowIndex = totalRowCount + _sourceRow + (pos_lv - totalRowCount) + 1;
+              let _endCell = '';
+              const rowIndex = totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + 1;
 
               worksheet.mergeCells(rowIndex, startMergeRedundantRow, rowIndex, endMergeRedundantRow);
 
@@ -461,18 +463,18 @@ class EiExcelConverterAuto {
                 };
               }
 
-              worksheet.getRow(totalRowCount + _sourceRow + (pos_lv - totalRowCount) + 1).addPageBreak();
-              logoArray.push({logoPos: totalRowCount + _sourceRow + (pos_lv - totalRowCount), logos: logos});
+              worksheet.getRow(totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + 1).addPageBreak();
+              logoArray.push({logoPos: totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount), logos: logos});
             } else {
               let leftCount = 0;
 
               if (page[j + 1] != 0) {
-                leftCount = pos_lv - countCheck;
+                leftCount = num_of_more_pages - countCheck;
 
                 let _startCell = '';
                 let _midCell = '';
-                let _endCell = totalRowCount + _sourceRow + (pos_lv - totalRowCount) + 1;
-                const rowIndex = totalRowCount + _sourceRow + (pos_lv - totalRowCount) + 1;
+                let _endCell = totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + 1;
+                const rowIndex = totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + 1;
 
                 worksheet.mergeCells(rowIndex, startMergeRedundantRow, rowIndex, endMergeRedundantRow);
 
@@ -519,8 +521,8 @@ class EiExcelConverterAuto {
 
                 logoArray.push({logoPos: totalRowCount + _sourceRow + leftCount, logos: logos});
               } else {
-                //for (let index = 1; index <= pos_lv - pos; index++) {
-                for (let index = pos + 1; index <= pos_lv; index++) {
+                //for (let index = 1; index <= num_of_more_pages - pos; index++) {
+                for (let index = num_of_pages + 1; index <= num_of_more_pages; index++) {
                   worksheet.getRow(totalRowCount + _sourceRow + leftCount + index).hidden = true;
                 }
               }
@@ -703,7 +705,7 @@ class EiExcelConverterAuto {
               }
             }
             if (j == 0) {
-              totalRowCount_2 += pos_lv - totalRowCount_2;
+              totalRowCount_2 += num_of_more_pages - totalRowCount_2;
               //console.log('totalRowCount_2  ' + totalRowCount_2);
               if (cancelYn == 'Y') {
                 try {
@@ -727,7 +729,7 @@ class EiExcelConverterAuto {
                 }
               }
             } else {
-              let leftCount = pos_lv - countCheck_2;
+              let leftCount = num_of_more_pages - countCheck_2;
               if (leftCount > 0) {
                 totalRowCount_2 += leftCount;
               }
@@ -735,7 +737,7 @@ class EiExcelConverterAuto {
                 if (j == v_countNumberOfPages - 1) {
                   try {
                     worksheet.addImage(await exceljs.insertPathImage(cancelPath), {
-                      tl: {col: 9, row: _sourceRow_2 + totalRowCount_2 - pos_lv},
+                      tl: {col: 9, row: _sourceRow_2 + totalRowCount_2 - num_of_more_pages},
                       ext: {width: 200, height: 100},
                     });
                   } catch (error) {
@@ -744,7 +746,7 @@ class EiExcelConverterAuto {
                 } else {
                   try {
                     worksheet.addImage(await exceljs.insertPathImage(cancelPath), {
-                      tl: {col: startMergeRedundantRow, row: _sourceRow_2 + totalRowCount_2 - pos_lv - 10},
+                      tl: {col: startMergeRedundantRow, row: _sourceRow_2 + totalRowCount_2 - num_of_more_pages - 10},
                       ext: {width: 705, height: 700},
                     });
                   } catch (error) {
@@ -755,11 +757,11 @@ class EiExcelConverterAuto {
 
               if (bgPath != '') {
                 if (j == v_countNumberOfPages - 1) {
-                  //console.log('backgroundCell  ' + backgroundRow + '  j  ' + j + ' totalRowCount_2 ' + totalRowCount_2 + ' pos_lv  ' + pos_lv);
+                  //console.log('backgroundCell  ' + backgroundRow + '  j  ' + j + ' totalRowCount_2 ' + totalRowCount_2 + ' num_of_more_pages  ' + num_of_more_pages);
                   try {
                     worksheet.addImage(await exceljs.insertPathImage2(bgPath), {
-                      // tl: { col: backgroundCell, row: backgroundRow + totalRowCount_2 - pos_lv - 1 },
-                      tl: {col: backgroundCell, row: backgroundRow + pos_lv * j + headerRowCount * j - 1},
+                      // tl: { col: backgroundCell, row: backgroundRow + totalRowCount_2 - num_of_more_pages - 1 },
+                      tl: {col: backgroundCell, row: backgroundRow + num_of_more_pages * j + headerRowCount * j - 1},
                       ext: {width: backgroundWidth, height: backgroundHeight},
                     });
                   } catch (error) {
@@ -768,8 +770,8 @@ class EiExcelConverterAuto {
                 } else {
                   try {
                     worksheet.addImage(await exceljs.insertPathImage2(bgPath), {
-                      // tl: { col: backgroundCell, row: _sourceRow_2 + totalRowCount_2 - pos_lv - 1 },
-                      tl: {col: backgroundCell, row: backgroundRow + pos_lv * j + headerRowCount * j - 1},
+                      // tl: { col: backgroundCell, row: _sourceRow_2 + totalRowCount_2 - num_of_more_pages - 1 },
+                      tl: {col: backgroundCell, row: backgroundRow + num_of_more_pages * j + headerRowCount * j - 1},
                       ext: {width: backgroundWidth, height: backgroundHeight},
                     });
                   } catch (error) {

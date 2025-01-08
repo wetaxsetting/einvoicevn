@@ -4272,6 +4272,8 @@ class EInvoiceController {
         let soTB = '';
         let ngayTB = '';
         let thoiGianCQTKy = '';
+        let tax_sign_by = '';
+        let tax_sign_datetime = '';
         if (!result.data.length) {
           ndungTBao = [];
           const param_d = {
@@ -4317,9 +4319,13 @@ class EInvoiceController {
                 base64XML = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8');
                 const temp_of_tax = {
                   MLTDiep: 'TDiep/TTChung/MLTDiep',
+                  TaxSignedBy: 'TDiep/DLieu/TBao/DSCKS/CQT/Signature/KeyInfo/X509Data/X509SubjectName',
+                  TaxSignedDate: 'TDiep/DLieu/TBao/DSCKS/CQT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
                 };
                 const data_of_tax = await transform(base64XML, temp_of_tax);
 
+                tax_sign_by = data_of_tax.TaxSignedBy;
+                tax_sign_datetime = data_of_tax.TaxSignedDate;
                 maTD = data_of_tax.MLTDiep;
                 maGDDTu = items[k].ndungTBao.maGDichTNDLieu;
                 ngayTaoTB = items[k].ngayTaoTBao;
@@ -4387,6 +4393,8 @@ class EInvoiceController {
                     invoice_date: invoice.ngayHDon,
                     cqt_result: invoice.tthaiTNCQT, //   invoice.dsachLoi.length == 0 ? 1 : 2,
                     dsachLoi: invoice.dsachLoi,
+                    tax_sign_datetime: tax_sign_datetime,
+                    tax_sign_by: tax_sign_by,
                   });
 
                   //console.log("invoice.dsachLoi  ", invoice.dsachLoi)

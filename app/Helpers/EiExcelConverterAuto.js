@@ -416,20 +416,50 @@ class EiExcelConverterAuto {
                 let tmpObj = {loop_row: pos_lv - totalRowCount, loopStartRow: totalRowCount + _sourceRow + 1};
                 extendedArray.push(tmpObj);
               }
-              /*console.log(
-                'totalRowCount  ',
-                totalRowCount,
-                '_sourceRow  ',
-                _sourceRow,
-                'pos_lv  ',
-                pos_lv,
-                'totalRowCount  ',
-                totalRowCount,
-                '(pos_lv - totalRowCount) ',
-                pos_lv - totalRowCount,
-              );*/
+
               _count_ = totalRowCount + _sourceRow + (pos_lv - totalRowCount) + 1; //
               totalRowCount += pos_lv - totalRowCount;
+
+              let _startCell = '';
+              let _midCell = '';
+              let _endCell = totalRowCount + _sourceRow + (pos_lv - totalRowCount) + 1;
+              const rowIndex = totalRowCount + _sourceRow + (pos_lv - totalRowCount) + 1;
+
+              worksheet.mergeCells(rowIndex, startMergeRedundantRow, rowIndex, endMergeRedundantRow);
+
+              if (detailCellFormat[0].startCell == 1) {
+                _startCell = excCols[detailCellFormat[0].startCell];
+                worksheet.getCell(`${_startCell + rowIndex}`).style.border = {
+                  left: {style: 'medium', color: {argb: 'FF0070C0'}},
+                  right: {style: 'medium', color: {argb: 'FF0070C0'}},
+                  top: {style: 'none', color: {argb: 'FF0070C0'}},
+                  bottom: {style: 'medium', color: {argb: 'FF0070C0'}},
+                };
+              } else {
+                _startCell = excCols[detailCellFormat[0].startCell - 1];
+                _midCell = excCols[detailCellFormat[0].startCell];
+                _endCell = excCols[detailCellFormat[detailCellFormat.length - 1].endCell + 1];
+
+                console.log('_startCell  ', _startCell, '_midCell  ', _midCell, '_endCell  ', _endCell);
+                worksheet.getCell(`${_startCell + rowIndex}`).style.border = {
+                  left: {style: 'medium', color: {argb: 'FF0070C0'}},
+                  right: {style: 'none', color: {argb: 'FF0070C0'}},
+                  top: {style: 'none', color: {argb: 'FF0070C0'}},
+                  bottom: {style: 'medium', color: {argb: 'FF0070C0'}},
+                };
+                worksheet.getCell(`${_midCell + rowIndex}`).style.border = {
+                  left: {style: 'none', color: {argb: 'FF0070C0'}},
+                  right: {style: 'none', color: {argb: 'FF0070C0'}},
+                  top: {style: 'none', color: {argb: 'FF0070C0'}},
+                  bottom: {style: 'medium', color: {argb: 'FF0070C0'}},
+                };
+                worksheet.getCell(`${_endCell + rowIndex}`).style.border = {
+                  left: {style: 'none', color: {argb: 'FF0070C0'}},
+                  right: {style: 'medium', color: {argb: 'FF0070C0'}},
+                  top: {style: 'none', color: {argb: 'FF0070C0'}},
+                  bottom: {style: 'medium', color: {argb: 'FF0070C0'}},
+                };
+              }
 
               worksheet.getRow(totalRowCount + _sourceRow + (pos_lv - totalRowCount) + 1).addPageBreak();
               logoArray.push({logoPos: totalRowCount + _sourceRow + (pos_lv - totalRowCount), logos: logos});
@@ -438,6 +468,48 @@ class EiExcelConverterAuto {
 
               if (page[j + 1] != 0) {
                 leftCount = pos_lv - countCheck;
+
+                let _startCell = '';
+                let _midCell = '';
+                let _endCell = totalRowCount + _sourceRow + (pos_lv - totalRowCount) + 1;
+                const rowIndex = totalRowCount + _sourceRow + (pos_lv - totalRowCount) + 1;
+
+                worksheet.mergeCells(rowIndex, startMergeRedundantRow, rowIndex, endMergeRedundantRow);
+
+                if (detailCellFormat[0].startCell == 1) {
+                  _startCell = excCols[detailCellFormat[0].startCell];
+                  worksheet.getCell(`${_startCell + rowIndex}`).style.border = {
+                    left: {style: 'medium', color: {argb: 'FF0070C0'}},
+                    right: {style: 'medium', color: {argb: 'FF0070C0'}},
+                    top: {style: 'none', color: {argb: 'FF0070C0'}},
+                    bottom: {style: 'medium', color: {argb: 'FF0070C0'}},
+                  };
+                } else {
+                  _startCell = excCols[detailCellFormat[0].startCell - 1];
+                  _midCell = excCols[detailCellFormat[0].startCell];
+                  _endCell = excCols[detailCellFormat[detailCellFormat.length - 1].endCell + 1];
+
+                  console.log('_startCell  ', _startCell, '_midCell  ', _midCell, '_endCell  ', _endCell);
+                  worksheet.getCell(`${_startCell + rowIndex}`).style.border = {
+                    left: {style: 'medium', color: {argb: 'FF0070C0'}},
+                    right: {style: 'none', color: {argb: 'FF0070C0'}},
+                    top: {style: 'none', color: {argb: 'FF0070C0'}},
+                    bottom: {style: 'medium', color: {argb: 'FF0070C0'}},
+                  };
+                  worksheet.getCell(`${_midCell + rowIndex}`).style.border = {
+                    left: {style: 'none', color: {argb: 'FF0070C0'}},
+                    right: {style: 'none', color: {argb: 'FF0070C0'}},
+                    top: {style: 'none', color: {argb: 'FF0070C0'}},
+                    bottom: {style: 'medium', color: {argb: 'FF0070C0'}},
+                  };
+                  worksheet.getCell(`${_endCell + rowIndex}`).style.border = {
+                    left: {style: 'none', color: {argb: 'FF0070C0'}},
+                    right: {style: 'medium', color: {argb: 'FF0070C0'}},
+                    top: {style: 'none', color: {argb: 'FF0070C0'}},
+                    bottom: {style: 'medium', color: {argb: 'FF0070C0'}},
+                  };
+                }
+
                 worksheet.getRow(totalRowCount + _sourceRow + leftCount + 1).addPageBreak();
 
                 if (leftCount > 0) {
@@ -901,7 +973,8 @@ class EiExcelConverterAuto {
         // );
         //console.log(detailCellFormat[0]);
         //console.log(`worksheet.getCell('J46') `, worksheet.getCell('J46').style.border);
-        worksheet.mergeCells(
+
+        /*worksheet.mergeCells(
           rowItem.loopStartRow + rowItem.loop_row,
           startMergeRedundantRow,
           rowItem.loopStartRow + rowItem.loop_row,
@@ -944,7 +1017,7 @@ class EiExcelConverterAuto {
             top: {style: 'none', color: {argb: 'FF0070C0'}},
             bottom: {style: 'medium', color: {argb: 'FF0070C0'}},
           };
-        }
+        }*/
         //console.log(`worksheet.getCell('J46') 1 `, worksheet.getCell('J46').style.border);
         //worksheet.getCell('B46').style.border = {};
         //worksheet.getCell(`${sttCell + (rowItem.loopStartRow + rowItem.loop_row)}`).style.border = {}; //bottom: {style: 'thick', color: {argb: 'FF0070C0'}},

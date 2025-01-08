@@ -32,6 +32,8 @@ class EiExcelConverterAuto {
     backgroundRow,
     backgroundWidth,
     backgroundHeight,
+    num_of_pages,
+    num_of_more_pages,
   ) {
     let reportInfo = {CODE: '01', NAME: einvoiceMasterData[0]['PK'], PATH: reportPath}; //that is the report template path.
     //console.log('reportInfo  ', reportInfo);
@@ -66,8 +68,8 @@ class EiExcelConverterAuto {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       ];
 
-      let pos_lv = 20; //giới hạn row một trang
-      let pos = 10; //giới hạn row trang cuối
+      let pos_lv = num_of_more_pages || 20; //giới hạn row một trang
+      let pos = num_of_pages || 10; //giới hạn row trang cuối
       let v_countNumberOfPages = 0;
       let total_countLenght = 0;
       let count_col = 0;
@@ -880,33 +882,76 @@ class EiExcelConverterAuto {
       for (let o = 0; o < extendedArray.length; o++) {
         let rowItem = extendedArray[o];
         worksheet.mergeCells(rowItem.loopStartRow, startMergeRedundantRow, rowItem.loopStartRow + rowItem.loop_row - 1, endMergeRedundantRow);
-        worksheet.getCell(`${sttCell + rowItem.loopStartRow}`).style.border = {left: {style: 'thin'}, bottom: {style: 'thin'}};
-        for (let _omg = 0; _omg < rowItem.loop_row; _omg++) {
+        //worksheet.getCell(`${sttCell + rowItem.loopStartRow}`).style.border = {left: {style: 'thin'}, bottom: {style: 'thin'}};
+        /*for (let _omg = 0; _omg < rowItem.loop_row; _omg++) {
           try {
             worksheet.getCell(`${lastCell + (rowItem.loopStartRow + _omg)}`).style.border = {right: {style: 'thin'}, bottom: {style: 'thin'}};
           } catch (error) {
             console.log('error', rowItem.loopStartRow + _omg);
           }
-        }
+        }*/
         // const startMergeCell = x['range'].split(':').shift();
-
         // worksheet.unMergeCells(rowItem.loopStartRow + rowItem.loop_row);
-
-        // worksheet.mergeCells(
+        // console.log(
+        //   'rowItem.loopStartRow + rowItem.loop_row ++==>',
         //   rowItem.loopStartRow + rowItem.loop_row,
-        //   startMergeRedundantRow,
-        //   rowItem.loopStartRow + rowItem.loop_row,
-        //   endMergeRedundantRow,
+        //   'sttCell ',
+        //   sttCell,
+        //   `${sttCell + (rowItem.loopStartRow + rowItem.loop_row)}`,
         // );
-        // console.log('rowItem.loopStartRow + rowItem.loop_row ++==>', rowItem.loopStartRow + rowItem.loop_row, 'sttCell ', sttCell);
+        //console.log(detailCellFormat[0]);
+        //console.log(`worksheet.getCell('J46') `, worksheet.getCell('J46').style.border);
+        worksheet.mergeCells(
+          rowItem.loopStartRow + rowItem.loop_row,
+          startMergeRedundantRow,
+          rowItem.loopStartRow + rowItem.loop_row,
+          endMergeRedundantRow,
+        );
 
-        // worksheet.getCell(`${sttCell + rowItem.loopStartRow + rowItem.loop_row}`).style.border = {}; //bottom: {style: 'thick', color: {argb: 'FF0070C0'}},
+        let _startCell = '';
+        let _midCell = '';
+        let _endCell = rowItem.loopStartRow + rowItem.loop_row;
+
+        if (detailCellFormat[0].startCell == 1) {
+          _startCell = excCols[detailCellFormat[0].startCell];
+          worksheet.getCell(`${_startCell + (rowItem.loopStartRow + rowItem.loop_row)}`).style.border = {
+            left: {style: 'medium', color: {argb: 'FF0070C0'}},
+            right: {style: 'medium', color: {argb: 'FF0070C0'}},
+            top: {style: 'none', color: {argb: 'FF0070C0'}},
+            bottom: {style: 'medium', color: {argb: 'FF0070C0'}},
+          };
+        } else {
+          _startCell = excCols[detailCellFormat[0].startCell - 1];
+          _midCell = excCols[detailCellFormat[0].startCell];
+          _endCell = excCols[detailCellFormat[detailCellFormat.length - 1].endCell + 1];
+
+          console.log('_startCell  ', _startCell, '_midCell  ', _midCell, '_endCell  ', _endCell);
+          worksheet.getCell(`${_startCell + (rowItem.loopStartRow + rowItem.loop_row)}`).style.border = {
+            left: {style: 'medium', color: {argb: 'FF0070C0'}},
+            right: {style: 'none', color: {argb: 'FF0070C0'}},
+            top: {style: 'none', color: {argb: 'FF0070C0'}},
+            bottom: {style: 'medium', color: {argb: 'FF0070C0'}},
+          };
+          worksheet.getCell(`${_midCell + (rowItem.loopStartRow + rowItem.loop_row)}`).style.border = {
+            left: {style: 'none', color: {argb: 'FF0070C0'}},
+            right: {style: 'none', color: {argb: 'FF0070C0'}},
+            top: {style: 'none', color: {argb: 'FF0070C0'}},
+            bottom: {style: 'medium', color: {argb: 'FF0070C0'}},
+          };
+          worksheet.getCell(`${_endCell + (rowItem.loopStartRow + rowItem.loop_row)}`).style.border = {
+            left: {style: 'none', color: {argb: 'FF0070C0'}},
+            right: {style: 'medium', color: {argb: 'FF0070C0'}},
+            top: {style: 'none', color: {argb: 'FF0070C0'}},
+            bottom: {style: 'medium', color: {argb: 'FF0070C0'}},
+          };
+        }
+        //console.log(`worksheet.getCell('J46') 1 `, worksheet.getCell('J46').style.border);
+        //worksheet.getCell('B46').style.border = {};
+        //worksheet.getCell(`${sttCell + (rowItem.loopStartRow + rowItem.loop_row)}`).style.border = {}; //bottom: {style: 'thick', color: {argb: 'FF0070C0'}},
         //worksheet.getCell(`C${_sourceRow + i}`).style.border = {};
       }
       //=======================================================================================================
       //END-this part add more style to the rows that missing(optional) Other pages.
-
-      //this part insert logo for all the self gen header
 
       //this part insert logo for all the self gen header
       let promises = logos.map(async (e, i) => {

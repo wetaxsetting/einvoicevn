@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
    <v-container fluid v-resize="onResize">
     <v-row >
       <v-col cols="1">
@@ -366,4 +366,4 @@
 </script>
 <style scoped>
   @import "@/assets/style/bundle.css";
-</style>
+</style> -->

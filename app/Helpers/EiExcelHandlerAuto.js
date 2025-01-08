@@ -46,6 +46,8 @@ class EiExcelHandler {
       let lastPageRowsHeight = 0;
       let companyName = '';
       let backgroundRow = 0;
+      let num_of_pages = 0;
+      let num_of_more_pages = 0;
 
       const einvoiceMasterData = await DBService.callProcCursor('ei_sel_einvoice_m_pdf', [tradecode], p_language, p_crt_by, _db2);
 
@@ -187,6 +189,8 @@ class EiExcelHandler {
       headerRowCount = einvoiceMasterData[0].DETAILS_START_ROW == null ? 0 : einvoiceMasterData[0].DETAILS_START_ROW;
       lastPageRowsHeight = 18;
 
+      num_of_pages = einvoiceMasterData[0].NUM_OF_PAGE;
+      num_of_more_pages = einvoiceMasterData[0].NUM_OF_MORE_PAGE;
       // console.log("this.masterDataArray ", this.masterDataArray);
 
       if (this.masterDataArray.length > 0) {
@@ -218,6 +222,8 @@ class EiExcelHandler {
           backgroundRow,
           backgroundWidth,
           backgroundHeight,
+          num_of_pages,
+          num_of_more_pages,
         );
       }
 

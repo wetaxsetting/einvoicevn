@@ -67,6 +67,8 @@
                 'URL_FILE_EXCEL_IMP',
                 'URL_FILE_EXCEL_C',
                 'URL_FILE_EXCEL_C_IMP',
+                'NUM_OF_PAGE',
+                'NUM_OF_MORE_PAGE',
               ]"
               @cellClick="cellClickCellTemplate"
             />
@@ -610,6 +612,24 @@ export default {
           dataField: "SIGN_RANGE_DETAILS",
           width: 150,
           caption: this.$t("range_details_sign"),
+          alignment: "left",
+          type: "number",
+          formatFloat: 0,
+          editable: true,
+        },
+        {
+          dataField: "NUM_OF_PAGE",
+          width: 150,
+          caption: this.$t("num_of_page"),
+          alignment: "left",
+          type: "number",
+          formatFloat: 0,
+          editable: true,
+        },
+        {
+          dataField: "NUM_OF_MORE_PAGE",
+          width: 150,
+          caption: this.$t("num_of_more_page"),
           alignment: "left",
           type: "number",
           formatFloat: 0,

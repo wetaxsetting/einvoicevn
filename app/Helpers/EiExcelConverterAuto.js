@@ -531,8 +531,11 @@ class EiExcelConverterAuto {
                     bottom: {style: 'medium', color: {argb: 'FF0070C0'}},
                   };
                 }
-
-                worksheet.getRow(totalRowCount + _sourceRow + leftCount + 1).addPageBreak();
+                //
+                //worksheet.getRow(totalRowCount + _sourceRow + leftCount + 1).addPageBreak();
+                worksheet
+                  .getRow(totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + (num_of_more_pages_max - num_of_more_pages) + 1)
+                  .addPageBreak();
 
                 if (leftCount > 0) {
                   let tmpObj = {loop_row: leftCount, loopStartRow: totalRowCount + _sourceRow + 1};

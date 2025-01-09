@@ -34,7 +34,7 @@ class EiExcelConverterAuto {
 
       if (bg.length) {
         try {
-          console.log('file: EiExcelTemplateConverter.js:37 logos[0].bgPath:', bg[0].bgPath);
+          console.log('file: EiExcelTemplateConverter.js:37 logos[0].bgPath:', bg[0], bg[0].bgPath);
           worksheet.addImage(await exceljs.insertPathImage(bg[0].bgPath), {
             tl: {col: bg[0].bg_start_col, row: bg[0].bg_start_row},
             ext: {width: bg[0].bg_width, height: bg[0].bg_height},
@@ -47,7 +47,7 @@ class EiExcelConverterAuto {
       //console.log("logos[0].logoPath  " , logos[0].logoPath  );
       if (logos && logos.length > 0 && logos[0].logoPath) {
         try {
-          console.log('file: EiExcelTemplateConverter.js:57 logos[0].logoPath:', logos[0].logoPath);
+          console.log('file: EiExcelTemplateConverter.js:57 logos[0].logoPath:', logos[0], logos[0].logoPath);
 
           let idimg = await exceljs.insertPathImage(logos[0].logoPath);
           worksheet.addImage(idimg, {

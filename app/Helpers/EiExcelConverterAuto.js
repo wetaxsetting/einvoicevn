@@ -413,12 +413,8 @@ class EiExcelConverterAuto {
                 console.log(totalRowCount);
               }
             }
-
             let _count_ = 0;
-            console.log('page   ', j);
             if (j == 0) {
-              console.log('page = 0  ', j);
-
               _sourceRow = _sourceRow - 1;
               if (num_of_more_pages - totalRowCount > 0) {
                 let tmpObj = {loop_row: num_of_more_pages - totalRowCount, loopStartRow: totalRowCount + _sourceRow + 1};
@@ -432,12 +428,6 @@ class EiExcelConverterAuto {
               let _midCell = '';
               let _endCell = '';
               const rowIndex = totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + (num_of_more_pages_max - num_of_more_pages) + 1;
-
-              console.log('rowIndex 0  ', rowIndex);
-              console.log(
-                'totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount)  0 ',
-                totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount),
-              );
 
               worksheet.mergeCells(
                 totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + 1,
@@ -485,17 +475,23 @@ class EiExcelConverterAuto {
               worksheet
                 .getRow(totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + (num_of_more_pages_max - num_of_more_pages) + 1)
                 .addPageBreak();
-              logoArray.push({logoPos: totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount), logos: logos});
+
+              console.log(
+                'totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) ',
+                totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount),
+              );
+
+              // logoArray.push({logoPos: totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount), logos: logos});
+              logoArray.push({
+                logoPos: totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + (num_of_more_pages_max - num_of_more_pages) + 2,
+                logos: logos,
+              });
             } else {
               let leftCount = 0;
-              console.log('page !=0  ', j);
-
               if (page[j + 1] != 0) {
-                console.log('page !=0  page[j + 1] != 0', j);
-
                 leftCount = num_of_more_pages - countCheck;
 
-                /*let _startCell = '';
+                let _startCell = '';
                 let _midCell = '';
                 let _endCell = totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + 1;
                 const rowIndex = totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + 1;
@@ -534,7 +530,7 @@ class EiExcelConverterAuto {
                     top: {style: 'none', color: {argb: 'FF0070C0'}},
                     bottom: {style: 'medium', color: {argb: 'FF0070C0'}},
                   };
-                }*/
+                }
 
                 worksheet.getRow(totalRowCount + _sourceRow + leftCount + 1).addPageBreak();
 
@@ -545,15 +541,8 @@ class EiExcelConverterAuto {
 
                 logoArray.push({logoPos: totalRowCount + _sourceRow + leftCount, logos: logos});
               } else {
-                console.log('page !=0  page[j + 1] != 0 edddd ', j);
-                console.log('totalRowCount   ', totalRowCount);
-                console.log('_sourceRow   ', _sourceRow);
-                console.log('leftCount   ', leftCount);
-
-                console.log('totalRowCount + _sourceRow + leftCount + index  ', totalRowCount + _sourceRow + leftCount + 11);
                 //for (let index = 1; index <= num_of_more_pages - pos; index++) {
                 let numHiddenRow = (v_countNumberOfPages - 1) * (num_of_more_pages_max + headerRowCount - 1) + (num_of_pages + headerRowCount);
-                console.log('numHiddenRow  ', numHiddenRow);
                 for (let index = 1; index <= num_of_pages; index++) {
                   //worksheet.getRow(totalRowCount + _sourceRow + leftCount + index + 1).hidden = true;
                   worksheet.getRow(numHiddenRow + index).hidden = true;

@@ -552,7 +552,7 @@ class EiExcelConverterAuto {
                   extendedArray.push(tmpObj);
                 }
 
-                logoArray.push({logoPos: totalRowCount + _sourceRow + leftCount, logos: logos});
+                logoArray.push({logoPos: rowIndex, logos: logos});
               } else {
                 //for (let index = 1; index <= num_of_more_pages - pos; index++) {
                 let numHiddenRow = (v_countNumberOfPages - 1) * (num_of_more_pages_max + headerRowCount - 1) + (num_of_pages + headerRowCount);

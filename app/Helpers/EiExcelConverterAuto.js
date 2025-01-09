@@ -477,8 +477,9 @@ class EiExcelConverterAuto {
                 .addPageBreak();
 
               console.log(
-                'totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) ',
-                totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount),
+                'totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount)  j ',
+                j,
+                totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + (num_of_more_pages_max - num_of_more_pages) + 1,
               );
 
               // logoArray.push({logoPos: totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount), logos: logos});
@@ -494,9 +495,15 @@ class EiExcelConverterAuto {
                 let _startCell = '';
                 let _midCell = '';
                 let _endCell = totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + 1;
-                const rowIndex = totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + 1;
+                const rowIndex = (j + 1) * (num_of_more_pages_max + headerRowCount);
 
-                worksheet.mergeCells(rowIndex, startMergeRedundantRow, rowIndex, endMergeRedundantRow);
+                console.log('startMergeRedundantRow ', startMergeRedundantRow, 'endMergeRedundantRow ', endMergeRedundantRow, 'rowIndex ', rowIndex);
+                console.log('page ', j + 1);
+                try {
+                  worksheet.mergeCells(rowIndex, startMergeRedundantRow, rowIndex, endMergeRedundantRow);
+                } catch (error) {
+                  console.log('err', error.Error);
+                }
 
                 if (detailCellFormat[0].startCell == 1) {
                   _startCell = excCols[detailCellFormat[0].startCell];
@@ -532,10 +539,13 @@ class EiExcelConverterAuto {
                   };
                 }
                 //
-                //worksheet.getRow(totalRowCount + _sourceRow + leftCount + 1).addPageBreak();
-                worksheet
-                  .getRow(totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + (num_of_more_pages_max - num_of_more_pages) + 1)
-                  .addPageBreak();
+                console.log(
+                  'totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount)  j ',
+                  j,
+                  (j + 1) * (num_of_more_pages_max + headerRowCount),
+                );
+
+                worksheet.getRow((j + 1) * (num_of_more_pages_max + headerRowCount)).addPageBreak();
 
                 if (leftCount > 0) {
                   let tmpObj = {loop_row: leftCount, loopStartRow: totalRowCount + _sourceRow + 1};

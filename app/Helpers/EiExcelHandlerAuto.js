@@ -25,6 +25,10 @@ class EiExcelHandler {
       let signBoxCell = ''; //Cell bắt đầu của signBy ví dụ:"L"
       let signByCell = {}; //điểm bắt đầu và kết thúc trên trục X của signBy
 
+      let taxSignCell = {}; //điểm bắt đầu và kết thúc trên trục X của hình dấu tick ký
+      let taxSignBoxCell = ''; //Cell bắt đầu của signBy ví dụ:"L"
+      let taxSignByCell = {}; //điểm bắt đầu và kết thúc trên trục X của signBy
+
       let reportPath = ''; //đường dẫn của template
       let reportSheet = ''; //tên của sheet trong template
 
@@ -155,21 +159,6 @@ class EiExcelHandler {
         });
       }
       // // //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
-      // // //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
-
-      //cấu trúc dòng detail
-      // thin//dotted//dashDot//hair//dashDotDot//slantDashDot//mediumDashed//mediumDashDotDot//mediumDashDot//medium//double//thick
-      // detailCellFormat = [
-      //   { startCell: 1, endCell: 2, cellType: 2, cellBorder: "dotted", field: "STT" },//từ cell bắt đầu tới cell kết thúc, type 2: cell đầu tiên
-      //   { startCell: 3, endCell: 9, cellType: 3, cellBorder: "dotted", field: "ITEM_NAME" },//từ cell bắt đầu tới cell kết thúc, type 3: cell kế tiếp cell đầu tiên,
-      //   { startCell: 10, endCell: 10, cellType: 1, cellBorder: "dotted", field: "ITEM_UOM" },//type 1: còn lại
-      //   { startCell: 11, endCell: 13, cellType: 1, cellBorder: "dotted", field: "QTY" },//type 1: còn lại
-      //   //{ startCell: 13, endCell: 14, cellType: 1, cellBorder: "dotted", field: "BLANK" },//type 1: còn lại
-      //   { startCell: 14, endCell: 16, cellType: 1, cellBorder: "dotted", field: "U_PRICE" },//type 1: còn lại
-      //   //{ startCell: 17, endCell: 1, cellType: 1, cellBorder: "dotted", field: "BLANK" },//type 1: còn lại
-      //   { startCell: 17, endCell: 18, cellType: 1, cellBorder: "dotted", field: "NET_TR_AMT" },//type 1: còn lại
-      //   // { startCell: 21, endCell: 22, cellType: 1, cellBorder: "dotted", field: "BLANK" },//type 1: còn lại
-      // ]
 
       //console.log('this.masterDataArray  ', this.masterDataArray);
       backgroundCell = einvoiceMasterData[0].BG_START_ROW;
@@ -181,6 +170,10 @@ class EiExcelHandler {
       signBoxCell = einvoiceMasterData[0].SIGN_CELL_BOX;
       signByCell = {start: einvoiceMasterData[0].SIGN_BY_START_CELL, end: einvoiceMasterData[0].SIGN_BY_END_CELL};
       countFromEndDetailToSignBox = einvoiceMasterData[0].SIGN_RANGE_DETAILS;
+
+      taxSignCell = {start: einvoiceMasterData[0].TAX_SIGN_BY_START_CELL, end: einvoiceMasterData[0].TAX_SIGN_BY_END_CELL};
+      taxSignBoxCell = einvoiceMasterData[0].TAX_SIGN_CELL_BOX;
+      taxSignByCell = {start: einvoiceMasterData[0].TAX_SIGN_BY_START_CELL, end: einvoiceMasterData[0].TAX_SIGN_BY_END_CELL};
 
       _sourceRow = einvoiceMasterData[0].DETAILS_START_ROW; //26
       _sourceRow_2 = einvoiceMasterData[0].DETAILS_START_ROW; //26
@@ -224,6 +217,9 @@ class EiExcelHandler {
           backgroundHeight,
           num_of_pages,
           num_of_more_pages,
+          taxSignCell,
+          taxSignBoxCell,
+          taxSignByCell,
         );
       }
 

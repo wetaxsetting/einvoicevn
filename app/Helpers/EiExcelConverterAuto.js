@@ -1122,7 +1122,7 @@ class EiExcelConverterAuto {
           worksheet.unMergeCells(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 2));
           try {
             worksheet.addImage(await exceljs.insertPathImage(signPath), {
-              tl: {col: signCell.start, row: totalRows + _sourceRow_3 + countFromEndDetailToSignBox - 1},
+              tl: {col: signCell.start + 2, row: totalRows + _sourceRow_3 + countFromEndDetailToSignBox - 1},
               ext: {width: 80, height: 50},
             });
           } catch (error) {
@@ -1159,7 +1159,7 @@ class EiExcelConverterAuto {
           worksheet.unMergeCells(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 2));
           try {
             worksheet.addImage(await exceljs.insertPathImage(signPath), {
-              tl: {col: taxSignCell.start, row: totalRows + _sourceRow_3 + countFromEndDetailToSignBox - 1},
+              tl: {col: taxSignCell.start + 2, row: totalRows + _sourceRow_3 + countFromEndDetailToSignBox - 1},
               ext: {width: 80, height: 50},
             });
           } catch (error) {

@@ -104,6 +104,7 @@ class EInvoiceController {
       }
 
       updatedXml = await this.OBJtoXML(jsonXML);
+
       return updatedXml;
     } catch (error) {
       Utils.Logger({
@@ -19793,6 +19794,7 @@ class EInvoiceController {
       tenGDDTu = '',
       ord = '',
       soTBao = '';
+    let data_send_mail = [];
     let p_seller_comp_seller = '';
     try {
       const param_trade_code = {

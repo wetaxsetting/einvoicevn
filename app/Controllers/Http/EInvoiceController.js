@@ -11380,7 +11380,7 @@ class EInvoiceController {
                   message: resMess,
                 };
               }
-            } else if (key == 'buyer_email' || key == 'buyer_email_cc' || key == 'seller_email') {
+            } else if (key == 'buyer_email' || key == 'seller_email') {
               //console.log('validateJsonInvalidNormalInvoiceToXML  key   ', key, ' - ', invoice[key]);
               if (!errorList[`${key}`].test(invoice[key]) && invoice[key]) {
                 // && invoice[key]
@@ -11390,6 +11390,21 @@ class EInvoiceController {
                   status,
                   message: resMess,
                 };
+              }
+            } else if (key == 'buyer_email_cc') {
+              if (invoice[key]) {
+                let buyer_email_cc = invoice[key].split(';');
+                console.log('buyer_email_cc ', buyer_email_cc);
+                buyer_email_cc.forEach(element => {
+                  if (!errorList[`${key}`].test(element)) {
+                    status = false;
+                    resMess = `${mess1} ${key}.`;
+                    return {
+                      status,
+                      message: resMess,
+                    };
+                  }
+                });
               }
             } else if (!errorList[`${key}`].test(invoice[key])) {
               status = false;

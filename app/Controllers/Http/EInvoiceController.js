@@ -19840,9 +19840,8 @@ class EInvoiceController {
           });
         }
       }
-      console.log('jobCheckTradeCodePosInvoice data_inv  ', JSON.stringify(data_inv));
+      //console.log('jobCheckTradeCodePosInvoice data_inv  ', JSON.stringify(data_inv));
 
-      return;
       const agent = {
         Agent: {
           defaultPort: 443,

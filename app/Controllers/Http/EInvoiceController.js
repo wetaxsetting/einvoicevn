@@ -19083,7 +19083,7 @@ class EInvoiceController {
             data_invoice.detail_invoice[i].seq,
             this.encoreHtmlCode(data_invoice.detail_invoice[i].item_code),
             this.encoreHtmlCode(data_invoice.detail_invoice[i].item_name),
-            this.encoreHtmlCode(data_invoice.detail_invoice[i].unit),
+            this.encoreHtmlCode(data_invoice.detail_invoice[i].item_uom),
             data_invoice.detail_invoice[i].quantity,
             data_invoice.detail_invoice[i].uprice,
             data_invoice.detail_invoice[i].amt,

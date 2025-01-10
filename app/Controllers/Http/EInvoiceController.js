@@ -94,15 +94,16 @@ class EInvoiceController {
     let jsonXML;
     let updatedXml = '';
     try {
-      var xml2js = require('xml2js');
-      parseString(xml, function (err, result) {
-        delete result.HDon.DLHDon[0].$;
-        delete result.HDon.DSCKS[0].NBan;
-        //console.log(JSON.stringify(result));
-        jsonXML = result;
-      });
+      if (xml) {
+        parseString(xml, function (err, result) {
+          delete result.HDon.DLHDon[0].$;
+          delete result.HDon.DSCKS[0].NBan;
+          //console.log(JSON.stringify(result));
+          jsonXML = result;
+        });
+      }
 
-      updatedXml = this.OBJtoXML(jsonXML);
+      updatedXml = await this.OBJtoXML(jsonXML);
       return updatedXml;
     } catch (error) {
       Utils.Logger({

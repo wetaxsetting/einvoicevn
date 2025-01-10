@@ -96,8 +96,8 @@ class EInvoiceController {
     try {
       if (xml) {
         parseString(xml, function (err, result) {
-          delete result.HDon.DLHDon[0].$;
-          delete result.HDon.DSCKS[0].NBan;
+          delete result?.HDon?.DLHDon[0]?.$;
+          delete result?.HDon?.DSCKS[0]?.NBan;
           //console.log(JSON.stringify(result));
           jsonXML = result;
         });
@@ -19836,7 +19836,7 @@ class EInvoiceController {
           });
         }
       }
-      console.log('jobCheckTradeCodePosInvoice data_inv  ', JSON.stringify(data_inv));
+      //console.log('jobCheckTradeCodePosInvoice data_inv  ', JSON.stringify(data_inv));
 
       const agent = {
         Agent: {

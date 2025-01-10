@@ -2560,7 +2560,7 @@ class EInvoiceController2 {
               Authorization: 'Basic ' + Buffer.from(`${authUserName}:${authPassword}`).toString('base64'),
             },
           }).then(async res => {
-            //console.log("res ", res);
+            console.log('res ', res);
             //return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, res.data));
             if (res.data.length) {
               for (let j = 0; j < res.data.length; j++) {
@@ -2738,7 +2738,7 @@ class EInvoiceController2 {
                 lookup_code: tr_code.lookup_code,
                 data_error: null,
               });
-              return response.status(200).json(Utils.responseByRule({success: true, message: 'Sent Normal invoice successfully.', data: rtnValue}));
+              return {rtnValue};
             }
           });
         }

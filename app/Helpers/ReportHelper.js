@@ -1682,7 +1682,7 @@ class ReportHelper {
             }
             //console.log('lstNewMerge', lstNewMerge);
           } catch (eee) {
-            console.log(eee.message);
+            //console.log(eee.message);
           }
         }
 

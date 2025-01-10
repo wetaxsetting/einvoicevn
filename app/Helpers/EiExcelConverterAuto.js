@@ -502,7 +502,7 @@ class EiExcelConverterAuto {
                 try {
                   worksheet.mergeCells(rowIndex, startMergeRedundantRow, rowIndex, endMergeRedundantRow);
                 } catch (error) {
-                  console.log('err', error.Error);
+                  //console.log('err', error.Error);
                 }
 
                 if (detailCellFormat[0].startCell == 1) {

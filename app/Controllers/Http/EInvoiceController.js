@@ -12061,6 +12061,79 @@ class EInvoiceController {
         objInvoice_M.HDon.DLHDon.TTChung.HTTToan = invoices[i].payment_method;
         objInvoice_M.HDon.DLHDon.TTChung.MSTTCGP = '1201496252'; //webcashgenuwin.com taxcode
 
+        objInvoice_M.HDon.DLHDon.TTChung.TTKhac = {};
+        objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin = [];
+        if (invoices[i].hasOwnProperty('attr01')) {
+          objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin.push({
+            TTruong: 'PortalLink',
+            KDLieu: 'string',
+            DLieu: invoices[i].attr01,
+          });
+        }
+        if (invoices[i].hasOwnProperty('attr02')) {
+          objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin.push({
+            TTruong: 'Fkey',
+            KDLieu: 'string',
+            DLieu: invoices[i].attr02,
+          });
+        }
+        if (invoices[i].hasOwnProperty('attr03')) {
+          objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin.push({
+            TTruong: 'PO',
+            KDLieu: 'string',
+            DLieu: invoices[i].attr03,
+          });
+        }
+        if (invoices[i].hasOwnProperty('attr04')) {
+          objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin.push({
+            TTruong: 'attr04',
+            KDLieu: 'string',
+            DLieu: invoices[i].attr04,
+          });
+        }
+        if (invoices[i].hasOwnProperty('attr05')) {
+          objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin.push({
+            TTruong: 'attr05',
+            KDLieu: 'string',
+            DLieu: invoices[i].attr05,
+          });
+        }
+        if (invoices[i].hasOwnProperty('attr06')) {
+          objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin.push({
+            TTruong: 'attr06',
+            KDLieu: 'string',
+            DLieu: invoices[i].attr06,
+          });
+        }
+        if (invoices[i].hasOwnProperty('attr07')) {
+          objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin.push({
+            TTruong: 'attr07',
+            KDLieu: 'string',
+            DLieu: invoices[i].attr07,
+          });
+        }
+        if (invoices[i].hasOwnProperty('attr08')) {
+          objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin.push({
+            TTruong: 'attr08',
+            KDLieu: 'string',
+            DLieu: invoices[i].attr08,
+          });
+        }
+        if (invoices[i].hasOwnProperty('attr09')) {
+          objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin.push({
+            TTruong: 'attr09',
+            KDLieu: 'string',
+            DLieu: invoices[i].attr09,
+          });
+        }
+        if (invoices[i].hasOwnProperty('attr10')) {
+          objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin.push({
+            TTruong: 'attr10',
+            KDLieu: 'string',
+            DLieu: invoices[i].attr10,
+          });
+        }
+
         objInvoice_M.HDon.DLHDon.TTChung.TTHDLQuan = [];
         // console.log("invoices[i].invoice_feature  " ,invoices[i].invoice_feature)
         if (invoices[i].invoice_feature != 0 && invoices[i].invoice_feature != null) {

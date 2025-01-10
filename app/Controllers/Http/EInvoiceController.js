@@ -21431,6 +21431,8 @@ class EInvoiceController {
     let ngayTaoTB = '';
     let ngayCQTKy = '';
     let soTBao = '';
+    let tax_sign_by = '';
+    let tax_sign_datetime = '';
     let ord = '';
     try {
       const agent = {
@@ -21516,6 +21518,15 @@ class EInvoiceController {
                 xml_tax_signed = '<?xml version="1.0" encoding="UTF-8"?>' + xml_draft[1].replace('</DLieu></TDiep>', '');
                 var getLength = require('utf8-byte-length');
                 xml_length = getLength(xml_tax_signed);
+
+                const templateSignTime = {
+                  TaxSignedBy: 'HDon/DSCKS/CQT/Signature/KeyInfo/X509Data/X509SubjectName',
+                  TaxSignedDate: 'HDon/DSCKS/CQT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
+                };
+                const signingTime = await transform(xml_tax_signed, templateSignTime);
+
+                tax_sign_by = signingTime.TaxSignedBy;
+                tax_sign_datetime = signingTime.TaxSignedDate;
 
                 maCQT = items[k].ndungTBao.maCQT;
                 maTBao = items[k].loaiTBao;

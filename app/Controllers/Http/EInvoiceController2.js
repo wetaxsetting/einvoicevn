@@ -2553,6 +2553,8 @@ class EInvoiceController2 {
         let ord = '';
         let ngayCQTKy = '';
         let soTBao = '';
+        let tax_sign_by = '';
+        let tax_sign_datetime = '';
         if (tr_code.trade_code) {
           await Request.get(urlCheck + tr_code.trade_code, {
             agent,
@@ -2633,6 +2635,15 @@ class EInvoiceController2 {
                     var getLength = require('utf8-byte-length');
                     xml_length = getLength(xml_tax_signed);
 
+                    const templateSignTime = {
+                      TaxSignedBy: 'HDon/DSCKS/CQT/Signature/KeyInfo/X509Data/X509SubjectName',
+                      TaxSignedDate: 'HDon/DSCKS/CQT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
+                    };
+                    const signingTime = await transform(xml_tax_signed, templateSignTime);
+
+                    tax_sign_by = signingTime.TaxSignedBy;
+                    tax_sign_datetime = signingTime.TaxSignedDate;
+
                     maCQT = items[k].ndungTBao.maCQT;
                     maTBao = items[k].loaiTBao;
                     tenTBao = items[k].tenTBao;
@@ -2654,6 +2665,8 @@ class EInvoiceController2 {
                       p_mccqt: maCQT,
                       p_xml_tax_signed: xml_tax_signed,
                       p_xml_length: xml_length,
+                      p_tax_sign_by: tax_sign_by,
+                      p_tax_sign_datetime: tax_sign_datetime,
                     };
 
                     //console.log('jobCheckTradeCodeNorInvoice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
@@ -2669,6 +2682,8 @@ class EInvoiceController2 {
                                       :p_mccqt,
                                       :p_xml_tax_signed,
                                       :p_xml_length,
+                                      :p_tax_sign_by,
+                                      :p_tax_sign_datetime,
                                       :p_language, 
                                       :p_crt_by, 
                                       :p_rtn_cur); 

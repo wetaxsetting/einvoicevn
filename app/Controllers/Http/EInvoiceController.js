@@ -19801,6 +19801,10 @@ class EInvoiceController {
         p_trade_code: check_data.TRADE_CODE,
       };
 
+      if (DB_CONNECTION == 'oracle') {
+        oracledb.fetchAsBuffer = [oracledb.BLOB];
+        oracledb.fetchAsString = [oracledb.CLOB];
+      }
       // console.log('jobCheckTradeCodePosInvoice param_pos  ', param_trade_code);
       const data_inv_of_trade_code = await DBService.ExecuteSQLBlob(
         `BEGIN wt_sel_einvoice_by_tradecode(
@@ -19836,8 +19840,9 @@ class EInvoiceController {
           });
         }
       }
-      //console.log('jobCheckTradeCodePosInvoice data_inv  ', JSON.stringify(data_inv));
+      console.log('jobCheckTradeCodePosInvoice data_inv  ', JSON.stringify(data_inv));
 
+      return;
       const agent = {
         Agent: {
           defaultPort: 443,

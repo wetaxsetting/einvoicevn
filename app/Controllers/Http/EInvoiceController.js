@@ -2783,6 +2783,8 @@ class EInvoiceController {
         ngayCQTKy = '',
         signTime = '',
         signBy = '';
+      let tax_sign_by = '';
+      let tax_sign_datetime = '';
       let xml_length = 0;
       for (let i = 0; i < data.length; i++) {
         data_inv.push({
@@ -2885,6 +2887,15 @@ class EInvoiceController {
                   var getLength = require('utf8-byte-length');
                   xml_length = getLength(xml_tax_signed);
 
+                  const templateSignTime = {
+                    TaxSignedBy: 'HDon/DSCKS/CQT/Signature/KeyInfo/X509Data/X509SubjectName',
+                    TaxSignedDate: 'HDon/DSCKS/CQT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
+                  };
+                  const signingTime = await transform(xml_tax_signed, templateSignTime);
+
+                  tax_sign_by = signingTime.TaxSignedBy;
+                  tax_sign_datetime = signingTime.TaxSignedDate;
+
                   maCQT = items[k].ndungTBao.maCQT;
                   maTBao = items[k].loaiTBao;
                   tenTBao = items[k].tenTBao;
@@ -2900,6 +2911,8 @@ class EInvoiceController {
                     p_mccqt: maCQT,
                     p_xml_tax_signed: xml_tax_signed,
                     p_xml_length: xml_length,
+                    p_tax_sign_by: tax_sign_by,
+                    p_tax_sign_datetime: tax_sign_datetime,
                   };
 
                   const data_update_inv = await DBService.ExecuteSQLBlob(
@@ -2913,6 +2926,8 @@ class EInvoiceController {
                                     :p_mccqt,
                                     :p_xml_tax_signed,
                                     :p_xml_length,
+                                    :p_tax_sign_by,
+                                    :p_tax_sign_datetime,
                                     :p_language, 
                                     :p_crt_by, 
                                     :p_rtn_cur); 
@@ -2973,6 +2988,8 @@ class EInvoiceController {
                                     :p_mccqt,
                                     :p_xml_tax_signed,
                                     :p_xml_length,
+                                    :p_tax_sign_by,
+                                    :p_tax_sign_datetime,
                                     :p_language, 
                                     :p_crt_by, 
                                     :p_rtn_cur); 
@@ -9878,6 +9895,8 @@ class EInvoiceController {
         let ord = '';
         let ngayCQTKy = '';
         let soTBao = '';
+        let tax_sign_by = '';
+        let tax_sign_datetime = '';
         if (tr_code.trade_code) {
           await Request.get(urlCheck + tr_code.trade_code, {
             agent,
@@ -9958,6 +9977,15 @@ class EInvoiceController {
                     var getLength = require('utf8-byte-length');
                     xml_length = getLength(xml_tax_signed);
 
+                    const templateSignTime = {
+                      TaxSignedBy: 'HDon/DSCKS/CQT/Signature/KeyInfo/X509Data/X509SubjectName',
+                      TaxSignedDate: 'HDon/DSCKS/CQT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
+                    };
+                    const signingTime = await transform(xml_tax_signed, templateSignTime);
+
+                    tax_sign_by = signingTime.TaxSignedBy;
+                    tax_sign_datetime = signingTime.TaxSignedDate;
+
                     maCQT = items[k].ndungTBao.maCQT;
                     maTBao = items[k].loaiTBao;
                     tenTBao = items[k].tenTBao;
@@ -9979,6 +10007,8 @@ class EInvoiceController {
                       p_mccqt: maCQT,
                       p_xml_tax_signed: xml_tax_signed,
                       p_xml_length: xml_length,
+                      p_tax_sign_by: tax_sign_by,
+                      p_tax_sign_datetime: tax_sign_datetime,
                     };
 
                     //console.log('jobCheckTradeCodeNorInvoice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
@@ -9994,6 +10024,8 @@ class EInvoiceController {
                                       :p_mccqt,
                                       :p_xml_tax_signed,
                                       :p_xml_length,
+                                      :p_tax_sign_by,
+                                      :p_tax_sign_datetime,
                                       :p_language, 
                                       :p_crt_by, 
                                       :p_rtn_cur); 
@@ -10026,6 +10058,8 @@ class EInvoiceController {
                       p_mccqt: '',
                       p_xml_tax_signed: '',
                       p_xml_length: '',
+                      p_tax_sign_by: '',
+                      p_tax_sign_datetime: '',
                     };
 
                     // console.log('jobCheckTradeCodeNorInvoice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
@@ -10041,6 +10075,8 @@ class EInvoiceController {
                                       :p_mccqt,
                                       :p_xml_tax_signed,
                                       :p_xml_length,
+                                      :p_tax_sign_by,
+                                      :p_tax_sign_datetime,
                                       :p_language, 
                                       :p_crt_by, 
                                       :p_rtn_cur); 
@@ -20227,6 +20263,8 @@ class EInvoiceController {
     let ngayTaoTB = '';
     let ngayCQTKy = '';
     let soTBao = '';
+    let tax_sign_by = '';
+    let tax_sign_datetime = '';
     let ord = '';
     try {
       const agent = {
@@ -20315,6 +20353,15 @@ class EInvoiceController {
                 var getLength = require('utf8-byte-length');
                 xml_length = getLength(xml_tax_signed);
 
+                const templateSignTime = {
+                  TaxSignedBy: 'HDon/DSCKS/CQT/Signature/KeyInfo/X509Data/X509SubjectName',
+                  TaxSignedDate: 'HDon/DSCKS/CQT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
+                };
+                const signingTime = await transform(xml_tax_signed, templateSignTime);
+
+                tax_sign_by = signingTime.TaxSignedBy;
+                tax_sign_datetime = signingTime.TaxSignedDate;
+
                 maCQT = items[k].ndungTBao.maCQT;
                 maTBao = items[k].loaiTBao;
                 tenTBao = items[k].tenTBao;
@@ -20330,6 +20377,8 @@ class EInvoiceController {
                   p_mccqt: maCQT,
                   p_xml_tax_signed: xml_tax_signed,
                   p_xml_length: xml_length,
+                  p_tax_sign_by: tax_sign_by,
+                  p_tax_sign_datetime: tax_sign_datetime,
                 };
 
                 //console.log('jobCheckTradeCodeNorInvoice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
@@ -20345,6 +20394,8 @@ class EInvoiceController {
                                       :p_mccqt,
                                       :p_xml_tax_signed,
                                       :p_xml_length,
+                                      :p_tax_sign_by,
+                                      :p_tax_sign_datetime,
                                       :p_language, 
                                       :p_crt_by, 
                                       :p_rtn_cur); 
@@ -20375,6 +20426,8 @@ class EInvoiceController {
                   p_mccqt: '',
                   p_xml_tax_signed: '',
                   p_xml_length: '',
+                  p_tax_sign_by: '',
+                  p_tax_sign_datetime: '',
                 };
 
                 //console.log('jobCheckTradeCodeNorInvoice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
@@ -20390,6 +20443,8 @@ class EInvoiceController {
                                       :p_mccqt,
                                       :p_xml_tax_signed,
                                       :p_xml_length,
+                                      :p_tax_sign_by,
+                                      :p_tax_sign_datetime,
                                       :p_language, 
                                       :p_crt_by, 
                                       :p_rtn_cur); 

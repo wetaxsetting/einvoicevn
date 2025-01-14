@@ -1697,7 +1697,7 @@ class ReportHelper {
         try {
           this.worksheet.mergeCells(x.row1, x.col1, x.row2, x.col2);
         } catch (ee) {
-          console.log(ee.message);
+          //console.log(ee.message);
         }
       });
     }

@@ -3041,6 +3041,8 @@ class EInvoiceController {
           data_error: data_error,
           sign_datetime: signTime,
           sign_by: signBy,
+          tax_sign_by: tax_sign_by,
+          tax_sign_datetime: tax_sign_datetime,
         });
       }
       //console.log('weTaxCheckInvoiceStatusFromTaxOffice sendMailNormailWT  ', JSON.stringify(data_inv));
@@ -10138,6 +10140,8 @@ class EInvoiceController {
           data_error: data_error,
           sign_datetime: masterInvoicePK.SIGN_DATETIME,
           sign_by: masterInvoicePK.SIGN_BY,
+          tax_sign_by: tax_sign_by,
+          tax_sign_datetime: tax_sign_datetime,
         });
       }
       // console.log('weTaxSendInvoiceToTaxOffice  rtnValue', rtnValue);

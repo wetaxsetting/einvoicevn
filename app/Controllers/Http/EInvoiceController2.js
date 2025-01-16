@@ -3287,7 +3287,7 @@ class EInvoiceController2 {
                   message: resMess,
                 };
               }
-              else if (key == 'buyer_email_cc') {
+            }else if (key == 'buyer_email_cc') {
                 if (invoice[key]) {
                   let buyer_email_cc = invoice[key].split(';');
                   console.log('buyer_email_cc ', buyer_email_cc);

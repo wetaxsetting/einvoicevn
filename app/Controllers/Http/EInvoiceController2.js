@@ -269,6 +269,8 @@ class EInvoiceController2 {
                   xml_no_sign: json_xml[0].xml,
                   xml_signed: json_xml_signed.data[0].signed_xml,
                   xml_tax_signed: data_send_tax.rtnValue[0].xml_tax_signed,
+                  tax_sign_by: data_send_tax.rtnValue[0].tax_sign_by,
+                  tax_sign_datetime: data_send_tax.rtnValue[0].tax_sign_datetime,
                 },
               ],
             };

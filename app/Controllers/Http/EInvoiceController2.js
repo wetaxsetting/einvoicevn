@@ -12,47 +12,13 @@ const API_URL = Env.get('API_URL');
 const APP_URL_LOCAL = Env.get('APP_URL_LOCAL', Env.get('APP_URL'));
 const API_URL_API = Env.get('API_URL_API', Env.get('API_URL_API'));
 const PORT = Env.get('PORT', Env.get('PORT'));
-const EINVOICE_USER = Env.get('EINVOICE_USER');
-const EINVOICE_PW = Env.get('EINVOICE_PW');
-const EINVOICE_URL_LOGIN = Env.get('EINVOICE_URL_LOGIN');
-const EINVOICE_URL_API = Env.get('EINVOICE_URL_API');
-const EINVOICE_URL_API_CHECKING = Env.get('EINVOICE_URL_API_CHECKING');
-const EINVOICE_URL_API_INFORMADJUST_SEND = Env.get('EINVOICE_URL_API_INFORMADJUST_SEND');
-const EINVOICE_URL_API_INFORMADJUST_CHECK = Env.get('EINVOICE_URL_API_INFORMADJUST_CHECK');
-const EINVOICE_URL_API_DECLARATION_SEND = Env.get('EINVOICE_URL_API_DECLARATION_SEND');
-const EINVOICE_URL_API_DECLARATION_CHECK = Env.get('EINVOICE_URL_API_DECLARATION_CHECK');
-const EINVOICE_URL_API_CONVERT = Env.get('EINVOICE_URL_API_DECLARATION_CHECK');
-const EINVOICE_URL_API_CONVERT_EINV = Env.get('EINVOICE_URL_API_CONVERT_EINV');
-const EINVOICE_URL_API_VIEW_PDF = Env.get('EINVOICE_URL_API_VIEW_PDF');
-const EINVOICE_URL_API_CONVERT_TO_XML_CLIENT = Env.get('EINVOICE_URL_API_CONVERT_TO_XML_CLIENT');
-const EINVOICE_URL_API_VIEW_XML = Env.get('EINVOICE_URL_API_VIEW_XML');
-const SMTP_SERVER = Env.get('SMTP_SERVER');
-const SMTP_PORT = Env.get('SMTP_PORT');
-const EMAIL_FROM = Env.get('EMAIL_FROM');
-const EMAIL_USER = Env.get('EMAIL_USER');
-const EMAIL_PW = Env.get('EMAIL_PW');
-const _send_from_users = eval(Env.get('send_from_users'));
 const fs = use('fs');
 const {transform, prettyPrint} = require('camaro');
 const convertXML = require('xml-js');
 const DB_CONNECTION = Env.get('DB_CONNECTION');
 const DBService = use('DBService');
 const oracledb = require('oracledb');
-// const { result_lodash } = require("lodash-es");
-const RenderJsonToExcelFile = use('App/Helpers/RenderJsonToExcelFile');
-const EiExcelHandler = use('App/Helpers/EiExcelHandler');
-const EiExcelHandlerAuto = use('App/Helpers/EiExcelHandlerAuto');
-const EiPosExcelConverter = use('App/Helpers/EiPosExcelConverter');
-const EiPosExcelHandler = use('App/Helpers/EiPosExcelHandler');
-const EiPosExcelHandlerAuto = use('App/Helpers/EiPosExcelHandlerAuto');
-const EiExcelTemplateHandler = use('App/Helpers/EiExcelTemplateHandler');
 const EiWTExcelHandlerAuto = use('App/Helpers/EiWTExcelHandlerAuto');
-const EiExcel04SS2Handler = use('App/Helpers/EiExcel04SS2Handler');
-const EiExcel04SS3Handler = use('App/Helpers/EiExcel04SS3Handler');
-const EiExcel04SSHandler = use('App/Helpers/EiExcel04SSHandler');
-const EiWTExcel04SSHandler = use('App/Helpers/EiWTExcel04SSHandler');
-const EiWTExcel04SS_BBHandler = use('App/Helpers/EiWTExcel04SS_BBHandler');
-const EiWTExcel04SS_BBRHandler = use('App/Helpers/EiWTExcel04SS_BBRHandler');
 const URL = 'http://demosign.easyca.vn:8080/api';
 const Username = 'demo_easysign';
 const Password = 'demo_easysign';
@@ -67,10 +33,6 @@ const {log, Console} = require('console');
 
 const EINVOICE_API_SEND_MAIL = 'http://sendmail.webcashvietnam.com/api/user/sendmail';
 const EINVOICE_API_SEND_MAIL_SMTP = 'http://sendmail.webcashvietnam.com/api/user/sendmailsmtp';
-// const moment = require('moment');
-// const {jar} = require('request');
-// const {lookup} = require('dns');
-// const {cloneQuiet} = require('jimp/types');
 
 // real site
 const TAX_CHECK_TRADE_CODE = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
@@ -2771,6 +2733,8 @@ class EInvoiceController2 {
           data_error: data_error,
           sign_datetime: masterInvoicePK.SIGN_DATETIME,
           sign_by: masterInvoicePK.SIGN_BY,
+          tax_sign_by: tax_sign_by,
+          tax_sign_datetime: tax_sign_datetime,
         });
       }
       //console.log('weTaxSendInvoiceToTaxOffice  rtnValue', rtnValue);
@@ -3287,23 +3251,22 @@ class EInvoiceController2 {
                   message: resMess,
                 };
               }
-              else if (key == 'buyer_email_cc') {
-                if (invoice[key]) {
-                  let buyer_email_cc = invoice[key].split(';');
-                  console.log('buyer_email_cc ', buyer_email_cc);
-                  buyer_email_cc.forEach(element => {
-                    if (!errorList[`${key}`].test(element)) {
-                      status = false;
-                      resMess = `${mess1} ${key}.`;
-                      return {
-                        status,
-                        message: resMess,
-                      };
-                    }
-                  });
-                }
+            } else if (key == 'buyer_email_cc') {
+              if (invoice[key]) {
+                let buyer_email_cc = invoice[key].split(';');
+                console.log('buyer_email_cc ', buyer_email_cc);
+                buyer_email_cc.forEach(element => {
+                  if (!errorList[`${key}`].test(element)) {
+                    status = false;
+                    resMess = `${mess1} ${key}.`;
+                    return {
+                      status,
+                      message: resMess,
+                    };
+                  }
+                });
               }
-             else if (!errorList[`${key}`].test(invoice[key])) {
+            } else if (!errorList[`${key}`].test(invoice[key])) {
               // && invoice[key]
               status = false;
               resMess = `${mess1} ${key}.`;
@@ -3315,7 +3278,6 @@ class EInvoiceController2 {
           } else {
             if (key == 'total_vat_list') {
               //console.log('key  ', key);
-
               for (const sub_vat of invoice[key]) {
                 vat_amount_vat += Number(sub_vat.sub_amt_vat);
                 vat_amout += Number(sub_vat.sub_amt);
@@ -3674,7 +3636,7 @@ class EInvoiceController2 {
                   }
                 });
               }
-            }else if (!errorList[`${key}`].test(invoice[key])) {
+            } else if (!errorList[`${key}`].test(invoice[key])) {
               status = false;
               resMess = `${mess1} ${key}.`;
               return {

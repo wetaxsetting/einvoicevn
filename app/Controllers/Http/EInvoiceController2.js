@@ -274,6 +274,7 @@ class EInvoiceController2 {
                 },
               ],
             };
+            console.log('res_data  ', res_data);
             return response.status(200).json(Utils.responseByRule({success: true, message: 'Sending invoice is successfully.', data: res_data}));
           } else {
             return response.status(409).json(Utils.responseByRule({success: false, message: 'Sending invoice to TAX is error!!'}));

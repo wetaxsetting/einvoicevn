@@ -1972,6 +1972,8 @@ class EInvoiceController2 {
               xml_no_sign: xml_no_sign,
               xml_signed: xml_content,
               xml_tax_signed: '',
+              tax_sign_by: '',
+              tax_sign_datetime: '',
             });
             if (rtnValueMaster.p_rtn_cur[0].STATUS == 'OK') {
               const invoice_detail = invoice.DLHDon.NDHDon.DSHHDVu.HHDVu;

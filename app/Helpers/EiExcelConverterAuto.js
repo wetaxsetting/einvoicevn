@@ -297,8 +297,8 @@ class EiExcelConverterAuto {
             countPerPage++;
           }
           if (page[j] > 0 && page[j + 1] == 0) {
-            totalRows = totalRows + (10 - lastPagelength);
-            extendedRows = 10 - lastPagelength;
+            totalRows = totalRows + (num_of_pages - lastPagelength);
+            extendedRows = num_of_pages - lastPagelength;
             break;
           }
         }
@@ -413,13 +413,10 @@ class EiExcelConverterAuto {
               let _midCell = '';
               let _endCell = '';
               const rowIndex = totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + (num_of_more_pages_max - num_of_more_pages) + 1;
+              const rowExtendedStart = totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + 1;
+              const rowExtendedEnd = totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + (num_of_more_pages_max - num_of_more_pages);
 
-              worksheet.mergeCells(
-                totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + 1,
-                startMergeRedundantRow,
-                totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + (num_of_more_pages_max - num_of_more_pages),
-                endMergeRedundantRow,
-              );
+              worksheet.mergeCells(rowExtendedStart, startMergeRedundantRow, rowExtendedEnd, endMergeRedundantRow);
 
               worksheet.mergeCells(rowIndex, startMergeRedundantRow, rowIndex, endMergeRedundantRow);
 
@@ -435,6 +432,28 @@ class EiExcelConverterAuto {
                 _startCell = excCols[detailCellFormat[0].startCell - 1];
                 _midCell = excCols[detailCellFormat[0].startCell];
                 _endCell = excCols[detailCellFormat[detailCellFormat.length - 1].endCell + 1];
+
+                // lấy đoạn stype none cho đoạn merge
+                for (let i = rowExtendedStart; i <= rowExtendedEnd; i++) {
+                  worksheet.getCell(`${_startCell + i}`).style.border = {
+                    left: {style: 'medium', color: {argb: 'FF0070C0'}},
+                    right: {style: 'none', color: {argb: 'FF0070C0'}},
+                    top: {style: 'none', color: {argb: 'FF0070C0'}},
+                    bottom: {style: 'none', color: {argb: 'FF0070C0'}},
+                  };
+                  worksheet.getCell(`${_midCell + i}`).style.border = {
+                    left: {style: 'none', color: {argb: 'FF0070C0'}},
+                    right: {style: 'none', color: {argb: 'FF0070C0'}},
+                    top: {style: 'none', color: {argb: 'FF0070C0'}},
+                    bottom: {style: 'none', color: {argb: 'FF0070C0'}},
+                  };
+                  worksheet.getCell(`${_endCell + i}`).style.border = {
+                    left: {style: 'none', color: {argb: 'FF0070C0'}},
+                    right: {style: 'medium', color: {argb: 'FF0070C0'}},
+                    top: {style: 'none', color: {argb: 'FF0070C0'}},
+                    bottom: {style: 'none', color: {argb: 'FF0070C0'}},
+                  };
+                }
 
                 console.log('_startCell  ', _startCell, '_midCell  ', _midCell, '_endCell  ', _endCell);
                 worksheet.getCell(`${_startCell + rowIndex}`).style.border = {
@@ -461,13 +480,6 @@ class EiExcelConverterAuto {
                 .getRow(totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + (num_of_more_pages_max - num_of_more_pages) + 1)
                 .addPageBreak();
 
-              // console.log(
-              //   'totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount)  j ',
-              //   j,
-              //   totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + (num_of_more_pages_max - num_of_more_pages) + 1,
-              // );
-
-              // logoArray.push({logoPos: totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount), logos: logos});
               logoArray.push({
                 logoPos: totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + (num_of_more_pages_max - num_of_more_pages) + 1,
                 logos: logos,
@@ -740,7 +752,7 @@ class EiExcelConverterAuto {
                   try {
                     worksheet.addImage(await exceljs.insertPathImage(cancelPath), {
                       tl: {col: startMergeRedundantRow, row: _sourceRow_2 + totalRowCount_2 - num_of_more_pages - 10},
-                      ext: {width: 705, height: 700},
+                      ext: {width: 200, height: 100},
                     });
                   } catch (error) {
                     console.log(error);
@@ -949,12 +961,46 @@ class EiExcelConverterAuto {
       for (let o = 0; o < extendedArray.length; o++) {
         let rowItem = extendedArray[o];
         worksheet.mergeCells(rowItem.loopStartRow, startMergeRedundantRow, rowItem.loopStartRow + rowItem.loop_row - 1, endMergeRedundantRow);
-        worksheet.getCell(`${sttCell + rowItem.loopStartRow}`).style.border = {
-          left: {style: 'none'},
-          bottom: {style: 'none'},
-          top: {style: 'none'},
-          right: {style: 'none'},
-        };
+
+        let _startCell = '';
+        let _midCell = '';
+        let _endCell = '';
+        for (let i = 0; i < rowItem.loop_row; i++) {
+          if (detailCellFormat[0].startCell == 1) {
+            _startCell = excCols[detailCellFormat[0].startCell];
+
+            worksheet.getCell(`${_startCell + (rowItem.loopStartRow + i)}`).style.border = {
+              left: {style: 'none', color: {argb: 'FF0070C0'}},
+              right: {style: 'none', color: {argb: 'FF0070C0'}},
+              top: {style: 'none', color: {argb: 'FF0070C0'}},
+              bottom: {style: 'none', color: {argb: 'FF0070C0'}},
+            };
+          } else {
+            _startCell = excCols[detailCellFormat[0].startCell - 1];
+            _midCell = excCols[detailCellFormat[0].startCell];
+            _endCell = excCols[detailCellFormat[detailCellFormat.length - 1].endCell + 1];
+
+            worksheet.getCell(`${_startCell + (rowItem.loopStartRow + i)}`).style.border = {
+              left: {style: 'medium', color: {argb: 'FF0070C0'}},
+              right: {style: 'none', color: {argb: 'FF0070C0'}},
+              top: {style: 'none', color: {argb: 'FF0070C0'}},
+              bottom: {style: 'none', color: {argb: 'FF0070C0'}},
+            };
+            worksheet.getCell(`${_midCell + (rowItem.loopStartRow + i)}`).style.border = {
+              left: {style: 'none', color: {argb: 'FF0070C0'}},
+              right: {style: 'none', color: {argb: 'FF0070C0'}},
+              top: {style: 'none', color: {argb: 'FF0070C0'}},
+              bottom: {style: 'none', color: {argb: 'FF0070C0'}},
+            };
+            worksheet.getCell(`${_endCell + (rowItem.loopStartRow + i)}`).style.border = {
+              left: {style: 'none', color: {argb: 'FF0070C0'}},
+              right: {style: 'medium', color: {argb: 'FF0070C0'}},
+              top: {style: 'none', color: {argb: 'FF0070C0'}},
+              bottom: {style: 'none', color: {argb: 'FF0070C0'}},
+            };
+          }
+        }
+
         /*for (let _omg = 0; _omg < rowItem.loop_row; _omg++) {
           try {
             worksheet.getCell(`${lastCell + (rowItem.loopStartRow + _omg)}`).style.border = {right: {style: 'thin'}, bottom: {style: 'thin'}};

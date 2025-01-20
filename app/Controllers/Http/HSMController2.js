@@ -80,7 +80,7 @@ class HSMController2 {
       const {user_name, password} = request.all();
 
       const token = await this.loginEasysign({user_name, password});
-      // console.log(token);
+      console.log('getCertificates ', token);
       if (!token) {
         return response.status(404).json(
           Utils.responseByRule({

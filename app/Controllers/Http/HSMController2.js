@@ -78,6 +78,7 @@ class HSMController2 {
       }
 
       const {user_name, password} = request.all();
+      console.log('getCertificates ', user_name, password);
 
       const token = await this.loginEasysign({user_name, password});
       console.log('getCertificates ', token);

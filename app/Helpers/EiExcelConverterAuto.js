@@ -751,7 +751,7 @@ class EiExcelConverterAuto {
                 } else {
                   try {
                     worksheet.addImage(await exceljs.insertPathImage(cancelPath), {
-                      tl: {col: startMergeRedundantRow, row: _sourceRow_2 + totalRowCount_2 - num_of_more_pages - 10},
+                      tl: {col: 9, row: _sourceRow_2 + totalRowCount_2 - num_of_more_pages},
                       ext: {width: 200, height: 100},
                     });
                   } catch (error) {

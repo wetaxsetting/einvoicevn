@@ -960,7 +960,11 @@ class EiExcelConverterAuto {
       console.log('extendedArray check chỗ này ++==>', extendedArray);
       for (let o = 0; o < extendedArray.length; o++) {
         let rowItem = extendedArray[o];
-        worksheet.mergeCells(rowItem.loopStartRow, startMergeRedundantRow, rowItem.loopStartRow + rowItem.loop_row - 1, endMergeRedundantRow);
+        try {
+          worksheet.mergeCells(rowItem.loopStartRow, startMergeRedundantRow, rowItem.loopStartRow + rowItem.loop_row - 1, endMergeRedundantRow);
+        } catch (error) {
+          console.log(error);
+        }
 
         let _startCell = '';
         let _midCell = '';

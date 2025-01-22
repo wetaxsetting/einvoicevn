@@ -34,6 +34,10 @@ class EiExcelHandler {
       let cancelPath = 'assets/images/einvoices_logo/Einvoice_cancel.png'; //đường dẫn của hình cancel
       let bgPath = ''; //đường dẫn của hình background
 
+      let taxSignCell = {}; //điểm bắt đầu và kết thúc trên trục X của hình dấu tick ký
+      let taxSignBoxCell = ''; //Cell bắt đầu của signBy ví dụ:"L"
+      let taxSignByCell = {}; //điểm bắt đầu và kết thúc trên trục X của signBy
+
       let _sourceRow = 0; //chiều cao tính từ đầu trang tới dòng đầu tiên của detail
       let _sourceRow_2 = 0; //chiều cao tính từ đầu trang tới dòng đầu tiên của detail
       let _sourceRow_3 = 0; //chiều cao tính từ đầu trang tới dòng đầu tiên của detail

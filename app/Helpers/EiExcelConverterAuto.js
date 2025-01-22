@@ -562,12 +562,9 @@ class EiExcelConverterAuto {
 
                 worksheet.getRow((j + 1) * (num_of_more_pages_max + headerRowCount)).addPageBreak();
 
-                //let xxx = (j) * (num_of_more_pages_max + headerRowCount) + headerRowCount + num_of_pages - leftCount
                 if (leftCount > 0) {
-                  //let tmpObj = {loop_row: leftCount, loopStartRow: totalRowCount + _sourceRow + 1};  countCheck
                   let tmpObj = {
                     loop_row: leftCount,
-                    //loopStartRow: j * (num_of_more_pages_max + headerRowCount) + headerRowCount + num_of_pages - leftCount,
                     loopStartRow: j * (num_of_more_pages_max + headerRowCount) + headerRowCount + countCheck,
                   };
                   extendedArray.push(tmpObj);
@@ -575,7 +572,6 @@ class EiExcelConverterAuto {
 
                 logoArray.push({logoPos: rowIndex, logos: logos});
               } else {
-                //for (let index = 1; index <= num_of_more_pages - pos; index++) {
                 let numHiddenRow = v_countNumberOfPages * (num_of_more_pages_max + headerRowCount);
                 for (let index = 1; index <= num_of_pages; index++) {
                   //worksheet.getRow(totalRowCount + _sourceRow + leftCount + index + 1).hidden = true;

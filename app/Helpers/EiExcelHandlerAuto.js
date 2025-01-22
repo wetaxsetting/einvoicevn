@@ -185,6 +185,8 @@ class EiExcelHandler {
 
       num_of_pages = einvoiceMasterData[0].NUM_OF_PAGE;
       num_of_more_pages = einvoiceMasterData[0].NUM_OF_MORE_PAGE;
+      num_of_more_pages_max = einvoiceMasterData[0].NUM_OF_MORE_PAGE_MAX;
+
       // console.log("this.masterDataArray ", this.masterDataArray);
 
       if (this.masterDataArray.length > 0) {

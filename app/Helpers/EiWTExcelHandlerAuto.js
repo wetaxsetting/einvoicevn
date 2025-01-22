@@ -43,7 +43,9 @@ class EiExcelHandler {
       let lastPageRowsHeight = 0;
       let companyName = '';
       let backgroundRow = 0;
-
+      let num_of_pages = 0;
+      let num_of_more_pages = 0;
+      let num_of_more_pages_max = 0;
       const einvoiceMasterData = await DBService.callProcCursor('EI_SEL_WT_EINVOICE_M_PDF', [pk], p_language, p_crt_by, _db2);
       // console.log("file: EiWTExcelHandlerAuto.js:57 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceMasterData:", einvoiceMasterData)
 
@@ -185,12 +187,20 @@ class EiExcelHandler {
       signByCell = {start: einvoiceMasterData[0].SIGN_BY_START_CELL, end: einvoiceMasterData[0].SIGN_BY_END_CELL};
       countFromEndDetailToSignBox = einvoiceMasterData[0].RANGE_DETAILS_SIGN;
 
+      taxSignCell = {start: einvoiceMasterData[0].TAX_SIGN_BY_START_CELL, end: einvoiceMasterData[0].TAX_SIGN_BY_END_CELL};
+      taxSignBoxCell = einvoiceMasterData[0].TAX_SIGN_CELL_BOX;
+      taxSignByCell = {start: einvoiceMasterData[0].TAX_SIGN_BY_START_CELL, end: einvoiceMasterData[0].TAX_SIGN_BY_END_CELL};
+
       _sourceRow = einvoiceMasterData[0].DETAILS_START_ROW; //26
       _sourceRow_2 = einvoiceMasterData[0].DETAILS_START_ROW; //26
       _sourceRow_3 = einvoiceMasterData[0].DETAILS_START_ROW; //26
 
       headerRowCount = einvoiceMasterData[0].DETAILS_START_ROW == null ? 0 : einvoiceMasterData[0].DETAILS_START_ROW;
       lastPageRowsHeight = 18;
+
+      num_of_pages = einvoiceMasterData[0].NUM_OF_PAGE;
+      num_of_more_pages = einvoiceMasterData[0].NUM_OF_MORE_PAGE;
+      num_of_more_pages_max = einvoiceMasterData[0].NUM_OF_MORE_PAGE_MAX;
 
       // console.log("this.masterDataArray ", this.masterDataArray);
 
@@ -223,6 +233,12 @@ class EiExcelHandler {
           backgroundRow,
           backgroundWidth,
           backgroundHeight,
+          num_of_pages,
+          num_of_more_pages,
+          num_of_more_pages_max,
+          taxSignCell,
+          taxSignBoxCell,
+          taxSignByCell,
         );
       }
 

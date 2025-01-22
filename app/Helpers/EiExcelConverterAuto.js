@@ -109,6 +109,9 @@ class EiExcelConverterAuto {
       let startMergeRedundantRow = detailCellFormat[0].startCell;
       let endMergeRedundantRow = detailCellFormat[detailCellFormat.length - 1].endCell;
       let convertStr = '(HÓA ĐƠN CHUYỂN ĐỔI TỪ HÓA ĐƠN ĐIỆN TỬ)';
+      let cell_of_page = '';
+      let number_of_page = '';
+
       detailCellFormat.forEach(e => {
         if (e.cellType == 2) {
           sttCell = excCols[e.startCell];
@@ -119,8 +122,8 @@ class EiExcelConverterAuto {
       });
 
       for (let i = 0; i < 99; i++) {
-        console.log('pagae ', page);
-        console.log('pagae ', i);
+        //console.log('pagae ', page);
+        //console.log('pagae ', i);
 
         count_col_index = 0;
         total_countLenght = 0;
@@ -131,7 +134,7 @@ class EiExcelConverterAuto {
           } else {
             total_countLenght += 1;
           }
-          console.log('total_countLenght  ', total_countLenght);
+          //console.log('total_countLenght  ', total_countLenght);
           if (count_col == v_count - 1) {
             if (total_countLenght > num_of_pages) {
               page[i] = count_col_index;
@@ -169,10 +172,24 @@ class EiExcelConverterAuto {
         }
       }
 
+      let data_of_page = [];
+      let total_number_of_page = 0;
       for (let i = 0; i < page.length; i++) {
+        total_number_of_page++;
         if (page[i] > 0) {
           v_countNumberOfPages++;
+          /*data_of_page.push({PAGE: 'Trang ' + (i + 1) + '/' + total_number_of_page, NUM: i});
+          if (i == 0) {
+            data_of_page.push({PAGE: 'Trang ' + (i + 1) + '/' + total_number_of_page, NUM: i});
+          } else {
+            data_of_page.push({PAGE: 'Trang tiếp theo trang trước- Trang ' + (i + 1), NUM: i});
+          }
+          */
         }
+      }
+
+      for (let i = 0; i < v_countNumberOfPages; i++) {
+        data_of_page.push({PAGE: 'Trang ' + (i + 1) + '/' + v_countNumberOfPages, NUM: i});
       }
       //END-this part calculate the number of pages base on the data.
 
@@ -198,6 +215,9 @@ class EiExcelConverterAuto {
                 //console.log(e.Cell+"+"+e.Info[0])
                 break;
               case 'page':
+                cell_of_page = this.extractLetters(e.Cell);
+                number_of_page = this.extractAllDigits(e.Cell);
+                //console.log('cell_of_page  ', cell_of_page);
                 if (v_countNumberOfPages <= 1) {
                   worksheet.getCell(`${e.Cell}`).value = ``;
                 }
@@ -383,6 +403,12 @@ class EiExcelConverterAuto {
         for (let j = 0; j < page.length; j++) {
           const e = parseInt(page[j]);
           let countCheck = 0;
+
+          if (page[j] > 0) {
+            let number_of_page_index = Number(number_of_page) + j * (num_of_more_pages_max + headerRowCount);
+            worksheet.getCell(`${cell_of_page + number_of_page_index}`).value = data_of_page[j].PAGE;
+          }
+
           if (e > 0) {
             for (let i = 0; i < e; i++) {
               const _e = einvoiceDetailData[i + count];
@@ -403,7 +429,7 @@ class EiExcelConverterAuto {
                 let tmpObj = {loop_row: num_of_more_pages_max - totalRowCount, loopStartRow: totalRowCount + _sourceRow + 1};
                 extendedArray.push(tmpObj);
               }
-              console.log(
+              /*console.log(
                 'totalRowCount  ',
                 totalRowCount,
                 '_sourceRow  ',
@@ -414,7 +440,7 @@ class EiExcelConverterAuto {
                 num_of_more_pages_max,
                 'num_of_more_pages',
                 num_of_more_pages,
-              );
+              );*/
               _count_ = totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + (num_of_more_pages_max - num_of_more_pages) + 1; //
               totalRowCount += num_of_more_pages - totalRowCount;
 
@@ -440,7 +466,7 @@ class EiExcelConverterAuto {
                 console.log('mergeCells 0 err ', error);
               }*/
               try {
-                console.log('rowIndex ', rowIndex, 'startMergeRedundantRow ', startMergeRedundantRow, 'endMergeRedundantRow ', endMergeRedundantRow);
+                // console.log('rowIndex ', rowIndex, 'startMergeRedundantRow ', startMergeRedundantRow, 'endMergeRedundantRow ', endMergeRedundantRow);
                 worksheet.mergeCells(rowIndex, startMergeRedundantRow, rowIndex, endMergeRedundantRow);
               } catch (error) {
                 console.log('mergeCells 0 dòng cuối cùng err ', error);
@@ -585,14 +611,6 @@ class EiExcelConverterAuto {
                 totalRowCount += leftCount;
               }
             }
-            let data = [];
-            for (let _u = 0; _u < v_countNumberOfPages; _u++) {
-              if (_u == 0) {
-                data.push({PAGE: 'Trang ' + (_u + 1)});
-              } else {
-                data.push({PAGE: 'Trang tiếp theo trang trước- Trang ' + (_u + 1)});
-              }
-            }
 
             let _startRow = 1;
             let _startcol = 1;
@@ -631,7 +649,7 @@ class EiExcelConverterAuto {
             });
 
             //console.log('data.length  ', data, data.length);
-            for (let idx = 0; idx < data.length - 1; idx++) {
+            for (let idx = 0; idx < data_of_page.length - 1; idx++) {
               _lstMerge.forEach(q => {
                 const startMergeCell = q['range'].split(':').shift();
                 const endMergeCell = q['range'].split(':').pop();
@@ -649,7 +667,7 @@ class EiExcelConverterAuto {
             }
 
             _lstNewMerge.sort((a, b) => parseFloat(a.row1) - parseFloat(b.row1));
-            exceljs.insertRange3(`A1:V${_count_}`, data, true, false);
+            exceljs.insertRange3(`A1:V${_count_}`, data_of_page, true, false);
             _lstNewMerge.forEach(x => {
               try {
                 const startMergeCell = x['range'].split(':').shift();
@@ -859,11 +877,11 @@ class EiExcelConverterAuto {
                       left: {style: 'thin'},
                     };
                   });
-                  for (let u = 0; u < item_name_lt; u++) {
+                  /*for (let u = 0; u < item_name_lt; u++) {
                     //worksheet.getCell(`${nmCell+(_sourceRow+totalRowCount+u}`).style.border = {left: {style:'thin'}};
                     //console.log(`${nmCell+(_sourceRow+totalRowCount+u)}`)
                   }
-                  console.log('nmCell  ', nmCell, '(_sourceRow + totalRowCount + item_name_lt - 1) ', _sourceRow + totalRowCount + item_name_lt - 1);
+                  console.log('nmCell  ', nmCell, '(_sourceRow + totalRowCount + item_name_lt - 1) ', _sourceRow + totalRowCount + item_name_lt - 1);*/
                   worksheet.getCell(`${nmCell + (_sourceRow + totalRowCount + item_name_lt - 1)}`).style.border = {
                     bottom: {style: detailCellFormat[0].cellBorder},
                   };
@@ -1265,6 +1283,18 @@ class EiExcelConverterAuto {
   countLineBreaks = str => {
     const matches = str.match(/\r?\n/g); // Tìm tất cả các ký tự xuống dòng (\n hoặc \r\n)
     return matches ? matches.length : 0;
+  };
+
+  getLetters = str => {
+    return str.match(/[a-zA-Z]/g) || []; // Tìm các chữ, nếu không có trả về mảng rỗng
+  };
+
+  extractLetters = str => {
+    return str.replace(/[^a-zA-Z]/g, ''); // Loại bỏ mọi thứ không phải chữ
+  };
+
+  extractAllDigits = str => {
+    return str.replace(/\D/g, ''); // Loại bỏ tất cả ký tự không phải số
   };
 }
 module.exports = EiExcelConverterAuto;

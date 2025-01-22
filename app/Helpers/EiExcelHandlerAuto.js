@@ -52,6 +52,7 @@ class EiExcelHandler {
       let backgroundRow = 0;
       let num_of_pages = 0;
       let num_of_more_pages = 0;
+      let num_of_more_pages_max = 0;
 
       const einvoiceMasterData = await DBService.callProcCursor('ei_sel_einvoice_m_pdf', [tradecode], p_language, p_crt_by, _db2);
 
@@ -217,6 +218,7 @@ class EiExcelHandler {
           backgroundHeight,
           num_of_pages,
           num_of_more_pages,
+          num_of_more_pages_max,
           taxSignCell,
           taxSignBoxCell,
           taxSignByCell,

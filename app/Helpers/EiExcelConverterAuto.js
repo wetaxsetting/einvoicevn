@@ -34,6 +34,7 @@ class EiExcelConverterAuto {
     backgroundHeight,
     l_num_of_pages,
     l_num_of_more_pages,
+    l_num_of_more_pages_max,
     taxSignCell,
     taxSignBoxCell,
     taxSignByCell,
@@ -70,7 +71,7 @@ class EiExcelConverterAuto {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       ];
-      const num_of_more_pages_max = 20; //giới hạn tối đa quy định trong 1 trang nhằm tạo ra trang đẹp
+      const num_of_more_pages_max = l_num_of_more_pages_max || 20; //giới hạn tối đa quy định trong 1 trang nhằm tạo ra trang đẹp
       const num_of_more_pages = l_num_of_more_pages || 20; //giới hạn row một trang
       const num_of_pages = l_num_of_pages || 10; //giới hạn row trang cuối
       let v_countNumberOfPages = 0;

@@ -573,9 +573,9 @@ class EiExcelConverterAuto {
 
                 logoArray.push({logoPos: rowIndex, logos: logos});
               } else {
-                //let numHiddenRow = v_countNumberOfPages * (num_of_more_pages_max + headerRowCount);
-                let numHiddenRow = v_countNumberOfPages * (20 + headerRowCount); // phần này lấy ra số dòng ẩn nhưng 20 dòng mới hơp lý
-                for (let index = 1; index <= num_of_pages + (num_of_more_pages_max - 20); index++) {
+                let numHiddenRow = v_countNumberOfPages * (num_of_more_pages_max + headerRowCount);
+                //let numHiddenRow = v_countNumberOfPages * (20 + headerRowCount); // phần này lấy ra số dòng ẩn nhưng 20 dòng mới hơp lý
+                for (let index = 1; index <= num_of_pages + (num_of_more_pages_max - num_of_more_pages); index++) {
                   //worksheet.getRow(totalRowCount + _sourceRow + leftCount + index + 1).hidden = true;
                   worksheet.getRow(numHiddenRow - index).hidden = true;
                 }

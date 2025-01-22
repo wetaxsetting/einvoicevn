@@ -173,9 +173,7 @@ class EiExcelConverterAuto {
       }
 
       let data_of_page = [];
-      let total_number_of_page = 0;
       for (let i = 0; i < page.length; i++) {
-        total_number_of_page++;
         if (page[i] > 0) {
           v_countNumberOfPages++;
           /*data_of_page.push({PAGE: 'Trang ' + (i + 1) + '/' + total_number_of_page, NUM: i});
@@ -191,6 +189,7 @@ class EiExcelConverterAuto {
       for (let i = 0; i < v_countNumberOfPages; i++) {
         data_of_page.push({PAGE: 'Trang ' + (i + 1) + '/' + v_countNumberOfPages, NUM: i});
       }
+      console.log('data_of_page  ', data_of_page);
       //END-this part calculate the number of pages base on the data.
 
       //this part set the master data to each cell. that 100% base on template.
@@ -403,8 +402,8 @@ class EiExcelConverterAuto {
         for (let j = 0; j < page.length; j++) {
           const e = parseInt(page[j]);
           let countCheck = 0;
-
-          if (page[j] > 0) {
+          console.log('cell_of_page  ', cell_of_page);
+          if (page[j] > 0 && cell_of_page) {
             let number_of_page_index = Number(number_of_page) + j * (num_of_more_pages_max + headerRowCount);
             worksheet.getCell(`${cell_of_page + number_of_page_index}`).value = data_of_page[j].PAGE;
           }

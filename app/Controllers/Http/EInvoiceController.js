@@ -14661,12 +14661,19 @@ class EInvoiceController {
     }
   }
 
-  async sendMailNormalEinvoiceToCustomer(tei_wt_sale_bill_pk, lookup_code, data_invoice, p_language, p_crt_by) {
+  async sendMailNormalEinvoiceToCustomer(tei_wt_sale_bill_pk, tei_ei_note_m_pk, lookup_code, data_invoice, p_language, p_crt_by) {
     try {
       //console.log("sSSSS ", tei_wt_sale_bill_pk);
-      let EiExcels = new EiWTExcelHandlerAuto();
-      let url_pdf = await EiExcels.getEinvoice(tei_wt_sale_bill_pk, p_language, p_crt_by);
+
       //console.log("base64PDf  ", url_pdf);
+      let url_pdf = '';
+      if (tei_ei_note_m_pk) {
+        let EiExcels = new EiExcelHandlerAuto();
+        url_pdf = await EiExcels.getEinvoice(tei_ei_note_m_pk, p_language, p_crt_by);
+      } else {
+        let EiExcels = new EiWTExcelHandlerAuto();
+        url_pdf = await EiExcels.getEinvoice(tei_wt_sale_bill_pk, p_language, p_crt_by);
+      }
 
       let re_url_xml = await Request.get(
         APP_URL_LOCAL + '/api/dso/getfiledbtoken?pk=' + tei_wt_sale_bill_pk + '&proc=' + 'WT_SEL_XML_NOR_EINVOICE' + '&token=',
@@ -19406,6 +19413,7 @@ class EInvoiceController {
 
             const {res_send_mail, subject, body} = await this.sendMailNormalEinvoiceToCustomer(
               rtnValue_inv.p_rtn_cur[0].PK, //data.req_ep_key,
+              rtnValue_inv.p_rtn_cur[0].TEI_EINVOICE_M_PK,
               rtnValue_inv.p_rtn_cur[0].LOOKUP_CD,
               invoice,
               p_language,

@@ -109,9 +109,6 @@ class EiExcelConverterAuto {
       let endMergeRedundantRow = detailCellFormat[detailCellFormat.length - 1].endCell;
       let convertStr = '(HÓA ĐƠN CHUYỂN ĐỔI TỪ HÓA ĐƠN ĐIỆN TỬ)';
       detailCellFormat.forEach(e => {
-        //console.log('detailCellFormat  startCell ', e);
-        //console.log('detailCellFormat  excCols[e.startCell] ', excCols[e.startCell]);
-
         if (e.cellType == 2) {
           sttCell = excCols[e.startCell];
         }
@@ -121,17 +118,19 @@ class EiExcelConverterAuto {
       });
 
       for (let i = 0; i < 99; i++) {
+        console.log('pagae ', page);
+        console.log('pagae ', i);
+
         count_col_index = 0;
         total_countLenght = 0;
         for (let j = count_col; j < v_count; j++) {
           let count_row = this.countlength(einvoiceDetailData[j]['ITEM_NAME']);
-          //console.log('ITEM_NAME ', einvoiceDetailData[j]['ITEM_NAME'], 'j ', j, 'count_row ', count_row);
           if (count_row > 0) {
             total_countLenght += count_row;
           } else {
             total_countLenght += 1;
           }
-          //console.log('total_countLenght ', total_countLenght, ' page ', JSON.stringify(page));
+          console.log('total_countLenght  ', total_countLenght);
           if (count_col == v_count - 1) {
             if (total_countLenght > num_of_pages) {
               page[i] = count_col_index;
@@ -281,8 +280,6 @@ class EiExcelConverterAuto {
       }
 
       if (v_countNumberOfPages > 1) {
-        /*totalRows = num_of_more_pages + (v_countNumberOfPages - 1) * (num_of_more_pages + headerRowCount - 1) + (v_countNumberOfPages - 1);
-        extendedRows = num_of_more_pages - page[v_countNumberOfPages - 1];*/
         totalRows = num_of_more_pages_max + (v_countNumberOfPages - 1) * (num_of_more_pages_max + headerRowCount - 1) + (v_countNumberOfPages - 1);
         extendedRows = num_of_more_pages_max - page[v_countNumberOfPages - 1];
       } else {
@@ -402,10 +399,21 @@ class EiExcelConverterAuto {
             if (j == 0) {
               _sourceRow = _sourceRow - 1;
               if (num_of_more_pages - totalRowCount > 0) {
-                let tmpObj = {loop_row: num_of_more_pages - totalRowCount, loopStartRow: totalRowCount + _sourceRow + 1};
+                let tmpObj = {loop_row: num_of_more_pages_max - totalRowCount, loopStartRow: totalRowCount + _sourceRow + 1};
                 extendedArray.push(tmpObj);
               }
-
+              console.log(
+                'totalRowCount  ',
+                totalRowCount,
+                '_sourceRow  ',
+                _sourceRow,
+                'totalRowCount  ',
+                totalRowCount,
+                'num_of_more_pages_max',
+                num_of_more_pages_max,
+                'num_of_more_pages',
+                num_of_more_pages,
+              );
               _count_ = totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + (num_of_more_pages_max - num_of_more_pages) + 1; //
               totalRowCount += num_of_more_pages - totalRowCount;
 
@@ -415,10 +423,27 @@ class EiExcelConverterAuto {
               const rowIndex = totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + (num_of_more_pages_max - num_of_more_pages) + 1;
               const rowExtendedStart = totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + 1;
               const rowExtendedEnd = totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + (num_of_more_pages_max - num_of_more_pages);
-
-              worksheet.mergeCells(rowExtendedStart, startMergeRedundantRow, rowExtendedEnd, endMergeRedundantRow);
-
-              worksheet.mergeCells(rowIndex, startMergeRedundantRow, rowIndex, endMergeRedundantRow);
+              /*try {
+                console.log(
+                  'rowExtendedStart ',
+                  rowExtendedStart,
+                  'startMergeRedundantRow ',
+                  startMergeRedundantRow,
+                  'rowExtendedEnd ',
+                  rowExtendedEnd,
+                  'endMergeRedundantRow ',
+                  endMergeRedundantRow,
+                );
+                worksheet.mergeCells(rowExtendedStart, startMergeRedundantRow, rowExtendedEnd, endMergeRedundantRow);
+              } catch (error) {
+                console.log('mergeCells 0 err ', error);
+              }*/
+              try {
+                console.log('rowIndex ', rowIndex, 'startMergeRedundantRow ', startMergeRedundantRow, 'endMergeRedundantRow ', endMergeRedundantRow);
+                worksheet.mergeCells(rowIndex, startMergeRedundantRow, rowIndex, endMergeRedundantRow);
+              } catch (error) {
+                console.log('mergeCells 0 dòng cuối cùng err ', error);
+              }
 
               if (detailCellFormat[0].startCell == 1) {
                 _startCell = excCols[detailCellFormat[0].startCell];
@@ -487,7 +512,7 @@ class EiExcelConverterAuto {
             } else {
               let leftCount = 0;
               if (page[j + 1] != 0) {
-                leftCount = num_of_more_pages - countCheck;
+                leftCount = num_of_more_pages_max - countCheck;
 
                 let _startCell = '';
                 let _midCell = '';
@@ -495,7 +520,6 @@ class EiExcelConverterAuto {
                 const rowIndex = (j + 1) * (num_of_more_pages_max + headerRowCount);
 
                 console.log('startMergeRedundantRow ', startMergeRedundantRow, 'endMergeRedundantRow ', endMergeRedundantRow, 'rowIndex ', rowIndex);
-                // console.log('page ', j + 1);
                 try {
                   worksheet.mergeCells(rowIndex, startMergeRedundantRow, rowIndex, endMergeRedundantRow);
                 } catch (error) {
@@ -540,10 +564,11 @@ class EiExcelConverterAuto {
 
                 //let xxx = (j) * (num_of_more_pages_max + headerRowCount) + headerRowCount + num_of_pages - leftCount
                 if (leftCount > 0) {
-                  //let tmpObj = {loop_row: leftCount, loopStartRow: totalRowCount + _sourceRow + 1};
+                  //let tmpObj = {loop_row: leftCount, loopStartRow: totalRowCount + _sourceRow + 1};  countCheck
                   let tmpObj = {
                     loop_row: leftCount,
-                    loopStartRow: j * (num_of_more_pages_max + headerRowCount) + headerRowCount + num_of_pages - leftCount,
+                    //loopStartRow: j * (num_of_more_pages_max + headerRowCount) + headerRowCount + num_of_pages - leftCount,
+                    loopStartRow: j * (num_of_more_pages_max + headerRowCount) + headerRowCount + countCheck,
                   };
                   extendedArray.push(tmpObj);
                 }
@@ -627,10 +652,8 @@ class EiExcelConverterAuto {
             _lstNewMerge.sort((a, b) => parseFloat(a.row1) - parseFloat(b.row1));
             exceljs.insertRange3(`A1:V${_count_}`, data, true, false);
             _lstNewMerge.forEach(x => {
-              //console.log(x);
               try {
                 const startMergeCell = x['range'].split(':').shift();
-                //console.log('startMergeCell  ', startMergeCell);
                 worksheet.unMergeCells(startMergeCell);
               } catch (ee) {
                 //console.log(ee.message);
@@ -658,14 +681,13 @@ class EiExcelConverterAuto {
           }
           if (e > 0) {
             for (let i = 0; i < e; i++) {
+              //console.log('i  ', i);
               const _e = einvoiceDetailData[i + count_2];
-              //console.log('_e  ', _e);
-
               try {
                 const _item_name = _e['ITEM_NAME'];
                 this.addValueToCellsWithItemName(worksheet, _sourceRow_2 + totalRowCount_2, _e, _item_name, detailCellFormat, excCols);
-                let item_name_lt = this.countlength(_e['ITEM_NAME']);
-
+                let item_name_lt = this.countlength(_item_name);
+                //console.log('item_name_lt  ', item_name_lt);
                 if (item_name_lt == 1) {
                   detailCellFormat.forEach((e, i) => {
                     try {
@@ -682,23 +704,20 @@ class EiExcelConverterAuto {
                     left: {style: 'thin'},
                   };
                 } else {
+                  // console.log(
+                  //   '_sourceRow_2 + totalRowCount_2  ',
+                  //   _sourceRow_2 + totalRowCount_2,
+                  //   '_sourceRow_2 + totalRowCount_2 + item_name_lt - 1 ',
+                  //   _sourceRow_2 + totalRowCount_2 + item_name_lt - 1,
+                  // );
                   detailCellFormat.forEach(e => {
-                    if (e.cellType == 1 || e.cellType == 3 || e.cellType == 2) {
-                      worksheet.mergeCells(_sourceRow_2 + totalRowCount_2, e.startCell, _sourceRow_2 + totalRowCount_2 + item_name_lt - 1, e.endCell);
-                      worksheet.getCell(`${excCols[e.startCell] + (_sourceRow_2 + totalRowCount_2)}`).style.border = {
-                        bottom: {style: detailCellFormat[i].cellBorder},
-                        left: {style: 'thin'},
-                      };
-                    }
+                    //console.log('e  ', e);
+                    worksheet.mergeCells(_sourceRow_2 + totalRowCount_2, e.startCell, _sourceRow_2 + totalRowCount_2 + item_name_lt - 1, e.endCell);
+                    worksheet.getCell(`${excCols[e.startCell] + (_sourceRow_2 + totalRowCount_2)}`).style.border = {
+                      bottom: {style: e.cellBorder},
+                      left: {style: 'thin'},
+                    };
                   });
-                  /*worksheet.getCell(`${nmCell + (_sourceRow_2 + totalRowCount_2 + item_name_lt - 1)}`).style.border = {
-                    bottom: {style: detailCellFormat[0].cellBorder},
-                  };
-                  worksheet.getCell(`${sttCell + (_sourceRow_2 + totalRowCount_2 + item_name_lt - 1)}`).style.border = {
-                    left: {style: 'thin'},
-                    right: {style: 'thin'},
-                    bottom: {style: detailCellFormat[0].cellBorder},
-                  };*/
                 }
 
                 totalRowCount_2 += item_name_lt;
@@ -711,7 +730,6 @@ class EiExcelConverterAuto {
             }
             if (j == 0) {
               totalRowCount_2 += num_of_more_pages - totalRowCount_2;
-              //console.log('totalRowCount_2  ' + totalRowCount_2);
               if (cancelYn == 'Y') {
                 try {
                   worksheet.addImage(await exceljs.insertPathImage(cancelPath), {
@@ -1289,7 +1307,13 @@ class EiExcelConverterAuto {
   countlength = s => {
     let rangeWord = 40;
     let result = 0;
-    result = Math.ceil(s.length / rangeWord);
+    //console.log('countlength ', s);
+    if (this.hasLineBreak(s)) {
+      result = this.countLineBreaks(s) + 1;
+    } else {
+      result = Math.ceil(s.length / rangeWord);
+    }
+    //console.log('countlength result ', result);
     return result;
   };
   // isVietnameseUpperCase(str) {
@@ -1302,5 +1326,14 @@ class EiExcelConverterAuto {
     const normalizedStr = str.normalize('NFC');
     return normalizedStr === normalizedStr.toUpperCase();
   }
+
+  hasLineBreak = str => {
+    return str.includes('\n') || str.includes('\r');
+  };
+
+  countLineBreaks = str => {
+    const matches = str.match(/\r?\n/g); // Tìm tất cả các ký tự xuống dòng (\n hoặc \r\n)
+    return matches ? matches.length : 0;
+  };
 }
 module.exports = EiExcelConverterAuto;

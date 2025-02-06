@@ -1093,7 +1093,7 @@ export default {
     async onPreview() {
       if(this.tei_einvoice_m_pk_row != "")
       {
-        if( Number(this.selected_company) < 943 )
+        if( Number(this.selected_company) < 943 &&  Number(this.selected_company) != 201  &&  Number(this.selected_company) != 462)
         {
           let res_url = await this.$axios.$post("/einvoice/view-pdf", {
               responseType: "json",

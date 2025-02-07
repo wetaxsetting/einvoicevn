@@ -1620,7 +1620,7 @@ class ReportHelper {
     }
     row.commit();
   }
-  insertRange3(rangeTemplate, datas, isReplace = false, isMerges = true) {
+  insertRange3(rangeTemplate, datas, isReplace = false, isMerges = true, endRowDontChange) {
     const sheetModel = this.worksheet.model;
 
     const startCell = rangeTemplate.split(':').shift();
@@ -1643,13 +1643,25 @@ class ReportHelper {
       mergeLength = lstMerge.length;
 
       for (let idx = 0; idx < datas.length - 1; idx++) {
-        for (let i = 0; i < rowCount; i++) {
-          let target = rowCount * (1 + idx) + startRow + i;
-          let src = startRow + rowCount * idx + i;
-          if (isReplace) {
-            this.copyRow(target, src, 'c', isReplace);
-          } else {
-            this.copyRow(target, src, 'c');
+        if (idx == datas.length - 2) {
+          for (let i = 0; i < rowCount - 1; i++) {
+            let target = rowCount * (1 + idx) + startRow + i;
+            let src = startRow + rowCount * idx + i;
+            if (isReplace) {
+              this.copyRow(target, src, 'c', isReplace);
+            } else {
+              this.copyRow(target, src, 'c');
+            }
+          }
+        } else {
+          for (let i = 0; i < rowCount; i++) {
+            let target = rowCount * (1 + idx) + startRow + i;
+            let src = startRow + rowCount * idx + i;
+            if (isReplace) {
+              this.copyRow(target, src, 'c', isReplace);
+            } else {
+              this.copyRow(target, src, 'c');
+            }
           }
         }
       }
@@ -1666,7 +1678,7 @@ class ReportHelper {
           const _row2 = Number(endMergeCell.match(this.regexCell)[2]); //regex: string - character - number
           const _col2 = this.excelCols.findIndex(x => x == endMergeCell.match(this.regexCell)[1]); //regex: string - character - number///
           try {
-            if (_row1 >= startRow && _col1 >= startColumn && _col2 <= endColumn) {
+            if (_row1 >= startRow && _col1 >= startColumn && _col2 <= endColumn && _row1 != endRowDontChange) {
               let c1 = startMergeCell.match(this.regexCell)[1] + (_row1 + rowCount * (1 + idx));
               let c2 = endMergeCell.match(this.regexCell)[1] + (_row2 + rowCount * (1 + idx));
               lstNewMerge.push({
@@ -1683,9 +1695,9 @@ class ReportHelper {
         }
 
         //add lai style do merge cell bi mat
-        for (let _ = 0; _ < rowCount; _++) {
+        /*for (let _ = 0; _ < rowCount; _++) {
           this._copyStyle(startRow + _, rowCount * (1 + idx) + startRow + _);
-        }
+        }*/
       }
     }
     if (isMerges) {

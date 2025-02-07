@@ -25,6 +25,10 @@ class EiExcelHandler {
       let signBoxCell = ''; //Cell bắt đầu của signBy ví dụ:"L"
       let signByCell = {}; //điểm bắt đầu và kết thúc trên trục X của signBy
 
+      let taxSignCell = {}; //điểm bắt đầu và kết thúc trên trục X của hình dấu tick ký
+      let taxSignBoxCell = ''; //Cell bắt đầu của signBy ví dụ:"L"
+      let taxSignByCell = {}; //điểm bắt đầu và kết thúc trên trục X của signBy
+
       let reportPath = ''; //đường dẫn của template
       let reportSheet = ''; //tên của sheet trong template
 
@@ -45,6 +49,12 @@ class EiExcelHandler {
       let lastPageRowsHeight = 0;
       let companyName = '';
       let backgroundRow = 0;
+
+      let num_of_pages = 0;
+      let num_of_more_pages = 0;
+      let num_of_more_pages_max = 0;
+
+      let type_template = 0;
 
       const einvoiceMasterData = await DBService.callProcCursor('ei_sel_einvoice_m_pdf', [tradecode], p_language, p_crt_by, _db2);
 
@@ -195,6 +205,10 @@ class EiExcelHandler {
       signByCell = {start: einvoiceMasterData[0].SIGN_BY_START_CELL, end: einvoiceMasterData[0].SIGN_BY_END_CELL};
       countFromEndDetailToSignBox = einvoiceMasterData[0].SIGN_RANGE_DETAILS;
 
+      taxSignCell = {start: einvoiceMasterData[0].TAX_SIGN_BY_START_CELL, end: einvoiceMasterData[0].TAX_SIGN_BY_END_CELL};
+      taxSignBoxCell = einvoiceMasterData[0].TAX_SIGN_CELL_BOX;
+      taxSignByCell = {start: einvoiceMasterData[0].TAX_SIGN_BY_START_CELL, end: einvoiceMasterData[0].TAX_SIGN_BY_END_CELL};
+
       _sourceRow = einvoiceMasterData[0].DETAILS_START_ROW; //26
       _sourceRow_2 = einvoiceMasterData[0].DETAILS_START_ROW; //26
       _sourceRow_3 = einvoiceMasterData[0].DETAILS_START_ROW; //26
@@ -202,6 +216,11 @@ class EiExcelHandler {
       headerRowCount = einvoiceMasterData[0].DETAILS_START_ROW == null ? 0 : einvoiceMasterData[0].DETAILS_START_ROW;
       lastPageRowsHeight = 18;
 
+      num_of_pages = einvoiceMasterData[0].NUM_OF_PAGE;
+      num_of_more_pages = einvoiceMasterData[0].NUM_OF_MORE_PAGE;
+      num_of_more_pages_max = einvoiceMasterData[0].NUM_OF_MORE_PAGE_MAX;
+
+      type_template = einvoiceMasterData[0].TEMPLATE_CD;
       // console.log("this.masterDataArray ", this.masterDataArray);
 
       if (this.masterDataArray.length > 0) {
@@ -233,6 +252,13 @@ class EiExcelHandler {
           backgroundRow,
           backgroundWidth,
           backgroundHeight,
+          num_of_pages,
+          num_of_more_pages,
+          num_of_more_pages_max,
+          taxSignCell,
+          taxSignBoxCell,
+          taxSignByCell,
+          type_template,
         );
       }
 

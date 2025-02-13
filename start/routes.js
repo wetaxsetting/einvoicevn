@@ -229,6 +229,8 @@ Route.group(() => {
   Route.post('update-image-c-sharp', 'EInvoiceController.UpdateImage');
   Route.post('sign-invoice-c-sharp', 'EInvoiceController.SignInvoiceXML');
   Route.post('pit2xml-c-sharp', 'EInvoiceController.SignInvoiceXML');
+
+  Route.post('pit2xml-c-sharp', 'EInvoiceController.SignInvoiceXML');
 })
   .prefix('api/einvoice')
   .middleware('user');
@@ -303,6 +305,7 @@ Route.group(() => {
 // ======== clone WeTax
 Route.group(() => {
   Route.post('login', 'UserController.cloneWeTaxlogIn');
+  Route.post('get-token', 'UserController.getTokenWeTaxlogIn');
 }).prefix('api/wtx/pa/v1/auth');
 
 // Public api

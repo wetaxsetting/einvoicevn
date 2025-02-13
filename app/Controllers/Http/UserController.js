@@ -11,8 +11,10 @@ const UserRepo = use('UserRepo');
 const CryptoJS = use('crypto-js');
 const AppName = Env.get('APP_NAME');
 const svgCaptcha = use('svg-captcha');
+const Request = use('Request');
 const REDIS_CONNECTION = Env.get('REDIS_CONNECTION', 'NO_REDIS');
 let Redis = false;
+const WETAX_API_URL = Env.get('WETAX_API_URL');
 if (REDIS_CONNECTION != 'NO_REDIS') {
   Redis = use('Redis');
 } else {
@@ -164,6 +166,38 @@ class UserController {
         Utils.Logger({LVL: 'info', MODULE: 'UserController', FUNC: 'logIn', CONTENT: `Login ERROR. IP:${ip}`, CRT_BY: user_id});
         // return response.send(Utils.response(false, user.STATUS, null));
         return response.status(403).json(Utils.weTaxResponse({code: 403, message: user.STATUS}));
+      }
+      // return response.send(Utils.response(false, "User not found!", null));
+      return response.status(404).json(Utils.weTaxResponse({code: 404, message: 'User not found'}));
+    } catch (e) {
+      Utils.Logger({LVL: 'error', MODULE: 'UserController', FUNC: 'cloneWeTaxlogIn', CONTENT: `${e.message}. IP:${ip}`});
+      // return response.send(Utils.response(false, e.message, null));
+      return response.status(409).json(Utils.weTaxResponse({code: 409, message: e.message}));
+    }
+  }
+
+  async getTokenWeTaxlogIn({request, response, auth}) {
+    let ip = request.header('x-real-ip');
+    try {
+      if (ip == undefined) {
+        ip = request.ip();
+      }
+      const {user_id, password} = request.all();
+
+      const res = await Request.post(`${WETAX_API_URL}/api/wtx/pa/v1/auth/login`, {
+        user_id: 'webcashvietnam_test_api@gmail.com',
+        password: '12345679Aa',
+      });
+      //console.log('getTokenWeTaxlogIn', res);
+
+      if (res.data) {
+        return response.send(
+          Utils.weTaxResponse({
+            code: 200,
+            message: 'Log In Successfully!',
+            data: res.data.data,
+          }),
+        );
       }
       // return response.send(Utils.response(false, "User not found!", null));
       return response.status(404).json(Utils.weTaxResponse({code: 404, message: 'User not found'}));

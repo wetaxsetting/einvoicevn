@@ -4382,7 +4382,6 @@ class EInvoiceController {
                 soTB = items[k].ndungTBao.tbaoTNhanSSotDoc.soTBao;
                 ngayTB = items[k].ndungTBao.ngayTBao;
                 thoiGianCQTKy = items[k].ndungTBao.tbaoTNhanSSotDoc.ngayCQTKy;
-
                 for (const invoice of items[k].ndungTBao.tbaoTNhanSSotDoc.dsachHDonLoi) {
                   console.log('weTaxCheckInformAdjustToTaxOffice invoice  ', invoice);
                   ndungTBao.push({
@@ -4395,6 +4394,7 @@ class EInvoiceController {
                     dsachLoi: invoice.dsachLoi,
                     tax_sign_datetime: tax_sign_datetime,
                     tax_sign_by: tax_sign_by,
+                    cqt_doc_no: soTB,
                   });
 
                   //console.log("invoice.dsachLoi  ", invoice.dsachLoi)

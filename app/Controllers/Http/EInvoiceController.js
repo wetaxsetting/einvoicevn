@@ -18986,7 +18986,7 @@ class EInvoiceController {
         p_khhdclquan: data_invoice.serial_no_relative,
         p_shdclquan: data_invoice.invoice_no_relative,
         p_nlhdclquan: data_invoice.invoice_type_relative,
-        p_gchu: this.encoreHtmlCode(data_invoice.description_relative),
+        p_gchu: this.encoreHtmlCode(data_invoice.description),
         p_customfield1: this.encoreHtmlCode(data_invoice.attr01) || '',
         p_customfield2: this.encoreHtmlCode(data_invoice.attr02) || '',
         p_customfield3: this.encoreHtmlCode(data_invoice.attr03) || '',

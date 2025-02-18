@@ -201,7 +201,7 @@ Route.group(() => {
   Route.post('view-pdf', 'EInvoiceController.viewPDFInvoice');
   Route.post('general-base64-from-url', 'EInvoiceController.getBase64ImgFromUrl');
 
-  // e-invoice C#
+  // e-invoice C#s
   Route.post('declare2xml-c-sharp', 'EInvoiceController.GeneralDeclarationXML');
   Route.post('declare2xml-hsm-c-sharp', 'EInvoiceController.GeneralDeclarationHsmXML');
   Route.post('update-declare-c-sharp', 'EInvoiceController.UpdateDeclarationXML');

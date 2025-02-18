@@ -15514,22 +15514,33 @@ class EInvoiceController {
       } else {
         return response.send(Utils.response(false, 'Calling API is false', null));
       }
-    } catch (e) {
+    } catch (error) {
       Utils.Logger({
         LVL: 'error',
         MODULE: 'EInvoiceController',
-        FUNC: 'callPostAPI',
-        CONTENT: e.message,
+        FUNC: 'callGetAPI',
+        CONTENT: error.message,
       });
-      console.log(e);
-      return response.send(Utils.response(false, 'error', e.message));
+      let error_mess, error_code;
+      if (error.response) {
+        // Server phản hồi nhưng có lỗi (4xx, 5xx)
+        error_mess = error.response.data;
+        error_code = error.response.status;
+      } else if (error.request) {
+        // Request đã được gửi nhưng không có phản hồi
+        console.log('No response received:', error.request);
+      } else {
+        // Lỗi khi thiết lập request
+        console.log('Request Error:', error.message);
+      }
+      return response.status(400).json(Utils.eRPResponse({success: false, message: error_mess.status.message, data: null}));
     }
   }
 
   async callGetAPI({request, response, auth}) {
     try {
       const {user_id, password, api_url_name, data_res} = request.all();
-      console.log('user_id ', user_id, 'password ', password);
+      // console.log('user_id ', user_id, 'password ', password);
       const agent = {
         Agent: {
           defaultPort: 443,
@@ -15556,15 +15567,26 @@ class EInvoiceController {
       } else {
         return response.send(Utils.response(false, 'Calling API is false', null));
       }
-    } catch (e) {
+    } catch (error) {
       Utils.Logger({
         LVL: 'error',
         MODULE: 'EInvoiceController',
         FUNC: 'callGetAPI',
-        CONTENT: e.message,
+        CONTENT: error.message,
       });
-      console.log(e);
-      return response.send(Utils.response(false, 'error', e.message));
+      let error_mess, error_code;
+      if (error.response) {
+        // Server phản hồi nhưng có lỗi (4xx, 5xx)
+        error_mess = error.response.data;
+        error_code = error.response.status;
+      } else if (error.request) {
+        // Request đã được gửi nhưng không có phản hồi
+        console.log('No response received:', error.request);
+      } else {
+        // Lỗi khi thiết lập request
+        console.log('Request Error:', error.message);
+      }
+      return response.status(400).json(Utils.eRPResponse({success: false, message: error_mess.status.message, data: null}));
     }
   }
 
@@ -15602,15 +15624,26 @@ class EInvoiceController {
       } else {
         return response.send(Utils.response(false, 'Calling API is false', null));
       }
-    } catch (e) {
+    } catch (error) {
       Utils.Logger({
         LVL: 'error',
         MODULE: 'EInvoiceController',
-        FUNC: 'callDeleteAPI',
-        CONTENT: e.message,
+        FUNC: 'callGetAPI',
+        CONTENT: error.message,
       });
-      console.log(e);
-      return response.send(Utils.response(false, 'error', e.message));
+      let error_mess, error_code;
+      if (error.response) {
+        // Server phản hồi nhưng có lỗi (4xx, 5xx)
+        error_mess = error.response.data;
+        error_code = error.response.status;
+      } else if (error.request) {
+        // Request đã được gửi nhưng không có phản hồi
+        console.log('No response received:', error.request);
+      } else {
+        // Lỗi khi thiết lập request
+        console.log('Request Error:', error.message);
+      }
+      return response.status(400).json(Utils.eRPResponse({success: false, message: error_mess.status.message, data: null}));
     }
   }
 

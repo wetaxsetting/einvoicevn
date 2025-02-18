@@ -504,6 +504,16 @@ class Utils {
     };
   }
 
+  eRPResponse({success = false, message = 'Sometime wrong!', data = null}) {
+    return {
+      status: {
+        success: success,
+        message: message,
+      },
+      data,
+    };
+  }
+
   CurrentDate(separater = '') {
     const date = new Date();
     const yyyy = date.getFullYear();

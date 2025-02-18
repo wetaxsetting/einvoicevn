@@ -15484,6 +15484,53 @@ class EInvoiceController {
     }
   }
 
+  async callPostAPI({request, response, auth}) {
+    try {
+      const {user_name, password, api_url_name, data_res} = request.all();
+      let url = 'https://apitest.wetax.com.vn';
+      const res = await Request.post(
+        url + '/api/wtx/pa/v1/auth/login',
+        {user_name: user_name, password: password},
+        {
+          agent,
+          headers: {
+            Authorization: 'Basic ' + Buffer.from(`${authUserName}:${authPassword}`).toString('base64'),
+          },
+        },
+      );
+      console.log('res ', res);
+      return response.send(Utils.response(true, 'general url pdf success', res));
+
+      /*const agent = {
+        Agent: {
+          defaultPort: 443,
+          protocol: 'https:',
+          options: {maxVersion: 'TLSv1.2', minVersion: 'TLSv1.2', path: null},
+        },
+      };
+
+      const res = await Request.post(
+        url,
+        {base64XML: Buffer.from(invoice_xml_signed).toString('base64')},
+        {
+          agent,
+          headers: {
+            Authorization: 'Basic ' + Buffer.from(`${authUserName}:${authPassword}`).toString('base64'),
+          },
+        },
+      );*/
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'callPostAPI',
+        CONTENT: e.message,
+      });
+      console.log(e);
+      return response.send(Utils.response(false, 'error', e.message));
+    }
+  }
+
   async viewPDFEPortal({request, response, auth}) {
     try {
       var p_language = request.header('accept-language', 'ENG');

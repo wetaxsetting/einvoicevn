@@ -165,7 +165,7 @@ class EiExcelHandler {
           }`, ///assets/images/einvoices_logo/abc/
         },
       ];
-      //logos = [];
+      logos = [];
       //console.log('einvoiceDetailsParam 1 ', einvoiceDetailsParam);
       for (let i = 0; i < einvoiceDetailsParam.length; i++) {
         detailCellFormat.push({

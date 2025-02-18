@@ -133,7 +133,7 @@ Route.group(() => {
   Route.post('invalidinvoice2xml', 'EInvoiceController.convertInvaliInvoiceToXML');
   Route.post('sendinvoice', 'EInvoiceController.sendInvoiceToTaxOffice');
   Route.post('sendmail', 'EInvoiceController.sendMail');
-  Route.post('einvoicepdfconvert', 'EinvoiceController.einvoicePdfConvert');
+  Route.post('einvoicepdfconvert', 'EInvoiceController.einvoicePdfConvert');
   Route.post('sendinvoicefromclient', 'EInvoiceController.sendInvoiceToTaxOfficeFromClient');
   Route.post('checkinvoicestatus', 'EInvoiceController.checkInvoiceStatusFromTaxOffice');
   Route.post('checkinvoicestatusfromclient', 'EInvoiceController.checkInvoiceStatusFromClient');

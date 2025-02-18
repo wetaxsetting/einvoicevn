@@ -15503,7 +15503,7 @@ class EInvoiceController {
           agent,
         },
       );
-      if (res_login.data.data.access_token) {
+      if (res_login) {
         const res = await Request.post(url + api_url_name, data_res, {
           agent,
           headers: {

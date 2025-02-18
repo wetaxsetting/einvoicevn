@@ -15546,7 +15546,7 @@ class EInvoiceController {
         },
       );
       if (res_login) {
-        const res = await Request.get(url + api_url_name, data_res, {
+        const res = await Request.get(url + api_url_name, {
           agent,
           headers: {
             Authorization: 'Bearer ' + res_login.data.data.access_token,

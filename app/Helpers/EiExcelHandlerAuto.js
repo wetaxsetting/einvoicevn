@@ -18,7 +18,7 @@ class EiExcelHandler {
       let convertYn = 'N';
       let cancelYn = 'N';
 
-      let backgroundCell = 0; //ô chen background'
+      let backgroundCell = 0; //ô chen background'  
       let backgroundWidth = 300;
       let backgroundHeight = 200;
       let signCell = {}; //điểm bắt đầu và kết thúc trên trục X của hình dấu tick ký

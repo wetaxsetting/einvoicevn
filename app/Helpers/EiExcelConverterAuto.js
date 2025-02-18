@@ -158,7 +158,7 @@ class EiExcelConverterAuto {
               page.forEach(e => {
                 //console.log('e  ', e);
                 abc += e;
-              });* 123 */
+              });* 123   */
               count_col++;
               count_col_index++;
 

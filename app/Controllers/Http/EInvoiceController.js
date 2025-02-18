@@ -15486,44 +15486,127 @@ class EInvoiceController {
 
   async callPostAPI({request, response, auth}) {
     try {
-      const {user_name, password, api_url_name, data_res} = request.all();
-      let url = 'https://apitest.wetax.com.vn';
-      const res = await Request.post(
-        url + '/api/wtx/pa/v1/auth/login',
-        {user_name: user_name, password: password},
-        {
-          agent,
-          headers: {
-            Authorization: 'Basic ' + Buffer.from(`${authUserName}:${authPassword}`).toString('base64'),
-          },
-        },
-      );
-      console.log('res ', res);
-      return response.send(Utils.response(true, 'general url pdf success', res));
-
-      /*const agent = {
+      const {user_id, password, api_url_name, data_res} = request.all();
+      console.log('user_id ', user_id, 'password ', password);
+      const agent = {
         Agent: {
           defaultPort: 443,
           protocol: 'https:',
-          options: {maxVersion: 'TLSv1.2', minVersion: 'TLSv1.2', path: null},
+          options: {maxVersion: 'TLSv1.3', minVersion: 'TLSv1.2', path: null},
         },
       };
-
-      const res = await Request.post(
-        url,
-        {base64XML: Buffer.from(invoice_xml_signed).toString('base64')},
+      let url = 'https://apitest.wetax.com.vn';
+      const res_login = await Request.post(
+        url + '/api/wtx/pa/v1/auth/login',
+        {user_id: user_id, password: password},
         {
           agent,
-          headers: {
-            Authorization: 'Basic ' + Buffer.from(`${authUserName}:${authPassword}`).toString('base64'),
-          },
         },
-      );*/
+      );
+      if (res_login.data.data.access_token) {
+        const res = await Request.post(url + api_url_name, data_res, {
+          agent,
+          headers: {
+            Authorization: 'Bearer ' + res_login.data.data.access_token,
+          },
+        });
+        return response.send(Utils.response(true, 'Calling API is success', res.data.data));
+      } else {
+        return response.send(Utils.response(false, 'Calling API is false', null));
+      }
     } catch (e) {
       Utils.Logger({
         LVL: 'error',
         MODULE: 'EInvoiceController',
         FUNC: 'callPostAPI',
+        CONTENT: e.message,
+      });
+      console.log(e);
+      return response.send(Utils.response(false, 'error', e.message));
+    }
+  }
+
+  async callGetAPI({request, response, auth}) {
+    try {
+      const {user_id, password, api_url_name, data_res} = request.all();
+      console.log('user_id ', user_id, 'password ', password);
+      const agent = {
+        Agent: {
+          defaultPort: 443,
+          protocol: 'https:',
+          options: {maxVersion: 'TLSv1.3', minVersion: 'TLSv1.2', path: null},
+        },
+      };
+      let url = 'https://apitest.wetax.com.vn';
+      const res_login = await Request.post(
+        url + '/api/wtx/pa/v1/auth/login',
+        {user_id: user_id, password: password},
+        {
+          agent,
+        },
+      );
+      if (res_login) {
+        const res = await Request.get(url + api_url_name, data_res, {
+          agent,
+          headers: {
+            Authorization: 'Bearer ' + res_login.data.data.access_token,
+          },
+        });
+        return response.send(Utils.response(true, 'Calling API is success', res.data.data));
+      } else {
+        return response.send(Utils.response(false, 'Calling API is false', null));
+      }
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'callGetAPI',
+        CONTENT: e.message,
+      });
+      console.log(e);
+      return response.send(Utils.response(false, 'error', e.message));
+    }
+  }
+
+  async callDeleteAPI({request, response, auth}) {
+    try {
+      const {user_id, password, api_url_name, data_res} = request.all();
+      console.log('user_id ', user_id, 'password ', password);
+      const agent = {
+        Agent: {
+          defaultPort: 443,
+          protocol: 'https:',
+          options: {maxVersion: 'TLSv1.3', minVersion: 'TLSv1.2', path: null},
+        },
+      };
+      let url = 'https://apitest.wetax.com.vn';
+      const res_login = await Request.post(
+        url + '/api/wtx/pa/v1/auth/login',
+        {user_id: user_id, password: password},
+        {
+          agent,
+        },
+      );
+      if (res_login) {
+        const res = await Request.delete(
+          url + api_url_name,
+          {data_res},
+          {
+            agent,
+            headers: {
+              Authorization: 'Bearer ' + res_login.data.data.access_token,
+            },
+          },
+        );
+        return response.send(Utils.response(true, 'Calling API is success', res.data.data));
+      } else {
+        return response.send(Utils.response(false, 'Calling API is false', null));
+      }
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'callDeleteAPI',
         CONTENT: e.message,
       });
       console.log(e);

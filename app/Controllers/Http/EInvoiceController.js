@@ -15504,7 +15504,7 @@ class EInvoiceController {
         },
       );
       if (res_login) {
-        const res = await Request.post(url + api_url_name, data_res, {
+        const res = await Request.post(url + api_url_name, JSON.parse(data_res), {
           agent,
           headers: {
             Authorization: 'Bearer ' + res_login.data.data.access_token,

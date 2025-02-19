@@ -15487,7 +15487,7 @@ class EInvoiceController {
   async callPostAPI({request, response, auth}) {
     try {
       const {user_id, password, api_url_name, data_res} = request.all();
-      console.log('user_id ', user_id, 'password ', password);
+      console.log('data_res ', data_res);
       const agent = {
         Agent: {
           defaultPort: 443,
@@ -15593,7 +15593,7 @@ class EInvoiceController {
   async callDeleteAPI({request, response, auth}) {
     try {
       const {user_id, password, api_url_name, data_res} = request.all();
-      console.log('user_id ', user_id, 'password ', password);
+      //console.log('user_id ', user_id, 'password ', password);
       const agent = {
         Agent: {
           defaultPort: 443,

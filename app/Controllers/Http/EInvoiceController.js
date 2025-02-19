@@ -15510,9 +15510,9 @@ class EInvoiceController {
             Authorization: 'Bearer ' + res_login.data.data.access_token,
           },
         });
-        return response.send(Utils.response(true, 'Calling API is success', res.data.data));
+        return response.status(200).json(Utils.eRPResponse({success: true, message: 'Calling API is success', data: res.data.data}));
       } else {
-        return response.send(Utils.response(false, 'Calling API is false', null));
+        return response.status(400).json(Utils.eRPResponse({success: false, message: 'Calling API is false', data: null}));
       }
     } catch (error) {
       Utils.Logger({
@@ -15533,7 +15533,7 @@ class EInvoiceController {
         // Lỗi khi thiết lập request
         console.log('Request Error:', error.message);
       }
-      return response.status(400).json(Utils.eRPResponse({success: false, message: error_mess.status.message, data: null}));
+      return response.status(error_code).json(Utils.eRPResponse({success: false, message: error_mess.status.message, data: null}));
     }
   }
 
@@ -15563,9 +15563,9 @@ class EInvoiceController {
             Authorization: 'Bearer ' + res_login.data.data.access_token,
           },
         });
-        return response.send(Utils.response(true, 'Calling API is success', res.data.data));
+        return response.status(200).json(Utils.eRPResponse({success: true, message: 'Calling API is success', data: res.data.data}));
       } else {
-        return response.send(Utils.response(false, 'Calling API is false', null));
+        return response.status(400).json(Utils.eRPResponse({success: false, message: 'Calling API is false', data: null}));
       }
     } catch (error) {
       Utils.Logger({
@@ -15586,7 +15586,7 @@ class EInvoiceController {
         // Lỗi khi thiết lập request
         console.log('Request Error:', error.message);
       }
-      return response.status(400).json(Utils.eRPResponse({success: false, message: error_mess.status.message, data: null}));
+      return response.status(error_code).json(Utils.eRPResponse({success: false, message: error_mess.status.message, data: null}));
     }
   }
 
@@ -15616,9 +15616,9 @@ class EInvoiceController {
             Authorization: 'Bearer ' + res_login.data.data.access_token,
           },
         });
-        return response.send(Utils.response(true, 'Calling API is success', res.data.data));
+        return response.status(200).json(Utils.eRPResponse({success: true, message: 'Calling API is success', data: res.data.data}));
       } else {
-        return response.send(Utils.response(false, 'Calling API is false', null));
+        return response.status(400).json(Utils.eRPResponse({success: false, message: 'Calling API is false', data: null}));
       }
     } catch (error) {
       Utils.Logger({

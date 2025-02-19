@@ -239,7 +239,7 @@ Route.group(() => {
   Route.get('download-pdf-c-sharp', 'EInvoiceController.viewPDFInvoiceOut');
   Route.post('call-post-api', 'EInvoiceController.callPostAPI');
   Route.get('call-get-api', 'EInvoiceController.callGetAPI');
-  Route.post('call-delete-api', 'EInvoiceController.callDeleteAPI');
+  Route.delete('call-delete-api', 'EInvoiceController.callDeleteAPI');
 }).prefix('api/out/einvoice');
 
 Route.group(() => {

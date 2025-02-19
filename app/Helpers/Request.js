@@ -19,6 +19,10 @@ class Request {
     return axios.patch(url, data, config);
   }
 
+  delete(url, config) {
+    return axios.delete(url, config);
+  }
+
   all(...functions) {
     return Promise.all([...functions]);
   }

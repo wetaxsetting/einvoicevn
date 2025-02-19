@@ -15610,16 +15610,12 @@ class EInvoiceController {
         },
       );
       if (res_login) {
-        const res = await Request.delete(
-          url + api_url_name,
-          {data_res},
-          {
-            agent,
-            headers: {
-              Authorization: 'Bearer ' + res_login.data.data.access_token,
-            },
+        const res = await Request.delete(url + api_url_name, {
+          agent,
+          headers: {
+            Authorization: 'Bearer ' + res_login.data.data.access_token,
           },
-        );
+        });
         return response.send(Utils.response(true, 'Calling API is success', res.data.data));
       } else {
         return response.send(Utils.response(false, 'Calling API is false', null));
@@ -15631,6 +15627,7 @@ class EInvoiceController {
         FUNC: 'callGetAPI',
         CONTENT: error.message,
       });
+      //console.log(error);
       let error_mess, error_code;
       if (error.response) {
         // Server phản hồi nhưng có lỗi (4xx, 5xx)
@@ -15643,7 +15640,7 @@ class EInvoiceController {
         // Lỗi khi thiết lập request
         console.log('Request Error:', error.message);
       }
-      return response.status(400).json(Utils.eRPResponse({success: false, message: error_mess.status.message, data: null}));
+      return response.status(error_code).json(Utils.eRPResponse({success: false, message: error_mess.status.message, data: null}));
     }
   }
 

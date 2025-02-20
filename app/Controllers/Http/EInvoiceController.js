@@ -15533,7 +15533,7 @@ class EInvoiceController {
         // Lỗi khi thiết lập request
         console.log('Request Error:', error.message);
       }
-      return response.status(error_code).json(Utils.eRPResponse({success: false, message: error_mess.status.message, data: null}));
+      return response.status(error_code).json(Utils.eRPResponse({success: false, message: error_mess.status, data: null}));
     }
   }
 

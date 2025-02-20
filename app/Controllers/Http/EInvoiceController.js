@@ -15522,6 +15522,7 @@ class EInvoiceController {
         CONTENT: error.message,
       });
       let error_mess, error_code;
+      console.log('error.response ', error.response);
       if (error.response) {
         // Server phản hồi nhưng có lỗi (4xx, 5xx)
         error_mess = error.response.data;

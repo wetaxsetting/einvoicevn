@@ -504,7 +504,7 @@ class EInvoiceController {
       const declaration = {
         version,
         declare_name,
-        declare_type,
+        //declare_type,
         declare_form_no,
         seller_company_name,
         seller_taxcode,
@@ -533,6 +533,25 @@ class EInvoiceController {
         voucher,
         digital_certificates,
       };
+
+      const param_data_m = {
+        data_json: JSON.stringify(declaration),
+        api_name: 'weTaxConvertDeclareUsingInvoiceToXML',
+      };
+
+      await DBService.ExecuteSQLBlob(
+        `BEGIN WT_UPD_data_REQ(
+                          :data_json,
+                          :api_name,
+                          :p_language, 
+                          :p_crt_by, 
+                          :p_rtn_cur); 
+          END;`,
+        param_data_m,
+        p_language,
+        p_crt_by,
+      );
+
       const valid = this.validateJsonDeclarationToXML(declaration);
       if (!valid.status) {
         // return response.send(Utils.response(valid.status, valid.message, null));
@@ -2489,6 +2508,29 @@ class EInvoiceController {
       // const authPassword = 'genuwin123';
 
       const {xml_signed, tax_code, req_key} = request.all();
+
+      const declaration = {
+        xml_signed: xml_signed,
+        tax_code: tax_code,
+        req_key: req_key,
+      };
+      const param_data_m = {
+        data_json: JSON.stringify(declaration),
+        api_name: 'weTaxSendDeclarationToTaxOffice',
+      };
+
+      await DBService.ExecuteSQLBlob(
+        `BEGIN WT_UPD_data_REQ(
+                          :data_json,
+                          :api_name,
+                          :p_language, 
+                          :p_crt_by, 
+                          :p_rtn_cur); 
+          END;`,
+        param_data_m,
+        p_language,
+        p_crt_by,
+      );
 
       if (!xml_signed) {
         return response.status(400).json(Utils.responseByRule({success: false, message: 'Invalid xml_signed'}));
@@ -10180,7 +10222,7 @@ class EInvoiceController {
       const errorList = {
         version: /^(\d{1}\.\d{1}\.\d{1})$/,
         declare_name: /^.{1,100}$/,
-        declare_type: /^(1|2){1}$/,
+        //declare_type: /^(1|2){1}$/,
         declare_form_no: /^.{1,15}$/,
         seller_company_name: /^.{1,400}$/,
         seller_taxcode: {10: /^(\d{10})$/, 14: /^(\d{10}\-\d{3})$/},
@@ -10220,7 +10262,7 @@ class EInvoiceController {
       for (const key in declaration) {
         // console.log(' key   ', key, ' invoice[key]  ', declaration[key]);
         if (errorList[`${key}`] != undefined && !Array.isArray(declaration[key])) {
-          if (key == 'seller_taxcode') {
+          if (key == 'sllr_tax_code') {
             if (declaration[key].length == 10) {
               if (!errorList[`${key}`][10].test(declaration[key])) {
                 status = false;
@@ -10247,172 +10289,7 @@ class EInvoiceController {
                 message: resMess,
               };
             }
-          } else if (key == 'contact_email') {
-            if (!errorList[`${key}`].test(declaration[key]) && declaration[key]) {
-              // && declaration[key]
-              status = false;
-              resMess = `${mess1} ${key}.`;
-              return {
-                status,
-                message: resMess,
-              };
-            }
-          } else if (!errorList[`${key}`].test(declaration[key])) {
-            status = false;
-            resMess = `${mess1} ${key}.`;
-            return {
-              status,
-              message: resMess,
-            };
-          }
-        } else {
-          if (key == 'digital_certificates') {
-            for (const dec of declaration[key]) {
-              if (!errorList[`${key}`].sequence.test(dec.sequence)) {
-                status = false;
-                resMess = `${mess1} sequence is:  ${dec.sequence}.`;
-                return {
-                  status,
-                  message: resMess,
-                };
-              }
-              if (!errorList[`${key}`].organization_name.test(dec.organization_name)) {
-                status = false;
-                resMess = `${mess1} organization_name is:  ${dec.organization_name}.`;
-                return {
-                  status,
-                  message: resMess,
-                };
-              }
-              if (!errorList[`${key}`].serial_no.test(dec.serial_no) && dec.serial_no) {
-                status = false;
-                resMess = `${mess1} serial_no is:  ${dec.serial_no}.`;
-                return {
-                  status,
-                  message: resMess,
-                };
-              }
-              if (!errorList[`${key}`].from_date.test(dec.from_date)) {
-                status = false;
-                resMess = `${mess1} from_date is:  ${dec.from_date}.`;
-                return {
-                  status,
-                  message: resMess,
-                };
-              }
-              if (!errorList[`${key}`].to_date.test(dec.to_date)) {
-                status = false;
-                resMess = `${mess1} to_date is:  ${dec.to_date}.`;
-                return {
-                  status,
-                  message: resMess,
-                };
-              }
-              if (!errorList[`${key}`].type.test(dec.type)) {
-                status = false;
-                resMess = `${mess1} type is:  ${dec.type}.`;
-                return {
-                  status,
-                  message: resMess,
-                };
-              }
-            }
-          }
-        }
-      }
-
-      // if dont have any problem
-      return {
-        status,
-        message: resMess,
-      };
-    } catch (error) {
-      console.log('error  ', error);
-      //let status = false;
-      return {
-        status,
-        message: resMess,
-      };
-    }
-  }
-
-  validateJsonDeclarationToXML(declaration) {
-    let status = true;
-    let resMess = '';
-    const mess1 = 'Declaration field';
-    //console.log("declaration  ", declaration);
-    try {
-      const errorList = {
-        version: /^(\d{1}\.\d{1}\.\d{1})$/,
-        declare_name: /^.{1,100}$/,
-        declare_type: /^(1|2){1}$/,
-        declare_form_no: /^.{1,15}$/,
-        seller_company_name: /^.{1,400}$/,
-        seller_taxcode: {10: /^(\d{10})$/, 14: /^(\d{10}\-\d{3})$/},
-        tax_office_name: /^.{1,100}$/,
-        tax_office_code: /^.{1,5}$/,
-        contact_person: /^.{1,50}$/,
-        contact_address: /^.{1,400}$/,
-        contact_email: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
-        contact_phone: /^.{0,20}$/,
-        location_name: /^.{0,50}$/,
-        created_date: /^.{0,8}$/,
-        has_code: /^(1|0){1}$/,
-        no_code: /^(1|0){1}$/,
-        pos_code: /^(1|0){1}$/,
-        taxpayer_from_difficult_location: /^(1|0){1}$/,
-        taxpayer_from_people_committee_suggestions: /^(1|0){1}$/,
-        transfer_data_directly_to_tax_office: /^(1|0){1}$/,
-        cdlqtvan: /^(1|0){1}$/,
-        full_transfer: /^(1|0){1}$/,
-        summary_transfer: /^(1|0){1}$/,
-        vat_invoice: /^(1|0){1}$/,
-        sales_invoice: /^(1|0){1}$/,
-        sales_invoice_passet: /^(1|0){1}$/,
-        sales_invoice_national: /^(1|0){1}$/,
-        other_invoice: /^(1|0){1}$/,
-        voucher: /^(1|0){1}$/,
-        digital_certificates: {
-          sequence: /^-?\d*\.?\d*$/,
-          organization_name: /^.{1,400}$/,
-          serial_no: /^.{1,40}$/,
-          from_date: /^(19|20)\d\d-(0[1-9]|1[012])-([012]\d|3[01])T([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/,
-          to_date: /^(19|20)\d\d-(0[1-9]|1[012])-([012]\d|3[01])T([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/,
-          type: /^(1|2|3){1}$/,
-        },
-      };
-
-      for (const key in declaration) {
-        // console.log(' key   ', key, ' invoice[key]  ', declaration[key]);
-        if (errorList[`${key}`] != undefined && !Array.isArray(declaration[key])) {
-          if (key == 'seller_taxcode') {
-            if (declaration[key].length == 10) {
-              if (!errorList[`${key}`][10].test(declaration[key])) {
-                status = false;
-                resMess = `${mess1} ${key}.`;
-                return {
-                  status,
-                  message: resMess,
-                };
-              }
-            } else if (declaration[key].length == 14) {
-              if (!errorList[`${key}`][14].test(declaration[key])) {
-                status = false;
-                resMess = `${mess1} ${key}.`;
-                return {
-                  status,
-                  message: resMess,
-                };
-              }
-            } else if ((declaration[key].length < 10 || declaration[key].length > 14) && declaration[key]) {
-              status = false;
-              resMess = `${mess1} ${key}. length between 10 and 14}.`;
-              return {
-                status,
-                message: resMess,
-              };
-            }
-          } else if (key == 'contact_email') {
+          } else if (key == 'contact_eml') {
             if (!errorList[`${key}`].test(declaration[key]) && declaration[key]) {
               // && declaration[key]
               status = false;

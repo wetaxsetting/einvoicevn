@@ -4104,6 +4104,8 @@ class EInvoiceController {
         let soTB = '';
         let ngayTB = '';
         let thoiGianCQTKy = '';
+        let tax_sign_by = '';
+        let tax_sign_datetime = '';
         if (!result.data.length) {
           ndungTBao = [];
           const param_d = {
@@ -4111,11 +4113,11 @@ class EInvoiceController {
           };
           const data_d = await await DBService.ExecuteSQLBlob(
             `BEGIN wt_sel_hd04ss_d(
-                                                                                    :trade_code, 
-                                                                                    :p_language, 
-                                                                                    :p_crt_by, 
-                                                                                    :p_rtn_cur
-                                                                                ); END;`,
+                                    :trade_code, 
+                                    :p_language, 
+                                    :p_crt_by, 
+                                    :p_rtn_cur
+                                ); END;`,
             param_d,
             p_language,
             p_crt_by,
@@ -4149,9 +4151,13 @@ class EInvoiceController {
                 base64XML = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8');
                 const temp_of_tax = {
                   MLTDiep: 'TDiep/TTChung/MLTDiep',
+                  TaxSignedBy: 'TDiep/DLieu/TBao/DSCKS/CQT/Signature/KeyInfo/X509Data/X509SubjectName',
+                  TaxSignedDate: 'TDiep/DLieu/TBao/DSCKS/CQT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
                 };
                 const data_of_tax = await transform(base64XML, temp_of_tax);
 
+                tax_sign_by = data_of_tax.TaxSignedBy;
+                tax_sign_datetime = data_of_tax.TaxSignedDate;
                 maTD = data_of_tax.MLTDiep;
                 maGDDTu = items[k].ndungTBao.maGDichTNDLieu;
                 ngayTaoTB = items[k].ngayTaoTBao;
@@ -4176,7 +4182,7 @@ class EInvoiceController {
                     p_tvan_data_result: JSON.stringify(result.data),
                   };
 
-                  //console.log('weTaxCheckInformAdjustToTaxOffice  para_history  ', para_history);
+                  // console.log('weTaxCheckInformAdjustToTaxOffice  para_history  ', para_history);
 
                   const res_op = await DBService.ExecuteSQLBlob(
                     `BEGIN ei_upd_his_nor_inv(
@@ -4208,9 +4214,8 @@ class EInvoiceController {
                 soTB = items[k].ndungTBao.tbaoTNhanSSotDoc.soTBao;
                 ngayTB = items[k].ndungTBao.ngayTBao;
                 thoiGianCQTKy = items[k].ndungTBao.tbaoTNhanSSotDoc.ngayCQTKy;
-
                 for (const invoice of items[k].ndungTBao.tbaoTNhanSSotDoc.dsachHDonLoi) {
-                  //console.log('weTaxCheckInformAdjustToTaxOffice invoice  ', invoice);
+                  // console.log('weTaxCheckInformAdjustToTaxOffice invoice  ', invoice);
                   ndungTBao.push({
                     tax_auth_cd: invoice.MCCQT,
                     form_no: invoice.khieuMauHDon,
@@ -4219,6 +4224,9 @@ class EInvoiceController {
                     invoice_date: invoice.ngayHDon,
                     cqt_result: invoice.tthaiTNCQT, //   invoice.dsachLoi.length == 0 ? 1 : 2,
                     dsachLoi: invoice.dsachLoi,
+                    tax_sign_datetime: tax_sign_datetime,
+                    tax_sign_by: tax_sign_by,
+                    cqt_doc_no: soTB,
                   });
 
                   //console.log("invoice.dsachLoi  ", invoice.dsachLoi)
@@ -4377,7 +4385,7 @@ class EInvoiceController {
             p_messCQT: tenTBao,
             p_status: '1',
           };
-          //console.log('para_value_m  ', para_value_m);
+          console.log('para_value_m  ', para_value_m);
           await DBService.ExecuteSQLBlob(
             `BEGIN wt_upd_hd04ss_m(
                               :p_req_key, 
@@ -4405,7 +4413,7 @@ class EInvoiceController {
           //this.sendMailTBSSToCustomer(inv.trade_code, p_language, p_crt_by);
         }
       }
-      //console.log('weTaxCheckInformAdjustToTaxOffice  ', rtnValue);
+      console.log('weTaxCheckInformAdjustToTaxOffice  ', rtnValue);
       // return response.send(Utils.response(true, `checking_success`, rtnValue));
       return response.status(200).json(Utils.responseByRule({success: true, message: 'Check Announcement successfully.', data: rtnValue}));
     } catch (e) {

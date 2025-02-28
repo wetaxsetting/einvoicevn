@@ -4346,6 +4346,9 @@ class EInvoiceController {
                     invoice_date: invoice.ngayHDon,
                     cqt_result: '2', //   invoice.dsachLoi.length == 0 ? 1 : 2,
                     dsachLoi: error_list,
+                    tax_sign_datetime: '',
+                    tax_sign_by: '',
+                    cqt_doc_no: '',
                   });
 
                   const data_d_tbss = {

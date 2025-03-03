@@ -4470,7 +4470,7 @@ class EInvoiceController {
               } else if (items[k].loaiTBao == '16') {
                 tenTBao = items[k].tenTBao;
                 maTBao = items[k].loaiTBao;
-                soTB = items[k].ndungTBao.tbaoTNhanSSotDoc.soTBao;
+                soTB = items[k].ndungTBao.tbaoKTraDLieu.soTBao;
                 let error_list = [];
 
                 for (const error of items[k].ndungTBao.tbaoKTraDLieu.dsachLoiGoiDLieuKhac) {

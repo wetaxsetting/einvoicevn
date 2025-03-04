@@ -6460,7 +6460,7 @@ class EInvoiceController {
         },
 
         total_vat_list: {
-          sub_vat_rate: /^(0%|5%|8%|10%|KCT|KKKNT)$/, //sub_vat_rate: /^(0%|5%|8%|10%)$/, //  /^-?\d+(\.\d{1,4})?[%]/, //11,
+          sub_vat_rate: /^(0%|5%|8%|10%)$/, //  /^-?\d+(\.\d{1,4})?[%]/, //11,
           sub_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
           sub_amt_vat: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
         },
@@ -6580,8 +6580,14 @@ class EInvoiceController {
 
             if (key == 'detail_invoice') {
               for (const inv of invoice[key]) {
-                detail_amount_vat += Number(inv.amt_vat);
-                detail_amount += Number(inv.amt);
+                if (inv.feature == 3) {
+                  detail_amount_vat -= Number(inv.amt_vat);
+                  detail_amount -= Number(inv.amt);
+                } else {
+                  detail_amount_vat += Number(inv.amt_vat);
+                  detail_amount += Number(inv.amt);
+                }
+
                 if (!errorList[`${key}`].feature.test(inv.feature)) {
                   status = false;
                   resMess = `${mess1} feature is:  ${inv.feature}.`;
@@ -10441,7 +10447,7 @@ class EInvoiceController {
         },
 
         total_vat_list: {
-          sub_vat_rate: /^(0%|5%|8%|10%|KCT|KKKNT)$/, //sub_vat_rate: /^(0%|5%|8%|10%)$/, //  /^-?\d+(\.\d{1,4})?[%]/, //11,
+          sub_vat_rate: /^(0%|5%|8%|10%)$/, //  /^-?\d+(\.\d{1,4})?[%]/, //11,
           sub_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
           sub_amt_vat: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
         },
@@ -10466,9 +10472,9 @@ class EInvoiceController {
 
         for (const key in invoice) {
           if (errorList[`${key}`] != undefined && !Array.isArray(invoice[key])) {
-            master_amount_vat = Number(invoice['total_vat_amt']);
-            master_amount = Number(invoice['total_amt']);
-            master_total_amount = Number(invoice['total_payment']);
+            master_amount_vat = invoice['total_vat_amt'];
+            master_amount = invoice['total_amt'];
+            master_total_amount = invoice['total_payment'];
             if (key == 'seller_taxcode' || key == 'buyer_taxcode') {
               if (invoice[key].length == 10) {
                 if (!errorList[`${key}`][10].test(invoice[key])) {
@@ -10497,7 +10503,7 @@ class EInvoiceController {
                   message: resMess,
                 };
               }
-            } else if (key == 'buyer_email' || key == 'buyer_email_cc' || key == 'seller_email') {
+            } else if (key == 'buyer_email' || key == 'seller_email') {
               //console.log('validateJsonInvalidNormalInvoiceToXML  key   ', key, ' - ', invoice[key]);
               if (!errorList[`${key}`].test(invoice[key]) && invoice[key]) {
                 // && invoice[key]
@@ -10507,6 +10513,21 @@ class EInvoiceController {
                   status,
                   message: resMess,
                 };
+              }
+            } else if (key == 'buyer_email_cc') {
+              if (invoice[key]) {
+                let buyer_email_cc = invoice[key].split(';');
+                console.log('buyer_email_cc ', buyer_email_cc);
+                buyer_email_cc.forEach(element => {
+                  if (!errorList[`${key}`].test(element)) {
+                    status = false;
+                    resMess = `${mess1} ${key}.`;
+                    return {
+                      status,
+                      message: resMess,
+                    };
+                  }
+                });
               }
             } else if (!errorList[`${key}`].test(invoice[key])) {
               status = false;
@@ -10519,8 +10540,8 @@ class EInvoiceController {
           } else {
             if (key == 'total_vat_list') {
               for (const sub_vat of invoice[key]) {
-                vat_amount_vat += Number(sub_vat.sub_amt_vat);
-                vat_amout += Number(sub_vat.sub_amt);
+                vat_amount_vat += sub_vat.sub_amt_vat;
+                vat_amout += sub_vat.sub_amt;
                 if (
                   !errorList[`${key}`].sub_vat_rate.test(sub_vat.sub_vat_rate) &&
                   sub_vat.sub_vat_rate != 'KCT' &&
@@ -10556,12 +10577,16 @@ class EInvoiceController {
 
             if (key == 'detail_invoice') {
               for (const inv of invoice[key]) {
-                detail_amount_vat += Number(inv.amt_vat);
-                detail_amount += Number(inv.amt);
+                if (inv.feature == 3) {
+                  detail_amount_vat -= Number(inv.amt_vat);
+                  detail_amount -= Number(inv.amt);
+                } else {
+                  detail_amount_vat += Number(inv.amt_vat);
+                  detail_amount += Number(inv.amt);
+                }
                 if (!errorList[`${key}`].feature.test(inv.feature)) {
                   status = false;
                   resMess = `${mess1} feature is: ${inv.feature}.`;
-
                   return {
                     status,
                     message: resMess,
@@ -10660,7 +10685,7 @@ class EInvoiceController {
           }
         }
 
-        if (Number(master_amount.toFixed(6)) != Number(detail_amount.toFixed(6)) && master_amount != null) {
+        if (master_amount != detail_amount && master_amount != null) {
           status = false;
           resMess = `${mess1} amount xx is: ${master_amount}  != ${detail_amount}`;
           return {
@@ -10669,7 +10694,7 @@ class EInvoiceController {
           };
         }
 
-        if (Number(master_amount_vat.toFixed(6)) != Number(detail_amount_vat.toFixed(6)) && master_amount_vat != null) {
+        if (master_amount_vat != detail_amount_vat && master_amount_vat != null) {
           status = false;
           resMess = `${mess1} amount vat is: ${master_amount_vat} != ${detail_amount_vat}`;
           return {
@@ -10680,7 +10705,7 @@ class EInvoiceController {
         //vat_total_amount = vat_amount_vat + vat_amout;
         detail_total_amount = Number(detail_amount) + Number(detail_amount_vat);
 
-        if (Number(master_total_amount.toFixed(6)) != Number(detail_total_amount.toFixed(6)) && master_total_amount != null) {
+        if (master_total_amount != detail_total_amount && master_total_amount != null) {
           status = false;
           resMess = `${mess1} amount total is: ${master_total_amount}  != ${detail_total_amount}`;
           return {
@@ -10703,7 +10728,6 @@ class EInvoiceController {
       };
     }
   }
-
   async weTaxConvertInvoiceToXML({request, response, auth}) {
     try {
       var p_language = request.header('accept-language', 'ENG');

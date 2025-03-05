@@ -6528,7 +6528,7 @@ class EInvoiceController {
                   message: resMess,
                 };
               }
-            }else if (key == 'buyer_email_cc') {
+            } else if (key == 'buyer_email_cc') {
               if (invoice[key]) {
                 let buyer_email_cc = invoice[key].split(';');
                 console.log('buyer_email_cc ', buyer_email_cc);
@@ -10519,7 +10519,7 @@ class EInvoiceController {
                   message: resMess,
                 };
               }
-            } else if (key == 'buyer_email'|| key == 'seller_email') {
+            } else if (key == 'buyer_email' || key == 'seller_email') {
               //console.log('validateJsonInvalidNormalInvoiceToXML  key   ', key, ' - ', invoice[key]);
               if (!errorList[`${key}`].test(invoice[key]) && invoice[key]) {
                 // && invoice[key]
@@ -10545,7 +10545,7 @@ class EInvoiceController {
                   }
                 });
               }
-             }else if (!errorList[`${key}`].test(invoice[key])) {
+            } else if (!errorList[`${key}`].test(invoice[key])) {
               status = false;
               resMess = `${mess1} ${key}.`;
               return {
@@ -14336,7 +14336,9 @@ class EInvoiceController {
         if (
           Number(rtnValue.p_rtn_cur[0].TEI_COMPANY_PK) < 943 &&
           Number(rtnValue.p_rtn_cur[0].TEI_COMPANY_PK) != 201 &&
-          Number(rtnValue.p_rtn_cur[0].TEI_COMPANY_PK) != 462
+          Number(rtnValue.p_rtn_cur[0].TEI_COMPANY_PK) != 462 &&
+          (Number(rtnValue.p_rtn_cur[0].TEI_COMPANY_PK) != 1 &&
+          Number(rtnValue.p_rtn_cur[0].INVOICE_DATE) < 20250301)
         ) {
           const screte_key = 'RVNJbjib65jkGKJB789';
           const key = Utils.md5(rtnValue.p_rtn_cur[0].TEI_EINVOICE_M_PK + screte_key);

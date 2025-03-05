@@ -135,19 +135,19 @@ class EiExcelConverterAuto {
         total_countLenght = 0;
         for (let j = count_col; j < v_count; j++) {
           let count_row = this.countlength(einvoiceDetailData[j]['ITEM_NAME']);
-          //console.log('cont_row  ', count_row, 'ITEM_NAME  ', einvoiceDetailData[j]['ITEM_NAME']);
+          console.log('cont_row  ', count_row, 'ITEM_NAME  ', einvoiceDetailData[j]['ITEM_NAME']);
           if (count_row > 0) {
             total_countLenght += count_row;
           } else {
             total_countLenght += 1;
           }
-          //console.log('total_countLenght  ', total_countLenght);
+          console.log('total_countLenght  ', total_countLenght);
           if (count_col == v_count - 1) {
             if (total_countLenght > num_of_pages) {
               count_col++;
               count_col_index++;
 
-              page[i] = count_col_index;
+              page[i] = count_col_index - 1;
               page_index[i] = total_countLenght - 1;
               page[i + 1] = 1;
               page_index[i + 1] = count_row;
@@ -169,27 +169,22 @@ class EiExcelConverterAuto {
 
               break;
             }
-          } else if (total_countLenght >= num_of_more_pages) {
+          } else if (total_countLenght == num_of_more_pages) {
             count_col++;
             count_col_index++;
-
-            /*console.log(
-              'page ',
-              i,
-              'index',
-              j,
-              'total_countLenght  ',
-              total_countLenght,
-              'num_of_more_pages  ',
-              num_of_more_pages,
-              'count_col_index ',
-              count_col_index,
-            );*/
             page[i] = count_col_index;
             page_index[i] = total_countLenght;
 
             break; //continue;
+          } else if (total_countLenght > num_of_more_pages) {
+            page[i] = count_col_index;
+            page_index[i] = total_countLenght;
+            count_col++;
+            count_col_index++;
+
+            break; //continue;
           }
+
           count_col++;
           count_col_index++;
         }
@@ -1276,7 +1271,7 @@ class EiExcelConverterAuto {
   };
 
   countlength = s => {
-    let rangeWord = 40;
+    let rangeWord = 42; ///40 => ok;
     let result = 0;
     //console.log('countlength ', s);
     if (this.hasLineBreak(s)) {

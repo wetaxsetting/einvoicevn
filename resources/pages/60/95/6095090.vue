@@ -1137,7 +1137,9 @@ export default {
         if( Number(this.selected_company) < 943 &&
           Number(this.selected_company) != 201 &&
           Number(this.selected_company) != 462 &&
-          Number(this.tei_einvoice_date) >= 20240831 )
+          Number(this.tei_einvoice_date) >= 20240831 &&
+          (Number(this.selected_company) != 1 &&
+          Number(this.tei_einvoice_date) >= 20250301))
         {
           let res_url = await this.$axios.$post("/einvoice/view-pdf", {
               responseType: "json",

@@ -1,4 +1,5 @@
 const {cp} = require('fs');
+const {type} = require('os');
 
 const Helpers = use('Helpers');
 const Utils = use('Utils');
@@ -134,7 +135,7 @@ class EiExcelConverterAuto {
         count_col_index = 0;
         total_countLenght = 0;
         for (let j = count_col; j < v_count; j++) {
-          let count_row = this.countlength(einvoiceDetailData[j]['ITEM_NAME']);
+          let count_row = this.countlength(einvoiceDetailData[j]['ITEM_NAME'], type_template);
           console.log('cont_row  ', count_row, 'ITEM_NAME  ', einvoiceDetailData[j]['ITEM_NAME']);
           if (count_row > 0) {
             total_countLenght += count_row;
@@ -280,13 +281,27 @@ class EiExcelConverterAuto {
               case 'BUYER_ADDRESS':
                 let range_string = 0,
                   height_row = 0;
-                if (einvoiceMasterData[0]['BUYER_ADDRESS'] && this.isVietnameseUpperCase(einvoiceMasterData[0]['BUYER_ADDRESS'])) {
-                  range_string = 75;
-                  height_row = 15;
-                } else {
-                  range_string = 84;
-                  height_row = 14;
+
+                if (type_template == '1000000111') {
+                  if (einvoiceMasterData[0]['BUYER_ADDRESS'] && this.isVietnameseUpperCase(einvoiceMasterData[0]['BUYER_ADDRESS'])) {
+                    range_string = 75;
+                    height_row = 15;
+                  } else {
+                    range_string = 84;
+                    height_row = 14;
+                  }
+                } else if (type_template == '1000000112') {
+                  if (einvoiceMasterData[0]['BUYER_ADDRESS'] && this.isVietnameseUpperCase(einvoiceMasterData[0]['BUYER_ADDRESS'])) {
+                    range_string = 70;
+                    height_row = 15;
+                  } else {
+                    range_string = 80;
+                    height_row = 14;
+                  }
                 }
+
+                console.log('range_string  ', range_string, 'height_row  ', height_row);
+
                 worksheet.getCell(`${e.Cell}`).value = einvoiceMasterData[0]['BUYER_ADDRESS'];
                 worksheet.getRow(`${e.Cell.toString().substr(1, e.Cell.length - 1)}`).height =
                   einvoiceMasterData[0]['BUYER_ADDRESS'] == null
@@ -320,7 +335,7 @@ class EiExcelConverterAuto {
         for (let j = 0; j < page.length; j++) {
           let lastPagelength = 0;
           for (let i = 0; i < page[j]; i++) {
-            let item_length = this.countlength(einvoiceDetailData[countPerPage]['ITEM_NAME']);
+            let item_length = this.countlength(einvoiceDetailData[countPerPage]['ITEM_NAME'], type_template);
             if (page[j] > 0 && page[j + 1] == 0) {
               lastPagelength += item_length;
             }
@@ -429,7 +444,7 @@ class EiExcelConverterAuto {
             for (let i = 0; i < e; i++) {
               const _e = einvoiceDetailData[i + count];
               try {
-                let item_name_lt = this.countlength(_e['ITEM_NAME']);
+                let item_name_lt = this.countlength(_e['ITEM_NAME'], type_template);
                 totalRowCount += item_name_lt;
                 countCheck += item_name_lt;
               } catch (error) {
@@ -591,7 +606,7 @@ class EiExcelConverterAuto {
               } else {
                 numHiddenRow = v_countNumberOfPages * (num_of_more_pages_max + headerRowCount);
                 //let numHiddenRow = v_countNumberOfPages * (20 + headerRowCount); // phần này lấy ra số dòng ẩn nhưng 20 dòng mới hơp lý
-                console.log('numHiddenRow ', numHiddenRow, 'num_of_more_pages_max - num_of_more_pages ', num_of_more_pages_max % num_of_more_pages);
+                //console.log('numHiddenRow ', numHiddenRow, 'num_of_more_pages_max - num_of_more_pages ', num_of_more_pages_max % num_of_more_pages);
                 for (let index = 1; index <= num_of_pages + (num_of_more_pages_max % num_of_more_pages); index++) {
                   //worksheet.getRow(totalRowCount + _sourceRow + leftCount + index + 1).hidden = true;
                   worksheet.getRow(numHiddenRow - index).hidden = true;
@@ -708,7 +723,7 @@ class EiExcelConverterAuto {
               try {
                 const _item_name = _e['ITEM_NAME'];
                 this.addValueToCellsWithItemName(worksheet, _sourceRow_2 + totalRowCount_2, _e, _item_name, detailCellFormat, excCols);
-                let item_name_lt = this.countlength(_item_name);
+                let item_name_lt = this.countlength(_item_name, type_template);
                 //console.log('item_name_lt  ', item_name_lt);
                 if (item_name_lt == 1) {
                   detailCellFormat.forEach((e, i) => {
@@ -837,7 +852,7 @@ class EiExcelConverterAuto {
               const _e = einvoiceDetailData[i + count];
               console.log('_e  ', _e);
               try {
-                let item_name_lt = this.countlength(_e['ITEM_NAME']);
+                let item_name_lt = this.countlength(_e['ITEM_NAME'], type_template);
                 const _item_name = _e['ITEM_NAME']; //longRow[itl];
                 this.addValueToCellsWithItemName(worksheet, _sourceRow + totalRowCount, _e, _item_name, detailCellFormat, excCols);
                 if (item_name_lt == 1) {
@@ -1270,9 +1285,14 @@ class EiExcelConverterAuto {
     return result;
   };
 
-  countlength = s => {
-    let rangeWord = 42; ///40 => ok;
+  countlength(s, type) {
+    let rangeWord = 40; ///40 => ok;
     let result = 0;
+    if (type == '1000000111') {
+      rangeWord = 42;
+    } else if (type == '1000000112') {
+      rangeWord = 48;
+    }
     //console.log('countlength ', s);
     if (this.hasLineBreak(s)) {
       result = this.countLineBreaks(s) + 1;
@@ -1281,7 +1301,7 @@ class EiExcelConverterAuto {
     }
     //console.log('countlength result ', result);
     return result;
-  };
+  }
   // isVietnameseUpperCase(str) {
   //   const vietnameseRegex = /^[\p{Lu}\s]+$/u; // Chỉ kiểm tra chữ hoa và khoảng trắng
   //   return vietnameseRegex.test(str.normalize('NFC'));

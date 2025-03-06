@@ -300,7 +300,7 @@ class EiExcelConverterAuto {
                   }
                 }
 
-                console.log('range_string  ', range_string, 'height_row  ', height_row);
+                // console.log('range_string  ', range_string, 'height_row  ', height_row);
 
                 worksheet.getCell(`${e.Cell}`).value = einvoiceMasterData[0]['BUYER_ADDRESS'];
                 worksheet.getRow(`${e.Cell.toString().substr(1, e.Cell.length - 1)}`).height =
@@ -850,7 +850,7 @@ class EiExcelConverterAuto {
           if (e > 0) {
             for (let i = 0; i < e; i++) {
               const _e = einvoiceDetailData[i + count];
-              console.log('_e  ', _e);
+              // console.log('_e  ', _e);
               try {
                 let item_name_lt = this.countlength(_e['ITEM_NAME'], type_template);
                 const _item_name = _e['ITEM_NAME']; //longRow[itl];

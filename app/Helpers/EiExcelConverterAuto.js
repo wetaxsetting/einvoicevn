@@ -1291,7 +1291,7 @@ class EiExcelConverterAuto {
     if (type == '1000000111') {
       rangeWord = 42;
     } else if (type == '1000000112') {
-      rangeWord = 48;
+      rangeWord = 52;
     }
     //console.log('countlength ', s);
     if (this.hasLineBreak(s)) {

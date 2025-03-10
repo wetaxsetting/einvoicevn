@@ -33,6 +33,12 @@ class EiExcelConverterAuto {
     backgroundRow,
     backgroundWidth,
     backgroundHeight,
+    l_num_of_pages,
+    l_num_of_more_pages,
+    l_num_of_more_pages_max,
+    taxSignCell,
+    taxSignBoxCell,
+    taxSignByCell,
   ) {
     let reportInfo = {CODE: '01', NAME: einvoiceMasterData[0]['PK'], PATH: reportPath}; //that is the report template path.
     //console.log('reportInfo  ', reportInfo);

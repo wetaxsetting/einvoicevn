@@ -3,7 +3,7 @@ const Helpers = use('Helpers');
 const fs = require('fs');
 const DBService = use('DBService');
 const EiExcelConverter = use('App/Helpers/EiPosExcelConverterAuto');
-class EiExcelHandler {
+class EiPosExcelConverterAuto {
   constructor() {}
   masterDataArray = [];
 
@@ -121,7 +121,7 @@ class EiExcelHandler {
       } else {
         bgPath = '';
       }
-      let checkYN = 'N';
+      /*let checkYN = 'N';
       //console.log("EiPosExcelHandlerAuto ==> einvoiceMasterData[0].URL_IMG_LOGO  line 128", einvoiceMasterData[0].URL_IMG_LOGO)
       try {
         checkYN = 'Y';
@@ -152,8 +152,28 @@ class EiExcelHandler {
         ];
       } else {
         logos = [];
-      }
+      }*/
       //console.log(" bgPath  ", bgPath, "logos  ", logos);
+
+      try {
+        let savePath = await Helpers.appRoot(`${einvoiceMasterData[0].URL_IMG_LOGO}`);
+        if (fs.existsSync(savePath)) {
+          logos = [
+            {
+              start: einvoiceMasterData[0].LOGO_START_COL,
+              width: einvoiceMasterData[0].LOGO_WIDTH, //   0.99 * dpi,
+              height: einvoiceMasterData[0].LOGO_HEIGHT, // 0.99 * dpi,
+              logoStartCount: einvoiceMasterData[0].LOGO_START_ROW,
+              logoPath: `${einvoiceMasterData[0].URL_IMG_LOGO}`, //logoPath: '/../' + `${einvoiceMasterData[0].URL_IMG_LOGO}`,
+            },
+          ];
+        } else {
+          logos = [];
+        }
+      } catch (error) {
+        logos = [];
+        console.log('error  require url ', error);
+      }
 
       for (let i = 0; i < einvoiceDetailsParam.length; i++) {
         detailCellFormat.push({
@@ -257,4 +277,4 @@ class EiExcelHandler {
   }
 }
 
-module.exports = EiExcelHandler;
+module.exports = EiPosExcelConverterAuto;

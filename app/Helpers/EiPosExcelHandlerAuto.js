@@ -33,6 +33,10 @@ class EiExcelHandler {
       let cancelPath = 'assets/images/einvoices_logo/Einvoice_cancel.png'; //đường dẫn của hình cancel
       let bgPath = ''; //đường dẫn của hình background
 
+      let taxSignCell = {}; //điểm bắt đầu và kết thúc trên trục X của hình dấu tick ký
+      let taxSignBoxCell = ''; //Cell bắt đầu của signBy ví dụ:"L"
+      let taxSignByCell = {}; //điểm bắt đầu và kết thúc trên trục X của signBy
+
       let _sourceRow = 0; //chiều cao tính từ đầu trang tới dòng đầu tiên của detail
       let _sourceRow_2 = 0; //chiều cao tính từ đầu trang tới dòng đầu tiên của detail
       let _sourceRow_3 = 0; //chiều cao tính từ đầu trang tới dòng đầu tiên của detail
@@ -43,6 +47,9 @@ class EiExcelHandler {
       let companyName = '';
       let backgroundRow = 0;
 
+      let num_of_pages = 0;
+      let num_of_more_pages = 0;
+      let num_of_more_pages_max = 0;
       const einvoiceMasterData = await DBService.callProcCursor('EI_SEL_POS_EINVOICE_M_PDF', [pk], p_language, p_crt_by, _db2);
       //console.log("file: EiPosExcelHandlerAuto.js:57 [vng-304] EiExcelHandler [vng-304] getEinvoice [vng-304] einvoiceMasterData:", einvoiceMasterData)
       const einvoiceDetailData = await DBService.callProcCursor('EI_SEL_POS_EINVOICE_D_PDF', [pk], p_language, p_crt_by, _db2);
@@ -193,6 +200,10 @@ class EiExcelHandler {
 
       // console.log("this.masterDataArray ", this.masterDataArray);
 
+      num_of_pages = einvoiceMasterData[0].NUM_OF_PAGE;
+      num_of_more_pages = einvoiceMasterData[0].NUM_OF_MORE_PAGE;
+      num_of_more_pages_max = einvoiceMasterData[0].NUM_OF_MORE_PAGE_MAX;
+
       if (this.masterDataArray.length > 0) {
         // console.log("masterDataArray ", this.masterDataArray);
         resultExcel = await exceljs.ExcelBuilder(
@@ -223,6 +234,12 @@ class EiExcelHandler {
           backgroundRow,
           backgroundWidth,
           backgroundHeight,
+          num_of_pages,
+          num_of_more_pages,
+          num_of_more_pages_max,
+          taxSignCell,
+          taxSignBoxCell,
+          taxSignByCell,
         );
       }
 

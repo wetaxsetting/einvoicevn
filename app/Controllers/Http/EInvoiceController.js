@@ -15147,10 +15147,11 @@ class EInvoiceController {
   convertHtmlCode(sText) {
     if (sText != null || sText == '') {
       //return this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '"', '&quot;'), '<', '&lt;'), '>', '&gt;'); vng-199 tạm thời đóng đoạn này vì sửa lý ở C# khi ký
-      return this.replaceAllExt(
-        this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '&', '&amp;'), '"', '&quot;'), '<', '&lt;'),
-        '>',
-        '&gt;',
+      return;
+      this.replaceAllExt(
+        this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '&', '&amp;'), '"', '&quot;'), '<', '&lt;'), '>', '&gt;'),
+        "'",
+        '&apos;',
       );
     } else {
       return '';
@@ -15158,10 +15159,11 @@ class EInvoiceController {
   }
   encoreHtmlCode(sText) {
     if (sText != null || sText == '') {
-      return this.replaceAllExt(
-        this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '&quot;', '"'), '&lt;', '<'), '&gt;', '>'),
-        '&amp;',
-        '&',
+      return;
+      this.replaceAllExt(
+        this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '&quot;', '"'), '&lt;', '<'), '&gt;', '>'), '&amp;', '&'),
+        '&apos;',
+        "'",
       );
     } else {
       return '';

@@ -15146,11 +15146,22 @@ class EInvoiceController {
 
   convertHtmlCode(sText) {
     if (sText != null || sText == '') {
-      //return this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '"', '&#34;'), '<', '&lt;'), '>', '&gt;'); vng-199 tạm thời đóng đoạn này vì sửa lý ở C# khi ký
+      //return this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '"', '&quot;'), '<', '&lt;'), '>', '&gt;'); vng-199 tạm thời đóng đoạn này vì sửa lý ở C# khi ký
       return this.replaceAllExt(
-        this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '&', '&amp;'), '"', '&#34;'), '<', '&lt;'),
+        this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '&', '&amp;'), '"', '&quot;'), '<', '&lt;'),
         '>',
         '&gt;',
+      );
+    } else {
+      return '';
+    }
+  }
+  encoreHtmlCode(sText) {
+    if (sText != null || sText == '') {
+      return this.replaceAllExt(
+        this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '&quot;', '"'), '&lt;', '<'), '&gt;', '>'),
+        '&amp;',
+        '&',
       );
     } else {
       return '';
@@ -16652,24 +16663,24 @@ class EInvoiceController {
               tgia: p_TGia, //invoice.DLHDon.TTChung.TGia,
               htttoan: p_HTTToan, //invoice.DLHDon.TTChung.HTTToan,
 
-              nban_ten: invoice.DLHDon.NDHDon.NBan.Ten,
+              nban_ten: this.encoreHtmlCode(invoice.DLHDon.NDHDon.NBan.Ten),
               nban_mst: invoice.DLHDon.NDHDon.NBan.MST,
-              nban_dchi: invoice.DLHDon.NDHDon.NBan.DChi,
+              nban_dchi: this.encoreHtmlCode(invoice.DLHDon.NDHDon.NBan.DChi),
               nban_sdthoai: invoice.DLHDon.NDHDon.NBan.SDThoai,
               nban_dctdtu: p_DCTDTu,
               nban_stknhang: p_STKNHang,
-              nban_tnhang: p_TNHang,
+              nban_tnhang: this.encoreHtmlCode(p_TNHang),
               nban_fax: p_Fax,
               nban_website: p_Website,
 
-              nmua_ten: invoice.DLHDon.NDHDon.NMua.Ten,
+              nmua_ten: this.encoreHtmlCode(invoice.DLHDon.NDHDon.NMua.Ten),
               nmua_mst: invoice.DLHDon.NDHDon.NMua.MST,
-              nmua_dchi: invoice.DLHDon.NDHDon.NMua.DChi,
+              nmua_dchi: this.encoreHtmlCode(invoice.DLHDon.NDHDon.NMua.DChi),
               nmua_sdthoai: invoice.DLHDon.NDHDon.NMua.SDThoai,
               nmua_cccdan: invoice.DLHDon.NDHDon.NMua.CCCDan,
               nmua_dctdtu: p_nm_DCTDTu,
-              nmua_mkhang: p_nm_MKHang,
-              nmua_hvten: p_nm_HVTNMHang,
+              nmua_mkhang: this.encoreHtmlCode(p_nm_MKHang),
+              nmua_hvten: this.encoreHtmlCode(p_nm_HVTNMHang),
               nmua_stknhang: p_nm_STKNHang,
               nmua_tnhang: p_nm_TNHang,
 
@@ -16681,8 +16692,8 @@ class EInvoiceController {
               mccqt: invoice.MCCQT,
               seller_tax_code: seller_tax_code,
               seller_date: seller_date,
-              store_code: store_code,
-              store_name: store_name,
+              store_code: this.encoreHtmlCode(store_code),
+              store_name: this.encoreHtmlCode(store_name),
               tax_serial_number: tax_serial_number,
               pos_no: pos_no,
               signing_time: signingTime.SigningTime,
@@ -16771,8 +16782,8 @@ class EInvoiceController {
                   tei_wt_invoice_m_pk: rtnValueMaster.p_rtn_cur[0].PK,
                   tchat: inv_d.TChat,
                   stt: inv_d.STT,
-                  mhhdvu: inv_d.MHHDVu,
-                  thhdvu: inv_d.THHDVu,
+                  mhhdvu: this.encoreHtmlCode(inv_d.MHHDVu),
+                  thhdvu: this.encoreHtmlCode(inv_d.THHDVu),
                   dvtinh: inv_d.DVTinh,
                   sluong: inv_d.SLuong,
                   dgia: inv_d.DGia,
@@ -17196,13 +17207,13 @@ class EInvoiceController {
       ];
       const jsonNBan = await transform(p_xml_content, templateNBan);
       const arrNBan = [
-        jsonNBan[0].Ten,
+        this.encoreHtmlCode(jsonNBan[0].Ten),
         jsonNBan[0].MST,
-        jsonNBan[0].DChi,
+        this.encoreHtmlCode(jsonNBan[0].DChi),
         jsonNBan[0].SDThoai,
         jsonNBan[0].DCTDTu,
         jsonNBan[0].STKNHang,
-        jsonNBan[0].TNHang,
+        this.encoreHtmlCode(jsonNBan[0].TNHang),
         jsonNBan[0].Fax,
         jsonNBan[0].Website,
         jsonNBan[0].TTKhac,
@@ -17226,15 +17237,15 @@ class EInvoiceController {
       const jsonNMua = await transform(p_xml_content, templateNMua);
       // console.log("jsonNMua", jsonNMua)
       const arrNMua = [
-        jsonNMua[0].Ten,
+        this.encoreHtmlCode(jsonNMua[0].Ten),
         jsonNMua[0].MST,
-        jsonNMua[0].DChi,
+        this.encoreHtmlCode(jsonNMua[0].DChi),
         jsonNMua[0].SDThoai,
         jsonNMua[0].DCTDTu,
-        jsonNMua[0].MKHang,
-        jsonNMua[0].HVTNMHang,
+        this.encoreHtmlCode(jsonNMua[0].MKHang),
+        this.encoreHtmlCode(jsonNMua[0].HVTNMHang),
         jsonNMua[0].STKNHang,
-        jsonNMua[0].TNHang,
+        this.encoreHtmlCode(jsonNMua[0].TNHang),
         jsonNMua[0].TTKhac,
       ];
       const templateLTSuat = [
@@ -17310,16 +17321,16 @@ class EInvoiceController {
       const signingTime = await transform(p_xml_content, templateSignTime);
 
       masterPara = masterPara.concat([
-        customField1,
-        customField2,
-        customField3,
-        customField4,
-        customField5,
-        customField6,
-        customField7,
-        customField8,
-        customField9,
-        customField10,
+        this.encoreHtmlCode(customField1),
+        this.encoreHtmlCode(customField2),
+        this.encoreHtmlCode(customField3),
+        this.encoreHtmlCode(customField4),
+        this.encoreHtmlCode(customField5),
+        this.encoreHtmlCode(customField6),
+        this.encoreHtmlCode(customField7),
+        this.encoreHtmlCode(customField8),
+        this.encoreHtmlCode(customField9),
+        this.encoreHtmlCode(customField10),
         p_mail_to,
         p_mail_cc,
         p_invoice_type,
@@ -17344,8 +17355,8 @@ class EInvoiceController {
             master[0].PK,
             jsonDSHHDVu[i].TChat,
             jsonDSHHDVu[i].STT,
-            jsonDSHHDVu[i].MHHDVu,
-            jsonDSHHDVu[i].THHDVu,
+            this.encoreHtmlCode(jsonDSHHDVu[i].MHHDVu),
+            this.encoreHtmlCode(jsonDSHHDVu[i].THHDVu),
             jsonDSHHDVu[i].DVTinh,
             jsonDSHHDVu[i].SLuong,
             jsonDSHHDVu[i].DGia,

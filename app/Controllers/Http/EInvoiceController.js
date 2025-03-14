@@ -6595,15 +6595,15 @@ class EInvoiceController {
 
             if (key == 'detail_invoice') {
               for (const inv of invoice[key]) {
-                if (inv.feature == 3) {
+                /*if (inv.feature == 3) {
                   detail_amount_vat -= Number(inv.amt_vat);
                   detail_amount -= Number(inv.amt);
                 } else {
                   detail_amount_vat += Number(inv.amt_vat);
                   detail_amount += Number(inv.amt);
-                }
-                // detail_amount_vat += Number(inv.amt_vat);
-                // detail_amount += Number(inv.amt);
+                }*/
+                detail_amount_vat += Number(inv.amt_vat);
+                detail_amount += Number(inv.amt);
                 if (!errorList[`${key}`].feature.test(inv.feature)) {
                   status = false;
                   resMess = `${mess1} feature is:  ${inv.feature}.`;
@@ -10593,13 +10593,15 @@ class EInvoiceController {
 
             if (key == 'detail_invoice') {
               for (const inv of invoice[key]) {
-                if (inv.feature == 3) {
+                /*if (inv.feature == 3) {
                   detail_amount_vat -= Number(inv.amt_vat);
                   detail_amount -= Number(inv.amt);
                 } else {
                   detail_amount_vat += Number(inv.amt_vat);
                   detail_amount += Number(inv.amt);
-                }
+                }*/
+                detail_amount_vat += Number(inv.amt_vat);
+                detail_amount += Number(inv.amt);
                 if (!errorList[`${key}`].feature.test(inv.feature)) {
                   status = false;
                   resMess = `${mess1} feature is: ${inv.feature}.`;

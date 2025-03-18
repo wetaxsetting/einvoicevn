@@ -10367,7 +10367,7 @@ class EInvoiceController {
           p_crt_by,
         );
 
-        return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, masterInvoicePK));
+        //return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, masterInvoicePK));
 
         if (masterInvoicePK.PK == -1) {
           // console.log(`The issuer invoice has not register [${invoices[i].req_key}]`, invoices[i].xml_signed);

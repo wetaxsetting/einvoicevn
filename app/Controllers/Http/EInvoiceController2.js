@@ -5036,7 +5036,6 @@ class EInvoiceController2 {
         '&',
         '&amp;',
       );
->>>>>>> 0b64b720a8efef5a47b7962489dafa33d25babb1
     } else {
       return '';
     }
@@ -5047,18 +5046,17 @@ class EInvoiceController2 {
     return target.replace(new RegExp(search, 'g'), replacement);
   }
 
-<<<<<<< HEAD
-=======
   encoreHtmlCode(sText) {
     if (sText != null || sText == '') {
-      return this.replaceAllExt(
-        this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '&#34;', '"'), '&lt;', '<'), '&gt;', '>'),
-        '&amp;',
-        '&',
-      );
+      return this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '&quot;', '"'), '&lt;', '<'), '&gt;', '>'), '&amp;', '&');
     } else {
       return '';
     }
+  }
+
+  replaceAllExt(strOgr, search, replacement) {
+    var target = strOgr.toString();
+    return target.replace(new RegExp(search, 'g'), replacement);
   }
 
 >>>>>>> 0b64b720a8efef5a47b7962489dafa33d25babb1

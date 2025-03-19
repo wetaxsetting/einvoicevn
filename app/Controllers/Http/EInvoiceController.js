@@ -12038,7 +12038,7 @@ class EInvoiceController {
             .json(Utils.responseByRule({success: false, message: `invoice date cannot greater than ${tomorrow_date}.`, data: res_data}));
         }
 
-        const data_raw_param = {
+        /*const data_raw_param = {
           p_req_key: invoices[i].master_pk,
           p_data_raw: JSON.stringify(invoices[i]),
         };
@@ -12055,7 +12055,7 @@ class EInvoiceController {
           data_raw_param,
           p_language,
           p_crt_by,
-        );
+        );*/
 
         if (invoices[i].form_no == 1) {
           objInvoice_M.HDon.DLHDon.TTChung.THDon = 'Hóa đơn giá trị gia tăng';

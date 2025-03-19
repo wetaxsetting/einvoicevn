@@ -16753,7 +16753,7 @@ class EInvoiceController {
   }
   encoreHtmlCode(sText) {
     if (sText != null || sText == '') {
-      return this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '&quot;', '"'), '&lt;', '<'), '&gt;', '>'), '&amp;', '&');
+     return this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText,'&amp;', '&'), '&quot;', '"'),'&lt;', '<'), '&gt;', '>');
     } else {
       return '';
     }

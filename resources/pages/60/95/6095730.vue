@@ -157,8 +157,9 @@ export default {
       {
         dataField: "SEND_DT",
         caption: this.$t("nlap"),
-        dataType: "date",
-        width: 120,
+        dataType: "string",
+        width: 200,
+        alignment: "center",
       },
       {
         dataField: "STATUS",
@@ -297,6 +298,7 @@ export default {
       if (rowData.CQT_RESULT_CD == "2")
       {
         html = `<div class="h-100 d-flex align-center justify-center"><span class="ma-2 v-chip theme--light v-size--small green lighten-3 green--text text--darken-3"><span class="v-chip__content">${rowData.CQT_RESULT}</span></span></div>`;
+
       } else if (rowData.CQT_RESULT_CD == "7")
       {
         html = `<div class="h-100 d-flex align-center justify-center"><span class="ma-2 v-chip theme--light v-size--small red lighten-3 red--text text--darken-3 text-decoration-underline"><span class="v-chip__content">${rowData.CQT_RESULT}</span></span></div>`;

@@ -391,6 +391,7 @@ export default {
     xml_signed : "",
     showPDF: false,
     urlPDF:"",
+    
     drawer: null,
     maTDiepLine0: "",
     tenTDiepLine0: "",
@@ -1225,7 +1226,7 @@ export default {
         }
       }
 
-      const TrandingTypeList = await this._getCommonCode2(["ACEI0040","ACEIT010","ACEIT020","ACEI0010","ACEIT030"], this.user.PK);
+      const TrandingTypeList = await this._getCommonCode2(["ACEI0040","ACEIT010","ACEIT020","ACEI0010","ACEIT040"], this.user.PK);
       this.trading_type_list = TrandingTypeList[0];
       this.etaxStatus_list = TrandingTypeList[1];
       if(TrandingTypeList[1])

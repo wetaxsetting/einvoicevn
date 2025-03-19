@@ -2,7 +2,7 @@
   <v-dialog id="view-einvoice-details-dialog" width="1000" v-model="dialogIsShow" overlay-opacity="0.1" :origin="origin" :transition="transition" :fullscreen="isMaximized">
     <v-card>
       <v-card-title class="headline primary-gradient white--text py-2">
-        <span>{{ $t("view-einvoice-details-dialog") }}</span>
+        <span>{{ $t("view-einvoice-dialog") }}</span>
         <v-spacer></v-spacer>
         <v-icon dark class="mr-2" @click="minimizeDialog">mdi-window-minimize</v-icon>
         <v-icon dark class="mr-2" @click="isMaximized = !isMaximized">{{ isMaximized ? "mdi-window-restore" : "mdi-window-maximize" }}</v-icon>
@@ -186,12 +186,9 @@ export default {
       if (rowData.STATUS_CD == "2")
       {
         html = `<div class="h-100 d-flex align-center justify-center"><span class="ma-2 v-chip theme--light v-size--small green lighten-3 green--text text--darken-3"><span class="v-chip__content">${rowData.STATUS}</span></span></div>`;
-      } else if  (rowData.STATUS_CD == "7")
-      {
-        html = `<div class="h-100 d-flex align-center justify-center"><span class="ma-2 v-chip theme--light v-size--small red lighten-3 red--text text--darken-3"><span class="v-chip__content">${rowData.STATUS}</span></span></div>` //class="d-flex align-center justify-center h-100 error--text"
       } else
       {
-        html = `<div class="h-100 d-flex align-center justify-center"><span class="ma-2 v-chip theme--light v-size--small yellow lighten-3 yellow--text text--darken-3 text-decoration-underline"><span class="v-chip__content">Chờ kết quả</span></span></div>`;
+        html = `<div class="h-100 d-flex align-center justify-center"><span class="ma-2 v-chip theme--light v-size--small red lighten-3 red--text text--darken-3"><span class="v-chip__content">${rowData.STATUS}</span></span></div>` //class="d-flex align-center justify-center h-100 error--text"
       }
       return html;
     },

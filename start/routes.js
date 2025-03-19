@@ -113,6 +113,8 @@ Route.group(() => {
   Route.get('readattachfile', 'DsoController.readAttachFile');
   Route.get('getfiletoken', 'DsoController.getFileToken');
   Route.get('getfiletoken2', 'DsoController.getFileToken2');
+  Route.get('getfiletokenrealtime', 'DsoController.getFileTokenRealTime');
+
   Route.get('getfiledbtoken', 'DsoController.DownloadFileDBToken');
   Route.get('getlogo', 'DsoController.getLogo');
   Route.post('sendmailhr', 'SendMailController.sendMailHR');
@@ -131,7 +133,7 @@ Route.group(() => {
   Route.post('invalidinvoice2xml', 'EInvoiceController.convertInvaliInvoiceToXML');
   Route.post('sendinvoice', 'EInvoiceController.sendInvoiceToTaxOffice');
   Route.post('sendmail', 'EInvoiceController.sendMail');
-  Route.post('einvoicepdfconvert', 'EinvoiceController.einvoicePdfConvert');
+  Route.post('einvoicepdfconvert', 'EInvoiceController.einvoicePdfConvert');
   Route.post('sendinvoicefromclient', 'EInvoiceController.sendInvoiceToTaxOfficeFromClient');
   Route.post('checkinvoicestatus', 'EInvoiceController.checkInvoiceStatusFromTaxOffice');
   Route.post('checkinvoicestatusfromclient', 'EInvoiceController.checkInvoiceStatusFromClient');
@@ -152,8 +154,10 @@ Route.group(() => {
   // WeTax
   Route.post('json-to-excel', 'EInvoiceController.renderJsonToExcelFile');
   Route.post('generate-declare-xml', 'EInvoiceController.weTaxConvertDeclareUsingInvoiceToXML');
-  Route.post('send-declare', 'EInvoiceController.weTaxSendDeclarationToTaxOffice');
-  Route.post('check-status-declare', 'EInvoiceController.weTaxCheckingDeclarations');
+  //Route.post('send-declare', 'EInvoiceController.weTaxSendDeclarationToTaxOffice');
+  //Route.post('check-status-declare', 'EInvoiceController.weTaxCheckingDeclarations');
+  Route.post('send-declare', 'EInvoiceController.weTaxSendDeclarationToTaxOffice2');
+  Route.post('check-status-declare', 'EInvoiceController.weTaxCheckingDeclarations2');
   Route.post('generate-notice-cancel-adjust-replace-xml', 'EInvoiceController.weTaxConvertInvalidInvoiceToXML');
   Route.post('send-notice-cancel-adjust-replace', 'EInvoiceController.weTaxSendInformAdjustToTaxOffice2');
   Route.post('check-notification-status', 'EInvoiceController.weTaxCheckInformAdjustToTaxOffice');
@@ -165,8 +169,8 @@ Route.group(() => {
   Route.post('send-invoice', 'EInvoiceController.weTaxSendInvoiceToTaxOffice');
   Route.post('check-status-invoice', 'EInvoiceController.weTaxCheckInvoiceStatusFromTaxOffice');
   Route.post('generate-invoice-xml', 'EInvoiceController.weTaxConvertInvoiceToXML');
+  Route.post('generate-delivery-note-xml', 'EInvoiceController.weTaxConvertDeliveryNoteXML');
   Route.post('send-company-info', 'EInvoiceController.weTaxSendCompanyInfo');
-
   Route.post('re-send-order-info', 'EInvoiceController.weTaxReSendOrderInfoV2');
   Route.post('re-send-normal-invoice', 'EInvoiceController.weTaxReSendNormalInvoice');
   Route.post('send-company-template', 'EInvoiceController.weTaxSendCompanyTemplate');
@@ -225,12 +229,17 @@ Route.group(() => {
   Route.post('update-image-c-sharp', 'EInvoiceController.UpdateImage');
   Route.post('sign-invoice-c-sharp', 'EInvoiceController.SignInvoiceXML');
   Route.post('pit2xml-c-sharp', 'EInvoiceController.SignInvoiceXML');
+
+  Route.post('pit2xml-c-sharp', 'EInvoiceController.SignInvoiceXML');
 })
   .prefix('api/einvoice')
   .middleware('user');
 
 Route.group(() => {
   Route.get('download-pdf-c-sharp', 'EInvoiceController.viewPDFInvoiceOut');
+  Route.post('call-post-api', 'EInvoiceController.callPostAPI');
+  Route.post('call-get-api', 'EInvoiceController.callGetAPI');
+  Route.delete('call-delete-api', 'EInvoiceController.callDeleteAPI');
 }).prefix('api/out/einvoice');
 
 Route.group(() => {
@@ -249,6 +258,7 @@ Route.group(() => {
   Route.post('hsm-sign-pdf', 'HSMController.signPdf');
 
   Route.post('hsm-sign-xml', 'HSMController2.HsmSignXml');
+  Route.post('hsm-sign-xml-twice', 'HSMController2.HsmSignXmlTwice');
 })
   .prefix('api/hsm')
   .middleware('user');
@@ -271,6 +281,9 @@ Route.group(() => {
   //e-invoice
   Route.post('invalidinvoice2xml', 'EInvoiceController.convertInvaliInvoiceToXML2');
   Route.post('sendinformadjustinvoice', 'EInvoiceController.sendInformAdjustToTaxOffice2');
+
+  Route.post('send-declare', 'EInvoiceController.weTaxSendDeclarationToTaxOffice2');
+  Route.post('check-status-declare', 'EInvoiceController.weTaxCheckingDeclarations2');
 })
   .prefix('api/einvoice/v2')
   .middleware('user');
@@ -286,14 +299,10 @@ Route.group(() => {
   Route.get('ReceiveSmsStatus', 'EInvoiceController.receiveSmsStatus');
 }).prefix('api/callbackotp');
 
-Route.group(() => {
-  Route.post('report-to-tax', 'EInvoiceController2.weTaxPosReportToTax');
-})
-  .prefix('api/einvoice/pos')
-  .middleware('user');
 // ======== clone WeTax
 Route.group(() => {
   Route.post('login', 'UserController.cloneWeTaxlogIn');
+  Route.post('get-token', 'UserController.getTokenWeTaxlogIn');
 }).prefix('api/wtx/pa/v1/auth');
 
 // Public api

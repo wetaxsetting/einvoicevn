@@ -4588,11 +4588,14 @@ class EInvoiceController2 {
 
   convertHtmlCode(sText) {
     if (sText != null || sText == '') {
-      return this.replaceAllExt(
-        this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '"', '&#34;'), '<', '&lt;'), '>', '&gt;'),
-        '&',
-        '&amp;',
-      );
+      return this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '&', '&amp;'), '"', '&quot;'), '<', '&lt;'), '>', '&gt;');
+    } else {
+      return '';
+    }
+  }
+  encoreHtmlCode(sText) {
+    if (sText != null || sText == '') {
+      return this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '&quot;', '"'), '&lt;', '<'), '&gt;', '>'), '&amp;', '&');
     } else {
       return '';
     }
@@ -4601,18 +4604,6 @@ class EInvoiceController2 {
   replaceAllExt(strOgr, search, replacement) {
     var target = strOgr.toString();
     return target.replace(new RegExp(search, 'g'), replacement);
-  }
-
-  encoreHtmlCode(sText) {
-    if (sText != null || sText == '') {
-      return this.replaceAllExt(
-        this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '&#34;', '"'), '&lt;', '<'), '&gt;', '>'),
-        '&amp;',
-        '&',
-      );
-    } else {
-      return '';
-    }
   }
 
   OBJtoXML(obj) {

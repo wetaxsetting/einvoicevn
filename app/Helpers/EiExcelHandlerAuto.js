@@ -159,8 +159,6 @@ class EiExcelHandler {
           field: einvoiceDetailsParam[i].FIELD,
         });
       }
-      // // //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
-
       //console.log('this.masterDataArray  ', this.masterDataArray);
       backgroundCell = einvoiceMasterData[0].BG_START_ROW;
       backgroundRow = einvoiceMasterData[0].BG_END_ROW;
@@ -223,7 +221,7 @@ class EiExcelHandler {
           num_of_more_pages_max,
           taxSignCell,
           taxSignBoxCell,
-          taxSignByCell,
+          taxSignByCell
         );
       }
 

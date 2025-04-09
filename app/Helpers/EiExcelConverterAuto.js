@@ -38,6 +38,7 @@ class EiExcelConverterAuto {
     taxSignCell,
     taxSignBoxCell,
     taxSignByCell,
+    template_cd
   ) {
     let reportInfo = {CODE: '01', NAME: einvoiceMasterData[0]['PK'], PATH: reportPath}; //that is the report template path.
     //console.log('reportInfo  ', reportInfo);
@@ -176,13 +177,6 @@ class EiExcelConverterAuto {
       for (let i = 0; i < page.length; i++) {
         if (page[i] > 0) {
           v_countNumberOfPages++;
-          /*data_of_page.push({PAGE: 'Trang ' + (i + 1) + '/' + total_number_of_page, NUM: i});
-          if (i == 0) {
-            data_of_page.push({PAGE: 'Trang ' + (i + 1) + '/' + total_number_of_page, NUM: i});
-          } else {
-            data_of_page.push({PAGE: 'Trang tiếp theo trang trước- Trang ' + (i + 1), NUM: i});
-          }
-          */
         }
       }
 
@@ -207,6 +201,34 @@ class EiExcelConverterAuto {
               }
             });
             worksheet.getCell(`${e.Cell}`).value = infoData;
+            if(einvoiceMasterData[0].TEMPLATE_CD.toString() == "2")
+            {
+              if(einvoiceMasterData[0].NOTVAT_DEL_YN.toString() == "Y")
+              {
+
+              }
+              if(einvoiceMasterData[0].VAT_RATE0_YN.toString() == "Y")
+              {
+
+              }
+              if(einvoiceMasterData[0].VAT_RATE5_YN.toString() == "Y")
+              {
+
+              }
+              if(einvoiceMasterData[0].VAT_RATE8_YN.toString() == "Y")
+              {
+
+              }
+              if(einvoiceMasterData[0].VAT_RATE10_YN.toString() == "Y")
+              {
+
+              }
+              if(einvoiceMasterData[0].ORHER_VAT_RATE_YN.toString() == "Y")
+              {
+
+              }
+
+            }
           } else if (e.Type == 2) {
             switch (e.Info[0]) {
               case 'dateString':
@@ -829,7 +851,7 @@ class EiExcelConverterAuto {
           if (e > 0) {
             for (let i = 0; i < e; i++) {
               const _e = einvoiceDetailData[i + count];
-              console.log('_e  ', _e);
+              //console.log('_e  ', _e);
               try {
                 let item_name_lt = this.countlength(_e['ITEM_NAME']);
                 const _item_name = _e['ITEM_NAME']; //longRow[itl];

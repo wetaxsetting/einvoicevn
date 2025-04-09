@@ -98,9 +98,6 @@ class EiExcelHandler {
           this.masterDataArray.push({Cell: `${msothueArray[i] + taxRow}`, Info: [e], Type: 2}); //so thue
         }
       };
-      // console.log("companyTaxcode ", companyTaxcode);
-
-      //let url_file_excel = "report/60/95/einvoices_template/Bornga/Bornga.xlsx";
 
       this.masterDataArray = [];
       if (convertYn == 'Y') {
@@ -185,10 +182,7 @@ class EiExcelHandler {
       num_of_more_pages = einvoiceMasterData[0].NUM_OF_MORE_PAGE;
       num_of_more_pages_max = einvoiceMasterData[0].NUM_OF_MORE_PAGE_MAX;
 
-      // console.log("this.masterDataArray ", this.masterDataArray);
-
       if (this.masterDataArray.length > 0) {
-        // console.log("masterDataArray ", this.masterDataArray);
         resultExcel = await exceljs.ExcelBuilder(
           p_crt_by,
           einvoiceMasterData,

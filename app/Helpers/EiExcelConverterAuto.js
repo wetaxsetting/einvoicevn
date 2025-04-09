@@ -193,42 +193,17 @@ class EiExcelConverterAuto {
         masterDataArray.forEach(e => {
           if (e.Type == 1) {
             let infoData = '';
+            let cellName = '';
             e.Info.forEach(_e => {
+              cellName = _e;
               if (einvoiceMasterData[0][`${_e}`] != null || einvoiceMasterData[0][`${_e}`] != undefined) {
                 infoData = infoData + einvoiceMasterData[0][`${_e}`];
               } else {
                 infoData = infoData + ' ';
               }
             });
+            // console.log("infoData " , infoData , " e.Cell ", e.Cell, " cellName ", cellName);
             worksheet.getCell(`${e.Cell}`).value = infoData;
-            if(einvoiceMasterData[0].TEMPLATE_CD.toString() == "2")
-            {
-              if(einvoiceMasterData[0].NOTVAT_DEL_YN.toString() == "Y")
-              {
-
-              }
-              if(einvoiceMasterData[0].VAT_RATE0_YN.toString() == "Y")
-              {
-
-              }
-              if(einvoiceMasterData[0].VAT_RATE5_YN.toString() == "Y")
-              {
-
-              }
-              if(einvoiceMasterData[0].VAT_RATE8_YN.toString() == "Y")
-              {
-
-              }
-              if(einvoiceMasterData[0].VAT_RATE10_YN.toString() == "Y")
-              {
-
-              }
-              if(einvoiceMasterData[0].ORHER_VAT_RATE_YN.toString() == "Y")
-              {
-
-              }
-
-            }
           } else if (e.Type == 2) {
             switch (e.Info[0]) {
               case 'dateString':
@@ -286,7 +261,7 @@ class EiExcelConverterAuto {
                     : Math.ceil(einvoiceMasterData[0]['SELLER_ADDRESS'].toString().length / 99) * 14; //Math.ceil
                 break;
               case 'BUYER_ADDRESS':
-                let range_string = 0,
+                /*let range_string = 0,
                   height_row = 0;
                 if (einvoiceMasterData[0]['BUYER_ADDRESS'] && this.isVietnameseUpperCase(einvoiceMasterData[0]['BUYER_ADDRESS'])) {
                   range_string = 75;
@@ -300,7 +275,35 @@ class EiExcelConverterAuto {
                   einvoiceMasterData[0]['BUYER_ADDRESS'] == null
                     ? 14
                     : Math.ceil(einvoiceMasterData[0]['BUYER_ADDRESS'].toString().length / range_string) * height_row; //Math.ceil
-                break;
+                break;*/
+                let range_string = 0,
+                    height_row = 0;
+
+                if (einvoiceMasterData[0].TEMPLATE_CD.toString() == '1000000111') {
+                  if (einvoiceMasterData[0]['BUYER_ADDRESS'] && this.isVietnameseUpperCase(einvoiceMasterData[0]['BUYER_ADDRESS'])) {
+                    range_string = 75;
+                    height_row = 15;
+                  } else {
+                    range_string = 84;
+                    height_row = 14;
+                  }
+                } else if (einvoiceMasterData[0].TEMPLATE_CD.toString() == '1000000112') {
+                  if (einvoiceMasterData[0]['BUYER_ADDRESS'] && this.isVietnameseUpperCase(einvoiceMasterData[0]['BUYER_ADDRESS'])) {
+                    range_string = 70;
+                    height_row = 15;
+                  } else {
+                    range_string = 80;
+                    height_row = 14;
+                  }
+                }
+
+                // console.log('range_string  ', range_string, 'height_row  ', height_row);
+
+                worksheet.getCell(`${e.Cell}`).value = einvoiceMasterData[0]['BUYER_ADDRESS'];
+                worksheet.getRow(`${e.Cell.toString().substr(1, e.Cell.length - 1)}`).height =
+                    einvoiceMasterData[0]['BUYER_ADDRESS'] == null
+                        ? 14
+                        : Math.ceil(einvoiceMasterData[0]['BUYER_ADDRESS'].toString().length / range_string) * height_row; //Math.ceil
               default:
                 worksheet.getCell(`${e.Cell}`).value = e.Info[0] != null ? e.Info[0] : '';
                 break;
@@ -450,18 +453,7 @@ class EiExcelConverterAuto {
                 let tmpObj = {loop_row: num_of_more_pages_max - totalRowCount, loopStartRow: totalRowCount + _sourceRow + 1};
                 extendedArray.push(tmpObj);
               }
-              /*console.log(
-                'totalRowCount  ',
-                totalRowCount,
-                '_sourceRow  ',
-                _sourceRow,
-                'totalRowCount  ',
-                totalRowCount,
-                'num_of_more_pages_max',
-                num_of_more_pages_max,
-                'num_of_more_pages',
-                num_of_more_pages,
-              );*/
+
               _count_ = totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + (num_of_more_pages_max - num_of_more_pages) + 1; //
               totalRowCount += num_of_more_pages - totalRowCount;
 
@@ -471,21 +463,7 @@ class EiExcelConverterAuto {
               const rowIndex = totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + (num_of_more_pages_max - num_of_more_pages) + 1;
               const rowExtendedStart = totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + 1;
               const rowExtendedEnd = totalRowCount + _sourceRow + (num_of_more_pages - totalRowCount) + (num_of_more_pages_max - num_of_more_pages);
-              /*try {
-                console.log(
-                  'rowExtendedStart ',
-                  rowExtendedStart,
-                  'startMergeRedundantRow ',
-                  startMergeRedundantRow,
-                  'rowExtendedEnd ',
-                  rowExtendedEnd,
-                  'endMergeRedundantRow ',
-                  endMergeRedundantRow,
-                );
-                worksheet.mergeCells(rowExtendedStart, startMergeRedundantRow, rowExtendedEnd, endMergeRedundantRow);
-              } catch (error) {
-                console.log('mergeCells 0 err ', error);
-              }*/
+
               try {
                 // console.log('rowIndex ', rowIndex, 'startMergeRedundantRow ', startMergeRedundantRow, 'endMergeRedundantRow ', endMergeRedundantRow);
                 worksheet.mergeCells(rowIndex, startMergeRedundantRow, rowIndex, endMergeRedundantRow);
@@ -742,12 +720,6 @@ class EiExcelConverterAuto {
                     left: {style: 'thin'},
                   };
                 } else {
-                  // console.log(
-                  //   '_sourceRow_2 + totalRowCount_2  ',
-                  //   _sourceRow_2 + totalRowCount_2,
-                  //   '_sourceRow_2 + totalRowCount_2 + item_name_lt - 1 ',
-                  //   _sourceRow_2 + totalRowCount_2 + item_name_lt - 1,
-                  // );
                   detailCellFormat.forEach(e => {
                     //console.log('e  ', e);
                     worksheet.mergeCells(_sourceRow_2 + totalRowCount_2, e.startCell, _sourceRow_2 + totalRowCount_2 + item_name_lt - 1, e.endCell);
@@ -1185,6 +1157,7 @@ class EiExcelConverterAuto {
       }
       //END-this part insert Signed image if the einvoice is signed.
 
+
       //this part add more style to missing part of the footer(optional).
       try {
         if (v_countNumberOfPages > 1) {
@@ -1212,7 +1185,65 @@ class EiExcelConverterAuto {
       } catch (error) {
         console.log(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
       }
-
+      let current_row = 0;
+      //NOTVAT_DEL_YN, VAT_RATE0_YN, VAT_RATE5_YN, VAT_RATE8_YN, VAT_RATE10_YN, ORHER_VAT_RATE_YN
+      if(einvoiceMasterData[0].TEMPLATE_CD.toString() == "2") {
+        masterDataArray.forEach(e => {
+          console.log(e);
+          switch (e.Info[0]) {
+            case 'NOTVAT_NET' :
+              if(einvoiceMasterData[0].NOTVAT_DEL_YN == "Y")
+              {
+                current_row = this.extractAllDigits(e.Cell);
+                console.log("NOTVAT_NET ===> ",e.Cell, (Number(current_row) + Number(totalRows)));
+                worksheet.getRow((Number(current_row) + Number(totalRows) - 1)).hidden = true;
+              }
+              break;
+            case 'VAT_RATE0_NET' :
+              if(einvoiceMasterData[0].VAT_RATE0_YN == "Y")
+              {
+                current_row = this.extractAllDigits(e.Cell);
+                console.log("VAT_RATE0_NET ===> ",e.Cell, (Number(current_row) + Number(totalRows)));
+                worksheet.getRow((Number(current_row) + Number(totalRows) - 1)).hidden = true;
+              }
+              break;
+            case 'VAT_RATE5_NET' :
+              if(einvoiceMasterData[0].VAT_RATE5_YN == "Y")
+              {
+                current_row = this.extractAllDigits(e.Cell);
+                console.log("VAT_RATE5_NET ===> ",e.Cell, (Number(current_row) + Number(totalRows)));
+                worksheet.getRow((Number(current_row) + Number(totalRows) - 1)).hidden = true;
+              }
+              break;
+            case 'VAT_RATE8_NET' :
+              if(einvoiceMasterData[0].VAT_RATE8_YN == "Y")
+              {
+                current_row = this.extractAllDigits(e.Cell);
+                console.log("VAT_RATE8_NET ===> ",e.Cell, (Number(current_row) + Number(totalRows)));
+                worksheet.getRow((Number(current_row) + Number(totalRows) - 1)).hidden = true;
+              }
+              break;
+            case 'VAT_RATE10_NET' :
+              if(einvoiceMasterData[0].VAT_RATE10_YN == "Y")
+              {
+                current_row = this.extractAllDigits(e.Cell);
+                console.log("VAT_RATE10_NET ===> ",e.Cell, (Number(current_row) + Number(totalRows)));
+                worksheet.getRow((Number(current_row) + Number(totalRows) - 1)).hidden = true;
+              }
+              break;
+            case 'ORHER_VAT_RATE_NET' :
+              if(einvoiceMasterData[0].ORHER_VAT_RATE_YN == "Y")
+              {
+                current_row = this.extractAllDigits(e.Cell);
+                console.log("ORHER_VAT_RATE_NET ===> ",e.Cell, (Number(current_row) + Number(totalRows)));
+                worksheet.getRow((Number(current_row) + Number(totalRows) - 1)).hidden = true;
+              }
+              break;
+            default:
+              break;
+          }
+        });
+      }
       //END-this part add more style to missing part of the footer(optional).
 
       // const reportFilePdf = await exceljs.writeFile();
@@ -1247,17 +1278,6 @@ class EiExcelConverterAuto {
         worksheet.getCell(`${e.col + rownum}`).value = detaildata[e.field];
       }
     });
-    // let fieldArray = []
-    // detailCellFormat.forEach(e => {
-    // 	fieldArray.push(excCols[e.startCell])
-    // });
-    // //console.log(fieldArray)
-    // worksheet.getCell(`${fieldArray[0] + rownum}`).value = detaildata["STT"];
-    // worksheet.getCell(`${fieldArray[1] + rownum}`).value = itemname;
-    // worksheet.getCell(`${fieldArray[2] + rownum}`).value = detaildata["ITEM_UOM"];
-    // worksheet.getCell(`${fieldArray[3] + rownum}`).value = detaildata["QTY"];
-    // worksheet.getCell(`${fieldArray[4] + rownum}`).value = detaildata["U_PRICE"];
-    // worksheet.getCell(`${fieldArray[5] + rownum}`).value = detaildata["NET_TR_AMT"];
   }
 
   countlength_v2 = s => {

@@ -2699,8 +2699,9 @@ class EInvoiceController {
           maTD = '',
           maGDDTu = '',
           tenGDDTu = '',
-          ngayTaoTB = '';
-
+          ngayTaoTB = '',
+            ord = '';
+        let para_value;
         if (!res_tradeCode.data) {
           return response.status(400).json(Utils.responseByRule({success: false, message: `no data found.`}));
         }
@@ -3011,7 +3012,6 @@ class EInvoiceController {
                   HTDKy: 'TDiep/DLieu/TBao/DLTBao/HTDKy',
                   TTXNCQT: 'TDiep/DLieu/TBao/DLTBao/TTXNCQT',
                   MCCQT: 'TDiep/DLieu/TBao/DLTBao/MCCQT',
-                  So: 'TDiep/DLieu/TBao/STBao/So',
                   NTBao: 'TDiep/DLieu/TBao/STBao/NTBao',
                   NgayCQTKy: 'TDiep/DLieu/TBao/DSCKS/CQT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
                 };
@@ -3278,7 +3278,11 @@ class EInvoiceController {
         ngayTaoTB = '',
         ketQua = '',
         messCQT = '',
-        pos_key = '';
+        pos_key = '',
+          ord = '';
+      let soTB = '';
+      let ngayTB = '';
+      let thoiGianCQTKy = '';
       if (!res.data.length) {
         // return response.send(Utils.response(false, 'Checking Tax Status Failure. No data found.', null));
         return response.status(404).json(Utils.responseByRule({success: false, message: 'No data found!'}));
@@ -3485,7 +3489,11 @@ class EInvoiceController {
         ngayTaoTB = '',
         ketQua = '',
         messCQT = '',
+          soTB = '',
+          ngayTB = '',
+          thoiGianCQTKy = '',
         pos_key = '';
+      let para_history;
       if (!res.data.length) {
         // return response.send(Utils.response(false, 'Checking Tax Status Failure. No data found.', null));
         return response.status(404).json(Utils.responseByRule({success: false, message: 'No data found!'}));
@@ -3562,7 +3570,6 @@ class EInvoiceController {
                   HTDKy: 'TDiep/DLieu/TBao/DLTBao/HTDKy',
                   TTXNCQT: 'TDiep/DLieu/TBao/DLTBao/TTXNCQT',
                   MCCQT: 'TDiep/DLieu/TBao/DLTBao/MCCQT',
-                  So: 'TDiep/DLieu/TBao/STBao/So',
                   NTBao: 'TDiep/DLieu/TBao/STBao/NTBao',
                   NgayCQTKy: 'TDiep/DLieu/TBao/DSCKS/CQT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
                 };
@@ -5362,7 +5369,6 @@ class EInvoiceController {
         p_inv_qty: para.INV_QTY,
         p_from_no: para.FROM_NO,
         p_to_no: para.TO_NO,
-        p_inv_qty: null,
         p_from_dt: para.FROM_DT,
         p_to_dt: para.TO_DT,
         p_status: para.STATUS,
@@ -10222,7 +10228,6 @@ class EInvoiceController {
           TTXNCQT: 'TTXNCQT',
           HThuc: 'HThuc',
           MCCQT: 'MCCQT',
-          DDanh: 'DDanh',
           CDanh: 'CDanh',
         },
       ];

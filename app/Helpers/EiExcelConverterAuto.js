@@ -887,7 +887,7 @@ class EiExcelConverterAuto {
                 }
                 totalRowCount += item_name_lt;
                 if (i == 0) {
-                  console.log('cancelYn   ', cancelYn);
+                  //console.log('cancelYn   ', cancelYn);
                   if (cancelYn == 'Y') {
                     try {
                       worksheet.addImage(await exceljs.insertPathImage(cancelPath), {
@@ -926,7 +926,7 @@ class EiExcelConverterAuto {
       //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
       //	worksheet.getCell(`${excCols[e.startCell]+( _sourceRow_2 + totalRowCount_2)}`).style.border = {bottom: {style:detailCellFormat[i].cellBorder},left: { style: 'thin' }, };
       if (v_countNumberOfPages > 1) {
-        console.log('extendedRows  ', extendedRows);
+        //console.log('extendedRows  ', extendedRows);
         for (let o = 1; o <= extendedRows; o++) {
           try {
             detailCellFormat.forEach((e, i) => {
@@ -954,7 +954,7 @@ class EiExcelConverterAuto {
           }
         }
       } else {
-        console.log('extendedRows  1 page', extendedRows);
+        //console.log('extendedRows  1 page', extendedRows);
         for (let o = 1; o <= extendedRows; o++) {
           try {
             detailCellFormat.forEach((e, i) => {
@@ -1087,7 +1087,7 @@ class EiExcelConverterAuto {
 
       if (einvoiceMasterData[0]['SIGN_YN'] == 'Y') {
         try {
-          console.log('SIGN_YN  ++===>  ', signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
+          //console.log('SIGN_YN  ++===>  ', signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
           worksheet.unMergeCells(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
           worksheet.unMergeCells(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 1));
           worksheet.unMergeCells(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 2));
@@ -1124,7 +1124,7 @@ class EiExcelConverterAuto {
 
       if (einvoiceMasterData[0]['ETAX_SIGN_YN'] == 'Y') {
         try {
-          console.log('ETAX_SIGN_YN  ++===>  ', taxSignCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
+          //console.log('ETAX_SIGN_YN  ++===>  ', taxSignCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
           worksheet.unMergeCells(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
           worksheet.unMergeCells(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 1));
           worksheet.unMergeCells(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 2));

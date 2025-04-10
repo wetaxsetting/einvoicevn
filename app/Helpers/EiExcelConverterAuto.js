@@ -833,7 +833,7 @@ class EiExcelConverterAuto {
                 } else {
                   //console.log('detailCellFormat  ', detailCellFormat);
                   detailCellFormat.forEach((e, i) => {
-                    console.log('e.startCell', e.startCell, " =>> ", (_sourceRow + totalRowCount + item_name_lt - 1), " e.endCell ", e.endCell );
+                    //console.log('e.startCell', e.startCell, " =>> ", (_sourceRow + totalRowCount + item_name_lt - 1), " e.endCell ", e.endCell );
                     if (e.cellType == 2 || e.cellType == 1) {
                       nmCell = excCols[e.startCell];
                       worksheet.mergeCells(_sourceRow + totalRowCount, e.startCell, _sourceRow + totalRowCount + item_name_lt - 1, e.endCell);
@@ -856,7 +856,7 @@ class EiExcelConverterAuto {
                     };
                   });
                   if(einvoiceMasterData[0].TEMPLATE_CD.toString() == "2") {
-                    console.log('nmCell  ', nmCell, '(_sourceRow + totalRowCount + item_name_lt - 1) ', _sourceRow + totalRowCount + item_name_lt);
+                    //console.log('nmCell  ', nmCell, '(_sourceRow + totalRowCount + item_name_lt - 1) ', _sourceRow + totalRowCount + item_name_lt);
                     /*worksheet.getCell(`${nmCell + (_sourceRow + totalRowCount + item_name_lt)}`).style.border = {
                       bottom: {style: detailCellFormat[0].cellBorder},
                     };

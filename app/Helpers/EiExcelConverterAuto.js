@@ -954,6 +954,7 @@ class EiExcelConverterAuto {
           }
         }
       } else {
+        console.log('extendedRows  1 page', extendedRows);
         for (let o = 1; o <= extendedRows; o++) {
           try {
             detailCellFormat.forEach((e, i) => {
@@ -962,11 +963,13 @@ class EiExcelConverterAuto {
               } catch (error) {}
               worksheet.getCell(`${excCols[e.startCell] + (totalRows + _sourceRow_3 - o)}`).style.border = {
                 left: {style: 'thin'},
+                right: {style: 'thin'},
                 bottom: {style: detailCellFormat[i].cellBorder},
               };
             });
             worksheet.getCell(`${lastCell + (totalRows + _sourceRow_3 - o)}`).style.border = {
               right: {style: 'thin'},
+              left: {style: 'thin'},
               bottom: {style: detailCellFormat[0].cellBorder},
             };
             worksheet.getRow(totalRows + _sourceRow_3 - o).height = lastPageRowsHeight;
@@ -1186,16 +1189,13 @@ class EiExcelConverterAuto {
         console.log(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
       }
       let current_row = 0;
-      //NOTVAT_DEL_YN, VAT_RATE0_YN, VAT_RATE5_YN, VAT_RATE8_YN, VAT_RATE10_YN, ORHER_VAT_RATE_YN
       if(einvoiceMasterData[0].TEMPLATE_CD.toString() == "2") {
         masterDataArray.forEach(e => {
-          console.log(e);
           switch (e.Info[0]) {
             case 'NOTVAT_NET' :
               if(einvoiceMasterData[0].NOTVAT_DEL_YN == "Y")
               {
                 current_row = this.extractAllDigits(e.Cell);
-                console.log("NOTVAT_NET ===> ",e.Cell, (Number(current_row) + Number(totalRows)));
                 worksheet.getRow((Number(current_row) + Number(totalRows) - 1)).hidden = true;
               }
               break;
@@ -1203,7 +1203,6 @@ class EiExcelConverterAuto {
               if(einvoiceMasterData[0].VAT_RATE0_YN == "Y")
               {
                 current_row = this.extractAllDigits(e.Cell);
-                console.log("VAT_RATE0_NET ===> ",e.Cell, (Number(current_row) + Number(totalRows)));
                 worksheet.getRow((Number(current_row) + Number(totalRows) - 1)).hidden = true;
               }
               break;
@@ -1211,7 +1210,6 @@ class EiExcelConverterAuto {
               if(einvoiceMasterData[0].VAT_RATE5_YN == "Y")
               {
                 current_row = this.extractAllDigits(e.Cell);
-                console.log("VAT_RATE5_NET ===> ",e.Cell, (Number(current_row) + Number(totalRows)));
                 worksheet.getRow((Number(current_row) + Number(totalRows) - 1)).hidden = true;
               }
               break;
@@ -1219,7 +1217,6 @@ class EiExcelConverterAuto {
               if(einvoiceMasterData[0].VAT_RATE8_YN == "Y")
               {
                 current_row = this.extractAllDigits(e.Cell);
-                console.log("VAT_RATE8_NET ===> ",e.Cell, (Number(current_row) + Number(totalRows)));
                 worksheet.getRow((Number(current_row) + Number(totalRows) - 1)).hidden = true;
               }
               break;
@@ -1227,7 +1224,6 @@ class EiExcelConverterAuto {
               if(einvoiceMasterData[0].VAT_RATE10_YN == "Y")
               {
                 current_row = this.extractAllDigits(e.Cell);
-                console.log("VAT_RATE10_NET ===> ",e.Cell, (Number(current_row) + Number(totalRows)));
                 worksheet.getRow((Number(current_row) + Number(totalRows) - 1)).hidden = true;
               }
               break;
@@ -1235,7 +1231,7 @@ class EiExcelConverterAuto {
               if(einvoiceMasterData[0].ORHER_VAT_RATE_YN == "Y")
               {
                 current_row = this.extractAllDigits(e.Cell);
-                console.log("ORHER_VAT_RATE_NET ===> ",e.Cell, (Number(current_row) + Number(totalRows)));
+                //console.log("ORHER_VAT_RATE_NET ===> ",e.Cell, (Number(current_row) + Number(totalRows)));
                 worksheet.getRow((Number(current_row) + Number(totalRows) - 1)).hidden = true;
               }
               break;

@@ -126,7 +126,7 @@ class EiExcelConverterAuto {
         count_col_index = 0;
         total_countLenght = 0;
         for (let j = count_col; j < v_count; j++) {
-          let count_row = this.countlength(einvoiceDetailData[j]['ITEM_NAME']);
+          let count_row = this.countlength(einvoiceDetailData[j]['ITEM_NAME'],einvoiceMasterData[0].TEMPLATE_CD.toString());
           if (count_row > 0) {
             total_countLenght += count_row;
           } else {
@@ -313,7 +313,7 @@ class EiExcelConverterAuto {
         for (let j = 0; j < page.length; j++) {
           let lastPagelength = 0;
           for (let i = 0; i < page[j]; i++) {
-            let item_length = this.countlength(einvoiceDetailData[countPerPage]['ITEM_NAME']);
+            let item_length = this.countlength(einvoiceDetailData[countPerPage]['ITEM_NAME'],einvoiceMasterData[0].TEMPLATE_CD.toString());
             if (page[j] > 0 && page[j + 1] == 0) {
               lastPagelength += item_length;
             }
@@ -419,7 +419,7 @@ class EiExcelConverterAuto {
             for (let i = 0; i < e; i++) {
               const _e = einvoiceDetailData[i + count];
               try {
-                let item_name_lt = this.countlength(_e['ITEM_NAME']);
+                let item_name_lt = this.countlength(_e['ITEM_NAME'],einvoiceMasterData[0].TEMPLATE_CD.toString());
                 totalRowCount += item_name_lt;
                 countCheck += item_name_lt;
               } catch (error) {
@@ -684,7 +684,7 @@ class EiExcelConverterAuto {
               try {
                 const _item_name = _e['ITEM_NAME'];
                 this.addValueToCellsWithItemName(worksheet, _sourceRow_2 + totalRowCount_2, _e, _item_name, detailCellFormat, excCols);
-                let item_name_lt = this.countlength(_item_name);
+                let item_name_lt = this.countlength(_item_name,einvoiceMasterData[0].TEMPLATE_CD.toString());
                 //console.log('item_name_lt  ', item_name_lt);
                 if (item_name_lt == 1) {
                   detailCellFormat.forEach((e, i) => {
@@ -809,7 +809,7 @@ class EiExcelConverterAuto {
               const _e = einvoiceDetailData[i + count];
               //console.log('_e  ', _e);
               try {
-                let item_name_lt = this.countlength(_e['ITEM_NAME']);
+                let item_name_lt = this.countlength(_e['ITEM_NAME'],einvoiceMasterData[0].TEMPLATE_CD.toString() );
                 const _item_name = _e['ITEM_NAME']; //longRow[itl];
                 this.addValueToCellsWithItemName(worksheet, _sourceRow + totalRowCount, _e, _item_name, detailCellFormat, excCols);
                 console.log('item_name_lt', item_name_lt);
@@ -1285,10 +1285,25 @@ class EiExcelConverterAuto {
     return result;
   };
 
-  countlength = s => {
+  countlength(s, type) {
     let rangeWord = 40;
     let result = 0;
-    //console.log('countlength ', s);
+
+    if (this.isVietnameseUpperCase(s) && type == "2")
+    {
+      rangeWord = 30;
+    }else if (!this.isVietnameseUpperCase(s) && type == "2")
+    {
+      rangeWord = 42;
+    }else if (this.isVietnameseUpperCase(s) && type == "1")
+    {
+      rangeWord = 57;
+    }else if (!this.isVietnameseUpperCase(s) && type == "1")
+    {
+      rangeWord = 44;
+    }
+
+    console.log('countlength ', rangeWord);
     if (this.hasLineBreak(s)) {
       result = this.countLineBreaks(s) + 1;
     } else {

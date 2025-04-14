@@ -5198,7 +5198,6 @@ class EInvoiceController {
         p_inv_qty: para.INV_QTY,
         p_from_no: para.FROM_NO,
         p_to_no: para.TO_NO,
-        p_inv_qty: null,
         p_from_dt: para.FROM_DT,
         p_to_dt: para.TO_DT,
         p_status: para.STATUS,
@@ -9670,7 +9669,6 @@ class EInvoiceController {
           TTXNCQT: 'TTXNCQT',
           HThuc: 'HThuc',
           MCCQT: 'MCCQT',
-          DDanh: 'DDanh',
           CDanh: 'CDanh',
         },
       ];

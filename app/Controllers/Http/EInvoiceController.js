@@ -638,6 +638,19 @@ class EInvoiceController {
         sales_invoice_national,
         other_invoice,
         voucher,
+        asset_handling_agency,
+        foreign_supplier,
+        data_transfer_to_foreign_supplier,
+        integrated_vat_invoice,
+        integrated_sales_invoice,
+        commercial_invoice,
+        foreign_supplier_invoice,
+        rppr_nm,
+        rppr_phone,
+        rppr_cid,
+        rppr_passport,
+        rppr_dob,
+        rppr_gender,
         digital_certificates,
       } = request.all();
 
@@ -671,6 +684,19 @@ class EInvoiceController {
         sales_invoice_national,
         other_invoice,
         voucher,
+        asset_handling_agency,
+        foreign_supplier,
+        data_transfer_to_foreign_supplier,
+        integrated_vat_invoice,
+        integrated_sales_invoice,
+        commercial_invoice,
+        foreign_supplier_invoice,
+        rppr_nm,
+        rppr_phone,
+        rppr_cid,
+        rppr_passport,
+        rppr_dob,
+        rppr_gender,
         digital_certificates,
       };
 
@@ -679,39 +705,6 @@ class EInvoiceController {
         // return response.send(Utils.response(valid.status, valid.message, null));
         return response.status(400).json(Utils.responseByRule({success: false, message: valid.message}));
       }
-
-      //  console.log("weTaxConvertDeclareUsingInvoiceToXML  ", {
-      //   version,
-      //   declare_name,
-      //   declare_type,
-      //   declare_form_no,
-      //   seller_company_name,
-      //   seller_taxcode,
-      //   tax_office_name,
-      //   tax_office_code,
-      //   contact_person,
-      //   contact_address,
-      //   contact_email,
-      //   contact_phone,
-      //   location_name,
-      //   created_date,
-      //   has_code,
-      //   no_code,
-      //   pos_code,
-      //   taxpayer_from_difficult_location,
-      //   taxpayer_from_people_committee_suggestions,
-      //   transfer_data_directly_to_tax_office,
-      //   cdlqtvan,
-      //   full_transfer,
-      //   summary_transfer,
-      //   vat_invoice,
-      //   sales_invoice,
-      //   sales_invoice_passet,
-      //   sales_invoice_national,
-      //   other_invoice,
-      //   voucher,
-      //   digital_certificates
-      //  });
 
       let jsonDeclare = {
         TKhai: {
@@ -731,6 +724,12 @@ class EInvoiceController {
               DTLHe: '394552327',
               DDanh: 'Hà Nội',
               NLap: '2021-15-11',
+              TNDDPLuat: '',
+              DTDDPLuat: '',
+              CCCDan: '',
+              SHChieu: 'E',
+              NSDDPLuat: '2025-04-16',
+              GTinh: '1',
             },
             NDTKhai: {
               HTHDon: {
@@ -744,6 +743,8 @@ class EInvoiceController {
                 CDLTTDCQT: 0,
                 CDLQTVAN: 0,
                 CDLQTCTN: 0,
+                CQXLTSCong: 0,
+                NCCNN: 0
               },
               PThuc: {
                 CDDu: 1,
@@ -756,6 +757,10 @@ class EInvoiceController {
                 HDBHDTQGia: '',
                 HDKhac: 0,
                 CTu: 1,
+                HDGTGTTHBLai: 1,
+                HDBHTHBLai: 1,
+                HDTMai: 1,
+                HDNCCNN: 1
               },
               DSCTSSDung: {
                 CTS: [],
@@ -781,14 +786,27 @@ class EInvoiceController {
       jsonDeclare.TKhai.DLTKhai.TTChung.DTLHe = contact_phone;
       jsonDeclare.TKhai.DLTKhai.TTChung.DDanh = location_name;
       jsonDeclare.TKhai.DLTKhai.TTChung.NLap = created_date;
+      jsonDeclare.TKhai.DLTKhai.TTChung.TNDDPLuat = rppr_nm;
+      jsonDeclare.TKhai.DLTKhai.TTChung.DTDDPLuat = rppr_phone;
+      jsonDeclare.TKhai.DLTKhai.TTChung.CCCDan = rppr_cid;
+      jsonDeclare.TKhai.DLTKhai.TTChung.SHChieu = rppr_passport;
+      jsonDeclare.TKhai.DLTKhai.TTChung.NSDDPLuat = rppr_dob;
+      jsonDeclare.TKhai.DLTKhai.TTChung.GTinh = rppr_gender;
+
+
       jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.CMa = has_code;
       jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.KCMa = no_code;
       jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.CMTMTTien = pos_code;
+
       jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NNTDBKKhan = taxpayer_from_difficult_location;
       jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NNTKTDNUBND = taxpayer_from_people_committee_suggestions;
       jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLTTDCQT = transfer_data_directly_to_tax_office;
       jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLQTVAN = cdlqtvan;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLQTCTN = 0;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CQXLTSCong = asset_handling_agency;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NCCNN = foreign_supplier;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLQCNCCNN = data_transfer_to_foreign_supplier;
+
+
       jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CDDu = full_transfer;
       jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CBTHop = summary_transfer;
 
@@ -798,6 +816,12 @@ class EInvoiceController {
       jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBHDTQGia = sales_invoice_national;
       jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDKhac = other_invoice;
       jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.CTu = voucher;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDGTGTTHBLai = integrated_vat_invoice;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBHTHBLai = integrated_sales_invoice;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDTMai = commercial_invoice;
+      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDNCCNN = foreign_supplier_invoice;
+
+
 
       for (let i = 0; i < digital_certificates.length; i++) {
         jsonDeclare.TKhai.DLTKhai.NDTKhai.DSCTSSDung.CTS.push({
@@ -809,8 +833,8 @@ class EInvoiceController {
           HThuc: digital_certificates[i].type,
         });
       }
-      // const id = uuid.v4();
-      const id = 'ID1';
+      const id = uuid.v4();
+      //const id = 'ID1';
       const signature_path = 'TKhai/DSCKS/NNT';
       const xml = this.OBJtoXML(jsonDeclare);
       const xmlId = xml.toString().replace('<DLTKhai>', `<DLTKhai Id=\'${id}\'>`);

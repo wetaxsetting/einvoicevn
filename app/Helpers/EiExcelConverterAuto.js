@@ -621,21 +621,6 @@ class EiExcelConverterAuto {
           } else break;
         }
 
-        //////////////////////////
-        /*console.log('totalRows  ', numHiddenRow, 'totalRows  ', totalRows);
-        exceljs.copyRow(numHiddenRow, _sourceRow, 'c');
-        worksheet.getCell(`C${numHiddenRow}`).style.border = {};
-
-        lstNewMerge1.sort((a, b) => parseFloat(a.row1) - parseFloat(b.row1));
-        console.log('lstNewMerge1  ', lstNewMerge1);
-        lstNewMerge1.forEach(x => {
-          try {
-            //console.log(x);
-            worksheet.mergeCells(x.row1, x.col1, x.row2, x.col2);
-          } catch (ee) {
-            console.log('err', ee);
-          }
-        });*/
         let _startRow = 1;
         let _startcol = 1;
         let _endRow = _count_;
@@ -879,23 +864,23 @@ class EiExcelConverterAuto {
                       nmCell = excCols[e.startCell];
                       worksheet.mergeCells(_sourceRow + totalRowCount, e.startCell, _sourceRow + totalRowCount + item_name_lt - 1, e.endCell);
                       worksheet.getCell(`${excCols[e.startCell] + (_sourceRow + totalRowCount)}`).style.border = {
-                        bottom: {style: detailCellFormat[i].cellBorder},
+                        bottom: {style: e.cellBorder},
                         left: {style: 'thin'},
                         right: {style: 'thin'},
                       };
                     } else {
                       worksheet.mergeCells(_sourceRow + totalRowCount, e.startCell, _sourceRow + totalRowCount, e.endCell);
                       worksheet.getCell(`${excCols[e.startCell] + (_sourceRow + totalRowCount)}`).style.border = {
-                        bottom: {style: detailCellFormat[i].cellBorder},
+                        bottom: {style: e.cellBorder},
                         left: {style: 'thin'},
                       };
                     }
                     //console.log('lastCell  ', lastCell);
-                    worksheet.getCell(`${lastCell + (_sourceRow + totalRowCount)}`).style.border = {
+                    /*worksheet.getCell(`${lastCell + (_sourceRow + totalRowCount)}`).style.border = {
                       right: {style: 'thin'},
                       bottom: {style: detailCellFormat[0].cellBorder},
                       left: {style: 'thin'},
-                    };
+                    };*/
                   });
                   /*for (let u = 0; u < item_name_lt; u++) {
                     //worksheet.getCell(`${nmCell+(_sourceRow+totalRowCount+u}`).style.border = {left: {style:'thin'}};
@@ -909,7 +894,7 @@ class EiExcelConverterAuto {
                     left: {style: 'thin'},
                     right: {style: 'thin'},
                     bottom: {style: detailCellFormat[0].cellBorder},
-                    top: {style: 'thin'},
+                    top: {style: detailCellFormat[0].cellBorder},
                   };
                 }
                 totalRowCount += item_name_lt;

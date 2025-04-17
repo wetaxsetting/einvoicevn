@@ -2135,6 +2135,12 @@ class EInvoiceController {
           MSTTCGP: 'MSTTCGP',
           DDanh: 'DDanh',
           NLap: 'NLap',
+          TNDDPLuat: 'TNDDPLuat',
+          DTDDPLuat: 'DTDDPLuat',
+          CCCDan: 'CCCDan',
+          SHChieu: 'SHChieu',
+          NSDDPLuat: 'NSDDPLuat',
+          GTinh: 'GTinh'
         },
       ];
       //console.log("p_xml_content  ", p_xml_content);
@@ -2156,6 +2162,12 @@ class EInvoiceController {
         jsonTTChung[0].DTLHe,
         jsonTTChung[0].DDanh,
         jsonTTChung[0].NLap,
+        jsonTTChung[0].TNDDPLuat,
+        jsonTTChung[0].DTDDPLuat,
+        jsonTTChung[0].CCCDan,
+        jsonTTChung[0].SHChieu,
+        jsonTTChung[0].NSDDPLuat,
+        jsonTTChung[0].GTinh,
       ];
       //TKhai.DLTKhai.NDTKhai.HTHDon.CMa
       const templateNDTKhai = [
@@ -2177,6 +2189,10 @@ class EInvoiceController {
           NNTKTDNUBND: 'NNTKTDNUBND',
           CDLTTDCQT: 'CDLTTDCQT',
           CDLQTVAN: 'CDLQTVAN',
+          CDLQTCTN: 'CDLQTCTN',
+          CQXLTSCong: 'CQXLTSCong',
+          NCCNN: 'NCCNN',
+          CDLQCNCCNN: 'CDLQCNCCNN'
         },
       ];
       const jsonHTGDLHDDT = await transform(p_xml_content, templateHTGDLHDDT);
@@ -2185,6 +2201,10 @@ class EInvoiceController {
         jsonHTGDLHDDT[0].NNTKTDNUBND || '0',
         jsonHTGDLHDDT[0].CDLTTDCQT || '0',
         jsonHTGDLHDDT[0].CDLQTVAN || '0',
+        jsonHTGDLHDDT[0].CDLQTCTN || '0',
+        jsonHTGDLHDDT[0].CQXLTSCong || '0',
+        jsonHTGDLHDDT[0].NCCNN || '0',
+        jsonHTGDLHDDT[0].CDLQCNCCNN || '0',
       ];
 
       //TKhai.DLTKhai.NDTKhai.PThuc
@@ -2208,6 +2228,10 @@ class EInvoiceController {
           HDBHDTQGia: 'HDBHDTQGia',
           HDKhac: 'HDKhac',
           CTu: 'CTu',
+          HDGTGTTHBLai: 'HDGTGTTHBLai',
+          HDBHTHBLai: 'HDBHTHBLai',
+          HDTMai: 'HDTMai',
+          HDNCCNN: 'HDNCCNN'
         },
       ];
       const jsonLHDSDung = await transform(p_xml_content, templateLHDSDung);
@@ -2218,6 +2242,10 @@ class EInvoiceController {
         jsonLHDSDung[0].HDBHDTQGia,
         jsonLHDSDung[0].HDKhac,
         jsonLHDSDung[0].CTu,
+        jsonLHDSDung[0].HDGTGTTHBLai,
+        jsonLHDSDung[0].HDBHTHBLai,
+        jsonLHDSDung[0].HDTMai,
+        jsonLHDSDung[0].HDNCCNN,
       ];
 
       //TKhai.DLTKhai.NDTKhai.DSCTSSDung

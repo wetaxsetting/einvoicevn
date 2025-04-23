@@ -2771,7 +2771,7 @@ class EInvoiceController {
         LVL: 'error',
         MODULE: 'EInvoiceController',
         FUNC: 'weTaxSendCompanyInfor',
-        CONTENT: e.message,
+        CONTENT: e,
       });
       // return response.send(Utils.response(false, e.message, null));
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));

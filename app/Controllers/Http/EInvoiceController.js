@@ -2773,6 +2773,7 @@ class EInvoiceController {
         FUNC: 'weTaxSendCompanyInfor',
         CONTENT: e,
       });
+      console.log(e);
       // return response.send(Utils.response(false, e.message, null));
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
     }

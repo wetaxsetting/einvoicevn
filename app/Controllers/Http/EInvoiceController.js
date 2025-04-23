@@ -2598,11 +2598,11 @@ class EInvoiceController {
         tax_office_code = '',
         seller_website = '',
         tokens = [],
-        rppr_phone,
-        rppr_cid,
-        rppr_passport,
-        rppr_dob,
-        rppr_gender
+        rppr_phone = '',
+        rppr_cid = '',
+        rppr_passport = '',
+        rppr_dob = '',
+        rppr_gender = ''
       } = request.all();
 
       if (!seller_company_nm) {

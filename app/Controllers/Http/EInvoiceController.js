@@ -702,150 +702,254 @@ class EInvoiceController {
 
       const valid = this.validateJsonDeclarationToXML(declaration);
       if (!valid.status) {
-        // return response.send(Utils.response(valid.status, valid.message, null));
         return response.status(400).json(Utils.responseByRule({success: false, message: valid.message}));
       }
-
-      let jsonDeclare = {
-        TKhai: {
-          DLTKhai: {
-            TTChung: {
-              PBan: '2.0.0',
-              MSo: '01/ĐKTĐ-HĐĐT',
-              Ten: 'Tờ khai đăng ký/thay đổi thông tin sử dụng hóa đơn điện tử',
-              HThuc: 1,
-              TNNT: 'Vinmart',
-              MST: 104918404,
-              CQTQLy: 'Chi cục thuế Quận Hoàng Mai',
-              MCQTQLy: 10108,
-              NLHe: 'NGUYỄN THỊ DUNG',
-              DCLHe: 'Quận Hoàng Mai, Hà Nội',
-              DCTDTu: 'dungnguyentran@gmail.com',
-              DTLHe: '394552327',
-              DDanh: 'Hà Nội',
-              NLap: '2021-15-11',
-              TNDDPLuat: '',
-              DTDDPLuat: '',
-              CCCDan: '',
-              SHChieu: 'E',
-              NSDDPLuat: '2025-04-16',
-              GTinh: '1',
-            },
-            NDTKhai: {
-              HTHDon: {
-                CMa: 1,
-                KCMa: 0,
-                CMTMTTien: 0,
+      let jsonDeclare = {};
+      if(version == "2.0.1")
+      {
+        jsonDeclare = {
+          TKhai: {
+            DLTKhai: {
+              TTChung: {
+                PBan: '2.0.0',
+                MSo: '01/ĐKTĐ-HĐĐT',
+                Ten: 'Tờ khai đăng ký/thay đổi thông tin sử dụng hóa đơn điện tử',
+                HThuc: 1,
+                TNNT: 'Vinmart',
+                MST: 104918404,
+                CQTQLy: 'Chi cục thuế Quận Hoàng Mai',
+                MCQTQLy: 10108,
+                NLHe: 'NGUYỄN THỊ DUNG',
+                DCLHe: 'Quận Hoàng Mai, Hà Nội',
+                DCTDTu: 'dungnguyentran@gmail.com',
+                DTLHe: '394552327',
+                DDanh: 'Hà Nội',
+                NLap: '2021-15-11',
               },
-              HTGDLHDDT: {
-                NNTDBKKhan: 0,
-                NNTKTDNUBND: 0,
-                CDLTTDCQT: 0,
-                CDLQTVAN: 0,
-                CDLQTCTN: 0,
-                CQXLTSCong: 0,
-                NCCNN: 0
-              },
-              PThuc: {
-                CDDu: 1,
-                CBTHop: 0,
-              },
-              LHDSDung: {
-                HDGTGT: 1,
-                HDBHang: 1,
-                HDBTSCong: '',
-                HDBHDTQGia: '',
-                HDKhac: 0,
-                CTu: 1,
-                HDGTGTTHBLai: 1,
-                HDBHTHBLai: 1,
-                HDTMai: 1,
-                HDNCCNN: 1
-              },
-              DSCTSSDung: {
-                CTS: [],
+              NDTKhai: {
+                HTHDon: {
+                  CMa: 1,
+                  KCMa: 0,
+                  CMTMTTien: 0,
+                },
+                  HTGDLHDDT: {
+                    NNTDBKKhan: 0,
+                    NNTKTDNUBND: 0,
+                    CDLTTDCQT: 0,
+                    CDLQTCTN: 0,
+                },
+                PThuc: {
+                  CDDu: 1,
+                  CBTHop: 0,
+                },
+                LHDSDung: {
+                  HDGTGT: 1,
+                  HDBHang: 1,
+                  HDBTSCong: '',
+                  HDBHDTQGia: '',
+                  HDKhac: 0,
+                  CTu: 1,
+                },
+                DSCTSSDung: {
+                  CTS: [],
+                },
               },
             },
+            DSCKS: {
+              NNT: '',
+            },
           },
-          DSCKS: {
-            NNT: '',
+        };
+        jsonDeclare.TKhai.DLTKhai.TTChung.PBan = version;
+        jsonDeclare.TKhai.DLTKhai.TTChung.MSo = declare_form_no;
+        jsonDeclare.TKhai.DLTKhai.TTChung.Ten = declare_name;
+        jsonDeclare.TKhai.DLTKhai.TTChung.HThuc = declare_type;
+        jsonDeclare.TKhai.DLTKhai.TTChung.TNNT = this.convertHtmlCode(seller_company_name);
+        jsonDeclare.TKhai.DLTKhai.TTChung.MST = seller_taxcode;
+        jsonDeclare.TKhai.DLTKhai.TTChung.CQTQLy = tax_office_name;
+        jsonDeclare.TKhai.DLTKhai.TTChung.MCQTQLy = tax_office_code;
+        jsonDeclare.TKhai.DLTKhai.TTChung.NLHe = contact_person;
+        jsonDeclare.TKhai.DLTKhai.TTChung.DCLHe = contact_address;
+        jsonDeclare.TKhai.DLTKhai.TTChung.DCTDTu = contact_email;
+        jsonDeclare.TKhai.DLTKhai.TTChung.DTLHe = contact_phone;
+        jsonDeclare.TKhai.DLTKhai.TTChung.DDanh = location_name;
+        jsonDeclare.TKhai.DLTKhai.TTChung.NLap = created_date;
+        jsonDeclare.TKhai.DLTKhai.TTChung.TNDDPLuat = rppr_nm;
+        jsonDeclare.TKhai.DLTKhai.TTChung.DTDDPLuat = rppr_phone;
+        jsonDeclare.TKhai.DLTKhai.TTChung.CCCDan = rppr_cid;
+        jsonDeclare.TKhai.DLTKhai.TTChung.SHChieu = rppr_passport;
+        jsonDeclare.TKhai.DLTKhai.TTChung.NSDDPLuat = rppr_dob;
+        jsonDeclare.TKhai.DLTKhai.TTChung.GTinh = rppr_gender;
+
+
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.CMa = has_code;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.KCMa = no_code;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.CMTMTTien = pos_code;
+
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NNTDBKKhan = taxpayer_from_difficult_location;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NNTKTDNUBND = taxpayer_from_people_committee_suggestions;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLTTDCQT = transfer_data_directly_to_tax_office;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLQTCTN = '0';// cdlqtvan;
+
+
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CDDu = full_transfer;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CBTHop = summary_transfer;
+
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDGTGT = vat_invoice;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBHang = sales_invoice;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBTSCong = sales_invoice_passet;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBHDTQGia = sales_invoice_national;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDKhac = other_invoice;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.CTu = voucher;
+
+
+
+        for (let i = 0; i < digital_certificates.length; i++) {
+          jsonDeclare.TKhai.DLTKhai.NDTKhai.DSCTSSDung.CTS.push({
+            STT: digital_certificates[i].sequence || i + 1,
+            TTChuc: this.convertHtmlCode(digital_certificates[i].organization_name),
+            Seri: digital_certificates[i].serial_no,
+            TNgay: digital_certificates[i].from_date,
+            DNgay: digital_certificates[i].to_date,
+            HThuc: digital_certificates[i].type,
+          });
+        }
+      }else
+      {
+        jsonDeclare = {
+          TKhai: {
+            DLTKhai: {
+              TTChung: {
+                PBan: '2.0.0',
+                MSo: '01/ĐKTĐ-HĐĐT',
+                Ten: 'Tờ khai đăng ký/thay đổi thông tin sử dụng hóa đơn điện tử',
+                HThuc: 1,
+                TNNT: 'Vinmart',
+                MST: 104918404,
+                CQTQLy: 'Chi cục thuế Quận Hoàng Mai',
+                MCQTQLy: 10108,
+                NLHe: 'NGUYỄN THỊ DUNG',
+                DCLHe: 'Quận Hoàng Mai, Hà Nội',
+                DCTDTu: 'dungnguyentran@gmail.com',
+                DTLHe: '394552327',
+                DDanh: 'Hà Nội',
+                NLap: '2021-15-11',
+                TNDDPLuat: '',
+                DTDDPLuat: '',
+                CCCDan: '',
+                SHChieu: 'E',
+                NSDDPLuat: '2025-04-16',
+                GTinh: '1',
+              },
+              NDTKhai: {
+                HTHDon: {
+                  CMa: 1,
+                  KCMa: 0,
+                  CMTMTTien: 0,
+                },
+                HTGDLHDDT: {
+                  NNTDBKKhan: 0,
+                  NNTKTDNUBND: 0,
+                  CDLTTDCQT: 0,
+                  CDLQTVAN: 0,
+                  CDLQTCTN: 0,
+                  CQXLTSCong: 0,
+                  NCCNN: 0
+                },
+                PThuc: {
+                  CDDu: 1,
+                  CBTHop: 0,
+                },
+                LHDSDung: {
+                  HDGTGT: 1,
+                  HDBHang: 1,
+                  HDBTSCong: '',
+                  HDBHDTQGia: '',
+                  HDKhac: 0,
+                  CTu: 1,
+                  HDGTGTTHBLai: 1,
+                  HDBHTHBLai: 1,
+                  HDTMai: 1,
+                  HDNCCNN: 1
+                },
+                DSCTSSDung: {
+                  CTS: [],
+                },
+              },
+            },
+            DSCKS: {
+              NNT: '',
+            },
           },
-        },
-      };
-      jsonDeclare.TKhai.DLTKhai.TTChung.PBan = version;
-      jsonDeclare.TKhai.DLTKhai.TTChung.MSo = declare_form_no;
-      jsonDeclare.TKhai.DLTKhai.TTChung.Ten = declare_name;
-      jsonDeclare.TKhai.DLTKhai.TTChung.HThuc = declare_type;
-      jsonDeclare.TKhai.DLTKhai.TTChung.TNNT = this.convertHtmlCode(seller_company_name);
-      jsonDeclare.TKhai.DLTKhai.TTChung.MST = seller_taxcode;
-      jsonDeclare.TKhai.DLTKhai.TTChung.CQTQLy = tax_office_name;
-      jsonDeclare.TKhai.DLTKhai.TTChung.MCQTQLy = tax_office_code;
-      jsonDeclare.TKhai.DLTKhai.TTChung.NLHe = contact_person;
-      jsonDeclare.TKhai.DLTKhai.TTChung.DCLHe = contact_address;
-      jsonDeclare.TKhai.DLTKhai.TTChung.DCTDTu = contact_email;
-      jsonDeclare.TKhai.DLTKhai.TTChung.DTLHe = contact_phone;
-      jsonDeclare.TKhai.DLTKhai.TTChung.DDanh = location_name;
-      jsonDeclare.TKhai.DLTKhai.TTChung.NLap = created_date;
-      jsonDeclare.TKhai.DLTKhai.TTChung.TNDDPLuat = rppr_nm;
-      jsonDeclare.TKhai.DLTKhai.TTChung.DTDDPLuat = rppr_phone;
-      jsonDeclare.TKhai.DLTKhai.TTChung.CCCDan = rppr_cid;
-      jsonDeclare.TKhai.DLTKhai.TTChung.SHChieu = rppr_passport;
-      jsonDeclare.TKhai.DLTKhai.TTChung.NSDDPLuat = rppr_dob;
-      jsonDeclare.TKhai.DLTKhai.TTChung.GTinh = rppr_gender;
+        };
+        jsonDeclare.TKhai.DLTKhai.TTChung.PBan = version;
+        jsonDeclare.TKhai.DLTKhai.TTChung.MSo = declare_form_no;
+        jsonDeclare.TKhai.DLTKhai.TTChung.Ten = declare_name;
+        jsonDeclare.TKhai.DLTKhai.TTChung.HThuc = declare_type;
+        jsonDeclare.TKhai.DLTKhai.TTChung.TNNT = this.convertHtmlCode(seller_company_name);
+        jsonDeclare.TKhai.DLTKhai.TTChung.MST = seller_taxcode;
+        jsonDeclare.TKhai.DLTKhai.TTChung.CQTQLy = tax_office_name;
+        jsonDeclare.TKhai.DLTKhai.TTChung.MCQTQLy = tax_office_code;
+        jsonDeclare.TKhai.DLTKhai.TTChung.NLHe = contact_person;
+        jsonDeclare.TKhai.DLTKhai.TTChung.DCLHe = contact_address;
+        jsonDeclare.TKhai.DLTKhai.TTChung.DCTDTu = contact_email;
+        jsonDeclare.TKhai.DLTKhai.TTChung.DTLHe = contact_phone;
+        jsonDeclare.TKhai.DLTKhai.TTChung.DDanh = location_name;
+        jsonDeclare.TKhai.DLTKhai.TTChung.NLap = created_date;
+        jsonDeclare.TKhai.DLTKhai.TTChung.TNDDPLuat = rppr_nm;
+        jsonDeclare.TKhai.DLTKhai.TTChung.DTDDPLuat = rppr_phone;
+        jsonDeclare.TKhai.DLTKhai.TTChung.CCCDan = rppr_cid;
+        jsonDeclare.TKhai.DLTKhai.TTChung.SHChieu = rppr_passport;
+        jsonDeclare.TKhai.DLTKhai.TTChung.NSDDPLuat = rppr_dob;
+        jsonDeclare.TKhai.DLTKhai.TTChung.GTinh = rppr_gender;
 
 
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.CMa = has_code;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.KCMa = no_code;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.CMTMTTien = pos_code;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.CMa = has_code;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.KCMa = no_code;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.CMTMTTien = pos_code;
 
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NNTDBKKhan = taxpayer_from_difficult_location;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NNTKTDNUBND = taxpayer_from_people_committee_suggestions;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLTTDCQT = transfer_data_directly_to_tax_office;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLQTVAN = cdlqtvan;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CQXLTSCong = asset_handling_agency;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NCCNN = foreign_supplier;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLQCNCCNN = data_transfer_to_foreign_supplier;
-
-
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CDDu = full_transfer;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CBTHop = summary_transfer;
-
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDGTGT = vat_invoice;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBHang = sales_invoice;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBTSCong = sales_invoice_passet;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBHDTQGia = sales_invoice_national;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDKhac = other_invoice;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.CTu = voucher;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDGTGTTHBLai = integrated_vat_invoice;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBHTHBLai = integrated_sales_invoice;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDTMai = commercial_invoice;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDNCCNN = foreign_supplier_invoice;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NNTDBKKhan = taxpayer_from_difficult_location;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NNTKTDNUBND = taxpayer_from_people_committee_suggestions;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLTTDCQT = transfer_data_directly_to_tax_office;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLQTCTN = '0';
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLQTVAN = cdlqtvan;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CQXLTSCong = asset_handling_agency;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NCCNN = foreign_supplier;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLQCNCCNN = data_transfer_to_foreign_supplier;
 
 
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CDDu = full_transfer;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CBTHop = summary_transfer;
 
-      for (let i = 0; i < digital_certificates.length; i++) {
-        jsonDeclare.TKhai.DLTKhai.NDTKhai.DSCTSSDung.CTS.push({
-          STT: digital_certificates[i].sequence || i + 1,
-          TTChuc: this.convertHtmlCode(digital_certificates[i].organization_name),
-          Seri: digital_certificates[i].serial_no,
-          TNgay: digital_certificates[i].from_date,
-          DNgay: digital_certificates[i].to_date,
-          HThuc: digital_certificates[i].type,
-        });
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDGTGT = vat_invoice;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBHang = sales_invoice;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBTSCong = sales_invoice_passet;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBHDTQGia = sales_invoice_national;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDKhac = other_invoice;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.CTu = voucher;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDGTGTTHBLai = integrated_vat_invoice;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBHTHBLai = integrated_sales_invoice;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDTMai = commercial_invoice;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDNCCNN = foreign_supplier_invoice;
+
+        for (let i = 0; i < digital_certificates.length; i++) {
+          jsonDeclare.TKhai.DLTKhai.NDTKhai.DSCTSSDung.CTS.push({
+            STT: digital_certificates[i].sequence || i + 1,
+            TTChuc: this.convertHtmlCode(digital_certificates[i].organization_name),
+            Seri: digital_certificates[i].serial_no,
+            TNgay: digital_certificates[i].from_date,
+            DNgay: digital_certificates[i].to_date,
+            HThuc: digital_certificates[i].type,
+          });
+        }
       }
+
       const id = uuid.v4();
-      //const id = 'ID1';
       const signature_path = 'TKhai/DSCKS/NNT';
       const xml = this.OBJtoXML(jsonDeclare);
       const xmlId = xml.toString().replace('<DLTKhai>', `<DLTKhai Id=\'${id}\'>`);
       const xmlRemoveLine = xmlId.toString().replace(/\n/g, '');
 
-      // return response.send(
-      //   Utils.response(true, `Convert declare using invoices to xml was succesful.`, {
-      //     xml_data: xmlRemoveLine,
-      //     sign_id: id,
-      //   })
-      // );
       return response.status(200).json(
         Utils.responseByRule({
           success: true,
@@ -2162,12 +2266,12 @@ class EInvoiceController {
         jsonTTChung[0].DTLHe,
         jsonTTChung[0].DDanh,
         jsonTTChung[0].NLap,
-        jsonTTChung[0].TNDDPLuat,
-        jsonTTChung[0].DTDDPLuat,
-        jsonTTChung[0].CCCDan,
-        jsonTTChung[0].SHChieu,
-        jsonTTChung[0].NSDDPLuat,
-        jsonTTChung[0].GTinh,
+        jsonTTChung[0].TNDDPLuat || '',
+        jsonTTChung[0].DTDDPLuat || '',
+        jsonTTChung[0].CCCDan || '',
+        jsonTTChung[0].SHChieu || '',
+        jsonTTChung[0].NSDDPLuat || '',
+        jsonTTChung[0].GTinh || '',
       ];
       //TKhai.DLTKhai.NDTKhai.HTHDon.CMa
       const templateNDTKhai = [
@@ -2242,10 +2346,10 @@ class EInvoiceController {
         jsonLHDSDung[0].HDBHDTQGia,
         jsonLHDSDung[0].HDKhac,
         jsonLHDSDung[0].CTu,
-        jsonLHDSDung[0].HDGTGTTHBLai,
-        jsonLHDSDung[0].HDBHTHBLai,
-        jsonLHDSDung[0].HDTMai,
-        jsonLHDSDung[0].HDNCCNN,
+        jsonLHDSDung[0].HDGTGTTHBLai || '0',
+        jsonLHDSDung[0].HDBHTHBLai || '0',
+        jsonLHDSDung[0].HDTMai || '0',
+        jsonLHDSDung[0].HDNCCNN || '0',
       ];
 
       //TKhai.DLTKhai.NDTKhai.DSCTSSDung
@@ -2494,6 +2598,11 @@ class EInvoiceController {
         tax_office_code = '',
         seller_website = '',
         tokens = [],
+        rppr_phone,
+        rppr_cid,
+        rppr_passport,
+        rppr_dob,
+        rppr_gender
       } = request.all();
 
       if (!seller_company_nm) {
@@ -2529,6 +2638,11 @@ class EInvoiceController {
         tax_office_name,
         tax_office_code,
         seller_website,
+        rppr_phone,
+        rppr_cid,
+        rppr_passport,
+        rppr_dob,
+        rppr_gender
       };
       const res = await DBService.ExecuteSQLBlob(
         `BEGIN WETAX_PRO_COMPANY_INFO(
@@ -2548,7 +2662,14 @@ class EInvoiceController {
                     :tax_office_name,
                     :tax_office_code,
                     :seller_website
-                    ,:p_language, :p_crt_by, :p_rtn_cur); END;`,
+                    :rppr_phone,
+                    :rppr_cid,
+                    :rppr_passport,
+                    :rppr_dob,
+                    :rppr_gender,
+                    :p_language, 
+                    :p_crt_by, 
+                    :p_rtn_cur); END;`,
         para_value,
         p_language,
         p_crt_by,

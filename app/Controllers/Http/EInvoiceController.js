@@ -2661,7 +2661,7 @@ class EInvoiceController {
                     :seller_bank_name2,
                     :tax_office_name,
                     :tax_office_code,
-                    :seller_website
+                    :seller_website,
                     :rppr_phone,
                     :rppr_cid,
                     :rppr_passport,

@@ -3,6 +3,7 @@ const DBService = use('DBService');
 const Helpers = use('Helpers');
 const fs = require('fs');
 const EiExcelConverter = use('App/Helpers/EiExcelConverterAuto');
+const EiExcelConverter2 = use('App/Helpers/EiExcelConverterAuto2');
 
 class EiExcelHandler {
   constructor() {}
@@ -10,7 +11,7 @@ class EiExcelHandler {
 
   async getEinvoice(tradecode, p_language, p_crt_by, _db2 = 'N') {
     try {
-      let exceljs = new EiExcelConverter();
+
       let resultExcel = null;
       let companyTaxcode = 0;
 
@@ -18,7 +19,7 @@ class EiExcelHandler {
       let convertYn = 'N';
       let cancelYn = 'N';
 
-      let backgroundCell = 0; //ô chen background'  
+      let backgroundCell = 0; //ô chen background'
       let backgroundWidth = 300;
       let backgroundHeight = 200;
       let signCell = {}; //điểm bắt đầu và kết thúc trên trục X của hình dấu tick ký
@@ -60,19 +61,19 @@ class EiExcelHandler {
       const einvoiceDetailData = await DBService.callProcCursor('ei_sel_einvoice_d_pdf', [tradecode], p_language, p_crt_by, _db2);
 
       const einvoiceMasterParam = await DBService.callProcCursor(
-        'ei_sel_einvoice_m_param',
-        [tradecode, einvoiceMasterData[0].FORM_NO, einvoiceMasterData[0].SERIAL_NO, ''],
-        p_language,
-        p_crt_by,
-        _db2,
+          'ei_sel_einvoice_m_param',
+          [tradecode, einvoiceMasterData[0].FORM_NO, einvoiceMasterData[0].SERIAL_NO, ''],
+          p_language,
+          p_crt_by,
+          _db2,
       );
 
       const einvoiceDetailsParam = await DBService.callProcCursor(
-        'ei_sel_einvoice_d_param',
-        [tradecode, einvoiceMasterData[0].FORM_NO, einvoiceMasterData[0].SERIAL_NO, ''],
-        p_language,
-        p_crt_by,
-        _db2,
+          'ei_sel_einvoice_d_param',
+          [tradecode, einvoiceMasterData[0].FORM_NO, einvoiceMasterData[0].SERIAL_NO, ''],
+          p_language,
+          p_crt_by,
+          _db2,
       );
 
       //console.log(einvoiceDetailData)
@@ -146,7 +147,7 @@ class EiExcelHandler {
         logos = [];
         console.log('error  require url ', error);
       }
-
+      logos = [];
       for (let i = 0; i < einvoiceDetailsParam.length; i++) {
         detailCellFormat.push({
           startCell: einvoiceDetailsParam[i].STARTCELL,
@@ -181,54 +182,85 @@ class EiExcelHandler {
       num_of_pages = einvoiceMasterData[0].NUM_OF_PAGE;
       num_of_more_pages = einvoiceMasterData[0].NUM_OF_MORE_PAGE;
       num_of_more_pages_max = einvoiceMasterData[0].NUM_OF_MORE_PAGE_MAX;
-
-      if (this.masterDataArray.length > 0) {
+      if(einvoiceMasterData[0].TYPE_REPORT !== "1008161211" && this.masterDataArray.length > 0)
+      {
+        let exceljs = new EiExcelConverter();
         resultExcel = await exceljs.ExcelBuilder(
-          p_crt_by,
-          einvoiceMasterData,
-          einvoiceDetailData,
-          '',
-          _sourceRow,
-          _sourceRow_2,
-          _sourceRow_3,
-          headerRowCount,
-          countFromEndDetailToSignBox,
-          lastPageRowsHeight,
-          reportPath,
-          reportSheet,
-          signPath,
-          cancelPath,
-          bgPath,
-          this.masterDataArray,
-          detailCellFormat,
-          logos,
-          signCell,
-          signBoxCell,
-          signByCell,
-          cancelYn,
-          backgroundCell,
-          backgroundRow,
-          backgroundWidth,
-          backgroundHeight,
-          num_of_pages,
-          num_of_more_pages,
-          num_of_more_pages_max,
-          taxSignCell,
-          taxSignBoxCell,
-          taxSignByCell
+            p_crt_by,
+            einvoiceMasterData,
+            einvoiceDetailData,
+            '',
+            _sourceRow,
+            _sourceRow_2,
+            _sourceRow_3,
+            headerRowCount,
+            countFromEndDetailToSignBox,
+            lastPageRowsHeight,
+            reportPath,
+            reportSheet,
+            signPath,
+            cancelPath,
+            bgPath,
+            this.masterDataArray,
+            detailCellFormat,
+            logos,
+            signCell,
+            signBoxCell,
+            signByCell,
+            cancelYn,
+            backgroundCell,
+            backgroundRow,
+            backgroundWidth,
+            backgroundHeight,
+            num_of_pages,
+            num_of_more_pages,
+            num_of_more_pages_max,
+            taxSignCell,
+            taxSignBoxCell,
+            taxSignByCell
+        );
+      }else
+      {
+        let exceljs = new EiExcelConverter2();
+        //let exceljs = new EiExcelConverter();
+        resultExcel = await exceljs.ExcelBuilder(
+            p_crt_by,
+            einvoiceMasterData,
+            einvoiceDetailData,
+            '',
+            _sourceRow,
+            _sourceRow_2,
+            _sourceRow_3,
+            headerRowCount,
+            countFromEndDetailToSignBox,
+            lastPageRowsHeight,
+            reportPath,
+            reportSheet,
+            signPath,
+            cancelPath,
+            bgPath,
+            this.masterDataArray,
+            detailCellFormat,
+            logos,
+            signCell,
+            signBoxCell,
+            signByCell,
+            cancelYn,
+            backgroundCell,
+            backgroundRow,
+            backgroundWidth,
+            backgroundHeight,
+            num_of_pages,
+            num_of_more_pages,
+            num_of_more_pages_max,
+            taxSignCell,
+            taxSignBoxCell,
+            taxSignByCell
         );
       }
-
       return resultExcel;
     } catch (error) {
       console.log(error);
-    }
-  }
-
-  msThueCutter(msothueArray, taxCode, taxRow) {
-    for (let i = 0; i < taxCode.length; i++) {
-      const e = taxCode[i];
-      this.masterDataArray.push({Cell: `${msothueArray[i] + taxRow}`, Info: [e], Type: 2}); //so thue
     }
   }
 }

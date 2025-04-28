@@ -1618,6 +1618,7 @@ class ReportHelper {
     }
     row.commit();
   }
+
   insertRange3(rangeTemplate, datas, isReplace = false, isMerges = true) {
     const sheetModel = this.worksheet.model;
 
@@ -1727,6 +1728,7 @@ class ReportHelper {
       }
     }
   }
+
   insertRange2(rangeTemplate, datas, styles, details, key) {
     const sheetModel = this.worksheet.model;
 
@@ -2335,6 +2337,104 @@ class ReportHelper {
         Utils.Logger({LVL: 'error', MODULE: 'ReportController', FUNC: '_buildJsonToObject', CONTENT: `Cannot parse '${strJson}' to object.`});
     }
     return !!!jsonStr ? null : JSON.parse(jsonStr);
+  }
+
+  copyRange(styleCell, startRow, endRow,  startCol,  endCol, pasteStartRow, pasteStartCol )
+  {
+    const rowCount = endRow - startRow + 1;
+    const colCount = endCol - startCol + 1;
+
+    const rowHeights = [];
+    const rangeData = [];
+    // 1. Lấy dữ liệu từ range nguồn
+    for (let r = 0; r < rowCount; r++) {
+      const rowData = [];
+      const sourceRow = this.worksheet.getRow(startRow + r);
+
+      rowHeights.push({
+        rowNumber: sourceRow.number,
+        height: sourceRow.height
+      });
+      for (let c = 0; c < colCount; c++) {
+        const cell = sourceRow.getCell(startCol + c);
+        const cellData = {
+          value: cell.value,
+          type: cell.type,
+          isMerged: cell.isMerged
+        };
+
+        cellData.style = JSON.parse(JSON.stringify(cell.style));
+        rowData.push(cellData);
+      }
+      rangeData.push(rowData);
+    }
+
+
+    // 3. Paste dữ liệu vào vị trí đích
+    for (let r = 0; r < rowCount; r++) {
+      const targetRow = this.worksheet.getRow(pasteStartRow + r);
+
+      if (rowHeights[r]) {
+        targetRow.height = rowHeights[r].height;
+
+        // Nếu dòng có thiết lập custom height
+        if (rowHeights[r].height !== undefined) {
+          targetRow.hidden = false; // Đảm bảo dòng không bị ẩn
+        }
+      }
+
+      for (let c = 0; c < colCount; c++) {
+        const targetCol = (pasteStartCol || 1) + c;
+        const targetCell = targetRow.getCell(targetCol);
+        const cellData = rangeData[r][c];
+
+        if (cellData.formula) {
+          targetCell.value = { formula: cellData.formula };
+        } else {
+          targetCell.value = cellData.value;
+        }
+
+        if (cellData.style)
+          targetCell.style = JSON.parse(JSON.stringify(cellData.style));
+      }
+    }
+
+    let newStyleCell = [];
+    const regexCell = /([a-zA-Z]+)(\d+)/;
+
+    styleCell.forEach(q => {
+      const startMergeCell = q['range'].split(':').shift();
+      const endMergeCell = q['range'].split(':').pop();
+      //let rangeExtend = num_of_more_pages_max - num_of_more_pages;
+      let c1 = startMergeCell.match(regexCell)[1] + (q.row1 + pasteStartRow - 1);
+      let c2 = endMergeCell.match(regexCell)[1] + (q.row2 + pasteStartRow - 1);
+      newStyleCell.push({
+        row1: q.row1 + pasteStartRow - 1,
+        col1: q.col1,
+        row2: q.row2 + pasteStartRow - 1,
+        col2: q.col2,
+        range: `${c1}:${c2}`,
+      });
+    });
+
+    newStyleCell.sort((a, b) => parseFloat(a.row1) - parseFloat(b.row1));
+
+    //console.log(newStyleCell);
+    newStyleCell.forEach(x => {
+      try {
+        const startMergeCell = x['range'].split(':').shift();
+        this.worksheet.unMergeCells(startMergeCell);
+      } catch (ee) {
+        console.log(ee.message);
+      }
+      try {
+        this.worksheet.mergeCells(x.row1, x.col1, x.row2, x.col2);
+      } catch (ee) {
+        console.log(ee.message);
+        console.log(x.row1 + '+' + x.col1);
+        console.log(x.row2 + '+' + x.col2);
+      }
+    });
   }
 
   //vng-207

@@ -767,25 +767,6 @@ class EInvoiceController {
                   CTS: [],
                 },
 
-                TTTCGP:{
-                  TCGP: [],
-                },
-
-                TTTCTN:{
-                  TCTN: []
-                },
-
-                TTDVHTPT:{
-                  DVHTPT: []
-                },
-
-                TTTNSDung:{
-                  TNSDung: []
-                },
-
-                TTDKTH:{
-                  DKTH: []
-                }
               },
             },
             DSCKS: {
@@ -1056,6 +1037,25 @@ class EInvoiceController {
                 DSCTSSDung: {
                   CTS: [],
                 },
+                TTTCGP:{
+                  TCGP: [],
+                },
+
+                TTTCTN:{
+                  TCTN: []
+                },
+
+                TTDVHTPT:{
+                  DVHTPT: []
+                },
+
+                TTTNSDung:{
+                  TNSDung: []
+                },
+
+                TTDKTH:{
+                  DKTH: []
+                }
               },
             },
             DSCKS: {

@@ -652,6 +652,8 @@ class EInvoiceController {
         rppr_dob,
         rppr_gender,
         digital_certificates,
+        solution_provider,
+        tvan_company
       } = request.all();
 
       const declaration = {
@@ -698,6 +700,8 @@ class EInvoiceController {
         rppr_dob,
         rppr_gender,
         digital_certificates,
+        solution_provider,
+        tvan_company
       };
 
       const valid = this.validateJsonDeclarationToXML(declaration);
@@ -887,6 +891,10 @@ class EInvoiceController {
                   HDBHDTQGia: '',
                   HDKhac: 0,
                   CTu: 1,
+                  HDGTGTTHBLai: 1,
+                  HDBHTHBLai: 1,
+                  HDTMai: 1,
+                  HDNCCNN: 1
                 },
                 DSCTSSDung: {
                   CTS: [],
@@ -960,9 +968,40 @@ class EInvoiceController {
 
         jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCGP = {};
         jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCGP.TCGP = [];
+        
+        if(tvan_company)
+        {
+          for(let i = 0; i < tvan_company.length; i ++)
+            {
+              jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCGP.TCGP.push({
+                STT : tvan_company[i].sequence || i + 1,
+                TTCGP : this.convertHtmlCode(tvan_company[i].organization_name),
+                MSTTCGP : tvan_company[i].organization_taxcode,
+                TNgay :  tvan_company[i].from_date,
+                DNgay :  tvan_company[i].to_date,
+                GChu :  tvan_company[i].note,
+              });
+            }
+        }
+        
 
         jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCTN  = {};
         jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCTN.TCTN  = [];
+
+        if(solution_provider)
+        {
+          for(let i = 0; i < solution_provider.length; i ++)
+            {
+              jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCTN.TCTN.push({
+                STT : solution_provider[i].sequence || i + 1,
+                TTCGP : this.convertHtmlCode(solution_provider[i].organization_name),
+                MSTTCGP : solution_provider[i].organization_taxcode,
+                TNgay :  solution_provider[i].from_date,
+                DNgay :  solution_provider[i].to_date,
+                GChu :  solution_provider[i].note,
+              });
+            }
+        }
 
         jsonDeclare.TKhai.DLTKhai.NDTKhai.TTDVHTPT  = {};
         jsonDeclare.TKhai.DLTKhai.NDTKhai.TTDVHTPT.DVHTPT  = [];

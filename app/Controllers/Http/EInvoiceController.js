@@ -479,6 +479,22 @@ class EInvoiceController {
           to_date: /^(19|20)\d\d-(0[1-9]|1[012])-([012]\d|3[01])T([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/,
           type: /^(1|2|3){1}$/,
         },
+        solution_provider:{
+          sequence: /^-?\d*\.?\d*$/,
+          organization_name: /^.{1,400}$/,
+          organization_taxcode: /^(\d{10})$/,
+          from_date: /^(19|20)\d\d-(0[1-9]|1[012])-([012]\d|3[01])T([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/,
+          to_date: /^(19|20)\d\d-(0[1-9]|1[012])-([012]\d|3[01])T([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/,
+          note: /^.{0,255}$/,
+        },
+        tvan_company:{
+          sequence: /^-?\d*\.?\d*$/,
+          organization_name: /^.{1,400}$/,
+          organization_taxcode: /^(\d{10})$/,
+          from_date: /^(19|20)\d\d-(0[1-9]|1[012])-([012]\d|3[01])T([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/,
+          to_date: /^(19|20)\d\d-(0[1-9]|1[012])-([012]\d|3[01])T([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/,
+          note: /^.{0,255}$/,
+        }
       };
 
       for (const key in declaration) {
@@ -575,6 +591,111 @@ class EInvoiceController {
               if (!errorList[`${key}`].type.test(dec.type)) {
                 status = false;
                 resMess = `${mess1} type is: ${dec.type}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+            }
+          }
+          if (key == 'solution_provider') {
+            for (const dec of declaration[key]) {
+              if (!errorList[`${key}`].sequence.test(dec.sequence)) {
+                status = false;
+                resMess = `${mess1} sequence is: ${dec.sequence}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+              if (!errorList[`${key}`].organization_name.test(dec.organization_name)) {
+                status = false;
+                resMess = `${mess1} organization_name is: ${dec.organization_name}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+              if (!errorList[`${key}`].organization_taxcode.test(dec.organization_taxcode) && dec.organization_taxcode) {
+                status = false;
+                resMess = `${mess1} organization_taxcode is: ${dec.organization_taxcode}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+              if (!errorList[`${key}`].from_date.test(dec.from_date)) {
+                status = false;
+                resMess = `${mess1} from_date is: ${dec.from_date}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+              if (!errorList[`${key}`].to_date.test(dec.to_date)) {
+                status = false;
+                resMess = `${mess1} to_date is: ${dec.to_date}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+              if (!errorList[`${key}`].note.test(dec.note)) {
+                status = false;
+                resMess = `${mess1} note is: ${dec.note}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+            }
+          }
+
+          if (key == 'tvan_company') {
+            for (const dec of declaration[key]) {
+              if (!errorList[`${key}`].sequence.test(dec.sequence)) {
+                status = false;
+                resMess = `${mess1} sequence is: ${dec.sequence}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+              if (!errorList[`${key}`].organization_name.test(dec.organization_name)) {
+                status = false;
+                resMess = `${mess1} organization_name is: ${dec.organization_name}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+              if (!errorList[`${key}`].organization_taxcode.test(dec.organization_taxcode) && dec.organization_taxcode) {
+                status = false;
+                resMess = `${mess1} organization_taxcode is: ${dec.organization_taxcode}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+              if (!errorList[`${key}`].from_date.test(dec.from_date)) {
+                status = false;
+                resMess = `${mess1} from_date is: ${dec.from_date}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+              if (!errorList[`${key}`].to_date.test(dec.to_date)) {
+                status = false;
+                resMess = `${mess1} to_date is: ${dec.to_date}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+              if (!errorList[`${key}`].note.test(dec.note)) {
+                status = false;
+                resMess = `${mess1} note is: ${dec.note}.`;
                 return {
                   status,
                   message: resMess,
@@ -2586,6 +2707,32 @@ class EInvoiceController {
       ];
       const jsonCTS = await transform(p_xml_content, templateCTS);
 
+      const templateTCGP = [
+        'TKhai/DLTKhai/NDTKhai/TTTCGP/TCGP',
+        {
+          STT: 'STT',
+          TTCGP: 'TTCGP',
+          MSTTCGP: 'MSTTCGP',
+          TNgay: 'TNgay',
+          DNgay: 'DNgay',
+          GChu: 'GChu',
+        },
+      ];
+      const jsonTCGP = await transform(p_xml_content, templateTCGP);
+
+      const templateTCTN  = [
+        'TKhai/DLTKhai/NDTKhai/TTTCGP/TCTN',
+        {
+          STT: 'STT',
+          TTCGP: 'TTCGP',
+          MSTTCGP: 'MSTTCGP',
+          TNgay: 'TNgay',
+          DNgay: 'DNgay',
+          GChu: 'GChu',
+        },
+      ];
+      const jsonTCTN   = await transform(p_xml_content, templateTCTN);
+
       let masterPara = arrTTChung.concat(arrNDTKhai).concat(arrHTGDLHDDT).concat(arrPThuc).concat(arrLHDSDung);
 
       // console.log("masterPara  ",masterPara)
@@ -2593,10 +2740,24 @@ class EInvoiceController {
       // console.log("master", master);
       if (master && master[0].PK > 0) {
         for (let i = 0; i < jsonCTS.length; i++) {
-          const detailPara = [master[0].PK, jsonCTS[i].STT, jsonCTS[i].TTChuc, jsonCTS[i].Seri, jsonCTS[i].TNgay, jsonCTS[i].DNgay, jsonCTS[i].HThuc];
+          const detailPara = [master[0].PK, jsonCTS[i].STT, jsonCTS[i].TTChuc, jsonCTS[i].Seri, jsonCTS[i].TNgay, jsonCTS[i].DNgay, jsonCTS[i].GChu];
           const detail = await DBService.callProcCursor('WT_UPD_DECLARATION_D', detailPara, p_language, p_crt_by);
           //console.log("detail", detail);
         }
+
+        for (let i = 0; i < jsonTCGP.length; i++) {
+          const detailPara = [master[0].PK, jsonTCGP[i].STT, jsonTCGP[i].TTCGP, jsonTCGP[i].MSTTCGP, jsonTCGP[i].TNgay, jsonTCGP[i].DNgay, jsonTCGP[i].GChu];
+          const detail = await DBService.callProcCursor('WT_UPD_DECLARATION_D_1', detailPara, p_language, p_crt_by);
+          //console.log("detail", detail);
+        }
+
+        for (let i = 0; i < jsonCTS.length; i++) {
+          const detailPara = [master[0].PK, jsonCTS[i].STT, jsonCTS[i].TTCGP, jsonCTS[i].MSTTCGP, jsonCTS[i].TNgay, jsonCTS[i].DNgay, jsonCTS[i].HThuc];
+          const detail = await DBService.callProcCursor('WT_UPD_DECLARATION_D_2', detailPara, p_language, p_crt_by);
+          //console.log("detail", detail);
+        }
+
+
         return {PK: master[0].PK, SIGN_DATETIME: signingTime.SigningTime, SIGN_BY: jsonTTChung[0].TNNT};
       } else {
         return {PK: master[0].PK};

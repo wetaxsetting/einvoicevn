@@ -1256,7 +1256,7 @@ class EInvoiceController {
         jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLQTVAN = cdlqtvan;
         jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CQXLTSCong = asset_handling_agency;
         jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NCCNN = foreign_supplier;
-        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLQCNCCNN = data_transfer_to_foreign_supplier;
+        //jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLQCNCCNN = data_transfer_to_foreign_supplier;
 
 
         jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CDDu = full_transfer;

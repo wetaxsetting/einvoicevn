@@ -2684,6 +2684,8 @@ class EInvoiceController2 {
                       p_mccqt: '',
                       p_xml_tax_signed: '',
                       p_xml_length: '',
+                      p_tax_sign_by: '',
+                      p_tax_sign_datetime: '',
                     };
 
                     //console.log('jobCheckTradeCodeNorInvoice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
@@ -2699,6 +2701,8 @@ class EInvoiceController2 {
                                       :p_mccqt,
                                       :p_xml_tax_signed,
                                       :p_xml_length,
+                                      :p_tax_sign_by,
+                                      :p_tax_sign_datetime,
                                       :p_language, 
                                       :p_crt_by, 
                                       :p_rtn_cur); 

@@ -89,7 +89,7 @@ class EInvoiceController2 {
         p_language,
         p_crt_by,
       );
-      console.log('weTaxGeneralXML data_send_mail ', data_send_mail, ' json_xml ', json_xml[0].xml_process);
+      console.log('weTaxGeneralXML data_send_mail ', data_send_mail, ' json_xml ', json_xml[0].xml_process, ' process_type ', process_type);
       if (json_xml[0].xml_process) {
         const json_xml_signed = await this.weTaxSignXMLHSM(
           user_name,

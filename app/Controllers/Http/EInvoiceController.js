@@ -11824,12 +11824,6 @@ class EInvoiceController {
       console.log('weTaxSendInvoiceToTaxOffice  rtnValue', JSON.stringify(rtnValue));
       console.log('weTaxSendInvoiceToTaxOffice  END ================================= ');
 
-      // rtnValueTradecode.push({
-      //   req_key: invoices[i].req_key,
-      //   req_ep_key: masterInvoicePK.PK,
-      //   trade_code: trade_code.data.maGDich,
-      //   msg_his_id: invoices[i].msg_his_id
-      // });
       //console.log("rtnValueTradecode ", rtnValueTradecode);
       this.sendMailNormailWT(rtnValueTradecode, 'WTPTA003N', p_language, p_crt_by);
 

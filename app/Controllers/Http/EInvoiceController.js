@@ -11427,7 +11427,19 @@ class EInvoiceController {
       let rtnValueTradecode = [];
       let masterInvoicePK;
       for (let i = 0; i < invoices.length; i++) {
-        masterInvoicePK = await this.weTaxExtractXMLContent2(
+        /*masterInvoicePK = await this.weTaxExtractXMLContent2(
+          invoices[i].xml_signed,
+          invoices[i].mail_to || '',
+          invoices[i].mail_cc || '',
+          invoices[i].invoice_type || '',
+          invoices[i].tr_type || '',
+          invoices[i].token_serial_number || '',
+          invoices[i].req_key || '',
+          invoices[i].invoice_form_symbol || '',
+          p_language,
+          p_crt_by,
+        );*/
+        masterInvoicePK = await this.weTaxExtractXMLContent(
           invoices[i].xml_signed,
           invoices[i].mail_to || '',
           invoices[i].mail_cc || '',
@@ -19387,16 +19399,16 @@ class EInvoiceController {
   }
 
   async weTaxExtractXMLContent(
-    p_xml_content,
-    p_mail_to,
-    p_mail_cc,
-    p_invoice_type,
-    p_tr_type,
-    p_tax_serial_number,
-    p_tac_crca_pk,
-    p_invoice_form_symbol,
-    p_language,
-    p_crt_by,
+      p_xml_content,
+      p_mail_to,
+      p_mail_cc,
+      p_invoice_type,
+      p_tr_type,
+      p_tax_serial_number,
+      p_tac_crca_pk,
+      p_invoice_form_symbol,
+      p_language,
+      p_crt_by,
   ) {
     let result_extra = {};
     try {
@@ -19436,15 +19448,15 @@ class EInvoiceController {
       } catch (e) {}
       // console.log("jsonTTKhac", jsonTTKhac)
       let customField1 = '',
-        customField2 = '',
-        customField3 = '',
-        customField4 = '',
-        customField5 = '',
-        customField6 = '',
-        customField7 = '',
-        customField8 = '',
-        customField9 = '',
-        customField10 = '';
+          customField2 = '',
+          customField3 = '',
+          customField4 = '',
+          customField5 = '',
+          customField6 = '',
+          customField7 = '',
+          customField8 = '',
+          customField9 = '',
+          customField10 = '';
       if (jsonTTKhac && jsonTTKhac.length > 0) {
         customField1 = jsonTTKhac[0].TTruong + ': ' + jsonTTKhac[0].DLieu;
         if (jsonTTKhac.length > 1) {
@@ -19558,13 +19570,15 @@ class EInvoiceController {
           Fax: 'Fax',
           Website: 'Website',
           TTKhac: 'TTKhac',
+          MCHang: 'MCHang',
+          TCHang: 'TCHang'
         },
       ];
       const jsonNBan = await transform(p_xml_content, templateNBan);
       const arrNBan = [
         this.encoreHtmlCode(jsonNBan[0].Ten),
         jsonNBan[0].MST,
-        jsonNBan[0].DChi,
+        this.encoreHtmlCode(jsonNBan[0].DChi),
         jsonNBan[0].SDThoai,
         jsonNBan[0].DCTDTu,
         jsonNBan[0].STKNHang,
@@ -19587,6 +19601,9 @@ class EInvoiceController {
           STKNHang: 'STKNHang',
           TNHang: 'TNHang',
           TTKhac: 'TTKhac',
+          MDVQHNSach: 'MDVQHNSach',
+          CCCDan: 'CCCDan',
+          SHChieu: 'SHChieu',
         },
       ];
       const jsonNMua = await transform(p_xml_content, templateNMua);
@@ -19597,7 +19614,7 @@ class EInvoiceController {
         this.encoreHtmlCode(jsonNMua[0].DChi),
         jsonNMua[0].SDThoai,
         jsonNMua[0].DCTDTu,
-        jsonNMua[0].MKHang,
+        this.encoreHtmlCode(jsonNMua[0].MKHang),
         this.encoreHtmlCode(jsonNMua[0].HVTNMHang),
         jsonNMua[0].STKNHang,
         this.encoreHtmlCode(jsonNMua[0].TNHang),
@@ -19705,6 +19722,7 @@ class EInvoiceController {
         signingTime.SigningTime,
       ]);
 
+      //console.log('weTaxExtractXMLContent masterPara', masterPara);
       //const master = await callAPI(_jwtToken, { proc: 'ei_upd_tei_einvoice_cloud', para: masterPara });
       const master = await DBService.callProcCursor('WT_UPD_TEI_WT_INVOICE_M', masterPara, p_language, p_crt_by);
       // console.log("master", master);
@@ -19713,13 +19731,13 @@ class EInvoiceController {
         const jsonDSHHDVu = await transform(p_xml_content, templateDSHHDVu);
         //console.log(jsonDSHHDVu)
         for (let i = 0; i < jsonDSHHDVu.length; i++) {
-          console.log(JSON.stringify(jsonDSHHDVu[i]));
+
           const detailPara = [
             master[0].PK,
             jsonDSHHDVu[i].TChat,
             jsonDSHHDVu[i].STT,
-            this.this.encoreHtmlCode(jsonDSHHDVu[i].MHHDVu),
-            this.this.encoreHtmlCode(jsonDSHHDVu[i].THHDVu),
+            this.encoreHtmlCode(jsonDSHHDVu[i].MHHDVu),
+            this.encoreHtmlCode(jsonDSHHDVu[i].THHDVu),
             jsonDSHHDVu[i].DVTinh,
             jsonDSHHDVu[i].SLuong,
             jsonDSHHDVu[i].DGia,
@@ -19727,14 +19745,20 @@ class EInvoiceController {
             jsonDSHHDVu[i].TLCKhau,
             jsonDSHHDVu[i].STCKhau,
             jsonDSHHDVu[i].TSuat,
-            jsonDSHHDVu[i].TTKhac[0].DLieu,
+
             master[0].TEI_EINVOICE_M_PK,
           ];
 
+          /*const detail = */
           await DBService.callProcCursor('WT_UPD_TEI_WT_INVOICE_D', detailPara, p_language, p_crt_by);
           // console.log("detail", detail);
         }
 
+        // const para_detail_vat = [
+        //   req_wt_key : ,
+        // ]
+
+        /*const detail_vat = */
         await DBService.callProcCursor('WT_UPD_TEI_WT_INVOICE_D_VAT', [master[0].PK], p_language, p_crt_by);
 
         return (result_extra = {

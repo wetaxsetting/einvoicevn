@@ -11840,7 +11840,7 @@ class EInvoiceController {
         LVL: 'error',
         MODULE: 'EInvoiceController',
         FUNC: 'weTaxSendInvoiceToTaxOffice',
-        CONTENT: e.message,
+        CONTENT: e,
       });
       //console.log("weTaxSendInvoiceToTaxOffice error  ", e);
       // return response.send(Utils.response(false, e.message, null));

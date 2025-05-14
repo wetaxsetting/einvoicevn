@@ -2940,6 +2940,8 @@ class EInvoiceController2 {
           Fax: 'Fax',
           Website: 'Website',
           TTKhac: 'TTKhac',
+           MCHang: 'MCHang',
+          TCHang: 'TCHang',
         },
       ];
       const jsonNBan = await transform(p_xml_content, templateNBan);
@@ -2969,6 +2971,9 @@ class EInvoiceController2 {
           STKNHang: 'STKNHang',
           TNHang: 'TNHang',
           TTKhac: 'TTKhac',
+          MDVQHNSach: 'MDVQHNSach',
+          CCCDan: 'CCCDan',
+          SHChieu: 'SHChieu',
         },
       ];
       const jsonNMua = await transform(p_xml_content, templateNMua);

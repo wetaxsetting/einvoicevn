@@ -7483,22 +7483,22 @@ class EiExcelConverterAuto {
   };
 
   countlength(s, type) {
-    // let rangeWord = 40; ///40 => ok;
-    // let result = 0;
-    // if (type == '1000000111') {
-    //   rangeWord = 42;
-    // } else if (type == '1000000112') {
-    //   rangeWord = 52;
-    // }
-    // //console.log('countlength ', s);
-    // if (this.hasLineBreak(s)) {
-    //   result = this.countLineBreaks(s) + 1;
-    // } else {
-    //   result = Math.ceil(s.length / rangeWord);
-    // }
+    let rangeWord = 40; ///40 => ok;
+    let result = 0;
+    if (type == '1000000111') {
+      rangeWord = 999;// 42;
+    } else if (type == '1000000112') {
+      rangeWord = 52;
+    }
+    //console.log('countlength ', s);
+    if (this.hasLineBreak(s)) {
+      result = this.countLineBreaks(s) + 1;
+    } else {
+      result = Math.ceil(s.length / rangeWord);
+    }
     // //console.log('countlength result ', result);
-    // return result;
-    return 1;
+     return result;
+    //return 1;
   }
   // isVietnameseUpperCase(str) {
   //   const vietnameseRegex = /^[\p{Lu}\s]+$/u; // Chỉ kiểm tra chữ hoa và khoảng trắng

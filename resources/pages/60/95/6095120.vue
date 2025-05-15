@@ -110,6 +110,8 @@ export default {
     selected_rows: [],
     pdfUrl: '',
     tei_einvoice_m_pk_row: '',
+    isSending:true,
+    isProcessing: false,
   }),
   /*############### created #######################*/
   created() {
@@ -142,24 +144,23 @@ export default {
       return [
         {field: 'RN', width: 40, title: 'No', alignment: 'right', type: 'text'},
         {field: 'TR_DATE', width: 100, title: 'TransDate', alignment: 'right', type: 'text'},
-        {field: 'CUS_CD', width: 120, title: 'CustomerID', alignment: 'right', type: 'text'},
-        {field: 'CUS_NM', width: 200, title: 'Customername', alignment: 'right', type: 'text'},
-        {field: 'ORM_NO', width: 120, title: 'FormNo', alignment: 'right', type: 'text'},
+        {field: 'CUS_CD', width: 120, title: 'CustomerID', alignment: 'left', type: 'text'},
+        {field: 'CUS_NM', width: 200, title: 'Customername', alignment: 'left', type: 'text'},
+        {field: 'FORM_NO', width: 120, title: 'FormNo', alignment: 'right', type: 'text'},
         {field: 'SERIAL_NO', width: 90, title: 'SerialNo', alignment: 'right', type: 'text'},
         {field: 'INVOICE_NO', width: 100, title: 'InvoiceNo', alignment: 'right', type: 'text'},
-        {field: 'TR_CCY', width: 80, title: 'Currency', alignment: 'right', type: 'text'},
-        {field: 'R_RATE', width: 90, title: 'Ex.rate', alignment: 'right', type: 'text'},
-        {field: 'TOT_NET_TR_AMT', width: 130, title: 'Amount(Trans)', alignment: 'right', type: 'text'},
-        {field: 'TOT_NET_BK_AMT', width: 130, title: 'Amount(Books)', alignment: 'right', type: 'text'},
-        {field: 'REMARK', width: 210, title: 'Description', alignment: 'right', type: 'text'},
-        {field: 'REMARK2', width: 210, title: 'LocalDescription', alignment: 'right', type: 'text'},
-        {field: 'EI_STATUS', width: 120, title: 'EI.Status', alignment: 'right', type: 'text'},
-        {field: 'SIGN_BY', width: 150, title: 'Signname', alignment: 'center', type: 'text'},
+        {field: 'TR_CCY', width: 80, title: 'Currency', alignment: 'center', type: 'text'},
+        {field: 'TR_RATE', width: 90, title: 'Ex.rate', alignment: 'right', type: "number", formatFloat: 2},
+        {field: 'TOT_NET_TR_AMT', width: 130, title: 'Amount(Trans)', alignment: 'right', type: "number", formatFloat: 2},
+        {field: 'REMARK', width: 210, title: 'Description', alignment: 'left', type: 'text'},
+        {field: 'REMARK2', width: 210, title: 'LocalDescription', alignment: 'left', type: 'text'},
+        {field: 'EI_STATUS', width: 120, title: 'EI.Status', alignment: 'center', type: 'text'},
+        {field: 'SIGN_BY', width: 150, title: 'Signname', alignment: 'left', type: 'text'},
         {field: 'SIGN_DT', width: 170, title: 'Signdate', alignment: 'center', type: 'text'},
-        {field: 'INVOICE_TYPE', width: 150, title: 'InvoiceType', alignment: 'left', type: 'text'},
+        {field: 'INVOICE_TYPE', width: 150, title: 'InvoiceType', alignment: 'center', type: 'text'},
         {field: 'CONVERT_NAME', width: 150, title: 'Convertname', alignment: 'left', type: 'text'},
-        {field: 'CONVERT_DATE', width: 150, title: 'Convertdate', alignment: 'left', type: 'text'},
-        {field: 'CONVERT_YN', width: 50, title: 'ConvertY/N', alignment: 'left', type: 'text'},
+        {field: 'CONVERT_DATE', width: 150, title: 'Convertdate', alignment: 'center', type: 'text'},
+        {field: 'CONVERT_YN', width: 50, title: 'ConvertY/N', alignment: 'center', type: 'text'},
       ];
     },
   },
@@ -169,7 +170,30 @@ export default {
   /*############### methods #######################*/
   methods: {
     debitNote() {},
-    onConvert() {},
+    onConvert() {
+      this.isSending = true;
+      let pkArr = '';
+      for (var i = 0; i < this.selected_rows.length; i++) {
+        let item = this.selected_rows[i];
+        pkArr += item.PK + '|';
+      }
+      this.tei_einvoice_m_pk_row = pkArr;
+      if (pkArr != '') {
+        jQuery.support.cors = true;
+        $.ajax({
+          type: 'POST',
+          url: 'http://csharp-api.webcashvietnam.com/wseinvoice/BSService.asmx/ConvertEI',
+          data: {
+            tei_einvoice_m_pk: pkArr,
+            tei_company_pk: this.selected_company,
+          },
+          dataType: 'text',
+          crossDomain: true,
+          success: this.OnSuccessCallConvert,
+          error: this.OnErrorCallConvert,
+        });
+      }
+    },
     async onPreview() {
       this.isProcessing = true;
       this.pdfUrl = await this.pdfUrlGetter(this.tei_einvoice_m_pk_row);

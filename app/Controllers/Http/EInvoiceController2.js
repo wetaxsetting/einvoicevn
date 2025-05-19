@@ -2956,6 +2956,8 @@ class EInvoiceController2 {
         jsonNBan[0].Fax,
         jsonNBan[0].Website,
         jsonNBan[0].TTKhac,
+        jsonNBan[0].MCHang,
+        jsonNBan[0].TCHang,
       ];
       // console.log("jsonNBan", jsonNBan)
       const templateNMua = [
@@ -2989,6 +2991,9 @@ class EInvoiceController2 {
         jsonNMua[0].STKNHang,
         jsonNMua[0].TNHang,
         jsonNMua[0].TTKhac,
+        jsonNMua[0].MDVQHNSach,
+        jsonNMua[0].CCCDan,
+        jsonNMua[0].SHChieu,
       ];
       const templateLTSuat = [
         'HDon/DLHDon/NDHDon/TToan/THTTLTSuat/LTSuat',

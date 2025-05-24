@@ -174,6 +174,8 @@ class HSMController2 {
       const {user_name, password, otp, serial_no, pin, organization, signing_xml, client_id, client_secret} = request.all();
 
       console.log('HsmSignXml client_id ', client_id);
+      console.log('HsmSignXml signing_xml ', JSON.stringify(signing_xml));
+
 
       let type = 'C';
       if (!user_name || !password || !pin || !organization || !serial_no || !signing_xml) {

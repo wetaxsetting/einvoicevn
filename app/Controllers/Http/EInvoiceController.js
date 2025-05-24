@@ -7570,9 +7570,7 @@ class EInvoiceController {
           });
           process_yn = false;
         }
-        console.log('weTaxConvertPosInvoiceToXML2 process_yn', process_yn);
-        
-        if (invoices[i].invoice_no) {
+        console.log('weTaxConvertPosInvoiceToXML2  process_yn', process_yn);
         if (process_yn) {
           req_key.push(invoices[i].req_key);
           if (invoices[i].form_no == 1) {
@@ -7597,6 +7595,11 @@ class EInvoiceController {
             objInvoice.DLHDon.TTChung.KHHDon = invoices[i].serial_no;
             objInvoice.DLHDon.TTChung.SHDon = invoices[i].invoice_no;
             objInvoice.DLHDon.TTChung.NLap = invoices[i].invoice_date;
+
+            //objInvoice.DLHDon.TTChung.DVTTe = invoices[i].currency;
+            //objInvoice.DLHDon.TTChung.TGia = invoices[i].ex_rate;
+            //objInvoice.DLHDon.TTChung.HTTToan = invoices[i].payment_method;
+            //objInvoice.DLHDon.TTChung.MSTTCGP = '1201496252'; //webcashgenuwin.com taxcode
 
             objInvoice.DLHDon.TTChung.TTHDLQuan = [];
             // console.log("invoices[i].invoice_feature  " ,invoices[i].invoice_feature)

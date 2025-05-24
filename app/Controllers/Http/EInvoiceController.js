@@ -3420,6 +3420,9 @@ class EInvoiceController {
 
       const {xml_signed, tax_code, req_key} = request.all();
 
+      return response.status(400).json(Utils.responseByRule({success: {xml_signed, tax_code, req_key}, message: 'This function xxxxxxxis deprecated!'}));
+
+
       if (!xml_signed) {
         return response.status(400).json(Utils.responseByRule({success: false, message: 'Invalid xml_signed'}));
       }

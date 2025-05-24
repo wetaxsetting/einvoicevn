@@ -7510,7 +7510,7 @@ class EInvoiceController {
         data_xml = [],
         rtnXML = [];
       let xmlRemoveLine = '';
-      const id = 'ID1'; //uuid.v4();
+      const id = uuid.v4();
       const signature_path = 'TDiep/CKSNNT';
       const size_max = 943718; // 0.9 MB 838860; // 0.8MB  734003; // 0.7MB  629145; // 0.6MB  524283; // 0.5MB   1572864; // 1.5MB  1048576; 1MB
       let process_yn = true;
@@ -7570,6 +7570,9 @@ class EInvoiceController {
           });
           process_yn = false;
         }
+        console.log('weTaxConvertPosInvoiceToXML2 process_yn', process_yn);
+        
+        if (invoices[i].invoice_no) {
         if (process_yn) {
           req_key.push(invoices[i].req_key);
           if (invoices[i].form_no == 1) {
@@ -7594,11 +7597,6 @@ class EInvoiceController {
             objInvoice.DLHDon.TTChung.KHHDon = invoices[i].serial_no;
             objInvoice.DLHDon.TTChung.SHDon = invoices[i].invoice_no;
             objInvoice.DLHDon.TTChung.NLap = invoices[i].invoice_date;
-
-            //objInvoice.DLHDon.TTChung.DVTTe = invoices[i].currency;
-            //objInvoice.DLHDon.TTChung.TGia = invoices[i].ex_rate;
-            //objInvoice.DLHDon.TTChung.HTTToan = invoices[i].payment_method;
-            //objInvoice.DLHDon.TTChung.MSTTCGP = '1201496252'; //webcashgenuwin.com taxcode
 
             objInvoice.DLHDon.TTChung.TTHDLQuan = [];
             // console.log("invoices[i].invoice_feature  " ,invoices[i].invoice_feature)
@@ -7909,10 +7907,6 @@ class EInvoiceController {
             objInvoice.DLHDon.TTChung.SHDon = invoices[i].invoice_no;
             objInvoice.DLHDon.TTChung.NLap = invoices[i].invoice_date;
             objInvoice.DLHDon.TTChung.HTTToan = invoices[i].payment_method;
-
-            //objInvoice.DLHDon.TTChung.DVTTe = invoices[i].currency;
-            //objInvoice.DLHDon.TTChung.TGia = invoices[i].ex_rate;
-            //objInvoice.DLHDon.TTChung.MSTTCGP = '1201496252'; //webcashgenuwin.com taxcode
 
             objInvoice.DLHDon.TTChung.TTHDLQuan = [];
             // console.log("invoices[i].invoice_feature  " ,invoices[i].invoice_feature)

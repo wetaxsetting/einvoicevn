@@ -7587,9 +7587,12 @@ class EInvoiceController {
           } else if (invoices[i].form_no == 6) {
             objInvoice.DLHDon.TTChung.THDon = 'Phiếu xuất kho kiêm vận chuyển nội bộ, phiếu xuất kho hàng gửi bán đại lý khởi tạo từ máy tính tiền';
           }
+        console.log('weTaxConvertPosInvoiceToXML2  invoices[i].version', invoices[i].version);
 
           if(invoices[i].version != "2.1.0")
           {
+            console.log('weTaxConvertPosInvoiceToXML2xxxx  invoices[i].version', invoices[i].version);
+
             objInvoice.DLHDon.TTChung.PBan = invoices[i].version;
             objInvoice.DLHDon.TTChung.KHMSHDon = invoices[i].form_no;
             objInvoice.DLHDon.TTChung.KHHDon = invoices[i].serial_no;
@@ -7904,6 +7907,8 @@ class EInvoiceController {
           }
           }else
           {
+                        console.log('weTaxConvertPosInvoiceToXML2xxsssssxx  invoices[i].version', invoices[i].version);
+
             objInvoice.DLHDon.TTChung.PBan = invoices[i].version;
             objInvoice.DLHDon.TTChung.KHMSHDon = invoices[i].form_no;
             objInvoice.DLHDon.TTChung.KHHDon = invoices[i].serial_no;

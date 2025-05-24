@@ -7571,7 +7571,8 @@ class EInvoiceController {
           process_yn = false;
         }
         console.log('weTaxConvertPosInvoiceToXML2  process_yn', process_yn);
-        if (process_yn) {
+        if (process_yn) 
+        {
           req_key.push(invoices[i].req_key);
           if (invoices[i].form_no == 1) {
             objInvoice.DLHDon.TTChung.THDon = 'Hóa đơn giá trị gia tăng khởi tạo từ máy tính tiền';
@@ -7587,7 +7588,6 @@ class EInvoiceController {
           } else if (invoices[i].form_no == 6) {
             objInvoice.DLHDon.TTChung.THDon = 'Phiếu xuất kho kiêm vận chuyển nội bộ, phiếu xuất kho hàng gửi bán đại lý khởi tạo từ máy tính tiền';
           }
-        console.log('weTaxConvertPosInvoiceToXML2  invoices[i].version', invoices[i].version);
 
           if(invoices[i].version != "2.1.0")
           {
@@ -7905,9 +7905,9 @@ class EInvoiceController {
                 DSCKS: {},
               };
           }
-          }else
+          else
           {
-                        console.log('weTaxConvertPosInvoiceToXML2xxsssssxx  invoices[i].version', invoices[i].version);
+            console.log('weTaxConvertPosInvoiceToXML2xxsssssxx  invoices[i].version', invoices[i].version);
 
             objInvoice.DLHDon.TTChung.PBan = invoices[i].version;
             objInvoice.DLHDon.TTChung.KHMSHDon = invoices[i].form_no;
@@ -8195,6 +8195,7 @@ class EInvoiceController {
                 DSCKS: {},
               };
           }
+        }
       }
 
       //const xml = await this.OBJtoXML(objData);

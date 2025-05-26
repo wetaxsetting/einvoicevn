@@ -13546,7 +13546,8 @@ class EInvoiceController {
                 ],
               });
             }
-          }else if(invoices[i].form_no == 2) {
+          }else if(invoices[i].form_no == 2) 
+          {
             objInvoice_M.HDon.DLHDon.TTChung.PBan = invoices[i].version;
             objInvoice_M.HDon.DLHDon.TTChung.KHMSHDon = invoices[i].form_no;
             objInvoice_M.HDon.DLHDon.TTChung.KHHDon = invoices[i].serial_no;
@@ -13714,7 +13715,6 @@ class EInvoiceController {
               });
             }
           }
-          objInvoice_M
         }
 
         

@@ -20078,7 +20078,7 @@ class EInvoiceController {
         LVL: 'error',
         MODULE: 'EInvoiceController',
         FUNC: 'GeneralInvalidInvoiceToHsmXML',
-        CONTENT: e.message,
+        CONTENT: e,
       });
       console.log('GeneralInvalidInvoiceToHsmXML  ', e.message);
 

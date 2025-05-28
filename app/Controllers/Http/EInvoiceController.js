@@ -4823,7 +4823,7 @@ class EInvoiceController {
             Authorization: 'Basic ' + Buffer.from(`${authUserName}:${authPassword}`).toString('base64'),
           },
         });
-        // console.log("result", JSON.stringify(result.data));
+        console.log("weTaxCheckInformAdjustToTaxOffice result", JSON.stringify(result.data));
         let tenTBao = '',
           maTBao = '',
           p_cqt_result = '',

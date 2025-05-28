@@ -4823,7 +4823,7 @@ class EInvoiceController {
             Authorization: 'Basic ' + Buffer.from(`${authUserName}:${authPassword}`).toString('base64'),
           },
         });
-        console.log("weTaxCheckInformAdjustToTaxOffice result", JSON.stringify(result.data));
+        //console.log("weTaxCheckInformAdjustToTaxOffice result", JSON.stringify(result.data));
         let tenTBao = '',
           maTBao = '',
           p_cqt_result = '',
@@ -4942,13 +4942,14 @@ class EInvoiceController {
                   ngayTaoTB = '';
                 }
               } else if (items[k].loaiTBao == '17' || items[k].loaiTBao == '15') {
+                console.log('weTaxCheckInformAdjustToTaxOffice  items[k] xxxx', items[k]);
                 tenTBao = items[k].tenTBao;
                 maTBao = items[k].loaiTBao;
                 soTB = items[k].ndungTBao.tbaoTNhanSSotDoc.soTBao;
                 ngayTB = items[k].ndungTBao.ngayTBao;
                 thoiGianCQTKy = items[k].ndungTBao.tbaoTNhanSSotDoc.ngayCQTKy;
                 for (const invoice of items[k].ndungTBao.tbaoTNhanSSotDoc.dsachHDonLoi) {
-                  console.log('weTaxCheckInformAdjustToTaxOffice invoice  ', invoice);
+                  // console.log('weTaxCheckInformAdjustToTaxOffice invoice  ', invoice);
                   ndungTBao.push({
                     tax_auth_cd: invoice.MCCQT,
                     form_no: invoice.khieuMauHDon,

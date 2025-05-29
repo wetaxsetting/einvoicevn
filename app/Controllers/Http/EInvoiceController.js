@@ -5338,8 +5338,6 @@ class EInvoiceController {
                     ndungTBao[i].tax_sign_datetime = tax_sign_datetime;
                     ndungTBao[i].tax_sign_by = tax_sign_by;
                     ndungTBao[i].cqt_doc_no = soTB;
-                    ndungTBao[i].tax_sign_datetime = tax_sign_datetime;
-                    ndungTBao[i].tax_sign_by = tax_sign_by;
 
                     /*invoice.tax_sign_datetime = tax_sign_datetime;
                     invoice.tax_sign_by = tax_sign_by;  

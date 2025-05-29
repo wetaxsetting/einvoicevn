@@ -5330,10 +5330,10 @@ class EInvoiceController {
                 maTBao = items[k].loaiTBao;
                 soTB = items[k].ndungTBao.tbaoTNhanSSotDoc.soTBao;
                 ngayTB = items[k].ndungTBao.ngayTBao;
-                tax_sign_datetime = items[k].ndungTBao.tbaoKTraDLieu.ngayTbao;
-                tax_sign_by = items[k].ndungTBao.tbaoKTraDLieu.ngayCQTKy;
-                console.log('weTaxCheckInformAdjustToTaxOffice2 tax_sign_datetime ', tax_sign_datetime);
-                console.log('weTaxCheckInformAdjustToTaxOffice2 tax_sign_by ', tax_sign_by);
+                //tax_sign_datetime = items[k].ndungTBao.tbaoTNhanSSotDoc.ngayCQTKy;
+                //tax_sign_by = items[k].ndungTBao.tbaoTNhanSSotDoc.ngayCQTKy;
+                //console.log('weTaxCheckInformAdjustToTaxOffice2 tax_sign_datetime ', tax_sign_datetime);
+                //console.log('weTaxCheckInformAdjustToTaxOffice2 tax_sign_by ', tax_sign_by);
                 for (let i = 0; i < ndungTBao.length; i++) {
                     ndungTBao[i].cqt_doc_no = soTB;
                     ndungTBao[i].tax_sign_datetime = tax_sign_datetime;

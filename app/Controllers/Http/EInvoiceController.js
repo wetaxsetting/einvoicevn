@@ -5258,7 +5258,7 @@ class EInvoiceController {
           //   tax_code: tax_code,
           //   result_content: ndungTBao,
           // });
-
+          console.log('weTaxCheckInformAdjustToTaxOffice2  ndungTBaoh ', ndungTBao);
         if (result.data.length) {
           for (let j = 0; j < result.data.length; j++) {
             const items = result.data[j];

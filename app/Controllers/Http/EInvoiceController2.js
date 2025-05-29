@@ -127,11 +127,11 @@ class EInvoiceController2 {
 
         const {check_data, data_inv} = await this.weTaxExtractPosXMLContent(
           json_xml[0].xml,
-          json_xml_signed.data[0].signed_xml,
+          json_xml_signed.data[0]?.signed_xml,
           tax_code,
           sale_date,
           tax_serial_number,
-          json_xml_signed.data[0].req_key,
+          json_xml_signed.data[0]?.req_key,
           store_code,
           store_name,
           p_language,
@@ -158,10 +158,10 @@ class EInvoiceController2 {
           store_code,
           store_name,
           tax_serial_number,
-          json_xml_signed.data[0].signed_xml,
+          json_xml_signed.data[0]?.signed_xml,
           check_data,
           data_inv,
-          data_send_mail[0].lookup_code,
+          data_send_mail[0]?.lookup_code,
           p_language,
           p_crt_by,
         );

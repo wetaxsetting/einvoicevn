@@ -5338,6 +5338,11 @@ class EInvoiceController {
                     invoice.tax_sign_datetime = tax_sign_datetime;
                     invoice.tax_sign_by = tax_sign_by;  
                     invoice.cqt_doc_no = soTB;
+                    invoice.cqt_result = '1';
+                    invoice.dsachLoi = [];
+                    invoice.cqt_doc_no = soTB;
+                    invoice.tax_sign_datetime = tax_sign_datetime;
+                    invoice.tax_sign_by = tax_sign_by;
 
                     const data_d_tbss = {
                       p_mccqt: invoice.MCCQT,

@@ -5391,8 +5391,8 @@ class EInvoiceController {
                 tenTBao = items[k].tenTBao;
                 maTBao = items[k].loaiTBao;
                 soTB = items[k].ndungTBao.tbaoKTraDLieu.soTBao;
-                tax_sign_datetime = items[k].ndungTBao.tbaoKTraDLieu.ngayTbao;
-                tax_sign_by = items[k].ndungTBao.tbaoKTraDLieu.ngayCQTKy;
+                tax_sign_datetime = tax_sign_datetime;
+                tax_sign_by = tax_sign_by;
                 let error_list = [];
                 // ndungTBao
                 for (const error of items[k].ndungTBao.tbaoKTraDLieu.dsachLoiGoiDLieuKhac) {

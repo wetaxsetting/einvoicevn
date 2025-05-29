@@ -5258,7 +5258,7 @@ class EInvoiceController {
           //   tax_code: tax_code,
           //   result_content: ndungTBao,
           // });
-          console.log('weTaxCheckInformAdjustToTaxOffice2  ndungTBaoh ', ndungTBao);
+         // console.log('weTaxCheckInformAdjustToTaxOffice2  ndungTBaoh ', ndungTBao);
         if (result.data.length) {
           for (let j = 0; j < result.data.length; j++) {
             const items = result.data[j];
@@ -5332,7 +5332,8 @@ class EInvoiceController {
                 ngayTB = items[k].ndungTBao.ngayTBao;
                 tax_sign_datetime = items[k].ndungTBao.tbaoKTraDLieu.ngayTbao;
                 tax_sign_by = items[k].ndungTBao.tbaoKTraDLieu.ngayCQTKy;
-
+                console.log('weTaxCheckInformAdjustToTaxOffice2 tax_sign_datetime ', tax_sign_datetime);
+                console.log('weTaxCheckInformAdjustToTaxOffice2 tax_sign_by ', tax_sign_by);
                 for (let i = 0; i < ndungTBao.length; i++) {
                     ndungTBao[i].cqt_doc_no = soTB;
                     ndungTBao[i].tax_sign_datetime = tax_sign_datetime;

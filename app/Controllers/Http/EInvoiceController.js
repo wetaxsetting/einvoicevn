@@ -5333,24 +5333,29 @@ class EInvoiceController {
                 tax_sign_datetime = items[k].ndungTBao.tbaoKTraDLieu.ngayTbao;
                 tax_sign_by = items[k].ndungTBao.tbaoKTraDLieu.ngayCQTKy;
 
-                if(items[k].ndungTBao.tbaoTNhanSSotDoc.dsachHDonLoi == null) {
-                  for (const invoice of ndungTBao) {
-                    invoice.tax_sign_datetime = tax_sign_datetime;
+                for (let i = 0; i < ndungTBao.length; i++) {
+                    ndungTBao[i].cqt_doc_no = soTB;
+                    ndungTBao[i].tax_sign_datetime = tax_sign_datetime;
+                    ndungTBao[i].tax_sign_by = tax_sign_by;
+                    ndungTBao[i].cqt_doc_no = soTB;
+                    ndungTBao[i].tax_sign_datetime = tax_sign_datetime;
+                    ndungTBao[i].tax_sign_by = tax_sign_by;
+
+                    /*invoice.tax_sign_datetime = tax_sign_datetime;
                     invoice.tax_sign_by = tax_sign_by;  
                     invoice.cqt_doc_no = soTB;
                     invoice.cqt_result = '1';
-                    invoice.dsachLoi = [];
                     invoice.cqt_doc_no = soTB;
                     invoice.tax_sign_datetime = tax_sign_datetime;
-                    invoice.tax_sign_by = tax_sign_by;
+                    invoice.tax_sign_by = tax_sign_by;*/
 
                     const data_d_tbss = {
-                      p_mccqt: invoice.MCCQT,
-                      p_form_no: invoice.khieuMauHDon,
-                      p_serial_no: invoice.khieuHDon,
-                      p_invoice_no: invoice.soHDon,
-                      p_cqt_result: p_cqt_result,
-                      p_cqt_status: p_cqt_status,
+                      p_mccqt: ndungTBao[i].tax_auth_cd,
+                      p_form_no: ndungTBao[i].form_no,
+                      p_serial_no: ndungTBao[i].serial_no,
+                      p_invoice_no: ndungTBao[i].invoice_no,
+                      p_cqt_result: "Thành công",
+                      p_cqt_status: "1",
                     };
 
                     // console.log("data_d_tbss  ", data_d_tbss)
@@ -5373,7 +5378,6 @@ class EInvoiceController {
 
 
                   }
-                }
                 /*for (const invoice of items[k].ndungTBao.dsachHDonSSot.dsachHDonLoi) {
                   // console.log('weTaxCheckInformAdjustToTaxOffice2 invoice  ', invoice);
                   ndungTBao.push({

@@ -16,6 +16,7 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route');
 const {ioc} = require('@adonisjs/fold');
+const { version } = require('systeminformation');
 
 Route.get('/:controller/:action', ({auth, view, request, response, params}) => {
   const module = params.module;
@@ -160,7 +161,8 @@ Route.group(() => {
   Route.post('check-status-declare', 'EInvoiceController.weTaxCheckingDeclarations2');
   Route.post('generate-notice-cancel-adjust-replace-xml', 'EInvoiceController.weTaxConvertInvalidInvoiceToXML');
   Route.post('send-notice-cancel-adjust-replace', 'EInvoiceController.weTaxSendInformAdjustToTaxOffice2');
-  Route.post('check-notification-status', 'EInvoiceController.weTaxCheckInformAdjustToTaxOffice');
+  // Route.post('check-notification-status', 'EInvoiceController.weTaxCheckInformAdjustToTaxOffice');
+  Route.post('check-notification-status', 'EInvoiceController.weTaxCheckInformAdjustToTaxOffice2'); // version 2.1.0
   Route.post('send-order-info', 'EInvoiceController.weTaxSendOrderInfoV2');
   Route.post('send-order-info-update', 'EInvoiceController.weTaxUpdateSendOrderInfo');
   Route.post('get-sendmail-invoice-status', 'EInvoiceController.weTaxCheckStausSendMail');

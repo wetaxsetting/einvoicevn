@@ -181,7 +181,7 @@ class EInvoiceController2 {
         LVL: 'error',
         MODULE: 'EInvoiceController2',
         FUNC: 'weTaxPosReportToTax',
-        CONTENT: e.message,
+        CONTENT: e,
       });
       console.log('weTaxPosReportToTax error ', e);
       // return response.send(Utils.response(false, e.message, null));

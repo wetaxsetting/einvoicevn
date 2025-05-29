@@ -5247,14 +5247,14 @@ class EInvoiceController {
             });
           }
 
-          rtnValue.push({
-            trade_code: inv.trade_code,
-            req_key: inv.req_key,
-            inform_code: '16',
-            inform_desc: 'Thông báo có thông báo mới của CQT',
-            tax_code: tax_code,
-            result_content: ndungTBao,
-          });
+          // rtnValue.push({
+          //   trade_code: inv.trade_code,
+          //   req_key: inv.req_key,
+          //   inform_code: '16',
+          //   inform_desc: 'Thông báo có thông báo mới của CQT',
+          //   tax_code: tax_code,
+          //   result_content: ndungTBao,
+          // });
 
         if (result.data.length) {
           for (let j = 0; j < result.data.length; j++) {

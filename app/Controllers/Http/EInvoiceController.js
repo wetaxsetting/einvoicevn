@@ -5330,23 +5330,12 @@ class EInvoiceController {
                 maTBao = items[k].loaiTBao;
                 soTB = items[k].ndungTBao.tbaoTNhanSSotDoc.soTBao;
                 ngayTB = items[k].ndungTBao.ngayTBao;
-                //tax_sign_datetime = items[k].ndungTBao.tbaoTNhanSSotDoc.ngayCQTKy;
-                //tax_sign_by = items[k].ndungTBao.tbaoTNhanSSotDoc.ngayCQTKy;
-                //console.log('weTaxCheckInformAdjustToTaxOffice2 tax_sign_datetime ', tax_sign_datetime);
-                //console.log('weTaxCheckInformAdjustToTaxOffice2 tax_sign_by ', tax_sign_by);
+
                 for (let i = 0; i < ndungTBao.length; i++) {
                     ndungTBao[i].cqt_doc_no = soTB;
                     ndungTBao[i].tax_sign_datetime = tax_sign_datetime;
                     ndungTBao[i].tax_sign_by = tax_sign_by;
                     ndungTBao[i].cqt_doc_no = soTB;
-
-                    /*invoice.tax_sign_datetime = tax_sign_datetime;
-                    invoice.tax_sign_by = tax_sign_by;  
-                    invoice.cqt_doc_no = soTB;
-                    invoice.cqt_result = '1';
-                    invoice.cqt_doc_no = soTB;
-                    invoice.tax_sign_datetime = tax_sign_datetime;
-                    invoice.tax_sign_by = tax_sign_by;*/
 
                     const data_d_tbss = {
                       p_mccqt: ndungTBao[i].tax_auth_cd,
@@ -5377,61 +5366,6 @@ class EInvoiceController {
 
 
                   }
-                /*for (const invoice of items[k].ndungTBao.dsachHDonSSot.dsachHDonLoi) {
-                  // console.log('weTaxCheckInformAdjustToTaxOffice2 invoice  ', invoice);
-                  ndungTBao.push({
-                    tax_auth_cd: invoice.MCCQT,
-                    form_no: invoice.khieuMauHDon,
-                    serial_no: invoice.khieuHDon,
-                    invoice_no: invoice.soHDon,
-                    invoice_date: invoice.ngayHDon,
-                    cqt_result: invoice.tthaiTNCQT, //   invoice.dsachLoi.length == 0 ? 1 : 2,
-                    dsachLoi: invoice.dsachLoi,
-                    tax_sign_datetime: tax_sign_datetime,
-                    tax_sign_by: tax_sign_by,
-                    cqt_doc_no: soTB,
-                  });
-
-                  //console.log("invoice.dsachLoi  ", invoice.dsachLoi)
-
-                  if (invoice.dsachLoi.length == 0) {
-                    p_cqt_result = 'Thành công';
-                    p_cqt_status = invoice.tthaiTNCQT;
-                  } else {
-                    p_cqt_result = '';
-                    for (const error of invoice.dsachLoi) {
-                      p_cqt_result += error.maLoi + ' - ' + error.mtaLoi;
-                      p_cqt_status = invoice.tthaiTNCQT;
-                    }
-                  }
-
-                  const data_d_tbss = {
-                    p_mccqt: invoice.MCCQT,
-                    p_form_no: invoice.khieuMauHDon,
-                    p_serial_no: invoice.khieuHDon,
-                    p_invoice_no: invoice.soHDon,
-                    p_cqt_result: p_cqt_result,
-                    p_cqt_status: p_cqt_status,
-                  };
-
-                  // console.log("data_d_tbss  ", data_d_tbss)
-                  await DBService.ExecuteSQLBlob(
-                    `BEGIN wt_upd_hd04ss_d(
-                                      :p_mccqt, 
-                                      :p_form_no, 
-                                      :p_serial_no,
-                                      :p_invoice_no,
-                                      :p_cqt_result,
-                                      :p_cqt_status,
-                                      :p_language, 
-                                      :p_crt_by, 
-                                      :p_rtn_cur
-                                  ); END;`,
-                    data_d_tbss,
-                    p_language,
-                    p_crt_by,
-                  );
-                }*/
 
                 const para_his_ss_15 = {
                   p_trade_code: inv.trade_code,

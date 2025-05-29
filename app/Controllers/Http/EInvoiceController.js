@@ -5244,6 +5244,9 @@ class EInvoiceController {
               invoice_date: data.INVOICE_DT,
               cqt_result: '1', //   invoice.dsachLoi.length == 0 ? 1 : 2,
               dsachLoi: [],
+              tax_sign_datetime: '',
+              tax_sign_by: '',
+              cqt_doc_no: '',
             });
           }
 

@@ -127,7 +127,7 @@ class EInvoiceController2 {
         console.log('json_xml_signed  ', json_xml_signed);
 
         const {check_data, data_inv} = await this.weTaxExtractPosXMLContent(
-          json_xml[0].xml,
+          json_xml[0]?.xml,
           json_xml_signed.data[0]?.signed_xml,
           tax_code,
           sale_date,

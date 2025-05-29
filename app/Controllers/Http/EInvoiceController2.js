@@ -111,7 +111,8 @@ class EInvoiceController2 {
       console.log('weTaxPosGeneralXML json_xml ', json_xml);
       console.log('weTaxPosGeneralXML data_send_mail ', data_send_mail);
 
-      if (json_xml[0].xml_process) {
+      ///return json_xml;
+      if (json_xml[0]?.xml_process) {
         const json_xml_signed = await this.weTaxSignXMLHSM(
           user_name,
           password,
@@ -210,6 +211,7 @@ class EInvoiceController2 {
       } else if (process_type == 'N') {
       }
 
+      console.log('weTaxPosGeneralXML valid ', valid);
       if (!valid.status) {
         json_xml.push({
           error: valid.message,
@@ -645,7 +647,6 @@ class EInvoiceController2 {
             DSCKS: {},
           },
         };
-
         for (let i = 0; i < invoices.length; i++) {
           const lastInvoiceNo = await DBService.callProcCursor(
             'wt_sel_last_invoice_no',
@@ -726,7 +727,7 @@ class EInvoiceController2 {
             msg_his_id: invoices[i].msg_his_id,
             process_type: process_type,
           };
-          //console.log(para_value);
+          console.log(para_value);
           const rtnValue = await DBService.ExecuteSQLBlob(
             `BEGIN wt_upd_send_order_info (          
                                             :sale_date,
@@ -776,7 +777,7 @@ class EInvoiceController2 {
             p_crt_by,
           );
 
-          //console.log(rtnValue);
+          console.log(rtnValue);
 
           let tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
 
@@ -794,7 +795,7 @@ class EInvoiceController2 {
                 sub_vat_amt: invoices[i].total_vat_list[j].sub_amt_vat,
               };
 
-              //console.log('wt_upd_sale_bill_vat  para_amt_vat ', para_amt_vat);
+              console.log('wt_upd_sale_bill_vat  para_amt_vat ', para_amt_vat);
 
               await DBService.ExecuteSQLBlob(
                 `BEGIN wt_upd_sale_bill_vat (          

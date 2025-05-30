@@ -7777,15 +7777,6 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-
-      // let ip = request.header('x-real-ip');
-      // if (ip == undefined) {
-      //   ip = request.ip();
-      // }
-      // if (ip == '18.140.179.68') {
-      //   return response.status(400).json(Utils.responseByRule({success: false, message: `Can't call API with this IP ${ip}`}));
-      // }
-
       //console.log(' weTaxConvertPosInvoiceToXML2 ip ', ip);
 
       const {tax_code, store_code, store_name, count_invoice, list_invoice} = request.all();
@@ -7861,7 +7852,7 @@ class EInvoiceController {
       let xmlRemoveLine = '';
       const id = uuid.v4();
       const signature_path = 'TDiep/CKSNNT';
-      const size_max = 943718; // 0.9 MB 838860; // 0.8MB  734003; // 0.7MB  629145; // 0.6MB  524283; // 0.5MB   1572864; // 1.5MB  1048576; 1MB
+      const size_max = 1572864; // 0.9 MB 838860; // 0.8MB  734003; // 0.7MB  629145; // 0.6MB  524283; // 0.5MB   1572864; // 1.5MB  1048576; 1MB
       let process_yn = true;
       const invoices = list_invoice;
 

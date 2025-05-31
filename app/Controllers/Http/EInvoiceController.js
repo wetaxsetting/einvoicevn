@@ -7910,7 +7910,7 @@ class EInvoiceController {
           });
           process_yn = false;
         }
-        console.log('weTaxConvertPosInvoiceToXML2  process_yn', process_yn);
+        //console.log('weTaxConvertPosInvoiceToXML2  process_yn', process_yn);
         if (process_yn) 
         {
           req_key.push(invoices[i].req_key);
@@ -8247,7 +8247,7 @@ class EInvoiceController {
           }
           else
           {
-            console.log('weTaxConvertPosInvoiceToXML2xxsssssxx  invoices[i].version', invoices[i].version);
+            //console.log('weTaxConvertPosInvoiceToXML2xxsssssxx  invoices[i].version', invoices[i].version);
 
             objInvoice.DLHDon.TTChung.PBan = invoices[i].version;
             objInvoice.DLHDon.TTChung.KHMSHDon = invoices[i].form_no;

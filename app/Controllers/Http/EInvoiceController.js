@@ -20304,6 +20304,7 @@ class EInvoiceController {
       soTBao = '';
     let data_send_mail = [];
     let p_seller_comp_seller = '';
+    let p_cqt_result_yn = 'N';
     try {
       const param_trade_code = {
         p_trade_code: check_data.TRADE_CODE,
@@ -20444,6 +20445,7 @@ class EInvoiceController {
                 ngayCQTKy = '';
                 maGDichDTu = '';
               } else if (items[k].loaiTBao == '8') {
+                p_cqt_result_yn = "Y";
                 //trade_code = items[k].ndungTBao.maGDichTChieu;
                 maTBao = items[k].ndungTBao.tbaoKTraDLieu.loaiTBao; //items[k].loaiTBao;
                 tenTBao = items[k].tenTBao;
@@ -20487,6 +20489,7 @@ class EInvoiceController {
                   }
                 });
               } else if (items[k].loaiTBao == '9' || items[k].loaiTBao == '7') {
+                p_cqt_result_yn = "Y";
                 //trade_code = items[k].ndungTBao.maGDichTChieu;
                 maTBao = items[k].ndungTBao.tbaoKTraDLieu.loaiTBao; //items[k].loaiTBao;
                 tenTBao = items[k].tenTBao;
@@ -20628,7 +20631,8 @@ class EInvoiceController {
           });
         }
       });
-      if (check_data.CRT_BY == 'wetax' && data_inv.length > 0) {
+      if (check_data.CRT_BY == 'wetax' && data_inv.length > 0 && p_cqt_result_yn == 'Y') {
+        
         const param_data_m = {
           data_json: JSON.stringify(data_inv),
           api_name: 'weTaxCallBackStatusPosInv',

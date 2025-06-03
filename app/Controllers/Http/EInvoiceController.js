@@ -3457,7 +3457,7 @@ class EInvoiceController {
             contentNotice = child.ndungTBao.tbaoDKyDTu;
             loaiTBao = child.loaiTBao;
             tenTBao = child.tenTBao;
-          } else if (child.loaiTBao == '4') {
+          } else if (child.loaiTBao == '4' || child.loaiTBao == '6') {
             contentNotice = child.ndungTBao.tbaoTNhanDTu;
             loaiTBao = child.loaiTBao;
             tenTBao = '';

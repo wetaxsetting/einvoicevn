@@ -187,6 +187,7 @@ class HSMController2 {
           const res = await Request.post(EINVOICE_ESIGN_XML, {
             xmlContent: JSON.stringify({user_name, password, serial_no, pin, organization, otp, signing_xml, url, site}),
           });
+
           data = res.data.d;
           break;
         default:
@@ -197,12 +198,24 @@ class HSMController2 {
             }),
           );
       }
+      
+      const parsedData = JSON.parse(data);
+      //console.log('EINVOICE_ESIGN_XML', parsedData);
+
+      if (parsedData?.status !== '200') {
+        return response.status(409).json(
+          Utils.responseByRule({
+            success: false,
+            message: parsedData.data[0]?.message ,
+          }),
+        );
+      }
 
       return response.status(200).json(
         Utils.responseByRule({
           success: true,
           message: 'success.',
-          data: JSON.parse(data),
+          data: parsedData,
         }),
       );
     } catch (e) {

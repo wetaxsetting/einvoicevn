@@ -3426,17 +3426,23 @@ class EInvoiceController {
               );
             }
           } else if (child.loaiTBao == '5') {
+
             contentNotice = child.ndungTBao.tbaoDKyDTu;
             loaiTBao = child.loaiTBao;
             tenTBao = child.tenTBao;
-          } else if (child.loaiTBao == '4' || child.loaiTBao == '6') {
-            contentNotice = child.ndungTBao.tbaoTNhanDTu;
-            loaiTBao = child.loaiTBao;
-            tenTBao = '';
 
+          } else if (child.loaiTBao == '4' || child.loaiTBao == '6') {
+            /*contentNotice = child.ndungTBao.tbaoTNhanDTu;
+            loaiTBao = child.loaiTBao;
+            tenTBao = '';*/
+          
             // child.ndungTBao.tbaoTNhanDTu.dsachLoiTNhanDTu.forEach((element, index) => {
             //   tenTBao = element.maLoi + ' - ' + element.mtaLoi;
             // });
+
+            contentNotice = child.ndungTBao.tbaoDKyDTu;
+            loaiTBao = child.loaiTBao;
+            tenTBao = '';
 
             child.ndungTBao.tbaoDKyDTu.dsachLDoKhongCNhan.forEach((element, index) => {
               tenTBao = element.maLoi + ' - ' + element.mtaLoi;
@@ -3463,7 +3469,7 @@ class EInvoiceController {
         LVL: 'error',
         MODULE: 'EInvoiceController',
         FUNC: 'weTaxCheckingDeclarations',
-        CONTENT: e.message,
+        CONTENT: e,
       });
       console.log(' weTaxCheckingDeclarations error ', e);
       // return response.send(Utils.response(false, e.message,null));

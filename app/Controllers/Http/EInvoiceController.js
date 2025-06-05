@@ -3299,7 +3299,9 @@ class EInvoiceController {
         MCCQT = '',
         contentNotice = {},
         jsonData = [];
+
       if (!ress.data.length) {
+
         if (DB_CONNECTION == 'oracle') {
           oracledb.fetchAsBuffer = [oracledb.BLOB];
           oracledb.fetchAsString = [oracledb.CLOB];
@@ -3317,7 +3319,7 @@ class EInvoiceController {
           p_language,
           p_crt_by,
         );
-        // console.log('dataCheckTradeCode ', dataCheckTradeCode);
+        
         if (dataCheckTradeCode) {
           jsonData = JSON.parse(dataCheckTradeCode.p_rtn_cur[0].TVAN_DATA_RESULT);
         } else {
@@ -3325,42 +3327,12 @@ class EInvoiceController {
         }
       } else {
         jsonData = ress.data;
-        // para_value = {
-        //   p_trade_code: trade_code,
-        //   p_xml_sign: base64XML,
-        //   p_messCQT: tenTBao,
-        //   p_status: status,
-        //   p_pos_key: pos_key,
-        //   p_maTDiep: maTD,
-        //   p_soTB: soTB,
-        //   p_ngayTB: ngayTB,
-        //   p_thoiGianCQTKy: thoiGianCQTKy,
-        //   p_ketQua: ketQua,
-        // };
-        // await DBService.ExecuteSQLBlob(
-        //   `BEGIN ei_upd_his_dec_status(
-        //                     :p_trade_code,
-        //                     :p_xml_sign,
-        //                     :p_messCQT,
-        //                     :p_status,
-        //                     :p_pos_key,
-        //                     :p_maTDiep,
-        //                     :p_soTB,
-        //                     :p_ngayTB,
-        //                     :p_thoiGianCQTKy,
-        //                     :p_ketQua,
-        //                     :p_language,
-        //                     :p_crt_by,
-        //                     :p_rtn_cur
-        //                 ); END;`,
-        //   para_value,
-        //   p_language,
-        //   p_crt_by,
-        // );
       }
 
       for (let item of jsonData) {
+
         for (let child of item) {
+
           if (child.loaiTBao == '1') {
             base64XML = Buffer.from(child.ndungTBao.base64XML, 'base64').toString('utf8');
             const temp_of_tax = {
@@ -3462,7 +3434,11 @@ class EInvoiceController {
             loaiTBao = child.loaiTBao;
             tenTBao = '';
 
-            child.ndungTBao.tbaoTNhanDTu.dsachLoiTNhanDTu.forEach((element, index) => {
+            // child.ndungTBao.tbaoTNhanDTu.dsachLoiTNhanDTu.forEach((element, index) => {
+            //   tenTBao = element.maLoi + ' - ' + element.mtaLoi;
+            // });
+
+            child.ndungTBao.tbaoDKyDTu.dsachLDoKhongCNhan.forEach((element, index) => {
               tenTBao = element.maLoi + ' - ' + element.mtaLoi;
             });
           }
@@ -3489,6 +3465,7 @@ class EInvoiceController {
         FUNC: 'weTaxCheckingDeclarations',
         CONTENT: e.message,
       });
+      console.log(' weTaxCheckingDeclarations error ', e);
       // return response.send(Utils.response(false, e.message,null));
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
     }

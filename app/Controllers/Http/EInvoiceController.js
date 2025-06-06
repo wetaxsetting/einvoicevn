@@ -14009,8 +14009,8 @@ class EInvoiceController {
       //console.log("sSSSS ", tei_wt_sale_bill_pk);
       //let EiExcels = new EiWTExcelHandlerAuto();
       //let url_pdf = await EiExcels.getEinvoice(tei_wt_sale_bill_pk, p_language, p_crt_by);
-      let EiExcels = new EiExcelHandlerAuto();
-      let url_pdf = await EiExcels.getEinvoice(tei_wt_sale_bill_pk, p_language, p_crt_by);
+      /*let EiExcels = new EiExcelHandlerAuto();
+      let url_pdf = await EiExcels.getEinvoice(tei_wt_sale_bill_pk, p_language, p_crt_by);*/
       //console.log("base64PDf  ", url_pdf);
 
       let re_url_xml = await Request.get(
@@ -18687,7 +18687,7 @@ class EInvoiceController {
             tax_code = rtnValue_inv.p_rtn_cur[0].SLLR_TAXCODE;
 
             const {res_send_mail, subject, body} = await this.sendMailNormalEinvoiceToCustomer2(
-              rtnValue_inv.p_rtn_cur[0].TEI_EINVOICE_M_PK, // PK, //data.req_ep_key,
+              rtnValue_inv.p_rtn_cur[0].CQT_MCCQT, // PK, //data.req_ep_key,
               rtnValue_inv.p_rtn_cur[0].LOOKUP_CD,
               invoice,
               p_language,

@@ -9091,6 +9091,166 @@ class EInvoiceController {
     }
   }
 
+  async weTaxReSendOrderInfoV3({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      let data_send_mail = [];
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const {tax_code, sale_date, store_code, store_name, infor_send_mail} = request.all();
+
+      // console.log("weTaxReSendNormalInvoice  BEGIN ============================= ");
+      // console.log("weTaxReSendNormalInvoice  tax_code ",tax_code);
+      // console.log("weTaxReSendNormalInvoice  sale_date ",sale_date);
+      // console.log("weTaxReSendNormalInvoice  store_code ",store_code);
+      // console.log("weTaxReSendNormalInvoice  store_name ",store_name);
+      // console.log("weTaxReSendNormalInvoice  infor_send_mail ",infor_send_mail);
+      // console.log("weTaxReSendNormalInvoice  END =============================== ");
+
+      let tei_wt_sale_bill_pk = 0;
+      let data_r = [];
+      //const data_xml = await this.createXMLByOne(data.data_invoice);
+      for (const invoice of infor_send_mail) {
+        const para_value = {
+          tax_code: tax_code,
+          sale_date: sale_date,
+          store_code: store_code,
+          store_name: store_name,
+          form_no: invoice.form_no,
+          serial_no: invoice.serial_no,
+          invoice_no: invoice.invoice_no,
+        };
+
+        //console.log("para_value  ", para_value)
+
+        const rtnValue = await DBService.ExecuteSQLBlob(
+          `BEGIN wt_sel_nor_invoice_info (                :tax_code,
+                                                          :sale_date,
+                                                          :store_code,
+                                                          :store_name,
+                                                          :form_no,
+                                                          :serial_no,
+                                                          :invoice_no,
+                                                          :p_language, 
+                                                          :p_crt_by, 
+                                                          :p_rtn_cur); END;`,
+          para_value,
+          p_language,
+          p_crt_by,
+        );
+
+        //console.log("rtnValue  ", rtnValue)
+
+        if (rtnValue?.p_rtn_cur?.[0]?.STATUS == 'OK') {
+          tei_wt_sale_bill_pk = rtnValue.p_rtn_cur[0].PK;
+          data_send_mail.push({
+            buyer_comp_name: rtnValue.p_rtn_cur[0].BUYER_COMP_NM,
+            seller_comp_name: rtnValue.p_rtn_cur[0].SLLR_COMP_NM,
+            form_no: rtnValue.p_rtn_cur[0].FORM_NO,
+            serial_no: rtnValue.p_rtn_cur[0].SERIAL_NO,
+            invoice_no: rtnValue.p_rtn_cur[0].INVOICE_NO,
+            total_payment: rtnValue.p_rtn_cur[0].TOT_TR_AMT,
+            mccqt: rtnValue.p_rtn_cur[0].CQT_MCCQT,
+            buyer_email: invoice.buyer_email,
+            buyer_email_cc: invoice.buyer_email_cc,
+            sale_id: invoice.sale_id,
+            msg_his_id: invoice.msg_his_id,
+            send_mail_yn: 'Y',
+            trade_code: rtnValue.p_rtn_cur[0].MA_TRACUU
+          });
+
+          if (!invoice.buyer_email && !invoice.buyer_email_cc && !rtnValue.p_rtn_cur[0].BUYER_EMAIL && !rtnValue.p_rtn_cur[0].BUYER_EMAIL_CC) {
+            data_r.push({
+              sale_id: invoice.sale_id,
+              msg_his_id: invoice.msg_his_id,
+              link_invoice_preview: 'https://einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
+              lookup_code: rtnValue?.p_rtn_cur?.[0]?.LOOKUP_CD,
+              seller_taxcode: tax_code,
+              form_no: invoice.form_no,
+              serial_no: invoice.serial_no,
+              invoice_no: invoice.invoice_no,
+              status_code: '0',
+              status_name: 'Buyer mail and buyer maill cc are null',
+              etax_result: '',
+              // customer_name: "",
+              // send_date: "",
+              // send_time: "",
+              // mail_form: "",
+              // mail_to: "",
+              // mail_to_cc: "",
+              // title: "",
+              // content: "",
+            });
+            continue;
+          }
+
+          data_r.push({
+            sale_id: invoice.sale_id,
+            msg_his_id: invoice.msg_his_id,
+            link_invoice_preview: 'https://einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
+            lookup_code: rtnValue?.p_rtn_cur?.[0]?.LOOKUP_CD,
+            seller_taxcode: tax_code,
+            form_no: invoice.form_no,
+            serial_no: invoice.serial_no,
+            invoice_no: invoice.invoice_no,
+            status_code: '3',
+            status_name: 'In Process',
+            etax_result: '',
+            // customer_name: "",
+            // send_date: "",
+            // send_time: "",
+            // mail_form: "",
+            // mail_to: "",
+            // mail_to_cc: "",
+            // title: "",
+            // content: "",
+          });
+        } else {
+          //return response.send(Utils.response(false, 'Order einvoice not exit'));
+          data_r.push({
+            sale_id: invoice.sale_id,
+            msg_his_id: invoice.msg_his_id,
+            link_invoice_preview: 'https://einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code',
+            lookup_code: '',
+            seller_taxcode: tax_code,
+            form_no: invoice.form_no,
+            serial_no: invoice.serial_no,
+            invoice_no: invoice.invoice_no,
+            status_code: '0',
+            status_name: 'Order einvoice not exit/ Taxcode not yet register',
+            etax_result: '',
+            // customer_name: "",
+            // send_date: "",
+            // send_time: "",
+            // mail_form: "",
+            // mail_to: "",
+            // mail_to_cc: "",
+            // title: "",
+            // content: "",
+          });
+        }
+      }
+
+      this.sendMailNormailWT2(data_send_mail, 'WTPTA002N-2', p_language, p_crt_by);
+
+      // return response.send(Utils.response(true, `ReSend invoice was Successfully!`, data_r));
+      return response.status(200).json(Utils.responseByRule({success: true, message: 'Resend order normal invoice successfully.', data: data_r}));
+    } catch (error) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'weTaxReSendOrderInfo',
+        CONTENT: error.message,
+      });
+      // console.log(error);
+      // return response.send(Utils.response(false, error.message, null));
+      return response.status(400).json(Utils.responseByRule({success: true, message: error.message}));
+    }
+  }
+
   async weTaxSendCompanyTemplate({request, response, auth}) {
     try {
       var p_language = request.header('accept-language', 'ENG');
@@ -13844,6 +14004,199 @@ class EInvoiceController {
     }
   }
 
+  async sendMailNormalEinvoiceToCustomer2(tei_wt_sale_bill_pk, lookup_code, data_invoice, p_language, p_crt_by) {
+    try {
+      //console.log("sSSSS ", tei_wt_sale_bill_pk);
+      //let EiExcels = new EiWTExcelHandlerAuto();
+      //let url_pdf = await EiExcels.getEinvoice(tei_wt_sale_bill_pk, p_language, p_crt_by);
+      let EiExcels = new EiExcelHandlerAuto();
+      let url_pdf = await EiExcels.getEinvoice(tei_wt_sale_bill_pk, p_language, p_crt_by);
+      //console.log("base64PDf  ", url_pdf);
+
+      let re_url_xml = await Request.get(
+        APP_URL_LOCAL + '/api/dso/getfiledbtoken?pk=' + tei_wt_sale_bill_pk + '&proc=' + 'WT_SEL_XML_NOR_EINVOICE' + '&token=',
+      ); //  await this.getUrlXML(tei_wt_sale_bill_pk, "EI_SEL_XML_POS_EINVOICE" );
+      let url_xml = re_url_xml.data;
+      // console.log('sendMailNormalEinvoiceToCustomer data_invoice ', data_invoice);
+      let body = '';
+
+      let subject = `${data_invoice.seller_comp_name}[Thông báo phát hành HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
+
+      if (data_invoice.invoice_type == '1') {
+        subject = `${data_invoice.seller_comp_name}[Thông báo về việc thay thế HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
+      } else if (data_invoice.invoice_type == '2') {
+        subject = `${data_invoice.seller_comp_name}[Thông báo về việc điều chỉnh HĐĐT][${data_invoice.form_no}][${data_invoice.serial_no}][${data_invoice.invoice_no}]`;
+      }
+
+      body = `<html>
+                            <body>
+                                <div id="page">
+                                    <div id="d2">
+                                        <p>Dear: ${data_invoice.buyer_comp_name}
+                                            <br />
+                                            <br />${data_invoice.seller_comp_name}.
+                                            <br />            Trân trọng cảm ơn Quý khách hàng đã sử dụng sản phẩm của chúng tôi.
+                                            <br/> Chúng tôi đã 
+                                            <b>PHÁT HÀNH </b> hóa đơn điện tử với các thông tin như sau:
+                                            <br/>- Mẫu số: ${data_invoice.form_no}
+                                            <br/>- Ký hiệu: 
+                                            <b>${data_invoice.serial_no}</b>
+                                            <br/>- Số hóa đơn: 
+                                            <b>${data_invoice.invoice_no}</b>
+                                            <br/>- Tổng thanh toán: 
+                                            <b>       ${
+                                              new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND', maximumFractionDigits: 9})
+                                                .format(Number(data_invoice.total_payment))
+                                                .replace('₫', '') +
+                                              ' ' +
+                                              data_invoice.currency
+                                            }</b>
+                                            <br/>- Mã CQT của hóa đơn: 
+								                            <b> ${data_invoice.mccqt}</b>
+                                            <br/>- Link tra cứu: 
+								                            <a href='https://einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code=${lookup_code}'>Xem hóa đơn</a>
+                                            <br />- Link download file PDF: 
+                                            <a href='${url_pdf}'>Tải file PDF</a>
+                                            <br />- Link download file XML: 
+                                            <a href='${url_xml}'>Tải file XML</a>
+                                            <br />`;
+      if (data_invoice.invoice_type == '1') {
+        body =
+          body +
+          ` - Thay thế cho Số hóa đơn: <b>${data_invoice.invoice_no_ref}</b><br />
+                                              - Mẫu số: <b>${data_invoice.form_no_ref}</b><br />
+                                              - Ký hiệu: <b>${data_invoice.serial_no_ref}</b><br />
+                                              - Mã CQT (nếu có): <b>${data_invoice.mccqt_ref}</b><br />
+                                              - Tổng thanh toán: <b>${
+                                                new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND', maximumFractionDigits: 9})
+                                                  .format(Number(data_invoice.total_payment_ref))
+                                                  .replace('₫', '') +
+                                                ' ' +
+                                                data_invoice.currency
+                                              }</b><br />
+                                            `;
+      } else if (data_invoice.invoice_type == '2') {
+        body =
+          body +
+          ` - Điều chỉnh cho Số hóa đơn: <b>${data_invoice.invoice_no_ref}</b><br />
+                                              - Mẫu số: <b>${data_invoice.form_no_ref}</b><br />
+                                              - Ký hiệu: <b>${data_invoice.serial_no_ref}</b><br />
+                                              - Mã CQT (nếu có): <b>${data_invoice.mccqt_ref}</b><br />
+                                              - Tổng thanh toán: <b>${
+                                                new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND', maximumFractionDigits: 9})
+                                                  .format(Number(data_invoice.total_payment_ref))
+                                                  .replace('₫', '') +
+                                                ' ' +
+                                                data_invoice.currency
+                                              }</b><br />
+                                            `;
+      }
+      body =
+        body +
+        `</div>
+                                        <br/>
+                                        <div id="d6">
+                                            <p>
+                                                <i>* Xin lưu ý: Đây là email gửi tự động từ hệ thống, vui lòng không trả lời về địa chỉ email này</i>
+                                                <br />
+                                                <i>Cám ơn sự hợp tác. </i>
+                                                <br />
+                                        --------------------------------------------------------------------------
+                                    
+                                            </p>
+                                        </div>
+                                        <div id="d7"> Would like to send you our warmest greetings and most sincere thanks for choosing our product. 
+                                            <br/> We 
+                                            <b>issued </b> your e-invoice with the information as below: 
+                                            <br/>- Form No: 
+                                            <b>${data_invoice.form_no}</b>
+                                            <br/>- Serial: 
+                                            <b>${data_invoice.serial_no}</b>
+                                            <br/>- Invoice No:  
+                                            <b>${data_invoice.invoice_no}</b>
+                                            <br/>- Total amount :  
+                                            <b>       ${
+                                              new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND', maximumFractionDigits: 9})
+                                                .format(Number(data_invoice.total_payment))
+                                                .replace('₫', '') +
+                                              ' ' +
+                                              data_invoice.currency
+                                            }</b>
+                                            <br/>- CQT code of e-invoice: 
+								                            <b> ${data_invoice.mccqt}</b>
+                                            <br/>- Link lookup: 
+								                            <a href='https://einvoicepro.webcashvietnam.com/lookup-einvoice?trade_code=${lookup_code}'>View e-invoice</a>
+                                            <br />- Download file PDF link:  
+                                            <a href='${url_pdf}'>Download file PDF</a>
+                                            <br />- Download file XML link:  
+                                            <a href='${url_xml}'>Download file XML</a>
+                                            <br />`;
+      if (data_invoice.invoice_type == '1') {
+        body =
+          body +
+          ` - Replace for Invoice No: <b>${data_invoice.invoice_no_ref}</b> <br />
+                                              - Form No: <b>${data_invoice.form_no_ref}</b> <br />
+                                              - Serial No: <b>${data_invoice.serial_no_ref}</b> <br />
+                                              - Tax agency’s code: <b>${data_invoice.mccqt_ref}</b> <br />
+                                              - Total amount: <b>${
+                                                new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND', maximumFractionDigits: 9})
+                                                  .format(Number(data_invoice.total_payment_ref))
+                                                  .replace('₫', '') +
+                                                ' ' +
+                                                data_invoice.currency
+                                              }</b> <br />
+                                            `;
+      } else if (data_invoice.invoice_type == '2') {
+        body =
+          body +
+          ` - Adjustment for Invoice No: <b>${data_invoice.invoice_no_ref}</b> <br />
+                                              - Form No: <b>${data_invoice.form_no_ref}</b> <br />
+                                              - Serial No: <b>${data_invoice.serial_no_ref}</b> <br />
+                                              - Tax agency’s code: <b>${data_invoice.mccqt_ref}</b> <br />
+                                              - Total amount: <b>${
+                                                new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND', maximumFractionDigits: 9})
+                                                  .format(Number(data_invoice.total_payment_ref))
+                                                  .replace('₫', '') +
+                                                ' ' +
+                                                data_invoice.currency
+                                              }</b> <br />
+                                            `;
+      }
+      body =
+        body +
+        `</p>
+                                    </div>
+                                    <div id="d8">
+                                        <p>
+                                            <br/>* Note: This is an automatic email. Please do not feedback to this email.
+                                            <br/>
+                                        Thank you for your corporation!
+                                        
+                                        </p>
+                                    </div>
+                                </body>
+                            </html>
+                            `;
+
+      //console.log("sSSSS4 ", tei_wt_sale_bill_pk);
+
+      const res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {
+        mail_to: data_invoice.buyer_email,
+        cc_to: data_invoice.buyer_email_cc,
+        subject: subject,
+        body: body,
+        /*attachfile1: url_xml,
+        attachfile2: url_pdf,
+        filename1: data_invoice.form_no + '_' + data_invoice.serial_no + '_' + data_invoice.invoice_no + '.xml',
+        filename2: data_invoice.form_no + '_' + data_invoice.serial_no + '_' + data_invoice.invoice_no + '.pdf',*/
+      });
+      //console.log("res_send_mail  ", res_send_mail);
+      return {res_send_mail, subject, body};
+    } catch (error) {
+      console.log('sendMailNormalEinvoiceToCustomer error  ', error);
+    }
+  }
+
   async sendMailToCustomer(tei_wt_sale_bill_pk, lookup_code, data_invoice, p_language, p_crt_by) {
     try {
       //console.log("sSSSS ", tei_wt_sale_bill_pk);
@@ -18166,6 +18519,174 @@ class EInvoiceController {
             tax_code = rtnValue_inv.p_rtn_cur[0].SLLR_TAXCODE;
 
             const {res_send_mail, subject, body} = await this.sendMailNormalEinvoiceToCustomer(
+              rtnValue_inv.p_rtn_cur[0].TEI_EINVOICE_M_PK, // PK, //data.req_ep_key,
+              rtnValue_inv.p_rtn_cur[0].LOOKUP_CD,
+              invoice,
+              p_language,
+              p_crt_by,
+            );
+
+            if (res_send_mail.data.success) {
+              const para_inv_st = {
+                tei_wt_sale_bill_pk: data.req_ep_key,
+                status: 'Y',
+              };
+              // const rtnValueSendMail =
+              await DBService.ExecuteSQLBlob(
+                `BEGIN wt_upd_invoice_status (          
+                                                                     :tei_wt_sale_bill_pk,
+                                                                     :status,
+                                                                     :p_language, 
+                                                                     :p_crt_by, 
+                                                                     :p_rtn_cur); END;`,
+                para_inv_st,
+                p_language,
+                p_crt_by,
+              );
+
+              data_rep.push({
+                sale_id: data.sale_id,
+                msg_his_id: data.msg_his_id,
+                status_code: '1',
+                status_name: 'Sent Success',
+                send_date: res_send_mail.data.data.date_send,
+                send_time: res_send_mail.data.data.time_send,
+                mail_form: res_send_mail.data.data.mail_from,
+                mail_to: res_send_mail.data.data.mail_to,
+                mail_to_cc: res_send_mail.data.data.mail_to_cc,
+                title: subject,
+                content: body,
+              });
+            } else {
+              const para_inv_st = {
+                tei_wt_sale_bill_pk: data.req_ep_key,
+                status: 'N',
+              };
+              // const rtnValueSendMail =
+              await DBService.ExecuteSQLBlob(
+                `BEGIN wt_upd_invoice_status (          
+                                                                     :tei_wt_sale_bill_pk,
+                                                                     :status,
+                                                                     :p_language, 
+                                                                     :p_crt_by, 
+                                                                     :p_rtn_cur); END;`,
+                para_inv_st,
+                p_language,
+                p_crt_by,
+              );
+              data_rep.push({
+                sale_id: data.sale_id,
+                msg_his_id: data.msg_his_id,
+                status_code: '0',
+                status_name: 'Sent Faile',
+                send_date: res_send_mail.data.data.date_send,
+                send_time: res_send_mail.data.data.time_send,
+                mail_form: res_send_mail.data.data.mail_from,
+                mail_to: res_send_mail.data.data.mail_to,
+                mail_to_cc: res_send_mail.data.data.mail_to_cc,
+                title: subject,
+                content: body,
+              });
+            }
+          }
+        }
+      }
+
+      if (data_rep && data_rep.length > 0) {
+        // console.log('data_rep ', data_rep);
+        const agent = {
+          Agent: {
+            defaultPort: 443,
+            protocol: 'https:',
+            options: {maxVersion: 'TLSv1.2', minVersion: 'TLSv1.2', path: null},
+          },
+        };
+
+        let triesCounter = 0;
+        while (triesCounter < 3) {
+          try {
+            const res = await Request.post(
+              `${WETAX_API_URL}/api/wtx/v1/email-delivery-status`,
+              {
+                service_id: ipa_name,
+                seller_tax_code: tax_code,
+                info_send_email: data_rep,
+              },
+              {
+                agent,
+                headers: {
+                  Authorization: 'Basic ' + WETAX_TOKEN_CALLBACK,
+                },
+              },
+            );
+            break; // 'return' would work here as well
+          } catch (err) {
+            await Utils._sleep(5);
+            console.log(err);
+          }
+          triesCounter++;
+        }
+      }
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'sendMailNormailWT',
+        CONTENT: e.message,
+      });
+      console.log('e  ', e);
+      //return response.send(Utils.response(false, e.message));
+    }
+  }
+
+   async sendMailNormailWT2(data_send_mail, ipa_name, p_language, p_crt_by) {
+    try {
+      // send mail ............
+      let data_rep = [];
+      let tax_code = '';
+      //console.log("data_send_mail", data_send_mail);
+      for (const data of data_send_mail) {
+        if (data.mccqt && data.msg_his_id && data.buyer_email) {
+          const data_param = {
+            rep_key:  data.mccqt, //data.trade_code,
+            send_mail_yn: data.send_mail_yn,
+          };
+          const rtnValue_inv = await DBService.ExecuteSQLBlob(
+            `BEGIN wt_sel_nor_inv_mail (          
+                                                                  :rep_key,
+                                                                  :send_mail_yn,
+                                                                  :p_language, 
+                                                                  :p_crt_by, 
+                                                                  :p_rtn_cur); END;`,
+            data_param,
+            p_language,
+            p_crt_by,
+          );
+
+          //console.log("rtnValue_inv  ", rtnValue_inv);
+          if (rtnValue_inv?.p_rtn_cur?.[0]?.STATUS == 'OK') {
+            const invoice = {
+              buyer_comp_name: rtnValue_inv.p_rtn_cur[0].BUYER_COMP_NM,
+              seller_comp_name: rtnValue_inv.p_rtn_cur[0].SLLR_COMP_NM,
+              form_no: rtnValue_inv.p_rtn_cur[0].FORM_NO,
+              serial_no: rtnValue_inv.p_rtn_cur[0].SERIAL_NO,
+              invoice_no: rtnValue_inv.p_rtn_cur[0].INVOICE_NO,
+              total_payment: rtnValue_inv.p_rtn_cur[0].TOT_NET_TR_AMT,
+              mccqt: rtnValue_inv.p_rtn_cur[0].CQT_MCCQT,
+              buyer_email: data.buyer_email,
+              buyer_email_cc: data.buyer_email_cc,
+              invoice_type: rtnValue_inv.p_rtn_cur[0].INVOICE_TYPE,
+              form_no_ref: rtnValue_inv.p_rtn_cur[0].FORM_NO_REF,
+              serial_no_ref: rtnValue_inv.p_rtn_cur[0].SERIAL_NO_REF,
+              invoice_no_ref: rtnValue_inv.p_rtn_cur[0].INVOICE_NO_REF,
+              mccqt_ref: rtnValue_inv.p_rtn_cur[0].CQT_MCCQT_REF,
+              total_payment_ref: rtnValue_inv.p_rtn_cur[0].TOT_NET_TR_AMT_REF,
+              currency: rtnValue_inv.p_rtn_cur[0].TR_CCY,
+            };
+
+            tax_code = rtnValue_inv.p_rtn_cur[0].SLLR_TAXCODE;
+
+            const {res_send_mail, subject, body} = await this.sendMailNormalEinvoiceToCustomer2(
               rtnValue_inv.p_rtn_cur[0].TEI_EINVOICE_M_PK, // PK, //data.req_ep_key,
               rtnValue_inv.p_rtn_cur[0].LOOKUP_CD,
               invoice,

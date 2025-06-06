@@ -6354,7 +6354,7 @@ class EiExcelConverterAuto {
           } else {
             total_countLenght += 1;
           }
-          console.log('total_countLenght  ', total_countLenght);
+          //console.log('total_countLenght  ', total_countLenght);
           if (count_col == v_count - 1) {
             if (total_countLenght > num_of_pages) {
               count_col++;
@@ -6641,7 +6641,7 @@ class EiExcelConverterAuto {
       //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",  "K",  "L",  "M",  "N",  "O",  "P",  "Q",  "R",  "S",  "T",  "U",  "V",  "W",  "X",  "Y",  "Z",
       //"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
       //=======================================================================================================
-      console.log('page  ', JSON.stringify(page));
+      //console.log('page  ', JSON.stringify(page));
       if (v_countNumberOfPages > 1) {
         for (let j = 0; j < page.length; j++) {
           const e = parseInt(page[j]);
@@ -7308,7 +7308,7 @@ class EiExcelConverterAuto {
 
       if (einvoiceMasterData[0]['SIGN_YN'] == 'Y') {
         try {
-          console.log('SIGN_YN  ++===>  ', signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
+          //console.log('SIGN_YN  ++===>  ', signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
           worksheet.unMergeCells(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox));
           worksheet.unMergeCells(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 1));
           worksheet.unMergeCells(signBoxCell + (totalRows + _sourceRow_3 + countFromEndDetailToSignBox + 2));

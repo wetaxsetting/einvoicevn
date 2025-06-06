@@ -8999,7 +8999,7 @@ class EInvoiceController {
             sale_id: invoice.sale_id,
             msg_his_id: invoice.msg_his_id,
             send_mail_yn: 'Y',
-            trade_code: rtnValue.p_rtn_cur[0].MA_TRACUU,
+            trade_code: rtnValue.p_rtn_cur[0].MA_TRACUU
           });
 
           if (!invoice.buyer_email && !invoice.buyer_email_cc && !rtnValue.p_rtn_cur[0].BUYER_EMAIL && !rtnValue.p_rtn_cur[0].BUYER_EMAIL_CC) {
@@ -18127,7 +18127,7 @@ class EInvoiceController {
       for (const data of data_send_mail) {
         if (data.mccqt && data.msg_his_id && data.buyer_email) {
           const data_param = {
-            rep_key: data.trade_code,
+            rep_key:  data.mccqt, //data.trade_code,
             send_mail_yn: data.send_mail_yn,
           };
           const rtnValue_inv = await DBService.ExecuteSQLBlob(

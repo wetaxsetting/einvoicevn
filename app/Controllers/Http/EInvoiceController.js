@@ -15178,7 +15178,7 @@ class EInvoiceController {
       }
 
       const para_inv_st = {
-        trade_code: lookupcode.replaceAll(' ', '+'),
+        trade_code: lookupcode.replaceAll(' ', '+'), 
       };
       const rtnValue = await DBService.ExecuteSQLBlob(
         `BEGIN ei_sel_get_data_lookup_code (:trade_code,:p_language, :p_crt_by, :p_rtn_cur); END;`,
@@ -15248,7 +15248,7 @@ class EInvoiceController {
         // console.log("base64PDf: ", url_pdf);
 
         re_url_xml = await Request.get(
-          APP_URL_LOCAL + '/api/dso/getfiledbtoken?pk=' + rtnValue.p_rtn_cur[0].CQT_MCCQT_ID + '&proc=' + 'EI_SEL_XML_EINVOICE' + '&token=',
+          APP_URL_LOCAL + '/api/dso/getfiledbtoken?pk=' + rtnValue.p_rtn_cur[0].TEI_EINVOICE_M_PK + '&proc=' + 'EI_SEL_XML_EINVOICE' + '&token=',
         );
         url_xml = re_url_xml.data;
       } else {

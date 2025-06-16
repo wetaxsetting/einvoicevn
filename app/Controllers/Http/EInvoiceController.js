@@ -9243,7 +9243,7 @@ class EInvoiceController {
         LVL: 'error',
         MODULE: 'EInvoiceController',
         FUNC: 'weTaxReSendOrderInfo',
-        CONTENT: error.message,
+        CONTENT: error,
       });
       // console.log(error);
       // return response.send(Utils.response(false, error.message, null));

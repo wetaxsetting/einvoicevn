@@ -14776,7 +14776,8 @@ class EInvoiceController {
           }),
         );
       } else if (type == 'X') {
-        const dir = ROOT_DIR_FILES + '/xml/' + year + '/' + month;
+        //const dir = ROOT_DIR_FILES + '/xml/' + year + '/' + month;
+        const dir = ROOT_DIR_FILES + '/pdf/' + year + '/' + month;
         if (!fs.existsSync(dir)) {
           fs.mkdirSync(dir, {recursive: true}, err => {
             console.log(err);
@@ -14784,7 +14785,8 @@ class EInvoiceController {
         }
 
         const unixtime = Date.now();
-        const fileName = '/xml/' + year + '/' + month + '/rpt-' + unixtime + '-' + rep_key + '.xml';
+        //const fileName = '/xml/' + year + '/' + month + '/rpt-' + unixtime + '-' + rep_key + '.xml';
+        const fileName = '/pdf/' + year + '/' + month + '/rpt-' + unixtime + '-' + rep_key + '.xml';
         let token = AES.encrypt(fileName + '|' + year + month + day, APP_KEY);
         token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
 

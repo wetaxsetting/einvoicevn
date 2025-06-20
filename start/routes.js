@@ -157,7 +157,7 @@ Route.group(() => {
   Route.post('generate-declare-xml', 'EInvoiceController.weTaxConvertDeclareUsingInvoiceToXML');
   //Route.post('send-declare', 'EInvoiceController.weTaxSendDeclarationToTaxOffice');
   //Route.post('check-status-declare', 'EInvoiceController.weTaxCheckingDeclarations');
-  Route.post('send-declare', 'EInvoiceController.weTaxSendDeclarationToTaxOffice2');
+  // Route.post('send-declare', 'EInvoiceController.weTaxSendDeclarationToTaxOffice2');
   Route.post('check-status-declare', 'EInvoiceController.weTaxCheckingDeclarations2');
   Route.post('generate-notice-cancel-adjust-replace-xml', 'EInvoiceController.weTaxConvertInvalidInvoiceToXML');
   Route.post('send-notice-cancel-adjust-replace', 'EInvoiceController.weTaxSendInformAdjustToTaxOffice2');

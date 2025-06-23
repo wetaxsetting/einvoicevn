@@ -10256,7 +10256,7 @@ class EInvoiceController {
         }
       }
 
-      this.sendMailWT(data_send_mail, 'WTPTA002', tax_code, p_language, p_crt_by);
+      //this.sendMailWT(data_send_mail, 'WTPTA002', tax_code, p_language, p_crt_by);
 
       console.log('weTaxSendOrderInfoV2 data ', data_rep);
       console.log('======================weTaxSendOrderInfoV2 END===================');
@@ -10631,7 +10631,7 @@ class EInvoiceController {
         }
       }
 
-      this.sendMailWT(data_send_mail, 'WTPTA002-2', tax_code, p_language, p_crt_by);
+      //this.sendMailWT(data_send_mail, 'WTPTA002-2', tax_code, p_language, p_crt_by);
 
       // return response.send(Utils.response(true, `ReSend order to invoice was Successfully!`, data_r));
       return response.status(200).json(Utils.responseByRule({success: true, message: 'ReSend order successfully.', data: data_r}));

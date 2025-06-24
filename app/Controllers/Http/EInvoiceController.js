@@ -70,7 +70,7 @@ const {jar} = require('request');
 const {lookup} = require('dns');
 
 // real site
-const TAX_CHECK_TRADE_CODE = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+const TAX_CHECK_TRADE_CODE = 'https://tvan.fpt.com/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
 const TAX_USER_NAME = 'GENUWIN';
 const TAX_PASSWORD = 'e_GX4v@';
 
@@ -1512,7 +1512,7 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon';
+      const url = 'https://tvan.fpt.com/ftvan-hddt/hdon/cmahdon';
       const authUserName = 'GENUWIN';
       const authPassword = 'e_GX4v@';
 
@@ -1680,7 +1680,7 @@ class EInvoiceController {
       // const authUserName = 'GENUWIN';
       // const authPassword = 'genuwin123';
 
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      const url = 'https://tvan.fpt.com/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
       const authUserName = 'GENUWIN';
       const authPassword = 'e_GX4v@';
 
@@ -2497,8 +2497,8 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/dkyhddt/dkysdung';
-      const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      const url = 'https://tvan.fpt.com/ftvan-hddt/dkyhddt/dkysdung';
+      const urlCheck = 'https://tvan.fpt.com/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
       const authUserName = 'GENUWIN';
       const authPassword = 'e_GX4v@';
 
@@ -2782,7 +2782,7 @@ class EInvoiceController {
       // const authUserName = 'GENUWIN'; // "GENUWIN";
       // const authPassword = 'genuwin123'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
 
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      const url = 'https://tvan.fpt.com/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
       const authUserName = 'GENUWIN'; // "GENUWIN";
       const authPassword = 'e_GX4v@'; // "e_GX4v@";
 
@@ -3153,7 +3153,7 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      const url = 'https://tvan.fpt.com/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
       const authUserName = 'GENUWIN';
       const authPassword = 'e_GX4v@';
 
@@ -3266,7 +3266,7 @@ class EInvoiceController {
 
       const authUserName = 'GENUWIN';
       const authPassword = 'e_GX4v@';
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      const url = 'https://tvan.fpt.com/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
 
       const agent = {
         Agent: {
@@ -3543,7 +3543,7 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
+      const url = 'https://tvan.fpt.com/ftvan-hddt/tbao/tbaonnt/tbaossot';
       const authUserName = 'GENUWIN';
       const authPassword = 'e_GX4v@';
 
@@ -3627,7 +3627,7 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
+      const url = 'https://tvan.fpt.com/ftvan-hddt/tbao/tbaonnt/tbaossot';
       const authUserName = 'GENUWIN';
       const authPassword = 'e_GX4v@';
 
@@ -3729,7 +3729,7 @@ class EInvoiceController {
       // const authUserName = 'GENUWIN';
       // const authPassword = 'genuwin123';
 
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
+      const url = 'https://tvan.fpt.com/ftvan-hddt/tbao/tbaonnt/tbaossot';
       const authUserName = 'GENUWIN';
       const authPassword = 'e_GX4v@';
 
@@ -3864,7 +3864,7 @@ class EInvoiceController {
 
       // const authUserName = 'GENUWIN';
       // const authPassword = 'genuwin123';
-      //const url = "https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
+      //const url = "https://tvan.fpt.com/ftvan-hddt/tbao/tbaonnt/tbaossot";
       //const url = "https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot";
       const {xml_signed, req_key, smbl_type, doc_no} = request.all();
 
@@ -3899,10 +3899,10 @@ class EInvoiceController {
       //console.log("smbl_kind ", smbl_type);
       if (smbl_type == 'M') {
         // url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/mttien/tbaossot';
-        url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/mttien/tbaossot';
+        url = 'https://tvan.fpt.com/ftvan-hddt/tbao/tbaonnt/mttien/tbaossot';
       } else {
         // url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
-        url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
+        url = 'https://tvan.fpt.com/ftvan-hddt/tbao/tbaonnt/tbaossot';
       }
       // console.log("weTaxSendInformAdjustToTaxOffice  xml_signed  ", xml_signed);
 
@@ -4056,7 +4056,7 @@ class EInvoiceController {
 
       const authUserName = 'GENUWIN';
       const authPassword = 'e_GX4v@';
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      const url = 'https://tvan.fpt.com/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
 
       // const authUserName = 'GENUWIN';
       // const authPassword = 'genuwin123';
@@ -4431,7 +4431,7 @@ class EInvoiceController {
           options: {maxVersion: 'TLSv1.2', minVersion: 'TLSv1.2', path: null},
         },
       };
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      const url = 'https://tvan.fpt.com/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
       const authUserName = 'GENUWIN';
       const authPassword = 'e_GX4v@';
 
@@ -9849,8 +9849,8 @@ class EInvoiceController {
 
       const authUserName = 'GENUWIN';
       const authPassword = 'e_GX4v@';
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/mttien';
-      const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      const url = 'https://tvan.fpt.com/ftvan-hddt/hdon/mttien';
+      const urlCheck = 'https://tvan.fpt.com/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
 
       // const authUserName = 'GENUWIN';
       // const authPassword = 'genuwin123';
@@ -10259,8 +10259,8 @@ class EInvoiceController {
 
       const authUserName = 'GENUWIN';
       const authPassword = 'e_GX4v@';
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/mttien';
-      const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      const url = 'https://tvan.fpt.com/ftvan-hddt/hdon/mttien';
+      const urlCheck = 'https://tvan.fpt.com/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
       const agent = {
         Agent: {
           defaultPort: 443,
@@ -10451,8 +10451,8 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon';
+      const urlCheck = 'https://tvan.fpt.com/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      const url = 'https://tvan.fpt.com/ftvan-hddt/hdon/cmahdon';
       const authUserName = 'GENUWIN';
       const authPassword = 'e_GX4v@';
 
@@ -13215,7 +13215,7 @@ class EInvoiceController {
       // const authPassword = 'genuwin123';
       // const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon';
 
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon';
+      const url = 'https://tvan.fpt.com/ftvan-hddt/hdon/cmahdon';
       const authUserName = 'GENUWIN';
       const authPassword = 'e_GX4v@';
 
@@ -13295,8 +13295,8 @@ class EInvoiceController {
 
       const authUserName = 'GENUWIN';
       const authPassword = 'e_GX4v@';
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/mttien';
-      const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      const url = 'https://tvan.fpt.com/ftvan-hddt/hdon/mttien';
+      const urlCheck = 'https://tvan.fpt.com/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
 
       // const authUserName = 'GENUWIN';
       // const authPassword = 'genuwin123';
@@ -13470,7 +13470,7 @@ class EInvoiceController {
       // const authUserName = 'GENUWIN';
       // const authPassword = 'genuwin123';
 
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      const url = 'https://tvan.fpt.com/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
       const authUserName = 'GENUWIN';
       const authPassword = 'e_GX4v@';
 
@@ -15043,8 +15043,8 @@ class EInvoiceController {
 
       const authUserName = 'GENUWIN';
       const authPassword = 'e_GX4v@';
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/mttien';
-      const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      const url = 'https://tvan.fpt.com/ftvan-hddt/hdon/mttien';
+      const urlCheck = 'https://tvan.fpt.com/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
 
       const {tax_serial_number, seller_tax_code, sale_date, store_code, store_name, pos_no, invoice_xml_signed, req_key} = request.all();
 
@@ -18289,8 +18289,8 @@ class EInvoiceController {
 
       const authUserName = 'GENUWIN';
       const authPassword = 'e_GX4v@';
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon';
-      const urlCheck = 'https://tvan.fpt.com.vn//ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      const url = 'https://tvan.fpt.com/ftvan-hddt/hdon/cmahdon';
+      const urlCheck = 'https://tvan.fpt.com//ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
 
       const {invoices} = request.all();
 
@@ -20069,7 +20069,7 @@ class EInvoiceController {
 
       const authUserName = 'GENUWIN';
       const authPassword = 'e_GX4v@';
-      const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      const urlCheck = 'https://tvan.fpt.com/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
       let url = '';
       const agent = {
         Agent: {
@@ -20082,7 +20082,7 @@ class EInvoiceController {
       let data_r = [];
       for (const invoice of data) {
         if (invoice.type == 'C') {
-          url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon';
+          url = 'https://tvan.fpt.com/ftvan-hddt/hdon/cmahdon';
 
           const para_data_check = {
             req_ep_key: invoice.req_key,
@@ -20145,7 +20145,7 @@ class EInvoiceController {
             });
           }
         } else if (invoice.type == 'S') {
-          url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tbaonnt/tbaossot';
+          url = 'https://tvan.fpt.com/ftvan-hddt/tbao/tbaonnt/tbaossot';
 
           const trade_code = await Request.post(
             url,
@@ -20183,11 +20183,11 @@ class EInvoiceController {
             trade_code: trade_code.data.maGDich,
           });
         } else if (invoice.type == 'D') {
-          url = 'https://tvan.fpt.com.vn/ftvan-hddt/dkyhddt/dkysdung';
+          url = 'https://tvan.fpt.com/ftvan-hddt/dkyhddt/dkysdung';
         } else if (invoice.type == 'M') {
-          url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/mttien';
+          url = 'https://tvan.fpt.com/ftvan-hddt/hdon/mttien';
         } else if (invoice.type == 'K') {
-          url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/hdonkma';
+          url = 'https://tvan.fpt.com/ftvan-hddt/hdon/hdonkma';
         } else if (invoice.type == 'P') {
           let para_pit = {
             p_tei_einvoice_m_pk: invoice.req_key,
@@ -20791,7 +20791,7 @@ class EInvoiceController {
     const p_language = 'ENG';
     const p_crt_by = 'system-scheduler';
 
-    const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+    const urlCheck = 'https://tvan.fpt.com/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
     const authUserName = 'GENUWIN';
     const authPassword = 'e_GX4v@';
     let SLuong = 0;
@@ -21228,7 +21228,7 @@ class EInvoiceController {
     const p_language = 'ENG';
     const p_crt_by = 'system-scheduler';
 
-    const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+    const urlCheck = 'https://tvan.fpt.com/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
     const authUserName = 'GENUWIN';
     const authPassword = 'e_GX4v@';
 
@@ -21459,7 +21459,7 @@ class EInvoiceController {
     const p_language = 'ENG';
     const p_crt_by = 'system-scheduler';
 
-    const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+    const urlCheck = 'https://tvan.fpt.com/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
     const authUserName = 'GENUWIN';
     const authPassword = 'e_GX4v@';
 

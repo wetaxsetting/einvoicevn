@@ -22,7 +22,7 @@ const {jar} = require('request');
 const {lookup} = require('dns');
 
 // real site
-const TAX_CHECK_TRADE_CODE = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+const TAX_CHECK_TRADE_CODE = 'https://tvan.fpt.com/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
 const TAX_USER_NAME = 'GENUWIN';
 const TAX_PASSWORD = 'e_GX4v@';
 const WETAX_TOKEN_CALLBACK = Env.get('WETAX_API_KEY');
@@ -1943,8 +1943,8 @@ class EInvoiceController2 {
 
       const authUserName = 'GENUWIN';
       const authPassword = 'e_GX4v@';
-      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/mttien';
-      const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+      const url = 'https://tvan.fpt.com/ftvan-hddt/hdon/mttien';
+      const urlCheck = 'https://tvan.fpt.com/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
 
       const agent = {
         Agent: {

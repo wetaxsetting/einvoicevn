@@ -14423,17 +14423,17 @@ class EInvoiceController {
         seller_tel,
         noti_list,
       } = request.all();
-      // console.log('weTaxGenerateRecordsXml  BEGIN ============================');
-      // console.log('weTaxGenerateRecordsXml noti_list ', noti_list);
-      // console.log('weTaxGenerateRecordsXml form_no ', form_no);
-      // console.log('weTaxGenerateRecordsXml inform_date ', inform_date);
-      // console.log('weTaxGenerateRecordsXml version ', version);
-      // console.log('weTaxGenerateRecordsXml seller_company_name ', seller_company_name);
-      // console.log('weTaxGenerateRecordsXml seller_taxcode ', seller_taxcode);
-      // console.log('weTaxGenerateRecordsXml seller_address ', seller_address);
-      // console.log('weTaxGenerateRecordsXml seller_position ', seller_position);
-      // console.log('weTaxGenerateRecordsXml seller_representative ', seller_representative);
-      // console.log('weTaxGenerateRecordsXml seller_tel ', seller_tel);
+      console.log('weTaxGenerateRecordsXml  BEGIN ============================');
+      console.log('weTaxGenerateRecordsXml noti_list ', noti_list);
+      console.log('weTaxGenerateRecordsXml form_no ', form_no);
+      console.log('weTaxGenerateRecordsXml inform_date ', inform_date);
+      console.log('weTaxGenerateRecordsXml version ', version);
+      console.log('weTaxGenerateRecordsXml seller_company_name ', seller_company_name);
+      console.log('weTaxGenerateRecordsXml seller_taxcode ', seller_taxcode);
+      console.log('weTaxGenerateRecordsXml seller_address ', seller_address);
+      console.log('weTaxGenerateRecordsXml seller_position ', seller_position);
+      console.log('weTaxGenerateRecordsXml seller_representative ', seller_representative);
+      console.log('weTaxGenerateRecordsXml seller_tel ', seller_tel);
 
       if (!form_no) {
         // return response.send(Utils.response(false, `form no is not null`, null));
@@ -14505,8 +14505,32 @@ class EInvoiceController {
         if (!noti.buyer_company_name || !noti.form_no || !noti.serial_no || !noti.invoice_no || !noti.invoice_dt || !noti.reason) {
           return response.status(400).json(Utils.responseByRule({success: false, message: 'Invalid: noti_list'}));
         }
+        objInvoice.BKe.NDBKe = [];
+        objInvoice.BKe.NDBKe.push({
+          TTChung: {
+            PBan: version,
+            TBBan: form_no,
+            SBBan: noti.voucher_no,
+            NBBan: inform_date,
+            TCHDon: noti.feature,
+            NBan: this.convertHtmlCode(seller_company_name),
+            MSTNBan: seller_taxcode,
+            DCNban: this.convertHtmlCode(seller_address),
+            NMua: this.convertHtmlCode(noti.buyer_company_name),
+            MSTNMua: noti.buyer_taxcode,
+            DCNmua: this.convertHtmlCode(noti.buyer_address),
+            KHMSHDon: noti.form_no,
+            KHHDon: noti.serial_no,
+            SHDon: noti.invoice_no,
+            DSLDTDoi: [
+              {
+                LDo: this.convertHtmlCode(noti.reason)
+              }
+            ]
+          }  
+        }); 
 
-        objInvoice.BKe.NDBKe.TTChung.PBan = version;
+        /*objInvoice.BKe.NDBKe.TTChung.PBan = version;
         objInvoice.BKe.NDBKe.TTChung.TBBan = form_no;
         objInvoice.BKe.NDBKe.TTChung.SBBan = noti.voucher_no;
         objInvoice.BKe.NDBKe.TTChung.NBBan = inform_date;
@@ -14527,11 +14551,10 @@ class EInvoiceController {
         objInvoice.BKe.NDBKe.TTChung.DSLDTDoi = [];
         objInvoice.BKe.NDBKe.TTChung.DSLDTDoi.push({
           LDo: this.convertHtmlCode(noti.reason),
-        });
+        });*/ 
+      }
 
-       
-    
-        const id = uuid.v4();
+      const id = uuid.v4();
         const xml = this.OBJtoXML(objInvoice);
         const xmlId = xml.toString().replace('<DLieu>', `<DLieu Id=\'${id}\'>`);
         const xmlRemoveLine = xmlId.toString().replace(/\n/g, '');
@@ -14541,8 +14564,6 @@ class EInvoiceController {
           url_signing: 'BKe/DSCKS/NBan',
           xml: xmlRemoveLine,
         });
-      }
-
       console.log('weTaxGenerateRecordsXml rtnXML ', rtnXML);
       console.log('weTaxGenerateRecordsXml END ====================================');
 
@@ -14555,7 +14576,7 @@ class EInvoiceController {
         FUNC: 'generalRecordsXml',
         CONTENT: e.message,
       });
-      // console.log(e);
+       console.log(e);
       // return response.send(Utils.response(false, e.message, null));
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
     }

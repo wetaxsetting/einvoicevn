@@ -14465,7 +14465,8 @@ class EInvoiceController {
         return response.status(400).json(Utils.responseByRule({success: false, message: 'Invalid: seller_address'}));
       }
 
-      let rtnXML = [], rtnReqKey = [];
+      let rtnXML = [];
+      let rtnReqKey = 0;
       let objInvoice = {
         BKe: {
             NDBKe: [{
@@ -14505,7 +14506,8 @@ class EInvoiceController {
         if (!noti.buyer_company_name || !noti.form_no || !noti.serial_no || !noti.invoice_no || !noti.invoice_dt || !noti.reason) {
           return response.status(400).json(Utils.responseByRule({success: false, message: 'Invalid: noti_list'}));
         }
-        rtnReqKey.push(noti.req_key);
+        //rtnReqKey.push(noti.req_key);
+        rtnReqKey = noti.req_key;
         objInvoice.BKe.NDBKe = [];
         objInvoice.BKe.NDBKe.push({
           TTChung: {

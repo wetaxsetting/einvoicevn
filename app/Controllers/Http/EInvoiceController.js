@@ -14465,7 +14465,7 @@ class EInvoiceController {
         return response.status(400).json(Utils.responseByRule({success: false, message: 'Invalid: seller_address'}));
       }
 
-      let rtnXML = [];
+      let rtnXML = [], rtnReqKey = [];
       let objInvoice = {
         BKe: {
             NDBKe: [{
@@ -14505,6 +14505,7 @@ class EInvoiceController {
         if (!noti.buyer_company_name || !noti.form_no || !noti.serial_no || !noti.invoice_no || !noti.invoice_dt || !noti.reason) {
           return response.status(400).json(Utils.responseByRule({success: false, message: 'Invalid: noti_list'}));
         }
+        rtnReqKey.push(noti.req_key);
         objInvoice.BKe.NDBKe = [];
         objInvoice.BKe.NDBKe.push({
           TTChung: {
@@ -14559,7 +14560,7 @@ class EInvoiceController {
         const xmlId = xml.toString().replace('<DLieu>', `<DLieu Id=\'${id}\'>`);
         const xmlRemoveLine = xmlId.toString().replace(/\n/g, '');
         rtnXML.push({
-          req_key: noti.req_key,
+          req_key: rtnReqKey,
           id_signing: id,
           url_signing: 'BKe/DSCKS/NBan',
           xml: xmlRemoveLine,

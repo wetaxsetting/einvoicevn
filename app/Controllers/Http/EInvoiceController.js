@@ -19921,9 +19921,10 @@ class EInvoiceController {
             invoice.tei_company_pk == '642'
           ) {
             url = EINVOICE_API_SEND_MAIL_SMTP;
-          } else if (invoice.tei_company_pk == '442' || invoice.tei_company_pk == '503') {
+          /*} else if (invoice.tei_company_pk == '442' || invoice.tei_company_pk == '503') {
             url = EINVOICE_API_SEND_MAIL_PRIVATE;
-          }
+          */
+         }
           else {
             url = EINVOICE_API_SEND_MAIL;
           }

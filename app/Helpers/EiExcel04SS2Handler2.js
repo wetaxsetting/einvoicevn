@@ -44,7 +44,7 @@ class EiExcelHandler {
       //tei_einvoice_m_pk = "574306";
 
       const einvoiceMasterData = await DBService.callProcCursor('EI_SEL_04SS_02_M_2', [tei_einvoice_m_pk], p_language, p_crt_by, _db2);
-      //const einvoiceDetailData = await DBService.callProcCursor('EI_SEL_04SS_02_D', [tei_einvoice_m_pk], p_language, p_crt_by, _db2);
+      const einvoiceDetailData = await DBService.callProcCursor('EI_SEL_04SS_02_D', [tei_einvoice_m_pk], p_language, p_crt_by, _db2);
 
       // const einvoiceMasterParam = await DBService.callProcCursor(
       //   "ac_sel_einvoice_m_param", [tradecode, einvoiceMasterData[0].FORM_NO , einvoiceMasterData[0].SERIAL_NO,''],
@@ -160,7 +160,7 @@ class EiExcelHandler {
         resultExcel = await exceljs.ExcelBuilder(
           p_crt_by,
           einvoiceMasterData,
-          null,
+          einvoiceDetailData,
           '',
           _sourceRow,
           _sourceRow_2,

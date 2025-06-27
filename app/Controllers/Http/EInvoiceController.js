@@ -15101,7 +15101,7 @@ class EInvoiceController {
           reason          : noti.reason                ,
           tot_aft_dc_amt  : noti.tot_aft_dc_amt        ,
           tot_vat_amt     : noti.tot_vat_amt           ,
-          tot_pay         : noti.tot_pay               
+          tot_pay         : noti.tot_pay,
         };
 
         const res = await DBService.ExecuteSQLBlob(

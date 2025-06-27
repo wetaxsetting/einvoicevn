@@ -48,6 +48,7 @@ const EiPosExcelHandlerAuto = use('App/Helpers/EiPosExcelHandlerAuto');
 const EiExcelTemplateHandler = use('App/Helpers/EiExcelTemplateHandler');
 const EiWTExcelHandlerAuto = use('App/Helpers/EiWTExcelHandlerAuto');
 const EiExcel04SS2Handler = use('App/Helpers/EiExcel04SS2Handler');
+const EiExcel04SS2Handler2 = use('App/Helpers/EiExcel04SS2Handler2');
 const EiExcel04SS3Handler = use('App/Helpers/EiExcel04SS3Handler');
 const EiExcel04SSHandler = use('App/Helpers/EiExcel04SSHandler');
 const EiWTExcel04SSHandler = use('App/Helpers/EiWTExcel04SSHandler');
@@ -15151,12 +15152,9 @@ class EInvoiceController {
 
         console.log('weTaxSendRecords   details res', res);
 
-        if (res.STATUS == 'OK') {
+        if (res.p_rtn_cur[0].STATUS == 'OK') {
           const data_mail = await this.weTaxSendMailRecords2(
-            res.TEI_EINVOICE_SS_D_PK,
-            res.TEI_COMPANY_PK,
-            noti.buyer_email,
-            noti.buyer_email_cc || '',
+            res.p_rtn_cur[0].TEI_E_RECORD_PK,
             p_language,
             p_crt_by,
           );
@@ -22210,17 +22208,14 @@ class EInvoiceController {
     }
   }
 
-  async weTaxSendMailRecords2(p_tei_einvoice_ss_d_pk, p_tei_company_pk, p_buyer_mail, p_buyer_mail_cc, p_language, p_crt_by) {
+  async weTaxSendMailRecords2(p_tei_e_record_pk, p_language, p_crt_by) {
     try {
-      //console.log("p_tei_einvoice_m_pk  ", p_tei_einvoice_m_pk, " p_tei_company_pk ", p_tei_company_pk)
       let para_value_mail = {
-        p_tei_einvoice_ss_d_pk: p_tei_einvoice_ss_d_pk, //"4090",//
-        p_tco_company_pk: p_tei_company_pk,
+        p_tei_e_record_pk: p_tei_e_record_pk //"4090",//
       };
       let data_mail = await DBService.ExecuteSQLBlob(
-        `BEGIN wt_sel_data_send_mail(
-                          :p_tei_einvoice_ss_d_pk, 
-                          :p_tco_company_pk, 
+        `BEGIN wt_sel_data_e_record(
+                          :p_tei_e_record_pk, 
                           :p_language, 
                           :p_crt_by, 
                           :p_rtn_cur
@@ -22233,13 +22228,13 @@ class EInvoiceController {
       // console.log(data_mail.p_rtn_cur.length);
 
       if (data_mail.p_rtn_cur.length > 0) {
-        let EiExcels = new EiExcel04SS2Handler();
-        let url_pdf = await EiExcels.getEinvoice(p_tei_einvoice_ss_d_pk, p_language, p_crt_by);
+        let EiExcels = new EiExcel04SS2Handler2();
+        let url_pdf = await EiExcels.getEinvoice(p_tei_e_record_pk, p_language, p_crt_by);
         //console.log("url_pdf2  ", url_pdf);
 
         const res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {
-          mail_to: p_buyer_mail,
-          cc_to: p_buyer_mail_cc || '',
+          mail_to: data_mail.p_rtn_cur.EMAIL_ADDRESS,
+          cc_to: data_mail.p_rtn_cur.EMAIL_ADDRESS_CC || '',
           subject: data_mail.p_rtn_cur[0].SUBJECT,
           body: data_mail.p_rtn_cur[0].BODY_1_MAIL,
           attachfile1: url_pdf,

@@ -35,7 +35,6 @@ class EiExcelConverterAuto {
 			return file;
 		}
 		//this part calculate the number of pages base on the data.
-		let v_count = einvoiceDetailData.length;
 		let page = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 		let page_index = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 

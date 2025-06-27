@@ -14423,17 +14423,17 @@ class EInvoiceController {
         seller_tel,
         noti_list,
       } = request.all();
-      console.log('weTaxGenerateRecordsXml  BEGIN ============================');
-      console.log('weTaxGenerateRecordsXml noti_list ', noti_list);
-      console.log('weTaxGenerateRecordsXml form_no ', form_no);
-      console.log('weTaxGenerateRecordsXml inform_date ', inform_date);
-      console.log('weTaxGenerateRecordsXml version ', version);
-      console.log('weTaxGenerateRecordsXml seller_company_name ', seller_company_name);
-      console.log('weTaxGenerateRecordsXml seller_taxcode ', seller_taxcode);
-      console.log('weTaxGenerateRecordsXml seller_address ', seller_address);
-      console.log('weTaxGenerateRecordsXml seller_position ', seller_position);
-      console.log('weTaxGenerateRecordsXml seller_representative ', seller_representative);
-      console.log('weTaxGenerateRecordsXml seller_tel ', seller_tel);
+      // console.log('weTaxGenerateRecordsXml  BEGIN ============================');
+      // console.log('weTaxGenerateRecordsXml noti_list ', noti_list);
+      // console.log('weTaxGenerateRecordsXml form_no ', form_no);
+      // console.log('weTaxGenerateRecordsXml inform_date ', inform_date);
+      // console.log('weTaxGenerateRecordsXml version ', version);
+      // console.log('weTaxGenerateRecordsXml seller_company_name ', seller_company_name);
+      // console.log('weTaxGenerateRecordsXml seller_taxcode ', seller_taxcode);
+      // console.log('weTaxGenerateRecordsXml seller_address ', seller_address);
+      // console.log('weTaxGenerateRecordsXml seller_position ', seller_position);
+      // console.log('weTaxGenerateRecordsXml seller_representative ', seller_representative);
+      // console.log('weTaxGenerateRecordsXml seller_tel ', seller_tel);
 
       if (!form_no) {
         // return response.send(Utils.response(false, `form no is not null`, null));
@@ -14559,7 +14559,7 @@ class EInvoiceController {
 
       const id = uuid.v4();
         const xml = this.OBJtoXML(objInvoice);
-        const xmlId = xml.toString().replace('<DLieu>', `<DLieu Id=\'${id}\'>`);
+        const xmlId = xml.toString().replace('<BKe>', `<BKe Id=\'${id}\'>`);
         const xmlRemoveLine = xmlId.toString().replace(/\n/g, '');
         rtnXML.push({
           req_key: rtnReqKey,
@@ -15049,6 +15049,196 @@ class EInvoiceController {
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
     }
   }
+
+
+  // async weTaxSendRecordsN70({request, response, auth}) {
+  //   try {
+  //     var p_language = request.header('accept-language', 'ENG');
+  //     var p_crt_by = '';
+  //     const user = await auth.getUser();
+  //     if (user) {
+  //       p_crt_by = user.USER_ID;
+  //     }
+  //     let r_data_noti = [];
+  //     const {seller_taxcode, 
+  //              } = request.all();
+
+  //     for (const noti of noti_list) {
+  //       console.log('noti  ', noti);
+
+  //       /*req_key
+  //       msg_his_id
+  //       xml_signed
+  //       buyer_email
+  //       buyer_email_cc
+  //       doc_no
+  //       reg_dtm
+  //       cus_nm
+  //       cus_taxcd
+  //       cus_add
+  //       cus_tel
+  //       cus_email
+  //       cus_rppr_nm
+  //       cus_position
+  //       cus_signed_by
+  //       cus_signed_date
+  //       seller_nm
+  //       seller_taxcd
+  //       seller_add
+  //       seller_tel_no
+  //       seller_email
+  //       seller_rppr_nm
+  //       seller_position
+  //       signed_by
+  //       signed_date
+  //       cqt_code
+  //       form_no
+  //       serial_no
+  //       inv_no
+  //       inv_date
+  //       feature
+  //       reason
+  //       tot_aft_dc_amt
+  //       tot_vat_amt
+  //       tot_pay*/
+
+  //       const param_noti = {
+  //         req_key			: noti.req_key				,
+  //         msg_his_id      : noti.msg_his_id            ,
+  //         xml_signed      : noti.xml_signed            ,
+  //         buyer_email     : noti.buyer_email           ,
+  //         buyer_email_cc  : noti.buyer_email_cc        ,
+  //         doc_no          : noti.doc_no                ,
+  //         reg_dtm         : noti.reg_dtm               ,
+  //         cus_nm          : noti.cus_nm                ,
+  //         cus_taxcd       : noti.cus_taxcd             ,
+  //         cus_add         : noti.cus_add               ,
+  //         cus_tel         : noti.cus_tel               ,
+  //         cus_email       : noti.cus_email             ,
+  //         cus_rppr_nm     : noti.cus_rppr_nm           ,
+  //         cus_position    : noti.cus_position          ,
+  //         cus_signed_by   : noti.cus_signed_by         ,
+  //         cus_signed_date : noti.cus_signed_date       ,
+  //         seller_nm       : noti.seller_nm             ,
+  //         seller_taxcd    : noti.seller_taxcd          ,
+  //         seller_add      : noti.seller_add            ,
+  //         seller_tel_no   : noti.seller_tel_no         ,
+  //         seller_email    : noti.seller_email          ,
+  //         seller_rppr_nm  : noti.seller_rppr_nm        ,
+  //         seller_position : noti.seller_position       ,
+  //         signed_by       : noti.signed_by             ,
+  //         signed_date     : noti.signed_date           ,
+  //         cqt_code        : noti.cqt_code              ,
+  //         form_no         : noti.form_no               ,
+  //         serial_no       : noti.serial_no             ,
+  //         inv_no          : noti.inv_no                ,
+  //         inv_date        : noti.inv_date              ,
+  //         feature         : noti.feature               ,
+  //         reason          : noti.reason                ,
+  //         tot_aft_dc_amt  : noti.tot_aft_dc_amt        ,
+  //         tot_vat_amt     : noti.tot_vat_amt           ,
+  //         tot_pay         : noti.tot_pay               
+  //       };
+
+  //       const res = await DBService.ExecuteSQLBlob(
+  //         `BEGIN wt_sel_data_mail(
+  //                           :form_no, 
+  //                           :serial_no,
+  //                           :invoice_no,
+  //                           :mccqt,
+  //                           :p_language, 
+  //                           :p_crt_by, 
+  //                           :p_rtn_cur); 
+  //           END;`,
+  //         param_noti,
+  //         p_language,
+  //         p_crt_by,
+  //       );
+
+
+  //       const res = await this.weTaxExtractRecordXMLContent(noti.xml_signed, noti.req_key, p_language, p_crt_by);
+
+  //       console.log('weTaxSendRecords   details res', res);
+
+  //       if (res.STATUS == 'OK') {
+  //         const data_mail = await this.weTaxSendMailRecords(
+  //           res.TEI_EINVOICE_SS_D_PK,
+  //           res.TEI_COMPANY_PK,
+  //           noti.buyer_email,
+  //           noti.buyer_email_cc || '',
+  //           p_language,
+  //           p_crt_by,
+  //         );
+
+  //         //console.log("weTaxSendRecords   data_mail ", data_mail);
+  //         if (data_mail) {
+  //           r_data_noti.push({
+  //             sale_id: noti.req_key,
+  //             msg_his_id: noti.msg_his_id,
+  //             status_code: '1',
+  //             status_name: 'Sent Sucess',
+  //             send_date: data_mail.send_date,
+  //             send_time: data_mail.send_time,
+  //             mail_form: data_mail.mail_form,
+  //             mail_to: data_mail.mail_to,
+  //             mail_to_cc: data_mail.mail_to_cc,
+  //             title: data_mail.title,
+  //             content: data_mail.content,
+  //             sign_datetime: res.SIGN_DATETIME,
+  //             sign_by: res.SIGN_BY,
+  //           });
+  //         } else {
+  //           r_data_noti.push({
+  //             sale_id: noti.req_key,
+  //             msg_his_id: noti.msg_his_id,
+  //             status_code: '0',
+  //             status_name: 'Sent Faile',
+  //             send_date: '',
+  //             send_time: '',
+  //             mail_form: '',
+  //             mail_to: '',
+  //             mail_to_cc: '',
+  //             title: '',
+  //             content: '',
+  //             sign_datetime: res.SIGN_DATETIME,
+  //             sign_by: res.SIGN_BY,
+  //           });
+  //         }
+  //       } else {
+  //         r_data_noti.push({
+  //           sale_id: noti.req_key,
+  //           msg_his_id: noti.msg_his_id,
+  //           status_code: '0',
+  //           status_name: 'Sent Faile',
+  //           send_date: '',
+  //           send_time: '',
+  //           mail_form: '',
+  //           mail_to: '',
+  //           mail_to_cc: '',
+  //           title: '',
+  //           content: '',
+  //           sign_datetime: res.SIGN_DATETIME,
+  //           sign_by: res.SIGN_BY,
+  //         });
+  //       }
+  //     }
+  //     console.log('weTaxSendRecords   r_data_noti ', r_data_noti);
+  //     console.log('weTaxSendRecords   END =================================');
+
+  //     // return response.send(Utils.response(true, `Sending records was successful. `,r_data_noti ));
+  //     return response.status(200).json(Utils.responseByRule({success: true, message: 'Send e-Record successfully.', data: r_data_noti}));
+  //   } catch (e) {
+  //     Utils.Logger({
+  //       LVL: 'error',
+  //       MODULE: 'EInvoiceController',
+  //       FUNC: 'generalRecordsXml',
+  //       CONTENT: e.message,
+  //     });
+  //     console.log(e);
+  //     // return response.send(Utils.response(false, e.message, null));
+  //     return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+  //   }
+  // }
   // end weTAX
 
   // e -invoice

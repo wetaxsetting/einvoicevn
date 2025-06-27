@@ -178,7 +178,8 @@ Route.group(() => {
   Route.post('send-company-template', 'EInvoiceController.weTaxSendCompanyTemplate');
   // Route.post('generate-records-xml', 'EInvoiceController.weTaxGenerateRecordsXml');
   Route.post('generate-records-xml', 'EInvoiceController.weTaxGenerateRecordsXmlN70');
-  Route.post('send-records', 'EInvoiceController.weTaxSendRecords');
+  //Route.post('send-records', 'EInvoiceController.weTaxSendRecords');
+  Route.post('send-records', 'EInvoiceController.weTaxSendRecordsN70');
   Route.post('re-send-mail-records', 'EInvoiceController.weTaxReSendRecords');
   Route.post('view-records', 'EInvoiceController.weTaxViewRecords');
 

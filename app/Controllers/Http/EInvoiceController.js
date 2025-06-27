@@ -22233,8 +22233,8 @@ class EInvoiceController {
         //console.log("url_pdf2  ", url_pdf);
 
         const res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {
-          mail_to: data_mail.p_rtn_cur.EMAIL_ADDRESS,
-          cc_to: data_mail.p_rtn_cur.EMAIL_ADDRESS_CC,
+          mail_to: data_mail.p_rtn_cur[0].EMAIL_ADDRESS,
+          cc_to: data_mail.p_rtn_cur[0].EMAIL_ADDRESS_CC,
           subject: data_mail.p_rtn_cur[0].SUBJECT,
           body: data_mail.p_rtn_cur[0].BODY_1_MAIL,
           attachfile1: url_pdf,

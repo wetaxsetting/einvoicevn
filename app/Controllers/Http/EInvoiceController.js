@@ -18317,15 +18317,13 @@ class EInvoiceController {
       var p_crt_by = '';
 
       const {captcha, sessionid, lookupcode} = request.all();
-      // console.log("captcha:", captcha);
-      // console.log("sessionid:", sessionid);
       if (Redis) {
         const valueCache = await Redis.get(sessionid);
         if (!valueCache || valueCache != captcha) {
           return response.send(Utils.response(false, 'invalid_captchar', null));
         }
       }    
-      //console.log("data_split ", data_split , "trade_code ", trade_code, "voucher_no  ", voucher_no)
+      console.log(  "lookupcode ", lookupcode)
       if (DB_CONNECTION == 'oracle') {
         oracledb.fetchAsBuffer = [oracledb.BLOB];
         oracledb.fetchAsString = [oracledb.CLOB];

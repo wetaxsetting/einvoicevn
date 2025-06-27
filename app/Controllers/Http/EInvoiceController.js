@@ -18341,9 +18341,9 @@ class EInvoiceController {
         p_crt_by,
       );
 
-      //console.log("rtnValue  ", rtnValue);
+      console.log("rtnValue  ", rtnValue);
       let EiExcels = new EiExcel04SS2Handler2(); //CQT_MAGD
-      let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].TEI_EINVOICE_SS_D_PK, p_language, p_crt_by);
+      let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].TEI_E_RECORD_PK , p_language, p_crt_by);
       //console.log("base64PDf: ", url_pdf);
 
       //let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + rtnValue.p_rtn_cur[0].CQT_MAGD + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token=");

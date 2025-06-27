@@ -15060,8 +15060,7 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
       let r_data_noti = [];
-      const {seller_taxcode, 
-               } = request.all();
+      const {seller_taxcode, noti_list } = request.all();
 
       for (const noti of noti_list) {
         console.log('noti  ', noti);

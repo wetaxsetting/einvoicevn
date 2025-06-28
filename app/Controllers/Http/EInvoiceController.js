@@ -18431,7 +18431,7 @@ class EInvoiceController {
 
       //console.log("rtnValue  ", rtnValue);
       let EiExcels = new EiExcel04SS2Handler2(); //CQT_MAGD
-      let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].TEI_EINVOICE_SS_D_PK, p_language, p_crt_by);
+       let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].TEI_E_RECORD_PK , p_language, p_crt_by);
       //console.log("base64PDf: ", url_pdf);
 
       let url_xml = '';
@@ -18444,7 +18444,7 @@ class EInvoiceController {
       }
 
       const rep_data = {
-        info_inv: rtnValue.p_rtn_cur[0].INFO_INV,
+         info_inv: rtnValue.p_rtn_cur[0].INFO_INV,
         ma_gd: rtnValue.p_rtn_cur[0].CQT_MAGD,
         buyer_name: rtnValue.p_rtn_cur[0].CUS_NM,
         buyer_code: rtnValue.p_rtn_cur[0].CUS_CD,

@@ -71,9 +71,9 @@
         <v-container fluid>
           <v-row no-gutters>
             <v-col lg="8" cols="12">
-              <!--<v-card flat tile :height="dialogHeight" v-if="invoiceInfo && invoiceInfo.url_pdf">
+              <v-card flat tile :height="dialogHeight" v-if="invoiceInfo && invoiceInfo.url_pdf">
                 <iframe :src="invoiceInfo.url_pdf" height="100%" width="100%" ></iframe>
-              </v-card>-->
+              </v-card>
             </v-col>
             <v-col lg="4" cols="12">
               <v-card flat tile>

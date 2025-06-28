@@ -167,6 +167,8 @@
   </div>
 </template>
 <script>
+import { type } from 'jquery';
+
 export default {
   layout: "monitoring",
 
@@ -295,6 +297,50 @@ export default {
       }
     },
 
+    stringToBase64(str) {
+      return btoa(unescape(encodeURIComponent(str)));
+    },
+        xmlToBase64(xmlString) {
+          if (!xmlString) return "";
+      try {
+        const utf8Bytes = new TextEncoder().encode(xmlString);
+        let binary = '';
+        utf8Bytes.forEach(byte => binary += String.fromCharCode(byte));
+        return btoa(binary);
+      } catch (error) {
+        console.error("Error converting XML to Base64:", error);
+        return "";
+      }
+    },
+
+    // Unicode-safe Base64 encoding (classic)
+      toBase64Unicode(str) {
+        return btoa(
+          encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_, p1) =>
+            String.fromCharCode('0x' + p1)
+          )
+        )
+      },
+
+      // Modern UTF-8 safe Base64 encoding
+      toBase64Utf8(str) {
+        return btoa(String.fromCharCode(...new TextEncoder().encode(str)))
+      },
+
+      encodeXml(xmlInput) {
+        if (!xmlInput.value) {
+          alert('Please enter your XML string first!')
+          return
+        }
+
+        try {
+          // You can pick *either* one:
+          result.value = this.toBase64Unicode(xmlInput.value)
+          //result.value = toBase64Utf8(xmlInput.value)
+        } catch (e) {
+          result.value = `Error: ${e.message}`
+        }
+      },
     async onSignXML()
     {
       console.log("onSignXML  ", this.invoiceInfo);
@@ -313,25 +359,17 @@ export default {
             id_signing = nodesByName[0].attributes[0].value;
         }
 
-        if(!this.invoiceInfo.signature_path)
-        {
-          url_signing = "BKe/DSCKS/NMua";
-        }else
-        {
-          url_signing = this.invoiceInfo.signature_path;
-        }
         
+        
+        console.log("this.invoiceInfo.seller_sign_xml  ", this.invoiceInfo.seller_sign_xml.replace(/"/g, "'"));
         let objXml = [
           {
             req_key: this.invoiceInfo.req_key,
-            xml: this.invoiceInfo.seller_sign_xml,
+            xml: this.invoiceInfo.seller_sign_xml.replace(/"/g, "'"),
             id_signing: id_signing,
-            url_signing: url_signing
+            url_signing: "BKe/DSCKS/NMua",
           }
         ]
-        console.log("onSignXML  ", this.invoiceInfo);
-
-        console.log("objXml  ", objXml);
         $.ajax({
           url: "http://localhost:1080/issueXmlList",
           dataType: "json",
@@ -339,6 +377,7 @@ export default {
           data: {
             crt_by: this.invoiceInfo.buyer_name,
             xml: JSON.stringify(objXml).toString(),
+            type:"base64",
           },
           error: this.onErrorissueXmlList,
           success: this.onSuccessissueXmlList,
@@ -348,6 +387,7 @@ export default {
     },
 
     async onErrorissueXmlList(json, textStatus, errorThrown) {
+      console.log("onErrorissueXmlList  ", json, textStatus, errorThrown);
       return this.showNotification("warning", this.$t("error_occurs"), errorThrown);//   alert(" Error :" + errorThrown);
     },
 

@@ -297,7 +297,9 @@ Route.group(() => {
   Route.post('general-convert-einvoice', 'EInvoiceController.generalConvertEinvoice');
   // Route.post('lookup-minutes', 'EInvoiceController.getDataEinvoiceFormLookupMinutesCode');
   Route.post('lookup-minutes', 'EInvoiceController.getDataEinvoiceFormLookupMinutesCode2');
-  Route.post('lookup-minutes-update', 'EInvoiceController.getUpdateXmlBuyerSign');
+  //Route.post('lookup-minutes-update', 'EInvoiceController.getUpdateXmlBuyerSign');
+  Route.post('lookup-minutes-update', 'EInvoiceController.getUpdateXmlBuyerSign2');
+
 }).prefix('api/einvoice');
 
 Route.group(() => {

@@ -18416,7 +18416,7 @@ class EInvoiceController {
         xml_signed: xml_signed,
       };
       const rtnValue = await DBService.ExecuteSQLBlob(
-        `BEGIN ei_upd_lookup_minutes_code (:trade_code,
+        `BEGIN ei_upd_lookup_minutes_code2 (:trade_code,
                                            :voucher_no,
                                            :req_key,
                                            :buyer_sign_dt,

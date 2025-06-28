@@ -71,9 +71,9 @@
         <v-container fluid>
           <v-row no-gutters>
             <v-col lg="8" cols="12">
-              <v-card flat tile :height="dialogHeight" v-if="invoiceInfo && invoiceInfo.url_pdf">
+              <!--<v-card flat tile :height="dialogHeight" v-if="invoiceInfo && invoiceInfo.url_pdf">
                 <iframe :src="invoiceInfo.url_pdf" height="100%" width="100%" ></iframe>
-              </v-card>
+              </v-card>-->
             </v-col>
             <v-col lg="4" cols="12">
               <v-card flat tile>
@@ -297,29 +297,33 @@ export default {
 
     async onSignXML()
     {
-      //console.log("onSignXML  ", this.invoiceInfo);
-      if(this.invoiceInfo.seller_sign_xml && this.invoiceInfo.buyer_sign_by == "N")
+      console.log("onSignXML  ", this.invoiceInfo);
+
+      console.log("onSignXML  ", this.invoiceInfo.buyer_sign_yn);
+
+      if(this.invoiceInfo.buyer_sign_yn == "N")
       {
-        /*var DOMParser = new (require('xmldom')).DOMParser;
+        var DOMParser = new (require('xmldom')).DOMParser;
         var document = DOMParser.parseFromString(this.invoiceInfo.seller_sign_xml);
-        var nodesByName = document.getElementsByTagName('DLieu');
+        var nodesByName = document.getElementsByTagName('BKe');
         // console.log("nodesByName  ", nodesByName);
         // console.log("nodesByName  ", nodesByName[0]);
         // console.log("nodesByName  ", nodesByName[0].attributes[0].value);
-        var id_signing = nodesByName[0].attributes[0].value;*/
+        var id_signing = nodesByName[0].attributes[0].value;
         let objXml = [
           {
             req_key: this.invoiceInfo.req_key,
             xml: this.invoiceInfo.seller_sign_xml,
             id_signing: id_signing,
-            url_signing: "<BKe/DSCKS/NMua"
+            url_signing: "BKe/DSCKS/NMua"
           }
         ]
-        //console.log("objXml  ", objXml);
-       
-        jQuery.support.cors = true;
+
+              console.log("onSignXML  ", this.invoiceInfo);
+
+        console.log("objXml  ", objXml);
         $.ajax({
-          url: "http://localhost:1080/issusXMLList",
+          url: "http://localhost:1080/issueXmlList",
           dataType: "json",
           method: "POST",
           data: {

@@ -15102,6 +15102,8 @@ class EInvoiceController {
           tot_aft_dc_amt  : noti.tot_aft_dc_amt        ,
           tot_vat_amt     : noti.tot_vat_amt           ,
           tot_pay         : noti.tot_pay,
+          sign_id         : noti.sign_id,
+          signature_path  : noti.signature_path,
         };
 
         const res = await DBService.ExecuteSQLBlob(
@@ -15141,9 +15143,11 @@ class EInvoiceController {
                           :tot_aft_dc_amt     ,
                           :tot_vat_amt        ,
                           :tot_pay            ,
-                            :p_language, 
-                            :p_crt_by, 
-                            :p_rtn_cur); 
+                          :sign_id            ,
+                          :signature_path,
+                          :p_language, 
+                          :p_crt_by, 
+                          :p_rtn_cur); 
             END;`,
           param_noti,
           p_language,
@@ -18323,7 +18327,7 @@ class EInvoiceController {
           return response.send(Utils.response(false, 'invalid_captchar', null));
         }
       }    
-      console.log(  "lookupcode ", lookupcode)
+      //console.log(  "lookupcode ", lookupcode)
       if (DB_CONNECTION == 'oracle') {
         oracledb.fetchAsBuffer = [oracledb.BLOB];
         oracledb.fetchAsString = [oracledb.CLOB];
@@ -18342,10 +18346,10 @@ class EInvoiceController {
       );
 
       console.log("rtnValue  ", rtnValue);
-      let EiExcels = new EiExcel04SS2Handler2(); //CQT_MAGD
-      let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].TEI_E_RECORD_PK , p_language, p_crt_by);
+       let EiExcels = new EiExcel04SS2Handler2(); //CQT_MAGD
+       let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].TEI_E_RECORD_PK , p_language, p_crt_by);
       //console.log("base64PDf: ", url_pdf);
-
+      //let url_pdf = '';
       //let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + rtnValue.p_rtn_cur[0].CQT_MAGD + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token=");
       //let url_xml = re_url_xml.data;
       // console.log("base64XML:", url_xml);
@@ -18372,6 +18376,84 @@ class EInvoiceController {
         LVL: 'error',
         MODULE: 'EInvoiceController',
         FUNC: 'getDataEinvoiceFormLookupMinutesCode2',
+        CONTENT: e.message,
+      });
+      console.log(e);
+      return response.send(Utils.response(false, 'error', e.message));
+    }
+  }
+
+  async getUpdateXmlBuyerSign2({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+
+      const {xml_signed, buyer_sign_by, buyer_sign_dt, req_key, lookupcode} = request.all();
+
+    
+      if (DB_CONNECTION == 'oracle') {
+        oracledb.fetchAsBuffer = [oracledb.BLOB];
+        oracledb.fetchAsString = [oracledb.CLOB];
+      }
+      const para_inv_st = {
+        trade_code: lookupcode,
+        req_key: req_key,
+        buyer_sign_dt: buyer_sign_dt,
+        buyer_sign_by: buyer_sign_by,
+        xml_signed: xml_signed,
+      };
+      const rtnValue = await DBService.ExecuteSQLBlob(
+        `BEGIN ei_upd_lookup_minutes_code (:trade_code,
+                                           :voucher_no,
+                                           :req_key,
+                                           :buyer_sign_dt,
+                                           :buyer_sign_by,
+                                           :xml_signed,
+                                           :p_language, 
+                                           :p_crt_by, 
+                                           :p_rtn_cur); END;`,
+        para_inv_st,
+        p_language,
+        p_crt_by,
+      );
+
+      //console.log("rtnValue  ", rtnValue);
+      let EiExcels = new EiExcel04SS2Handler2(); //CQT_MAGD
+      let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].TEI_EINVOICE_SS_D_PK, p_language, p_crt_by);
+      //console.log("base64PDf: ", url_pdf);
+
+      let url_xml = '';
+      //let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + rtnValue.p_rtn_cur[0].TEI_EINVOICE_SS_D_PK + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token=");
+      //let url_xml = re_url_xml.data;
+      //console.log("base64XML:", url_xml);
+      let data_re = {};
+      if (rtnValue.p_rtn_cur && rtnValue.p_rtn_cur[0].STATUS_EXIT == 'EXIT') {
+        this.weTaxCallBackStatus(rtnValue.p_rtn_cur[0]);
+      }
+
+      const rep_data = {
+        info_inv: rtnValue.p_rtn_cur[0].INFO_INV,
+        ma_gd: rtnValue.p_rtn_cur[0].CQT_MAGD,
+        buyer_name: rtnValue.p_rtn_cur[0].CUS_NM,
+        buyer_code: rtnValue.p_rtn_cur[0].CUS_CD,
+        buyer_taxcode: rtnValue.p_rtn_cur[0].TAX_CODE,
+        buyer_sign_yn: rtnValue.p_rtn_cur[0].USER_SIGN_YN,
+        buyer_sign_xml: rtnValue.p_rtn_cur[0].BUYER_SIGN_XML,
+        voucher_no: rtnValue.p_rtn_cur[0].VOUCHER_NO,
+        seller_status: rtnValue.p_rtn_cur[0].SELLER_STATUS,
+        seller_sign_xml: rtnValue.p_rtn_cur[0].SELLER_SIGN_XML,
+        url_pdf: url_pdf,
+        url_xml: url_xml,
+        seller_inv_dt: rtnValue.p_rtn_cur[0].NTBAO,
+        req_key: rtnValue.p_rtn_cur[0].TEI_EINVOICE_SS_D_PK,
+      };
+
+      return response.send(Utils.response(true, 'Research data invocie was success', rep_data));
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'getDataEinvoiceFormLookupMinutesCode',
         CONTENT: e.message,
       });
       console.log(e);

@@ -298,9 +298,7 @@ export default {
     async onSignXML()
     {
       console.log("onSignXML  ", this.invoiceInfo);
-
-      console.log("onSignXML  ", this.invoiceInfo.buyer_sign_yn);
-
+      //console.log("onSignXML  ", this.invoiceInfo.buyer_sign_yn);
       if(this.invoiceInfo.buyer_sign_yn == "N")
       {
         var DOMParser = new (require('xmldom')).DOMParser;
@@ -342,7 +340,7 @@ export default {
     },
 
     async onSuccessissueXmlList(data) {
-      //console.log("data  ", data);
+      console.log("data  ", data);
       
       if(this.invoiceInfo.buyer_taxcode != data.dn_mst)
       {

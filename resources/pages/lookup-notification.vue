@@ -187,7 +187,7 @@ export default {
    async created() {
     //console.log("this.$route?.query?.trade_code ",this.$route?.query?.trade_code)
     if(this.$route?.query?.trade_code) {
-        this.invoiceNo = this.$route?.query?.trade_code;
+        this.invoiceNo = this.$route?.query?.trade_code.replace(" ", "+");
       }
   }, 
 
@@ -301,23 +301,36 @@ export default {
       //console.log("onSignXML  ", this.invoiceInfo.buyer_sign_yn);
       if(this.invoiceInfo.buyer_sign_yn == "N")
       {
-        var DOMParser = new (require('xmldom')).DOMParser;
-        var document = DOMParser.parseFromString(this.invoiceInfo.seller_sign_xml);
-        var nodesByName = document.getElementsByTagName('BKe');
-        // console.log("nodesByName  ", nodesByName);
-        // console.log("nodesByName  ", nodesByName[0]);
-        // console.log("nodesByName  ", nodesByName[0].attributes[0].value);
-        var id_signing = nodesByName[0].attributes[0].value;
+        let id_signing = "", url_signing= "";
+        if(this.invoiceInfo.sign_id)
+        {
+          id_signing = this.invoiceInfo.sign_id;
+        }else
+        {
+          var DOMParser = new (require('xmldom')).DOMParser;
+          var document = DOMParser.parseFromString(this.invoiceInfo.seller_sign_xml);
+          var nodesByName = document.getElementsByTagName('BKe');
+            id_signing = nodesByName[0].attributes[0].value;
+        }
+
+        if(!this.inquiryInfo.signature_path)
+        {
+          url_signing = "BKe/DSCKS/NMua";
+        }else
+        {
+          url_signing = this.inquiryInfo.signature_path;
+        }
+
+        
         let objXml = [
           {
             req_key: this.invoiceInfo.req_key,
             xml: this.invoiceInfo.seller_sign_xml,
             id_signing: id_signing,
-            url_signing: "BKe/DSCKS/NMua"
+            url_signing: url_signing
           }
         ]
-
-              console.log("onSignXML  ", this.invoiceInfo);
+        console.log("onSignXML  ", this.invoiceInfo);
 
         console.log("objXml  ", objXml);
         $.ajax({

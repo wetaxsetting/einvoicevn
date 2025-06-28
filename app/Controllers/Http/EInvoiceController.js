@@ -15072,9 +15072,11 @@ class EInvoiceController {
         };
         const signingTime = await transform(noti.xml_signed, templateSignTime);
 
-        noti.signed_by = signingTime.sign_by;
-        noti.signed_date = signingTime.signed_date;
+        let signed_by = signingTime.sign_by;
+        let signed_date = signingTime.signed_date;
 
+        console.log('signed_by', signed_by);
+        console.log('signed_date', signed_date);
         const param_noti = {
           req_key			    : noti.req_key				,
           msg_his_id      : noti.msg_his_id            ,
@@ -15099,8 +15101,8 @@ class EInvoiceController {
           seller_email    : noti.seller_email          ,
           seller_rppr_nm  : noti.seller_rppr_nm        ,
           seller_position : noti.seller_position       ,
-          signed_by       : noti.signed_by             ,
-          signed_date     : noti.signed_date           ,
+          signed_by       : signed_by,//noti.signed_by             ,
+          signed_date     : signed_date,//noti.signed_date           ,
           cqt_code        : noti.cqt_code              ,
           form_no         : noti.form_no               ,
           serial_no       : noti.serial_no             ,
@@ -15186,8 +15188,8 @@ class EInvoiceController {
               mail_to_cc: data_mail.mail_to_cc,
               title: data_mail.title,
               content: data_mail.content,
-              sign_datetime: res.SIGN_DATETIME,
-              sign_by: res.SIGN_BY,
+              sign_datetime: res.p_rtn_cur[0].EREC_SIGN_DT,
+              sign_by: res.p_rtn_cur[0].EREC_SIGN_BY,
             });
           } else {
             r_data_noti.push({
@@ -15202,8 +15204,8 @@ class EInvoiceController {
               mail_to_cc: '',
               title: '',
               content: '',
-              sign_datetime: res.SIGN_DATETIME,
-              sign_by: res.SIGN_BY,
+              sign_datetime: res.p_rtn_cur[0].EREC_SIGN_DT,
+              sign_by: res.p_rtn_cur[0].EREC_SIGN_BY,
             });
           }
         } else {
@@ -15219,8 +15221,8 @@ class EInvoiceController {
             mail_to_cc: '',
             title: '',
             content: '',
-            sign_datetime: res.SIGN_DATETIME,
-            sign_by: res.SIGN_BY,
+            sign_datetime: res.p_rtn_cur[0].EREC_SIGN_DT,
+            sign_by: res.p_rtn_cur[0].EREC_SIGN_BY,
           });
         }
       }

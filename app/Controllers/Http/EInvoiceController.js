@@ -15066,6 +15066,15 @@ class EInvoiceController {
       for (const noti of noti_list) {
         console.log('noti  ', noti);
 
+       const templateSignTime = {
+                      sign_by: 'BKe/DSCKS/NBan/Signature/KeyInfo/X509Data/X509SubjectName',
+                      sign_datetime: 'BKe/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
+        };
+        const signingTime = await transform(noti.xml_data_signed, templateSignTime);
+
+        noti.signed_by = signingTime.TaxSignedBy;
+        noti.signed_date = signingTime.TaxSignedDate;
+
         const param_noti = {
           req_key			    : noti.req_key				,
           msg_his_id      : noti.msg_his_id            ,
@@ -18367,7 +18376,9 @@ class EInvoiceController {
         url_pdf: url_pdf,
         url_xml: '',
         seller_inv_dt: rtnValue.p_rtn_cur[0].NTBAO,
-        req_key: rtnValue.p_rtn_cur[0].TEI_EINVOICE_SS_D_PK,
+        req_key: rtnValue.p_rtn_cur[0].REQ_KEY,
+        signature_path: rtnValue.p_rtn_cur[0].PATH_SIGN,
+        sign_id: rtnValue.p_rtn_cur[0].SIGN_ID,
       };
 
       return response.send(Utils.response(true, 'Research data invocie was success', rep_data));

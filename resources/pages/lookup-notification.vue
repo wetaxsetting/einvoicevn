@@ -297,28 +297,29 @@ export default {
 
     async onSignXML()
     {
+      //console.log("onSignXML  ", this.invoiceInfo);
       if(this.invoiceInfo.seller_sign_xml)
       {
-        var DOMParser = new (require('xmldom')).DOMParser;
+        /*var DOMParser = new (require('xmldom')).DOMParser;
         var document = DOMParser.parseFromString(this.invoiceInfo.seller_sign_xml);
         var nodesByName = document.getElementsByTagName('DLieu');
         // console.log("nodesByName  ", nodesByName);
         // console.log("nodesByName  ", nodesByName[0]);
         // console.log("nodesByName  ", nodesByName[0].attributes[0].value);
-        var id_signing = nodesByName[0].attributes[0].value;
+        var id_signing = nodesByName[0].attributes[0].value;*/
         let objXml = [
           {
             req_key: this.invoiceInfo.req_key,
-            xml: this.invoiceInfo.seller_sign_xml.toString().replaceAll("\"","'"),
+            xml: this.invoiceInfo.seller_sign_xml,
             id_signing: id_signing,
-            url_signing: "BBan/DSCKS/NMua"
+            url_signing: "<BKe/DSCKS/NMua"
           }
         ]
         //console.log("objXml  ", objXml);
        
         jQuery.support.cors = true;
         $.ajax({
-          url: "http://localhost:1080/signXML",
+          url: "http://localhost:1080/issusXMLList",
           dataType: "json",
           method: "POST",
           data: {

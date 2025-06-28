@@ -298,7 +298,7 @@ export default {
     async onSignXML()
     {
       //console.log("onSignXML  ", this.invoiceInfo);
-      if(this.invoiceInfo.seller_sign_xml)
+      if(this.invoiceInfo.seller_sign_xml && this.invoiceInfo.buyer_sign_by == "N")
       {
         /*var DOMParser = new (require('xmldom')).DOMParser;
         var document = DOMParser.parseFromString(this.invoiceInfo.seller_sign_xml);

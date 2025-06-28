@@ -313,14 +313,13 @@ export default {
             id_signing = nodesByName[0].attributes[0].value;
         }
 
-        if(!this.inquiryInfo.signature_path)
+        if(!this.invoiceInfo.signature_path)
         {
           url_signing = "BKe/DSCKS/NMua";
         }else
         {
-          url_signing = this.inquiryInfo.signature_path;
+          url_signing = this.invoiceInfo.signature_path;
         }
-
         
         let objXml = [
           {

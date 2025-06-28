@@ -15070,7 +15070,7 @@ class EInvoiceController {
                       sign_by: 'BKe/DSCKS/NBan/Signature/KeyInfo/X509Data/X509SubjectName',
                       sign_datetime: 'BKe/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
         };
-        const signingTime = await transform(noti.xml_data_signed, templateSignTime);
+        const signingTime = await transform(noti.xml_signed, templateSignTime);
 
         noti.signed_by = signingTime.TaxSignedBy;
         noti.signed_date = signingTime.TaxSignedDate;

@@ -18416,8 +18416,8 @@ class EInvoiceController {
       //let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + rtnValue.p_rtn_cur[0].TEI_EINVOICE_SS_D_PK + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token=");
       //let url_xml = re_url_xml.data;
       //console.log("base64XML:", url_xml);
-      let data_re = {};
-      if (rtnValue.p_rtn_cur && rtnValue.p_rtn_cur[0].STATUS_EXIT == 'EXIT') {
+      console.log("rtnValue.p_rtn_cur[0] ", rtnValue.p_rtn_cur[0]);
+      if (rtnValue.p_rtn_cur && rtnValue.p_rtn_cur[0].USER_SIGN_YN == 'Y') {
         this.weTaxCallBackStatus(rtnValue.p_rtn_cur[0]);
       }
 

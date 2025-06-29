@@ -295,7 +295,7 @@ export default {
         {
           var DOMParser = new (require('xmldom')).DOMParser;
           var document = DOMParser.parseFromString(this.invoiceInfo.seller_sign_xml);
-          var nodesByName = document.getElementsByTagName('BKe');
+          var nodesByName = document.getElementsByTagName('NDBKe');
             id_signing = nodesByName[0].attributes[0].value;
         }
 

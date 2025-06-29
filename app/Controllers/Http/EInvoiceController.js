@@ -13720,7 +13720,7 @@ class EInvoiceController {
             objInvoice_M.HDon.DLHDon.TTChung.TGia = invoices[i].ex_rate;
             objInvoice_M.HDon.DLHDon.TTChung.HTTToan = invoices[i].payment_method;
             objInvoice_M.HDon.DLHDon.TTChung.MSTTCGP = '1201496252'; //webcashgenuwin.com taxcode
-            objInvoice_M.HDon.DLHDon.TTChung.HDCTTChinh = invoices[i].financial_leasing_invoice || '0'; //webcashgenuwin.com taxcode
+            objInvoice_M.HDon.DLHDon.TTChung.HDCTTChinh = invoices[i].lease_invoice_type || '0'; //webcashgenuwin.com taxcode
             objInvoice_M.HDon.DLHDon.TTChung.TTKhac = {};
             objInvoice_M.HDon.DLHDon.TTChung.TTKhac.TTin = [];
             if (invoices[i].hasOwnProperty('attr01')) {

@@ -299,8 +299,7 @@ export default {
             id_signing = nodesByName[0].attributes[0].value;
         }
 
-      
-        console.log("this.invoiceInfo.seller_sign_xml  ", this.invoiceInfo.seller_sign_xml.replace(/"/g, "'"));
+        //console.log("this.invoiceInfo.seller_sign_xml  ", this.invoiceInfo.seller_sign_xml.replace(/"/g, "'"));
         let objXml = [
           {
             req_key: this.invoiceInfo.req_key,

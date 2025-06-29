@@ -22413,7 +22413,7 @@ class EInvoiceController {
         options: {maxVersion: 'TLSv1.2', minVersion: 'TLSv1.2', path: null},
       },
     };
-
+    console.log('weTaxCallBackStatus data co vào đây k');
     let triesCounter = 0;
     while (triesCounter < 3) {
       try {
@@ -22436,6 +22436,7 @@ class EInvoiceController {
             },
           },
         );
+        console.log('weTaxCallBackStatus res ', res.data);
         break; // 'return' would work here as well
       } catch (err) {
         await Utils._sleep(5);

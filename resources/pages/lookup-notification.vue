@@ -279,11 +279,49 @@ export default {
         await this._handleGenerateCaptcha();
       }
     },
+onDownloadXML()
+    {
+      let _blob = new Blob([this.invoiceInfo.buyer_sign_xml], {
+                type: "application/xml",
+            });
+            let _url = window.URL.createObjectURL(_blob);
+            var tag_a = document.createElement("a");
+            document.body.appendChild(tag_a);
+            tag_a.style = "display: none";
+            tag_a.href = _url;
+            tag_a.download = this.invoiceInfo.buyer_taxcode + "_" + this.invoiceInfo.voucher_no; 
+            tag_a.click();
+            window.URL.revokeObjectURL(_url);
+            tag_a.remove();
+    },
 
+    onDownloadPDF() {
+      try {
+        var link = document.createElement('a');
+        link.href = this.invoiceInfo.url_pdf;
+        link.download = `${this.invoiceInfo.buyer_taxcode + "_" + this.invoiceInfo.voucher_no}.pdf`;
+        link.dispatchEvent(new MouseEvent('click'));
+      } catch (error) {
+        this.showNotification("danger", "onDownload-catch exception:", error.message, "", 3000);
+        console.log("onDownload-catch exception:", error.message)
+      }
+    },
+
+    onDownloadApp() {
+      try {
+        var link = document.createElement('a');
+        link.href = this.invoiceInfo.url_setup;
+        link.download = `WebcashKySo.msi`;
+        link.dispatchEvent(new MouseEvent('click'));
+      } catch (error) {
+        this.showNotification("danger", "onDownload-catch exception:", error.message, "", 3000);
+        console.log("onDownload-catch exception:", error.message)
+      }
+    },
   
     async onSignXML()
     {
-      console.log("onSignXML  ", this.invoiceInfo);
+      //console.log("onSignXML  ", this.invoiceInfo);
       //console.log("onSignXML  ", this.invoiceInfo.buyer_sign_yn);
       if(this.invoiceInfo.buyer_sign_yn == "N")
       {
@@ -325,8 +363,8 @@ export default {
     },
 
     async onErrorissueXmlList(json, textStatus, errorThrown) {
-      console.log("onErrorissueXmlList  ", json, textStatus, errorThrown);
-      return this.showNotification("warning", this.$t("error_occurs"), errorThrown);//   alert(" Error :" + errorThrown);
+      //console.log("onErrorissueXmlList  ", json, textStatus, errorThrown);
+      return this.showNotification("warning", this.$t("Bạn chưa cài ứng dụng ký XML. Hãy tải ứng dụng, cài đặt."));//   alert(" Error :" + errorThrown);
     },
 
     async onSuccessissueXmlList(data) {

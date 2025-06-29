@@ -18337,11 +18337,22 @@ class EInvoiceController {
       console.log("rtnValue  ", rtnValue);
        let EiExcels = new EiExcel04SS2Handler2(); //CQT_MAGD
        let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].TEI_E_RECORD_PK , p_language, p_crt_by);
-      //console.log("base64PDf: ", url_pdf);
-      //let url_pdf = '';
-      //let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + rtnValue.p_rtn_cur[0].CQT_MAGD + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token=");
-      //let url_xml = re_url_xml.data;
-      // console.log("base64XML:", url_xml);
+
+        const current = new Date();
+        const year = current.getFullYear();
+        let month = current.getMonth() + 1;
+        let day = current.getDate();
+        if (day < 10) {
+          day = '0' + day;
+        }
+        if (month < 10) {
+          month = '0' + month;
+        }
+        let url_setup ='setup/WebcashKySo.msi';
+        let token = AES.encrypt('/' + url_setup + '|' + year + month + day, APP_KEY);
+        token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
+        let setup_url = APP_URL_LOCAL + '/api/dso/getfiletoken?file_name=' + '/' + url_setup + '&token=' + token;
+
       const rep_data = {
         info_inv: rtnValue.p_rtn_cur[0].INFO_INV,
         ma_gd: rtnValue.p_rtn_cur[0].CQT_MAGD,
@@ -18355,6 +18366,7 @@ class EInvoiceController {
         seller_sign_xml: rtnValue.p_rtn_cur[0].SELLER_SIGN_XML,
         url_pdf: url_pdf,
         url_xml: '',
+        url_setup: setup_url,
         seller_inv_dt: rtnValue.p_rtn_cur[0].NTBAO,
         req_key: rtnValue.p_rtn_cur[0].REQ_KEY,
         signature_path: rtnValue.p_rtn_cur[0].PATH_SIGN,

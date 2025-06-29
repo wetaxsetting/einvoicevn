@@ -18428,10 +18428,25 @@ class EInvoiceController {
       //let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + rtnValue.p_rtn_cur[0].TEI_EINVOICE_SS_D_PK + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token=");
       //let url_xml = re_url_xml.data;
       //console.log("base64XML:", url_xml);
-      console.log("rtnValue.p_rtn_cur[0] ", rtnValue.p_rtn_cur[0]);
+      //console.log("rtnValue.p_rtn_cur[0] ", rtnValue.p_rtn_cur[0]);
       if (rtnValue.p_rtn_cur && rtnValue.p_rtn_cur[0].USER_SIGN_YN == 'Y') {
         this.weTaxCallBackStatus(rtnValue.p_rtn_cur[0]);
       }
+
+      const current = new Date();
+        const year = current.getFullYear();
+        let month = current.getMonth() + 1;
+        let day = current.getDate();
+        if (day < 10) {
+          day = '0' + day;
+        }
+        if (month < 10) {
+          month = '0' + month;
+        }
+        let url_setup ='setup/WebcashKySo.msi';
+        let token = AES.encrypt('/' + url_setup + '|' + year + month + day, APP_KEY);
+        token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
+        let setup_url = APP_URL_LOCAL + '/api/dso/getfiletoken?file_name=' + '/' + url_setup + '&token=' + token;
 
       const rep_data = {
          info_inv: rtnValue.p_rtn_cur[0].INFO_INV,
@@ -18446,6 +18461,7 @@ class EInvoiceController {
         seller_sign_xml: rtnValue.p_rtn_cur[0].SELLER_SIGN_XML,
         url_pdf: url_pdf,
         url_xml: url_xml,
+        url_setup: setup_url,
         seller_inv_dt: rtnValue.p_rtn_cur[0].NTBAO,
         req_key: rtnValue.p_rtn_cur[0].TEI_EINVOICE_SS_D_PK,
       };

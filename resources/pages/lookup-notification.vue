@@ -280,78 +280,7 @@ export default {
       }
     },
 
-    onDownloadXML()
-    {
-      let _blob = new Blob([this.invoiceInfo.buyer_sign_xml], {
-                type: "application/xml",
-            });
-            let _url = window.URL.createObjectURL(_blob);
-            var tag_a = document.createElement("a");
-            document.body.appendChild(tag_a);
-            tag_a.style = "display: none";
-            tag_a.href = _url;
-            tag_a.download = this.invoiceInfo.buyer_taxcode + "_" + this.invoiceInfo.voucher_no; 
-            tag_a.click();
-            window.URL.revokeObjectURL(_url);
-            tag_a.remove();
-    },
-
-    onDownloadPDF() {
-      try {
-        var link = document.createElement('a');
-        link.href = this.invoiceInfo.url_pdf;
-        link.download = `${this.invoiceInfo.buyer_taxcode + "_" + this.invoiceInfo.voucher_no}.pdf`;
-        link.dispatchEvent(new MouseEvent('click'));
-      } catch (error) {
-        this.showNotification("danger", "onDownload-catch exception:", error.message, "", 3000);
-        console.log("onDownload-catch exception:", error.message)
-      }
-    },
-
-    stringToBase64(str) {
-      return btoa(unescape(encodeURIComponent(str)));
-    },
-        xmlToBase64(xmlString) {
-          if (!xmlString) return "";
-      try {
-        const utf8Bytes = new TextEncoder().encode(xmlString);
-        let binary = '';
-        utf8Bytes.forEach(byte => binary += String.fromCharCode(byte));
-        return btoa(binary);
-      } catch (error) {
-        console.error("Error converting XML to Base64:", error);
-        return "";
-      }
-    },
-
-    // Unicode-safe Base64 encoding (classic)
-      toBase64Unicode(str) {
-        return btoa(
-          encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_, p1) =>
-            String.fromCharCode('0x' + p1)
-          )
-        )
-      },
-
-      // Modern UTF-8 safe Base64 encoding
-      toBase64Utf8(str) {
-        return btoa(String.fromCharCode(...new TextEncoder().encode(str)))
-      },
-
-      encodeXml(xmlInput) {
-        if (!xmlInput.value) {
-          alert('Please enter your XML string first!')
-          return
-        }
-
-        try {
-          // You can pick *either* one:
-          result.value = this.toBase64Unicode(xmlInput.value)
-          //result.value = toBase64Utf8(xmlInput.value)
-        } catch (e) {
-          result.value = `Error: ${e.message}`
-        }
-      },
+  
     async onSignXML()
     {
       console.log("onSignXML  ", this.invoiceInfo);
@@ -370,8 +299,7 @@ export default {
             id_signing = nodesByName[0].attributes[0].value;
         }
 
-        
-        
+      
         console.log("this.invoiceInfo.seller_sign_xml  ", this.invoiceInfo.seller_sign_xml.replace(/"/g, "'"));
         let objXml = [
           {
@@ -382,7 +310,7 @@ export default {
           }
         ]
         $.ajax({
-          url: "http://localhost:1080/issueXmlList",
+          url: "http://localhost:1080/issueXmlListByBuyer",
           dataType: "json",
           method: "POST",
           data: {

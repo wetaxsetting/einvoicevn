@@ -22428,6 +22428,7 @@ class EInvoiceController {
             inv_no: data.NGAY,
             cus_xml_mins: data.BUYER_SIGN_XML,
             cus_sign_by: data.USER_SIGN_NM,
+            cus_sign_time: data.USER_SIGN_DT,
           },
           {
             agent,

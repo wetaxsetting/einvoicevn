@@ -310,7 +310,7 @@ export default {
           }
         ]
         $.ajax({
-          url: "http://localhost:1080/issueXmlListByBuyer",
+          url: "http://localhost:1080/issueXmlList",
           dataType: "json",
           method: "POST",
           data: {

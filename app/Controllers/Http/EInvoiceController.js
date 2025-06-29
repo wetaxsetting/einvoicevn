@@ -14534,33 +14534,11 @@ class EInvoiceController {
           }  
         }); 
 
-        /*objInvoice.BKe.NDBKe.TTChung.PBan = version;
-        objInvoice.BKe.NDBKe.TTChung.TBBan = form_no;
-        objInvoice.BKe.NDBKe.TTChung.SBBan = noti.voucher_no;
-        objInvoice.BKe.NDBKe.TTChung.NBBan = inform_date;
-        objInvoice.BKe.NDBKe.TTChung.TCHDon = noti.voucher_no;
-
-        objInvoice.BKe.NDBKe.TTChung.NBan = this.convertHtmlCode(seller_company_name);
-        objInvoice.BKe.NDBKe.TTChung.MSTNBan = seller_taxcode;
-        objInvoice.BKe.NDBKe.TTChung.DCNban = this.convertHtmlCode(seller_address);
-
-        objInvoice.BKe.NDBKe.TTChung.NMua = this.convertHtmlCode(noti.buyer_company_name);
-        objInvoice.BKe.NDBKe.TTChung.MSTNMua = noti.buyer_taxcode;
-        objInvoice.BKe.NDBKe.TTChung.DCNmua = this.convertHtmlCode(noti.buyer_address);
-
-        objInvoice.BKe.NDBKe.TTChung.KHMSHDon = noti.form_no;
-        objInvoice.BKe.NDBKe.TTChung.KHHDon = noti.serial_no;
-        objInvoice.BKe.NDBKe.TTChung.SHDon = noti.invoice_no;
-
-        objInvoice.BKe.NDBKe.TTChung.DSLDTDoi = [];
-        objInvoice.BKe.NDBKe.TTChung.DSLDTDoi.push({
-          LDo: this.convertHtmlCode(noti.reason),
-        });*/ 
       }
 
       const id = uuid.v4();
         const xml = this.OBJtoXML(objInvoice);
-        const xmlId = xml.toString().replace('<BKe>', `<BKe Id=\'${id}\'>`);
+        const xmlId = xml.toString().replace('<NDBKe>', `<NDBKe Id=\'${id}\'>`);
         const xmlRemoveLine = xmlId.toString().replace(/\n/g, '');
         rtnXML.push({
           req_key: rtnReqKey,

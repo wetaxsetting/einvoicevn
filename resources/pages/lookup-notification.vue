@@ -311,7 +311,7 @@ onDownloadXML()
       try {
         var link = document.createElement('a');
         link.href = this.invoiceInfo.url_setup;
-        link.download = `WebcashKySo.msi`;
+        link.download = `WeTaxKySo.msi`;
         link.dispatchEvent(new MouseEvent('click'));
       } catch (error) {
         this.showNotification("danger", "onDownload-catch exception:", error.message, "", 3000);

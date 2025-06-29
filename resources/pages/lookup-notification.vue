@@ -119,22 +119,33 @@
                         <span class="font-weight-bold">{{ invoiceInfo.seller_inv_dt }}</span>
                       </v-sheet>
                     </v-col>
-                    <v-col cols="12">
-                      <v-btn dark depressed small :color="currentTheme" @click="onSignXML" :disabled="invoiceInfo.buyer_sign_yn=='Y'" >
-                        <v-icon left>mdi-file-pdf-box</v-icon>
-                        <span class="ml-2">Ký biên bản</span>
+                    <v-col cols="12" class="d-flex flex-column align-center">
+                      <v-btn
+                        class="mb-3"
+                        :color="currentTheme"
+                        dark
+                        large
+                        elevation="2"
+                        style="width: 100%; border-radius: 24px"
+                        @click="onSignXML"
+                        :disabled="invoiceInfo.buyer_sign_yn === 'Y'">
+                        <v-icon left>mdi-pen</v-icon>
+                        Ký biên bản
                       </v-btn>
-                    </v-col>
-                    <v-col cols="12">
-                      <v-btn dark depressed small color="#EA7700" target="_blank" @click="onDownloadXML">
-                        <v-icon left>mdi-file-xml-box</v-icon>
-                        <span class="ml-2">Tải về định dạng XML</span>
+
+                      <v-btn class="mb-3" color="#EA7700" dark large elevation="2" style="width: 100%; border-radius: 24px" @click="onDownloadXML">
+                        <v-icon left>mdi-code-tags</v-icon>
+                        Tải về định dạng XML
                       </v-btn>
-                    </v-col>
-                    <v-col cols="12">
-                      <v-btn dark depressed small color="#AD0B00" @click="onDownloadPDF">
-                        <v-icon left>mdi-file-pdf-box</v-icon>
-                        <span class="ml-2">Tải về định dạng PDF</span>
+
+                      <v-btn class="mb-3" color="#AD0B00" dark large elevation="2" style="width: 100%; border-radius: 24px" @click="onDownloadPDF">
+                        <v-icon left>mdi-file-pdf</v-icon>
+                        Tải về định dạng PDF
+                      </v-btn>
+
+                      <v-btn color="#009688" dark large elevation="2" style="width: 100%; border-radius: 24px" @click="onDownloadApp">
+                        <v-icon left>mdi-cellphone-arrow-down</v-icon>
+                        Tải ứng dụng
                       </v-btn>
                     </v-col>
                   </v-row>

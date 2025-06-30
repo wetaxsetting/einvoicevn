@@ -20979,6 +20979,255 @@ class EInvoiceController {
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
     }
   }
+
+  async weTaxSendRecordsEP({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      let r_data_noti = [];
+      const {seller_taxcode, noti_list } = request.all();
+
+      for (const noti of noti_list) {
+        console.log('noti  ', noti);
+
+       const templateSignTime = {
+                      sign_by: 'BKe/DSCKS/NBan/Signature/KeyInfo/X509Data/X509SubjectName',
+                      signed_date: 'BKe/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
+        };
+        const signingTime = await transform(noti.xml_signed, templateSignTime);
+
+        let signed_by = signingTime.sign_by;
+        let signed_date = signingTime.signed_date;
+
+        console.log('signed_by', signed_by);
+        console.log('signed_date', signed_date);
+        const param_noti = {
+          req_key			    : noti.req_key				,
+          msg_his_id      : noti.msg_his_id            ,
+          xml_signed      : noti.xml_signed            ,
+          buyer_email     : noti.buyer_email           ,
+          buyer_email_cc  : noti.buyer_email_cc        ,
+          doc_no          : noti.doc_no                ,
+          reg_dtm         : noti.reg_dtm               ,
+          cus_nm          : noti.cus_nm                ,
+          cus_taxcd       : noti.cus_taxcd             ,
+          cus_add         : noti.cus_add               ,
+          cus_tel         : noti.cus_tel               ,
+          cus_email       : noti.cus_email             ,
+          cus_rppr_nm     : noti.cus_rppr_nm           ,
+          cus_position    : noti.cus_position          ,
+          cus_signed_by   : noti.cus_signed_by         ,
+          cus_signed_date : noti.cus_signed_date       ,
+          seller_nm       : noti.seller_nm             ,
+          seller_taxcd    : noti.seller_taxcd          ,
+          seller_add      : noti.seller_add            ,
+          seller_tel_no   : noti.seller_tel_no         ,
+          seller_email    : noti.seller_email          ,
+          seller_rppr_nm  : noti.seller_rppr_nm        ,
+          seller_position : noti.seller_position       ,
+          signed_by       : signed_by,//noti.signed_by             ,
+          signed_date     : signed_date,//noti.signed_date           ,
+          cqt_code        : noti.cqt_code              ,
+          form_no         : noti.form_no               ,
+          serial_no       : noti.serial_no             ,
+          inv_no          : noti.inv_no                ,
+          inv_date        : noti.inv_date              ,
+          feature         : noti.feature               ,
+          reason          : noti.reason                ,
+          tot_aft_dc_amt  : noti.tot_aft_dc_amt        ,
+          tot_vat_amt     : noti.tot_vat_amt           ,
+          tot_pay         : noti.tot_pay,
+          sign_id         : noti.sign_id,
+          signature_path  : noti.signature_path,
+        };
+
+        const res = await DBService.ExecuteSQLBlob(
+          `BEGIN wt_upd_e_record_ep(
+                          :req_key				,
+                          :msg_his_id         ,
+                          :xml_signed         ,
+                          :buyer_email        ,
+                          :buyer_email_cc     ,
+                          :doc_no             ,
+                          :reg_dtm            ,
+                          :cus_nm             ,
+                          :cus_taxcd          ,
+                          :cus_add            ,
+                          :cus_tel            ,
+                          :cus_email          ,
+                          :cus_rppr_nm        ,
+                          :cus_position       ,
+                          :cus_signed_by      ,
+                          :cus_signed_date    ,
+                          :seller_nm          ,
+                          :seller_taxcd       ,
+                          :seller_add         ,
+                          :seller_tel_no      ,
+                          :seller_email       ,
+                          :seller_rppr_nm     ,
+                          :seller_position    ,
+                          :signed_by          ,
+                          :signed_date        ,
+                          :cqt_code           ,
+                          :form_no            ,
+                          :serial_no          ,
+                          :inv_no             ,
+                          :inv_date           ,
+                          :feature            ,
+                          :reason             ,
+                          :tot_aft_dc_amt     ,
+                          :tot_vat_amt        ,
+                          :tot_pay            ,
+                          :sign_id            ,
+                          :signature_path,
+                          :p_language, 
+                          :p_crt_by, 
+                          :p_rtn_cur); 
+            END;`,
+          param_noti,
+          p_language,
+          p_crt_by,
+        );
+
+        console.log('weTaxSendRecords   details res', res);
+
+        if (res.p_rtn_cur[0].STATUS == 'OK') {
+          const data_mail = await this.weTaxSendMailRecords2(
+            res.p_rtn_cur[0].TEI_E_RECORD_PK,
+            p_language,
+            p_crt_by,
+          );
+
+          //console.log("weTaxSendRecords   data_mail ", data_mail);
+          if (data_mail) {
+            r_data_noti.push({
+              sale_id: noti.req_key,
+              msg_his_id: noti.msg_his_id,
+              status_code: '1',
+              status_name: 'Sent Sucess',
+              send_date: data_mail.send_date,
+              send_time: data_mail.send_time,
+              mail_form: data_mail.mail_form,
+              mail_to: data_mail.mail_to,
+              mail_to_cc: data_mail.mail_to_cc,
+              title: data_mail.title,
+              content: data_mail.content,
+              sign_datetime: res.p_rtn_cur[0].EREC_SIGN_DT,
+              sign_by: res.p_rtn_cur[0].EREC_SIGN_BY,
+            });
+          } else {
+            r_data_noti.push({
+              sale_id: noti.req_key,
+              msg_his_id: noti.msg_his_id,
+              status_code: '0',
+              status_name: 'Sent Faile',
+              send_date: '',
+              send_time: '',
+              mail_form: '',
+              mail_to: '',
+              mail_to_cc: '',
+              title: '',
+              content: '',
+              sign_datetime: res.p_rtn_cur[0].EREC_SIGN_DT,
+              sign_by: res.p_rtn_cur[0].EREC_SIGN_BY,
+            });
+          }
+        } else {
+          r_data_noti.push({
+            sale_id: noti.req_key,
+            msg_his_id: noti.msg_his_id,
+            status_code: '0',
+            status_name: 'Sent Faile',
+            send_date: '',
+            send_time: '',
+            mail_form: '',
+            mail_to: '',
+            mail_to_cc: '',
+            title: '',
+            content: '',
+            sign_datetime: res.p_rtn_cur[0].EREC_SIGN_DT,
+            sign_by: res.p_rtn_cur[0].EREC_SIGN_BY,
+          });
+        }
+      }
+      console.log('weTaxSendRecords   r_data_noti ', r_data_noti);
+      console.log('weTaxSendRecords   END =================================');
+
+      // return response.send(Utils.response(true, `Sending records was successful. `,r_data_noti ));
+      return response.status(200).json(Utils.responseByRule({success: true, message: 'Send e-Record successfully.', data: r_data_noti}));
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'generalRecordsXml',
+        CONTENT: e.message,
+      });
+      console.log(e);
+      // return response.send(Utils.response(false, e.message, null));
+      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+    }
+  }
+
+  async weTaxSendMailRecords2(p_tei_e_record_pk, p_language, p_crt_by) {
+    try {
+      let para_value_mail = {
+        p_tei_e_record_pk: p_tei_e_record_pk //"4090",//
+      };
+      let data_mail = await DBService.ExecuteSQLBlob(
+        `BEGIN wt_sel_data_e_record(
+                          :p_tei_e_record_pk, 
+                          :p_language, 
+                          :p_crt_by, 
+                          :p_rtn_cur
+                      ); END;`,
+        para_value_mail,
+        p_language,
+        p_crt_by,
+      );
+      console.log('weTaxSendMailRecords ', data_mail.p_rtn_cur);
+      // console.log(data_mail.p_rtn_cur.length);
+
+      if (data_mail.p_rtn_cur.length > 0) {
+        let EiExcels = new EiExcel04SS2Handler2();
+        let url_pdf = await EiExcels.getEinvoice(p_tei_e_record_pk, p_language, p_crt_by);
+        //console.log("url_pdf2  ", url_pdf);
+
+        const res_send_mail = await Request.post(EINVOICE_API_SEND_MAIL, {
+          mail_to: data_mail.p_rtn_cur[0].EMAIL_ADDRESS,
+          cc_to: data_mail.p_rtn_cur[0].EMAIL_ADDRESS_CC,
+          subject: data_mail.p_rtn_cur[0].SUBJECT,
+          body: data_mail.p_rtn_cur[0].BODY_1_MAIL,
+          attachfile1: url_pdf,
+          filename1: data_mail.p_rtn_cur[0].FILENAME1,
+        });
+
+        console.log('weTaxSendMailRecords res_send_mail  ', res_send_mail);
+
+        if (res_send_mail.data.success) {
+          let rtnValue = {
+            send_date: res_send_mail.data.data.date_send,
+            send_time: res_send_mail.data.data.time_send,
+            mail_form: res_send_mail.data.data.mail_from,
+            mail_to: res_send_mail.data.data.mail_to,
+            mail_to_cc: res_send_mail.data.data.mail_to_cc,
+            title: data_mail.p_rtn_cur[0].SUBJECT,
+            content: data_mail.p_rtn_cur[0].BODY_1_MAIL,
+          };
+
+          return rtnValue;
+        } else {
+          return [];
+        }
+      }
+      return [];
+    } catch (error) {
+      console.log('res_send_mail error  ', error);
+    }
+  }
   
   async weTaxGenerateRecordsXmlN70({request, response, auth}) {
     try {

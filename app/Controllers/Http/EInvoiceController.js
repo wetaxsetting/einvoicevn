@@ -21102,8 +21102,8 @@ class EInvoiceController {
       Utils.Logger({
         LVL: 'error',
         MODULE: 'EInvoiceController',
-        FUNC: 'generalRecordsXml',
-        CONTENT: e.message,
+        FUNC: 'weTaxSendRecordsN70EP',
+        CONTENT: e,
       });
       console.log(e);
       // return response.send(Utils.response(false, e.message, null));

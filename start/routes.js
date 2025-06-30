@@ -235,7 +235,7 @@ Route.group(() => {
   Route.post('upload-excel-pit-c-sharp', 'EInvoiceController.UploadDataExcelPIT');
   Route.post('send-pit-c-sharp', 'EInvoiceController.SendMailPITCSharp');
 
-  Route.post('send-records-ep', 'EInvoiceController.weTaxSendRecordsN70');
+  Route.post('send-records-ep', 'EInvoiceController.weTaxSendRecordsN70EP');
 
   Route.post('validate-invoice-c-sharp', 'EInvoiceController.ValidateInvoiceCSharp');
 })

@@ -20980,6 +20980,137 @@ class EInvoiceController {
     }
   }
 
+  async weTaxSendRecordsN70EP({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      let r_data_noti = [];
+      const {seller_taxcode, noti_list } = request.all();
+
+      for (const noti of noti_list) {
+        console.log('noti  ', noti);
+
+       const templateSignTime = {
+                      sign_by: 'BKe/DSCKS/NBan/Signature/KeyInfo/X509Data/X509SubjectName',
+                      signed_date: 'BKe/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
+        };
+        const signingTime = await transform(noti.xml_signed, templateSignTime);
+
+        let signed_by = signingTime.sign_by;
+        let signed_date = signingTime.signed_date;
+
+        console.log('signed_by', signed_by);
+        console.log('signed_date', signed_date);
+        const param_noti = {
+          req_key			    : noti.req_key				,
+          xml_signed      : noti.xml_signed            ,
+          signed_by       : signed_by,//noti.signed_by             ,
+          signed_date     : signed_date,//noti.signed_date           ,
+          sign_id         : noti.sign_id,
+          signature_path  : noti.signature_path,
+        };
+
+        const res = await DBService.ExecuteSQLBlob(
+          `BEGIN wt_upd_e_record_ep(
+                          :req_key				,
+                          :msg_his_id         ,
+                          :xml_signed         ,
+                          :signed_by          ,
+                          :signed_date        ,
+                          :sign_id            ,
+                          :signature_path,
+                          :p_language, 
+                          :p_crt_by, 
+                          :p_rtn_cur); 
+            END;`,
+          param_noti,
+          p_language,
+          p_crt_by,
+        );
+
+        console.log('weTaxSendRecords   details res', res);
+
+        if (res.p_rtn_cur[0].STATUS == 'OK') {
+          const data_mail = await this.weTaxSendMailRecords2(
+            res.p_rtn_cur[0].TEI_E_RECORD_PK,
+            p_language,
+            p_crt_by,
+          );
+
+          //console.log("weTaxSendRecords   data_mail ", data_mail);
+          if (data_mail) {
+            r_data_noti.push({
+              sale_id: noti.req_key,
+              msg_his_id: noti.msg_his_id,
+              status_code: '1',
+              status_name: 'Sent Sucess',
+              send_date: data_mail.send_date,
+              send_time: data_mail.send_time,
+              mail_form: data_mail.mail_form,
+              mail_to: data_mail.mail_to,
+              mail_to_cc: data_mail.mail_to_cc,
+              title: data_mail.title,
+              content: data_mail.content,
+              sign_datetime: res.p_rtn_cur[0].EREC_SIGN_DT,
+              sign_by: res.p_rtn_cur[0].EREC_SIGN_BY,
+            });
+          } else {
+            r_data_noti.push({
+              sale_id: noti.req_key,
+              msg_his_id: noti.msg_his_id,
+              status_code: '0',
+              status_name: 'Sent Faile',
+              send_date: '',
+              send_time: '',
+              mail_form: '',
+              mail_to: '',
+              mail_to_cc: '',
+              title: '',
+              content: '',
+              sign_datetime: res.p_rtn_cur[0].EREC_SIGN_DT,
+              sign_by: res.p_rtn_cur[0].EREC_SIGN_BY,
+            });
+          }
+        } else {
+          r_data_noti.push({
+            sale_id: noti.req_key,
+            msg_his_id: noti.msg_his_id,
+            status_code: '0',
+            status_name: 'Sent Faile',
+            send_date: '',
+            send_time: '',
+            mail_form: '',
+            mail_to: '',
+            mail_to_cc: '',
+            title: '',
+            content: '',
+            sign_datetime: res.p_rtn_cur[0].EREC_SIGN_DT,
+            sign_by: res.p_rtn_cur[0].EREC_SIGN_BY,
+          });
+        }
+      }
+      console.log('weTaxSendRecords   r_data_noti ', r_data_noti);
+      console.log('weTaxSendRecords   END =================================');
+
+      // return response.send(Utils.response(true, `Sending records was successful. `,r_data_noti ));
+      return response.status(200).json(Utils.responseByRule({success: true, message: 'Send e-Record successfully.', data: r_data_noti}));
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'generalRecordsXml',
+        CONTENT: e.message,
+      });
+      console.log(e);
+      // return response.send(Utils.response(false, e.message, null));
+      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+    }
+  }
+
   async weTaxSendRecordsEP({request, response, auth}) {
     try {
       var p_language = request.header('accept-language', 'ENG');

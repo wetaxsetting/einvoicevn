@@ -21551,6 +21551,180 @@ class EInvoiceController {
     }
   }
 
+  async getDataEinvoiceFormLookupMinutesCode2({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+
+      const {captcha, sessionid, lookupcode} = request.all();
+      if (Redis) {
+        const valueCache = await Redis.get(sessionid);
+        if (!valueCache || valueCache != captcha) {
+          return response.send(Utils.response(false, 'invalid_captchar', null));
+        }
+      }    
+      //console.log(  "lookupcode ", lookupcode)
+      if (DB_CONNECTION == 'oracle') {
+        oracledb.fetchAsBuffer = [oracledb.BLOB];
+        oracledb.fetchAsString = [oracledb.CLOB];
+      }
+      const para_inv_st = {
+        trade_code: lookupcode,
+      };
+      const rtnValue = await DBService.ExecuteSQLBlob(
+        `BEGIN ei_sel_lookup_minutes_code_2 (:trade_code,
+                                           :p_language, 
+                                           :p_crt_by, 
+                                           :p_rtn_cur); END;`,
+        para_inv_st,
+        p_language,
+        p_crt_by,
+      );
+
+      console.log("rtnValue  ", rtnValue);
+       let EiExcels = new EiExcel04SS2Handler2(); //CQT_MAGD
+       let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].TEI_E_RECORD_PK , p_language, p_crt_by);
+
+        const current = new Date();
+        const year = current.getFullYear();
+        let month = current.getMonth() + 1;
+        let day = current.getDate();
+        if (day < 10) {
+          day = '0' + day;
+        }
+        if (month < 10) {
+          month = '0' + month;
+        }
+        let url_setup ='setup/WebcashKySo.msi';
+        let token = AES.encrypt('/' + url_setup + '|' + year + month + day, APP_KEY);
+        token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
+        let setup_url = APP_URL_LOCAL + '/api/dso/getfiletoken?file_name=' + '/' + url_setup + '&token=' + token;
+
+      const rep_data = {
+        info_inv: rtnValue.p_rtn_cur[0].INFO_INV,
+        ma_gd: rtnValue.p_rtn_cur[0].CQT_MAGD,
+        buyer_name: rtnValue.p_rtn_cur[0].CUS_NM,
+        buyer_code: rtnValue.p_rtn_cur[0].CUS_CD,
+        buyer_taxcode: rtnValue.p_rtn_cur[0].BUYER_TAX_CODE,
+        buyer_sign_yn: rtnValue.p_rtn_cur[0].USER_SIGN_YN,
+        buyer_sign_xml: rtnValue.p_rtn_cur[0].BUYER_SIGN_XML,
+        voucher_no: rtnValue.p_rtn_cur[0].VOUCHER_NO,
+        seller_status: rtnValue.p_rtn_cur[0].SELLER_STATUS,
+        seller_sign_xml: rtnValue.p_rtn_cur[0].SELLER_SIGN_XML,
+        url_pdf: url_pdf,
+        url_xml: '',
+        url_setup: setup_url,
+        seller_inv_dt: rtnValue.p_rtn_cur[0].NTBAO,
+        req_key: rtnValue.p_rtn_cur[0].REQ_KEY,
+        signature_path: rtnValue.p_rtn_cur[0].PATH_SIGN,
+        sign_id: rtnValue.p_rtn_cur[0].SIGN_ID,
+      };
+
+      return response.send(Utils.response(true, 'Research data invocie was success', rep_data));
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'getDataEinvoiceFormLookupMinutesCode2',
+        CONTENT: e.message,
+      });
+      console.log(e);
+      return response.send(Utils.response(false, 'error', e.message));
+    }
+  }
+
+  async getUpdateXmlBuyerSign2({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+
+      const {xml_signed, buyer_sign_by, buyer_sign_dt, req_key, lookupcode} = request.all();
+
+    
+      if (DB_CONNECTION == 'oracle') {
+        oracledb.fetchAsBuffer = [oracledb.BLOB];
+        oracledb.fetchAsString = [oracledb.CLOB];
+      }
+      const para_inv_st = {
+        trade_code: lookupcode,
+        req_key: req_key,
+        buyer_sign_dt: buyer_sign_dt,
+        buyer_sign_by: buyer_sign_by,
+        xml_signed: xml_signed,
+      };
+      const rtnValue = await DBService.ExecuteSQLBlob(
+        `BEGIN ei_upd_lookup_minutes_code2 (:trade_code,
+                                           :req_key,
+                                           :buyer_sign_dt,
+                                           :buyer_sign_by,
+                                           :xml_signed,
+                                           :p_language, 
+                                           :p_crt_by, 
+                                           :p_rtn_cur); END;`,
+        para_inv_st,
+        p_language,
+        p_crt_by,
+      );
+
+      //console.log("rtnValue  ", rtnValue);
+      let EiExcels = new EiExcel04SS2Handler2(); //CQT_MAGD
+       let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].TEI_E_RECORD_PK , p_language, p_crt_by);
+      //console.log("base64PDf: ", url_pdf);
+
+      let url_xml = '';
+      //let re_url_xml = await Request.get(APP_URL_LOCAL + "/api/dso/getfiledbtoken?pk=" + rtnValue.p_rtn_cur[0].TEI_EINVOICE_SS_D_PK + "&proc=" + "EI_SEL_XML_EINVOICE" + "&token=");
+      //let url_xml = re_url_xml.data;
+      //console.log("base64XML:", url_xml);
+      //console.log("rtnValue.p_rtn_cur[0] ", rtnValue.p_rtn_cur[0]);
+      if (rtnValue.p_rtn_cur && rtnValue.p_rtn_cur[0].USER_SIGN_YN == 'Y') {
+        this.weTaxCallBackStatus(rtnValue.p_rtn_cur[0]);
+      }
+
+      const current = new Date();
+        const year = current.getFullYear();
+        let month = current.getMonth() + 1;
+        let day = current.getDate();
+        if (day < 10) {
+          day = '0' + day;
+        }
+        if (month < 10) {
+          month = '0' + month;
+        }
+        let url_setup ='setup/WebcashKySo.msi';
+        let token = AES.encrypt('/' + url_setup + '|' + year + month + day, APP_KEY);
+        token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
+        let setup_url = APP_URL_LOCAL + '/api/dso/getfiletoken?file_name=' + '/' + url_setup + '&token=' + token;
+
+      const rep_data = {
+         info_inv: rtnValue.p_rtn_cur[0].INFO_INV,
+        ma_gd: rtnValue.p_rtn_cur[0].CQT_MAGD,
+        buyer_name: rtnValue.p_rtn_cur[0].CUS_NM,
+        buyer_code: rtnValue.p_rtn_cur[0].CUS_CD,
+        buyer_taxcode: rtnValue.p_rtn_cur[0].TAX_CODE,
+        buyer_sign_yn: rtnValue.p_rtn_cur[0].USER_SIGN_YN,
+        buyer_sign_xml: rtnValue.p_rtn_cur[0].BUYER_SIGN_XML,
+        voucher_no: rtnValue.p_rtn_cur[0].VOUCHER_NO,
+        seller_status: rtnValue.p_rtn_cur[0].SELLER_STATUS,
+        seller_sign_xml: rtnValue.p_rtn_cur[0].SELLER_SIGN_XML,
+        url_pdf: url_pdf,
+        url_xml: url_xml,
+        url_setup: setup_url,
+        seller_inv_dt: rtnValue.p_rtn_cur[0].NTBAO,
+        req_key: rtnValue.p_rtn_cur[0].TEI_EINVOICE_SS_D_PK,
+      };
+
+      return response.send(Utils.response(true, 'Research data invocie was success', rep_data));
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'getDataEinvoiceFormLookupMinutesCode',
+        CONTENT: e.message,
+      });
+      console.log(e);
+      return response.send(Utils.response(false, 'error', e.message));
+    }
+  }
   async jobCheckTradeCodePosInvoice(check_data) {
     //console.log('jobCheckTradeCodePosInvoice BEGIN ========================  ');
     // const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';

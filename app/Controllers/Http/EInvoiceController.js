@@ -21017,7 +21017,6 @@ class EInvoiceController {
         const res = await DBService.ExecuteSQLBlob(
           `BEGIN wt_upd_e_record_ep(
                           :req_key				,
-                          :msg_his_id         ,
                           :xml_signed         ,
                           :signed_by          ,
                           :signed_date        ,

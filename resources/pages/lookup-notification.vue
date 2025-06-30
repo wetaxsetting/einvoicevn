@@ -119,22 +119,33 @@
                         <span class="font-weight-bold">{{ invoiceInfo.seller_inv_dt }}</span>
                       </v-sheet>
                     </v-col>
-                    <v-col cols="12">
-                      <v-btn dark depressed small :color="currentTheme" @click="onSignXML" :disabled="invoiceInfo.buyer_sign_yn=='Y'" >
-                        <v-icon left>mdi-file-pdf-box</v-icon>
-                        <span class="ml-2">Ký biên bản</span>
+                    <v-col cols="12" class="d-flex flex-column align-center">
+                      <v-btn
+                        class="mb-3"
+                        :color="currentTheme"
+                        dark
+                        large
+                        elevation="2"
+                        style="width: 100%; border-radius: 24px"
+                        @click="onSignXML"
+                        :disabled="invoiceInfo.buyer_sign_yn === 'Y'">
+                        <v-icon left>mdi-pen</v-icon>
+                        Ký biên bản
                       </v-btn>
-                    </v-col>
-                    <v-col cols="12">
-                      <v-btn dark depressed small color="#EA7700" target="_blank" @click="onDownloadXML">
-                        <v-icon left>mdi-file-xml-box</v-icon>
-                        <span class="ml-2">Tải về định dạng XML</span>
+
+                      <v-btn class="mb-3" color="#EA7700" dark large elevation="2" style="width: 100%; border-radius: 24px" @click="onDownloadXML">
+                        <v-icon left>mdi-code-tags</v-icon>
+                        Tải về định dạng XML
                       </v-btn>
-                    </v-col>
-                    <v-col cols="12">
-                      <v-btn dark depressed small color="#AD0B00" @click="onDownloadPDF">
-                        <v-icon left>mdi-file-pdf-box</v-icon>
-                        <span class="ml-2">Tải về định dạng PDF</span>
+
+                      <v-btn class="mb-3" color="#AD0B00" dark large elevation="2" style="width: 100%; border-radius: 24px" @click="onDownloadPDF">
+                        <v-icon left>mdi-file-pdf</v-icon>
+                        Tải về định dạng PDF
+                      </v-btn>
+
+                      <v-btn color="#009688" dark large elevation="2" style="width: 100%; border-radius: 24px" @click="onDownloadApp">
+                        <v-icon left>mdi-cellphone-arrow-down</v-icon>
+                        Tải ứng dụng
                       </v-btn>
                     </v-col>
                   </v-row>
@@ -167,6 +178,8 @@
   </div>
 </template>
 <script>
+import { type } from 'jquery';
+
 export default {
   layout: "monitoring",
 
@@ -187,7 +200,7 @@ export default {
    async created() {
     //console.log("this.$route?.query?.trade_code ",this.$route?.query?.trade_code)
     if(this.$route?.query?.trade_code) {
-        this.invoiceNo = this.$route?.query?.trade_code;
+        this.invoiceNo = this.$route?.query?.trade_code.replace(" ", "+");
       }
   }, 
 
@@ -266,8 +279,7 @@ export default {
         await this._handleGenerateCaptcha();
       }
     },
-
-    onDownloadXML()
+onDownloadXML()
     {
       let _blob = new Blob([this.invoiceInfo.buyer_sign_xml], {
                 type: "application/xml",
@@ -295,35 +307,53 @@ export default {
       }
     },
 
+    onDownloadApp() {
+      try {
+        var link = document.createElement('a');
+        link.href = this.invoiceInfo.url_setup;
+        link.download = `WeTaxKySo.msi`;
+        link.dispatchEvent(new MouseEvent('click'));
+      } catch (error) {
+        this.showNotification("danger", "onDownload-catch exception:", error.message, "", 3000);
+        console.log("onDownload-catch exception:", error.message)
+      }
+    },
+  
     async onSignXML()
     {
-      if(this.invoiceInfo.seller_sign_xml)
+      //console.log("onSignXML  ", this.invoiceInfo);
+      //console.log("onSignXML  ", this.invoiceInfo.buyer_sign_yn);
+      if(this.invoiceInfo.buyer_sign_yn == "N")
       {
-        var DOMParser = new (require('xmldom')).DOMParser;
-        var document = DOMParser.parseFromString(this.invoiceInfo.seller_sign_xml);
-        var nodesByName = document.getElementsByTagName('DLieu');
-        // console.log("nodesByName  ", nodesByName);
-        // console.log("nodesByName  ", nodesByName[0]);
-        // console.log("nodesByName  ", nodesByName[0].attributes[0].value);
-        var id_signing = nodesByName[0].attributes[0].value;
+        let id_signing = "", url_signing= "";
+        if(this.invoiceInfo.sign_id)
+        {
+          id_signing = this.invoiceInfo.sign_id;
+        }else
+        {
+          var DOMParser = new (require('xmldom')).DOMParser;
+          var document = DOMParser.parseFromString(this.invoiceInfo.seller_sign_xml);
+          var nodesByName = document.getElementsByTagName('NDBKe');
+            id_signing = nodesByName[0].attributes[0].value;
+        }
+
+        //console.log("this.invoiceInfo.seller_sign_xml  ", this.invoiceInfo.seller_sign_xml.replace(/"/g, "'"));
         let objXml = [
           {
             req_key: this.invoiceInfo.req_key,
-            xml: this.invoiceInfo.seller_sign_xml.toString().replaceAll("\"","'"),
+            xml: this.invoiceInfo.seller_sign_xml.replace(/"/g, "'"),
             id_signing: id_signing,
-            url_signing: "BBan/DSCKS/NMua"
+            url_signing: "BKe/DSCKS/NMua",
           }
         ]
-        //console.log("objXml  ", objXml);
-       
-        jQuery.support.cors = true;
         $.ajax({
-          url: "http://localhost:1080/signXML",
+          url: "http://localhost:1080/issueXmlList",
           dataType: "json",
           method: "POST",
           data: {
             crt_by: this.invoiceInfo.buyer_name,
             xml: JSON.stringify(objXml).toString(),
+            type:"base64",
           },
           error: this.onErrorissueXmlList,
           success: this.onSuccessissueXmlList,
@@ -333,11 +363,12 @@ export default {
     },
 
     async onErrorissueXmlList(json, textStatus, errorThrown) {
-      return this.showNotification("warning", this.$t("error_occurs"), errorThrown);//   alert(" Error :" + errorThrown);
+      //console.log("onErrorissueXmlList  ", json, textStatus, errorThrown);
+      return this.showNotification("warning", this.$t("Bạn chưa cài ứng dụng ký XML. Hãy tải ứng dụng, cài đặt."));//   alert(" Error :" + errorThrown);
     },
 
     async onSuccessissueXmlList(data) {
-      //console.log("data  ", data);
+      console.log("data  ", data);
       
       if(this.invoiceInfo.buyer_taxcode != data.dn_mst)
       {

@@ -48,6 +48,7 @@ const EiPosExcelHandlerAuto = use('App/Helpers/EiPosExcelHandlerAuto');
 const EiExcelTemplateHandler = use('App/Helpers/EiExcelTemplateHandler');
 const EiWTExcelHandlerAuto = use('App/Helpers/EiWTExcelHandlerAuto');
 const EiExcel04SS2Handler = use('App/Helpers/EiExcel04SS2Handler');
+const EiExcel04SS2Handler2 = use('App/Helpers/EiExcel04SS2Handler2');
 const EiExcel04SS3Handler = use('App/Helpers/EiExcel04SS3Handler');
 const EiExcel04SSHandler = use('App/Helpers/EiExcel04SSHandler');
 const EiWTExcel04SSHandler = use('App/Helpers/EiWTExcel04SSHandler');

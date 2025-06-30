@@ -21806,7 +21806,7 @@ class EInvoiceController {
       //let url_xml = re_url_xml.data;
       //console.log("base64XML:", url_xml);
       //console.log("rtnValue.p_rtn_cur[0] ", rtnValue.p_rtn_cur[0]);
-      if (rtnValue.p_rtn_cur && rtnValue.p_rtn_cur[0].USER_SIGN_YN == 'Y') {
+      if (rtnValue.p_rtn_cur && rtnValue.p_rtn_cur[0].USER_SIGN_YN == 'Y' && rtnValue.p_rtn_cur[0].CRT_BY == 'wetax') {
         this.weTaxCallBackStatus(rtnValue.p_rtn_cur[0]);
       }
 

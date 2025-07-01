@@ -75,30 +75,30 @@ class EiExcelHandler {
       this.masterDataArray.push(
         {Cell: `B6`, Info: [`TEN_BIEN_BAN`], Type: 1},
         {Cell: `B7`, Info: [`VOUCHER_NO`], Type: 1},
-        {Cell: `B15`, Info: [`NOW`], Type: 1},
+        {Cell: `B17`, Info: [`NOW`], Type: 1},
 
-        {Cell: `B17`, Info: [`COMPANY_NM`], Type: 1},
-        {Cell: `B18`, Info: [`COM_ADD`], Type: 1},
-        {Cell: `B19`, Info: [`TAX_CODE`], Type: 1},
-        {Cell: `H19`, Info: [`COM_TEL`], Type: 1},
-        {Cell: `B20`, Info: [`COM_REPRESENT`], Type: 1},
-        {Cell: `H20`, Info: [`COM_POSITION`], Type: 1},
+        {Cell: `B19`, Info: [`COMPANY_NM`], Type: 1},
+        {Cell: `B20`, Info: [`COM_ADD`], Type: 1},
+        {Cell: `B21`, Info: [`TAX_CODE`], Type: 1},
+        {Cell: `H21`, Info: [`COM_TEL`], Type: 1},
+        {Cell: `B22`, Info: [`COM_REPRESENT`], Type: 1},
+        {Cell: `H22`, Info: [`COM_POSITION`], Type: 1},
 
-        {Cell: `B22`, Info: [`CUSTOMER_NAME`], Type: 1},
-        {Cell: `B23`, Info: [`CUS_ADDR`], Type: 1},
-        {Cell: `B24`, Info: [`CUS_TAX_CODE`], Type: 1},
-        {Cell: `H24`, Info: [`CUS_TEL`], Type: 1},
-        {Cell: `B25`, Info: [`CUS_REPRESENT`], Type: 1},
-        {Cell: `H25`, Info: [`CUS_POSITION`], Type: 1},
+        {Cell: `B24`, Info: [`CUSTOMER_NAME`], Type: 1},
+        {Cell: `B25`, Info: [`CUS_ADDR`], Type: 1},
+        {Cell: `B26`, Info: [`CUS_TAX_CODE`], Type: 1},
+        {Cell: `H26`, Info: [`CUS_TEL`], Type: 1},
+        {Cell: `B27`, Info: [`CUS_REPRESENT`], Type: 1},
+        {Cell: `H28`, Info: [`CUS_POSITION`], Type: 1},
 
-        {Cell: `B27`, Info: [`CUS_TITLE`], Type: 1},
-        {Cell: `B32`, Info: [`REASON`], Type: 1},
+        {Cell: `B29`, Info: [`CUS_TITLE`], Type: 1},
+        {Cell: `B34`, Info: [`REASON`], Type: 1},
 
-        {Cell: `D41`, Info: [`COMPANY_SIGN`], Type: 1},
-        {Cell: `D42`, Info: [`COMPANY_SIGN_DT`], Type: 1},
+        {Cell: `D43`, Info: [`COMPANY_SIGN`], Type: 1},
+        {Cell: `D44`, Info: [`COMPANY_SIGN_DT`], Type: 1},
 
-        {Cell: `H41`, Info: [`USER_SIGN_NM`], Type: 1},
-        {Cell: `H42`, Info: [`USER_SIGN_DT`], Type: 1},
+        {Cell: `H43`, Info: [`USER_SIGN_NM`], Type: 1},
+        {Cell: `H44`, Info: [`USER_SIGN_DT`], Type: 1},
       );
 
       detailCellFormat = [
@@ -146,9 +146,9 @@ class EiExcelHandler {
       signByCell = {start: einvoiceMasterData[0].SIGN_BY_START_CELL, end: einvoiceMasterData[0].SIGN_BY_END_CELL};
       countFromEndDetailToSignBox = 8;
 
-      _sourceRow = 30;
-      _sourceRow_2 = 30;
-      _sourceRow_3 = 30;
+      _sourceRow = 32;
+      _sourceRow_2 = 32;
+      _sourceRow_3 = 32;
 
       headerRowCount = einvoiceMasterData[0].DETAILS_START_ROW == null ? 0 : einvoiceMasterData[0].DETAILS_START_ROW;
       lastPageRowsHeight = 18;

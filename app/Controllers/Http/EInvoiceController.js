@@ -21831,7 +21831,7 @@ class EInvoiceController {
         ma_gd: rtnValue.p_rtn_cur[0].CQT_MAGD,
         buyer_name: rtnValue.p_rtn_cur[0].CUS_NM,
         buyer_code: rtnValue.p_rtn_cur[0].CUS_CD,
-        buyer_taxcode: rtnValue.p_rtn_cur[0].TAX_CODE,
+        buyer_taxcode: rtnValue.p_rtn_cur[0].BUYER_TAX_CODE,
         buyer_sign_yn: rtnValue.p_rtn_cur[0].USER_SIGN_YN,
         buyer_sign_xml: rtnValue.p_rtn_cur[0].BUYER_SIGN_XML,
         voucher_no: rtnValue.p_rtn_cur[0].VOUCHER_NO,

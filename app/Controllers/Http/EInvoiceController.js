@@ -1049,7 +1049,7 @@ class EInvoiceController {
         },
       };
 
-      jsonInvalidInvoices.TBao.DLTBao.PBan = version;
+      jsonInvalidInvoices.TBao.DLTBao.PBan = "2.1.0";//version;
       jsonInvalidInvoices.TBao.DLTBao.MSo = form_no;
       jsonInvalidInvoices.TBao.DLTBao.Ten = declare_name;
       jsonInvalidInvoices.TBao.DLTBao.Loai = declare_type;

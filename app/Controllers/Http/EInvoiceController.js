@@ -4167,7 +4167,7 @@ class EInvoiceController {
                     p_tvan_data_result: JSON.stringify(result.data),
                   };
 
-                  // console.log('weTaxCheckInformAdjustToTaxOffice  para_history  ', para_history);
+                  //console.log('weTaxCheckInformAdjustToTaxOffice  para_history  ', para_history);
 
                   const res_op = await DBService.ExecuteSQLBlob(
                     `BEGIN ei_upd_his_nor_inv(
@@ -4194,6 +4194,7 @@ class EInvoiceController {
                   ngayTaoTB = '';
                 }
               } else if (items[k].loaiTBao == '17' || items[k].loaiTBao == '15') {
+                //console.log('weTaxCheckInformAdjustToTaxOffice  items[k] xxxx', items[k]);
                 tenTBao = items[k].tenTBao;
                 maTBao = items[k].loaiTBao;
                 soTB = items[k].ndungTBao.tbaoTNhanSSotDoc.soTBao;
@@ -4287,6 +4288,7 @@ class EInvoiceController {
               } else if (items[k].loaiTBao == '16') {
                 tenTBao = items[k].tenTBao;
                 maTBao = items[k].loaiTBao;
+                soTB = items[k].ndungTBao.tbaoKTraDLieu.soTBao;
                 let error_list = [];
 
                 for (const error of items[k].ndungTBao.tbaoKTraDLieu.dsachLoiGoiDLieuKhac) {
@@ -4331,9 +4333,9 @@ class EInvoiceController {
                     invoice_date: invoice.ngayHDon,
                     cqt_result: '2', //   invoice.dsachLoi.length == 0 ? 1 : 2,
                     dsachLoi: error_list,
-                    tax_sign_datetime: '',
-                    tax_sign_by: '',
-                    cqt_doc_no: '',
+                    tax_sign_datetime: tax_sign_datetime,
+                    tax_sign_by: tax_sign_by,
+                    cqt_doc_no: soTB,
                   });
 
                   const data_d_tbss = {

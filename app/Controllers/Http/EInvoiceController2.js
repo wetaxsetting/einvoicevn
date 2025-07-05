@@ -1018,6 +1018,8 @@ class EInvoiceController2 {
                   DChi: '',
                   SDThoai: '',
                   CCCDan: '',
+                  SHChieu: '',
+                  MDVQHNSach: '',
                   TTKhac: '',
                 },
                 DSHHDVu: {},
@@ -1113,6 +1115,10 @@ class EInvoiceController2 {
             buyer_cccd: invoices[i].buyer_cccd,
             buyer_email: invoices[i].buyer_email,
             buyer_email_cc: invoices[i].buyer_email_cc,
+
+            passport_no: invoices[i].passport_no,
+            buyer_unit_cd: invoices[i].buyer_unit_cd,
+
             total_amt_no_vat: invoices[i].total_amt,
             total_amt_dc: invoices[i].total_amt_dc || 0,
             total_amt_vat: invoices[i].total_amt_vat,
@@ -1156,6 +1162,8 @@ class EInvoiceController2 {
                                                             :buyer_cccd,
                                                             :buyer_email,
                                                             :buyer_email_cc,
+                                                            :passport_no,
+                                                            :buyer_unit_cd,
                                                             :total_amt_no_vat,
                                                             :total_amt_dc,
                                                             :total_amt_vat,
@@ -1384,6 +1392,10 @@ class EInvoiceController2 {
           objInvoice.DLHDon.NDHDon.NMua.DChi = this.convertHtmlCode(invoices[i].buyer_address);
           objInvoice.DLHDon.NDHDon.NMua.CCCDan = invoices[i].buyer_cccd;
           objInvoice.DLHDon.NDHDon.NMua.SDThoai = invoices[i].buyer_phone;
+          objInvoice.DLHDon.NDHDon.NMua.SHChieu = invoices[i].buyer_cid || ' ';
+          objInvoice.DLHDon.NDHDon.NMua.MDVQHNSach = invoices[i].buyer_unit_cd || '';
+          objInvoice.DLHDon.NDHDon.NMua.HVTNMHang = this.convertHtmlCode(invoices[i].buyer_nm);
+          
 
           objInvoice.DLHDon.NDHDon.NMua.TTKhac = {};
           objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin = [];

@@ -13395,6 +13395,9 @@ class EInvoiceController {
                 STKNHang: '',
                 HVTNMHang: '',
                 TNHang: '',
+                MDVQHNSach: '',
+                CCCDan: '',
+                SHChieu: '',
                 TTKhac: '',
               },
               DSHHDVu: {},
@@ -13832,9 +13835,9 @@ class EInvoiceController {
             objInvoice_M.HDon.DLHDon.NDHDon.NMua.STKNHang = invoices[i].buyer_bank_no || '';
             objInvoice_M.HDon.DLHDon.NDHDon.NMua.TNHang = this.convertHtmlCode(invoices[i].buyer_bank_name) || '';
 
-            objInvoice_M.HDon.DLHDon.NDHDon.NMua.MDVQHNSach = this.convertHtmlCode(invoices[i].budget_relationship_unit_code) || '';
-            objInvoice_M.HDon.DLHDon.NDHDon.NMua.CCCDan = this.convertHtmlCode(invoices[i].ccid) || '';
-            objInvoice_M.HDon.DLHDon.NDHDon.NMua.SHChieu = this.convertHtmlCode(invoices[i].passport) || '';
+            objInvoice_M.HDon.DLHDon.NDHDon.NMua.MDVQHNSach = this.convertHtmlCode(invoices[i].buyer_unit_cd) || '';
+            objInvoice_M.HDon.DLHDon.NDHDon.NMua.CCCDan = this.convertHtmlCode(invoices[i].buyer_cccd) || '';
+            objInvoice_M.HDon.DLHDon.NDHDon.NMua.SHChieu = this.convertHtmlCode(invoices[i].passport_no) || '';
 
             objInvoice_M.HDon.DLHDon.NDHDon.NMua.TTKhac = '';
 

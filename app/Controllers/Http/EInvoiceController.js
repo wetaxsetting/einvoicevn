@@ -7303,6 +7303,9 @@ class EInvoiceController {
           objInvoice.DLHDon.NDHDon.NMua.DChi = this.convertHtmlCode(invoices[i].buyer_address);
           objInvoice.DLHDon.NDHDon.NMua.CCCDan = invoices[i].buyer_cccd;
           objInvoice.DLHDon.NDHDon.NMua.SDThoai = invoices[i].buyer_tel;
+    
+          objInvoice.DLHDon.NDHDon.NMua.MDVQHNSach = invoices[i].buyer_unit_cd;
+          objInvoice.DLHDon.NDHDon.NMua.SHChieu = invoices[i].passport_no;
 
           objInvoice.DLHDon.NDHDon.NMua.TTKhac = {};
           objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin = [];

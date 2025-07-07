@@ -2769,7 +2769,7 @@ class EInvoiceController {
 
       // // console.log(" weTaxSendDeclarationToTaxOffice  xml_signed  ", xml_signed)
       // // console.log(" weTaxSendDeclarationToTaxOffice tax_code  ", tax_code)
-      // // console.log(" weTaxSendDeclarationToTaxOffice req_key  ", req_key)
+      // // console.log(" weTaxSendDeclarationToTaxOffice req_key  ",  sss req_key)
 
       const valid = this.validateDeclareXML(this.parseXmlToJson(xml_signed));
       if (!valid.status) {

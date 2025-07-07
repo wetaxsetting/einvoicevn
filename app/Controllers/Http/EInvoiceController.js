@@ -762,17 +762,17 @@ class EInvoiceController {
         voucher,
         asset_handling_agency,
         foreign_supplier,
-        //data_transfer_to_foreign_supplier,
         integrated_vat_invoice,
         integrated_sales_invoice,
         commercial_invoice,
-        foreign_supplier_invoice,
+        //foreign_supplier_invoice,
         rppr_nm,
         rppr_phone,
         rppr_cid,
         rppr_passport,
         rppr_dob,
         rppr_gender,
+        rppr_nation,
         digital_certificates,
         solution_provider,
         tvan_company
@@ -810,17 +810,17 @@ class EInvoiceController {
         voucher,
         asset_handling_agency,
         foreign_supplier,
-        //data_transfer_to_foreign_supplier,
         integrated_vat_invoice,
         integrated_sales_invoice,
         commercial_invoice,
-        foreign_supplier_invoice,
+        //foreign_supplier_invoice,
         rppr_nm,
         rppr_phone,
         rppr_cid,
         rppr_passport,
         rppr_dob,
         rppr_gender,
+        rppr_nation,
         digital_certificates,
         solution_provider,
         tvan_company
@@ -989,6 +989,7 @@ class EInvoiceController {
                 SHChieu: '',
                 NSDDPLuat: '',
                 GTinh: '',
+                QTich: '',
               },
               NDTKhai: {
                 HTHDon: {
@@ -1016,7 +1017,7 @@ class EInvoiceController {
                   HDGTGTTHBLai: 1,
                   HDBHTHBLai: 1,
                   HDTMai: 1,
-                  HDNCCNN: 1
+                  
                 },
                 DSCTSSDung: {
                   CTS: [],
@@ -1048,6 +1049,7 @@ class EInvoiceController {
         jsonDeclare.TKhai.DLTKhai.TTChung.SHChieu = rppr_passport;
         jsonDeclare.TKhai.DLTKhai.TTChung.NSDDPLuat = rppr_dob;
         jsonDeclare.TKhai.DLTKhai.TTChung.GTinh = rppr_gender;
+        jsonDeclare.TKhai.DLTKhai.TTChung.QTich = rppr_nation;
 
         jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.CMa = has_code;
         jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.KCMa = no_code;
@@ -1074,7 +1076,7 @@ class EInvoiceController {
         jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDGTGTTHBLai = integrated_vat_invoice;
         jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBHTHBLai = integrated_sales_invoice;
         jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDTMai = commercial_invoice;
-        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDNCCNN = foreign_supplier_invoice;
+        //jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDNCCNN = foreign_supplier_invoice;
 
 
         for (let i = 0; i < digital_certificates.length; i++) {
@@ -1090,31 +1092,12 @@ class EInvoiceController {
 
         jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCGP = {};
         jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCGP.TCGP = [];
-        
-        if(tvan_company)
-        {
-          for(let i = 0; i < tvan_company.length; i ++)
-            {
-              jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCGP.TCGP.push({
-                STT : tvan_company[i].sequence || i + 1,
-                TTCGP : this.convertHtmlCode(tvan_company[i].organization_name),
-                MSTTCGP : tvan_company[i].organization_taxcode,
-                TNgay :  tvan_company[i].from_date,
-                DNgay :  tvan_company[i].to_date,
-                GChu :  tvan_company[i].note,
-              });
-            }
-        }
-        
-
-        jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCTN  = {};
-        jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCTN.TCTN  = [];
 
         if(solution_provider)
         {
           for(let i = 0; i < solution_provider.length; i ++)
             {
-              jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCTN.TCTN.push({
+              jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCGP.TCGP.push({
                 STT : solution_provider[i].sequence || i + 1,
                 TTCGP : this.convertHtmlCode(solution_provider[i].organization_name),
                 MSTTCGP : solution_provider[i].organization_taxcode,
@@ -1124,6 +1107,25 @@ class EInvoiceController {
               });
             }
         }
+
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCTN  = {};
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCTN.TCTN  = [];
+
+        if(tvan_company)
+        {
+          for(let i = 0; i < tvan_company.length; i ++)
+            {
+              jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCTN.TCTN.push({
+                STT : tvan_company[i].sequence || i + 1,
+                TTCTN : this.convertHtmlCode(tvan_company[i].organization_name),
+                MSTTCTN : tvan_company[i].organization_taxcode,
+                TNgay :  tvan_company[i].from_date,
+                DNgay :  tvan_company[i].to_date,
+                GChu :  tvan_company[i].note,
+              });
+            }
+        }
+        
 
         jsonDeclare.TKhai.DLTKhai.NDTKhai.TTDVHTPT  = {};
         jsonDeclare.TKhai.DLTKhai.NDTKhai.TTDVHTPT.DVHTPT  = [];
@@ -1193,7 +1195,7 @@ class EInvoiceController {
                   HDGTGTTHBLai: 1,
                   HDBHTHBLai: 1,
                   HDTMai: 1,
-                  HDNCCNN: 1
+                  //HDNCCNN: 1
                 },
                 DSCTSSDung: {
                   CTS: [],
@@ -1272,7 +1274,7 @@ class EInvoiceController {
         jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDGTGTTHBLai = integrated_vat_invoice;
         jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBHTHBLai = integrated_sales_invoice;
         jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDTMai = commercial_invoice;
-        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDNCCNN = foreign_supplier_invoice;
+        //jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDNCCNN = foreign_supplier_invoice;
 
         for (let i = 0; i < digital_certificates.length; i++) {
           jsonDeclare.TKhai.DLTKhai.NDTKhai.DSCTSSDung.CTS.push({

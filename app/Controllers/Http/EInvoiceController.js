@@ -500,13 +500,27 @@ class EInvoiceController {
         sales_invoice_national,
         other_invoice,
         voucher,
+        asset_handling_agency,
+        foreign_supplier,
+        integrated_vat_invoice,
+        integrated_sales_invoice,
+        commercial_invoice,
+        rppr_nm,
+        rppr_phone,
+        rppr_cid,
+        rppr_passport,
+        rppr_dob,
+        rppr_gender,
+        rppr_nation,
         digital_certificates,
+        solution_provider,
+        tvan_company
       } = request.all();
 
       const declaration = {
         version,
         declare_name,
-        //declare_type,
+        declare_type,
         declare_form_no,
         seller_company_name,
         seller_taxcode,
@@ -533,7 +547,21 @@ class EInvoiceController {
         sales_invoice_national,
         other_invoice,
         voucher,
+        asset_handling_agency,
+        foreign_supplier,
+        integrated_vat_invoice,
+        integrated_sales_invoice,
+        commercial_invoice,
+        rppr_nm,
+        rppr_phone,
+        rppr_cid,
+        rppr_passport,
+        rppr_dob,
+        rppr_gender,
+        rppr_nation,
         digital_certificates,
+        solution_provider,
+        tvan_company
       };
 
       const param_data_m = {
@@ -559,40 +587,10 @@ class EInvoiceController {
         // return response.send(Utils.response(valid.status, valid.message, null));
         return response.status(400).json(Utils.responseByRule({success: false, message: valid.message}));
       }
-      //  console.log("weTaxConvertDeclareUsingInvoiceToXML  ", {
-      //   version,
-      //   declare_name,
-      //   declare_type,
-      //   declare_form_no,
-      //   seller_company_name,
-      //   seller_taxcode,
-      //   tax_office_name,
-      //   tax_office_code,
-      //   contact_person,
-      //   contact_address,
-      //   contact_email,
-      //   contact_phone,
-      //   location_name,
-      //   created_date,
-      //   has_code,
-      //   no_code,
-      //   pos_code,
-      //   taxpayer_from_difficult_location,
-      //   taxpayer_from_people_committee_suggestions,
-      //   transfer_data_directly_to_tax_office,
-      //   cdlqtvan,
-      //   full_transfer,
-      //   summary_transfer,
-      //   vat_invoice,
-      //   sales_invoice,
-      //   sales_invoice_passet,
-      //   sales_invoice_national,
-      //   other_invoice,
-      //   voucher,
-      //   digital_certificates
-      //  });
-
-      let jsonDeclare = {
+     let jsonDeclare = {};
+     if(version == "2.0.1")
+     {
+jsonDeclare = {
         TKhai: {
           DLTKhai: {
             TTChung: {
@@ -688,19 +686,185 @@ class EInvoiceController {
           HThuc: digital_certificates[i].type,
         });
       }
-      // const id = uuid.v4();
-      const id = 'ID1';
+     }else if(version == "2.0.2" || version == "2.1.0")
+     {
+      jsonDeclare = {
+          TKhai: {
+            DLTKhai: {
+              TTChung: {
+                PBan: '2.1.0',
+                MSo: '01/ĐKTĐ-HĐĐT',
+                Ten: 'Tờ khai đăng ký/thay đổi thông tin sử dụng hóa đơn điện tử',
+                HThuc: 1,
+                TNNT: 'Vinmart',
+                MST: 104918404,
+                CQTQLy: 'Chi cục thuế Quận Hoàng Mai',
+                MCQTQLy: 10108,
+                NLHe: 'NGUYỄN THỊ DUNG',
+                DCLHe: 'Quận Hoàng Mai, Hà Nội',
+                DCTDTu: 'dungnguyentran@gmail.com',
+                DTLHe: '394552327',
+                DDanh: 'Hà Nội',
+                NLap: '2021-15-11',
+                TNDDPLuat: '',
+                DTDDPLuat: '',
+                CCCDan: '',
+                SHChieu: '',
+                NSDDPLuat: '',
+                GTinh: '',
+                QTich: '',
+              },
+              NDTKhai: {
+                HTHDon: {
+                  CMa: 1,
+                  KCMa: 0,
+                  CMTMTTien: 0,
+                },
+                HTGDLHDDT: {
+                  NNTDBKKhan: 0,
+                  NNTKTDNUBND: 0,
+                  CDLTTDCQT: 0,
+                  CDLQTCTN: 0,
+                },
+                PThuc: {
+                  CDDu: 1,
+                  CBTHop: 0,
+                },
+                LHDSDung: {
+                  HDGTGT: 1,
+                  HDBHang: 1,
+                  HDBTSCong: '',
+                  HDBHDTQGia: '',
+                  HDKhac: 0,
+                  CTu: 1,
+                  HDGTGTTHBLai: 1,
+                  HDBHTHBLai: 1,
+                  HDTMai: 1,
+                  
+                },
+                DSCTSSDung: {
+                  CTS: [],
+                },
+              },
+            },
+            DSCKS: {
+              NNT: '',
+            },
+          },
+        };
+        jsonDeclare.TKhai.DLTKhai.TTChung.PBan = version;
+        jsonDeclare.TKhai.DLTKhai.TTChung.MSo = declare_form_no;
+        jsonDeclare.TKhai.DLTKhai.TTChung.Ten = declare_name;
+        jsonDeclare.TKhai.DLTKhai.TTChung.HThuc = declare_type;
+        jsonDeclare.TKhai.DLTKhai.TTChung.TNNT = this.convertHtmlCode(seller_company_name);
+        jsonDeclare.TKhai.DLTKhai.TTChung.MST = seller_taxcode;
+        jsonDeclare.TKhai.DLTKhai.TTChung.CQTQLy = tax_office_name;
+        jsonDeclare.TKhai.DLTKhai.TTChung.MCQTQLy = tax_office_code;
+        jsonDeclare.TKhai.DLTKhai.TTChung.NLHe = contact_person;
+        jsonDeclare.TKhai.DLTKhai.TTChung.DCLHe = contact_address;
+        jsonDeclare.TKhai.DLTKhai.TTChung.DCTDTu = contact_email;
+        jsonDeclare.TKhai.DLTKhai.TTChung.DTLHe = contact_phone;
+        jsonDeclare.TKhai.DLTKhai.TTChung.DDanh = location_name;
+        jsonDeclare.TKhai.DLTKhai.TTChung.NLap = created_date;
+        jsonDeclare.TKhai.DLTKhai.TTChung.TNDDPLuat = rppr_nm;
+        jsonDeclare.TKhai.DLTKhai.TTChung.DTDDPLuat = rppr_phone;
+        jsonDeclare.TKhai.DLTKhai.TTChung.CCCDan = rppr_cid;
+        jsonDeclare.TKhai.DLTKhai.TTChung.SHChieu = rppr_passport;
+        jsonDeclare.TKhai.DLTKhai.TTChung.NSDDPLuat = rppr_dob;
+        jsonDeclare.TKhai.DLTKhai.TTChung.GTinh = rppr_gender;
+        jsonDeclare.TKhai.DLTKhai.TTChung.QTich = rppr_nation;
+
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.CMa = has_code;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.KCMa = no_code;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.CMTMTTien = pos_code;
+
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NNTDBKKhan = taxpayer_from_difficult_location;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NNTKTDNUBND = taxpayer_from_people_committee_suggestions;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLTTDCQT = transfer_data_directly_to_tax_office;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLQTCTN = '0';// cdlqtvan;
+
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CQXLTSCong = asset_handling_agency;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NCCNN = foreign_supplier
+
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CDDu = full_transfer;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CBTHop = summary_transfer;
+
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDGTGT = vat_invoice;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBHang = sales_invoice;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBTSCong = sales_invoice_passet;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBHDTQGia = sales_invoice_national;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDKhac = other_invoice;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.CTu = voucher;
+
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDGTGTTHBLai = integrated_vat_invoice;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBHTHBLai = integrated_sales_invoice;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDTMai = commercial_invoice;
+        //jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDNCCNN = foreign_supplier_invoice;
+
+        for (let i = 0; i < digital_certificates.length; i++) {
+          jsonDeclare.TKhai.DLTKhai.NDTKhai.DSCTSSDung.CTS.push({
+            STT: digital_certificates[i].sequence || i + 1,
+            TTChuc: this.convertHtmlCode(digital_certificates[i].organization_name),
+            Seri: digital_certificates[i].serial_no,
+            TNgay: digital_certificates[i].from_date,
+            DNgay: digital_certificates[i].to_date,
+            HThuc: digital_certificates[i].type,
+          });
+        }
+
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCGP = {};
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCGP.TCGP = [];
+
+        if(solution_provider)
+        {
+          for(let i = 0; i < solution_provider.length; i ++)
+            {
+              jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCGP.TCGP.push({
+                STT : solution_provider[i].sequence || i + 1,
+                TTCGP : this.convertHtmlCode(solution_provider[i].organization_name),
+                MSTTCGP : solution_provider[i].organization_taxcode,
+                TNgay :  solution_provider[i].from_date,
+                DNgay :  solution_provider[i].to_date,
+                GChu :  solution_provider[i].note,
+              });
+            }
+        }
+
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCTN  = {};
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCTN.TCTN  = [];
+
+        if(tvan_company)
+        {
+          for(let i = 0; i < tvan_company.length; i ++)
+            {
+              jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCTN.TCTN.push({
+                STT : tvan_company[i].sequence || i + 1,
+                TTCTN : this.convertHtmlCode(tvan_company[i].organization_name),
+                MSTTCTN : tvan_company[i].organization_taxcode,
+                TNgay :  tvan_company[i].from_date,
+                DNgay :  tvan_company[i].to_date,
+                GChu :  tvan_company[i].note,
+              });
+            }
+        }
+        
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.TTDVHTPT  = {};
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.TTDVHTPT.DVHTPT  = [];
+
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTNSDung  = {};
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTNSDung.TNSDung  = [];
+
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.TTDKTH   = {};
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.TTDKTH.DKTH   = [];
+
+     }
+      
+      const id = uuid.v4();
       const signature_path = 'TKhai/DSCKS/NNT';
       const xml = this.OBJtoXML(jsonDeclare);
       const xmlId = xml.toString().replace('<DLTKhai>', `<DLTKhai Id=\'${id}\'>`);
       const xmlRemoveLine = xmlId.toString().replace(/\n/g, '');
 
-      // return response.send(
-      //   Utils.response(true, `Convert declare using invoices to xml was succesful.`, {
-      //     xml_data: xmlRemoveLine,
-      //     sign_id: id,
-      //   })
-      // );
       return response.status(200).json(
         Utils.responseByRule({
           success: true,
@@ -1990,6 +2154,13 @@ class EInvoiceController {
           MSTTCGP: 'MSTTCGP',
           DDanh: 'DDanh',
           NLap: 'NLap',
+          TNDDPLuat: 'TNDDPLuat',
+          DTDDPLuat: 'DTDDPLuat',
+          CCCDan: 'CCCDan',
+          SHChieu: 'SHChieu',
+          NSDDPLuat: 'NSDDPLuat',
+          GTinh: 'GTinh',
+          QTich: 'QTich',
         },
       ];
       //console.log("p_xml_content  ", p_xml_content);
@@ -2011,6 +2182,13 @@ class EInvoiceController {
         jsonTTChung[0].DTLHe,
         jsonTTChung[0].DDanh,
         jsonTTChung[0].NLap,
+        jsonTTChung[0].TNDDPLuat || '',
+        jsonTTChung[0].DTDDPLuat || '',
+        jsonTTChung[0].CCCDan || '',
+        jsonTTChung[0].SHChieu || '',
+        jsonTTChung[0].NSDDPLuat || '',
+        jsonTTChung[0].GTinh || '',
+        jsonTTChung[0].QTich || '',
       ];
       //TKhai.DLTKhai.NDTKhai.HTHDon.CMa
       const templateNDTKhai = [
@@ -2063,6 +2241,9 @@ class EInvoiceController {
           HDBHDTQGia: 'HDBHDTQGia',
           HDKhac: 'HDKhac',
           CTu: 'CTu',
+          HDGTGTTHBLai: 'HDGTGTTHBLai',
+          HDBHTHBLai: 'HDBHTHBLai',
+          HDTMai: 'HDTMai',
         },
       ];
       const jsonLHDSDung = await transform(p_xml_content, templateLHDSDung);
@@ -2073,6 +2254,9 @@ class EInvoiceController {
         jsonLHDSDung[0].HDBHDTQGia,
         jsonLHDSDung[0].HDKhac,
         jsonLHDSDung[0].CTu,
+        jsonLHDSDung[0].HDGTGTTHBLai || '0',
+        jsonLHDSDung[0].HDBHTHBLai || '0',
+        jsonLHDSDung[0].HDTMai || '0',
       ];
 
       //TKhai.DLTKhai.NDTKhai.DSCTSSDung
@@ -2088,6 +2272,32 @@ class EInvoiceController {
         },
       ];
       const jsonCTS = await transform(p_xml_content, templateCTS);
+
+      const templateTCGP = [
+        'TKhai/DLTKhai/NDTKhai/TTTCGP/TCGP',
+        {
+          STT: 'STT',
+          TTCGP: 'TTCGP',
+          MSTTCGP: 'MSTTCGP',
+          TNgay: 'TNgay',
+          DNgay: 'DNgay',
+          GChu: 'GChu',
+        },
+      ];
+      const jsonTCGP = await transform(p_xml_content, templateTCGP);
+
+      const templateTCTN  = [
+        'TKhai/DLTKhai/NDTKhai/TTTCGP/TCTN',
+        {
+          STT: 'STT',
+          TTCGP: 'TTCGP',
+          MSTTCGP: 'MSTTCGP',
+          TNgay: 'TNgay',
+          DNgay: 'DNgay',
+          GChu: 'GChu',
+        },
+      ];
+      const jsonTCTN   = await transform(p_xml_content, templateTCTN);
 
       let masterPara = arrTTChung.concat(arrNDTKhai).concat(arrHTGDLHDDT).concat(arrPThuc).concat(arrLHDSDung);
 
@@ -10921,7 +11131,7 @@ class EInvoiceController {
       const errorList = {
         version: /^(\d{1}\.\d{1}\.\d{1})$/,
         declare_name: /^.{1,100}$/,
-        //declare_type: /^(1|2){1}$/,
+        declare_type: /^(1|2){1}$/,
         declare_form_no: /^.{1,15}$/,
         seller_company_name: /^.{1,400}$/,
         seller_taxcode: {10: /^(\d{10})$/, 14: /^(\d{10}\-\d{3})$/},
@@ -10932,7 +11142,7 @@ class EInvoiceController {
         contact_email: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
         contact_phone: /^.{0,20}$/,
         location_name: /^.{0,50}$/,
-        created_date: /^.{0,8}$/,
+        created_date: /^.{0,10}$/,
         has_code: /^(1|0){1}$/,
         no_code: /^(1|0){1}$/,
         pos_code: /^(1|0){1}$/,
@@ -10956,12 +11166,28 @@ class EInvoiceController {
           to_date: /^(19|20)\d\d-(0[1-9]|1[012])-([012]\d|3[01])T([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/,
           type: /^(1|2|3){1}$/,
         },
+        solution_provider:{
+          sequence: /^-?\d*\.?\d*$/,
+          organization_name: /^.{1,400}$/,
+          organization_taxcode: /^(\d{10})$/,
+          from_date: /^(19|20)\d\d-(0[1-9]|1[012])-([012]\d|3[01])T([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/,
+          //to_date: /^(19|20)\d\d-(0[1-9]|1[012])-([012]\d|3[01])T([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/,
+          note: /^.{0,255}$/,
+        },
+        tvan_company:{
+          sequence: /^-?\d*\.?\d*$/,
+          organization_name: /^.{1,400}$/,
+          organization_taxcode: /^(\d{10})$/,
+          from_date: /^(19|20)\d\d-(0[1-9]|1[012])-([012]\d|3[01])T([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/,
+          //to_date: /^(19|20)\d\d-(0[1-9]|1[012])-([012]\d|3[01])T([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/,
+          note: /^.{0,255}$/,
+        }
       };
 
       for (const key in declaration) {
-        // console.log(' key   ', key, ' invoice[key]  ', declaration[key]);
+        console.log(' key   ', key, ' invoice[key]  ', declaration[key]);
         if (errorList[`${key}`] != undefined && !Array.isArray(declaration[key])) {
-          if (key == 'sllr_tax_code') {
+          if (key == 'seller_taxcode') {
             if (declaration[key].length == 10) {
               if (!errorList[`${key}`][10].test(declaration[key])) {
                 status = false;
@@ -10988,7 +11214,7 @@ class EInvoiceController {
                 message: resMess,
               };
             }
-          } else if (key == 'contact_eml') {
+          } else if (key == 'contact_email') {
             if (!errorList[`${key}`].test(declaration[key]) && declaration[key]) {
               // && declaration[key]
               status = false;
@@ -11011,7 +11237,7 @@ class EInvoiceController {
             for (const dec of declaration[key]) {
               if (!errorList[`${key}`].sequence.test(dec.sequence)) {
                 status = false;
-                resMess = `${mess1} sequence is:  ${dec.sequence}.`;
+                resMess = `${mess1} sequence is: ${dec.sequence}.`;
                 return {
                   status,
                   message: resMess,
@@ -11019,7 +11245,7 @@ class EInvoiceController {
               }
               if (!errorList[`${key}`].organization_name.test(dec.organization_name)) {
                 status = false;
-                resMess = `${mess1} organization_name is:  ${dec.organization_name}.`;
+                resMess = `${mess1} organization_name is: ${dec.organization_name}.`;
                 return {
                   status,
                   message: resMess,
@@ -11027,7 +11253,7 @@ class EInvoiceController {
               }
               if (!errorList[`${key}`].serial_no.test(dec.serial_no) && dec.serial_no) {
                 status = false;
-                resMess = `${mess1} serial_no is:  ${dec.serial_no}.`;
+                resMess = `${mess1} serial_no is: ${dec.serial_no}.`;
                 return {
                   status,
                   message: resMess,
@@ -11035,7 +11261,7 @@ class EInvoiceController {
               }
               if (!errorList[`${key}`].from_date.test(dec.from_date)) {
                 status = false;
-                resMess = `${mess1} from_date is:  ${dec.from_date}.`;
+                resMess = `${mess1} from_date is: ${dec.from_date}.`;
                 return {
                   status,
                   message: resMess,
@@ -11043,7 +11269,7 @@ class EInvoiceController {
               }
               if (!errorList[`${key}`].to_date.test(dec.to_date)) {
                 status = false;
-                resMess = `${mess1} to_date is:  ${dec.to_date}.`;
+                resMess = `${mess1} to_date is: ${dec.to_date}.`;
                 return {
                   status,
                   message: resMess,
@@ -11051,7 +11277,112 @@ class EInvoiceController {
               }
               if (!errorList[`${key}`].type.test(dec.type)) {
                 status = false;
-                resMess = `${mess1} type is:  ${dec.type}.`;
+                resMess = `${mess1} type is: ${dec.type}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+            }
+          }
+          if (key == 'solution_provider') {
+            for (const dec of declaration[key]) {
+              if (!errorList[`${key}`].sequence.test(dec.sequence)) {
+                status = false;
+                resMess = `${mess1} sequence is: ${dec.sequence}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+              if (!errorList[`${key}`].organization_name.test(dec.organization_name)) {
+                status = false;
+                resMess = `${mess1} organization_name is: ${dec.organization_name}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+              if (!errorList[`${key}`].organization_taxcode.test(dec.organization_taxcode) && dec.organization_taxcode) {
+                status = false;
+                resMess = `${mess1} organization_taxcode is: ${dec.organization_taxcode}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+              if (!errorList[`${key}`].from_date.test(dec.from_date)) {
+                status = false;
+                resMess = `${mess1} from_date is: ${dec.from_date}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+              if (!errorList[`${key}`].to_date.test(dec.to_date)) {
+                status = false;
+                resMess = `${mess1} to_date is: ${dec.to_date}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+              if (!errorList[`${key}`].note.test(dec.note)) {
+                status = false;
+                resMess = `${mess1} note is: ${dec.note}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+            }
+          }
+
+          if (key == 'tvan_company') {
+            for (const dec of declaration[key]) {
+              if (!errorList[`${key}`].sequence.test(dec.sequence)) {
+                status = false;
+                resMess = `${mess1} sequence is: ${dec.sequence}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+              if (!errorList[`${key}`].organization_name.test(dec.organization_name)) {
+                status = false;
+                resMess = `${mess1} organization_name is: ${dec.organization_name}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+              if (!errorList[`${key}`].organization_taxcode.test(dec.organization_taxcode) && dec.organization_taxcode) {
+                status = false;
+                resMess = `${mess1} organization_taxcode is: ${dec.organization_taxcode}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+              if (!errorList[`${key}`].from_date.test(dec.from_date)) {
+                status = false;
+                resMess = `${mess1} from_date is: ${dec.from_date}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+              if (!errorList[`${key}`].to_date.test(dec.to_date)) {
+                status = false;
+                resMess = `${mess1} to_date is: ${dec.to_date}.`;
+                return {
+                  status,
+                  message: resMess,
+                };
+              }
+              if (!errorList[`${key}`].note.test(dec.note)) {
+                status = false;
+                resMess = `${mess1} note is: ${dec.note}.`;
                 return {
                   status,
                   message: resMess,

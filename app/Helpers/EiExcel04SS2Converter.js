@@ -264,7 +264,7 @@ class EiExcelConverterAuto {
 		if (einvoiceMasterData[0]["USER_SIGN_YN"] == "Y") {
 			try {
 				worksheet.addImage(await exceljs.insertPathImage(signPath), {
-					tl: { col: 8, row: 40 },
+					tl: { col: 8, row: 42 },
 					ext: { width: 50, height: 50 }
 				});
 			} catch (error) {

@@ -514,7 +514,7 @@ class EInvoiceController {
         rppr_nation,
         digital_certificates,
         solution_provider,
-        tvan_company
+        tvan_company,
       } = request.all();
 
       const declaration = {
@@ -561,7 +561,7 @@ class EInvoiceController {
         rppr_nation,
         digital_certificates,
         solution_provider,
-        tvan_company
+        tvan_company,
       };
 
       const param_data_m = {
@@ -587,108 +587,106 @@ class EInvoiceController {
         // return response.send(Utils.response(valid.status, valid.message, null));
         return response.status(400).json(Utils.responseByRule({success: false, message: valid.message}));
       }
-     let jsonDeclare = {};
-     if(version == "2.0.1")
-     {
-jsonDeclare = {
-        TKhai: {
-          DLTKhai: {
-            TTChung: {
-              PBan: '2.0.0',
-              MSo: '01/ĐKTĐ-HĐĐT',
-              Ten: 'Tờ khai đăng ký/thay đổi thông tin sử dụng hóa đơn điện tử',
-              HThuc: 1,
-              TNNT: 'Vinmart',
-              MST: 104918404,
-              CQTQLy: 'Chi cục thuế Quận Hoàng Mai',
-              MCQTQLy: 10108,
-              NLHe: 'NGUYỄN THỊ DUNG',
-              DCLHe: 'Quận Hoàng Mai, Hà Nội',
-              DCTDTu: 'dungnguyentran@gmail.com',
-              DTLHe: '394552327',
-              DDanh: 'Hà Nội',
-              NLap: '2021-15-11',
+      let jsonDeclare = {};
+      if (version == '2.0.1') {
+        jsonDeclare = {
+          TKhai: {
+            DLTKhai: {
+              TTChung: {
+                PBan: '2.0.0',
+                MSo: '01/ĐKTĐ-HĐĐT',
+                Ten: 'Tờ khai đăng ký/thay đổi thông tin sử dụng hóa đơn điện tử',
+                HThuc: 1,
+                TNNT: 'Vinmart',
+                MST: 104918404,
+                CQTQLy: 'Chi cục thuế Quận Hoàng Mai',
+                MCQTQLy: 10108,
+                NLHe: 'NGUYỄN THỊ DUNG',
+                DCLHe: 'Quận Hoàng Mai, Hà Nội',
+                DCTDTu: 'dungnguyentran@gmail.com',
+                DTLHe: '394552327',
+                DDanh: 'Hà Nội',
+                NLap: '2021-15-11',
+              },
+              NDTKhai: {
+                HTHDon: {
+                  CMa: 1,
+                  KCMa: 0,
+                  CMTMTTien: 0,
+                },
+                HTGDLHDDT: {
+                  NNTDBKKhan: 0,
+                  NNTKTDNUBND: 0,
+                  CDLTTDCQT: 0,
+                  CDLQTVAN: 0,
+                  CDLQTCTN: 0,
+                },
+                PThuc: {
+                  CDDu: 1,
+                  CBTHop: 0,
+                },
+                LHDSDung: {
+                  HDGTGT: 1,
+                  HDBHang: 1,
+                  HDBTSCong: '',
+                  HDBHDTQGia: '',
+                  HDKhac: 0,
+                  CTu: 1,
+                },
+                DSCTSSDung: {
+                  CTS: [],
+                },
+              },
             },
-            NDTKhai: {
-              HTHDon: {
-                CMa: 1,
-                KCMa: 0,
-                CMTMTTien: 0,
-              },
-              HTGDLHDDT: {
-                NNTDBKKhan: 0,
-                NNTKTDNUBND: 0,
-                CDLTTDCQT: 0,
-                CDLQTVAN: 0,
-                CDLQTCTN: 0,
-              },
-              PThuc: {
-                CDDu: 1,
-                CBTHop: 0,
-              },
-              LHDSDung: {
-                HDGTGT: 1,
-                HDBHang: 1,
-                HDBTSCong: '',
-                HDBHDTQGia: '',
-                HDKhac: 0,
-                CTu: 1,
-              },
-              DSCTSSDung: {
-                CTS: [],
-              },
+            DSCKS: {
+              NNT: '',
             },
           },
-          DSCKS: {
-            NNT: '',
-          },
-        },
-      };
-      jsonDeclare.TKhai.DLTKhai.TTChung.PBan = version;
-      jsonDeclare.TKhai.DLTKhai.TTChung.MSo = declare_form_no;
-      jsonDeclare.TKhai.DLTKhai.TTChung.Ten = declare_name;
-      jsonDeclare.TKhai.DLTKhai.TTChung.HThuc = declare_type;
-      jsonDeclare.TKhai.DLTKhai.TTChung.TNNT = this.convertHtmlCode(seller_company_name);
-      jsonDeclare.TKhai.DLTKhai.TTChung.MST = seller_taxcode;
-      jsonDeclare.TKhai.DLTKhai.TTChung.CQTQLy = tax_office_name;
-      jsonDeclare.TKhai.DLTKhai.TTChung.MCQTQLy = tax_office_code;
-      jsonDeclare.TKhai.DLTKhai.TTChung.NLHe = contact_person;
-      jsonDeclare.TKhai.DLTKhai.TTChung.DCLHe = contact_address;
-      jsonDeclare.TKhai.DLTKhai.TTChung.DCTDTu = contact_email;
-      jsonDeclare.TKhai.DLTKhai.TTChung.DTLHe = contact_phone;
-      jsonDeclare.TKhai.DLTKhai.TTChung.DDanh = location_name;
-      jsonDeclare.TKhai.DLTKhai.TTChung.NLap = created_date;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.CMa = has_code;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.KCMa = no_code;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.CMTMTTien = pos_code;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NNTDBKKhan = taxpayer_from_difficult_location;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NNTKTDNUBND = taxpayer_from_people_committee_suggestions;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLTTDCQT = transfer_data_directly_to_tax_office;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLQTVAN = cdlqtvan;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLQTCTN = 0;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CDDu = full_transfer;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CBTHop = summary_transfer;
+        };
+        jsonDeclare.TKhai.DLTKhai.TTChung.PBan = version;
+        jsonDeclare.TKhai.DLTKhai.TTChung.MSo = declare_form_no;
+        jsonDeclare.TKhai.DLTKhai.TTChung.Ten = declare_name;
+        jsonDeclare.TKhai.DLTKhai.TTChung.HThuc = declare_type;
+        jsonDeclare.TKhai.DLTKhai.TTChung.TNNT = this.convertHtmlCode(seller_company_name);
+        jsonDeclare.TKhai.DLTKhai.TTChung.MST = seller_taxcode;
+        jsonDeclare.TKhai.DLTKhai.TTChung.CQTQLy = tax_office_name;
+        jsonDeclare.TKhai.DLTKhai.TTChung.MCQTQLy = tax_office_code;
+        jsonDeclare.TKhai.DLTKhai.TTChung.NLHe = contact_person;
+        jsonDeclare.TKhai.DLTKhai.TTChung.DCLHe = contact_address;
+        jsonDeclare.TKhai.DLTKhai.TTChung.DCTDTu = contact_email;
+        jsonDeclare.TKhai.DLTKhai.TTChung.DTLHe = contact_phone;
+        jsonDeclare.TKhai.DLTKhai.TTChung.DDanh = location_name;
+        jsonDeclare.TKhai.DLTKhai.TTChung.NLap = created_date;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.CMa = has_code;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.KCMa = no_code;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTHDon.CMTMTTien = pos_code;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NNTDBKKhan = taxpayer_from_difficult_location;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NNTKTDNUBND = taxpayer_from_people_committee_suggestions;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLTTDCQT = transfer_data_directly_to_tax_office;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLQTVAN = cdlqtvan;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLQTCTN = 0;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CDDu = full_transfer;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CBTHop = summary_transfer;
 
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDGTGT = vat_invoice;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBHang = sales_invoice;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBTSCong = sales_invoice_passet;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBHDTQGia = sales_invoice_national;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDKhac = other_invoice;
-      jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.CTu = voucher;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDGTGT = vat_invoice;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBHang = sales_invoice;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBTSCong = sales_invoice_passet;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDBHDTQGia = sales_invoice_national;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.HDKhac = other_invoice;
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.LHDSDung.CTu = voucher;
 
-      for (let i = 0; i < digital_certificates.length; i++) {
-        jsonDeclare.TKhai.DLTKhai.NDTKhai.DSCTSSDung.CTS.push({
-          STT: digital_certificates[i].sequence || i + 1,
-          TTChuc: this.convertHtmlCode(digital_certificates[i].organization_name),
-          Seri: digital_certificates[i].serial_no,
-          TNgay: digital_certificates[i].from_date,
-          DNgay: digital_certificates[i].to_date,
-          HThuc: digital_certificates[i].type,
-        });
-      }
-     }else if(version == "2.0.2" || version == "2.1.0")
-     {
-      jsonDeclare = {
+        for (let i = 0; i < digital_certificates.length; i++) {
+          jsonDeclare.TKhai.DLTKhai.NDTKhai.DSCTSSDung.CTS.push({
+            STT: digital_certificates[i].sequence || i + 1,
+            TTChuc: this.convertHtmlCode(digital_certificates[i].organization_name),
+            Seri: digital_certificates[i].serial_no,
+            TNgay: digital_certificates[i].from_date,
+            DNgay: digital_certificates[i].to_date,
+            HThuc: digital_certificates[i].type,
+          });
+        }
+      } else if (version == '2.0.2' || version == '2.1.0') {
+        jsonDeclare = {
           TKhai: {
             DLTKhai: {
               TTChung: {
@@ -740,7 +738,6 @@ jsonDeclare = {
                   HDGTGTTHBLai: 1,
                   HDBHTHBLai: 1,
                   HDTMai: 1,
-                  
                 },
                 DSCTSSDung: {
                   CTS: [],
@@ -781,10 +778,8 @@ jsonDeclare = {
         jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NNTDBKKhan = taxpayer_from_difficult_location;
         jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NNTKTDNUBND = taxpayer_from_people_committee_suggestions;
         jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLTTDCQT = transfer_data_directly_to_tax_office;
-        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLQTCTN = '0';// cdlqtvan;
-
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CDLQTCTN = cdlqtvan; // cdlqtvan;
         jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.CQXLTSCong = asset_handling_agency;
-        jsonDeclare.TKhai.DLTKhai.NDTKhai.HTGDLHDDT.NCCNN = foreign_supplier
 
         jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CDDu = full_transfer;
         jsonDeclare.TKhai.DLTKhai.NDTKhai.PThuc.CBTHop = summary_transfer;
@@ -815,50 +810,45 @@ jsonDeclare = {
         jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCGP = {};
         jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCGP.TCGP = [];
 
-        if(solution_provider)
-        {
-          for(let i = 0; i < solution_provider.length; i ++)
-            {
-              jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCGP.TCGP.push({
-                STT : solution_provider[i].sequence || i + 1,
-                TTCGP : this.convertHtmlCode(solution_provider[i].organization_name),
-                MSTTCGP : solution_provider[i].organization_taxcode,
-                TNgay :  solution_provider[i].from_date,
-                DNgay :  solution_provider[i].to_date,
-                GChu :  solution_provider[i].note,
-              });
-            }
+        if (solution_provider) {
+          for (let i = 0; i < solution_provider.length; i++) {
+            jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCGP.TCGP.push({
+              STT: solution_provider[i].sequence || i + 1,
+              TTCGP: this.convertHtmlCode(solution_provider[i].organization_name),
+              MSTTCGP: solution_provider[i].organization_taxcode,
+              TNgay: solution_provider[i].from_date,
+              DNgay: solution_provider[i].to_date,
+              GChu: solution_provider[i].note,
+            });
+          }
         }
 
-        jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCTN  = {};
-        jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCTN.TCTN  = [];
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCTN = {};
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCTN.TCTN = [];
 
-        if(tvan_company)
-        {
-          for(let i = 0; i < tvan_company.length; i ++)
-            {
-              jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCTN.TCTN.push({
-                STT : tvan_company[i].sequence || i + 1,
-                TTCTN : this.convertHtmlCode(tvan_company[i].organization_name),
-                MSTTCTN : tvan_company[i].organization_taxcode,
-                TNgay :  tvan_company[i].from_date,
-                DNgay :  tvan_company[i].to_date,
-                GChu :  tvan_company[i].note,
-              });
-            }
+        if (tvan_company) {
+          for (let i = 0; i < tvan_company.length; i++) {
+            jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCTN.TCTN.push({
+              STT: tvan_company[i].sequence || i + 1,
+              TTCTN: this.convertHtmlCode(tvan_company[i].organization_name),
+              MSTTCTN: tvan_company[i].organization_taxcode,
+              TNgay: tvan_company[i].from_date,
+              DNgay: tvan_company[i].to_date,
+              GChu: tvan_company[i].note,
+            });
+          }
         }
-        
-        jsonDeclare.TKhai.DLTKhai.NDTKhai.TTDVHTPT  = {};
-        jsonDeclare.TKhai.DLTKhai.NDTKhai.TTDVHTPT.DVHTPT  = [];
 
-        jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTNSDung  = {};
-        jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTNSDung.TNSDung  = [];
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.TTDVHTPT = {};
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.TTDVHTPT.DVHTPT = [];
 
-        jsonDeclare.TKhai.DLTKhai.NDTKhai.TTDKTH   = {};
-        jsonDeclare.TKhai.DLTKhai.NDTKhai.TTDKTH.DKTH   = [];
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTNSDung = {};
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTNSDung.TNSDung = [];
 
-     }
-      
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.TTDKTH = {};
+        jsonDeclare.TKhai.DLTKhai.NDTKhai.TTDKTH.DKTH = [];
+      }
+
       const id = uuid.v4();
       const signature_path = 'TKhai/DSCKS/NNT';
       const xml = this.OBJtoXML(jsonDeclare);
@@ -1213,7 +1203,7 @@ jsonDeclare = {
         },
       };
 
-      jsonInvalidInvoices.TBao.DLTBao.PBan = "2.1.0";//version;
+      jsonInvalidInvoices.TBao.DLTBao.PBan = '2.1.0'; //version;
       jsonInvalidInvoices.TBao.DLTBao.MSo = form_no;
       jsonInvalidInvoices.TBao.DLTBao.Ten = declare_name;
       jsonInvalidInvoices.TBao.DLTBao.Loai = declare_type;
@@ -2199,11 +2189,7 @@ jsonDeclare = {
         },
       ];
       const jsonNDTKhai = await transform(p_xml_content, templateNDTKhai);
-      const arrNDTKhai = [
-        jsonNDTKhai[0].CMa, 
-        jsonNDTKhai[0].KCMa, 
-        jsonNDTKhai[0].CMTMTTien
-      ];
+      const arrNDTKhai = [jsonNDTKhai[0].CMa, jsonNDTKhai[0].KCMa, jsonNDTKhai[0].CMTMTTien];
 
       //TKhai.DLTKhai.NDTKhai.HTGDLHDDT
       const templateHTGDLHDDT = [
@@ -2291,7 +2277,7 @@ jsonDeclare = {
       ];
       const jsonTCGP = await transform(p_xml_content, templateTCGP);
 
-      const templateTCTN  = [
+      const templateTCTN = [
         'TKhai/DLTKhai/NDTKhai/TTTCGP/TCTN',
         {
           STT: 'STT',
@@ -2302,7 +2288,7 @@ jsonDeclare = {
           GChu: 'GChu',
         },
       ];
-      const jsonTCTN   = await transform(p_xml_content, templateTCTN);
+      const jsonTCTN = await transform(p_xml_content, templateTCTN);
 
       let masterPara = arrTTChung.concat(arrNDTKhai).concat(arrHTGDLHDDT).concat(arrPThuc).concat(arrLHDSDung);
 
@@ -2319,13 +2305,29 @@ jsonDeclare = {
         }
 
         for (let i = 0; i < jsonTCTN.length; i++) {
-          const detailPara = [master[0].PK, jsonTCGP[i].STT, jsonTCGP[i].TTCTN, jsonTCGP[i].MSTTCTN, jsonTCGP[i].TNgay, jsonTCGP[i].DNgay, jsonTCGP[i].GChu];
+          const detailPara = [
+            master[0].PK,
+            jsonTCGP[i].STT,
+            jsonTCGP[i].TTCTN,
+            jsonTCGP[i].MSTTCTN,
+            jsonTCGP[i].TNgay,
+            jsonTCGP[i].DNgay,
+            jsonTCGP[i].GChu,
+          ];
           const detail = await DBService.callProcCursor('WT_UPD_DECLARATION_D_1', detailPara, p_language, p_crt_by);
           //console.log("detail", detail);
         }
 
         for (let i = 0; i < jsonTCGP.length; i++) {
-          const detailPara = [master[0].PK, jsonCTS[i].STT, jsonCTS[i].TTCGP, jsonCTS[i].MSTTCGP, jsonCTS[i].TNgay, jsonCTS[i].DNgay, jsonCTS[i].HThuc];
+          const detailPara = [
+            master[0].PK,
+            jsonCTS[i].STT,
+            jsonCTS[i].TTCGP,
+            jsonCTS[i].MSTTCGP,
+            jsonCTS[i].TNgay,
+            jsonCTS[i].DNgay,
+            jsonCTS[i].HThuc,
+          ];
           const detail = await DBService.callProcCursor('WT_UPD_DECLARATION_D_2', detailPara, p_language, p_crt_by);
           //console.log("detail", detail);
         }
@@ -2932,6 +2934,7 @@ jsonDeclare = {
                                             :p_THop,
                                             :p_So,
                                             :p_TTXNCQT,
+                                            :p_MCCQT,
                                             :p_tvan_data_result,
                                             :p_language, 
                                             :p_crt_by, 
@@ -2949,7 +2952,6 @@ jsonDeclare = {
             }
           }
         }
-
       } else {
         // return response.send(Utils.response(false, `Failed to call tax office api.`, tradeCode));
         return response
@@ -3508,7 +3510,6 @@ jsonDeclare = {
         jsonData = [];
 
       if (!ress.data.length) {
-
         if (DB_CONNECTION == 'oracle') {
           oracledb.fetchAsBuffer = [oracledb.BLOB];
           oracledb.fetchAsString = [oracledb.CLOB];
@@ -3526,7 +3527,7 @@ jsonDeclare = {
           p_language,
           p_crt_by,
         );
-        
+
         if (dataCheckTradeCode) {
           jsonData = JSON.parse(dataCheckTradeCode.p_rtn_cur[0].TVAN_DATA_RESULT);
         } else {
@@ -3537,9 +3538,7 @@ jsonDeclare = {
       }
 
       for (let item of jsonData) {
-
         for (let child of item) {
-
           if (child.loaiTBao == '1') {
             base64XML = Buffer.from(child.ndungTBao.base64XML, 'base64').toString('utf8');
             const temp_of_tax = {
@@ -3633,16 +3632,14 @@ jsonDeclare = {
               );
             }
           } else if (child.loaiTBao == '5') {
-
             contentNotice = child.ndungTBao.tbaoDKyDTu;
             loaiTBao = child.loaiTBao;
             tenTBao = child.tenTBao;
-
           } else if (child.loaiTBao == '4' || child.loaiTBao == '6') {
             /*contentNotice = child.ndungTBao.tbaoTNhanDTu;
             loaiTBao = child.loaiTBao;
             tenTBao = '';*/
-          
+
             // child.ndungTBao.tbaoTNhanDTu.dsachLoiTNhanDTu.forEach((element, index) => {
             //   tenTBao = element.maLoi + ' - ' + element.mtaLoi;
             // });
@@ -9208,7 +9205,7 @@ jsonDeclare = {
             sale_id: invoice.sale_id,
             msg_his_id: invoice.msg_his_id,
             send_mail_yn: 'Y',
-            trade_code: rtnValue.p_rtn_cur[0].MA_TRACUU
+            trade_code: rtnValue.p_rtn_cur[0].MA_TRACUU,
           });
 
           if (!invoice.buyer_email && !invoice.buyer_email_cc && !rtnValue.p_rtn_cur[0].BUYER_EMAIL && !rtnValue.p_rtn_cur[0].BUYER_EMAIL_CC) {
@@ -9368,7 +9365,7 @@ jsonDeclare = {
             sale_id: invoice.sale_id,
             msg_his_id: invoice.msg_his_id,
             send_mail_yn: 'Y',
-            trade_code: rtnValue.p_rtn_cur[0].MA_TRACUU
+            trade_code: rtnValue.p_rtn_cur[0].MA_TRACUU,
           });
 
           if (!invoice.buyer_email && !invoice.buyer_email_cc && !rtnValue.p_rtn_cur[0].BUYER_EMAIL && !rtnValue.p_rtn_cur[0].BUYER_EMAIL_CC) {
@@ -11161,22 +11158,22 @@ jsonDeclare = {
           to_date: /^(19|20)\d\d-(0[1-9]|1[012])-([012]\d|3[01])T([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/,
           type: /^(1|2|3){1}$/,
         },
-        solution_provider:{
+        solution_provider: {
           sequence: /^-?\d*\.?\d*$/,
           organization_name: /^.{1,400}$/,
           organization_taxcode: /^(\d{10})$/,
           from_date: /^(19|20)\d\d-(0[1-9]|1[012])-([012]\d|3[01])T([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/,
-          //to_date: /^(19|20)\d\d-(0[1-9]|1[012])-([012]\d|3[01])T([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/,
+          to_date: /^.{0,255}$/, ///^(19|20)\d\d-(0[1-9]|1[012])-([012]\d|3[01])T([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/,
           note: /^.{0,255}$/,
         },
-        tvan_company:{
+        tvan_company: {
           sequence: /^-?\d*\.?\d*$/,
           organization_name: /^.{1,400}$/,
           organization_taxcode: /^(\d{10})$/,
           from_date: /^(19|20)\d\d-(0[1-9]|1[012])-([012]\d|3[01])T([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/,
-          //to_date: /^(19|20)\d\d-(0[1-9]|1[012])-([012]\d|3[01])T([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/,
+          to_date: /^.{0,255}$/, ///^(19|20)\d\d-(0[1-9]|1[012])-([012]\d|3[01])T([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/,
           note: /^.{0,255}$/,
-        }
+        },
       };
 
       for (const key in declaration) {
@@ -15511,7 +15508,7 @@ jsonDeclare = {
       }
 
       const para_inv_st = {
-        trade_code: lookupcode.replaceAll(' ', '+'), 
+        trade_code: lookupcode.replaceAll(' ', '+'),
       };
       const rtnValue = await DBService.ExecuteSQLBlob(
         `BEGIN ei_sel_get_data_lookup_code (:trade_code,:p_language, :p_crt_by, :p_rtn_cur); END;`,
@@ -16334,7 +16331,11 @@ jsonDeclare = {
 
   convertHtmlCode(sText) {
     if (sText != null || sText == '') {
-      return this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '&', '&amp;'), '"', '&quot;'), '<', '&lt;'), '>', '&gt;');   
+      return this.replaceAllExt(
+        this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '&', '&amp;'), '"', '&quot;'), '<', '&lt;'),
+        '>',
+        '&gt;',
+      );
       /* this.replaceAllExt(
         this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '&', '&amp;'), '"', '&quot;'), '<', '&lt;'), '>', '&gt;'),
         "\'",
@@ -16346,7 +16347,11 @@ jsonDeclare = {
   }
   encoreHtmlCode(sText) {
     if (sText != null || sText == '') {
-      return this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '&quot;', '"'), '&lt;', '<'), '&gt;', '>'), '&amp;', '&');
+      return this.replaceAllExt(
+        this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '&quot;', '"'), '&lt;', '<'), '&gt;', '>'),
+        '&amp;',
+        '&',
+      );
       /*this.replaceAllExt(
         this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(this.replaceAllExt(sText, '&quot;', '"'), '&lt;', '<'), '&gt;', '>'), '&amp;', '&'),
         '&apos;',
@@ -16356,7 +16361,6 @@ jsonDeclare = {
       return '';
     }
   }
-
 
   replaceAllExt(strOgr, search, replacement) {
     var target = strOgr.toString();
@@ -18532,7 +18536,7 @@ jsonDeclare = {
         signingTime.SigningTime,
       ]);
 
-       //console.log('weTaxExtractXMLContent masterPara', masterPara);
+      //console.log('weTaxExtractXMLContent masterPara', masterPara);
       //const master = await callAPI(_jwtToken, { proc: 'ei_upd_tei_einvoice_cloud', para: masterPara });
       const master = await DBService.callProcCursor('WT_UPD_TEI_WT_INVOICE_M', masterPara, p_language, p_crt_by);
       // console.log("master", master);
@@ -18813,7 +18817,7 @@ jsonDeclare = {
       for (const data of data_send_mail) {
         if (data.mccqt && data.msg_his_id && data.buyer_email) {
           const data_param = {
-            rep_key:  data.mccqt, //data.trade_code,
+            rep_key: data.mccqt, //data.trade_code,
             send_mail_yn: data.send_mail_yn,
           };
           const rtnValue_inv = await DBService.ExecuteSQLBlob(
@@ -18972,7 +18976,7 @@ jsonDeclare = {
     }
   }
 
-   async sendMailNormailWT2(data_send_mail, ipa_name, p_language, p_crt_by) {
+  async sendMailNormailWT2(data_send_mail, ipa_name, p_language, p_crt_by) {
     try {
       // send mail ............
       let data_rep = [];
@@ -18981,7 +18985,7 @@ jsonDeclare = {
       for (const data of data_send_mail) {
         if (data.mccqt && data.msg_his_id && data.buyer_email) {
           const data_param = {
-            rep_key:  data.mccqt, //data.trade_code,
+            rep_key: data.mccqt, //data.trade_code,
             send_mail_yn: data.send_mail_yn,
           };
           const rtnValue_inv = await DBService.ExecuteSQLBlob(
@@ -20250,11 +20254,10 @@ jsonDeclare = {
             invoice.tei_company_pk == '642'
           ) {
             url = EINVOICE_API_SEND_MAIL_SMTP;
-          /*} else if (invoice.tei_company_pk == '442' || invoice.tei_company_pk == '503') {
+            /*} else if (invoice.tei_company_pk == '442' || invoice.tei_company_pk == '503') {
             url = EINVOICE_API_SEND_MAIL_PRIVATE;
           */
-         }
-          else {
+          } else {
             url = EINVOICE_API_SEND_MAIL;
           }
           //console.log('url  ', url);
@@ -21126,14 +21129,14 @@ jsonDeclare = {
         p_crt_by = user.USER_ID;
       }
       let r_data_noti = [];
-      const {seller_taxcode, noti_list } = request.all();
+      const {seller_taxcode, noti_list} = request.all();
 
       for (const noti of noti_list) {
         console.log('noti  ', noti);
 
-       const templateSignTime = {
-                      sign_by: 'BKe/DSCKS/NBan/Signature/KeyInfo/X509Data/X509SubjectName',
-                      signed_date: 'BKe/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
+        const templateSignTime = {
+          sign_by: 'BKe/DSCKS/NBan/Signature/KeyInfo/X509Data/X509SubjectName',
+          signed_date: 'BKe/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
         };
         const signingTime = await transform(noti.xml_signed, templateSignTime);
 
@@ -21143,43 +21146,43 @@ jsonDeclare = {
         console.log('signed_by', signed_by);
         console.log('signed_date', signed_date);
         const param_noti = {
-          req_key			    : noti.req_key				,
-          msg_his_id      : noti.msg_his_id            ,
-          xml_signed      : noti.xml_signed            ,
-          buyer_email     : noti.buyer_email           ,
-          buyer_email_cc  : noti.buyer_email_cc        ,
-          doc_no          : noti.doc_no                ,
-          reg_dtm         : noti.reg_dtm               ,
-          cus_nm          : noti.cus_nm                ,
-          cus_taxcd       : noti.cus_taxcd             ,
-          cus_add         : noti.cus_add               ,
-          cus_tel         : noti.cus_tel               ,
-          cus_email       : noti.cus_email             ,
-          cus_rppr_nm     : noti.cus_rppr_nm           ,
-          cus_position    : noti.cus_position          ,
-          cus_signed_by   : noti.cus_signed_by         ,
-          cus_signed_date : noti.cus_signed_date       ,
-          seller_nm       : noti.seller_nm             ,
-          seller_taxcd    : noti.seller_taxcd          ,
-          seller_add      : noti.seller_add            ,
-          seller_tel_no   : noti.seller_tel_no         ,
-          seller_email    : noti.seller_email          ,
-          seller_rppr_nm  : noti.seller_rppr_nm        ,
-          seller_position : noti.seller_position       ,
-          signed_by       : signed_by,//noti.signed_by             ,
-          signed_date     : signed_date,//noti.signed_date           ,
-          cqt_code        : noti.cqt_code              ,
-          form_no         : noti.form_no               ,
-          serial_no       : noti.serial_no             ,
-          inv_no          : noti.inv_no                ,
-          inv_date        : noti.inv_date              ,
-          feature         : noti.feature               ,
-          reason          : noti.reason                ,
-          tot_aft_dc_amt  : noti.tot_aft_dc_amt        ,
-          tot_vat_amt     : noti.tot_vat_amt           ,
-          tot_pay         : noti.tot_pay,
-          sign_id         : noti.sign_id,
-          signature_path  : noti.signature_path,
+          req_key: noti.req_key,
+          msg_his_id: noti.msg_his_id,
+          xml_signed: noti.xml_signed,
+          buyer_email: noti.buyer_email,
+          buyer_email_cc: noti.buyer_email_cc,
+          doc_no: noti.doc_no,
+          reg_dtm: noti.reg_dtm,
+          cus_nm: noti.cus_nm,
+          cus_taxcd: noti.cus_taxcd,
+          cus_add: noti.cus_add,
+          cus_tel: noti.cus_tel,
+          cus_email: noti.cus_email,
+          cus_rppr_nm: noti.cus_rppr_nm,
+          cus_position: noti.cus_position,
+          cus_signed_by: noti.cus_signed_by,
+          cus_signed_date: noti.cus_signed_date,
+          seller_nm: noti.seller_nm,
+          seller_taxcd: noti.seller_taxcd,
+          seller_add: noti.seller_add,
+          seller_tel_no: noti.seller_tel_no,
+          seller_email: noti.seller_email,
+          seller_rppr_nm: noti.seller_rppr_nm,
+          seller_position: noti.seller_position,
+          signed_by: signed_by, //noti.signed_by             ,
+          signed_date: signed_date, //noti.signed_date           ,
+          cqt_code: noti.cqt_code,
+          form_no: noti.form_no,
+          serial_no: noti.serial_no,
+          inv_no: noti.inv_no,
+          inv_date: noti.inv_date,
+          feature: noti.feature,
+          reason: noti.reason,
+          tot_aft_dc_amt: noti.tot_aft_dc_amt,
+          tot_vat_amt: noti.tot_vat_amt,
+          tot_pay: noti.tot_pay,
+          sign_id: noti.sign_id,
+          signature_path: noti.signature_path,
         };
 
         const res = await DBService.ExecuteSQLBlob(
@@ -21233,11 +21236,7 @@ jsonDeclare = {
         console.log('weTaxSendRecords   details res', res);
 
         if (res.p_rtn_cur[0].STATUS == 'OK') {
-          const data_mail = await this.weTaxSendMailRecords2(
-            res.p_rtn_cur[0].TEI_E_RECORD_PK,
-            p_language,
-            p_crt_by,
-          );
+          const data_mail = await this.weTaxSendMailRecords2(res.p_rtn_cur[0].TEI_E_RECORD_PK, p_language, p_crt_by);
 
           //console.log("weTaxSendRecords   data_mail ", data_mail);
           if (data_mail) {
@@ -21318,14 +21317,14 @@ jsonDeclare = {
         p_crt_by = user.USER_ID;
       }
       let r_data_noti = [];
-      const {seller_taxcode, noti_list } = request.all();
+      const {seller_taxcode, noti_list} = request.all();
 
       for (const noti of noti_list) {
         console.log('noti  ', noti);
 
-       const templateSignTime = {
-                      sign_by: 'BKe/DSCKS/NBan/Signature/KeyInfo/X509Data/X509SubjectName',
-                      signed_date: 'BKe/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
+        const templateSignTime = {
+          sign_by: 'BKe/DSCKS/NBan/Signature/KeyInfo/X509Data/X509SubjectName',
+          signed_date: 'BKe/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
         };
         const signingTime = await transform(noti.xml_signed, templateSignTime);
 
@@ -21335,12 +21334,12 @@ jsonDeclare = {
         console.log('signed_by', signed_by);
         console.log('signed_date', signed_date);
         const param_noti = {
-          req_key			    : noti.req_key				,
-          xml_signed      : noti.xml_signed            ,
-          signed_by       : signed_by,//noti.signed_by             ,
-          signed_date     : signed_date,//noti.signed_date           ,
-          sign_id         : noti.sign_id,
-          signature_path  : noti.signature_path,
+          req_key: noti.req_key,
+          xml_signed: noti.xml_signed,
+          signed_by: signed_by, //noti.signed_by             ,
+          signed_date: signed_date, //noti.signed_date           ,
+          sign_id: noti.sign_id,
+          signature_path: noti.signature_path,
         };
 
         const res = await DBService.ExecuteSQLBlob(
@@ -21363,11 +21362,7 @@ jsonDeclare = {
         console.log('weTaxSendRecords   details res', res);
 
         if (res.p_rtn_cur[0].STATUS == 'OK') {
-          const data_mail = await this.weTaxSendMailRecords2(
-            res.p_rtn_cur[0].TEI_E_RECORD_PK,
-            p_language,
-            p_crt_by,
-          );
+          const data_mail = await this.weTaxSendMailRecords2(res.p_rtn_cur[0].TEI_E_RECORD_PK, p_language, p_crt_by);
 
           //console.log("weTaxSendRecords   data_mail ", data_mail);
           if (data_mail) {
@@ -21448,14 +21443,14 @@ jsonDeclare = {
         p_crt_by = user.USER_ID;
       }
       let r_data_noti = [];
-      const {seller_taxcode, noti_list } = request.all();
+      const {seller_taxcode, noti_list} = request.all();
 
       for (const noti of noti_list) {
         console.log('noti  ', noti);
 
-       const templateSignTime = {
-                      sign_by: 'BKe/DSCKS/NBan/Signature/KeyInfo/X509Data/X509SubjectName',
-                      signed_date: 'BKe/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
+        const templateSignTime = {
+          sign_by: 'BKe/DSCKS/NBan/Signature/KeyInfo/X509Data/X509SubjectName',
+          signed_date: 'BKe/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
         };
         const signingTime = await transform(noti.xml_signed, templateSignTime);
 
@@ -21465,43 +21460,43 @@ jsonDeclare = {
         console.log('signed_by', signed_by);
         console.log('signed_date', signed_date);
         const param_noti = {
-          req_key			    : noti.req_key				,
-          msg_his_id      : noti.msg_his_id            ,
-          xml_signed      : noti.xml_signed            ,
-          buyer_email     : noti.buyer_email           ,
-          buyer_email_cc  : noti.buyer_email_cc        ,
-          doc_no          : noti.doc_no                ,
-          reg_dtm         : noti.reg_dtm               ,
-          cus_nm          : noti.cus_nm                ,
-          cus_taxcd       : noti.cus_taxcd             ,
-          cus_add         : noti.cus_add               ,
-          cus_tel         : noti.cus_tel               ,
-          cus_email       : noti.cus_email             ,
-          cus_rppr_nm     : noti.cus_rppr_nm           ,
-          cus_position    : noti.cus_position          ,
-          cus_signed_by   : noti.cus_signed_by         ,
-          cus_signed_date : noti.cus_signed_date       ,
-          seller_nm       : noti.seller_nm             ,
-          seller_taxcd    : noti.seller_taxcd          ,
-          seller_add      : noti.seller_add            ,
-          seller_tel_no   : noti.seller_tel_no         ,
-          seller_email    : noti.seller_email          ,
-          seller_rppr_nm  : noti.seller_rppr_nm        ,
-          seller_position : noti.seller_position       ,
-          signed_by       : signed_by,//noti.signed_by             ,
-          signed_date     : signed_date,//noti.signed_date           ,
-          cqt_code        : noti.cqt_code              ,
-          form_no         : noti.form_no               ,
-          serial_no       : noti.serial_no             ,
-          inv_no          : noti.inv_no                ,
-          inv_date        : noti.inv_date              ,
-          feature         : noti.feature               ,
-          reason          : noti.reason                ,
-          tot_aft_dc_amt  : noti.tot_aft_dc_amt        ,
-          tot_vat_amt     : noti.tot_vat_amt           ,
-          tot_pay         : noti.tot_pay,
-          sign_id         : noti.sign_id,
-          signature_path  : noti.signature_path,
+          req_key: noti.req_key,
+          msg_his_id: noti.msg_his_id,
+          xml_signed: noti.xml_signed,
+          buyer_email: noti.buyer_email,
+          buyer_email_cc: noti.buyer_email_cc,
+          doc_no: noti.doc_no,
+          reg_dtm: noti.reg_dtm,
+          cus_nm: noti.cus_nm,
+          cus_taxcd: noti.cus_taxcd,
+          cus_add: noti.cus_add,
+          cus_tel: noti.cus_tel,
+          cus_email: noti.cus_email,
+          cus_rppr_nm: noti.cus_rppr_nm,
+          cus_position: noti.cus_position,
+          cus_signed_by: noti.cus_signed_by,
+          cus_signed_date: noti.cus_signed_date,
+          seller_nm: noti.seller_nm,
+          seller_taxcd: noti.seller_taxcd,
+          seller_add: noti.seller_add,
+          seller_tel_no: noti.seller_tel_no,
+          seller_email: noti.seller_email,
+          seller_rppr_nm: noti.seller_rppr_nm,
+          seller_position: noti.seller_position,
+          signed_by: signed_by, //noti.signed_by             ,
+          signed_date: signed_date, //noti.signed_date           ,
+          cqt_code: noti.cqt_code,
+          form_no: noti.form_no,
+          serial_no: noti.serial_no,
+          inv_no: noti.inv_no,
+          inv_date: noti.inv_date,
+          feature: noti.feature,
+          reason: noti.reason,
+          tot_aft_dc_amt: noti.tot_aft_dc_amt,
+          tot_vat_amt: noti.tot_vat_amt,
+          tot_pay: noti.tot_pay,
+          sign_id: noti.sign_id,
+          signature_path: noti.signature_path,
         };
 
         const res = await DBService.ExecuteSQLBlob(
@@ -21555,11 +21550,7 @@ jsonDeclare = {
         console.log('weTaxSendRecords   details res', res);
 
         if (res.p_rtn_cur[0].STATUS == 'OK') {
-          const data_mail = await this.weTaxSendMailRecords2(
-            res.p_rtn_cur[0].TEI_E_RECORD_PK,
-            p_language,
-            p_crt_by,
-          );
+          const data_mail = await this.weTaxSendMailRecords2(res.p_rtn_cur[0].TEI_E_RECORD_PK, p_language, p_crt_by);
 
           //console.log("weTaxSendRecords   data_mail ", data_mail);
           if (data_mail) {
@@ -21634,7 +21625,7 @@ jsonDeclare = {
   async weTaxSendMailRecords2(p_tei_e_record_pk, p_language, p_crt_by) {
     try {
       let para_value_mail = {
-        p_tei_e_record_pk: p_tei_e_record_pk //"4090",//
+        p_tei_e_record_pk: p_tei_e_record_pk, //"4090",//
       };
       let data_mail = await DBService.ExecuteSQLBlob(
         `BEGIN wt_sel_data_e_record(
@@ -21687,7 +21678,7 @@ jsonDeclare = {
       console.log('res_send_mail error  ', error);
     }
   }
-  
+
   async weTaxGenerateRecordsXmlN70({request, response, auth}) {
     try {
       var p_language = request.header('accept-language', 'ENG');
@@ -21755,40 +21746,40 @@ jsonDeclare = {
       let rtnReqKey = 0;
       let objInvoice = {
         BKe: {
-            NDBKe: [{
+          NDBKe: [
+            {
               TTChung: {
-                  PBan: '',
-                  TBBan: '',
-                  SBBan: '',
-                  NBBan: '',
-                  TCHDon: '',
-                  NBan: '',
-                  MSTNBan: '',
-                  DCNban: '',
-                  NMua: '',
-                  MSTNMua: '',
-                  DCNmua: '',
-                  KHMSHDon: '',
-                  KHHDon: '',
-                  SHDon: '',
-                  DSLDTDoi: [
-                    {
-                      LDo: ''
-                    }
-                  ]
-                }	
-              }
-            ],
-            DSCKS: {
-              NBan: {},
-              NMua: {},
-              CCKSKhac: {}
-            }
-          }
+                PBan: '',
+                TBBan: '',
+                SBBan: '',
+                NBBan: '',
+                TCHDon: '',
+                NBan: '',
+                MSTNBan: '',
+                DCNban: '',
+                NMua: '',
+                MSTNMua: '',
+                DCNmua: '',
+                KHMSHDon: '',
+                KHHDon: '',
+                SHDon: '',
+                DSLDTDoi: [
+                  {
+                    LDo: '',
+                  },
+                ],
+              },
+            },
+          ],
+          DSCKS: {
+            NBan: {},
+            NMua: {},
+            CCKSKhac: {},
+          },
+        },
       };
 
       for (const noti of noti_list) {
-
         if (!noti.buyer_company_name || !noti.form_no || !noti.serial_no || !noti.invoice_no || !noti.invoice_dt || !noti.reason) {
           return response.status(400).json(Utils.responseByRule({success: false, message: 'Invalid: noti_list'}));
         }
@@ -21813,24 +21804,23 @@ jsonDeclare = {
             SHDon: noti.invoice_no,
             DSLDTDoi: [
               {
-                LDo: this.convertHtmlCode(noti.reason)
-              }
-            ]
-          }  
-        }); 
-
+                LDo: this.convertHtmlCode(noti.reason),
+              },
+            ],
+          },
+        });
       }
 
       const id = uuid.v4();
-        const xml = this.OBJtoXML(objInvoice);
-        const xmlId = xml.toString().replace('<NDBKe>', `<NDBKe Id=\'${id}\'>`);
-        const xmlRemoveLine = xmlId.toString().replace(/\n/g, '');
-        rtnXML.push({
-          req_key: rtnReqKey,
-          id_signing: id,
-          url_signing: 'BKe/DSCKS/NBan',
-          xml: xmlRemoveLine,
-        });
+      const xml = this.OBJtoXML(objInvoice);
+      const xmlId = xml.toString().replace('<NDBKe>', `<NDBKe Id=\'${id}\'>`);
+      const xmlRemoveLine = xmlId.toString().replace(/\n/g, '');
+      rtnXML.push({
+        req_key: rtnReqKey,
+        id_signing: id,
+        url_signing: 'BKe/DSCKS/NBan',
+        xml: xmlRemoveLine,
+      });
       console.log('weTaxGenerateRecordsXml rtnXML ', rtnXML);
       console.log('weTaxGenerateRecordsXml END ====================================');
 
@@ -21843,7 +21833,7 @@ jsonDeclare = {
         FUNC: 'generalRecordsXml',
         CONTENT: e.message,
       });
-       console.log(e);
+      console.log(e);
       // return response.send(Utils.response(false, e.message, null));
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
     }
@@ -21860,7 +21850,7 @@ jsonDeclare = {
         if (!valueCache || valueCache != captcha) {
           return response.send(Utils.response(false, 'invalid_captchar', null));
         }
-      }    
+      }
       //console.log(  "lookupcode ", lookupcode)
       if (DB_CONNECTION == 'oracle') {
         oracledb.fetchAsBuffer = [oracledb.BLOB];
@@ -21879,24 +21869,24 @@ jsonDeclare = {
         p_crt_by,
       );
 
-      console.log("rtnValue  ", rtnValue);
-       let EiExcels = new EiExcel04SS2Handler2(); //CQT_MAGD
-       let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].TEI_E_RECORD_PK , p_language, p_crt_by);
+      console.log('rtnValue  ', rtnValue);
+      let EiExcels = new EiExcel04SS2Handler2(); //CQT_MAGD
+      let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].TEI_E_RECORD_PK, p_language, p_crt_by);
 
-        const current = new Date();
-        const year = current.getFullYear();
-        let month = current.getMonth() + 1;
-        let day = current.getDate();
-        if (day < 10) {
-          day = '0' + day;
-        }
-        if (month < 10) {
-          month = '0' + month;
-        }
-        let url_setup ='setup/WebcashKySo.msi';
-        let token = AES.encrypt('/' + url_setup + '|' + year + month + day, APP_KEY);
-        token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
-        let setup_url = APP_URL_LOCAL + '/api/dso/getfiletoken?file_name=' + '/' + url_setup + '&token=' + token;
+      const current = new Date();
+      const year = current.getFullYear();
+      let month = current.getMonth() + 1;
+      let day = current.getDate();
+      if (day < 10) {
+        day = '0' + day;
+      }
+      if (month < 10) {
+        month = '0' + month;
+      }
+      let url_setup = 'setup/WebcashKySo.msi';
+      let token = AES.encrypt('/' + url_setup + '|' + year + month + day, APP_KEY);
+      token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
+      let setup_url = APP_URL_LOCAL + '/api/dso/getfiletoken?file_name=' + '/' + url_setup + '&token=' + token;
 
       const rep_data = {
         info_inv: rtnValue.p_rtn_cur[0].INFO_INV,
@@ -21938,7 +21928,6 @@ jsonDeclare = {
 
       const {xml_signed, buyer_sign_by, buyer_sign_dt, req_key, lookupcode} = request.all();
 
-    
       if (DB_CONNECTION == 'oracle') {
         oracledb.fetchAsBuffer = [oracledb.BLOB];
         oracledb.fetchAsString = [oracledb.CLOB];
@@ -21966,7 +21955,7 @@ jsonDeclare = {
 
       //console.log("rtnValue  ", rtnValue);
       let EiExcels = new EiExcel04SS2Handler2(); //CQT_MAGD
-       let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].TEI_E_RECORD_PK , p_language, p_crt_by);
+      let url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].TEI_E_RECORD_PK, p_language, p_crt_by);
       //console.log("base64PDf: ", url_pdf);
 
       let url_xml = '';
@@ -21979,22 +21968,22 @@ jsonDeclare = {
       }
 
       const current = new Date();
-        const year = current.getFullYear();
-        let month = current.getMonth() + 1;
-        let day = current.getDate();
-        if (day < 10) {
-          day = '0' + day;
-        }
-        if (month < 10) {
-          month = '0' + month;
-        }
-        let url_setup ='setup/WebcashKySo.msi';
-        let token = AES.encrypt('/' + url_setup + '|' + year + month + day, APP_KEY);
-        token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
-        let setup_url = APP_URL_LOCAL + '/api/dso/getfiletoken?file_name=' + '/' + url_setup + '&token=' + token;
+      const year = current.getFullYear();
+      let month = current.getMonth() + 1;
+      let day = current.getDate();
+      if (day < 10) {
+        day = '0' + day;
+      }
+      if (month < 10) {
+        month = '0' + month;
+      }
+      let url_setup = 'setup/WebcashKySo.msi';
+      let token = AES.encrypt('/' + url_setup + '|' + year + month + day, APP_KEY);
+      token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
+      let setup_url = APP_URL_LOCAL + '/api/dso/getfiletoken?file_name=' + '/' + url_setup + '&token=' + token;
 
       const rep_data = {
-         info_inv: rtnValue.p_rtn_cur[0].INFO_INV,
+        info_inv: rtnValue.p_rtn_cur[0].INFO_INV,
         ma_gd: rtnValue.p_rtn_cur[0].CQT_MAGD,
         buyer_name: rtnValue.p_rtn_cur[0].CUS_NM,
         buyer_code: rtnValue.p_rtn_cur[0].CUS_CD,
@@ -22192,7 +22181,7 @@ jsonDeclare = {
                 ngayCQTKy = '';
                 maGDichDTu = '';
               } else if (items[k].loaiTBao == '8') {
-                p_cqt_result_yn = "Y";
+                p_cqt_result_yn = 'Y';
                 //trade_code = items[k].ndungTBao.maGDichTChieu;
                 maTBao = items[k].ndungTBao.tbaoKTraDLieu.loaiTBao; //items[k].loaiTBao;
                 tenTBao = items[k].tenTBao;
@@ -22236,7 +22225,7 @@ jsonDeclare = {
                   }
                 });
               } else if (items[k].loaiTBao == '9' || items[k].loaiTBao == '7') {
-                p_cqt_result_yn = "Y";
+                p_cqt_result_yn = 'Y';
                 //trade_code = items[k].ndungTBao.maGDichTChieu;
                 maTBao = items[k].ndungTBao.tbaoKTraDLieu.loaiTBao; //items[k].loaiTBao;
                 tenTBao = items[k].tenTBao;
@@ -22379,7 +22368,6 @@ jsonDeclare = {
         }
       });
       if (check_data.CRT_BY == 'wetax' && data_inv.length > 0 && p_cqt_result_yn == 'Y') {
-        
         const param_data_m = {
           data_json: JSON.stringify(data_inv),
           api_name: 'weTaxCallBackStatusPosInv',
@@ -22764,47 +22752,47 @@ jsonDeclare = {
         }
       } else {
         for (let j = 0; j < result.data.length; j++) {
-            const items = result.data[j];
-            for (let k = 0; k < items.length; k++) {
-              if (items[k].loaiTBao == '1') {
-                base64XML = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8');
-                const temp_of_tax = {
-                  MLTDiep: 'TDiep/TTChung/MLTDiep',
-                  TaxSignedBy: 'TDiep/DLieu/TBao/DSCKS/CQT/Signature/KeyInfo/X509Data/X509SubjectName',
-                  TaxSignedDate: 'TDiep/DLieu/TBao/DSCKS/CQT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
+          const items = result.data[j];
+          for (let k = 0; k < items.length; k++) {
+            if (items[k].loaiTBao == '1') {
+              base64XML = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8');
+              const temp_of_tax = {
+                MLTDiep: 'TDiep/TTChung/MLTDiep',
+                TaxSignedBy: 'TDiep/DLieu/TBao/DSCKS/CQT/Signature/KeyInfo/X509Data/X509SubjectName',
+                TaxSignedDate: 'TDiep/DLieu/TBao/DSCKS/CQT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
+              };
+              const data_of_tax = await transform(base64XML, temp_of_tax);
+
+              tax_sign_by = data_of_tax.TaxSignedBy;
+              tax_sign_datetime = data_of_tax.TaxSignedDate;
+              maTD = data_of_tax.MLTDiep;
+              maGDDTu = items[k].ndungTBao.maGDichTNDLieu;
+              ngayTaoTB = items[k].ngayTaoTBao;
+
+              if (maTD == '301') {
+                tenGDDTu = 'tiếp nhận thông báo sai sót';
+                ord = '3';
+              } else {
+                tenGDDTu = 'gói tin hợp lệ';
+                ord = '2';
+              }
+
+              if (base64XML) {
+                const para_history = {
+                  p_CQT_Code: inv.trade_code,
+                  p_xml_sign: base64XML,
+                  p_maTD: maTD,
+                  p_maGDDTu: maGDDTu,
+                  p_tenGDDTu: tenGDDTu,
+                  p_ngayTaoTB: ngayTaoTB,
+                  p_ord: ord,
+                  p_tvan_data_result: JSON.stringify(result.data),
                 };
-                const data_of_tax = await transform(base64XML, temp_of_tax);
 
-                tax_sign_by = data_of_tax.TaxSignedBy;
-                tax_sign_datetime = data_of_tax.TaxSignedDate;
-                maTD = data_of_tax.MLTDiep;
-                maGDDTu = items[k].ndungTBao.maGDichTNDLieu;
-                ngayTaoTB = items[k].ngayTaoTBao;
+                //console.log('weTaxCheckInformAdjustToTaxOffice  para_history  ', para_history);
 
-                if (maTD == '301') {
-                  tenGDDTu = 'tiếp nhận thông báo sai sót';
-                  ord = '3';
-                } else {
-                  tenGDDTu = 'gói tin hợp lệ';
-                  ord = '2';
-                }
-
-                if (base64XML) {
-                  const para_history = {
-                    p_CQT_Code: inv.trade_code,
-                    p_xml_sign: base64XML,
-                    p_maTD: maTD,
-                    p_maGDDTu: maGDDTu,
-                    p_tenGDDTu: tenGDDTu,
-                    p_ngayTaoTB: ngayTaoTB,
-                    p_ord: ord,
-                    p_tvan_data_result: JSON.stringify(result.data),
-                  };
-
-                  //console.log('weTaxCheckInformAdjustToTaxOffice  para_history  ', para_history);
-
-                  const res_op = await DBService.ExecuteSQLBlob(
-                    `BEGIN ei_upd_his_nor_inv(
+                const res_op = await DBService.ExecuteSQLBlob(
+                  `BEGIN ei_upd_his_nor_inv(
                                               :p_CQT_Code, 
                                               :p_xml_sign,
                                               :p_maTD,
@@ -22817,63 +22805,63 @@ jsonDeclare = {
                                               :p_crt_by, 
                                               :p_rtn_cur); 
                               END;`,
-                    para_history,
-                    p_language,
-                    p_crt_by,
-                  );
+                  para_history,
+                  p_language,
+                  p_crt_by,
+                );
 
-                  maTD = '';
-                  maGDDTu = '';
-                  tenGDDTu = '';
-                  ngayTaoTB = '';
-                }
-              } else if (items[k].loaiTBao == '17' || items[k].loaiTBao == '15') {
-                //console.log('weTaxCheckInformAdjustToTaxOffice  items[k] xxxx', items[k]);
-                tenTBao = items[k].tenTBao;
-                maTBao = items[k].loaiTBao;
-                soTB = items[k].ndungTBao.tbaoTNhanSSotDoc.soTBao;
-                ngayTB = items[k].ndungTBao.ngayTBao;
-                thoiGianCQTKy = items[k].ndungTBao.tbaoTNhanSSotDoc.ngayCQTKy;
-                for (const invoice of items[k].ndungTBao.tbaoTNhanSSotDoc.dsachHDonLoi) {
-                  // console.log('weTaxCheckInformAdjustToTaxOffice invoice  ', invoice);
-                  ndungTBao.push({
-                    tax_auth_cd: invoice.MCCQT,
-                    form_no: invoice.khieuMauHDon,
-                    serial_no: invoice.khieuHDon,
-                    invoice_no: invoice.soHDon,
-                    invoice_date: invoice.ngayHDon,
-                    cqt_result: invoice.tthaiTNCQT, //   invoice.dsachLoi.length == 0 ? 1 : 2,
-                    dsachLoi: invoice.dsachLoi,
-                    tax_sign_datetime: tax_sign_datetime,
-                    tax_sign_by: tax_sign_by,
-                    cqt_doc_no: soTB,
-                  });
+                maTD = '';
+                maGDDTu = '';
+                tenGDDTu = '';
+                ngayTaoTB = '';
+              }
+            } else if (items[k].loaiTBao == '17' || items[k].loaiTBao == '15') {
+              //console.log('weTaxCheckInformAdjustToTaxOffice  items[k] xxxx', items[k]);
+              tenTBao = items[k].tenTBao;
+              maTBao = items[k].loaiTBao;
+              soTB = items[k].ndungTBao.tbaoTNhanSSotDoc.soTBao;
+              ngayTB = items[k].ndungTBao.ngayTBao;
+              thoiGianCQTKy = items[k].ndungTBao.tbaoTNhanSSotDoc.ngayCQTKy;
+              for (const invoice of items[k].ndungTBao.tbaoTNhanSSotDoc.dsachHDonLoi) {
+                // console.log('weTaxCheckInformAdjustToTaxOffice invoice  ', invoice);
+                ndungTBao.push({
+                  tax_auth_cd: invoice.MCCQT,
+                  form_no: invoice.khieuMauHDon,
+                  serial_no: invoice.khieuHDon,
+                  invoice_no: invoice.soHDon,
+                  invoice_date: invoice.ngayHDon,
+                  cqt_result: invoice.tthaiTNCQT, //   invoice.dsachLoi.length == 0 ? 1 : 2,
+                  dsachLoi: invoice.dsachLoi,
+                  tax_sign_datetime: tax_sign_datetime,
+                  tax_sign_by: tax_sign_by,
+                  cqt_doc_no: soTB,
+                });
 
-                  //console.log("invoice.dsachLoi  ", invoice.dsachLoi)
+                //console.log("invoice.dsachLoi  ", invoice.dsachLoi)
 
-                  if (invoice.dsachLoi.length == 0) {
-                    p_cqt_result = 'Thành công';
+                if (invoice.dsachLoi.length == 0) {
+                  p_cqt_result = 'Thành công';
+                  p_cqt_status = invoice.tthaiTNCQT;
+                } else {
+                  p_cqt_result = '';
+                  for (const error of invoice.dsachLoi) {
+                    p_cqt_result += error.maLoi + ' - ' + error.mtaLoi;
                     p_cqt_status = invoice.tthaiTNCQT;
-                  } else {
-                    p_cqt_result = '';
-                    for (const error of invoice.dsachLoi) {
-                      p_cqt_result += error.maLoi + ' - ' + error.mtaLoi;
-                      p_cqt_status = invoice.tthaiTNCQT;
-                    }
                   }
+                }
 
-                  const data_d_tbss = {
-                    p_mccqt: invoice.MCCQT,
-                    p_form_no: invoice.khieuMauHDon,
-                    p_serial_no: invoice.khieuHDon,
-                    p_invoice_no: invoice.soHDon,
-                    p_cqt_result: p_cqt_result,
-                    p_cqt_status: p_cqt_status,
-                  };
+                const data_d_tbss = {
+                  p_mccqt: invoice.MCCQT,
+                  p_form_no: invoice.khieuMauHDon,
+                  p_serial_no: invoice.khieuHDon,
+                  p_invoice_no: invoice.soHDon,
+                  p_cqt_result: p_cqt_result,
+                  p_cqt_status: p_cqt_status,
+                };
 
-                  // console.log("data_d_tbss  ", data_d_tbss)
-                  await DBService.ExecuteSQLBlob(
-                    `BEGIN wt_upd_hd04ss_d(
+                // console.log("data_d_tbss  ", data_d_tbss)
+                await DBService.ExecuteSQLBlob(
+                  `BEGIN wt_upd_hd04ss_d(
                                       :p_mccqt, 
                                       :p_form_no, 
                                       :p_serial_no,
@@ -22884,25 +22872,25 @@ jsonDeclare = {
                                       :p_crt_by, 
                                       :p_rtn_cur
                                   ); END;`,
-                    data_d_tbss,
-                    p_language,
-                    p_crt_by,
-                  );
-                }
+                  data_d_tbss,
+                  p_language,
+                  p_crt_by,
+                );
+              }
 
-                const para_his_ss_15 = {
-                  p_trade_code: inv.trade_code,
-                  p_xml_sign: base64XML,
-                  p_messCQT: tenTBao,
-                  p_status: '1',
-                  p_soTB: soTB,
-                  p_ngayTB: ngayTB,
-                  p_thoiGianCQTKy: thoiGianCQTKy,
-                  p_ketQua: 'CQT tiếp nhận/không tiếp nhận',
-                };
+              const para_his_ss_15 = {
+                p_trade_code: inv.trade_code,
+                p_xml_sign: base64XML,
+                p_messCQT: tenTBao,
+                p_status: '1',
+                p_soTB: soTB,
+                p_ngayTB: ngayTB,
+                p_thoiGianCQTKy: thoiGianCQTKy,
+                p_ketQua: 'CQT tiếp nhận/không tiếp nhận',
+              };
 
-                await DBService.ExecuteSQLBlob(
-                  `BEGIN ei_upd_noti_ss(
+              await DBService.ExecuteSQLBlob(
+                `BEGIN ei_upd_noti_ss(
                                     :p_trade_code, 
                                     :p_xml_sign, 
                                     :p_messCQT,
@@ -22915,75 +22903,75 @@ jsonDeclare = {
                                     :p_crt_by, 
                                     :p_rtn_cur
                                 ); END;`,
-                  para_his_ss_15,
-                  p_language,
-                  p_crt_by,
-                );
-              } else if (items[k].loaiTBao == '16') {
-                tenTBao = items[k].tenTBao;
-                maTBao = items[k].loaiTBao;
-                soTB = items[k].ndungTBao.tbaoKTraDLieu.soTBao;
-                let error_list = [];
+                para_his_ss_15,
+                p_language,
+                p_crt_by,
+              );
+            } else if (items[k].loaiTBao == '16') {
+              tenTBao = items[k].tenTBao;
+              maTBao = items[k].loaiTBao;
+              soTB = items[k].ndungTBao.tbaoKTraDLieu.soTBao;
+              let error_list = [];
 
-                for (const error of items[k].ndungTBao.tbaoKTraDLieu.dsachLoiGoiDLieuKhac) {
-                  error_list.push({
-                    maLoi: error.maLoi,
-                    mtaLoi: error.mtaLoi,
-                  });
-                  p_cqt_result = error.maLoi + ' - ' + error.mtaLoi + '\n';
-                }
+              for (const error of items[k].ndungTBao.tbaoKTraDLieu.dsachLoiGoiDLieuKhac) {
+                error_list.push({
+                  maLoi: error.maLoi,
+                  mtaLoi: error.mtaLoi,
+                });
+                p_cqt_result = error.maLoi + ' - ' + error.mtaLoi + '\n';
+              }
 
-                const param_d = {
-                  trade_code: inv.trade_code,
-                };
-                const data_d = await await DBService.ExecuteSQLBlob(
-                  `BEGIN wt_sel_hd04ss_d(
+              const param_d = {
+                trade_code: inv.trade_code,
+              };
+              const data_d = await await DBService.ExecuteSQLBlob(
+                `BEGIN wt_sel_hd04ss_d(
                                                                                       :trade_code, 
                                                                                       :p_language, 
                                                                                       :p_crt_by, 
                                                                                       :p_rtn_cur
                                                                                   ); END;`,
-                  param_d,
-                  p_language,
-                  p_crt_by,
+                param_d,
+                p_language,
+                p_crt_by,
+              );
+              // console.log("data_d  ", data_d);
+              for (const invoice of items[k].ndungTBao.dsachHDonSSot) {
+                //p_cqt_result = "Thành công";
+                p_cqt_status = '2';
+
+                const found = data_d.p_rtn_cur?.find(
+                  element =>
+                    element.FORM_NO == invoice.khieuMauHDon && element.SERIAL_NO == invoice.khieuHDon && element.INVOICE_NO == invoice.soHDon,
                 );
-                // console.log("data_d  ", data_d);
-                for (const invoice of items[k].ndungTBao.dsachHDonSSot) {
-                  //p_cqt_result = "Thành công";
-                  p_cqt_status = '2';
 
-                  const found = data_d.p_rtn_cur?.find(
-                    element =>
-                      element.FORM_NO == invoice.khieuMauHDon && element.SERIAL_NO == invoice.khieuHDon && element.INVOICE_NO == invoice.soHDon,
-                  );
+                //console.log("found  ", found);
 
-                  //console.log("found  ", found);
+                ndungTBao.push({
+                  tax_auth_cd: found?.MCCQT,
+                  form_no: invoice.khieuMauHDon,
+                  serial_no: invoice.khieuHDon,
+                  invoice_no: invoice.soHDon,
+                  invoice_date: invoice.ngayHDon,
+                  cqt_result: '2', //   invoice.dsachLoi.length == 0 ? 1 : 2,
+                  dsachLoi: error_list,
+                  tax_sign_datetime: tax_sign_datetime,
+                  tax_sign_by: tax_sign_by,
+                  cqt_doc_no: soTB,
+                });
 
-                  ndungTBao.push({
-                    tax_auth_cd: found?.MCCQT,
-                    form_no: invoice.khieuMauHDon,
-                    serial_no: invoice.khieuHDon,
-                    invoice_no: invoice.soHDon,
-                    invoice_date: invoice.ngayHDon,
-                    cqt_result: '2', //   invoice.dsachLoi.length == 0 ? 1 : 2,
-                    dsachLoi: error_list,
-                    tax_sign_datetime: tax_sign_datetime,
-                    tax_sign_by: tax_sign_by,
-                    cqt_doc_no: soTB,
-                  });
+                const data_d_tbss = {
+                  p_mccqt: found?.MCCQT,
+                  p_form_no: invoice.khieuMauHDon,
+                  p_serial_no: invoice.khieuHDon,
+                  p_invoice_no: invoice.soHDon,
+                  p_cqt_result: p_cqt_result,
+                  p_cqt_status: p_cqt_status,
+                };
 
-                  const data_d_tbss = {
-                    p_mccqt: found?.MCCQT,
-                    p_form_no: invoice.khieuMauHDon,
-                    p_serial_no: invoice.khieuHDon,
-                    p_invoice_no: invoice.soHDon,
-                    p_cqt_result: p_cqt_result,
-                    p_cqt_status: p_cqt_status,
-                  };
-
-                  //console.log("data_d_tbss  ", data_d_tbss)
-                  await DBService.ExecuteSQLBlob(
-                    `BEGIN wt_upd_hd04ss_d(
+                //console.log("data_d_tbss  ", data_d_tbss)
+                await DBService.ExecuteSQLBlob(
+                  `BEGIN wt_upd_hd04ss_d(
                                       :p_mccqt, 
                                       :p_form_no, 
                                       :p_serial_no,
@@ -22994,14 +22982,14 @@ jsonDeclare = {
                                       :p_crt_by, 
                                       :p_rtn_cur
                                   ); END;`,
-                    data_d_tbss,
-                    p_language,
-                    p_crt_by,
-                  );
-                }
+                  data_d_tbss,
+                  p_language,
+                  p_crt_by,
+                );
               }
             }
           }
+        }
 
         let para_value_m = {
           p_req_key: check_data.TRADE_CODE,

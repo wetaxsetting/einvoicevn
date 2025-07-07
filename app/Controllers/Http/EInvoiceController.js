@@ -2151,7 +2151,6 @@ jsonDeclare = {
           DCLHe: 'DCLHe',
           DCTDTu: 'DCTDTu',
           DTLHe: 'DTLHe',
-          MSTTCGP: 'MSTTCGP',
           DDanh: 'DDanh',
           NLap: 'NLap',
           TNDDPLuat: 'TNDDPLuat',
@@ -2200,7 +2199,11 @@ jsonDeclare = {
         },
       ];
       const jsonNDTKhai = await transform(p_xml_content, templateNDTKhai);
-      const arrNDTKhai = [jsonNDTKhai[0].CMa, jsonNDTKhai[0].KCMa, jsonNDTKhai[0].CMTMTTien];
+      const arrNDTKhai = [
+        jsonNDTKhai[0].CMa, 
+        jsonNDTKhai[0].KCMa, 
+        jsonNDTKhai[0].CMTMTTien
+      ];
 
       //TKhai.DLTKhai.NDTKhai.HTGDLHDDT
       const templateHTGDLHDDT = [
@@ -2208,16 +2211,18 @@ jsonDeclare = {
         {
           NNTDBKKhan: 'NNTDBKKhan',
           NNTKTDNUBND: 'NNTKTDNUBND',
+          CQXLTSCong: 'CQXLTSCong',
           CDLTTDCQT: 'CDLTTDCQT',
-          CDLQTVAN: 'CDLQTVAN',
+          CDLQTCTN: 'CDLQTCTN',
         },
       ];
       const jsonHTGDLHDDT = await transform(p_xml_content, templateHTGDLHDDT);
       const arrHTGDLHDDT = [
         jsonHTGDLHDDT[0].NNTDBKKhan || '0',
         jsonHTGDLHDDT[0].NNTKTDNUBND || '0',
+        jsonHTGDLHDDT[0].CQXLTSCong || '0',
         jsonHTGDLHDDT[0].CDLTTDCQT || '0',
-        jsonHTGDLHDDT[0].CDLQTVAN || '0',
+        jsonHTGDLHDDT[0].CDLQTCTN || '0',
       ];
 
       //TKhai.DLTKhai.NDTKhai.PThuc

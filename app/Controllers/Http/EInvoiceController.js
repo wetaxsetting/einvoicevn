@@ -2295,8 +2295,8 @@ jsonDeclare = {
         'TKhai/DLTKhai/NDTKhai/TTTCGP/TCTN',
         {
           STT: 'STT',
-          TTCGP: 'TTCGP',
-          MSTTCGP: 'MSTTCGP',
+          TTCTN: 'TTCGP',
+          MSTTCTN: 'MSTTCGP',
           TNgay: 'TNgay',
           DNgay: 'DNgay',
           GChu: 'GChu',
@@ -2315,6 +2315,18 @@ jsonDeclare = {
         for (let i = 0; i < jsonCTS.length; i++) {
           const detailPara = [master[0].PK, jsonCTS[i].STT, jsonCTS[i].TTChuc, jsonCTS[i].Seri, jsonCTS[i].TNgay, jsonCTS[i].DNgay, jsonCTS[i].HThuc];
           const detail = await DBService.callProcCursor('WT_UPD_DECLARATION_D', detailPara, p_language, p_crt_by);
+          //console.log("detail", detail);
+        }
+
+        for (let i = 0; i < jsonTCTN.length; i++) {
+          const detailPara = [master[0].PK, jsonTCGP[i].STT, jsonTCGP[i].TTCTN, jsonTCGP[i].MSTTCTN, jsonTCGP[i].TNgay, jsonTCGP[i].DNgay, jsonTCGP[i].GChu];
+          const detail = await DBService.callProcCursor('WT_UPD_DECLARATION_D_1', detailPara, p_language, p_crt_by);
+          //console.log("detail", detail);
+        }
+
+        for (let i = 0; i < jsonTCGP.length; i++) {
+          const detailPara = [master[0].PK, jsonCTS[i].STT, jsonCTS[i].TTCGP, jsonCTS[i].MSTTCGP, jsonCTS[i].TNgay, jsonCTS[i].DNgay, jsonCTS[i].HThuc];
+          const detail = await DBService.callProcCursor('WT_UPD_DECLARATION_D_2', detailPara, p_language, p_crt_by);
           //console.log("detail", detail);
         }
         return master[0].PK;

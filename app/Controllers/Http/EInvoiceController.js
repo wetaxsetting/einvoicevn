@@ -2950,28 +2950,6 @@ jsonDeclare = {
           }
         }
 
-        // const para_value = {
-        //   req_key: matesDecPK, //  matesDecPK,
-        //   xml_sign: xml_signed,
-        //   trade_code: trade_code, //tradeCode.data.maGDich,
-        //   tax_code: tax_code,
-        // };
-
-        // // console.log(para_value);
-        // const res = await DBService.ExecuteSQLBlob(
-        //   `BEGIN WT_UPD_DECLARATION_STATUS( :req_key,
-        //                                     :xml_sign,
-        //                                     :trade_code,
-        //                                     :tax_code,
-        //                                     :p_language,
-        //                                     :p_crt_by,
-        //                                     :p_rtn_cur); END;`,
-        //   para_value,
-        //   p_language,
-        //   p_crt_by,
-        // );
-
-        // console.log("res  ", res);
       } else {
         // return response.send(Utils.response(false, `Failed to call tax office api.`, tradeCode));
         return response

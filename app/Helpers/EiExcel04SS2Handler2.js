@@ -89,7 +89,7 @@ class EiExcelHandler {
         {Cell: `B26`, Info: [`CUS_TAX_CODE`], Type: 1},
         {Cell: `H26`, Info: [`CUS_TEL`], Type: 1},
         {Cell: `B27`, Info: [`CUS_REPRESENT`], Type: 1},
-        {Cell: `H28`, Info: [`CUS_POSITION`], Type: 1},
+        {Cell: `H27`, Info: [`CUS_POSITION`], Type: 1},
 
         {Cell: `B29`, Info: [`CUS_TITLE`], Type: 1},
         {Cell: `B34`, Info: [`REASON`], Type: 1},

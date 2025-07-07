@@ -9623,6 +9623,11 @@ class EInvoiceController {
           buyer_cccd: invoice.buyer_cccd,
           buyer_email: invoice.buyer_email,
           buyer_email_cc: invoice.buyer_email_cc,
+
+          passport_no: invoice.passport_no || '', // vng-199
+          buyer_unit_cd: invoice.buyer_unit_cd || '', // vng-199
+
+          
           total_amt_no_vat: invoice.total_amt,
           total_amt_dc: invoice.total_dc_amt,
           total_amt_vat: invoice.total_amt_vat,
@@ -9666,6 +9671,8 @@ class EInvoiceController {
                                                           :buyer_cccd,
                                                           :buyer_email,
                                                           :buyer_email_cc,
+                                                          :passport_no,
+                                                          :buyer_unit_cd,
                                                           :total_amt_no_vat,
                                                           :total_amt_dc,
                                                           :total_amt_vat,
@@ -10044,6 +10051,10 @@ class EInvoiceController {
           buyer_cccd: invoice.buyer_cccd,
           buyer_email: invoice.buyer_email,
           buyer_email_cc: invoice.buyer_email_cc,
+
+          passport_no: invoice.passport_no,
+          buyer_unit_cd: invoice.buyer_unit_cd,
+
           total_amt_no_vat: invoice.total_amt,
           total_amt_dc: invoice.total_amt_dc || 0,
           total_amt_vat: invoice.total_amt_vat,
@@ -10087,6 +10098,8 @@ class EInvoiceController {
                                                           :buyer_cccd,
                                                           :buyer_email,
                                                           :buyer_email_cc,
+                                                          :passport_no,
+                                                          :buyer_unit_cd,
                                                           :total_amt_no_vat,
                                                           :total_amt_dc,
                                                           :total_amt_vat,

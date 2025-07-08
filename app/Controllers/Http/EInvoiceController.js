@@ -2785,8 +2785,6 @@ class EInvoiceController {
         return response.status(400).json(Utils.responseByRule({success: false, message: 'The file xml is wrong!', data: {tax_code: tax_code}}));
       }
 
-
-      return;
       const agent = {
         Agent: {
           defaultPort: 443,

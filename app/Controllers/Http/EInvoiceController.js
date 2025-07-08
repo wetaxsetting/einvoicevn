@@ -2307,12 +2307,12 @@ class EInvoiceController {
         for (let i = 0; i < jsonTCTN.length; i++) {
           const detailPara = [
             master[0].PK,
-            jsonTCGP[i].STT,
-            jsonTCGP[i].TTCTN,
-            jsonTCGP[i].MSTTCTN,
-            jsonTCGP[i].TNgay,
-            jsonTCGP[i].DNgay,
-            jsonTCGP[i].GChu,
+            jsonTCTN[i].STT,
+            jsonTCTN[i].TTCTN,
+            jsonTCTN[i].MSTTCTN,
+            jsonTCTN[i].TNgay,
+            jsonTCTN[i].DNgay,
+            jsonTCTN[i].GChu,
           ];
           const detail = await DBService.callProcCursor('WT_UPD_DECLARATION_D_1', detailPara, p_language, p_crt_by);
           //console.log("detail", detail);
@@ -2321,12 +2321,12 @@ class EInvoiceController {
         for (let i = 0; i < jsonTCGP.length; i++) {
           const detailPara = [
             master[0].PK,
-            jsonCTS[i].STT,
-            jsonCTS[i].TTCGP,
-            jsonCTS[i].MSTTCGP,
-            jsonCTS[i].TNgay,
-            jsonCTS[i].DNgay,
-            jsonCTS[i].HThuc,
+            jsonTCGP[i].STT,
+            jsonTCGP[i].TTCGP,
+            jsonTCGP[i].MSTTCGP,
+            jsonTCGP[i].TNgay,
+            jsonTCGP[i].DNgay,
+            jsonTCGP[i].GChu,
           ];
           const detail = await DBService.callProcCursor('WT_UPD_DECLARATION_D_2', detailPara, p_language, p_crt_by);
           //console.log("detail", detail);
@@ -2784,6 +2784,9 @@ class EInvoiceController {
       } else if (matesDecPK == -2) {
         return response.status(400).json(Utils.responseByRule({success: false, message: 'The file xml is wrong!', data: {tax_code: tax_code}}));
       }
+
+
+      return;
       const agent = {
         Agent: {
           defaultPort: 443,

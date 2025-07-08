@@ -584,8 +584,7 @@ class EInvoiceController {
 
       const valid = this.validateJsonDeclarationToXML(declaration);
       if (!valid.status) {
-        // return response.send(Utils.response(valid.status, valid.message, null));
-        return response.status(400).json(Utils.responseByRule({success: false, message: valid.message}));
+=        return response.status(400).json(Utils.responseByRule({success: false, message: valid.message}));
       }
       let jsonDeclare = {};
       if (version == '2.0.1') {

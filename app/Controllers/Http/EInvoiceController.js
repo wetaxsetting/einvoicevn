@@ -566,7 +566,7 @@ class EInvoiceController {
 
       const param_data_m = {
         data_json: JSON.stringify(declaration),
-        api_name: 'weTaxConvertDeclareUsingInvoiceToXML',
+        api_name: 'weTaxConvertDeclareUsingInvoiceToXML 2.1.0',
       };
 
       await DBService.ExecuteSQLBlob(

@@ -11404,7 +11404,7 @@ class EInvoiceController {
     let status = true;
     let resMess = '';
     const mess1 = 'Invalid field';
-    //console.log("invoice  ", invoice)
+    console.log("invoice  ", invoices)
     try {
       const errorList = {
         version: /^(\d{1}\.\d{1}\.\d{1})$/, //6
@@ -21117,16 +21117,18 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
       const {data_inv} = request.all();
-      //console.log('data_inv  ', data_inv);
-      const invoices = JSON.parse(data_inv);
+      /* console.log('data_inv  ', data_inv);
+      const invoices = JSON.parse(data_inv);*/
 
-      const valid = await this.validateJsonInvalidNormalInvoiceToXML(invoices);
-      //console.log('valid  ', valid);
+      const valid = await this.validateJsonInvalidNormalInvoiceToXML(data_inv);
+      console.log('valid  ', valid);
       if (!valid.status) {
         return response.status(400).json(Utils.responseByRule({success: false, message: valid.message}));
       }
       return response.status(200).json(Utils.responseByRule({success: true, message: 'Check validate is done.'}));
-    } catch (error) {}
+    } catch (error) {
+      console.log('ValidateInvoiceCSharp error: ', error);
+    }
   }
 
   async weTaxSendRecordsN70({request, response, auth}) {
@@ -22731,10 +22733,13 @@ class EInvoiceController {
       let ngayTB = '';
       let thoiGianCQTKy = '';
       let ndungTBao = [];
+      let tax_sign_by = '';
+      let tax_sign_datetime = '';
+      
       if (!result.data.length) {
         ndungTBao = [];
         const param_d = {
-          trade_code: inv.trade_code,
+          trade_code: check_data.TRADE_CODE,
         };
         const data_d = await await DBService.ExecuteSQLBlob(
           `BEGIN wt_sel_hd04ss_d(

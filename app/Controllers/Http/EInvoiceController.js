@@ -21117,10 +21117,10 @@ class EInvoiceController {
         p_crt_by = user.USER_ID;
       }
       const {data_inv} = request.all();
-      /* console.log('data_inv  ', data_inv);
-      const invoices = JSON.parse(data_inv);*/
+       //console.log('data_inv  ', data_inv);
+      const invoices = JSON.parse(data_inv);
 
-      const valid = await this.validateJsonInvalidNormalInvoiceToXML(data_inv);
+      const valid = await this.validateJsonInvalidNormalInvoiceToXML(invoices);
       console.log('valid  ', valid);
       if (!valid.status) {
         return response.status(400).json(Utils.responseByRule({success: false, message: valid.message}));
@@ -22735,7 +22735,7 @@ class EInvoiceController {
       let ndungTBao = [];
       let tax_sign_by = '';
       let tax_sign_datetime = '';
-      
+
       if (!result.data.length) {
         ndungTBao = [];
         const param_d = {

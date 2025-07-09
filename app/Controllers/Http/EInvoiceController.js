@@ -11429,7 +11429,7 @@ class EInvoiceController {
         buyer_comp_name: /^.{0,400}$/, //400,
         buyer_name: /^.{0,100}$/,
         buyer_code: /^.{0,50}$/,
-        buyer_taxcode: {10: /^(\d{10})$/, 14: /^(\d{10}\-\d{3})$/},
+        buyer_taxcode: {10: /^(\d{10})$/, 12: /^(\d{12})$/, 14: /^(\d{10}\-\d{3})$/},
         buyer_address: /^.{0,400}$/, // 400
         buyer_phone: /^.{0,20}$/, //20,
         buyer_email: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, //  /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/gm,
@@ -11491,7 +11491,16 @@ class EInvoiceController {
                     message: resMess,
                   };
                 }
-              } else if (invoice[key].length == 14) {
+              } else if (invoice[key].length == 12) {
+              if (!errorList[`${key}`][12].test(invoice[key])) {
+                  status = false;
+                  resMess = `${mess1} ${key}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+              }else if (invoice[key].length == 14) {
                 if (!errorList[`${key}`][14].test(invoice[key])) {
                   status = false;
                   resMess = `${mess1} ${key}.`;

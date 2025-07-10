@@ -22793,7 +22793,7 @@ class EInvoiceController {
 
               if (base64XML) {
                 const para_history = {
-                  p_CQT_Code: inv.trade_code,
+                  p_CQT_Code: check_data.TRADE_CODE,
                   p_xml_sign: base64XML,
                   p_maTD: maTD,
                   p_maGDDTu: maGDDTu,
@@ -22893,7 +22893,7 @@ class EInvoiceController {
               }
 
               const para_his_ss_15 = {
-                p_trade_code: inv.trade_code,
+                p_trade_code: check_data.TRADE_CODE,
                 p_xml_sign: base64XML,
                 p_messCQT: tenTBao,
                 p_status: '1',
@@ -22936,7 +22936,7 @@ class EInvoiceController {
               }
 
               const param_d = {
-                trade_code: inv.trade_code,
+                trade_code: check_data.TRADE_CODE,
               };
               const data_d = await await DBService.ExecuteSQLBlob(
                 `BEGIN wt_sel_hd04ss_d(

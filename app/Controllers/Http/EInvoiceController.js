@@ -4621,6 +4621,350 @@ class EInvoiceController {
     }
   }
 
+  async weTaxCheckInformAdjustToTaxOffice2({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      //console.log("ss",EINVOICE_URL_API)
+      const agent = {
+        Agent: {
+          defaultPort: 443,
+          protocol: 'https:',
+          options: {maxVersion: 'TLSv1.2', minVersion: 'TLSv1.2', path: null},
+        },
+      };
+
+      const authUserName = 'GENUWIN';
+      const authPassword = 'e_GX4v@';
+      const url = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+
+      // const authUserName = 'GENUWIN'; // "GENUWIN";
+      // const authPassword = 'genuwin123'; // "e_GX4v@";
+      // let url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
+
+      const {tax_code, trade_code_list} = request.all();
+
+      let rtnValue = [];
+      let ndungTBao = [];
+      for (const inv of trade_code_list) {
+        const result = await Request.get(url + inv.trade_code, {
+          agent,
+          headers: {
+            Authorization: 'Basic ' + Buffer.from(`${authUserName}:${authPassword}`).toString('base64'),
+          },
+        });
+        //console.log("weTaxCheckInformAdjustToTaxOffice2 result", JSON.stringify(result.data));
+        let tenTBao = '',
+          maTBao = '',
+          p_cqt_result = '',
+          p_cqt_status = '',
+          base64XML = '';
+        let maTD = '';
+        let maGDDTu = '';
+        let tenGDDTu = '';
+        let ngayTaoTB = '';
+        let ord = '';
+        let soTB = '';
+        let ngayTB = '';
+        let thoiGianCQTKy = '';
+        let tax_sign_by = '';
+        let tax_sign_datetime = '';
+          ndungTBao = [];
+          const param_d = {
+            trade_code: inv.trade_code,
+          };
+          const data_d = await await DBService.ExecuteSQLBlob(
+            `BEGIN wt_sel_hd04ss_d(
+                                    :trade_code, 
+                                    :p_language, 
+                                    :p_crt_by, 
+                                    :p_rtn_cur
+                                ); END;`,
+            param_d,
+            p_language,
+            p_crt_by,
+          );
+
+          for (const data of data_d.p_rtn_cur) {
+            ndungTBao.push({
+              tax_auth_cd: data.MCCQT,
+              form_no: data.FORM_NO,
+              serial_no: data.SERIAL_NO,
+              invoice_no: data.INVOICE_NO,
+              invoice_date: data.INVOICE_DT,
+              cqt_result: '1', //   invoice.dsachLoi.length == 0 ? 1 : 2,
+              dsachLoi: [],
+              tax_sign_datetime: '',
+              tax_sign_by: '',
+              cqt_doc_no: '',
+            });
+          }
+
+        if (result.data.length) {
+          for (let j = 0; j < result.data.length; j++) {
+            const items = result.data[j];
+            for (let k = 0; k < items.length; k++) {
+              if (items[k].loaiTBao == '1') {
+                base64XML = Buffer.from(items[k].ndungTBao.base64XML, 'base64').toString('utf8');
+                const temp_of_tax = {
+                  MLTDiep: 'TDiep/TTChung/MLTDiep',
+                  TaxSignedBy: 'TDiep/DLieu/TBao/DSCKS/CQT/Signature/KeyInfo/X509Data/X509SubjectName',
+                  TaxSignedDate: 'TDiep/DLieu/TBao/DSCKS/CQT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
+                };
+                const data_of_tax = await transform(base64XML, temp_of_tax);
+
+                tax_sign_by = data_of_tax.TaxSignedBy;
+                tax_sign_datetime = data_of_tax.TaxSignedDate;
+                maTD = data_of_tax.MLTDiep;
+                maGDDTu = items[k].ndungTBao.maGDichTNDLieu;
+                ngayTaoTB = items[k].ngayTaoTBao;
+
+                if (maTD == '301') {
+                  tenGDDTu = 'tiếp nhận thông báo sai sót';
+                  ord = '3';
+                } else {
+                  tenGDDTu = 'gói tin hợp lệ';
+                  ord = '2';
+                }
+
+                if (base64XML) {
+                  const para_history = {
+                    p_CQT_Code: inv.trade_code,
+                    p_xml_sign: base64XML,
+                    p_maTD: maTD,
+                    p_maGDDTu: maGDDTu,
+                    p_tenGDDTu: tenGDDTu,
+                    p_ngayTaoTB: ngayTaoTB,
+                    p_ord: ord,
+                    p_tvan_data_result: JSON.stringify(result.data),
+                  };
+
+                  //console.log('weTaxCheckInformAdjustToTaxOffice2  para_history  ', para_history);
+
+                  const res_op = await DBService.ExecuteSQLBlob(
+                    `BEGIN ei_upd_his_nor_inv(
+                                              :p_CQT_Code, 
+                                              :p_xml_sign,
+                                              :p_maTD,
+                                              :p_maGDDTu,
+                                              :p_tenGDDTu,
+                                              :p_ngayTaoTB,
+                                              :p_ord,
+                                              :p_tvan_data_result,
+                                              :p_language, 
+                                              :p_crt_by, 
+                                              :p_rtn_cur); 
+                              END;`,
+                    para_history,
+                    p_language,
+                    p_crt_by,
+                  );
+
+                  maTD = '';
+                  maGDDTu = '';
+                  tenGDDTu = '';
+                  ngayTaoTB = '';
+                }
+              } else if (items[k].loaiTBao == '17' || items[k].loaiTBao == '15') {
+                //console.log('weTaxCheckInformAdjustToTaxOffice2  items[k] xxxx', items[k]);
+                tenTBao = items[k].tenTBao;
+                maTBao = items[k].loaiTBao;
+                soTB = items[k].ndungTBao.tbaoTNhanSSotDoc.soTBao;
+                ngayTB = items[k].ndungTBao.ngayTBao;
+
+                for (let i = 0; i < ndungTBao.length; i++) {
+                    ndungTBao[i].cqt_doc_no = soTB;
+                    ndungTBao[i].tax_sign_datetime = tax_sign_datetime;
+                    ndungTBao[i].tax_sign_by = tax_sign_by;
+                    ndungTBao[i].cqt_doc_no = soTB;
+
+                    const data_d_tbss = {
+                      p_mccqt: ndungTBao[i].tax_auth_cd,
+                      p_form_no: ndungTBao[i].form_no,
+                      p_serial_no: ndungTBao[i].serial_no,
+                      p_invoice_no: ndungTBao[i].invoice_no,
+                      p_cqt_result: "Thành công",
+                      p_cqt_status: "1",
+                    };
+
+                    // console.log("data_d_tbss  ", data_d_tbss)
+                    await DBService.ExecuteSQLBlob(
+                      `BEGIN wt_upd_hd04ss_d(
+                                        :p_mccqt, 
+                                        :p_form_no, 
+                                        :p_serial_no,
+                                        :p_invoice_no,
+                                        :p_cqt_result,
+                                        :p_cqt_status,
+                                        :p_language, 
+                                        :p_crt_by, 
+                                        :p_rtn_cur
+                                    ); END;`,
+                      data_d_tbss,
+                      p_language,
+                      p_crt_by,
+                    );
+
+
+                  }
+
+                const para_his_ss_15 = {
+                  p_trade_code: inv.trade_code,
+                  p_xml_sign: base64XML,
+                  p_messCQT: tenTBao,
+                  p_status: '1',
+                  p_soTB: soTB,
+                  p_ngayTB: ngayTB,
+                  p_thoiGianCQTKy: thoiGianCQTKy,
+                  p_ketQua: 'CQT tiếp nhận/không tiếp nhận',
+                };
+
+                await DBService.ExecuteSQLBlob(
+                  `BEGIN ei_upd_noti_ss(
+                                    :p_trade_code, 
+                                    :p_xml_sign, 
+                                    :p_messCQT,
+                                    :p_status,
+                                    :p_soTB,
+                                    :p_ngayTB,
+                                    :p_thoiGianCQTKy,
+                                    :p_ketQua,
+                                    :p_language, 
+                                    :p_crt_by, 
+                                    :p_rtn_cur
+                                ); END;`,
+                  para_his_ss_15,
+                  p_language,
+                  p_crt_by,
+                );
+              } else if (items[k].loaiTBao == '16') {
+                tenTBao = items[k].tenTBao;
+                maTBao = items[k].loaiTBao;
+                soTB = items[k].ndungTBao.tbaoKTraDLieu.soTBao;
+                tax_sign_datetime = tax_sign_datetime;
+                tax_sign_by = tax_sign_by;
+                let error_list = [];
+                // ndungTBao
+                for (const error of items[k].ndungTBao.tbaoKTraDLieu.dsachLoiGoiDLieuKhac) {
+                  error_list.push({
+                    maLoi: error.maLoi,
+                    mtaLoi: error.mtaLoi,
+                  });
+                  p_cqt_result = error.maLoi + ' - ' + error.mtaLoi + '\n';
+                }
+
+                // console.log("data_d  ", data_d);
+                for (const invoice of items[k].ndungTBao.dsachHDonSSot) {
+                  p_cqt_status = '2';
+                  let data_d_tbss = null;
+           
+                  //console.log("found  ", found);
+                  for(const found of ndungTBao) {
+                    if (found.form_no == invoice.khieuMauHDon && found.serial_no == invoice.khieuHDon && found.invoice_no == invoice.soHDon) {
+                        found.cqt_result = '2'; //   invoice.dsachLoi.length == 0 ? 1 : 2;
+                        found.dsachLoi = error_list;
+                        found.tax_sign_datetime = tax_sign_datetime;
+                        found.tax_sign_by = tax_sign_by;
+                        found.cqt_doc_no = soTB;
+
+                        data_d_tbss = {
+                          p_mccqt: found?.MCCQT,
+                          p_form_no: invoice.khieuMauHDon,
+                          p_serial_no: invoice.khieuHDon,
+                          p_invoice_no: invoice.soHDon,
+                          p_cqt_result: p_cqt_result,
+                          p_cqt_status: p_cqt_status,
+                        };
+                    }
+                  }
+                  // ndungTBao.push({
+                  //   tax_auth_cd: found?.MCCQT,
+                  //   form_no: invoice.khieuMauHDon,
+                  //   serial_no: invoice.khieuHDon,
+                  //   invoice_no: invoice.soHDon,
+                  //   invoice_date: invoice.ngayHDon,
+                  //   cqt_result: '2', //   invoice.dsachLoi.length == 0 ? 1 : 2,
+                  //   dsachLoi: error_list,
+                  //   tax_sign_datetime: tax_sign_datetime,
+                  //   tax_sign_by: tax_sign_by,
+                  //   cqt_doc_no: soTB,
+                  // });
+
+                  //console.log("data_d_tbss  ", data_d_tbss)
+                  await DBService.ExecuteSQLBlob(
+                    `BEGIN wt_upd_hd04ss_d(
+                                      :p_mccqt, 
+                                      :p_form_no, 
+                                      :p_serial_no,
+                                      :p_invoice_no,
+                                      :p_cqt_result,
+                                      :p_cqt_status,
+                                      :p_language, 
+                                      :p_crt_by, 
+                                      :p_rtn_cur
+                                  ); END;`,
+                    data_d_tbss,
+                    p_language,
+                    p_crt_by,
+                  );
+                }
+              }
+            }
+          }
+
+          let para_value_m = {
+            p_req_key: inv.trade_code,
+            p_xml_sign: base64XML,
+            p_messCQT: tenTBao,
+            p_status: '1',
+          };
+          console.log('para_value_m  ', para_value_m);
+          await DBService.ExecuteSQLBlob(
+            `BEGIN wt_upd_hd04ss_m(
+                              :p_req_key, 
+                              :p_xml_sign, 
+                              :p_messCQT, 
+                              :p_status,
+                              :p_language, 
+                              :p_crt_by, 
+                              :p_rtn_cur
+                          ); END;`,
+            para_value_m,
+            p_language,
+            p_crt_by,
+          );
+
+          rtnValue.push({
+            trade_code: inv.trade_code,
+            req_key: inv.req_key,
+            inform_code: maTBao,
+            inform_desc: tenTBao,
+            tax_code: tax_code,
+            result_content: ndungTBao,
+          });
+
+          //this.sendMailTBSSToCustomer(inv.trade_code, p_language, p_crt_by);
+        }
+      }
+      //console.log('weTaxCheckInformAdjustToTaxOffice2  ', rtnValue);
+      // return response.send(Utils.response(true, `checking_success`, rtnValue));
+      return response.status(200).json(Utils.responseByRule({success: true, message: 'Check Announcement successfully.', data: rtnValue}));
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'weTaxCheckInformAdjustToTaxOffice2',
+        CONTENT: e,
+      });
+      // console.log("error ", e);
+      // return response.send(Utils.response(false, e.message, null));
+      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+    }
+  }
   async checkInformAdjustToTaxOffice({request, response, auth}) {
     try {
       var p_language = request.header('accept-language', 'ENG');

@@ -4922,7 +4922,7 @@ class EInvoiceController {
             p_messCQT: tenTBao,
             p_status: '1',
           };
-          console.log('para_value_m  ', para_value_m);
+          //console.log('para_value_m  ', para_value_m);
           await DBService.ExecuteSQLBlob(
             `BEGIN wt_upd_hd04ss_m(
                               :p_req_key, 

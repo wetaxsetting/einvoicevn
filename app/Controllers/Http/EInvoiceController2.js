@@ -3879,7 +3879,7 @@ class EInvoiceController2 {
             master[0].TEI_EINVOICE_M_PK,
           ];
 
-          await DBService.callProcCursor('WT_UPD_TEI_WT_INVOICE_D', detailPara, p_language, p_crt_by);
+          await DBService.callProcCursor('WT_UPD_TEI_WT_INVOICE_D_v2', detailPara, p_language, p_crt_by);
           // console.log("detail", detail);
         }
 

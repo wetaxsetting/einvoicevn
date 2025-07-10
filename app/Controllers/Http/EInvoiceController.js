@@ -4962,7 +4962,7 @@ class EInvoiceController {
       });
       // console.log("error ", e);
       // return response.send(Utils.response(false, e.message, null));
-      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+      return response.status(409).json(Utils.responseByRule({success: false, message: e}));
     }
   }
   async checkInformAdjustToTaxOffice({request, response, auth}) {

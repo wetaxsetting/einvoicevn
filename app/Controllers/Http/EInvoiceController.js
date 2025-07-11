@@ -15876,12 +15876,57 @@ class EInvoiceController {
       if (rtnValue.p_rtn_cur[0].TYPE == 'EP') {
         console.log(rtnValue.p_rtn_cur[0]);
         if (
-          Number(rtnValue.p_rtn_cur[0].TEI_COMPANY_PK) < 943 &&
-          Number(rtnValue.p_rtn_cur[0].TEI_COMPANY_PK) != 201 &&
-          Number(rtnValue.p_rtn_cur[0].TEI_COMPANY_PK) != 462 &&
-          Number(rtnValue.p_rtn_cur[0].TEI_COMPANY_PK) != 1 &&
-          Number(rtnValue.p_rtn_cur[0].INVOICE_DATE) < 20250301
+          Number(rtnValue.p_rtn_cur[0].TEI_COMPANY_PK) < 943 
+          && Number(rtnValue.p_rtn_cur[0].TEI_COMPANY_PK) != 1 
+          && (Number(rtnValue.p_rtn_cur[0].TEI_COMPANY_PK) != 201) 
+          && (Number(rtnValue.p_rtn_cur[0].TEI_COMPANY_PK) != 462) 
         ) {
+ const screte_key = 'RVNJbjib65jkGKJB789';
+          const key = Utils.md5(rtnValue.p_rtn_cur[0].TEI_EINVOICE_M_PK + screte_key);
+          const type = 'C';
+          const axios = use('axios');
+          const fs = use('fs');
+          const url = `http://csharp-api.webcashvietnam.com/wseinvoice/BSService.asmx/Download_File_PDF_Nodejs?p_trade_code=${rtnValue.p_rtn_cur[0].TEI_EINVOICE_M_PK}&p_key=${key}&p_type=${type}`;
+
+          const current = new Date();
+          const year = current.getFullYear();
+          let month = current.getMonth() + 1;
+          let day = current.getDate();
+          if (day < 10) {
+            day = '0' + day;
+          }
+          if (month < 10) {
+            month = '0' + month;
+          }
+          const dir = ROOT_DIR_FILES + '/pdf/' + year + '/' + month;
+          if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, {recursive: true}, err => {
+              console.log(err);
+            });
+          }
+          const unixtime = Date.now();
+          const fileName = '/pdf/' + year + '/' + month + '/rpt-' + unixtime + '-' + rtnValue.p_rtn_cur[0].TEI_EINVOICE_M_PK + '.pdf';
+          let token = AES.encrypt(fileName + '|' + year + month + day, APP_KEY);
+          token = token.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
+
+          await axios({
+            method: 'get',
+            url: url,
+            responseType: 'stream',
+          })
+            .then(async res => {
+              await res.data.pipe(fs.createWriteStream(ROOT_DIR_FILES + fileName));
+            })
+            .catch(error => {
+              console.error(error);
+            });
+
+          url_pdf = APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token;
+         
+        } else {
+
+          if (Number(rtnValue.p_rtn_cur[0].INVOICE_DATE) < 20250301)
+          {
           const screte_key = 'RVNJbjib65jkGKJB789';
           const key = Utils.md5(rtnValue.p_rtn_cur[0].TEI_EINVOICE_M_PK + screte_key);
           const type = 'C';
@@ -15923,9 +15968,11 @@ class EInvoiceController {
             });
 
           url_pdf = APP_URL_LOCAL + '/api/dso/getfiletoken2?file_name=' + fileName + '&token=' + token;
-        } else {
-          EiExcels = new EiExcelHandlerAuto(); //CQT_MAGD
-          url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].TEI_EINVOICE_M_PK, p_language, p_crt_by);
+          }else {
+            EiExcels = new EiExcelHandlerAuto(); //CQT_MAGD
+            url_pdf = await EiExcels.getEinvoice(rtnValue.p_rtn_cur[0].TEI_EINVOICE_M_PK, p_language, p_crt_by);
+          }
+          
         }
 
         // console.log("base64PDf: ", url_pdf);

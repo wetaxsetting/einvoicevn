@@ -108,8 +108,8 @@ class EInvoiceController2 {
         p_language,
         p_crt_by,
       );
-      console.log('weTaxPosGeneralXML json_xml ', json_xml);
-      console.log('weTaxPosGeneralXML data_send_mail ', data_send_mail);
+      //console.log('weTaxPosGeneralXML json_xml ', json_xml);
+      //console.log('weTaxPosGeneralXML data_send_mail ', data_send_mail);
 
       ///return json_xml;
       if (json_xml[0]?.xml_process) {
@@ -124,7 +124,7 @@ class EInvoiceController2 {
           process_type || 'I',
         );
 
-        console.log('json_xml_signed  ', json_xml_signed);
+        //console.log('json_xml_signed  ', json_xml_signed);
 
         const {check_data, data_inv} = await this.weTaxExtractPosXMLContent(
           json_xml[0]?.xml,
@@ -139,8 +139,8 @@ class EInvoiceController2 {
           p_crt_by,
         );
 
-        console.log('check_data ', check_data);
-        console.log('data_inv ', data_inv);
+        //console.log('check_data ', check_data);
+        //console.log('data_inv ', data_inv);
 
         if (check_data.STATUS == 'FAILE') {
           return response

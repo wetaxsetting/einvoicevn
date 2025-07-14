@@ -89,7 +89,7 @@ class EInvoiceController2 {
         p_language,
         p_crt_by,
       );
-      console.log('weTaxGeneralXML data_send_mail ', data_send_mail, ' json_xml ', json_xml[0]?.xml_process, ' process_type ', process_type);
+
       if (json_xml[0].xml_process) {
         const json_xml_signed = await this.weTaxSignXMLHSM(
           user_name,
@@ -103,7 +103,7 @@ class EInvoiceController2 {
         );
 
         if (process_type == 'I' || process_type == 'P') {
-          console.log('json_xml_signed  ', json_xml_signed);
+          //console.log('json_xml_signed  ', json_xml_signed);
           const {check_data, data_inv} = await this.weTaxExtractPosXMLContent(
             json_xml[0].xml,
             json_xml_signed.data[0].signed_xml,
@@ -118,8 +118,8 @@ class EInvoiceController2 {
             p_crt_by,
           );
 
-          console.log('check_data ', check_data);
-          console.log('data_inv ', data_inv);
+          //console.log('check_data ', check_data);
+          //console.log('data_inv ', data_inv);
 
           if (check_data.STATUS == 'FAILE') {
             return response
@@ -145,10 +145,12 @@ class EInvoiceController2 {
             p_crt_by,
           );
           console.log('weTaxSendPosInvoice data_send_tax ', data_send_tax);
+
+
           if (data_send_tax) {
-            if (data_send_tax.send_mail) {
+            /*if (data_send_tax.send_mail) {
               this.weTaxSendMailPos(data_send_mail, 'WTPTA002', tax_code, p_language, p_crt_by);
-            }
+            }*/
             return response.status(200).json(Utils.responseByRule({success: true, message: 'Sending invoice is successfully.', data: data_send_tax}));
           } else {
             return response
@@ -666,318 +668,217 @@ class EInvoiceController2 {
 
           objInvoice.MCCQT = invoices[i].mccqt; //`M1-24-VZQYY-${Math.floor(10000000000 + Math.random() * 9000000000)}`; //
 
-          objInvoice = {
-            DLHDon: {
-              TTChung: {
-                PBan: '',
-                THDon: '',
-                KHMSHDon: '',
-                KHHDon: '',
-                SHDon: '',
-                NLap: '',
-                TTKhac: '',
-              },
-              NDHDon: {
-                NBan: {
-                  Ten: '',
-                  MST: '',
-                  DChi: '',
-                  SDThoai: '',
-                  TTKhac: '',
-                },
-                NMua: {
-                  Ten: '',
-                  MST: '',
-                  DChi: '',
-                  SDThoai: '',
-
-                  CCCDan: '',
-                  TTKhac: '',
-                },
-                DSHHDVu: {},
-                TToan: {
-                  THTTLTSuat: {
-                    LTSuat: {
-                      TSuat: '',
-                      ThTien: '',
-                      TThue: '',
-                    },
-                  },
-                  TgTCTHue: '',
-                  TgTThue: '',
-                  DSLPhi: {
-                    LPhi: {},
-                  },
-                  TTCKTMai: '',
-                  TgTTTBSo: '',
-                  TgTTTBChu: '',
-                },
-              },
-            },
-            DSCKS: {},
-          };
           }else
           {
             objInvoice.DLHDon.TTChung.PBan = invoices[i].version;
-          objInvoice.DLHDon.TTChung.KHMSHDon = invoices[i].form_no;
-          objInvoice.DLHDon.TTChung.KHHDon = invoices[i].serial_no;
-          objInvoice.DLHDon.TTChung.SHDon = invoices[i].invoice_no;
-          objInvoice.DLHDon.TTChung.NLap = invoices[i].invoice_date;
-          objInvoice.DLHDon.TTChung.HTTToan = invoices[i].payment_method;
+            objInvoice.DLHDon.TTChung.KHMSHDon = invoices[i].form_no;
+            objInvoice.DLHDon.TTChung.KHHDon = invoices[i].serial_no;
+            objInvoice.DLHDon.TTChung.SHDon = invoices[i].invoice_no;
+            objInvoice.DLHDon.TTChung.NLap = invoices[i].invoice_date;
+            objInvoice.DLHDon.TTChung.HTTToan = invoices[i].payment_method;
 
-          //objInvoice.DLHDon.TTChung.DVTTe = invoices[i].currency;
-          //objInvoice.DLHDon.TTChung.TGia = invoices[i].ex_rate;
-          //objInvoice.DLHDon.TTChung.MSTTCGP = '1201496252'; //webcashgenuwin.com taxcode
+            //objInvoice.DLHDon.TTChung.DVTTe = invoices[i].currency;
+            //objInvoice.DLHDon.TTChung.TGia = invoices[i].ex_rate;
+            //objInvoice.DLHDon.TTChung.MSTTCGP = '1201496252'; //webcashgenuwin.com taxcode
 
-          objInvoice.DLHDon.TTChung.TTHDLQuan = [];
-          // console.log("invoices[i].invoice_feature  " ,invoices[i].invoice_feature)
-          if (invoices[i].invoice_feature != 0 && invoices[i].invoice_feature != null) {
-            //
-            objInvoice.DLHDon.TTChung.TTHDLQuan.push({
-              TCHDon: invoices[i].invoice_feature,
-              LHDCLQuan: invoices[i].invoice_type_relative,
-              KHMSHDCLQuan: invoices[i].form_no_relative,
-              KHHDCLQuan: invoices[i].serial_no_relative,
-              SHDCLQuan: invoices[i].invoice_no_relative,
-              NLHDCLQuan: invoices[i].invoice_date_relative,
-              GChu: invoices[i].description,
-            });
-          }
-
-          objInvoice.DLHDon.TTChung.TTKhac = {};
-          objInvoice.DLHDon.TTChung.TTKhac.TTin = [];
-          objInvoice.DLHDon.TTChung.TTKhac.TTin.push({
-            TTruong: 'PortalLink',
-            KDLieu: 'string',
-            DLieu: 'https://einvoicepro.webcashvietnam.com/login',
-          });
-
-          if (invoices[i].currency) {
-            objInvoice.DLHDon.TTChung.TTKhac.TTin.push({
-              TTruong: 'DVTTe',
-              KDLieu: 'string',
-              DLieu: invoices[i].currency,
-            });
-          }
-          if (invoices[i].ex_rate) {
-            objInvoice.DLHDon.TTChung.TTKhac.TTin.push({
-              TTruong: 'TGia',
-              KDLieu: 'number',
-              DLieu: invoices[i].ex_rate,
-            });
-          }
-          objInvoice.DLHDon.TTChung.TTKhac.TTin.push({
-            TTruong: 'MSTTCGP',
-            KDLieu: 'string',
-            DLieu: '1201496252',
-          });
-
-          objInvoice.DLHDon.NDHDon.NBan.Ten = this.convertHtmlCode(invoices[i].seller_comp_name);
-          objInvoice.DLHDon.NDHDon.NBan.MST = invoices[i].seller_taxcode;
-          objInvoice.DLHDon.NDHDon.NBan.DChi = this.convertHtmlCode(invoices[i].seller_address);
-          objInvoice.DLHDon.NDHDon.NBan.SDThoai = invoices[i].seller_tel;
-          objInvoice.DLHDon.NDHDon.NBan.MCHang = store_code;
-          objInvoice.DLHDon.NDHDon.NBan.TCHang = store_name;
-          objInvoice.DLHDon.NDHDon.NBan.STKNHang = invoices[i].seller_bank_no || ' ';
-          objInvoice.DLHDon.NDHDon.NBan.TNHang = invoices[i].seller_bank_name || ' ';
-
-
-          objInvoice.DLHDon.NDHDon.NBan.TTKhac = {};
-          objInvoice.DLHDon.NDHDon.NBan.TTKhac.TTin = [];
-
-          if (invoices[i].seller_email) {
-            objInvoice.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
-              TTruong: 'DCTDTu',
-              KDLieu: 'string',
-              DLieu: invoices[i].seller_email,
-            });
-          }
-
-          if (invoices[i].seller_fax) {
-            objInvoice.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
-              TTruong: 'Fax',
-              KDLieu: 'string',
-              DLieu: invoices[i].seller_fax,
-            });
-          }
-
-          if (invoices[i].seller_website) {
-            objInvoice.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
-              TTruong: 'Website',
-              KDLieu: 'string',
-              DLieu: invoices[i].seller_website,
-            });
-          }
-
-          objInvoice.DLHDon.NDHDon.NMua.Ten = this.convertHtmlCode(invoices[i].buyer_comp_name);
-          objInvoice.DLHDon.NDHDon.NMua.MST = invoices[i].buyer_taxcode;
-          objInvoice.DLHDon.NDHDon.NMua.HVTNMHang = this.convertHtmlCode(invoices[i].buyer_nm);
-          objInvoice.DLHDon.NDHDon.NMua.DChi = this.convertHtmlCode(invoices[i].buyer_address);
-          objInvoice.DLHDon.NDHDon.NMua.CCCDan = invoices[i].buyer_cccd;
-          objInvoice.DLHDon.NDHDon.NMua.SHChieu = invoices[i].buyer_cid || ' ';
-          objInvoice.DLHDon.NDHDon.NMua.SDThoai = invoices[i].buyer_tel;
-          objInvoice.DLHDon.NDHDon.NMua.MDVQHNSach = "";
-
-
-          objInvoice.DLHDon.NDHDon.NMua.TTKhac = {};
-          objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin = [];
-
-          if (invoices[i].buyer_code) {
-            objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
-              TTruong: 'MKHang',
-              KDLieu: 'string',
-              DLieu: invoices[i].buyer_code,
-            });
-          }
-
-          if (invoices[i].buyer_email) {
-            objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
-              TTruong: 'DCTDTu',
-              KDLieu: 'string',
-              DLieu: invoices[i].buyer_email,
-            });
-          }
-
-          if (invoices[i].buyer_bank_no) {
-            objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
-              TTruong: 'STKNHang',
-              KDLieu: 'string',
-              DLieu: invoices[i].buyer_bank_no,
-            });
-          }
-
-          if (invoices[i].buyer_bank_name) {
-            objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
-              TTruong: 'TNHang',
-              KDLieu: 'string',
-              DLieu: invoices[i].buyer_bank_name,
-            });
-          }
-
-          objInvoice.DLHDon.NDHDon.DSHHDVu = [];
-
-          objInvoice.DLHDon.NDHDon.DSHHDVu = {};
-          objInvoice.DLHDon.NDHDon.DSHHDVu.HHDVu = [];
-
-          for (let j = 0; j < invoices[i].detail_invoice.length; j++) {
-            //console.log("invoices[i].detail_invoice  ", invoices[i].detail_invoice);
-            if (invoices[i].detail_invoice[j].amt_vat) {
-              let TTKhac = {};
-              TTKhac.TTin = [];
-              TTKhac.TTin.push({
-                TTruong: 'VATAmount',
-                KDLieu: 'decimal',
-                DLieu: invoices[i].detail_invoice[j].amt_vat,
-              });
-
-              objInvoice.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
-                TChat: invoices[i].detail_invoice[j].feature,
-                STT: invoices[i].detail_invoice[j].seq,
-                MHHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_code),
-                THHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_name),
-                DVTinh: this.convertHtmlCode(invoices[i].detail_invoice[j].item_uom),
-                SLuong: invoices[i].detail_invoice[j].quantity,
-                DGia: invoices[i].detail_invoice[j].uprice,
-                TLCKhau: invoices[i].detail_invoice[j].dc_rate,
-                STCKhau: invoices[i].detail_invoice[j].dc_amt,
-                ThTien: invoices[i].detail_invoice[j].amt,
-                TSuat: invoices[i].detail_invoice[j].vat_rate,
-                TTKhac: TTKhac,
-              });
-            } else {
-              objInvoice.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
-                TChat: invoices[i].detail_invoice[j].feature,
-                STT: invoices[i].detail_invoice[j].seq,
-                MHHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_code),
-                THHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_name),
-                DVTinh: this.convertHtmlCode(invoices[i].detail_invoice[j].item_uom),
-                SLuong: invoices[i].detail_invoice[j].quantity,
-                DGia: invoices[i].detail_invoice[j].uprice,
-                TLCKhau: invoices[i].detail_invoice[j].dc_rate,
-                STCKhau: invoices[i].detail_invoice[j].dc_amt,
-                ThTien: invoices[i].detail_invoice[j].amt,
-                TSuat: invoices[i].detail_invoice[j].vat_rate,
+            objInvoice.DLHDon.TTChung.TTHDLQuan = [];
+            // console.log("invoices[i].invoice_feature  " ,invoices[i].invoice_feature)
+            if (invoices[i].invoice_feature != 0 && invoices[i].invoice_feature != null) {
+              //
+              objInvoice.DLHDon.TTChung.TTHDLQuan.push({
+                TCHDon: invoices[i].invoice_feature,
+                LHDCLQuan: invoices[i].invoice_type_relative,
+                KHMSHDCLQuan: invoices[i].form_no_relative,
+                KHHDCLQuan: invoices[i].serial_no_relative,
+                SHDCLQuan: invoices[i].invoice_no_relative,
+                NLHDCLQuan: invoices[i].invoice_date_relative,
+                GChu: invoices[i].description,
               });
             }
-          }
 
-          objInvoice.DLHDon.NDHDon.TToan = {};
-          objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat = {};
-          objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat = [];
-
-          //console.log(' weTaxPosReportToTax invoices[i].total_vat_list', invoices[i].total_vat_list);
-
-          for (let j = 0; j < invoices[i].total_vat_list.length; j++) {
-            objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat.push({
-              TSuat: invoices[i].total_vat_list[j].sub_vat_rate,
-              ThTien: invoices[i].total_vat_list[j].sub_amt,
-              TThue: invoices[i].total_vat_list[j].sub_amt_vat,
+            objInvoice.DLHDon.TTChung.TTKhac = {};
+            objInvoice.DLHDon.TTChung.TTKhac.TTin = [];
+            objInvoice.DLHDon.TTChung.TTKhac.TTin.push({
+              TTruong: 'PortalLink',
+              KDLieu: 'string',
+              DLieu: 'https://einvoicepro.webcashvietnam.com/login',
             });
-          }
 
-          objInvoice.DLHDon.NDHDon.TToan.TgTCThue = invoices[i].total_amt;
-          objInvoice.DLHDon.NDHDon.TToan.TgTThue = invoices[i].total_amt_vat;
+            if (invoices[i].currency) {
+              objInvoice.DLHDon.TTChung.TTKhac.TTin.push({
+                TTruong: 'DVTTe',
+                KDLieu: 'string',
+                DLieu: invoices[i].currency,
+              });
+            }
+            if (invoices[i].ex_rate) {
+              objInvoice.DLHDon.TTChung.TTKhac.TTin.push({
+                TTruong: 'TGia',
+                KDLieu: 'number',
+                DLieu: invoices[i].ex_rate,
+              });
+            }
+            objInvoice.DLHDon.TTChung.TTKhac.TTin.push({
+              TTruong: 'MSTTCGP',
+              KDLieu: 'string',
+              DLieu: '1201496252',
+            });
 
-          objInvoice.DLHDon.NDHDon.TToan.TTCKTMai = invoices[i].total_amt_dc;
-          objInvoice.DLHDon.NDHDon.TToan.TgTTTBSo = invoices[i].total_payment;
-          objInvoice.DLHDon.NDHDon.TToan.TgTTTBChu = invoices[i].total_payment_word_vie; // await Utils.Num2VNText2(invoices[i].total_payment.toString(), invoices[i].currency);
+            objInvoice.DLHDon.NDHDon.NBan.Ten = this.convertHtmlCode(invoices[i].seller_comp_name);
+            objInvoice.DLHDon.NDHDon.NBan.MST = invoices[i].seller_taxcode;
+            objInvoice.DLHDon.NDHDon.NBan.DChi = this.convertHtmlCode(invoices[i].seller_address);
+            objInvoice.DLHDon.NDHDon.NBan.SDThoai = invoices[i].seller_tel;
+            objInvoice.DLHDon.NDHDon.NBan.MCHang = store_code;
+            objInvoice.DLHDon.NDHDon.NBan.TCHang = store_name;
+            objInvoice.DLHDon.NDHDon.NBan.STKNHang = invoices[i].seller_bank_no || ' ';
+            objInvoice.DLHDon.NDHDon.NBan.TNHang = invoices[i].seller_bank_name || ' ';
 
-          objInvoice.DSCKS.NBan = '';
 
-          objInvoice.MCCQT = invoices[i].mccqt; //`M1-24-VZQYY-${Math.floor(10000000000 + Math.random() * 9000000000)}`; //
+            objInvoice.DLHDon.NDHDon.NBan.TTKhac = {};
+            objInvoice.DLHDon.NDHDon.NBan.TTKhac.TTin = [];
 
-          objInvoice = {
-            DLHDon: {
-              TTChung: {
-                PBan: '',
-                THDon: '',
-                KHMSHDon: '',
-                KHHDon: '',
-                SHDon: '',
-                NLap: '',
-                TTKhac: '',
-              },
-              NDHDon: {
-                NBan: {
-                  Ten: '',
-                  MST: '',
-                  DChi: '',
-                  SDThoai: '',
-                  TTKhac: '',
-                },
-                NMua: {
-                  Ten: '',
-                  MST: '',
-                  DChi: '',
-                  SDThoai: '',
+            if (invoices[i].seller_email) {
+              objInvoice.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
+                TTruong: 'DCTDTu',
+                KDLieu: 'string',
+                DLieu: invoices[i].seller_email,
+              });
+            }
 
-                  CCCDan: '',
-                  TTKhac: '',
-                },
-                DSHHDVu: {},
-                TToan: {
-                  THTTLTSuat: {
-                    LTSuat: {
-                      TSuat: '',
-                      ThTien: '',
-                      TThue: '',
-                    },
-                  },
-                  TgTCTHue: '',
-                  TgTThue: '',
-                  DSLPhi: {
-                    LPhi: {},
-                  },
-                  TTCKTMai: '',
-                  TgTTTBSo: '',
-                  TgTTTBChu: '',
-                },
-              },
-            },
-            DSCKS: {},
-          };
+            if (invoices[i].seller_fax) {
+              objInvoice.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
+                TTruong: 'Fax',
+                KDLieu: 'string',
+                DLieu: invoices[i].seller_fax,
+              });
+            }
+
+            if (invoices[i].seller_website) {
+              objInvoice.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
+                TTruong: 'Website',
+                KDLieu: 'string',
+                DLieu: invoices[i].seller_website,
+              });
+            }
+
+            objInvoice.DLHDon.NDHDon.NMua.Ten = this.convertHtmlCode(invoices[i].buyer_comp_name);
+            objInvoice.DLHDon.NDHDon.NMua.MST = invoices[i].buyer_taxcode;
+            objInvoice.DLHDon.NDHDon.NMua.HVTNMHang = this.convertHtmlCode(invoices[i].buyer_nm);
+            objInvoice.DLHDon.NDHDon.NMua.DChi = this.convertHtmlCode(invoices[i].buyer_address);
+            objInvoice.DLHDon.NDHDon.NMua.CCCDan = invoices[i].buyer_cccd;
+            objInvoice.DLHDon.NDHDon.NMua.SHChieu = invoices[i].buyer_cid || ' ';
+            objInvoice.DLHDon.NDHDon.NMua.SDThoai = invoices[i].buyer_tel;
+            objInvoice.DLHDon.NDHDon.NMua.MDVQHNSach = "";
+
+
+            objInvoice.DLHDon.NDHDon.NMua.TTKhac = {};
+            objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin = [];
+
+            if (invoices[i].buyer_code) {
+              objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
+                TTruong: 'MKHang',
+                KDLieu: 'string',
+                DLieu: invoices[i].buyer_code,
+              });
+            }
+
+            if (invoices[i].buyer_email) {
+              objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
+                TTruong: 'DCTDTu',
+                KDLieu: 'string',
+                DLieu: invoices[i].buyer_email,
+              });
+            }
+
+            if (invoices[i].buyer_bank_no) {
+              objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
+                TTruong: 'STKNHang',
+                KDLieu: 'string',
+                DLieu: invoices[i].buyer_bank_no,
+              });
+            }
+
+            if (invoices[i].buyer_bank_name) {
+              objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
+                TTruong: 'TNHang',
+                KDLieu: 'string',
+                DLieu: invoices[i].buyer_bank_name,
+              });
+            }
+
+            objInvoice.DLHDon.NDHDon.DSHHDVu = [];
+
+            objInvoice.DLHDon.NDHDon.DSHHDVu = {};
+            objInvoice.DLHDon.NDHDon.DSHHDVu.HHDVu = [];
+
+            for (let j = 0; j < invoices[i].detail_invoice.length; j++) {
+              //console.log("invoices[i].detail_invoice  ", invoices[i].detail_invoice);
+              if (invoices[i].detail_invoice[j].amt_vat) {
+                let TTKhac = {};
+                TTKhac.TTin = [];
+                TTKhac.TTin.push({
+                  TTruong: 'VATAmount',
+                  KDLieu: 'decimal',
+                  DLieu: invoices[i].detail_invoice[j].amt_vat,
+                });
+
+                objInvoice.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
+                  TChat: invoices[i].detail_invoice[j].feature,
+                  STT: invoices[i].detail_invoice[j].seq,
+                  MHHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_code),
+                  THHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_name),
+                  DVTinh: this.convertHtmlCode(invoices[i].detail_invoice[j].item_uom),
+                  SLuong: invoices[i].detail_invoice[j].quantity,
+                  DGia: invoices[i].detail_invoice[j].uprice,
+                  TLCKhau: invoices[i].detail_invoice[j].dc_rate,
+                  STCKhau: invoices[i].detail_invoice[j].dc_amt,
+                  ThTien: invoices[i].detail_invoice[j].amt,
+                  TSuat: invoices[i].detail_invoice[j].vat_rate,
+                  TTKhac: TTKhac,
+                });
+              } else {
+                objInvoice.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
+                  TChat: invoices[i].detail_invoice[j].feature,
+                  STT: invoices[i].detail_invoice[j].seq,
+                  MHHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_code),
+                  THHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_name),
+                  DVTinh: this.convertHtmlCode(invoices[i].detail_invoice[j].item_uom),
+                  SLuong: invoices[i].detail_invoice[j].quantity,
+                  DGia: invoices[i].detail_invoice[j].uprice,
+                  TLCKhau: invoices[i].detail_invoice[j].dc_rate,
+                  STCKhau: invoices[i].detail_invoice[j].dc_amt,
+                  ThTien: invoices[i].detail_invoice[j].amt,
+                  TSuat: invoices[i].detail_invoice[j].vat_rate,
+                });
+              }
+            }
+
+            objInvoice.DLHDon.NDHDon.TToan = {};
+            objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat = {};
+            objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat = [];
+
+            //console.log(' weTaxPosReportToTax invoices[i].total_vat_list', invoices[i].total_vat_list);
+
+            for (let j = 0; j < invoices[i].total_vat_list.length; j++) {
+              objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat.push({
+                TSuat: invoices[i].total_vat_list[j].sub_vat_rate,
+                ThTien: invoices[i].total_vat_list[j].sub_amt,
+                TThue: invoices[i].total_vat_list[j].sub_amt_vat,
+              });
+            }
+
+            objInvoice.DLHDon.NDHDon.TToan.TgTCThue = invoices[i].total_amt;
+            objInvoice.DLHDon.NDHDon.TToan.TgTThue = invoices[i].total_amt_vat;
+
+            objInvoice.DLHDon.NDHDon.TToan.TTCKTMai = invoices[i].total_amt_dc;
+            objInvoice.DLHDon.NDHDon.TToan.TgTTTBSo = invoices[i].total_payment;
+            objInvoice.DLHDon.NDHDon.TToan.TgTTTBChu = invoices[i].total_payment_word_vie; // await Utils.Num2VNText2(invoices[i].total_payment.toString(), invoices[i].currency);
+
+            objInvoice.DSCKS.NBan = '';
+
+            objInvoice.MCCQT = invoices[i].mccqt; //`M1-24-VZQYY-${Math.floor(10000000000 + Math.random() * 9000000000)}`; //
+
           } 
-          
         }
         const id = uuid.v4();
         const signature_path = 'TDiep/CKSNNT';
@@ -1046,9 +947,7 @@ class EInvoiceController2 {
           },
         };
 
-        //console.log('invoices ', invoices);
         for (let i = 0; i < invoices.length; i++) {
-          //console.log('invoices ', invoices[i]);
           const lastInvoiceNo = await DBService.callProcCursor(
             'wt_sel_last_invoice_no',
             [invoices[i].seller_taxcode, invoices[i].serial_no, invoices[i].form_no],
@@ -1056,34 +955,33 @@ class EInvoiceController2 {
             p_crt_by,
             'N',
           );
+
           let last_invoice_no = lastInvoiceNo[0].INVOICE_NO;
           const last_invoice_date = lastInvoiceNo[0].INVOICE_DATE;
           const tomorrow_date = lastInvoiceNo[0].TOMORROW_DATE;
           if (isNaN(last_invoice_no)) {
-            return response.status(409).json(
-              Utils.responseByRule({
-                success: false,
-                message: `Failed to create invoice no. Please contact administrator for helping.`,
-                data: null,
-              }),
-            );
+            json_xml.push({
+            error: `Failed to create invoice no. Please contact administrator for helping.`,
+            xml_process: false,
+          });
+          return {json_xml, data_send_mail};
+  
           }
-
-          if (invoices[i].invoice_date < last_invoice_date && !invoices[i].invoice_no) {
-            return response.status(409).json(
-              Utils.responseByRule({
-                success: false,
-                message: `invoice date cannot smaller than ${last_invoice_date}.`,
-                data: invoices[i].invoice_date,
-              }),
-            );
+          
+          if (Number(invoices[i].invoice_date.replaceAll("-","")) < Number(last_invoice_date.replaceAll("-",""))) {
+             json_xml.push({
+              error: `invoice date cannot smaller than ${last_invoice_date}.`,
+              xml_process: false,
+            });
+            return {json_xml, data_send_mail};
+          
           }
-          if (invoices[i].invoice_date >= tomorrow_date) {
-            return response
-              .status(409)
-              .json(
-                Utils.responseByRule({success: false, message: `invoice date cannot greater than ${tomorrow_date}.`, data: invoices[i].invoice_date}),
-              );
+          if (Number(invoices[i].invoice_date.replaceAll("-","") >= Number(tomorrow_date.replaceAll("-","")))) {
+            json_xml.push({
+              error: `invoice date cannot greater than ${tomorrow_date}.`,  
+             xml_process: false,
+            });
+            return {json_xml, data_send_mail};
           }
           req_key = invoices[i].sale_id;
 
@@ -1283,286 +1181,286 @@ class EInvoiceController2 {
           
           if(invoices[i].version != "2.1.0")
           {
-          objInvoice.DLHDon.TTChung.PBan = invoices[i].version;
-          objInvoice.DLHDon.TTChung.KHMSHDon = invoices[i].form_no;
-          objInvoice.DLHDon.TTChung.KHHDon = invoices[i].serial_no;
-          objInvoice.DLHDon.TTChung.SHDon = invoices[i].invoice_no;
-          objInvoice.DLHDon.TTChung.NLap = invoices[i].invoice_date;
+            objInvoice.DLHDon.TTChung.PBan = invoices[i].version;
+            objInvoice.DLHDon.TTChung.KHMSHDon = invoices[i].form_no;
+            objInvoice.DLHDon.TTChung.KHHDon = invoices[i].serial_no;
+            objInvoice.DLHDon.TTChung.SHDon = invoices[i].invoice_no;
+            objInvoice.DLHDon.TTChung.NLap = invoices[i].invoice_date;
 
-          objInvoice.DLHDon.TTChung.TTHDLQuan = [];
-          // console.log("invoices[i].invoice_feature  " ,invoices[i].invoice_feature)
-          if (invoices[i].invoice_feature != 0 && invoices[i].invoice_feature != null) {
-            //
-            objInvoice.DLHDon.TTChung.TTHDLQuan.push({
-              TCHDon: invoices[i].invoice_feature,
-              LHDCLQuan: invoices[i].invoice_type_relative,
-              KHMSHDCLQuan: invoices[i].form_no_relative,
-              KHHDCLQuan: invoices[i].serial_no_relative,
-              SHDCLQuan: invoices[i].invoice_no_relative,
-              NLHDCLQuan: invoices[i].invoice_date_relative,
-              GChu: invoices[i].description,
-            });
-          }
-
-          objInvoice.DLHDon.TTChung.TTKhac = {};
-          objInvoice.DLHDon.TTChung.TTKhac.TTin = [];
-          objInvoice.DLHDon.TTChung.TTKhac.TTin.push({
-            TTruong: 'PortalLink',
-            KDLieu: 'string',
-            DLieu: 'https://einvoicepro.webcashvietnam.com/login',
-          });
-
-          if (invoices[i].currency) {
-            objInvoice.DLHDon.TTChung.TTKhac.TTin.push({
-              TTruong: 'DVTTe',
-              KDLieu: 'string',
-              DLieu: invoices[i].currency,
-            });
-          }
-          if (invoices[i].ex_rate) {
-            objInvoice.DLHDon.TTChung.TTKhac.TTin.push({
-              TTruong: 'TGia',
-              KDLieu: 'number',
-              DLieu: invoices[i].ex_rate,
-            });
-          }
-          if (invoices[i].payment_method) {
-            objInvoice.DLHDon.TTChung.TTKhac.TTin.push({
-              TTruong: 'HTTToan',
-              KDLieu: 'string',
-              DLieu: invoices[i].payment_method,
-            });
-          }
-          objInvoice.DLHDon.TTChung.TTKhac.TTin.push({
-            TTruong: 'MSTTCGP',
-            KDLieu: 'string',
-            DLieu: '1201496252',
-          });
-
-          objInvoice.DLHDon.NDHDon.NBan.Ten = this.convertHtmlCode(invoices[i].seller_comp_name);
-          objInvoice.DLHDon.NDHDon.NBan.MST = invoices[i].seller_taxcode;
-          objInvoice.DLHDon.NDHDon.NBan.DChi = this.convertHtmlCode(invoices[i].seller_address);
-          objInvoice.DLHDon.NDHDon.NBan.SDThoai = invoices[i].seller_phone;
-
-          objInvoice.DLHDon.NDHDon.NBan.TTKhac = {};
-          objInvoice.DLHDon.NDHDon.NBan.TTKhac.TTin = [];
-
-          if (invoices[i].seller_email) {
-            objInvoice.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
-              TTruong: 'DCTDTu',
-              KDLieu: 'string',
-              DLieu: invoices[i].seller_email,
-            });
-          }
-
-          if (invoices[i].seller_bank_no) {
-            objInvoice.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
-              TTruong: 'STKNHang',
-              KDLieu: 'string',
-              DLieu: invoices[i].seller_bank_no,
-            });
-          }
-
-          if (invoices[i].seller_bank_name) {
-            objInvoice.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
-              TTruong: 'TNHang',
-              KDLieu: 'string',
-              DLieu: invoices[i].seller_bank_name,
-            });
-          }
-
-          if (invoices[i].seller_fax) {
-            objInvoice.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
-              TTruong: 'Fax',
-              KDLieu: 'string',
-              DLieu: invoices[i].seller_fax,
-            });
-          }
-
-          if (invoices[i].seller_website) {
-            objInvoice.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
-              TTruong: 'Website',
-              KDLieu: 'string',
-              DLieu: invoices[i].seller_website,
-            });
-          }
-
-          objInvoice.DLHDon.NDHDon.NMua.Ten = this.convertHtmlCode(invoices[i].buyer_comp_name);
-          objInvoice.DLHDon.NDHDon.NMua.MST = invoices[i].buyer_taxcode;
-          objInvoice.DLHDon.NDHDon.NMua.DChi = this.convertHtmlCode(invoices[i].buyer_address);
-          objInvoice.DLHDon.NDHDon.NMua.CCCDan = invoices[i].buyer_cccd;
-          objInvoice.DLHDon.NDHDon.NMua.SDThoai = invoices[i].buyer_phone;
-          objInvoice.DLHDon.NDHDon.NMua.SHChieu = invoices[i].buyer_cid || ' ';
-          objInvoice.DLHDon.NDHDon.NMua.MDVQHNSach = invoices[i].buyer_unit_cd || '';
-          objInvoice.DLHDon.NDHDon.NMua.HVTNMHang = this.convertHtmlCode(invoices[i].buyer_nm);
-          
-
-          objInvoice.DLHDon.NDHDon.NMua.TTKhac = {};
-          objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin = [];
-
-          if (invoices[i].buyer_code) {
-            objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
-              TTruong: 'MKHang',
-              KDLieu: 'string',
-              DLieu: invoices[i].buyer_code,
-            });
-          }
-
-          if (invoices[i].buyer_email) {
-            objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
-              TTruong: 'DCTDTu',
-              KDLieu: 'string',
-              DLieu: this.convertHtmlCode(invoices[i].buyer_email),
-            });
-          }
-
-          if (invoices[i].buyer_nm) {
-            objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
-              TTruong: 'HVTNMHang',
-              KDLieu: 'string',
-              DLieu: this.convertHtmlCode(invoices[i].buyer_nm),
-            });
-          }
-
-          if (invoices[i].buyer_bank_no) {
-            objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
-              TTruong: 'STKNHang',
-              KDLieu: 'string',
-              DLieu: invoices[i].buyer_bank_no,
-            });
-          }
-
-          if (invoices[i].buyer_bank_name) {
-            objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
-              TTruong: 'TNHang',
-              KDLieu: 'string',
-              DLieu: this.convertHtmlCode(invoices[i].buyer_bank_name),
-            });
-          }
-          //if(invoices[i].buyer_phone)
-
-          objInvoice.DLHDon.NDHDon.DSHHDVu = [];
-
-          objInvoice.DLHDon.NDHDon.DSHHDVu = {};
-          objInvoice.DLHDon.NDHDon.DSHHDVu.HHDVu = [];
-
-          for (let j = 0; j < invoices[i].detail_invoice.length; j++) {
-            //console.log("invoices[i].detail_invoice  ", invoices[i].detail_invoice);
-            if (invoices[i].detail_invoice[j].amt_vat) {
-              let TTKhac = {};
-              TTKhac.TTin = [];
-              TTKhac.TTin.push({
-                TTruong: 'VATAmount',
-                KDLieu: 'decimal',
-                DLieu: invoices[i].detail_invoice[j].amt_vat,
-              });
-
-              objInvoice.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
-                TChat: invoices[i].detail_invoice[j].feature,
-                STT: invoices[i].detail_invoice[j].seq,
-                MHHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_code),
-                THHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_name),
-                DVTinh: this.convertHtmlCode(invoices[i].detail_invoice[j].item_uom),
-                SLuong: invoices[i].detail_invoice[j].quantity,
-                DGia: invoices[i].detail_invoice[j].uprice,
-                TLCKhau: invoices[i].detail_invoice[j].dc_rate,
-                STCKhau: invoices[i].detail_invoice[j].dc_amt,
-                ThTien: invoices[i].detail_invoice[j].amt,
-                TSuat: invoices[i].detail_invoice[j].vat_rate,
-                TTKhac: TTKhac,
-              });
-            } else {
-              objInvoice.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
-                TChat: invoices[i].detail_invoice[j].feature,
-                STT: invoices[i].detail_invoice[j].seq,
-                MHHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_code),
-                THHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_name),
-                DVTinh: this.convertHtmlCode(invoices[i].detail_invoice[j].item_uom),
-                SLuong: invoices[i].detail_invoice[j].quantity,
-                DGia: invoices[i].detail_invoice[j].uprice,
-                TLCKhau: invoices[i].detail_invoice[j].dc_rate,
-                STCKhau: invoices[i].detail_invoice[j].dc_amt,
-                ThTien: invoices[i].detail_invoice[j].amt,
-                TSuat: invoices[i].detail_invoice[j].vat_rate,
+            objInvoice.DLHDon.TTChung.TTHDLQuan = [];
+            // console.log("invoices[i].invoice_feature  " ,invoices[i].invoice_feature)
+            if (invoices[i].invoice_feature != 0 && invoices[i].invoice_feature != null) {
+              //
+              objInvoice.DLHDon.TTChung.TTHDLQuan.push({
+                TCHDon: invoices[i].invoice_feature,
+                LHDCLQuan: invoices[i].invoice_type_relative,
+                KHMSHDCLQuan: invoices[i].form_no_relative,
+                KHHDCLQuan: invoices[i].serial_no_relative,
+                SHDCLQuan: invoices[i].invoice_no_relative,
+                NLHDCLQuan: invoices[i].invoice_date_relative,
+                GChu: invoices[i].description,
               });
             }
-          }
 
-          objInvoice.DLHDon.NDHDon.TToan = {};
-          objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat = {};
-          objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat = [];
-
-          //console.log(' weTaxPosReportToTax invoices[i].total_vat_list', invoices[i].total_vat_list);
-
-          for (let j = 0; j < invoices[i].total_vat_list.length; j++) {
-            objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat.push({
-              TSuat: invoices[i].total_vat_list[j].sub_vat_rate,
-              ThTien: invoices[i].total_vat_list[j].sub_amt,
-              TThue: invoices[i].total_vat_list[j].sub_amt_vat,
+            objInvoice.DLHDon.TTChung.TTKhac = {};
+            objInvoice.DLHDon.TTChung.TTKhac.TTin = [];
+            objInvoice.DLHDon.TTChung.TTKhac.TTin.push({
+              TTruong: 'PortalLink',
+              KDLieu: 'string',
+              DLieu: 'https://einvoicepro.webcashvietnam.com/login',
             });
-          }
 
-          objInvoice.DLHDon.NDHDon.TToan.TgTCThue = invoices[i].total_amt;
-          objInvoice.DLHDon.NDHDon.TToan.TgTThue = invoices[i].total_amt_vat;
+            if (invoices[i].currency) {
+              objInvoice.DLHDon.TTChung.TTKhac.TTin.push({
+                TTruong: 'DVTTe',
+                KDLieu: 'string',
+                DLieu: invoices[i].currency,
+              });
+            }
+            if (invoices[i].ex_rate) {
+              objInvoice.DLHDon.TTChung.TTKhac.TTin.push({
+                TTruong: 'TGia',
+                KDLieu: 'number',
+                DLieu: invoices[i].ex_rate,
+              });
+            }
+            if (invoices[i].payment_method) {
+              objInvoice.DLHDon.TTChung.TTKhac.TTin.push({
+                TTruong: 'HTTToan',
+                KDLieu: 'string',
+                DLieu: invoices[i].payment_method,
+              });
+            }
+            objInvoice.DLHDon.TTChung.TTKhac.TTin.push({
+              TTruong: 'MSTTCGP',
+              KDLieu: 'string',
+              DLieu: '1201496252',
+            });
 
-          objInvoice.DLHDon.NDHDon.TToan.TTCKTMai = invoices[i].total_amt_dc;
-          objInvoice.DLHDon.NDHDon.TToan.TgTTTBSo = invoices[i].total_payment;
-          objInvoice.DLHDon.NDHDon.TToan.TgTTTBChu = invoices[i].total_payment_word_vie; // await Utils.Num2VNText2(invoices[i].total_payment.toString(), invoices[i].currency);
+            objInvoice.DLHDon.NDHDon.NBan.Ten = this.convertHtmlCode(invoices[i].seller_comp_name);
+            objInvoice.DLHDon.NDHDon.NBan.MST = invoices[i].seller_taxcode;
+            objInvoice.DLHDon.NDHDon.NBan.DChi = this.convertHtmlCode(invoices[i].seller_address);
+            objInvoice.DLHDon.NDHDon.NBan.SDThoai = invoices[i].seller_phone;
 
-          objInvoice.DSCKS.NBan = '';
+            objInvoice.DLHDon.NDHDon.NBan.TTKhac = {};
+            objInvoice.DLHDon.NDHDon.NBan.TTKhac.TTin = [];
 
-          objInvoice.MCCQT = invoices[i].mccqt; //`M1-24-VZQYY-${Math.floor(10000000000 + Math.random() * 9000000000)}`; //
+            if (invoices[i].seller_email) {
+              objInvoice.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
+                TTruong: 'DCTDTu',
+                KDLieu: 'string',
+                DLieu: invoices[i].seller_email,
+              });
+            }
 
-          objInvoice = {
-            DLHDon: {
-              TTChung: {
-                PBan: '',
-                THDon: '',
-                KHMSHDon: '',
-                KHHDon: '',
-                SHDon: '',
-                NLap: '',
-                TTKhac: '',
-              },
-              NDHDon: {
-                NBan: {
-                  Ten: '',
-                  MST: '',
-                  DChi: '',
-                  SDThoai: '',
+            if (invoices[i].seller_bank_no) {
+              objInvoice.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
+                TTruong: 'STKNHang',
+                KDLieu: 'string',
+                DLieu: invoices[i].seller_bank_no,
+              });
+            }
+
+            if (invoices[i].seller_bank_name) {
+              objInvoice.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
+                TTruong: 'TNHang',
+                KDLieu: 'string',
+                DLieu: invoices[i].seller_bank_name,
+              });
+            }
+
+            if (invoices[i].seller_fax) {
+              objInvoice.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
+                TTruong: 'Fax',
+                KDLieu: 'string',
+                DLieu: invoices[i].seller_fax,
+              });
+            }
+
+            if (invoices[i].seller_website) {
+              objInvoice.DLHDon.NDHDon.NBan.TTKhac.TTin.push({
+                TTruong: 'Website',
+                KDLieu: 'string',
+                DLieu: invoices[i].seller_website,
+              });
+            }
+
+            objInvoice.DLHDon.NDHDon.NMua.Ten = this.convertHtmlCode(invoices[i].buyer_comp_name);
+            objInvoice.DLHDon.NDHDon.NMua.MST = invoices[i].buyer_taxcode;
+            objInvoice.DLHDon.NDHDon.NMua.DChi = this.convertHtmlCode(invoices[i].buyer_address);
+            objInvoice.DLHDon.NDHDon.NMua.CCCDan = invoices[i].buyer_cccd;
+            objInvoice.DLHDon.NDHDon.NMua.SDThoai = invoices[i].buyer_phone;
+            objInvoice.DLHDon.NDHDon.NMua.SHChieu = invoices[i].buyer_cid || ' ';
+            objInvoice.DLHDon.NDHDon.NMua.MDVQHNSach = invoices[i].buyer_unit_cd || '';
+            objInvoice.DLHDon.NDHDon.NMua.HVTNMHang = this.convertHtmlCode(invoices[i].buyer_nm);
+            
+
+            objInvoice.DLHDon.NDHDon.NMua.TTKhac = {};
+            objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin = [];
+
+            if (invoices[i].buyer_code) {
+              objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
+                TTruong: 'MKHang',
+                KDLieu: 'string',
+                DLieu: invoices[i].buyer_code,
+              });
+            }
+
+            if (invoices[i].buyer_email) {
+              objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
+                TTruong: 'DCTDTu',
+                KDLieu: 'string',
+                DLieu: this.convertHtmlCode(invoices[i].buyer_email),
+              });
+            }
+
+            if (invoices[i].buyer_nm) {
+              objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
+                TTruong: 'HVTNMHang',
+                KDLieu: 'string',
+                DLieu: this.convertHtmlCode(invoices[i].buyer_nm),
+              });
+            }
+
+            if (invoices[i].buyer_bank_no) {
+              objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
+                TTruong: 'STKNHang',
+                KDLieu: 'string',
+                DLieu: invoices[i].buyer_bank_no,
+              });
+            }
+
+            if (invoices[i].buyer_bank_name) {
+              objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
+                TTruong: 'TNHang',
+                KDLieu: 'string',
+                DLieu: this.convertHtmlCode(invoices[i].buyer_bank_name),
+              });
+            }
+            //if(invoices[i].buyer_phone)
+
+            objInvoice.DLHDon.NDHDon.DSHHDVu = [];
+
+            objInvoice.DLHDon.NDHDon.DSHHDVu = {};
+            objInvoice.DLHDon.NDHDon.DSHHDVu.HHDVu = [];
+
+            for (let j = 0; j < invoices[i].detail_invoice.length; j++) {
+              //console.log("invoices[i].detail_invoice  ", invoices[i].detail_invoice);
+              if (invoices[i].detail_invoice[j].amt_vat) {
+                let TTKhac = {};
+                TTKhac.TTin = [];
+                TTKhac.TTin.push({
+                  TTruong: 'VATAmount',
+                  KDLieu: 'decimal',
+                  DLieu: invoices[i].detail_invoice[j].amt_vat,
+                });
+
+                objInvoice.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
+                  TChat: invoices[i].detail_invoice[j].feature,
+                  STT: invoices[i].detail_invoice[j].seq,
+                  MHHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_code),
+                  THHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_name),
+                  DVTinh: this.convertHtmlCode(invoices[i].detail_invoice[j].item_uom),
+                  SLuong: invoices[i].detail_invoice[j].quantity,
+                  DGia: invoices[i].detail_invoice[j].uprice,
+                  TLCKhau: invoices[i].detail_invoice[j].dc_rate,
+                  STCKhau: invoices[i].detail_invoice[j].dc_amt,
+                  ThTien: invoices[i].detail_invoice[j].amt,
+                  TSuat: invoices[i].detail_invoice[j].vat_rate,
+                  TTKhac: TTKhac,
+                });
+              } else {
+                objInvoice.DLHDon.NDHDon.DSHHDVu.HHDVu.push({
+                  TChat: invoices[i].detail_invoice[j].feature,
+                  STT: invoices[i].detail_invoice[j].seq,
+                  MHHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_code),
+                  THHDVu: this.convertHtmlCode(invoices[i].detail_invoice[j].item_name),
+                  DVTinh: this.convertHtmlCode(invoices[i].detail_invoice[j].item_uom),
+                  SLuong: invoices[i].detail_invoice[j].quantity,
+                  DGia: invoices[i].detail_invoice[j].uprice,
+                  TLCKhau: invoices[i].detail_invoice[j].dc_rate,
+                  STCKhau: invoices[i].detail_invoice[j].dc_amt,
+                  ThTien: invoices[i].detail_invoice[j].amt,
+                  TSuat: invoices[i].detail_invoice[j].vat_rate,
+                });
+              }
+            }
+
+            objInvoice.DLHDon.NDHDon.TToan = {};
+            objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat = {};
+            objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat = [];
+
+            //console.log(' weTaxPosReportToTax invoices[i].total_vat_list', invoices[i].total_vat_list);
+
+            for (let j = 0; j < invoices[i].total_vat_list.length; j++) {
+              objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat.push({
+                TSuat: invoices[i].total_vat_list[j].sub_vat_rate,
+                ThTien: invoices[i].total_vat_list[j].sub_amt,
+                TThue: invoices[i].total_vat_list[j].sub_amt_vat,
+              });
+            }
+
+            objInvoice.DLHDon.NDHDon.TToan.TgTCThue = invoices[i].total_amt;
+            objInvoice.DLHDon.NDHDon.TToan.TgTThue = invoices[i].total_amt_vat;
+
+            objInvoice.DLHDon.NDHDon.TToan.TTCKTMai = invoices[i].total_amt_dc;
+            objInvoice.DLHDon.NDHDon.TToan.TgTTTBSo = invoices[i].total_payment;
+            objInvoice.DLHDon.NDHDon.TToan.TgTTTBChu = invoices[i].total_payment_word_vie; // await Utils.Num2VNText2(invoices[i].total_payment.toString(), invoices[i].currency);
+
+            objInvoice.DSCKS.NBan = '';
+
+            objInvoice.MCCQT = invoices[i].mccqt; //`M1-24-VZQYY-${Math.floor(10000000000 + Math.random() * 9000000000)}`; //
+
+            objInvoice = {
+              DLHDon: {
+                TTChung: {
+                  PBan: '',
+                  THDon: '',
+                  KHMSHDon: '',
+                  KHHDon: '',
+                  SHDon: '',
+                  NLap: '',
                   TTKhac: '',
                 },
-                NMua: {
-                  Ten: '',
-                  MST: '',
-                  DChi: '',
-                  SDThoai: '',
+                NDHDon: {
+                  NBan: {
+                    Ten: '',
+                    MST: '',
+                    DChi: '',
+                    SDThoai: '',
+                    TTKhac: '',
+                  },
+                  NMua: {
+                    Ten: '',
+                    MST: '',
+                    DChi: '',
+                    SDThoai: '',
 
-                  CCCDan: '',
-                  TTKhac: '',
-                },
-                DSHHDVu: {},
-                TToan: {
-                  THTTLTSuat: {
-                    LTSuat: {
-                      TSuat: '',
-                      ThTien: '',
-                      TThue: '',
+                    CCCDan: '',
+                    TTKhac: '',
+                  },
+                  DSHHDVu: {},
+                  TToan: {
+                    THTTLTSuat: {
+                      LTSuat: {
+                        TSuat: '',
+                        ThTien: '',
+                        TThue: '',
+                      },
                     },
+                    TgTCTHue: '',
+                    TgTThue: '',
+                    DSLPhi: {
+                      LPhi: {},
+                    },
+                    TTCKTMai: '',
+                    TgTTTBSo: '',
+                    TgTTTBChu: '',
                   },
-                  TgTCTHue: '',
-                  TgTThue: '',
-                  DSLPhi: {
-                    LPhi: {},
-                  },
-                  TTCKTMai: '',
-                  TgTTTBSo: '',
-                  TgTTTBChu: '',
                 },
               },
-            },
-            DSCKS: {},
-          };
+              DSCKS: {},
+            };
           }else
           {
           objInvoice.HDon.DLHDon.TTChung.PBan = invoices[i].version;
@@ -1572,14 +1470,10 @@ class EInvoiceController2 {
           objInvoice.HDon.DLHDon.TTChung.NLap = invoices[i].invoice_date;
           objInvoice.HDon.DLHDon.TTChung.HTTToan = invoices[i].payment_method;
 
-          //objInvoice.DLHDon.TTChung.DVTTe = invoices[i].currency;
-          //objInvoice.DLHDon.TTChung.TGia = invoices[i].ex_rate;
-          //objInvoice.DLHDon.TTChung.MSTTCGP = '1201496252'; //webcashgenuwin.com taxcode
-
-          objInvoice.HDon.DLHDon.TTChung.TTHDLQuan = [];
           // console.log("invoices[i].invoice_feature  " ,invoices[i].invoice_feature)
           if (invoices[i].invoice_feature != 0 && invoices[i].invoice_feature != null) {
-            //
+            objInvoice.HDon.DLHDon.TTChung.TTHDLQuan = [];
+
             objInvoice.HDon.DLHDon.TTChung.TTHDLQuan.push({
               TCHDon: invoices[i].invoice_feature,
               LHDCLQuan: invoices[i].invoice_type_relative,
@@ -1752,8 +1646,6 @@ class EInvoiceController2 {
           objInvoice.HDon.DLHDon.NDHDon.TToan.THTTLTSuat = {};
           objInvoice.HDon.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat = [];
 
-          //console.log(' weTaxPosReportToTax invoices[i].total_vat_list', invoices[i].total_vat_list);
-
           for (let j = 0; j < invoices[i].total_vat_list.length; j++) {
             objInvoice.HDon.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat.push({
               TSuat: invoices[i].total_vat_list[j].sub_vat_rate,
@@ -1773,60 +1665,8 @@ class EInvoiceController2 {
 
           objInvoice.HDon.MCCQT = invoices[i].mccqt; //`M1-24-VZQYY-${Math.floor(10000000000 + Math.random() * 9000000000)}`; //
 
-          objInvoice = {
-          HDon: {
-            DLHDon: {
-              TTChung: {
-                PBan: '',
-                THDon: '',
-                KHMSHDon: '',
-                KHHDon: '',
-                SHDon: '',
-                NLap: '',
-                TTKhac: '',
-              },
-              NDHDon: {
-                NBan: {
-                  Ten: '',
-                  MST: '',
-                  DChi: '',
-                  SDThoai: '',
-                  TTKhac: '',
-                },
-                NMua: {
-                  Ten: '',
-                  MST: '',
-                  DChi: '',
-                  SDThoai: '',
-                  CCCDan: '',
-                  TTKhac: '',
-                },
-                DSHHDVu: {},
-                TToan: {
-                  THTTLTSuat: {
-                    LTSuat: {
-                      TSuat: '',
-                      ThTien: '',
-                      TThue: '',
-                    },
-                  },
-                  TgTCTHue: '',
-                  TgTThue: '',
-                  DSLPhi: {
-                    LPhi: {},
-                  },
-                  TTCKTMai: '',
-                  TgTTTBSo: '',
-                  TgTTTBChu: '',
-                },
-              },
-            },
-            DSCKS: {},
-          },
-        };
           } 
         }
-        //console.log('json_xml objInvoice', JSON.stringify(objInvoice));
 
         const id = uuid.v4();
         const signature_path = 'HDon/DSCKS/NBan';

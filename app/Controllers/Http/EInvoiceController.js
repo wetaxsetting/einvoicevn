@@ -15881,7 +15881,7 @@ class EInvoiceController {
           && (Number(rtnValue.p_rtn_cur[0].TEI_COMPANY_PK) != 201) 
           && (Number(rtnValue.p_rtn_cur[0].TEI_COMPANY_PK) != 462) 
         ) {
- const screte_key = 'RVNJbjib65jkGKJB789';
+           const screte_key = 'RVNJbjib65jkGKJB789';
           const key = Utils.md5(rtnValue.p_rtn_cur[0].TEI_EINVOICE_M_PK + screte_key);
           const type = 'C';
           const axios = use('axios');

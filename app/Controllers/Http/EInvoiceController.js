@@ -22241,6 +22241,130 @@ class EInvoiceController {
     }
   }
 
+  async weTaxGenerateRecordsXmlN70EP({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+
+      const {
+        tei_e_record_pk
+      } = request.all();
+     
+       if (DB_CONNECTION == 'oracle') {
+        oracledb.fetchAsBuffer = [oracledb.BLOB];
+        oracledb.fetchAsString = [oracledb.CLOB];
+      }
+      const para_inv_st = {
+        trade_code: tei_e_record_pk,
+      };
+      const rtnValue = await DBService.ExecuteSQLBlob(
+        `BEGIN ei_sel_e_record_ep (:trade_code,
+                                           :p_language, 
+                                           :p_crt_by, 
+                                           :p_rtn_cur); END;`,
+        para_inv_st,
+        p_language,
+        p_crt_by,
+      );
+
+      const e_record = rtnValue.p_rtn_cur[0];
+
+      let rtnXML = [];
+      let rtnReqKey = 0;
+      let objInvoice = {
+        BKe: {
+          NDBKe: [
+            {
+              TTChung: {
+                PBan: '',
+                TBBan: '',
+                SBBan: '',
+                NBBan: '',
+                TCHDon: '',
+                NBan: '',
+                MSTNBan: '',
+                DCNban: '',
+                NMua: '',
+                MSTNMua: '',
+                DCNmua: '',
+                KHMSHDon: '',
+                KHHDon: '',
+                SHDon: '',
+                DSLDTDoi: [
+                  {
+                    LDo: '',
+                  },
+                ],
+              },
+            },
+          ],
+          DSCKS: {
+            NBan: {},
+            NMua: {},
+            CCKSKhac: {},
+          },
+        },
+      };
+        //rtnReqKey.push(noti.req_key);
+        rtnReqKey = noti.req_key;
+        objInvoice.BKe.NDBKe = [];
+        objInvoice.BKe.NDBKe.push({
+          TTChung: {
+            PBan: e_record.VERSION,
+            TBBan: e_record.EREC_NAME,
+            SBBan: e_record.EREC_NO,
+            NBBan: e_record.EREC_NO,
+            TCHDon: e_record.FEATURE,
+            NBan: this.convertHtmlCode(e_record.SLLR_COMP_NM),
+            MSTNBan: e_record.SLLR_TAXCD,
+            DCNban: this.convertHtmlCode(e_record.SLLR_ADD),
+            NMua: this.convertHtmlCode(e_record.CUS_NM),
+            MSTNMua: e_record.CUS_TAXCD,
+            DCNmua: this.convertHtmlCode(e_record.CUS_ADD),
+            KHMSHDon: e_record.KHMSHDON,
+            KHHDon: e_record.KHHDON,
+            SHDon: e_record.SHDON,
+            DSLDTDoi: [
+              {
+                LDo: this.convertHtmlCode(e_record.REASON),
+              },
+            ],
+          },
+        });
+      
+
+      const id = uuid.v4();
+      const xml = this.OBJtoXML(objInvoice);
+      const xmlId = xml.toString().replace('<NDBKe>', `<NDBKe Id=\'${id}\'>`);
+      const xmlRemoveLine = xmlId.toString().replace(/\n/g, '');
+      rtnXML.push({
+        req_key: rtnReqKey,
+        id_signing: id,
+        url_signing: 'BKe/DSCKS/NBan',
+        xml: xmlRemoveLine,
+      });
+      console.log('weTaxGenerateRecordsXml rtnXML ', rtnXML);
+      console.log('weTaxGenerateRecordsXml END ====================================');
+
+      // return response.send(Utils.response(true, `Convert json to xml was successful. `, rtnXML));
+      return response.status(200).json(Utils.responseByRule({success: true, message: 'Generate e-Record xml successfully.', data: rtnXML}));
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'generalRecordsXml',
+        CONTENT: e.message,
+      });
+      console.log(e);
+      // return response.send(Utils.response(false, e.message, null));
+      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+    }
+  }
+
   async getDataEinvoiceFormLookupMinutesCode2({request, response, auth}) {
     try {
       var p_language = request.header('accept-language', 'ENG');

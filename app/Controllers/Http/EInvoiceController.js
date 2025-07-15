@@ -22310,7 +22310,7 @@ class EInvoiceController {
         },
       };
         //rtnReqKey.push(noti.req_key);
-        rtnReqKey = noti.req_key;
+        rtnReqKey = tei_e_record_pk;
         objInvoice.BKe.NDBKe = [];
         objInvoice.BKe.NDBKe.push({
           TTChung: {

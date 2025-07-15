@@ -22272,7 +22272,7 @@ class EInvoiceController {
       );
 
       const e_record = rtnValue.p_rtn_cur[0];
-
+      console.log('weTaxGenerateRecordsXmlN70EP e_record ', e_record);
       let rtnXML = [];
       let rtnReqKey = 0;
       let objInvoice = {
@@ -22317,7 +22317,7 @@ class EInvoiceController {
             PBan: e_record.VERSION,
             TBBan: e_record.EREC_NAME,
             SBBan: e_record.EREC_NO,
-            NBBan: e_record.EREC_NO,
+            NBBan: e_record.NTBAO,
             TCHDon: e_record.FEATURE,
             NBan: this.convertHtmlCode(e_record.SLLR_COMP_NM),
             MSTNBan: e_record.SLLR_TAXCD,

@@ -23684,7 +23684,7 @@ class EInvoiceController {
           });
         }
       }
-      console.log('jobCheckTradeCodePosInvoice data_inv  ', JSON.stringify(data_inv));
+      //console.log('jobCheckTradeCodePosInvoice data_inv  ', JSON.stringify(data_inv));
 
       const agent = {
         Agent: {
@@ -23956,7 +23956,7 @@ class EInvoiceController {
             p_language,
             p_crt_by,
           );
-
+          console.log('r_data_inv ', r_data_inv);
           data_inv.forEach((element, index) => {
             if (element.form_no === inv.form_no && element.serial_no === inv.serial_no && element.invoice_no === inv.invoice_no) {
               data_inv[index].lookup_code = r_data_inv.p_rtn_cur[0].LOOKUP_CODE;

@@ -23668,7 +23668,6 @@ class EInvoiceController {
       if (data_inv_of_trade_code.p_rtn_cur) {
         for (const inv of data_inv_of_trade_code.p_rtn_cur) {
           p_seller_comp_seller = inv.SLLR_TAXCODE;
-          console.log('jobCheckTradeCodePosInvoice inv  ', inv);
           data_inv.push({
             tax_code: inv.SLLR_TAXCODE,
             form_no: inv.FORM_NO,
@@ -23685,7 +23684,7 @@ class EInvoiceController {
           });
         }
       }
-      // console.log('jobCheckTradeCodePosInvoice data_inv  ', JSON.stringify(data_inv));
+      console.log('jobCheckTradeCodePosInvoice data_inv  ', JSON.stringify(data_inv));
 
       const agent = {
         Agent: {

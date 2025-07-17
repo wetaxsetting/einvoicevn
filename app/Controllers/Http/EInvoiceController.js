@@ -23677,7 +23677,7 @@ class EInvoiceController {
             inform_code: '',
             inform_name: '',
             mccqt: inv.CQT_MCCQT,
-            lookup_code: '',
+            lookup_code: inv.LOOKUP_CODE,
             xml_tax_signed: '',
             sign_datetime: inv.SIGN_DT,
             sign_by: inv.SIGN_BY,
@@ -23700,7 +23700,7 @@ class EInvoiceController {
           Authorization: 'Basic ' + Buffer.from(`${authUserName}:${authPassword}`).toString('base64'),
         },
       }).then(async res => {
-        console.log('jobCheckTradeCodePosInvoice res  ', res.data);
+        //console.log('jobCheckTradeCodePosInvoice res  ', res.data);
         if (res.data.length) {
           for (let j = 0; j < res.data.length; j++) {
             const items = res.data[j];
@@ -23781,7 +23781,7 @@ class EInvoiceController {
                 maGDichDTu = '';
               } else if (items[k].loaiTBao == '8') {
                 //trade_code = items[k].ndungTBao.maGDichTChieu;
-                console.log('jobCheckTradeCodePosInvoice items[k].ndungTBao  ', items[k]);
+                //console.log('jobCheckTradeCodePosInvoice items[k].ndungTBao  ', items[k]);
                 maTBao = items[k].ndungTBao.tbaoKTraDLieu.loaiTBao; //items[k].loaiTBao;
                 tenTBao = items[k].tenTBao;
                 soTBao = items[k].ndungTBao.tbaoKTraDLieu.soTBao;
@@ -23797,7 +23797,7 @@ class EInvoiceController {
                   p_count_error: '',
                 };
 
-                console.log('jobCheckTradeCodePosInvoice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
+                //console.log('jobCheckTradeCodePosInvoice param_ltb_8  ', items[k].loaiTBao, '    ', param_ltb_8);
 
                 await DBService.ExecuteSQLBlob(
                   `BEGIN WT_UPD_HISTORY_D_POS_TB8(

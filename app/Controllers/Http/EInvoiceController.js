@@ -23781,6 +23781,7 @@ class EInvoiceController {
                 maGDichDTu = '';
               } else if (items[k].loaiTBao == '8') {
                 //trade_code = items[k].ndungTBao.maGDichTChieu;
+                console.log('jobCheckTradeCodePosInvoice items[k].ndungTBao  ', items[k]);
                 maTBao = items[k].ndungTBao.tbaoKTraDLieu.loaiTBao; //items[k].loaiTBao;
                 tenTBao = items[k].tenTBao;
                 soTBao = items[k].ndungTBao.tbaoKTraDLieu.soTBao;

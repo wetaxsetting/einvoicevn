@@ -23924,7 +23924,7 @@ class EInvoiceController {
           }
         }
 
-        console.log('check_data ', check_data);
+        //console.log('check_data ', check_data);
 
         for (const inv of data_inv) {
           const param_m = {
@@ -23956,7 +23956,7 @@ class EInvoiceController {
             p_language,
             p_crt_by,
           );
-          console.log('r_data_inv ', r_data_inv);
+          //console.log('r_data_inv ', r_data_inv);
           data_inv.forEach((element, index) => {
             if (element.form_no === inv.form_no && element.serial_no === inv.serial_no && element.invoice_no === inv.invoice_no) {
               data_inv[index].lookup_code = r_data_inv.p_rtn_cur[0].LOOKUP_CODE;

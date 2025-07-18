@@ -20786,7 +20786,7 @@ class EInvoiceController {
                   stckhau: inv_d.STCKhau,
                   thtien: inv_d.ThTien,
                   tsuat: inv_d.TSuat,
-                  tthue: p_vat_amt.
+                  tthue: p_vat_amt,
                 };
 
                 console.log('weTaxExtractPosXMLContent d param ===> ', paraDetails);

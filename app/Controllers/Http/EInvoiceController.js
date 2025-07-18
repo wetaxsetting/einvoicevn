@@ -20779,7 +20779,7 @@ class EInvoiceController {
                   tsuat: inv_d.TSuat,
                 };
 
-                // console.log('weTaxExtractPosXMLContent d param ===> ', paraDetails);
+                console.log('weTaxExtractPosXMLContent d param ===> ', paraDetails);
 
                 const rtnValueDetail = await DBService.ExecuteSQLBlob(
                   `BEGIN WT_UPD_SALE_BILL_d (          

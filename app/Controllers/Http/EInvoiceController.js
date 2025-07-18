@@ -20764,6 +20764,15 @@ class EInvoiceController {
               const invoice_detail = invoice.DLHDon.NDHDon.DSHHDVu.HHDVu;
               for (let inv_d of invoice_detail) {
                 //console.log(" invoice_detail  ", invoice_detail);
+
+                let p_vat_amt = 0;
+
+                inv_d.TTKhac.forEach((element, index) => {
+                  if (element.TTruong == 'VATAmount') {
+                    p_vat_amt = element.DLieu;
+                  }
+                });
+
                 const paraDetails = {
                   tei_wt_invoice_m_pk: rtnValueMaster.p_rtn_cur[0].PK,
                   tchat: inv_d.TChat,
@@ -20777,6 +20786,7 @@ class EInvoiceController {
                   stckhau: inv_d.STCKhau,
                   thtien: inv_d.ThTien,
                   tsuat: inv_d.TSuat,
+                  tthue: p_vat_amt.
                 };
 
                 console.log('weTaxExtractPosXMLContent d param ===> ', paraDetails);
@@ -20795,6 +20805,7 @@ class EInvoiceController {
                                                     :stckhau,
                                                     :thtien,
                                                     :tsuat,
+                                                    :tthue,
                                                     :p_language, 
                                                     :p_crt_by, 
                                                     :p_rtn_cur); END;`,

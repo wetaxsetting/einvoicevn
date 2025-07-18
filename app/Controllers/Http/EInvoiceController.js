@@ -839,7 +839,7 @@ class EInvoiceController {
         }
 
          // TO_DO: TTVAN, TCTN
-          /*jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCGP.TCGP.push({
+          jsonDeclare.TKhai.DLTKhai.NDTKhai.TTTCGP.TCGP.push({
               STT: 2,
               TTCGP: this.convertHtmlCode("Tập Đoàn Bưu Chính Viễn Thông Việt Nam"),
               MSTTCGP: "0100684378",
@@ -855,7 +855,7 @@ class EInvoiceController {
               TNgay: created_date,
               DNgay: "",
               GChu: ""
-            });*/
+            });
         //END TO_DO: TTVAN, TCTN
 
         jsonDeclare.TKhai.DLTKhai.NDTKhai.TTDVHTPT = {};

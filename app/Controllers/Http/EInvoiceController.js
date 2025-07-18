@@ -11757,7 +11757,7 @@ class EInvoiceController {
       // let json =  this.parseXmlToJson(invoice_xml_signed);
       //console.log("weTaxSendPosInvoiceToTaxOffice BEGIN ================================   ");
 
-      const {check_data, data_inv} = await this.weTaxExtractPosXMLContent(
+      const {check_data, data_inv} = await this.weTaxExtractPosXMLContent2(
         invoice_xml_signed,
         seller_tax_code,
         sale_date,
@@ -20371,6 +20371,520 @@ class EInvoiceController {
     } catch (error) {
       console.log('error  ', error);
       return error;
+    }
+  }
+
+  async weTaxExtractPosXMLContent2(
+    xml_content,
+    seller_tax_code,
+    seller_date,
+    tax_serial_number,
+    req_key,
+    store_code,
+    store_name,
+    pos_no,
+    p_language,
+    p_crt_by,
+  ) {
+    let check_data = {};
+    let data_inv = [];
+    let status = '';
+    try {
+      const template = [
+        '//HDon',
+        {
+          DLHDon: {
+            TTChung: {
+              PBan: 'DLHDon/TTChung/PBan',
+              THDon: 'DLHDon/TTChung/THDon',
+              KHMSHDon: 'DLHDon/TTChung/KHMSHDon',
+              KHHDon: 'DLHDon/TTChung/KHHDon',
+              SHDon: 'DLHDon/TTChung/SHDon',
+              NLap: 'DLHDon/TTChung/NLap',
+              TTKhac: [
+                'DLHDon/TTChung/TTKhac/TTin',
+                {
+                  TTruong: 'TTruong',
+                  KDLieu: 'KDLieu',
+                  DLieu: 'DLieu',
+                },
+              ],
+              TTHDLQuan:
+              {
+                TCHDon: 'DLHDon/TTChung/TTHDLQuan/TCHDon',
+                LHDCLQuan: 'DLHDon/TTChung/TTHDLQuan/LHDCLQuan',
+                KHMSHDCLQuan: 'DLHDon/TTChung/TTHDLQuan/KHMSHDCLQuan',
+                KHHDCLQuan: 'DLHDon/TTChung/TTHDLQuan/KHHDCLQuan',
+                SHDCLQuan: 'DLHDon/TTChung/TTHDLQuan/SHDCLQuan',
+                NLapDCLQuan: 'DLHDon/TTChung/TTHDLQuan/NLapDCLQuan',
+                GChu: 'DLHDon/TTChung/TTHDLQuan/GChu',
+              }
+            },
+            NDHDon: {
+              NBan: {
+                Ten: 'DLHDon/NDHDon/NBan/Ten',
+                MST: 'DLHDon/NDHDon/NBan/MST',
+                DChi: 'DLHDon/NDHDon/NBan/DChi',
+                SDThoai: 'DLHDon/NDHDon/NBan/SDThoai',
+                TTKhac: [
+                  'DLHDon/NDHDon/NBan/TTKhac/TTin',
+                  {
+                    TTruong: 'TTruong',
+                    KDLieu: 'KDLieu',
+                    DLieu: 'DLieu',
+                  },
+                ],
+              },
+              NMua: {
+                Ten: 'DLHDon/NDHDon/NMua/Ten',
+                MST: 'DLHDon/NDHDon/NMua/MST',
+                DChi: 'DLHDon/NDHDon/NMua/DChi',
+                SDThoai: 'DLHDon/NDHDon/NMua/SDThoai',
+                CCCDan: 'DLHDon/NDHDon/NMua/CCCDan',
+                TTKhac: [
+                  'DLHDon/NDHDon/NMua/TTKhac/TTin',
+                  {
+                    TTruong: 'TTruong',
+                    KDLieu: 'KDLieu',
+                    DLieu: 'DLieu',
+                  },
+                ],
+              },
+              DSHHDVu: {
+                HHDVu: [
+                  'DLHDon/NDHDon/DSHHDVu/HHDVu',
+                  {
+                    TChat: 'TChat',
+                    STT: 'STT',
+                    MHHDVu: 'MHHDVu',
+                    THHDVu: 'THHDVu',
+                    DVTinh: 'DVTinh',
+                    SLuong: 'SLuong',
+                    DGia: 'DGia',
+                    TLCKhau: 'TLCKhau',
+                    STCKhau: 'STCKhau',
+                    ThTien: 'ThTien',
+                    TSuat: 'TSuat',
+                  },
+                ],
+              },
+              TToan: {
+                THTTLTSuat: {
+                  LTSuat: [
+                    'DLHDon/NDHDon/TToan/THTTLTSuat/LTSuat',
+                    {
+                      TSuat: 'TSuat',
+                      ThTien: 'ThTien',
+                      TThue: 'TThue',
+                    },
+                  ],
+                },
+                DSLPhi: {
+                  LPhi: [
+                    'DLHDon/NDHDon/TToan/DSLPhi/LPhi',
+                    {
+                      TLPhi: 'TLPhi',
+                      TPhi: 'TPhi',
+                    },
+                  ],
+                },
+                TgTCThue: 'DLHDon/NDHDon/TToan/TgTCThue',
+                TgTThue: 'DLHDon/NDHDon/TToan/TgTThue',
+                TTCKTMai: 'DLHDon/NDHDon/TToan/TTCKTMai',
+                TgTTTBSo: 'DLHDon/NDHDon/TToan/TgTTTBSo',
+                TgTTTBChu: 'DLHDon/NDHDon/TToan/TgTTTBChu',
+              },
+            },
+          },
+          DSCKS: [
+            'DSCKS',
+            {
+              NBan: 'NBan',
+            },
+          ],
+          MCCQT: 'MCCQT',
+        },
+      ];
+      const jsonInvoice = await transform(xml_content, template);
+
+      var xpath = require('xpath');
+      var dom = require('@xmldom/xmldom').DOMParser;
+
+      var doc = new dom().parseFromString(xml_content, 'text/xml');
+      var nodes = xpath.select('//HDon', doc);
+
+      const templateSignTime = {
+        SigningTime: 'TDiep/CKSNNT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
+      };
+      const signingTime = await transform(xml_content, templateSignTime);
+
+      //return jsonInvoice;
+      if (jsonInvoice) {
+        const paraPos = {
+          invoice_date: seller_date,
+          seller_tax_code: seller_tax_code,
+          tax_serial_number: tax_serial_number,
+          pos_xml: xml_content,
+          req_key: req_key,
+          signing_time: signingTime.SigningTime,
+          qty: jsonInvoice.length,
+        };
+        //console.log('weTaxExtractPosXMLContent box param ===> ', paraPos);
+
+        const rtnValuePos = await DBService.ExecuteSQLBlob(
+          `BEGIN wt_upd_pos_xml_box (          
+                                        :invoice_date,
+                                        :seller_tax_code,
+                                        :tax_serial_number,
+                                        :pos_xml,
+                                        :req_key,
+                                        :signing_time,
+                                        :qty,
+                                        :p_language, 
+                                        :p_crt_by, 
+                                        :p_rtn_cur); END;`,
+          paraPos,
+          p_language,
+          p_crt_by,
+        );
+
+        // console.log('weTaxExtractPosXMLContent rtnValuePos  ', rtnValuePos);
+        status = rtnValuePos.p_rtn_cur[0].STATUS;
+        if (rtnValuePos.p_rtn_cur[0].STATUS == 'OK') {
+          //console.log("jsonInvoice  ", jsonInvoice);
+          let index_node_xml = 0;
+          for (const invoice of jsonInvoice) {
+            let xml_content = nodes[index_node_xml].toString(); // '<HDon>' + this.OBJtoXML(invoice) + '</HDon>';
+            var getLength = require('utf8-byte-length');
+            let xml_length = getLength(xml_content);
+            // console.log('weTaxExtractPosXMLContent m xml_content ===> ', xml_content);
+            let p_DVTTe = '',
+              p_TGia = '',
+              p_HTTToan = '';
+            invoice.DLHDon.TTChung.TTKhac.forEach((element, index) => {
+              if (element.TTruong == 'DVTTe') {
+                p_DVTTe = element.DLieu;
+              }
+              if (element.TTruong == 'TGia') {
+                p_TGia = element.DLieu;
+              }
+              if (element.TTruong == 'HTTToan') {
+                p_HTTToan = element.DLieu;
+              }
+            });
+
+            let p_DCTDTu = '',
+              p_STKNHang = '',
+              p_TNHang = '',
+              p_Fax = '',
+              p_Website = '';
+            invoice.DLHDon.NDHDon.NBan.TTKhac.forEach((element, index) => {
+              if (element.TTruong == 'DCTDTu') {
+                p_DCTDTu = element.DLieu;
+              }
+              if (element.TTruong == 'STKNHang') {
+                p_STKNHang = element.DLieu;
+              }
+              if (element.TTruong == 'TNHang') {
+                p_TNHang = element.DLieu;
+              }
+
+              if (element.TTruong == 'Fax') {
+                p_Fax = element.DLieu;
+              }
+
+              if (element.TTruong == 'Website') {
+                p_Website = element.DLieu;
+              }
+            });
+
+            let p_nm_DCTDTu = '',
+              p_nm_MKHang = '',
+              p_nm_HVTNMHang = '',
+              p_nm_STKNHang = '',
+              p_nm_TNHang = '';
+            invoice.DLHDon.NDHDon.NMua.TTKhac.forEach((element, index) => {
+              if (element.TTruong == 'DCTDTu') {
+                p_nm_DCTDTu = element.DLieu;
+              }
+              if (element.TTruong == 'MKHang') {
+                p_nm_MKHang = element.DLieu;
+              }
+              if (element.TTruong == 'HVTNMHang') {
+                p_nm_HVTNMHang = element.DLieu;
+              }
+
+              if (element.TTruong == 'STKNHang') {
+                p_nm_STKNHang = element.DLieu;
+              }
+
+              if (element.TTruong == 'TNHang') {
+                p_nm_TNHang = element.DLieu;
+              }
+            });
+            const paraMaster = {
+              pban: invoice.DLHDon.TTChung.PBan,
+              thdon: invoice.DLHDon.TTChung.THDon,
+              khmshdon: invoice.DLHDon.TTChung.KHMSHDon,
+              khhdon: invoice.DLHDon.TTChung.KHHDon,
+              shdon: invoice.DLHDon.TTChung.SHDon,
+              nlap: invoice.DLHDon.TTChung.NLap,
+
+              dvtte: p_DVTTe, //invoice.DLHDon.TTChung.DVTTe,
+              tgia: p_TGia, //invoice.DLHDon.TTChung.TGia,
+              htttoan: p_HTTToan, //invoice.DLHDon.TTChung.HTTToan,
+
+              tchdon: invoice.DLHDon.TTChung.TTHDLQuan.TCHDon,
+              lhdclquan: invoice.DLHDon.TTChung.TTHDLQuan.LHDCLQuan,
+              khmshdclquan: invoice.DLHDon.TTChung.TTHDLQuan.KHMSHDCLQuan,
+              khhdclquan: invoice.DLHDon.TTChung.TTHDLQuan.KHHDCLQuan,
+              shdclquan: invoice.DLHDon.TTChung.TTHDLQuan.SHDCLQuan,
+              nlapdclquan: invoice.DLHDon.TTChung.TTHDLQuan.NLapDCLQuan,
+              gchu: this.encoreHtmlCode(invoice.DLHDon.TTChung.TTHDLQuan.GChu),
+
+              nban_ten: this.encoreHtmlCode(invoice.DLHDon.NDHDon.NBan.Ten),
+              nban_mst: invoice.DLHDon.NDHDon.NBan.MST,
+              nban_dchi: this.encoreHtmlCode(invoice.DLHDon.NDHDon.NBan.DChi),
+              nban_sdthoai: invoice.DLHDon.NDHDon.NBan.SDThoai,
+              nban_dctdtu: p_DCTDTu,
+              nban_stknhang: p_STKNHang,
+              nban_tnhang: this.encoreHtmlCode(p_TNHang),
+              nban_fax: p_Fax,
+              nban_website: p_Website,
+
+              nmua_ten: this.encoreHtmlCode(invoice.DLHDon.NDHDon.NMua.Ten),
+              nmua_mst: invoice.DLHDon.NDHDon.NMua.MST,
+              nmua_dchi: this.encoreHtmlCode(invoice.DLHDon.NDHDon.NMua.DChi),
+              nmua_sdthoai: invoice.DLHDon.NDHDon.NMua.SDThoai,
+              nmua_cccdan: invoice.DLHDon.NDHDon.NMua.CCCDan,
+              nmua_dctdtu: p_nm_DCTDTu,
+              nmua_mkhang: this.encoreHtmlCode(p_nm_MKHang),
+              nmua_hvten: this.encoreHtmlCode(p_nm_HVTNMHang),
+              nmua_stknhang: p_nm_STKNHang,
+              nmua_tnhang: p_nm_TNHang,
+
+              tgtcthue: invoice.DLHDon.NDHDon.TToan.TgTCThue,
+              tgtthue: invoice.DLHDon.NDHDon.TToan.TgTThue,
+              ttcktmai: invoice.DLHDon.NDHDon.TToan.TTCKTMai,
+              tgtttbso: invoice.DLHDon.NDHDon.TToan.TgTTTBSo,
+              tgtttbchu: invoice.DLHDon.NDHDon.TToan.TgTTTBChu,
+              mccqt: invoice.MCCQT,
+              seller_tax_code: seller_tax_code,
+              seller_date: seller_date,
+              store_code: this.encoreHtmlCode(store_code),
+              store_name: this.encoreHtmlCode(store_name),
+              tax_serial_number: tax_serial_number,
+              pos_no: pos_no,
+              signing_time: signingTime.SigningTime,
+              tei_wt_invoice_pos_pk: rtnValuePos.p_rtn_cur[0].PK,
+              xml_content: xml_content,
+              xml_length: xml_length,
+              vat_rate: invoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat[0].TSuat,
+            };
+
+            // console.log('weTaxExtractPosXMLContent m param ===> ', paraMaster);
+
+            const rtnValueMaster = await DBService.ExecuteSQLBlob(
+              `BEGIN WT_UPD_SALE_BILL_2 (          
+                                                  :pban,
+                                                  :thdon,
+                                                  :khmshdon,
+                                                  :khhdon,
+                                                  :shdon,
+                                                  :nlap,
+                                                  :dvtte,
+                                                  :tgia,
+                                                  :vat_rate,
+                                                  :htttoan,
+                                                  :tchdon,
+                                                  :lhdclquan,
+                                                  :khmshdclquan,
+                                                  :khhdclquan,
+                                                  :shdclquan,
+                                                  :nlapdclquan,
+                                                  :gchu,
+                                                  :nban_ten,
+                                                  :nban_mst,
+                                                  :nban_dchi,
+                                                  :nban_sdthoai,
+                                                  :nban_dctdtu,
+                                                  :nban_stknhang,
+                                                  :nban_tnhang,
+                                                  :nban_fax,
+                                                  :nban_website,
+                                                  :nmua_ten,
+                                                  :nmua_mst,
+                                                  :nmua_dchi,
+                                                  :nmua_sdthoai,
+                                                  :nmua_cccdan,
+                                                  :nmua_dctdtu,
+                                                  :nmua_mkhang,
+                                                  :nmua_hvten,
+                                                  :nmua_stknhang,
+                                                  :nmua_tnhang,
+                                                  :tgtcthue,
+                                                  :tgtthue,
+                                                  :ttcktmai,
+                                                  :tgtttbso,
+                                                  :tgtttbchu,
+                                                  :mccqt,
+                                                  :seller_tax_code,
+                                                  :seller_date,
+                                                  :store_code,
+                                                  :store_name,
+                                                  :tax_serial_number,
+                                                  :pos_no,
+                                                  :signing_time,
+                                                  :tei_wt_invoice_pos_pk,
+                                                  :xml_content,
+                                                  :xml_length,
+                                                  :p_language, 
+                                                  :p_crt_by, 
+                                                  :p_rtn_cur); END;`,
+              paraMaster,
+              p_language,
+              p_crt_by,
+            );
+            // console.log('weTaxExtractPosXMLContent rtnValueMaster  ', rtnValueMaster);
+            status = rtnValueMaster.p_rtn_cur[0].STATUS;
+            // tao json hd va trann thai các kiểu để sau này trả về cho WeTax dễ update
+            data_inv.push({
+              mccqt: invoice.MCCQT,
+              tax_code: invoice.DLHDon.NDHDon.NBan.MST,
+              form_no: invoice.DLHDon.TTChung.KHMSHDon,
+              serial_no: invoice.DLHDon.TTChung.KHHDon,
+              invoice_no: invoice.DLHDon.TTChung.SHDon,
+              inform_code: '', //8
+              inform_name: '', //Dữ liệu hóa đơn hợp lệ
+              lookup_code: '',
+              sign_datetime: signingTime.SigningTime,
+              sign_by: invoice.DLHDon.NDHDon.NBan.Ten,
+            });
+            if (rtnValueMaster.p_rtn_cur[0].STATUS == 'OK') {
+              const invoice_detail = invoice.DLHDon.NDHDon.DSHHDVu.HHDVu;
+              for (let inv_d of invoice_detail) {
+                //console.log(" invoice_detail  ", invoice_detail);
+                const paraDetails = {
+                  tei_wt_invoice_m_pk: rtnValueMaster.p_rtn_cur[0].PK,
+                  tchat: inv_d.TChat,
+                  stt: inv_d.STT,
+                  mhhdvu: this.encoreHtmlCode(inv_d.MHHDVu),
+                  thhdvu: this.encoreHtmlCode(inv_d.THHDVu),
+                  dvtinh: inv_d.DVTinh,
+                  sluong: inv_d.SLuong,
+                  dgia: inv_d.DGia,
+                  tlckhau: inv_d.TLCKhau,
+                  stckhau: inv_d.STCKhau,
+                  thtien: inv_d.ThTien,
+                  tsuat: inv_d.TSuat,
+                };
+
+                // console.log('weTaxExtractPosXMLContent d param ===> ', paraDetails);
+
+                const rtnValueDetail = await DBService.ExecuteSQLBlob(
+                  `BEGIN WT_UPD_SALE_BILL_d (          
+                                                    :tei_wt_invoice_m_pk,
+                                                    :tchat,
+                                                    :stt,
+                                                    :mhhdvu,
+                                                    :thhdvu,
+                                                    :dvtinh,
+                                                    :sluong,
+                                                    :dgia,
+                                                    :tlckhau,
+                                                    :stckhau,
+                                                    :thtien,
+                                                    :tsuat,
+                                                    :p_language, 
+                                                    :p_crt_by, 
+                                                    :p_rtn_cur); END;`,
+                  paraDetails,
+                  p_language,
+                  p_crt_by,
+                );
+
+                // console.log(' weTaxExtractPosXMLContent rtnValueDetail  ', rtnValueDetail);
+              }
+
+              const invoice_detail_vat = invoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat;
+              for (const inv_d_vat of invoice_detail_vat) {
+                //console.log(" inv_d_vat  ", inv_d_vat);
+                const para_amt_vat = {
+                  tei_wt_sale_bill_pk: rtnValueMaster.p_rtn_cur[0].PK,
+                  sub_amt: inv_d_vat.ThTien,
+                  sub_vat_rate: inv_d_vat.TSuat,
+                  sub_vat_amt: inv_d_vat.TThue,
+                };
+
+                // console.log('weTaxExtractPosXMLContent d vat param  ===> ', para_amt_vat);
+
+                const rtnValue_VAT = await DBService.ExecuteSQLBlob(
+                  `BEGIN WT_UPD_SALE_BILL_d_vat (          
+                                                                      :tei_wt_sale_bill_pk,
+                                                                      :sub_amt,
+                                                                      :sub_vat_rate,
+                                                                      :sub_vat_amt,
+                                                                      :p_language, 
+                                                                      :p_crt_by, 
+                                                                      :p_rtn_cur); END;`,
+                  para_amt_vat,
+                  p_language,
+                  p_crt_by,
+                );
+
+                // console.log(' weTaxExtractPosXMLContent invoice_detail_vat  ', rtnValue_VAT);
+              }
+            } else if (rtnValueMaster.p_rtn_cur[0].STATUS == 'RESEND') {
+              check_data = {
+                PK: rtnValuePos.p_rtn_cur[0].PK,
+                TEI_HISTORY_M_PK: rtnValuePos.p_rtn_cur[0].TEI_HISTORY_M_PK,
+                STATUS: 'OK', // rtnValuePos.p_rtn_cur[0].STATUS,
+              };
+
+              // return {check_data, data_inv};
+            } else {
+              check_data = {
+                PK: null,
+                //TEI_HISTORY_M_PK: null,
+                STATUS: 'FAILE',
+              };
+
+              return {check_data, data_inv};
+            }
+            index_node_xml++;
+          }
+        } else {
+          check_data = {
+            PK: null,
+            TEI_HISTORY_M_PK: null,
+            STATUS: 'FAILE',
+          };
+
+          return {check_data, data_inv};
+        }
+
+        check_data = {
+          PK: rtnValuePos.p_rtn_cur[0].PK,
+          TEI_HISTORY_M_PK: rtnValuePos.p_rtn_cur[0].TEI_HISTORY_M_PK,
+          STATUS: rtnValuePos.p_rtn_cur[0].STATUS,
+        };
+
+        // console.log('weTaxExtractPosXMLContent END ===> check_data ', check_data, ' data_inv ', data_inv);
+
+        return {check_data, data_inv};
+      }
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'extractXMLContent',
+        CONTENT: e.message,
+      });
+      console.log('===> extractXMLContent ', e.message);
+      return (check_data = {
+        PK: -2,
+        STATUS: 'FAILE',
+      }); //master[0].PK;;
     }
   }
 

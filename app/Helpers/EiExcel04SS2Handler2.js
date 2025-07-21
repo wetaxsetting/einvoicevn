@@ -109,7 +109,7 @@ class EiExcelHandler {
         {startCell: 7, endCell: 7, cellType: 1, cellBorder: 'thin', field: 'INVOICE_DATE'}, //type 1: còn lại
         {startCell: 8, endCell: 8, cellType: 1, cellBorder: 'thin', field: 'TOT_NET_TR_AMT'}, //type 1: còn lại
         {startCell: 9, endCell: 9, cellType: 1, cellBorder: 'thin', field: 'TOT_VAT_TR_AMT'}, //type 1: còn lại
-         {startCell: 9, endCell: 10, cellType: 1, cellBorder: 'thin', field: 'TOT_AMT'}, //type 1: còn lại
+        {startCell: 10, endCell: 10, cellType: 1, cellBorder: 'thin', field: 'TOT_AMT'}, //type 1: còn lại
       ];
 
       // if(einvoiceMasterData[0].URL_IMG_BG != "" && einvoiceMasterData[0].URL_IMG_BG != null )

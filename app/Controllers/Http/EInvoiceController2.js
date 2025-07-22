@@ -2848,7 +2848,8 @@ class EInvoiceController2 {
                   if (element.inform_code == '' && element.inform_name == '') {
                     (data_inv[index].inform_code = maTBao), //items[k].loaiTBao;
                       (data_inv[index].inform_name = tenTBao), //'Dữ liệu hóa đơn hợp lệ';
-                      (data_inv[index].xml_tax_signed = xml_tax_signed);
+                      //(data_inv[index].xml_tax_signed = xml_tax_signed);
+                      (data_inv[index].xml_tax_signed = invoice_xml_signed); 
                   }
                 });
               } else if (items[k].loaiTBao == '9' || items[k].loaiTBao == '7') {

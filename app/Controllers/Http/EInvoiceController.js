@@ -815,7 +815,7 @@ class EInvoiceController {
               STT: solution_provider[i].sequence || i + 1,
               TTCGP: this.convertHtmlCode(solution_provider[i].organization_name),
               MSTTCGP: solution_provider[i].organization_taxcode,
-              TNgay: solution_provider[i].from_date,
+              TNgay: created_date,//solution_provider[i].from_date,
               DNgay: solution_provider[i].to_date,
               GChu: solution_provider[i].note,
             });
@@ -831,7 +831,7 @@ class EInvoiceController {
               STT: tvan_company[i].sequence || i + 1,
               TTCTN: this.convertHtmlCode(tvan_company[i].organization_name),
               MSTTCTN: tvan_company[i].organization_taxcode,
-              TNgay: tvan_company[i].from_date,
+              TNgay: created_date,// tvan_company[i].from_date,
               DNgay: tvan_company[i].to_date,
               GChu: tvan_company[i].note,
             });

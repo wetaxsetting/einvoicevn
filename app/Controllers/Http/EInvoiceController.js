@@ -3904,13 +3904,23 @@ class EInvoiceController {
                contentNotice = child.ndungTBao.tbaoTNhanDTu;
                loaiTBao = child.loaiTBao;
             } else if (child.loaiTBao == '5') {
-              soTB = child.ndungTBao.tbaoTNhanDTu.soTBao;
-              ngayTB = child.ndungTBao.tbaoTNhanDTu.ngayTBao;
-              thoiGianCQTKy = child.ndungTBao.tbaoTNhanDTu.ngayCQTKy;
+              soTB = child.ndungTBao.tbaoDKyDTu.soTBao;
+              ngayTB = child.ndungTBao.tbaoDKyDTu.ngayTBao;
+              thoiGianCQTKy = child.ndungTBao.tbaoDKyDTu.ngayCQTKy;
               ketQua = '1-chấp nhận';
               messCQT = child.tenTBao;
               status = '1';
-               contentNotice = child.ndungTBao.tbaoTNhanDTu;
+               contentNotice = child.ndungTBao.tbaoDKyDTu;
+               loaiTBao = child.loaiTBao;
+            }
+            else if (child.loaiTBao == '6') {
+              soTB = child.ndungTBao.tbaoDKyDTu.soTBao;
+              ngayTB = child.ndungTBao.tbaoDKyDTu.ngayTBao;
+              thoiGianCQTKy = child.ndungTBao.tbaoDKyDTu.ngayCQTKy;
+              ketQua = '0-không chấp nhận';
+              messCQT = child.tenTBao;
+              status = '0';
+               contentNotice = child.ndungTBao.tbaoDKyDTu;
                loaiTBao = child.loaiTBao;
             }
             tenTBao = child.tenTBao;
@@ -3927,7 +3937,7 @@ class EInvoiceController {
             req_key: req_key,
             inform_desc: tenTBao,
             inform_code: loaiTBao,
-            //content: contentNotice,
+            content: contentNotice,
             pos_key: pos_key,
           },
         }),

@@ -11736,7 +11736,7 @@ class EInvoiceController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
-      console.log('weTaxSendPosInvoiceToTaxOffice user ', user);
+      //console.log('weTaxSendPosInvoiceToTaxOffice user ', user);
 
       const authUserName = 'GENUWIN'; // "GENUWIN";
       const authPassword = 'genuwin123'; // "e_GX4v@";
@@ -20465,6 +20465,14 @@ class EInvoiceController {
                     STCKhau: 'STCKhau',
                     ThTien: 'ThTien',
                     TSuat: 'TSuat',
+                    TTKhac: [
+                      'TTKhac/TTin',
+                      {
+                        TTruong: 'TTruong',
+                        KDLieu: 'KDLieu',
+                        DLieu: 'DLieu',
+                      },
+                    ],
                   },
                 ],
               },
@@ -20766,13 +20774,15 @@ class EInvoiceController {
                 //console.log(" invoice_detail  ", invoice_detail);
 
                 let p_vat_amt = 0;
-
-                inv_d.TTKhac.forEach((element, index) => {
-                  if (element.TTruong == 'VATAmount') {
-                    p_vat_amt = element.DLieu;
-                  }
-                });
-
+                if(inv_d.TTKhac)
+                {
+                  inv_d.TTKhac.forEach((element, index) => {
+                    if (element.TTruong == 'VATAmount') {
+                      p_vat_amt = element.DLieu;
+                    }
+                  });
+                }
+                
                 const paraDetails = {
                   tei_wt_invoice_m_pk: rtnValueMaster.p_rtn_cur[0].PK,
                   tchat: inv_d.TChat,
@@ -20891,7 +20901,7 @@ class EInvoiceController {
         FUNC: 'extractXMLContent',
         CONTENT: e.message,
       });
-      console.log('===> extractXMLContent ', e.message);
+      console.log('===> extractXMLContent ', e);
       return (check_data = {
         PK: -2,
         STATUS: 'FAILE',

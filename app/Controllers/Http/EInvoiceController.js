@@ -24492,7 +24492,7 @@ class EInvoiceController {
       });
       console.log('weTaxCallBackStatusPosInv rtnValue  ', rtnValue);
 
-      if (check_data.CRT_BY == 'wetax-test') {
+      if (check_data.CRT_BY == 'wetax-test' && data_inv) {
         this.weTaxCallBackStatusPosInv(data_inv, '/api/wtx/v1/pos-invoice-delivery-status', 'WTPTA003');
         let tax_code = data_inv[0].tax_code;
         for (const inv of data_inv) {

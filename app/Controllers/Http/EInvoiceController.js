@@ -10108,10 +10108,6 @@ class EInvoiceController {
         //return response.send(Utils.response(false, "form_no can't null",null));
         return response.status(400).json(Utils.responseByRule({success: false, message: "form_no can't null"}));
       }
-      if (form_no.length !== 1) {
-        // return response.send(Utils.response(false, "length form_no is 1 ",null));
-        return response.status(400).json(Utils.responseByRule({success: false, message: 'length form_no is 1 '}));
-      }
       if (!serial_no) {
         // return response.send(Utils.response(false, "serial_no can't null",null));
         return response.status(400).json(Utils.responseByRule({success: false, message: "serial_no can't null"}));

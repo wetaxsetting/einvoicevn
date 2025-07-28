@@ -10870,11 +10870,8 @@ class EInvoiceController {
       if (!serial_no) {
         // return response.send(Utils.response(false, "serial_no can't null",null));
         return response.status(400).json(Utils.responseByRule({success: false, message: "serial_no can't null"}));
-      } else if (serial_no.length !== 6) {
-        //return response.send(Utils.response(false, "length serial_no is 6 ",null));
-        return response.status(400).json(Utils.responseByRule({success: false, message: 'length serial_no is 6 '}));
       }
-      if (!template_id) {
+     s if (!template_id) {
         // return response.send(Utils.response(false, "template_id can't null",null));
         return response.status(400).json(Utils.responseByRule({success: false, message: "template_id can't null"}));
       }

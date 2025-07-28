@@ -10871,14 +10871,14 @@ class EInvoiceController {
         // return response.send(Utils.response(false, "serial_no can't null",null));
         return response.status(400).json(Utils.responseByRule({success: false, message: "serial_no can't null"}));
       }
-     s if (!template_id) {
+      if (!template_id) {
         // return response.send(Utils.response(false, "template_id can't null",null));
         return response.status(400).json(Utils.responseByRule({success: false, message: "template_id can't null"}));
       }
-      if (template_id.length !== 10) {
-        // return response.send(Utils.response(false, "length template_id is 10 ",null));
-        return response.status(400).json(Utils.responseByRule({success: false, message: 'length template_id is 10 '}));
-      }
+      // if (template_id.length !== 10) {
+      //   // return response.send(Utils.response(false, "length template_id is 10 ",null));
+      //   return response.status(400).json(Utils.responseByRule({success: false, message: 'length template_id is 10 '}));
+      // }
       if (!start_date) {
         // return response.send(Utils.response(false, "start_date can't null",null));
         return response.status(400).json(Utils.responseByRule({success: false, message: "start_date can't null"}));

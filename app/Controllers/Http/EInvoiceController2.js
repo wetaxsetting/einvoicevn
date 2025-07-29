@@ -1810,7 +1810,7 @@ class EInvoiceController2 {
             objInvoice.HDon.DLHDon.NDHDon.NMua.SDThoai = invoices[i].buyer_phone || '';
             objInvoice.HDon.DLHDon.NDHDon.NMua.DChi = this.convertHtmlCode(invoices[i].buyer_address) || '';
             objInvoice.HDon.DLHDon.NDHDon.NMua.CCCDan = invoices[i].buyer_cccd || '';
-            objInvoice.HDon.DLHDon.NDHDon.NMua.SHChieu = invoices[i].buyer_cid || '';
+            objInvoice.HDon.DLHDon.NDHDon.NMua.SHChieu = invoices[i].passport_no || '';
             objInvoice.HDon.DLHDon.NDHDon.NMua.MKHang = invoices[i].buyer_code || '';
             objInvoice.HDon.DLHDon.NDHDon.NMua.MDVQHNSach = invoices[i].buyer_unit_cd || '';
             objInvoice.HDon.DLHDon.NDHDon.NMua.HVTNMHang = this.convertHtmlCode(invoices[i].buyer_name) || '';

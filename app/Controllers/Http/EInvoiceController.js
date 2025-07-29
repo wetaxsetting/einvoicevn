@@ -12538,6 +12538,7 @@ class EInvoiceController {
         objInvoice_M.HDon.DLHDon.TTChung.DVTTe = invoices[i].currency;
         objInvoice_M.HDon.DLHDon.TTChung.TGia = invoices[i].ex_rate;
         objInvoice_M.HDon.DLHDon.TTChung.HTTToan = invoices[i].payment_method;
+        objInvoice_M.HDon.DLHDon.TTChung.HDCTTChinh = invoices[i].lease_invoice_type || '0'; //webcashgenuwin.com taxcode
         objInvoice_M.HDon.DLHDon.TTChung.MSTTCGP = '1201496252'; //webcashgenuwin.com taxcode
 
         objInvoice_M.HDon.DLHDon.TTChung.TTHDLQuan = [];
@@ -12571,6 +12572,10 @@ class EInvoiceController {
         objInvoice_M.HDon.DLHDon.NDHDon.NMua.SDThoai = invoices[i].buyer_phone || '';
         objInvoice_M.HDon.DLHDon.NDHDon.NMua.DChi = this.convertHtmlCode(invoices[i].buyer_address) || '';
         objInvoice_M.HDon.DLHDon.NDHDon.NMua.MKHang = invoices[i].buyer_code || '';
+        objInvoice_M.HDon.DLHDon.NDHDon.NMua.MDVQHNSach = invoices[i].buyer_unit_cd || '';
+        objInvoice_M.HDon.DLHDon.NDHDon.NMua.CCCDan = invoices[i].buyer_cccd || '';
+        objInvoice_M.HDon.DLHDon.NDHDon.NMua.SHChieu = invoices[i].passport_no || '';
+
         objInvoice_M.HDon.DLHDon.NDHDon.NMua.HVTNMHang = this.convertHtmlCode(invoices[i].buyer_name) || '';
         objInvoice_M.HDon.DLHDon.NDHDon.NMua.DCTDTu = invoices[i].buyer_email || '';
         objInvoice_M.HDon.DLHDon.NDHDon.NMua.STKNHang = invoices[i].buyer_bank_no || '';

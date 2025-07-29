@@ -1641,6 +1641,7 @@ class EInvoiceController2 {
                 KHHDon: '',
                 SHDon: '',
                 NLap: '',
+                HDCTTChinh:'',
                 DVTTe: '',
                 TGia: '',
                 HTTToan: '',
@@ -1664,7 +1665,10 @@ class EInvoiceController2 {
                   MST: '',
                   DChi: '',
                   MKHang: '',
+                  MDVQHNSach: '',
                   SDThoai: '',
+                  CCCDan: '',
+                  SHChieu: '',
                   DCTDTu: '',
                   STKNHang: '',
                   HVTNMHang: '',
@@ -1692,12 +1696,10 @@ class EInvoiceController2 {
           },
         };
         if (invoices.length == undefined || invoices.length == 0) {
-          // return response.send(Utils.response(false, `Invalid json format!`,null));
           return response.status(400).json(Utils.responseByRule({success: false, message: 'Invalid json format!'}));
         }
 
         for (let i = 0; i < invoices.length; i++) {
-          //console.log("invoices:", invoices[i])
           const lastInvoiceNo = await DBService.callProcCursor(
             'wt_sel_last_invoice_no',
             [invoices[i].seller_taxcode, invoices[i].serial_no, invoices[i].form_no],
@@ -1779,10 +1781,8 @@ class EInvoiceController2 {
             objInvoice.HDon.DLHDon.TTChung.HTTToan = invoices[i].payment_method;
             objInvoice.HDon.DLHDon.TTChung.MSTTCGP = '1201496252'; //webcashgenuwin.com taxcode
 
-            objInvoice.HDon.DLHDon.TTChung.TTHDLQuan = [];
-            // console.log("invoices[i].invoice_feature  " ,invoices[i].invoice_feature)
             if (invoices[i].invoice_feature != 0 && invoices[i].invoice_feature != null) {
-              //
+              objInvoice.HDon.DLHDon.TTChung.TTHDLQuan = [];
               objInvoice.HDon.DLHDon.TTChung.TTHDLQuan.push({
                 TCHDon: invoices[i].invoice_feature,
                 LHDCLQuan: invoices[i].invoice_type_relative,
@@ -1809,7 +1809,10 @@ class EInvoiceController2 {
             objInvoice.HDon.DLHDon.NDHDon.NMua.MST = invoices[i].buyer_taxcode || '';
             objInvoice.HDon.DLHDon.NDHDon.NMua.SDThoai = invoices[i].buyer_phone || '';
             objInvoice.HDon.DLHDon.NDHDon.NMua.DChi = this.convertHtmlCode(invoices[i].buyer_address) || '';
+            objInvoice.HDon.DLHDon.NDHDon.NMua.CCCDan = invoices[i].buyer_cccd || '';
+            objInvoice.HDon.DLHDon.NDHDon.NMua.SHChieu = invoices[i].buyer_cid || '';
             objInvoice.HDon.DLHDon.NDHDon.NMua.MKHang = invoices[i].buyer_code || '';
+            objInvoice.HDon.DLHDon.NDHDon.NMua.MDVQHNSach = invoices[i].buyer_unit_cd || '';
             objInvoice.HDon.DLHDon.NDHDon.NMua.HVTNMHang = this.convertHtmlCode(invoices[i].buyer_name) || '';
             objInvoice.HDon.DLHDon.NDHDon.NMua.DCTDTu = invoices[i].buyer_email || '';
             objInvoice.HDon.DLHDon.NDHDon.NMua.STKNHang = invoices[i].buyer_bank_no || '';

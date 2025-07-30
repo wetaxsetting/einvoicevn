@@ -3317,7 +3317,7 @@ class EInvoiceController {
         });
       }
       //console.log('weTaxCheckInvoiceStatusFromTaxOffice sendMailNormailWT  ', JSON.stringify(data_inv));
-      this.sendMailNormailWT(data_inv, 'WTPTA003-1', p_language, p_crt_by);
+      //this.sendMailNormailWT(data_inv, 'WTPTA003-1', p_language, p_crt_by);
       // return response.send(
       //   Utils.response(true, `${data.length} invoices was update status from tax office.`, rtnValue)
       // );

@@ -1000,7 +1000,7 @@ class EInvoiceController2 {
             });
           }
 
-          if (invoices[i].buyer_nm) {
+          if (invoices[i].buyer_nm && invoices[i].buyer_nm != '') {
             objInvoice.HDon.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
               TTruong: 'HVTNMHang',
               KDLieu: 'string',

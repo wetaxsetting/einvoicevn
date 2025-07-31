@@ -67,6 +67,7 @@ const {create, createCB} = require('xmlbuilder2');
 const EINVOICE_API_SEND_MAIL = 'http://sendmail.webcashvietnam.com/api/user/sendmail';
 const EINVOICE_API_SEND_MAIL_SMTP = 'http://sendmail.webcashvietnam.com/api/user/sendmailsmtp';
 const EINVOICE_API_SEND_MAIL_PRIVATE = 'http://sendmail.webcashvietnam.com/api/user/sendmailprivate';
+const EINVOICE_API_SEND_MAIL_BY_APP_PASSWORD = 'http://sendmail.webcashvietnam.com/api/user/send-mail-by-app-password';
 const moment = require('moment');
 const {jar} = require('request');
 const {lookup} = require('dns');
@@ -21445,7 +21446,10 @@ class EInvoiceController {
             /*} else if (invoice.tei_company_pk == '442' || invoice.tei_company_pk == '503') {
             url = EINVOICE_API_SEND_MAIL_PRIVATE;
           */
-          } else {
+          } else if (invoice.tei_company_pk == '161') {
+            url = EINVOICE_API_SEND_MAIL_BY_APP_PASSWORD;
+          }
+           else {
             url = EINVOICE_API_SEND_MAIL;
           }
           //console.log('url  ', url);

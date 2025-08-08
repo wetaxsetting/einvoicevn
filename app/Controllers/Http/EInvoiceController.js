@@ -6846,11 +6846,6 @@ class EInvoiceController {
       if (!valid.status) {
         return response.status(400).json(Utils.responseByRule({success: false, message: valid.message}));
       }
-      /*let invoices_sample=[
-                            {master:{},detail:[{}]},
-                            {master:{},detail:[{}]},
-                            {master:{},detail:[{}]},
-                        ];*/
       ////console.log("invoices1:", invoices)
       if (invoices.length == undefined || invoices.length == 0) {
         return response.status(400).json(Utils.responseByRule({success: false, message: `Invalid: list_invoice`}));

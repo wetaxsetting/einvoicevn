@@ -3839,6 +3839,7 @@ class EInvoiceController {
                   NgayCQTKy: 'TDiep/DLieu/TBao/DSCKS/CQT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
                 };
                 const data_of_103 = await transform(base64XML, temp_of_103);
+                pos_key = data_of_103.MCCQT;
 
                 para_history = {
                   p_CQT_Code: trade_code,
@@ -3858,7 +3859,6 @@ class EInvoiceController {
                   p_HTDKy: '',
                 };
               }
-
               console.log('weTaxSendDeclarationToTaxOffice2  para_history  ', para_history);
 
               /*const res_op*/  await DBService.ExecuteSQLBlob(

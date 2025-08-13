@@ -330,4 +330,12 @@ Route.group(() => {
   .middleware('user');
 // Frontend
 
+Route.group(() => {
+  Route.post('encrypt', 'EInvoiceController.createAESEncrypt');
+  Route.post('decrypt', 'EInvoiceController.createAESDecrypt');
+
+})
+  .prefix('api/user/erp-cloud')
+  .middleware('user');
+
 Route.any('*', 'NuxtController.render');

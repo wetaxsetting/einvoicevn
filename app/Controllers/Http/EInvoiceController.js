@@ -24628,5 +24628,71 @@ class EInvoiceController {
       triesCounter++;
     }
   }
+
+  async createAESEncrypt({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const {ip, port, user_id, password, database } = request.all();
+
+     const res_data = 
+     {
+      ip: AES.encrypt(ip, APP_KEY),
+      port: AES.encrypt(port, APP_KEY), 
+      user_id: AES.encrypt(user_id, APP_KEY), 
+      password: AES.encrypt(password, APP_KEY), 
+      database: AES.encrypt(database, APP_KEY)
+     }
+      return response.send(
+        Utils.response(true, 'data return',res_data),
+      );
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'createAESEncrypt',
+        CONTENT: e.message,
+      });
+      console.log(e);
+      return response.send(Utils.response(false, 'error', e.message));
+    }
+  }
+
+  async createAESDecrypt({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      const {ip, port, user_id, password, database } = request.all();
+
+     const res_data = 
+     {
+      ip: AES.decrypt(ip, APP_KEY),
+      port: AES.decrypt(port, APP_KEY), 
+      user_id: AES.decrypt(user_id, APP_KEY), 
+      password: AES.decrypt(password, APP_KEY), 
+      database: AES.decrypt(database, APP_KEY)
+     }
+      return response.send(
+        Utils.response(true, 'data return',res_data),
+      );
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'createAESEncrypt',
+        CONTENT: e.message,
+      });
+      console.log(e);
+      return response.send(Utils.response(false, 'error', e.message));
+    }
+  }
 }
 module.exports = EInvoiceController;

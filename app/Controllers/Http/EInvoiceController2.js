@@ -3957,7 +3957,7 @@ class EInvoiceController2 {
                     message: resMess,
                   };
                 }
-                if (!errorList[`${key}`].dc_rate.test(inv.dc_rate) && inv.dc_rate && inv.dc_rate != 'KCT' && inv.dc_rate != 'KKKNT') {
+                if (!errorList[`${key}`].dc_rate.test(inv.dc_rate)) {
                   status = false;
                   resMess = `${mess1} dc_rate is:  ${inv.dc_rate}.`;
                   return {

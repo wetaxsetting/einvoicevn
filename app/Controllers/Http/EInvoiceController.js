@@ -11213,7 +11213,7 @@ class EInvoiceController {
       };
       let rtnValue = {};
       let data_error = [];
-      let  trade_code = '';
+      let trade_code = '';
        
       const res = await Request.post(
         url,

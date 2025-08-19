@@ -161,7 +161,7 @@ class EInvoiceController2 {
           let masterInvoicePK = '',
             rtnValueTradecode = [],
             rtnValue = [];
-          masterInvoicePK = await this.weTaxExtractNorXMLContent(
+            masterInvoicePK = await this.weTaxExtractNorXMLContent(
             json_xml_signed.data[0].signed_xml,
             list_invoice[0].buyer_email || '',
             list_invoice[0].buyer_email_cc || '',
@@ -227,60 +227,51 @@ class EInvoiceController2 {
             return response.status(409).json(Utils.responseByRule({success: false, message: `Invalid xml format`, data: rtnValue}));
           }
 
-          rtnValueTradecode.push({
-            sale_id: list_invoice[0].sale_id,
-            req_ep_key: masterInvoicePK.PK,
-            trade_code: '',
-            msg_his_id: list_invoice[0].msg_his_id,
-            lookup_code: '',
-            buyer_email: list_invoice[0].buyer_email,
-            buyer_email_cc: list_invoice[0].buyer_email_cc,
-            mccqt: '',
-            send_mail_yn: 'N',
-          });
+          let data_inv =[];
 
-          const data_send_tax = await this.weTaxSendNorInvoice(
-            masterInvoicePK,
-            rtnValueTradecode,
-            json_xml_signed.data[0].signed_xml,
-            p_language,
-            p_crt_by,
-          );
-          //console.log('data_send_tax ', data_send_tax);
-          if (data_send_tax) {
-            let res_data = {
-              trade_code: data_send_tax.rtnValue[0].trade_code,
-              seller_tax_code: list_invoice[0].seller_taxcode,
-              sale_date: list_invoice[0].sale_date,
-              store_code: list_invoice[0].store_code,
-              store_name: list_invoice[0].store_name,
-              tax_serial_number: list_invoice[0].tax_serial_number,
-              data_error: [],
-              data_inv: [
-                {
-                  mccqt: data_send_tax.rtnValue[0].mccqt,
-                  tax_code: list_invoice[0].seller_taxcode,
-                  form_no: list_invoice[0].form_no,
-                  serial_no: list_invoice[0].serial_no,
-                  invoice_no: list_invoice[0].invoice_no,
-                  inform_code: data_send_tax.rtnValue[0].inform_code,
-                  inform_name: data_send_tax.rtnValue[0].inform_name,
-                  lookup_code: data_send_tax.rtnValue[0].lookup_code,
-                  sign_datetime: data_send_tax.rtnValue[0].sign_datetime,
-                  sign_by: data_send_tax.rtnValue[0].sign_by,
-                  xml_no_sign: json_xml[0].xml,
-                  xml_signed: json_xml_signed.data[0].signed_xml,
-                  xml_tax_signed: data_send_tax.rtnValue[0].xml_tax_signed,
-                  tax_sign_by: data_send_tax.rtnValue[0].tax_sign_by,
-                  tax_sign_datetime: data_send_tax.rtnValue[0].tax_sign_datetime,
-                },
-              ],
-            };
-            console.log('res_data  ', res_data);
-            return response.status(200).json(Utils.responseByRule({success: true, message: 'Sending invoice is successfully.', data: res_data}));
-          } else {
-            return response.status(409).json(Utils.responseByRule({success: false, message: 'Sending invoice to TAX is error!!'}));
+
+          for(let i = 0; i < json_xml_signed.data.length; i++) {
+               const data_send_tax = await this.weTaxSendNorInvoice(
+                masterInvoicePK,
+                rtnValueTradecode,
+                json_xml_signed.data[i].signed_xml,
+                p_language,
+                p_crt_by,
+              );
+              //console.log('data_send_tax ', data_send_tax);
+              if (data_send_tax) {
+                  data_inv.push({
+                      mccqt: data_send_tax.rtnValue[0].mccqt,
+                      tax_code: list_invoice[0].seller_taxcode,
+                      form_no: list_invoice[0].form_no,
+                      serial_no: list_invoice[0].serial_no,
+                      invoice_no: list_invoice[0].invoice_no,
+                      inform_code: data_send_tax.rtnValue[0].inform_code,
+                      inform_name: data_send_tax.rtnValue[0].inform_name,
+                      lookup_code: data_send_tax.rtnValue[0].lookup_code,
+                      sign_datetime: data_send_tax.rtnValue[0].sign_datetime,
+                      sign_by: data_send_tax.rtnValue[0].sign_by,
+                      xml_no_sign: json_xml[0].xml,
+                      xml_signed: json_xml_signed.data[0].signed_xml,
+                      xml_tax_signed: data_send_tax.rtnValue[0].xml_tax_signed,
+                      tax_sign_by: data_send_tax.rtnValue[0].tax_sign_by,
+                      tax_sign_datetime: data_send_tax.rtnValue[0].tax_sign_datetime,
+                  });
+              }
           }
+               
+          let res_data = {
+                  trade_code: data_send_tax.rtnValue[0].trade_code,
+                  seller_tax_code: list_invoice[0].seller_taxcode,
+                  sale_date: list_invoice[0].sale_date,
+                  store_code: list_invoice[0].store_code,
+                  store_name: list_invoice[0].store_name,
+                  tax_serial_number: list_invoice[0].tax_serial_number,
+                  data_error: [],
+                  data_inv: data_inv
+                };
+                console.log('res_data  ', res_data);
+          return response.status(200).json(Utils.responseByRule({success: true, message: 'Sending invoice is successfully.', data: res_data}));
         }
       } else {
         return response.status(409).json(Utils.responseByRule({success: false, message: 'General XML of invoice is error!!', data: json_xml}));
@@ -3294,15 +3285,9 @@ class EInvoiceController2 {
           tax_sign_datetime: tax_sign_datetime,
         });
       }
-      //console.log('weTaxSendInvoiceToTaxOffice  rtnValue', rtnValue);
-      //console.log('weTaxSendInvoiceToTaxOffice  END ================================= ');
-      //console.log('rtnValueTradecode ', rtnValueTradecode);
-
-      this.weTaxSendMailNor(rtnValueTradecode, 'WTPTA003N', p_language, p_crt_by);
-
+      //this.weTaxSendMailNor(rtnValueTradecode, 'WTPTA003N', p_language, p_crt_by);
       return {rtnValue};
-      // return response.send(Utils.response(true, `Send invoice to Tax Office was Successfully!`, rtnValue));
-      //return response.status(200).json(Utils.responseByRule({success: true, message: 'Sent Normal invoice successfully.', data: rtnValue}));
+
     } catch (e) {
       Utils.Logger({
         LVL: 'error',

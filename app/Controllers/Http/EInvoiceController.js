@@ -11936,6 +11936,8 @@ class EInvoiceController {
         let soTBao = '';
         let tax_sign_by = '';
         let tax_sign_datetime = '';
+        let sign_by = '';
+        let sign_datetime = '';
         if (tr_code.trade_code) {
           await Request.get(urlCheck + tr_code.trade_code, {
             agent,
@@ -12019,12 +12021,16 @@ class EInvoiceController {
                     const templateSignTime = {
                       TaxSignedBy: 'HDon/DSCKS/CQT/Signature/KeyInfo/X509Data/X509SubjectName',
                       TaxSignedDate: 'HDon/DSCKS/CQT/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
+                      SignedBy: 'HDon/DLHDon/NDHDon/NBan/Ten',
+                      SignedDate: 'HDon/DSCKS/NBan/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
                     };
                     const signingTime = await transform(xml_tax_signed, templateSignTime);
 
                     tax_sign_by = signingTime.TaxSignedBy;
                     tax_sign_datetime = signingTime.TaxSignedDate;
-
+                    sign_by = signingTime.SignedBy;
+                    sign_datetime = signingTime.SignedDate;
+                    
                     maCQT = items[k].ndungTBao.maCQT;
                     maTBao = items[k].loaiTBao;
                     tenTBao = items[k].tenTBao;
@@ -12175,8 +12181,8 @@ class EInvoiceController {
           mccqt: maCQT,
           lookup_code: tr_code.lookup_code,
           data_error: data_error,
-          sign_datetime: masterInvoicePK.SIGN_DATETIME,
-          sign_by: masterInvoicePK.SIGN_BY,
+          sign_datetime: sign_datetime,
+          sign_by: sign_by,
           tax_sign_by: tax_sign_by,
           tax_sign_datetime: tax_sign_datetime,
         });
@@ -24274,6 +24280,8 @@ class EInvoiceController {
     let soTBao = '';
     let tax_sign_by = '';
     let tax_sign_datetime = '';
+    let sign_dt = '';
+    let sign_by = '';
     let ord = '';
     try {
       const agent = {

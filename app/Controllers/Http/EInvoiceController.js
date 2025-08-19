@@ -11213,14 +11213,8 @@ class EInvoiceController {
       };
       let rtnValue = {};
       let data_error = [];
-        trade_code = '',
-        tenTBao = '',
-        ngayTBao = '',
-        ngayCQTKy = '',
-        maGDichDTu = '',
-        tenGDDTu = '',
-        ord = '',
-        soTBao = '';
+      let  trade_code = '';
+       
       const res = await Request.post(
         url,
         {base64XML: Buffer.from(invoice_xml_signed).toString('base64')},
@@ -11233,6 +11227,8 @@ class EInvoiceController {
       );
 
       trade_code = res.data.maGDich;
+
+      console.log('weTaxSendPosInvoiceToTaxOffice res.data: ', res.data);
 
       if (trade_code) {
         const para_value = {

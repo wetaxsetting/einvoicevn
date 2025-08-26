@@ -12032,7 +12032,7 @@ class EInvoiceController {
                   p_qty_invoice: SLuong,
                   p_loaiTB: maTBao,
                   p_CQT_Code: trade_code,
-                  p_xml_sign: xml_tax_signed,
+                  p_xml_sign: invoice_xml_signed,
                   p_maTDiep: mLTDiep,
                   p_maGdDTu: maGDichDTu,
                   p_tenGdDTu: tenGDDTu,
@@ -12224,7 +12224,7 @@ class EInvoiceController {
           data_inv: data_inv,
           inform_code: maTBao,
           inform_name: tenTBao,
-          xml_tax_signed: xml_tax_signed,
+          xml_tax_signed: invoice_xml_signed,
         };
       });
 

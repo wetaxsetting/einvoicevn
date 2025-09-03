@@ -241,6 +241,7 @@ class EInvoiceController2 {
               //console.log('data_send_tax ', data_send_tax);
               if (data_send_tax) {
                   data_inv.push({
+                      trade_code: data_send_tax.trade_code,
                       mccqt: data_send_tax.rtnValue[0].mccqt,
                       tax_code: list_invoice[0].seller_taxcode,
                       form_no: list_invoice[0].form_no,

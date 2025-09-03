@@ -261,7 +261,7 @@ class EInvoiceController2 {
           }
                
           let res_data = {
-                  trade_code: data_send_tax.trade_code,
+                  //trade_code: data_send_tax.trade_code,
                   seller_tax_code: list_invoice[0].seller_taxcode,
                   sale_date: list_invoice[0].sale_date,
                   store_code: list_invoice[0].store_code,

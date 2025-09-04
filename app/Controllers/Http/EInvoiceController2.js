@@ -238,6 +238,8 @@ class EInvoiceController2 {
             const it = data_send_tax?.rtnValue?.[0] || {};
             data_inv.push({
               // bạn yêu cầu các field dưới đây luôn có mặt
+              sale_id: list_invoice[i].sale_id || '',
+              msg_his_id: list_invoice[i].msg_his_id || '',
               mccqt: it.mccqt || list_invoice[i].mccqt || '',
               tax_code: list_invoice[i].seller_taxcode || seller_tax_code_fallback,
               form_no: String(list_invoice[i].form_no ?? ''),
@@ -3493,7 +3495,7 @@ class EInvoiceController2 {
           item_uom: /^.{0,50}$/, //50,
           quantity: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/, //21.6,
           uprice: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/, // 21.6,
-          dc_rate: /^-?[0-9]{0,6}(?:\.[0-9]{1,4})?$/, // /^-?\d+(\.\d{1,4})?[%]/, // 6,4
+          dc_rate: /^$|^-?\d{1,6}(\.\d{1,4})?$/,  // /^-?\d{1,6}(\.\d{1,4})?$, // /^-?\d+(\.\d{1,4})?[%]/, // 6,4
           dc_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
           amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
           vat_rate: /^(0|5|8|10)%$|^KCT$|^KKKNT$|^CTTC$|^KHAC(:\d+(\.\d+)?%)?$/, ///^(0%|5%|8%|10%)$/, //  /^-?\d+(\.\d{1,4})?[%]/,
@@ -3862,7 +3864,7 @@ class EInvoiceController2 {
           item_uom: /^.{0,50}$/, //50,
           quantity: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/, //21.6,
           uprice: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/, // 21.6,
-          dc_rate: /^-?\d{1,6}(\.\d{1,4})?$, // /^-?\d+(\.\d{1,4})?[%]/, // 6,4
+          dc_rate: /^$|^-?\d{1,6}(\.\d{1,4})?$/,  // /^-?\d{1,6}(\.\d{1,4})?$, // /^-?\d+(\.\d{1,4})?[%]/, // 6,4
           dc_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
           amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
           vat_rate: /^(0|5|8|10)%$|^KCT$|^KKKNT$|^CTTC$|^KHAC(:\d+(\.\d+)?%)?$/, ///^(0%|5%|8%|10%)$/, //  /^-?\d+(\.\d{1,4})?[%]/,
@@ -4908,6 +4910,7 @@ class EInvoiceController2 {
       return '';
     }
   }
+
   encoreHtmlCode(sText) {
     if (sText != null || sText == '') {
       return this.replaceAllExt(

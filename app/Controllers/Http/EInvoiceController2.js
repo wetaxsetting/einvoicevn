@@ -3073,6 +3073,7 @@ class EInvoiceController2 {
       return {trade_code, rtnValue: [parsed]};
     } catch (e) {
       Utils.Logger({LVL: 'error', MODULE: 'EInvoiceController2', FUNC: 'weTaxSendNorInvoice', CONTENT: e.message});
+      console.log('===> weTaxSendNorInvoice ', e);
       return {trade_code: '', rtnValue: []};
     }
   }
@@ -3413,7 +3414,7 @@ class EInvoiceController2 {
         const jsonDSHHDVu = await transform(p_xml_content, templateDSHHDVu);
         //console.log(jsonDSHHDVu)
         for (let i = 0; i < jsonDSHHDVu.length; i++) {
-          console.log(JSON.stringify(jsonDSHHDVu[i]));
+          //console.log(JSON.stringify(jsonDSHHDVu[i]));
           const detailPara = [
             master[0].PK,
             jsonDSHHDVu[i].TChat,

@@ -2998,18 +2998,28 @@ class EInvoiceController2 {
         if (!trade_code) break;
 
         const res = await Request.get(urlCheck + trade_code, {agent, headers});
+
+        console.log(`weTaxSendNorInvoice: poll CQT turn ${turn + 1}, got `, res?.data);
+
         const blocks = Array.isArray(res?.data) ? res.data.flatMap(b => (Array.isArray(b) ? b : [b])) : [];
+
+        console.log(`weTaxSendNorInvoice: blocks `, blocks);
 
         // Ưu tiên 10 ("Hóa đơn được CQT cấp mã"), sau đó 2/1
         const found10 = blocks.find(x => String(x?.loaiTBao) === '10');
         const found2 = blocks.find(x => String(x?.loaiTBao) === '2' || String(x?.maTBao) === '2');
         const found1 = blocks.find(x => String(x?.loaiTBao) === '1');
 
+        console.log(`weTaxSendNorInvoice: found1  `, found1, ` found2  `, found2, ` found10  `, found10);
+
         const pick = found10 || found2 || found1;
+
+        console.log(`weTaxSendNorInvoice: pick  `, pick);
+
         if (!pick) continue;
 
         console.log(`weTaxSendNorInvoice: found loaiTBao ${pick?.loaiTBao || pick?.maTBao} `, pick);  
-        
+
         let xml_tax_signed = '',
           tax_sign_by = '',
           tax_sign_datetime = '',

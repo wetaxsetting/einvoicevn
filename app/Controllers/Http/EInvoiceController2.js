@@ -2997,7 +2997,7 @@ class EInvoiceController2 {
         await Utils._sleep(5);
         if (!trade_code) break;
 
-        const res = await Request.get(urlCheck + trade_code, {agent, headers});
+        const res = await Request.get(urlCheck + trade_code, {agent, headers: authHeader});
 
         console.log(`weTaxSendNorInvoice: poll CQT turn ${turn + 1}, got `, res?.data);
 

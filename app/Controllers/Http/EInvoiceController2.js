@@ -2965,103 +2965,131 @@ class EInvoiceController2 {
 
   async weTaxSendNorInvoice(masterInvoicePK, rtnValueTradecode, xml_signed, p_language, p_crt_by) {
     try {
-      // const urlCheck = 'https://tvan.fpt.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
-      // const url = 'https://tvan.fpt.com.vn/ftvan-hddt/hdon/cmahdon';
-      // const authUserName = 'GENUWIN'; // "GENUWIN";
-      // const authPassword = 'e_GX4v@'; // "e_GX4v@";// "genuwin123";// "e_GX4v@";
-
       const url = 'https://tvan.webhoadon.com.vn/ftvan-hddt/hdon/cmahdon';
       const urlCheck = 'https://tvan.webhoadon.com.vn/ftvan-hddt/tbao/tcuu/tcuutbao?maGDichTNDLieu=';
       const authUserName = 'GENUWIN'; // "GENUWIN";
       const authPassword = 'genuwin123'; // "e_GX4v@";
-      const authHeader = {
-        Authorization: 'Basic ' + Buffer.from(`${authUserName}:${authPassword}`).toString('base64'),
-      };
+      
       const agent = { Agent: { defaultPort: 443, protocol: 'https:', options: { maxVersion: 'TLSv1.2', minVersion: 'TLSv1.2', path: null } } };
 
-      // 1) Gửi XML (base64)
-      const payload = { base64XML: Buffer.from(xml_signed).toString('base64') };
-      const sendRes = await Request.post(url, payload, { agent, headers: authHeader });
-      const tradeCode = sendRes?.data?.maGDich || sendRes?.maGDich || '';
+    // 1) Gửi base64 XML để lấy mã giao dịch (trade_code)
+    const sendRes = await Request.post(
+      url,
+      { base64XML: Buffer.from(xml_signed).toString('base64') },
+      { agent, headers: { Authorization: 'Basic ' + Buffer.from(`${authUserName}:${authPassword}`).toString('base64') } }
+    );
+    const trade_code = sendRes?.data?.maGDich || sendRes?.data?.maGDichTNDLieu || '';
 
-      // 2) Lưu tradeCode ngay (idempotent)
-      try {
-        await DBService.ExecuteSQLBlob(
-          `BEGIN WT_UPD_TEI_INV_TRADECODE(:req_ep_key,:trade_code,:xml_signed,:p_language,:p_crt_by,:p_rtn_cur); END;`,
-          { req_ep_key: masterInvoicePK.PK ?? masterInvoicePK.REQ_KEY_PK, trade_code: tradeCode, xml_signed },
-          p_language,
-          p_crt_by,
-        );
-      } catch (e) {
-        Utils.Logger({ LVL: 'warn', MODULE: 'EInvoiceController2', FUNC: 'weTaxSendNorInvoice', CONTENT: `Save trade_code failed: ${e.message}` });
+    // 2) Lưu trade_code vào DB với **đúng khóa REQ_KEY_PK**
+    const para_trade_code = {
+      req_ep_key: masterInvoicePK.REQ_KEY_PK, // FIX: trước dùng PK -> sai
+      trade_code,
+      xml_signed,
+    };
+    const data_r_tradecode = await DBService.ExecuteSQLBlob(
+      `BEGIN WT_UPD_TEI_INV_TRADECODE(
+          :req_ep_key, :trade_code, :xml_signed,
+          :p_language, :p_crt_by, :p_rtn_cur); END;`,
+      para_trade_code, p_language, p_crt_by
+    );
+
+    // 3) Cập nhật đúng item trong rtnValueTradecode theo req_ep_key (KHÔNG dùng [0])
+    const idx = rtnValueTradecode.findIndex(x => String(x.req_ep_key) === String(masterInvoicePK.REQ_KEY_PK));
+    if (idx >= 0) {
+      rtnValueTradecode[idx].trade_code  = trade_code;
+      rtnValueTradecode[idx].lookup_code = data_r_tradecode?.p_rtn_cur?.[0]?.LOOKUP_CODE || rtnValueTradecode[idx].lookup_code || '';
+    } else {
+      rtnValueTradecode.push({
+        sale_id: masterInvoicePK.REQ_KEY_PK,
+        req_ep_key: masterInvoicePK.REQ_KEY_PK,
+        trade_code,
+        msg_his_id: null,
+        lookup_code: data_r_tradecode?.p_rtn_cur?.[0]?.LOOKUP_CODE || '',
+        buyer_email: '',
+        buyer_email_cc: '',
+        mccqt: '', send_mail_yn: 'N',
+      });
+    }
+
+    // 4) Poll TBao (backoff) – CQT trả chậm thì chờ tới 60s
+    const rtnValue = [];
+    let gotNotice = false;
+    for (let attempt = 0; attempt < 12; attempt++) { // 12 * 5s = 60s
+      await Utils._sleep(5);
+      const res = await Request.get(urlCheck + trade_code, {
+        agent,
+        headers: { Authorization: 'Basic ' + Buffer.from(`${authUser}:${authPass}`).toString('base64') }
+      });
+
+      // Không có thông báo → thử lại
+      if (!res?.data?.length) continue;
+
+      // Parse tất cả TBao trả về, ưu tiên TB hợp lệ dữ liệu hóa đơn (thường là code '2')
+      let inform_code = '', inform_name = '', mccqt = '', xml_tax_signed = '',
+          tax_sign_by = '', tax_sign_datetime = '';
+
+      for (const items of res.data) {
+        for (const it of items) {
+          // Nhận TB loại hợp lệ dữ liệu (loaiTBao '1' hoặc '2' tùy TVAN), giữ rộng để không miss
+          if (it?.loaiTBao === '1' || it?.loaiTBao === '2' || it?.maTBao === '2') {
+            inform_code = it.maTBao || it.loaiTBao || '';
+            inform_name = it.tenTBao || '';
+            mccqt       = it.maCQT   || it.mccqt || '';
+
+            // Lấy XML TBao đã ký (base64)
+            if (it?.ndungTBao?.base64XML) {
+              xml_tax_signed = Buffer.from(it.ndungTBao.base64XML, 'base64').toString('utf8');
+              // Thử rút thông tin chữ ký CQThuế (nếu cần có thể parse sâu hơn)
+              try {
+                const tmp = await transform(xml_tax_signed, { taxSignBy: 'TDiep/TTChung/NNhan', taxSignDT: 'TDiep/TTChung/Ngay' });
+                tax_sign_by = tmp.taxSignBy || '';
+                tax_sign_datetime = tmp.taxSignDT || '';
+              } catch (e) {}
+            }
+            gotNotice = true;
+            break;
+          }
+        }
+        if (gotNotice) break;
       }
 
-      // 3) Ghi trade_code vào đúng phần tử trong rtnValueTradecode (map theo req_ep_key)
-        const idx = rtnValueTradecode.findIndex(x => x.req_ep_key === (masterInvoicePK.PK ?? masterInvoicePK.REQ_KEY_PK));
-        if (idx >= 0) rtnValueTradecode[idx].trade_code = tradeCode;
-
-        // 4) Polling kết quả TBao (<=60s, backoff 2→5s)
-        const start = Date.now();
-        let delayMs = 2000;
-        let parsedItems = [];
-
-        while (Date.now() - start < 60_000) {
-          if (!tradeCode) break;
-          const res = await Request.get(TVAN.CHECK_URL + tradeCode, { agent, headers: authHeader });
-
-          // ====== Parse tối thiểu (bạn có thể giữ camaro/transform cũ tại đây) ======
-          // Ưu tiên bắt các trường thường gặp: maTBao, tenTBao, nguoiKy/nguoiKyCQT, ngayKy/ngayKyCQT, xmlKy/hoadonXML
-          const raw = res?.data || {};
-          const items = Array.isArray(raw?.data) ? raw.data : (Array.isArray(raw) ? raw : [raw]);
-          parsedItems = items
-            .filter(Boolean)
-            .map(it => ({
-              maTBao:           it.maTBao           || it.ma_thong_bao || it.code || '',
-              tenTBao:          it.tenTBao          || it.message      || '',
-              sign_datetime:    it.ngayKy           || it.ngayKyCQT    || '',
-              sign_by:          it.nguoiKy          || it.nguoiKyCQT   || '',
-              xml_tax_signed:   it.xmlKy            || it.hoadonXML    || '',
-              tax_sign_by:      it.nguoiKyCQT       || it.nguoiKy      || '',
-              tax_sign_datetime:it.ngayKyCQT        || it.ngayKy       || '',
-              mccqt:            it.mccqt            || it.MCCQT        || '',
-            }));
-
-          // Khi đã có bất kỳ TBao (hoặc có xml_tax_signed) thì break
-          if (parsedItems.length && (parsedItems[0].maTBao || parsedItems[0].xml_tax_signed)) break;
-
-          await Utils._sleep(Math.min(delayMs, 5000) / 1000);
-          delayMs = Math.min(delayMs + 1000, 5000);
-        }
-
-        // 5) Chuẩn hóa cấu trúc trả về (tương thích nơi gọi)
-        // Ưu tiên phần tử đầu tiên (thực tế thường chỉ cần TBao gần nhất)
-        const first = parsedItems[0] || {};
-        return {
-          trade_code: tradeCode,
-          rtnValue: [{
-            inform_code:        first.maTBao            || '',
-            inform_name:        first.tenTBao           || '',
-            lookup_code:        (rtnValueTradecode[idx]?.lookup_code) || masterInvoicePK.LOOKUP_CODE || '',
-            sign_datetime:      first.sign_datetime     || '',
-            sign_by:            first.sign_by           || '',
-            xml_tax_signed:     first.xml_tax_signed    || '',
-            tax_sign_by:        first.tax_sign_by       || '',
-            tax_sign_datetime:  first.tax_sign_datetime || '',
-            mccqt:              first.mccqt             || '',
-          }],
-        };
-      }catch (e) {
-      Utils.Logger({
-        LVL: 'error',
-        MODULE: 'EInvoiceController',
-        FUNC: 'weTaxSendInvoiceToTaxOffice',
-        CONTENT: e.message,
-      });
-      console.log('weTaxSendInvoiceToTaxOffice error  ', e);
-      // return response.send(Utils.response(false, e.message, null));
-      //return response.status(409).json(Utils.responseByRule({success: true, message: e.message}));
+      if (gotNotice) {
+        rtnValue.push({
+          req_key:      rtnValueTradecode[idx >= 0 ? idx : rtnValueTradecode.length - 1].sale_id,
+          trade_code,
+          inform_code,
+          inform_name,
+          xml_tax_signed,
+          mccqt,
+          lookup_code:  rtnValueTradecode[idx >= 0 ? idx : rtnValueTradecode.length - 1].lookup_code,
+          data_error:   null,
+          sign_datetime: masterInvoicePK.SIGN_DATETIME || '',
+          sign_by:       masterInvoicePK.SIGN_BY || '',
+          tax_sign_by,
+          tax_sign_datetime,
+        });
+        break;
+      }
     }
+
+    // 5) Hết thời gian mà chưa có TBao → vẫn trả khung để client hiển thị & tra cứu
+    if (!gotNotice) {
+      const t = rtnValueTradecode[idx >= 0 ? idx : rtnValueTradecode.length - 1];
+      rtnValue.push({
+        req_key: t.sale_id, trade_code, inform_code: '', inform_name: '',
+        xml_tax_signed: '', mccqt: '', lookup_code: t.lookup_code, data_error: null,
+        sign_datetime: masterInvoicePK.SIGN_DATETIME || '', sign_by: masterInvoicePK.SIGN_BY || '',
+        tax_sign_by: '', tax_sign_datetime: ''
+      });
+    }
+
+    return { trade_code, rtnValue };
+  } catch (e) {
+    Utils.Logger({ LVL: 'error', MODULE: 'EInvoiceController2', FUNC: 'weTaxSendNorInvoice', CONTENT: e.message });
+    console.log('weTaxSendNorInvoice error', e);
+    return { trade_code: '', rtnValue: [] };
   }
+}
 
   async weTaxExtractNorXMLContent(
     p_xml_content,

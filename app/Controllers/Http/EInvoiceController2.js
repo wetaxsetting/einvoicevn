@@ -189,19 +189,19 @@ class EInvoiceController2 {
 
             // 2) Map lỗi -> data_error (nếu cần)
             if (masterInvoicePK.PK == -1) {
-              data_error.push({maLoi: '004', mtaLoi: ''});
+              data_error.push({maLoi: '004', mtaLoi: 'The issuer invoice has not register'});
               continue;
             }
             if (masterInvoicePK.PK == -2) {
-              data_error.push({maLoi: '005', mtaLoi: ''});
+              data_error.push({maLoi: '005', mtaLoi: 'invoice date current < invoice date max'});
               continue;
             }
             if (masterInvoicePK.PK < -2) {
-              data_error.push({maLoi: '006', mtaLoi: ''});
+              data_error.push({maLoi: '006', mtaLoi: 'Duplicated data. This invoice already sent'});
               continue;
             }
             if (masterInvoicePK.PK == 0 && masterInvoicePK.CQT_MCCQT) {
-              data_error.push({maLoi: '002', mtaLoi: ''});
+              data_error.push({maLoi: '002', mtaLoi: 'Duplicated data. This invoice already sent'});
               continue;
             }
 
@@ -2970,7 +2970,7 @@ class EInvoiceController2 {
       const sendRes = await Request.post(urlSend, {base64XML: Buffer.from(xml_signed).toString('base64')}, {agent, headers: authHeader});
       const trade_code = sendRes?.data?.maGDich || '';
 
-      console.log(`weTaxSendNorInvoice: trade_code `, trade_code);
+      //console.log(`weTaxSendNorInvoice: trade_code `, trade_code);
 
       // Lưu trade_code đúng khóa (theo code cũ của bạn)
       const reqKeyPk = masterInvoicePK.REQ_KEY_PK ?? masterInvoicePK.PK;
@@ -2998,27 +2998,15 @@ class EInvoiceController2 {
         if (!trade_code) break;
 
         const res = await Request.get(urlCheck + trade_code, {agent, headers: authHeader});
-
-        console.log(`weTaxSendNorInvoice: poll CQT turn ${turn + 1}, got `, res?.data);
-
         const blocks = Array.isArray(res?.data) ? res.data.flatMap(b => (Array.isArray(b) ? b : [b])) : [];
-
-        console.log(`weTaxSendNorInvoice: blocks `, blocks);
 
         // Ưu tiên 10 ("Hóa đơn được CQT cấp mã"), sau đó 2/1
         const found10 = blocks.find(x => String(x?.loaiTBao) === '10');
         const found2 = blocks.find(x => String(x?.loaiTBao) === '2' || String(x?.maTBao) === '2');
         const found1 = blocks.find(x => String(x?.loaiTBao) === '1');
 
-        console.log(`weTaxSendNorInvoice: found1  `, found1, ` found2  `, found2, ` found10  `, found10);
-
         const pick = found10 || found2 || found1;
-
-        console.log(`weTaxSendNorInvoice: pick  `, pick);
-
         if (!pick) continue;
-
-        console.log(`weTaxSendNorInvoice: found loaiTBao ${pick?.loaiTBao || pick?.maTBao} `, pick);  
 
         let xml_tax_signed = '',
           tax_sign_by = '',
@@ -3874,7 +3862,7 @@ class EInvoiceController2 {
           item_uom: /^.{0,50}$/, //50,
           quantity: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/, //21.6,
           uprice: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/, // 21.6,
-          dc_rate: /^-?\d{1,6}(\.\d{1,4})?$, / / /^-?\d+(\.\d{1,4})?[%]/, // 6,4
+          dc_rate: /^-?\d{1,6}(\.\d{1,4})?$, // /^-?\d+(\.\d{1,4})?[%]/, // 6,4
           dc_amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
           amt: /^-?[0-9]{0,21}(?:\.[0-9]{1,6})?$/,
           vat_rate: /^(0|5|8|10)%$|^KCT$|^KKKNT$|^CTTC$|^KHAC(:\d+(\.\d+)?%)?$/, ///^(0%|5%|8%|10%)$/, //  /^-?\d+(\.\d{1,4})?[%]/,

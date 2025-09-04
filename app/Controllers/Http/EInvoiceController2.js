@@ -2980,102 +2980,89 @@ class EInvoiceController2 {
         { agent, headers: authHeader }
       );
       const trade_code = sendRes?.data?.maGDich || '';
-      
+
       console.log(`weTaxSendNorInvoice: trade_code `, trade_code);
-      // 3) Lưu trade_code bằng **REQ_KEY_PK** (đúng khóa) + cập nhật đúng item theo req_ep_key (KHÔNG dùng [0])
-      const reqKeyPk = masterInvoicePK.REQ_KEY_PK ?? masterInvoicePK.PK;
-      const para_trade_code = { req_ep_key: reqKeyPk, trade_code, xml_signed };
-      const data_r_tradecode = await DBService.ExecuteSQLBlob(
-        `BEGIN WT_UPD_TEI_INV_TRADECODE(:req_ep_key,:trade_code,:xml_signed,:p_language,:p_crt_by,:p_rtn_cur); END;`,
-        para_trade_code, p_language, p_crt_by
-      );
-      const idx = rtnValueTradecode.findIndex(x => String(x.req_ep_key) === String(reqKeyPk));
-      const lookup_code = data_r_tradecode?.p_rtn_cur?.[0]?.LOOKUP_CODE || (idx >= 0 ? rtnValueTradecode[idx].lookup_code : '');
-      if (idx >= 0) rtnValueTradecode[idx].trade_code = trade_code;
+      
+      // Lưu trade_code đúng khóa (theo code cũ của bạn)
+    const reqKeyPk = masterInvoicePK.REQ_KEY_PK ?? masterInvoicePK.PK;
+    const para_trade_code = { req_ep_key: reqKeyPk, trade_code, xml_signed };
+    const data_r_tradecode = await DBService.ExecuteSQLBlob(
+      `BEGIN WT_UPD_TEI_INV_TRADECODE(:req_ep_key,:trade_code,:xml_signed,:p_language,:p_crt_by,:p_rtn_cur); END;`,
+      para_trade_code, p_language, p_crt_by
+    );
+    const lookup_code = data_r_tradecode?.p_rtn_cur?.[0]?.LOOKUP_CODE || '';
 
-      // 4) Chờ 5s rồi CHECK mã CQT (giữ đúng ý bạn) + retry (tối đa 12 lần = 60s)
-      let rtnValue = [];
-      let found = false;
-      for (let attempt = 0; attempt < 12; attempt++) {
-        await Utils._sleep(5);  // sleep 5s như bạn đang làm
-        if (!trade_code) break;
-
-        const res = await Request.get(urlCheck + trade_code, { agent, headers: authHeader });
-        if (!res?.data?.length) continue;
-
-        console.log(`weTaxSendNorInvoice: res `, JSON.stringify(res.data));
-        // 5) Parse toàn bộ TBao, ưu tiên loại hợp lệ dữ liệu hóa đơn (loaiTBao '1' hoặc '2')
-        let inform_code = '', inform_name = '', mccqt = '', xml_tax_signed = '',
-            tax_sign_by = '', tax_sign_datetime = '';
-
-        outer:
-        for (const items of res.data) {
-          for (const it of items) {
-            if (it?.loaiTBao === '1' || it?.loaiTBao === '2' || it?.maTBao === '2') {
-              inform_code = it.maTBao || it.loaiTBao || '';
-              inform_name = it.tenTBao || '';
-              mccqt       = it.maCQT   || it.mccqt   || '';
-
-              // Lấy XML TBao CQT (base64) & rút thông tin ký của CQT
-              if (it?.ndungTBao?.base64XML) {
-                xml_tax_signed = Buffer.from(it.ndungTBao.base64XML, 'base64').toString('utf8');
-                try {
-                  const tpl = { tax_sign_by: 'TDiep/TTChung/NNhan', tax_sign_datetime: 'TDiep/TTChung/Ngay' };
-                  const t = await transform(xml_tax_signed, tpl);
-                  tax_sign_by = t.tax_sign_by || '';
-                  tax_sign_datetime = t.tax_sign_datetime || '';
-                } catch (_) {}
-              }
-              found = true;
-              break outer;
-            }
-          }
-        }
-
-        if (found) {
-          rtnValue.push({
-            req_key:      rtnValueTradecode[idx >= 0 ? idx : 0]?.sale_id || '',
-            trade_code,
-            inform_code,
-            inform_name,
-            xml_tax_signed,
-            mccqt,
-            lookup_code,
-            data_error: null,
-            // ký bên người bán (đã có từ extract/DB)
-            sign_datetime: masterInvoicePK.SIGN_DATETIME || '',
-            sign_by:       masterInvoicePK.SIGN_BY || '',
-            // ký bởi CQT (rút từ TBao)
-            tax_sign_by,
-            tax_sign_datetime,
-          });
-          break;
-        }
-      }
-
-      // 6) Hết thời gian vẫn chưa có TBao → trả khung để client hiển thị & tra cứu tiếp
-      if (!found) {
-        rtnValue.push({
-          req_key:      rtnValueTradecode[idx >= 0 ? idx : 0]?.sale_id || '',
-          trade_code,
-          inform_code: '', inform_name: '',
-          xml_tax_signed: '', mccqt: '',
-          lookup_code,
-          data_error: null,
-          sign_datetime: masterInvoicePK.SIGN_DATETIME || '',
-          sign_by:       masterInvoicePK.SIGN_BY || '',
-          tax_sign_by: '', tax_sign_datetime: ''
-        });
-      }
-
-      return { trade_code, rtnValue };
-    } catch (e) {
-      Utils.Logger({ LVL:'error', MODULE:'EInvoiceController2', FUNC:'weTaxSendNorInvoice', CONTENT: e.message });
-      console.log('weTaxSendNorInvoice error', e);
-      return { trade_code:'', rtnValue: [] };
+    // cập nhật đúng item thay vì [0]
+    const idx = rtnValueTradecode.findIndex(x => String(x.req_ep_key) === String(reqKeyPk));
+    if (idx >= 0) {
+      rtnValueTradecode[idx].trade_code  = trade_code;
+      rtnValueTradecode[idx].lookup_code = rtnValueTradecode[idx].lookup_code || lookup_code;
     }
-  }
 
+    // Poll CQT (giữ sleep 5s như bạn), parse đủ loaiTBao 1/2/10
+    let parsed = null;
+    for (let turn = 0; turn < 12; turn++) { // 60s tối đa
+      await Utils._sleep(5);
+      if (!trade_code) break;
+
+      const res = await Request.get(urlCheck + trade_code, { agent, headers });
+      const blocks = Array.isArray(res?.data) ? res.data.flatMap(b => Array.isArray(b) ? b : [b]) : [];
+
+      // Ưu tiên 10 ("Hóa đơn được CQT cấp mã"), sau đó 2/1
+      const found10 = blocks.find(x => String(x?.loaiTBao) === '10');
+      const found2  = blocks.find(x => String(x?.loaiTBao) === '2' || String(x?.maTBao) === '2');
+      const found1  = blocks.find(x => String(x?.loaiTBao) === '1');
+
+      const pick = found10 || found2 || found1;
+      if (!pick) continue;
+
+      let xml_tax_signed = '', tax_sign_by = '', tax_sign_datetime = '', mccqt = '';
+      const nd = pick?.ndungTBao || {};
+      const b64 = nd.base64XML;
+
+      // mccqt (CQT) có thể ở maCQT
+      mccqt = nd.maCQT || pick.maCQT || pick.mccqt || '';
+
+      if (b64) {
+        xml_tax_signed = Buffer.from(b64, 'base64').toString('utf8');
+        try {
+          // rút người ký CQT & thời gian ký từ TDiep
+          const tpl = { tax_sign_by: 'TDiep/TTChung/NNhan', tax_sign_datetime: 'TDiep/TTChung/Ngay' };
+          const t = await transform(xml_tax_signed, tpl);
+          tax_sign_by = t.tax_sign_by || '';
+          tax_sign_datetime = t.tax_sign_datetime || '';
+        } catch {}
+      }
+
+      parsed = {
+        inform_code: String(pick.maTBao || pick.loaiTBao || ''),
+        inform_name: pick.tenTBao || '',
+        lookup_code,
+        sign_datetime: masterInvoicePK.SIGN_DATETIME || '',
+        sign_by: masterInvoicePK.SIGN_BY || '',
+        xml_tax_signed,
+        tax_sign_by,
+        tax_sign_datetime,
+        mccqt
+      };
+      break;
+    }
+
+    if (!parsed) {
+      parsed = {
+        inform_code:'', inform_name:'', lookup_code,
+        sign_datetime: masterInvoicePK.SIGN_DATETIME || '',
+        sign_by: masterInvoicePK.SIGN_BY || '',
+        xml_tax_signed:'', tax_sign_by:'', tax_sign_datetime:'', mccqt:''
+      };
+    }
+
+    return { trade_code, rtnValue: [ parsed ] };
+  } catch (e) {
+    Utils.Logger({ LVL:'error', MODULE:'EInvoiceController2', FUNC:'weTaxSendNorInvoice', CONTENT:e.message });
+    return { trade_code:'', rtnValue:[] };
+  }
+}
   async weTaxExtractNorXMLContent(
     p_xml_content,
     p_mail_to,

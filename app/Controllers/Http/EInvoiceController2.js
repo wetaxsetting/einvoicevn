@@ -157,113 +157,129 @@ class EInvoiceController2 {
               .status(409)
               .json(Utils.responseByRule({success: false, message: 'Sending invoice to TAX is error!!', data: data_send_tax}));
           }
-        } else {
-          // --- Ký xong rồi: xử lý từng hóa đơn theo chỉ số i ---
-          const data_inv = [];
-          const data_error = [];
+        // ===== NORMAL INVOICE FLOW (process_type khác 'I'/'P') =====
+      } else {
+        const data_inv = [];
+        const data_error = [];
+        let trade_code_top = ""; // sẽ set từ CQT (trade_code đầu tiên thành công)
 
-          for (let i = 0; i < json_xml_signed.data.length; i++) {
-            // 1) Extract theo TỪNG hóa đơn (không “mượn” phần tử [0])
-            const buyerEmail    = list_invoice[i]?.buyer_email    || '';
-            const buyerEmailCC  = list_invoice[i]?.buyer_email_cc || '';
-            const reqKey        = json_xml_signed.data[i].req_key;
+        // fallback an toàn nếu list_invoice thiếu field
+        const seller_tax_code_fallback = tax_code;
+        const sale_date_fallback       = sale_date || "";
+        const store_code_fallback      = store_code || "";
+        const store_name_fallback      = store_name || "";
+        const tax_serial_fallback      = tax_serial_number || "";
 
-            const masterInvoicePK = await this.weTaxExtractNorXMLContent(
-              json_xml_signed.data[i].signed_xml,
-              buyerEmail,
-              buyerEmailCC,
-              '', '',                // các trường trống như hiện trạng
-              tax_serial_number,
-              reqKey,
-              '',                    // mccqt (nếu cần để riêng, có thể truyền list_invoice[i].mccqt)
-              p_language,
-              p_crt_by,
-            );
+        for (let i = 0; i < json_xml_signed.data.length; i++) {
+          const buyerEmail   = list_invoice[i]?.buyer_email    || '';
+          const buyerEmailCC = list_invoice[i]?.buyer_email_cc || '';
+          const reqKey       = json_xml_signed.data[i].req_key;
 
-            // 2) Kiểm tra trạng thái đăng ký phát hành / ngày hóa đơn
-            if (masterInvoicePK.PK == -1) {
-              data_error.push({ req_key: reqKey, errmsg: 'The issuer invoice has not register' });
-              continue;
-            }
-            if (masterInvoicePK.PK == -2) {
-              data_error.push({ req_key: reqKey, errmsg: 'invoice date current < invoice date max' });
-              continue;
-            }
-            if (masterInvoicePK.PK < -2) {
-              data_error.push({ req_key: reqKey, errmsg: 'Invalid xml format' });
-              continue;
-            }
+          // 1) Extract per-invoice (đúng email/req_key)
+          const masterInvoicePK = await this.weTaxExtractNorXMLContent(
+            json_xml_signed.data[i].signed_xml,
+            buyerEmail,
+            buyerEmailCC,
+            '', '',                    // giữ nguyên theo code gốc
+            tax_serial_number,
+            reqKey,
+            '',                        // mccqt nếu cần
+            p_language,
+            p_crt_by,
+          );
 
-            // 3) Nếu đã từng gửi & đã có MCCQT: trả lỗi “đã gửi” cho hóa đơn này rồi NEXT các hóa đơn khác
-            if (masterInvoicePK.PK == 0 && masterInvoicePK.CQT_MCCQT) {
-              data_error.push({ req_key: reqKey, errmsg: 'The sign xml was send Tax Office' });
-              continue;
-            }
-
-            // 4) Chuẩn bị mapping CHÍNH XÁC cho hóa đơn i (KHÔNG dùng phần tử [0])
-            const oneTrade = [{
-              sale_id:       list_invoice[i].sale_id,
-              req_ep_key:    masterInvoicePK.REQ_KEY_PK,
-              trade_code:    masterInvoicePK.MA_TRACUU,    // sẽ bị overwrite sau khi POST
-              msg_his_id:    list_invoice[i].msg_his_id,
-              lookup_code:   masterInvoicePK.LOOKUP_CODE,
-              buyer_email:   buyerEmail,
-              buyer_email_cc:buyerEmailCC,
-              mccqt:         '',
-              send_mail_yn:  'N',
-            }];
-
-            // 5) Gửi hóa đơn thường i (tuần tự để tránh rate limit phía TVAN/CQT)
-            const data_send_tax = await this.weTaxSendNorInvoice(
-              masterInvoicePK,
-              oneTrade,
-              json_xml_signed.data[i].signed_xml,   // dùng ĐÚNG i
-              p_language,
-              p_crt_by,
-            );
-
-            // 6) Gom kết quả nếu có
-            if (data_send_tax?.rtnValue?.[0]) {
-              const r = data_send_tax.rtnValue[0];
-              data_inv.push({
-                trade_code:         data_send_tax.trade_code,
-                mccqt:              r.mccqt,
-                tax_code:           list_invoice[i].seller_taxcode,
-                form_no:            list_invoice[i].form_no,
-                serial_no:          list_invoice[i].serial_no,
-                invoice_no:         list_invoice[i].invoice_no,
-                inform_code:        r.inform_code,
-                inform_name:        r.inform_name,
-                lookup_code:        r.lookup_code,
-                sign_datetime:      r.sign_datetime,
-                sign_by:            r.sign_by,
-                xml_no_sign:        json_xml[0].xml,                 // giữ nguyên như trước
-                xml_signed:         json_xml_signed.data[i].signed_xml, // SỬA về i
-                xml_tax_signed:     r.xml_tax_signed,
-                tax_sign_by:        r.tax_sign_by,
-                tax_sign_datetime:  r.tax_sign_datetime,
-              });
-            } else {
-              data_error.push({ req_key: reqKey, errmsg: 'Send/Check to TAX failed or empty rtnValue' });
-            }
+          // 2) Map lỗi -> data_error theo format bạn muốn
+          if (masterInvoicePK.PK == -1) {
+            data_error.push({ maLoi: "004", mtaLoi: "" });      // issuer chưa đăng ký
+            continue;
+          }
+          if (masterInvoicePK.PK == -2) {
+            data_error.push({ maLoi: "005", mtaLoi: "" });      // ngày HĐ < max trong CSDL
+            continue;
+          }
+          if (masterInvoicePK.PK < -2) {
+            data_error.push({ maLoi: "006", mtaLoi: "" });      // XML không hợp lệ
+            continue;
+          }
+          if (masterInvoicePK.PK == 0 && masterInvoicePK.CQT_MCCQT) {
+            data_error.push({ maLoi: "002", mtaLoi: "" });      // đã gửi trước đó
+            continue;
           }
 
-          const res_data = {
-            seller_tax_code:  list_invoice[0]?.seller_taxcode || tax_code,
-            sale_date:        list_invoice[0]?.sale_date      || sale_date,
-            store_code:       list_invoice[0]?.store_code     || store_code,
-            store_name:       list_invoice[0]?.store_name     || store_name,
-            tax_serial_number:list_invoice[0]?.tax_serial_number || tax_serial_number,
-            data_error,
-            data_inv,
-          };
+          // 3) Build mapping đúng hóa đơn i
+          const oneTrade = [{
+            sale_id:        list_invoice[i].sale_id,
+            req_ep_key:     masterInvoicePK.REQ_KEY_PK,
+            trade_code:     masterInvoicePK.MA_TRACUU || '',
+            msg_his_id:     list_invoice[i].msg_his_id,
+            lookup_code:    masterInvoicePK.LOOKUP_CODE,
+            buyer_email:    buyerEmail,
+            buyer_email_cc: buyerEmailCC,
+            mccqt:          '',
+            send_mail_yn:   'N',
+          }];
 
-          const ok = data_inv.length > 0 && data_error.length === 0;
-          const message = ok ? 'Sending invoice is successfully.'
-                            : (data_inv.length > 0 ? 'Partially sent. Some invoices failed.' : 'All invoices failed.');
-          const code = ok ? 200 : 409;
-          return response.status(code).json(Utils.responseByRule({ success: ok, message, data: res_data }));
+          // 4) Gửi từng hóa đơn (tuần tự)
+          const data_send_tax = await this.weTaxSendNorInvoice(
+            masterInvoicePK,
+            oneTrade,
+            json_xml_signed.data[i].signed_xml, // dùng ĐÚNG i
+            p_language,
+            p_crt_by,
+          );
+
+          // 5) Gom kết quả
+          if (data_send_tax?.rtnValue?.[0]) {
+            const r = data_send_tax.rtnValue[0];
+
+            // set trade_code top-level 1 lần (ưu tiên CQT trả về)
+            if (!trade_code_top && data_send_tax.trade_code) {
+              trade_code_top = data_send_tax.trade_code;
+            }
+
+            data_inv.push({
+              mccqt:           r.mccqt || list_invoice[i].mccqt || "",
+              tax_code:        list_invoice[i].seller_taxcode || seller_tax_code_fallback,
+              form_no:         String(list_invoice[i].form_no ?? ""),
+              invoice_no:      String(list_invoice[i].invoice_no ?? ""),
+              inform_code:     String(r.inform_code ?? ""),
+              inform_name:     r.inform_name || "",
+              lookup_code:     r.lookup_code || "",
+              sign_datetime:   r.sign_datetime || "",
+              sign_by:         r.sign_by || "",
+              xml_no_sign:     json_xml[0].xml,                   // như code gốc
+              xml_signed:      json_xml_signed.data[i].signed_xml, // SỬA về i
+              xml_tax_signed:  r.xml_tax_signed || ""
+            });
+          } else {
+            // không có rtnValue từ tra cứu → coi như lỗi chung
+            data_error.push({ maLoi: "001", mtaLoi: "" });
+          }
         }
+
+        // 6) Dựng data theo format bạn yêu cầu
+        const res_data = {
+          trade_code:        trade_code_top, // khác với bản cũ: có giá trị
+          seller_tax_code:   (list_invoice[0]?.seller_taxcode) || seller_tax_code_fallback,
+          sale_date:         (list_invoice[0]?.sale_date)      || sale_date_fallback,
+          store_code:        (list_invoice[0]?.store_code)     || store_code_fallback,
+          store_name:        (list_invoice[0]?.store_name)     || store_name_fallback,
+          tax_serial_number: (list_invoice[0]?.tax_serial_number) || tax_serial_fallback,
+          data_error,
+          data_inv
+        };
+
+        const successAll = data_inv.length > 0 && data_error.length === 0;
+
+        // 7) Trả đúng message & success
+        return response
+          .status(successAll ? 200 : 200) // vẫn 200 theo format mong muốn
+          .json({
+            success: true, // bạn muốn luôn true khi trả về message success
+            message: "Sending invoice is successfully.",
+            data: res_data
+          });
+      }
       } else {
         return response.status(409).json(Utils.responseByRule({success: false, message: 'General XML of invoice is error!!', data: json_xml}));
       }
@@ -3032,7 +3048,6 @@ class EInvoiceController2 {
           delayMs = Math.min(delayMs + 1000, 5000);
         }
 
-      
         // 5) Chuẩn hóa cấu trúc trả về (tương thích nơi gọi)
         // Ưu tiên phần tử đầu tiên (thực tế thường chỉ cần TBao gần nhất)
         const first = parsedItems[0] || {};

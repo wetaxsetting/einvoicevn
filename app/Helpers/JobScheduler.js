@@ -88,6 +88,11 @@ class JobScheduler {
         for (let i = 0; i < res.length; i++) {
           await einvoice.jobCheckTradeCode04SSInvoice(res[i]);
         }
+      } else
+      {
+        for (let i = 0; i < res.length; i++) {
+          await einvoice.jobCallBackDataToWeTax(res[i]);
+        }
       }
     } catch (e) {
       Utils.Logger({LVL: 'error', MODULE: 'JobScheduler', FUNC: 'Schedule_Procedure', CONTENT: e.message});

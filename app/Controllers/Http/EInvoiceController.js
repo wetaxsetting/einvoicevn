@@ -24392,7 +24392,7 @@ class EInvoiceController {
       //console.log('jobCheckTradeCodePosInvoice rtnValue  ', rtnValue);
       // console.log('jobCheckTradeCodePosInvoice END ========================  ');
     } catch (error) {
-      console.log('jobCheckTradeCodePosInvoice  error', error);
+      console.log('jobCallBackDataToWeTax  error', error);
     }
 
     return '';

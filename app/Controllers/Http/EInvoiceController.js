@@ -3058,6 +3058,7 @@ class EInvoiceController {
       let tax_sign_by = '';
       let tax_sign_datetime = '';
       let xml_length = 0;
+      let lookup_code = '';
       for (let i = 0; i < data.length; i++) {
         data_inv.push({
           sale_id: data[i].req_key,
@@ -3209,14 +3210,19 @@ class EInvoiceController {
                     p_crt_by,
                   );
 
-                  data_inv.forEach((element, index) => {
+                  //console.log(data_update_inv.p_rtn_cur[0]);
+                  //console.log(data_inv);
+ 
+                  /*data_inv.forEach((element, index) => {
                     if (element.trade_code === data[i].trade_code) {
                       data_inv[index].mccqt = maCQT;
                       data_inv[index].req_ep_key = data_update_inv.p_rtn_cur[0].TEI_WT_INVOICE_M_PK;
                       data_inv[index].lookup_code = data_update_inv.p_rtn_cur[0].LOOKUP_CODE;
                     }
-                  });
-                  //console.log('data_update_inv', data_update_inv);
+                  });*/
+                  lookup_code = data_update_inv.p_rtn_cur[0].LOOKUP_CODE;
+                  //console.log('data_inv', data_inv);
+
                   signTime = data_update_inv.p_rtn_cur[0].SIGN_DT;
                   signBy = data_update_inv.p_rtn_cur[0].SIGN_BY;
                 } else if (items[k].loaiTBao == '9' || items[k].loaiTBao == '16' || items[k].loaiTBao == '15') {
@@ -3305,6 +3311,7 @@ class EInvoiceController {
         rtnValue.push({
           trade_code: data[i].trade_code,
           mccqt: maCQT,
+          lookup_code: lookup_code,
           inform_code: maTBao,
           inform_name: tenTBao,
           xml_tax_signed: base64XMLCQT,

@@ -13547,7 +13547,6 @@ class EInvoiceController {
                 STKNHang: '',
                 HVTNMHang: '',
                 TNHang: '',
-                MDVQHNSach: '',
                 CCCDan: '',
                 SHChieu: '',
                 TTKhac: '',

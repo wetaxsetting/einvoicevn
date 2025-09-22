@@ -12608,7 +12608,7 @@ class EInvoiceController {
 
         // console.log("res_op  ", res_op);
         const lookup_code = data_r_tradecode.p_rtn_cur[0].LOOKUP_CODE;
-        rtnValueTradecode.push({
+        /*rtnValueTradecode.push({
           sale_id: invoices[i].req_key,
           req_ep_key: masterInvoicePK.PK,
           trade_code: trade_code.data.maGDich,
@@ -12618,9 +12618,25 @@ class EInvoiceController {
           buyer_email_cc: invoices[i].mail_cc,
           mccqt: '',
           send_mail_yn: 'N',
+        });*/
+
+        rtnValue.push({
+          req_key: invoices[i].req_key,
+          trade_code: trade_code.data.maGDich,
+          inform_code: "",
+          inform_name: "",
+          xml_tax_signed: invoices[i].xml_signed,
+          mccqt: "",
+          lookup_code: lookup_code,
+          data_error: [],
+          sign_datetime: '',
+          sign_by:  '',
+          tax_sign_by: '',
+          tax_sign_datetime: '',
         });
       }
-      //console.log('weTaxSendInvoiceToTaxOffice befor check status e-invoice ', rtnValueTradecode);
+      console.log('weTaxSendInvoiceToTaxOffice befor check status e-invoice ', rtnValue);
+      return response.status(200).json(Utils.responseByRule({success: true, message: 'Sent Normal invoice successfully.', data: rtnValue}));
 
       await Utils._sleep(5);
 

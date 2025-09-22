@@ -12066,8 +12066,26 @@ class EInvoiceController {
           mccqt: '',
           send_mail_yn: 'N',
         });
+
+        rtnValue.push({
+          req_key: invoices[i].req_key,
+          trade_code: trade_code.data.maGDich,
+          inform_code: "",
+          inform_name: "",
+          xml_tax_signed: invoices[i].xml_signed,
+          mccqt: "",
+          lookup_code: lookup_code,
+          data_error: [],
+          sign_datetime: '',
+          sign_by:  '',
+          tax_sign_by: '',
+          tax_sign_datetime: '',
+        });
       }
-      // console.log('weTaxSendInvoiceToTaxOffice befor check status e-invoice ', rtnValueTradecode);
+
+       return response.status(200).json(Utils.responseByRule({success: true, message: 'Sent Normal invoice successfully.', data: rtnValue}));
+      
+       // console.log('weTaxSendInvoiceToTaxOffice befor check status e-invoice ', rtnValueTradecode);
 
       await Utils._sleep(5);
 

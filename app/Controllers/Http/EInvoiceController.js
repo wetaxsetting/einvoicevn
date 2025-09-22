@@ -24335,8 +24335,8 @@ class EInvoiceController {
         p_trade_code: check_data.TRADE_CODE,
       };
 
-      console.log('jobCheckTradeCodePosInvoice param_pos  ', param_trade_code);
-      
+      //console.log('jobCheckTradeCodePosInvoice param_pos  ', param_trade_code);
+
       const data_inv_of_trade_code = await DBService.ExecuteSQLBlob(
         `BEGIN wt_sel_einvoice_by_tradecode(
                             :p_trade_code,
@@ -24349,7 +24349,7 @@ class EInvoiceController {
         p_crt_by,
       );
       
-      console.log('jobCheckTradeCodePosInvoice data_inv_of_trade_code  ', JSON.stringify(data_inv_of_trade_code.p_rtn_cur));
+      //console.log('jobCheckTradeCodePosInvoice data_inv_of_trade_code  ', JSON.stringify(data_inv_of_trade_code.p_rtn_cur));
 
       if (data_inv_of_trade_code.p_rtn_cur) {
         for (const inv of data_inv_of_trade_code.p_rtn_cur) {

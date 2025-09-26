@@ -43,11 +43,9 @@ class EiExcelHandler {
 
       //tei_einvoice_m_pk = "574306";
 
-      //const einvoiceMasterData = await DBService.callProcCursor('EI_SEL_04SS_02_M_2', [tei_einvoice_m_pk], p_language, p_crt_by, _db2);
-      //const einvoiceDetailData = await DBService.callProcCursor('EI_SEL_04SS_02_D_2', [tei_einvoice_m_pk], p_language, p_crt_by, _db2);
+      const einvoiceMasterData = await DBService.callProcCursor('EI_SEL_04SS_02_M_2', [tei_einvoice_m_pk], p_language, p_crt_by, _db2);
+      const einvoiceDetailData = await DBService.callProcCursor('EI_SEL_04SS_02_D_2', [tei_einvoice_m_pk], p_language, p_crt_by, _db2);
 
-      const einvoiceMasterData = await DBService.callProcCursor('STACFRSTAC710017_R_04SSHDDT_BB_M_ND70', [tei_einvoice_m_pk], _db2);
-      const einvoiceDetailData = await DBService.callProcCursor('STACFRSTAC710017_R_04SSHDDT_BB_D_ND70', [tei_einvoice_m_pk], _db2);
       // const einvoiceMasterParam = await DBService.callProcCursor(
       //   "ac_sel_einvoice_m_param", [tradecode, einvoiceMasterData[0].FORM_NO , einvoiceMasterData[0].SERIAL_NO,''],
       //   p_language,
@@ -105,13 +103,12 @@ class EiExcelHandler {
 
       detailCellFormat = [
         {startCell: 2, endCell: 3, cellType: 2, cellBorder: 'thin', field: 'STT'}, //từ cell bắt đầu tới cell kết thúc, type 2: cell đầu tiên
-        {startCell: 4, endCell: 4, cellType: 1, cellBorder: 'thin', field: 'FORM_NO'}, //type 1: còn lại
-        {startCell: 5, endCell: 5, cellType: 1, cellBorder: 'thin', field: 'SERIAL_NO'}, //type 1: còn lại
-        {startCell: 6, endCell: 6, cellType: 1, cellBorder: 'thin', field: 'INVOICE_NO'}, //type 1: còn lại
-        {startCell: 7, endCell: 7, cellType: 1, cellBorder: 'thin', field: 'INVOICE_DATE'}, //type 1: còn lại
-        {startCell: 8, endCell: 8, cellType: 1, cellBorder: 'thin', field: 'TOT_NET_TR_AMT'}, //type 1: còn lại
-        {startCell: 9, endCell: 9, cellType: 1, cellBorder: 'thin', field: 'TOT_VAT_TR_AMT'}, //type 1: còn lại
-        {startCell: 10, endCell: 10, cellType: 1, cellBorder: 'thin', field: 'TOT_AMT'}, //type 1: còn lại
+        {startCell: 4, endCell: 4, cellType: 1, cellBorder: 'thin', field: 'SERIAL_NO'}, //type 1: còn lại
+        {startCell: 5, endCell: 5, cellType: 1, cellBorder: 'thin', field: 'INVOICE_NO'}, //type 1: còn lại
+        {startCell: 6, endCell: 6, cellType: 1, cellBorder: 'thin', field: 'INVOICE_DATE'}, //type 1: còn lại
+        {startCell: 7, endCell: 7, cellType: 1, cellBorder: 'thin', field: 'TOT_NET_TR_AMT'}, //type 1: còn lại
+        {startCell: 8, endCell: 8, cellType: 1, cellBorder: 'thin', field: 'TOT_VAT_TR_AMT'}, //type 1: còn lại
+        {startCell: 9, endCell: 10, cellType: 1, cellBorder: 'thin', field: 'TOT_AMT'}, //type 1: còn lại
       ];
 
       // if(einvoiceMasterData[0].URL_IMG_BG != "" && einvoiceMasterData[0].URL_IMG_BG != null )
@@ -147,7 +144,7 @@ class EiExcelHandler {
       signCell = {start: einvoiceMasterData[0].SIGN_START_CELL, end: einvoiceMasterData[0].SIGN_END_CELL};
       signBoxCell = einvoiceMasterData[0].SIGN_CELL_BOX;
       signByCell = {start: einvoiceMasterData[0].SIGN_BY_START_CELL, end: einvoiceMasterData[0].SIGN_BY_END_CELL};
-      countFromEndDetailToSignBox = 10;
+      countFromEndDetailToSignBox = 12;
 
       _sourceRow = 32;
       _sourceRow_2 = 32;

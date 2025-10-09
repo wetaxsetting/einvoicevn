@@ -8526,7 +8526,7 @@ class EInvoiceController {
         //   master_amount,
         // );
         if (
-          (Number(master_amount.toFixed(6)) != Number(detail_amount.toFixed(6)) ||
+          ( //Number(master_amount.toFixed(6)) != Number(detail_amount.toFixed(6)) ||
             Number(vat_amout.toFixed(6)) != Number(master_amount.toFixed(6))) &&
           master_amount != null
         ) {

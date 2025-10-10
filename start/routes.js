@@ -185,6 +185,9 @@ Route.group(() => {
   Route.post('re-send-mail-records', 'EInvoiceController.weTaxReSendRecords');
   Route.post('view-records', 'EInvoiceController.weTaxViewRecords');
 
+  Route.post('generate-records-xml-epit', 'EInvoiceController.weTaxGenerateRecordsEPitXmlN70');
+  Route.post('send-records-epit', 'EInvoiceController.weTaxSendRecordsEPitN70');
+
   // e-invoice
   Route.post('general-records-xml-at', 'EInvoiceController.generalRecordsXml');
   Route.post('general-pos-invoice-xml-view', 'EInvoiceController.generalXmlPosInvoiceView');

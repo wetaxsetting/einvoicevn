@@ -23335,6 +23335,344 @@ class EInvoiceController {
     }
   }
 
+  async weTaxGenerateRecordsEPitXmlN70({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+
+      const {
+        form_no,
+        inform_date,
+        version,
+        seller_company_name,
+        seller_taxcode,
+        seller_address,
+        seller_position,
+        seller_representative,
+        seller_tel,
+        noti_list,
+      } = request.all();
+
+      if (!form_no) {
+        // return response.send(Utils.response(false, `form no is not null`, null));
+        return response.status(400).json(Utils.responseByRule({success: false, message: 'Invalid: form_no'}));
+      }
+
+      if (!inform_date) {
+        // return response.send(Utils.response(false, `inform_date is not null`, null));
+        return response.status(400).json(Utils.responseByRule({success: false, message: 'Invalid: inform_date'}));
+      }
+
+      if (!version) {
+        // return response.send(Utils.response(false, `version is not null`, null));
+        return response.status(400).json(Utils.responseByRule({success: false, message: 'Invalid: version'}));
+      }
+
+      if (!seller_company_name) {
+        // return response.send(Utils.response(false, `seller_company_name is not null`, null));
+        return response.status(400).json(Utils.responseByRule({success: false, message: 'Invalid: seller_company_name'}));
+      }
+
+      if (!seller_taxcode) {
+        // return response.send(Utils.response(false, `seller_taxcode is not null`, null));
+        return response.status(400).json(Utils.responseByRule({success: false, message: 'Invalid: seller_taxcode'}));
+      }
+
+      if (!seller_address) {
+        // return response.send(Utils.response(false, `seller_address is not null`, null));
+        return response.status(400).json(Utils.responseByRule({success: false, message: 'Invalid: seller_address'}));
+      }
+
+      let rtnXML = [];
+      let rtnReqKey = 0;
+      let objInvoice = {
+        CTu: {
+          NDBKe: [
+            {
+              TTChung: {
+                PBan: '',
+                TBBan: '',
+                SBBan: '',
+                NBBan: '',
+                TCCTu: '',
+                TenTCTTNhap: '',
+                MSTTCTTNhap: '',
+                DChiTCTTNhap: '',
+                TenNNT: '',
+                MSTNNT: '',
+                DChiNNT: '',
+                KHMSCTCLQuan: '',
+                KHCTCLQuan: '',
+                SCTCLQuan: '',
+                DSLDTDoi: [
+                  {
+                    LDo: '',
+                  },
+                ],
+              },
+            },
+          ],
+          DSCKS: {
+            TCTTNhap: {},
+            NNT: {},
+            CCKSKhac: {},
+          },
+        },
+      };
+
+      for (const noti of noti_list) {
+        if (!noti.buyer_company_name || !noti.form_no || !noti.serial_no || !noti.invoice_no || !noti.invoice_dt || !noti.reason) {
+          return response.status(400).json(Utils.responseByRule({success: false, message: 'Invalid: noti_list'}));
+        }
+        //rtnReqKey.push(noti.req_key);
+        rtnReqKey = noti.req_key;
+        objInvoice.CTu.NDBKe = [];
+        objInvoice.CTu.NDBKe.push({
+          TTChung: {
+            PBan: version,
+            TBBan: form_no,
+            SBBan: noti.voucher_no,
+            NBBan: inform_date,
+            TCCTu: noti.feature,
+            TenTCTTNhap: this.convertHtmlCode(seller_company_name),
+            MSTTCTTNhap: seller_taxcode,
+            DChiTCTTNhap: this.convertHtmlCode(seller_address),
+            TenNNT: this.convertHtmlCode(noti.buyer_company_name),
+            MSTNNT: noti.buyer_taxcode,
+            DChiNNT: this.convertHtmlCode(noti.buyer_address),
+            KHMSCTCLQuan: noti.form_no,
+            KHCTCLQuan: noti.serial_no,
+            SCTCLQuan: noti.invoice_no,
+            DSLDTDoi: [
+              {
+                LDo: this.convertHtmlCode(noti.reason),
+              },
+            ],
+          },
+        });
+      }
+
+      const id = uuid.v4();
+      const xml = this.OBJtoXML(objInvoice);
+      const xmlId = xml.toString().replace('<NDBKe>', `<NDBKe Id=\'${id}\'>`);
+      const xmlRemoveLine = xmlId.toString().replace(/\n/g, '');
+      rtnXML.push({
+        req_key: rtnReqKey,
+        id_signing: id,
+        url_signing: 'CTu/DSCKS/TCTTNhap',
+        xml: xmlRemoveLine,
+      });
+      console.log('weTaxGenerateRecordsXml rtnXML ', rtnXML);
+      console.log('weTaxGenerateRecordsXml END ====================================');
+
+      // return response.send(Utils.response(true, `Convert json to xml was successful. `, rtnXML));
+      return response.status(200).json(Utils.responseByRule({success: true, message: 'Generate e-Record xml successfully.', data: rtnXML}));
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'generalRecordsXml',
+        CONTENT: e.message,
+      });
+      console.log(e);
+      // return response.send(Utils.response(false, e.message, null));
+      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+    }
+  }
+  
+  
+  async weTaxSendRecordsEPitN70({request, response, auth}) {
+    try {
+      var p_language = request.header('accept-language', 'ENG');
+      var p_crt_by = '';
+      const user = await auth.getUser();
+      if (user) {
+        p_crt_by = user.USER_ID;
+      }
+      let r_data_noti = [];
+      const {seller_taxcode, noti_list} = request.all();
+
+      for (const noti of noti_list) {
+        console.log('noti  ', noti);
+
+        const templateSignTime = {
+          sign_by: 'CTu/DSCKS/TCTTNhap/Signature/KeyInfo/X509Data/X509SubjectName',
+          signed_date: 'CTu/DSCKS/TCTTNhap/Signature/Object/SignatureProperties/SignatureProperty/SigningTime',
+        };
+        const signingTime = await transform(noti.xml_signed, templateSignTime);
+
+        let signed_by = signingTime.sign_by;
+        let signed_date = signingTime.signed_date;
+
+        console.log('signed_by', signed_by);
+        console.log('signed_date', signed_date);
+        const param_noti = {
+          req_key: noti.req_key,
+          msg_his_id: noti.msg_his_id,
+          xml_signed: noti.xml_signed,
+          buyer_email: noti.buyer_email,
+          buyer_email_cc: noti.buyer_email_cc,
+          doc_no: noti.doc_no,
+          reg_dtm: noti.reg_dtm,
+          cus_nm: noti.cus_nm,
+          cus_taxcd: noti.cus_taxcd,
+          cus_add: noti.cus_add,
+          cus_tel: noti.cus_tel,
+          cus_email: noti.cus_email,
+          cus_rppr_nm: noti.cus_rppr_nm,
+          cus_position: noti.cus_position,
+          cus_signed_by: noti.cus_signed_by,
+          cus_signed_date: noti.cus_signed_date,
+          seller_nm: noti.seller_nm,
+          seller_taxcd: noti.seller_taxcd,
+          seller_add: noti.seller_add,
+          seller_tel_no: noti.seller_tel_no,
+          seller_email: noti.seller_email,
+          seller_rppr_nm: noti.seller_rppr_nm,
+          seller_position: noti.seller_position,
+          signed_by: signed_by, //noti.signed_by             ,
+          signed_date: signed_date, //noti.signed_date           ,
+          cqt_code: noti.cqt_code,
+          form_no: noti.form_no,
+          serial_no: noti.serial_no,
+          inv_no: noti.inv_no,
+          inv_date: noti.inv_date,
+          feature: noti.feature,
+          reason: noti.reason,
+          tot_aft_dc_amt: noti.tot_aft_dc_amt,
+          tot_vat_amt: noti.tot_vat_amt,
+          tot_pay: noti.tot_pay,
+          sign_id: noti.sign_id,
+          signature_path: noti.signature_path,
+        };
+
+        const res = await DBService.ExecuteSQLBlob(
+          `BEGIN wt_upd_e_record(
+                          :req_key				,
+                          :msg_his_id         ,
+                          :xml_signed         ,
+                          :buyer_email        ,
+                          :buyer_email_cc     ,
+                          :doc_no             ,
+                          :reg_dtm            ,
+                          :cus_nm             ,
+                          :cus_taxcd          ,
+                          :cus_add            ,
+                          :cus_tel            ,
+                          :cus_email          ,
+                          :cus_rppr_nm        ,
+                          :cus_position       ,
+                          :cus_signed_by      ,
+                          :cus_signed_date    ,
+                          :seller_nm          ,
+                          :seller_taxcd       ,
+                          :seller_add         ,
+                          :seller_tel_no      ,
+                          :seller_email       ,
+                          :seller_rppr_nm     ,
+                          :seller_position    ,
+                          :signed_by          ,
+                          :signed_date        ,
+                          :cqt_code           ,
+                          :form_no            ,
+                          :serial_no          ,
+                          :inv_no             ,
+                          :inv_date           ,
+                          :feature            ,
+                          :reason             ,
+                          :tot_aft_dc_amt     ,
+                          :tot_vat_amt        ,
+                          :tot_pay            ,
+                          :sign_id            ,
+                          :signature_path,
+                          :p_language, 
+                          :p_crt_by, 
+                          :p_rtn_cur); 
+            END;`,
+          param_noti,
+          p_language,
+          p_crt_by,
+        );
+
+        console.log('weTaxSendRecords   details res', res);
+
+        if (res.p_rtn_cur[0].STATUS == 'OK') {
+          const data_mail = await this.weTaxSendMailRecords2(res.p_rtn_cur[0].TEI_E_RECORD_PK, p_language, p_crt_by);
+
+          //console.log("weTaxSendRecords   data_mail ", data_mail);
+          if (data_mail) {
+            r_data_noti.push({
+              sale_id: noti.req_key,
+              msg_his_id: noti.msg_his_id,
+              status_code: '1',
+              status_name: 'Sent Sucess',
+              send_date: data_mail.send_date,
+              send_time: data_mail.send_time,
+              mail_form: data_mail.mail_form,
+              mail_to: data_mail.mail_to,
+              mail_to_cc: data_mail.mail_to_cc,
+              title: data_mail.title,
+              content: data_mail.content,
+              sign_datetime: res.p_rtn_cur[0].EREC_SIGN_DT,
+              sign_by: res.p_rtn_cur[0].EREC_SIGN_BY,
+            });
+          } else {
+            r_data_noti.push({
+              sale_id: noti.req_key,
+              msg_his_id: noti.msg_his_id,
+              status_code: '0',
+              status_name: 'Sent Faile',
+              send_date: '',
+              send_time: '',
+              mail_form: '',
+              mail_to: '',
+              mail_to_cc: '',
+              title: '',
+              content: '',
+              sign_datetime: res.p_rtn_cur[0].EREC_SIGN_DT,
+              sign_by: res.p_rtn_cur[0].EREC_SIGN_BY,
+            });
+          }
+        } else {
+          r_data_noti.push({
+            sale_id: noti.req_key,
+            msg_his_id: noti.msg_his_id,
+            status_code: '0',
+            status_name: 'Sent Faile',
+            send_date: '',
+            send_time: '',
+            mail_form: '',
+            mail_to: '',
+            mail_to_cc: '',
+            title: '',
+            content: '',
+            sign_datetime: res.p_rtn_cur[0].EREC_SIGN_DT,
+            sign_by: res.p_rtn_cur[0].EREC_SIGN_BY,
+          });
+        }
+      }
+      console.log('weTaxSendRecords   r_data_noti ', r_data_noti);
+      console.log('weTaxSendRecords   END =================================');
+
+      // return response.send(Utils.response(true, `Sending records was successful. `,r_data_noti ));
+      return response.status(200).json(Utils.responseByRule({success: true, message: 'Send e-Record successfully.', data: r_data_noti}));
+    } catch (e) {
+      Utils.Logger({
+        LVL: 'error',
+        MODULE: 'EInvoiceController',
+        FUNC: 'generalRecordsXml',
+        CONTENT: e.message,
+      });
+      console.log(e);
+      // return response.send(Utils.response(false, e.message, null));
+      return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
+    }
+  }
+  
   async GeneralDeclarationXML({request, response, auth}) {
     try {
       var p_language = request.header('accept-language', 'ENG');

@@ -181,6 +181,9 @@ Route.group(() => {
   Route.post('generate-records-xml', 'EInvoiceController.weTaxGenerateRecordsXmlN70');
   Route.post('send-records', 'EInvoiceController.weTaxSendRecordsN70');
 
+  Route.post('generate-records-xml-epit', 'EInvoiceController.weTaxGenerateRecordsEPitXmlN70');
+  Route.post('send-records-epit', 'EInvoiceController.weTaxSendRecordsEPitN70');
+
   Route.post('re-send-mail-records', 'EInvoiceController.weTaxReSendRecords');
   Route.post('view-records', 'EInvoiceController.weTaxViewRecords');
 
@@ -240,8 +243,7 @@ Route.group(() => {
 
   Route.post('send-records-ep', 'EInvoiceController.weTaxSendRecordsN70EP');
   Route.post('generate-records-xml-ep', 'EInvoiceController.weTaxGenerateRecordsXmlN70EP');
-
-
+  
   Route.post('validate-invoice-c-sharp', 'EInvoiceController.ValidateInvoiceCSharp');
 })
   .prefix('api/einvoice')

@@ -8526,7 +8526,7 @@ class EInvoiceController {
         //   master_amount,
         // );
         if (
-          (// Number(master_amount.toFixed(6)) != Number(detail_amount.toFixed(6)) ||
+          ( Number(master_amount.toFixed(6)) != Number(detail_amount.toFixed(6)) ||
             Number(vat_amout.toFixed(6)) != Number(master_amount.toFixed(6))) &&
           master_amount != null
         ) {
@@ -8549,7 +8549,7 @@ class EInvoiceController {
         //   vat_amount_vat,
         // );
         if (
-          ( //Number(master_amount_vat.toFixed(6)) != Number(detail_amount_vat.toFixed(6)) ||
+          ( Number(master_amount_vat.toFixed(6)) != Number(detail_amount_vat.toFixed(6)) ||
             Number(vat_amount_vat.toFixed(6)) != Number(master_amount_vat.toFixed(6))) &&
           master_amount_vat != null
         ) {
@@ -8574,7 +8574,7 @@ class EInvoiceController {
         //   vat_total_amount,
         // );
         if (
-          (//Number(master_total_amount.toFixed(6)) != Number(detail_total_amount.toFixed(6)) ||
+          (Number(master_total_amount.toFixed(6)) != Number(detail_total_amount.toFixed(6)) ||
             Number(vat_total_amount.toFixed(6)) != Number(master_total_amount.toFixed(6))) &&
           master_total_amount != null
         ) {

@@ -96,7 +96,7 @@ class HSMController2 {
           Authorization: `Bearer ${token}`,
         },
       });
-      // console.log(res);
+      console.log(res);
 
       return response.status(200).json(
         Utils.responseByRule({

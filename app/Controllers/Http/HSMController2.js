@@ -98,11 +98,15 @@ class HSMController2 {
       });
       //console.log(res);
 
+      var res_data = res.data.find((item) => item.serial == '540110beffa622f3ca84bd2f93f0122c');
+
+      console.log(res_data);
+
       return response.status(200).json(
         Utils.responseByRule({
           success: true,
           message: 'success.',
-          data: res.data,
+          data: res_data,
         }),
       );
     } catch (e) {

@@ -6784,10 +6784,6 @@ class EInvoiceController {
 
       const {tax_code, store_code, store_name, count_invoice, list_invoice} = request.all();
 
-      //console.log(' weTaxConvertPosInvoiceToXML  BEGIN ==================================================');
-      //console.log(' weTaxConvertPosInvoiceToXML  list_invoice   ', list_invoice);
-
-      //invoices = JSON.parse(invoices);
       let rtnXML = [];
       let objInvoice = {
         DLHDon: {
@@ -6810,6 +6806,7 @@ class EInvoiceController {
               TTKhac: '',
             },
             NMua: {
+              HVTNMHang: '',
               Ten: '',
               MST: '',
               DChi: '',
@@ -6847,14 +6844,12 @@ class EInvoiceController {
           CKSNNT: {},
         },
       };
-      // //console.log(" data.list_invoice  ", data.list_invoice);
       let req_key = [];
       const invoices = list_invoice;
       const valid = this.validateJsonInvalidPosInvoiceToXML(invoices);
       if (!valid.status) {
         return response.status(400).json(Utils.responseByRule({success: false, message: valid.message}));
       }
-      ////console.log("invoices1:", invoices)
       if (invoices.length == undefined || invoices.length == 0) {
         return response.status(400).json(Utils.responseByRule({success: false, message: `Invalid: list_invoice`}));
       }
@@ -6911,7 +6906,7 @@ class EInvoiceController {
         } else if (invoices[i].form_no == 6) {
           objInvoice.DLHDon.TTChung.THDon = 'Phiếu xuất kho kiêm vận chuyển nội bộ, phiếu xuất kho hàng gửi bán đại lý khởi tạo từ máy tính tiền';
         }
-
+        
         if(invoices[i].version != "2.1.0")
         {
           objInvoice.DLHDon.TTChung.PBan = invoices[i].version;
@@ -6973,8 +6968,8 @@ class EInvoiceController {
           objInvoice.DLHDon.NDHDon.NBan.SDThoai = invoices[i].seller_tel;
           objInvoice.DLHDon.NDHDon.NBan.MCHang = store_code;
           objInvoice.DLHDon.NDHDon.NBan.TCHang = store_name;
-          objInvoice.DLHDon.NDHDon.NBan.STKNHang = invoices[i].seller_bank_no;
-          objInvoice.DLHDon.NDHDon.NBan.TNHang = invoices[i].seller_bank_name;
+          objInvoice.DLHDon.NDHDon.NBan.STKNHang = invoices[i].seller_bank_no || '';
+          objInvoice.DLHDon.NDHDon.NBan.TNHang = invoices[i].seller_bank_name || '';
 
           objInvoice.DLHDon.NDHDon.NBan.TTKhac = {};
           objInvoice.DLHDon.NDHDon.NBan.TTKhac.TTin = [];
@@ -7003,6 +6998,7 @@ class EInvoiceController {
             });
           }
 
+          objInvoice.DLHDon.NDHDon.NMua.HVTNMHang = this.convertHtmlCode(invoices[i].buyer_nm);
           objInvoice.DLHDon.NDHDon.NMua.Ten = this.convertHtmlCode(invoices[i].buyer_comp_name);
           objInvoice.DLHDon.NDHDon.NMua.MST = invoices[i].buyer_taxcode;
           objInvoice.DLHDon.NDHDon.NMua.DChi = this.convertHtmlCode(invoices[i].buyer_address);
@@ -7031,13 +7027,13 @@ class EInvoiceController {
             });
           }
 
-          if (invoices[i].buyer_nm) {
-            objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
-              TTruong: 'HVTNMHang',
-              KDLieu: 'string',
-              DLieu: this.convertHtmlCode(invoices[i].buyer_nm),
-            });
-          }
+          // if (invoices[i].buyer_nm) {
+          //   objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
+          //     TTruong: 'HVTNMHang',
+          //     KDLieu: 'string',
+          //     DLieu: this.convertHtmlCode(invoices[i].buyer_nm),
+          //   });
+          // }
 
           if (invoices[i].buyer_bank_no) {
             objInvoice.DLHDon.NDHDon.NMua.TTKhac.TTin.push({
@@ -7106,8 +7102,6 @@ class EInvoiceController {
           objInvoice.DLHDon.NDHDon.TToan = {};
           objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat = {};
           objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat = [];
-
-          //console.log(' weTaxConvertPosInvoiceToXML invoices[i].total_vat_list', invoices[i].total_vat_list);
 
           for (let j = 0; j < invoices[i].total_vat_list.length; j++) {
             objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat.push({
@@ -7180,7 +7174,8 @@ class EInvoiceController {
             },
             DSCKS: {},
           };
-        }else
+        }
+        else
         {
           objInvoice.DLHDon.TTChung.PBan = invoices[i].version;
           objInvoice.DLHDon.TTChung.KHMSHDon = invoices[i].form_no;
@@ -7278,7 +7273,7 @@ class EInvoiceController {
           objInvoice.DLHDon.NDHDon.NMua.HVTNMHang = this.convertHtmlCode(invoices[i].buyer_nm);
           objInvoice.DLHDon.NDHDon.NMua.DChi = this.convertHtmlCode(invoices[i].buyer_address);
           objInvoice.DLHDon.NDHDon.NMua.CCCDan = invoices[i].buyer_cccd;
-          objInvoice.DLHDon.NDHDon.NMua.SHChieu = invoices[i].buyer_cid || ' ';
+          objInvoice.DLHDon.NDHDon.NMua.SHChieu = invoices[i].passport_no || ' ';
           objInvoice.DLHDon.NDHDon.NMua.SDThoai = invoices[i].buyer_tel;
           objInvoice.DLHDon.NDHDon.NMua.MDVQHNSach = "";
 
@@ -7370,8 +7365,6 @@ class EInvoiceController {
           objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat = {};
           objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat = [];
 
-          //console.log(' weTaxConvertPosInvoiceToXML invoices[i].total_vat_list', invoices[i].total_vat_list);
-
           for (let j = 0; j < invoices[i].total_vat_list.length; j++) {
             objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat.push({
               TSuat: invoices[i].total_vat_list[j].sub_vat_rate,
@@ -7461,7 +7454,6 @@ class EInvoiceController {
         xml_data: xmlRemoveLine,
         req_key: req_key,
       };
-      //console.log(' weTaxConvertPosInvoiceToXML ', rtnXML);
       //console.log(' weTaxConvertPosInvoiceToXML  END ==================================================');
 
       return response.status(200).json(Utils.responseByRule({success: true, message: `Generate POS invoice xml format successfully.`, data: rtnXML}));
@@ -7488,11 +7480,6 @@ class EInvoiceController {
       }
 
       const {tax_code, store_code, store_name, count_invoice, list_invoice} = request.all();
-
-      console.log(' weTaxConvertPosInvoiceToXML2  BEGIN ==================================================');
-      console.log(' weTaxConvertPosInvoiceToXML2  list_invoice   ', JSON.stringify(list_invoice));
-
-      //invoices = JSON.parse(invoices);
 
       let objInvoice = {
         DLHDon: {
@@ -7572,7 +7559,6 @@ class EInvoiceController {
         process_yn = true;
         let arr_invoice = [invoices[i]];
         const valid = await this.validateJsonInvalidPosInvoiceToXML(arr_invoice);
-        // console.log('weTaxConvertPosInvoiceToXML2  valid', valid);
         if (!valid.status) {
           data_error.push({
             req_key: invoices[i].req_key,
@@ -7587,7 +7573,6 @@ class EInvoiceController {
           p_crt_by,
           'N',
         );
-        // console.log('weTaxConvertPosInvoiceToXML2  wt_sel_last_invoice_no', lastInvoiceNo);
 
         let last_invoice_no = lastInvoiceNo[0].INVOICE_NO;
         const last_invoice_date = lastInvoiceNo[0].INVOICE_DATE;
@@ -7609,7 +7594,6 @@ class EInvoiceController {
           });
           process_yn = false;
         }
-        // console.log('weTaxConvertPosInvoiceToXML2  invoice date cannot smaller than', data_error);
 
         if (invoices[i].invoice_date >= tomorrow_date) {
           data_error.push({
@@ -7831,7 +7815,6 @@ class EInvoiceController {
             objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat = {};
             objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat = [];
 
-            //console.log(' weTaxConvertPosInvoiceToXML invoices[i].total_vat_list', invoices[i].total_vat_list);
 
             for (let j = 0; j < invoices[i].total_vat_list.length; j++) {
               objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat.push({
@@ -8086,7 +8069,6 @@ class EInvoiceController {
             objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat = {};
             objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat = [];
 
-            //console.log(' weTaxConvertPosInvoiceToXML2 invoices[i].total_vat_list', invoices[i].total_vat_list);
 
             for (let j = 0; j < invoices[i].total_vat_list.length; j++) {
               objInvoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat.push({
@@ -8143,7 +8125,6 @@ class EInvoiceController {
             signature_path: signature_path,
           });
 
-          // console.log(' weTaxConvertPosInvoiceToXML2 data_xml ', i, JSON.stringify(data_xml));
         }
         objInvoice = {
           DLHDon: {
@@ -8211,8 +8192,6 @@ class EInvoiceController {
         req_key: req_key,
         data_error: data_error,
       };
-      // console.log(' weTaxConvertPosInvoiceToXML2 ', rtnXML);
-      // console.log(' weTaxConvertPosInvoiceToXML2  END ==================================================');
 
       return response.status(200).json(Utils.responseByRule({success: true, message: `Generate POS invoice xml format successfully.`, data: rtnXML}));
     } catch (e) {
@@ -8296,7 +8275,6 @@ class EInvoiceController {
 
         for (const key in invoice) {
           if (errorList[`${key}`] != undefined && !Array.isArray(invoice[key])) {
-            //console.log('weTaxConvertPosInvoiceToXML key  ', key, ' invoice[key] ', invoice[key]);
             master_amount_vat = Number(invoice['total_vat_amt']);
             master_amount = Number(invoice['total_amt']);
             master_total_amount = Number(invoice['total_payment']);

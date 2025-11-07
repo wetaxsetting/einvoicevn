@@ -20841,7 +20841,7 @@ class EInvoiceController {
               vat_rate: invoice.DLHDon.NDHDon.TToan.THTTLTSuat.LTSuat[0].TSuat,
             };
 
-            // console.log('weTaxExtractPosXMLContent m param ===> ', paraMaster);
+            console.log('weTaxExtractPosXMLContent m param ===> ', paraMaster);
 
             const rtnValueMaster = await DBService.ExecuteSQLBlob(
               `BEGIN WT_UPD_SALE_BILL_2 (          

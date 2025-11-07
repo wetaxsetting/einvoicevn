@@ -20789,7 +20789,7 @@ class EInvoiceController {
               shdon: invoice.DLHDon.TTChung.SHDon,
               nlap: invoice.DLHDon.TTChung.NLap,
 
-              dvtte: p_DVTTe, //invoice.DLHDon.TTChung.DVTTe,
+              dvtte: p_DVTTe != null ? p_DVTTe : invoice.DLHDon.TTChung.DVTTe,  // 
               tgia: p_TGia, //invoice.DLHDon.TTChung.TGia,
               htttoan: p_HTTToan, //invoice.DLHDon.TTChung.HTTToan,
 

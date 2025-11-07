@@ -20552,6 +20552,9 @@ class EInvoiceController {
               KHHDon: 'DLHDon/TTChung/KHHDon',
               SHDon: 'DLHDon/TTChung/SHDon',
               NLap: 'DLHDon/TTChung/NLap',
+              DVTTe: 'DLHDon/TTChung/DVTTe',
+              TGia: 'DLHDon/TTChung/TGia',
+              HTTToan: 'DLHDon/TTChung/HTTToan',
               TTKhac: [
                 'DLHDon/TTChung/TTKhac/TTin',
                 {
@@ -20790,8 +20793,8 @@ class EInvoiceController {
               nlap: invoice.DLHDon.TTChung.NLap,
 
               dvtte: p_DVTTe != '' ? p_DVTTe : invoice.DLHDon.TTChung.DVTTe,  // 
-              tgia: p_TGia, //invoice.DLHDon.TTChung.TGia,
-              htttoan: p_HTTToan, //invoice.DLHDon.TTChung.HTTToan,
+              tgia: p_TGia != '' ? p_TGia : invoice.DLHDon.TTChung.TGia,
+              htttoan: p_HTTToan != '' ? p_HTTToan : invoice.DLHDon.TTChung.HTTToan,
 
               tchdon: invoice.DLHDon.TTChung.TTHDLQuan.TCHDon,
               lhdclquan: invoice.DLHDon.TTChung.TTHDLQuan.LHDCLQuan,

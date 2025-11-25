@@ -9334,11 +9334,11 @@ class EInvoiceController {
         ex_rate: /^-?[0-9]{1,7}(?:\.[0-9]{1,2})?$/, //7.2
         payment_method: /^.{0,50}$/, //50,
         seller_comp_name: /^.{0,400}$/, //400,
-        seller_taxcode: {10: /^(\d{10})$/, 14: /^(\d{10}\-\d{3})$/}, // 10
+        seller_taxcode: {10: /^(\d{10})$/, 12: /^(\d{12})$/, 14: /^(\d{10}\-\d{3})$/}, // 10
         seller_address: /^.{0,400}$/, //400,
         seller_tel: /^.{0,50}$/, // 20
         buyer_comp_name: /^.{0,400}$/, //400,
-        buyer_taxcode: {10: /^(\d{10})$/, 14: /^(\d{10}\-\d{3})$/},
+        buyer_taxcode: {10: /^(\d{10})$/,12: /^(\d{12})$/, 14: /^(\d{10}\-\d{3})$/},
         buyer_address: /^.{0,400}$/, // 400
         buyer_nm: /^.{0,100}$/,
         buyer_tel: /^.{0,20}$/, //20,
@@ -9399,7 +9399,19 @@ class EInvoiceController {
                     message: resMess,
                   };
                 }
-              } else if (invoice[key].length == 14) {
+
+              }
+              else if (invoice[key].length == 12) {
+                if (!errorList[`${key}`][12].test(invoice[key])) {
+                  status = false;
+                  resMess = `${mess1} ${key}.`;
+                  return {
+                    status,
+                    message: resMess,
+                  };
+                }
+              }
+              else if (invoice[key].length == 14) {
                 if (!errorList[`${key}`][14].test(invoice[key])) {
                   status = false;
                   resMess = `${mess1} ${key}.`;

@@ -103,12 +103,13 @@ class EiExcelHandler {
 
       detailCellFormat = [
         {startCell: 2, endCell: 3, cellType: 2, cellBorder: 'thin', field: 'STT'}, //từ cell bắt đầu tới cell kết thúc, type 2: cell đầu tiên
-        {startCell: 4, endCell: 4, cellType: 1, cellBorder: 'thin', field: 'SERIAL_NO'}, //type 1: còn lại
-        {startCell: 5, endCell: 5, cellType: 1, cellBorder: 'thin', field: 'INVOICE_NO'}, //type 1: còn lại
-        {startCell: 6, endCell: 6, cellType: 1, cellBorder: 'thin', field: 'INVOICE_DATE'}, //type 1: còn lại
-        {startCell: 7, endCell: 7, cellType: 1, cellBorder: 'thin', field: 'TOT_NET_TR_AMT'}, //type 1: còn lại
-        {startCell: 8, endCell: 8, cellType: 1, cellBorder: 'thin', field: 'TOT_VAT_TR_AMT'}, //type 1: còn lại
-        {startCell: 9, endCell: 10, cellType: 1, cellBorder: 'thin', field: 'TOT_AMT'}, //type 1: còn lại
+        {startCell: 4, endCell: 4, cellType: 1, cellBorder: 'thin', field: 'FORM_NO'}, //type 1: còn lại
+        {startCell: 5, endCell: 5, cellType: 1, cellBorder: 'thin', field: 'SERIAL_NO'}, //type 1: còn lại
+        {startCell: 6, endCell: 6, cellType: 1, cellBorder: 'thin', field: 'INVOICE_NO'}, //type 1: còn lại
+        {startCell: 7, endCell: 7, cellType: 1, cellBorder: 'thin', field: 'INVOICE_DATE'}, //type 1: còn lại
+        {startCell: 8, endCell: 8, cellType: 1, cellBorder: 'thin', field: 'TOT_NET_TR_AMT'}, //type 1: còn lại
+        {startCell: 9, endCell: 9, cellType: 1, cellBorder: 'thin', field: 'TOT_VAT_TR_AMT'}, //type 1: còn lại
+        {startCell: 10, endCell: 10, cellType: 1, cellBorder: 'thin', field: 'TOT_AMT'}, //type 1: còn lại
       ];
 
       // if(einvoiceMasterData[0].URL_IMG_BG != "" && einvoiceMasterData[0].URL_IMG_BG != null )

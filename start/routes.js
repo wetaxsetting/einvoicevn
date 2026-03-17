@@ -213,38 +213,34 @@ Route.group(() => {
   Route.post('general-base64-from-url', 'EInvoiceController.getBase64ImgFromUrl');
 
   // e-invoice C#s
-  Route.post('declare2xml-c-sharp', 'EInvoiceController.GeneralDeclarationXML');
-  Route.post('declare2xml-hsm-c-sharp', 'EInvoiceController.GeneralDeclarationHsmXML');
-  Route.post('update-declare-c-sharp', 'EInvoiceController.UpdateDeclarationXML');
-  Route.post('check-declare-c-sharp', 'EInvoiceController.CheckDeclarationXML');
+  // Route.post('declare2xml-c-sharp', 'EInvoiceController.GeneralDeclarationXML');
+  // Route.post('declare2xml-hsm-c-sharp', 'EInvoiceController.GeneralDeclarationHsmXML');
+  // Route.post('update-declare-c-sharp', 'EInvoiceController.UpdateDeclarationXML');
+  // Route.post('check-declare-c-sharp', 'EInvoiceController.CheckDeclarationXML');
 
-  Route.post('invoice2xml-c-sharp', 'EInvoiceController.GeneralInvoiceXML');
-  Route.post('update-invoice-c-sharp', 'EInvoiceController.UpdateInvoiceXML');
-  Route.post('check-invoice-c-sharp', 'EInvoiceController.CheckInvoiceXML');
-  Route.post('invoice2xml-for-hsm-c-sharp', 'EInvoiceController.GeneralInvoiceHsmXML');
-  Route.post('sign-invoice-hsm-c-sharp', 'EInvoiceController.SignInvoiceHsmXML');
+  // Route.post('invoice2xml-c-sharp', 'EInvoiceController.GeneralInvoiceXML');
+  // Route.post('update-invoice-c-sharp', 'EInvoiceController.UpdateInvoiceXML');
+  // Route.post('check-invoice-c-sharp', 'EInvoiceController.CheckInvoiceXML');
+  // Route.post('invoice2xml-for-hsm-c-sharp', 'EInvoiceController.GeneralInvoiceHsmXML');
+  // Route.post('sign-invoice-hsm-c-sharp', 'EInvoiceController.SignInvoiceHsmXML');
 
-  Route.post('invalidinvoice2xml-c-sharp', 'EInvoiceController.GeneralInvalidInvoiceToXML');
-  Route.post('update-invalid-invoice-c-sharp', 'EInvoiceController.UpdataInvalidInvoiceToXML');
-  Route.post('check-invalid-invoice-c-sharp', 'EInvoiceController.CheckInvalidInvoiceToXML');
-  Route.post('invalidinvoice2xml-hsm-c-sharp', 'EInvoiceController.GeneralInvalidInvoiceToHsmXML');
+  // Route.post('invalidinvoice2xml-c-sharp', 'EInvoiceController.GeneralInvalidInvoiceToXML');
+  // Route.post('update-invalid-invoice-c-sharp', 'EInvoiceController.UpdataInvalidInvoiceToXML');
+  // Route.post('check-invalid-invoice-c-sharp', 'EInvoiceController.CheckInvalidInvoiceToXML');
+  // Route.post('invalidinvoice2xml-hsm-c-sharp', 'EInvoiceController.GeneralInvalidInvoiceToHsmXML');
+  // Route.post('invalidinvoice2xml-from-customer-c-sharp', 'EInvoiceController.GeneralInvalidInvoiceToXMLFromCustomer');
+  // Route.post('update-invalid-invoice-from-customer-c-sharp', 'EInvoiceController.UpdataInvalidInvoiceToXMLFromCustomer');
 
-  Route.post('invalidinvoice2xml-from-customer-c-sharp', 'EInvoiceController.GeneralInvalidInvoiceToXMLFromCustomer');
-  Route.post('update-invalid-invoice-from-customer-c-sharp', 'EInvoiceController.UpdataInvalidInvoiceToXMLFromCustomer');
-
-  Route.post('send-mail-c-sharp', 'EInvoiceController.SendMailCSharp');
-
-  Route.post('update-image-c-sharp', 'EInvoiceController.UpdateImage');
-  Route.post('sign-invoice-c-sharp', 'EInvoiceController.SignInvoiceXML');
-
-  Route.post('pit2xml-c-sharp', 'EInvoiceController.GeneralPITHsmXML');
-  Route.post('upload-excel-pit-c-sharp', 'EInvoiceController.UploadDataExcelPIT');
-  Route.post('send-pit-c-sharp', 'EInvoiceController.SendMailPITCSharp');
+  // Route.post('send-mail-c-sharp', 'EInvoiceController.SendMailCSharp');
+  // Route.post('update-image-c-sharp', 'EInvoiceController.UpdateImage');
+  // Route.post('sign-invoice-c-sharp', 'EInvoiceController.SignInvoiceXML');
+  // Route.post('pit2xml-c-sharp', 'EInvoiceController.GeneralPITHsmXML');
+  // Route.post('upload-excel-pit-c-sharp', 'EInvoiceController.UploadDataExcelPIT');
+  // Route.post('send-pit-c-sharp', 'EInvoiceController.SendMailPITCSharp');
+  // Route.post('validate-invoice-c-sharp', 'EInvoiceController.ValidateInvoiceCSharp');
 
   Route.post('send-records-ep', 'EInvoiceController.weTaxSendRecordsN70EP');
   Route.post('generate-records-xml-ep', 'EInvoiceController.weTaxGenerateRecordsXmlN70EP');
-  
-  Route.post('validate-invoice-c-sharp', 'EInvoiceController.ValidateInvoiceCSharp');
 })
   .prefix('api/einvoice')
   .middleware('user');
@@ -306,6 +302,33 @@ Route.group(() => {
   //Route.post('lookup-minutes-update', 'EInvoiceController.getUpdateXmlBuyerSign');
   Route.post('lookup-minutes', 'EInvoiceController.getDataEinvoiceFormLookupMinutesCode2');
   Route.post('lookup-minutes-update', 'EInvoiceController.getUpdateXmlBuyerSign2');
+
+   // e-invoice C#s
+  Route.post('declare2xml-c-sharp', 'EInvoiceController.GeneralDeclarationXML');
+  Route.post('declare2xml-hsm-c-sharp', 'EInvoiceController.GeneralDeclarationHsmXML');
+  Route.post('update-declare-c-sharp', 'EInvoiceController.UpdateDeclarationXML');
+  Route.post('check-declare-c-sharp', 'EInvoiceController.CheckDeclarationXML');
+
+  Route.post('invoice2xml-c-sharp', 'EInvoiceController.GeneralInvoiceXML');
+  Route.post('update-invoice-c-sharp', 'EInvoiceController.UpdateInvoiceXML');
+  Route.post('check-invoice-c-sharp', 'EInvoiceController.CheckInvoiceXML');
+  Route.post('invoice2xml-for-hsm-c-sharp', 'EInvoiceController.GeneralInvoiceHsmXML');
+  Route.post('sign-invoice-hsm-c-sharp', 'EInvoiceController.SignInvoiceHsmXML');
+
+  Route.post('invalidinvoice2xml-c-sharp', 'EInvoiceController.GeneralInvalidInvoiceToXML');
+  Route.post('update-invalid-invoice-c-sharp', 'EInvoiceController.UpdataInvalidInvoiceToXML');
+  Route.post('check-invalid-invoice-c-sharp', 'EInvoiceController.CheckInvalidInvoiceToXML');
+  Route.post('invalidinvoice2xml-hsm-c-sharp', 'EInvoiceController.GeneralInvalidInvoiceToHsmXML');
+  Route.post('invalidinvoice2xml-from-customer-c-sharp', 'EInvoiceController.GeneralInvalidInvoiceToXMLFromCustomer');
+  Route.post('update-invalid-invoice-from-customer-c-sharp', 'EInvoiceController.UpdataInvalidInvoiceToXMLFromCustomer');
+
+  Route.post('send-mail-c-sharp', 'EInvoiceController.SendMailCSharp');
+  Route.post('update-image-c-sharp', 'EInvoiceController.UpdateImage');
+  Route.post('sign-invoice-c-sharp', 'EInvoiceController.SignInvoiceXML');
+  Route.post('pit2xml-c-sharp', 'EInvoiceController.GeneralPITHsmXML');
+  Route.post('upload-excel-pit-c-sharp', 'EInvoiceController.UploadDataExcelPIT');
+  Route.post('send-pit-c-sharp', 'EInvoiceController.SendMailPITCSharp');
+  Route.post('validate-invoice-c-sharp', 'EInvoiceController.ValidateInvoiceCSharp');
 }).prefix('api/einvoice');
 
 Route.group(() => {

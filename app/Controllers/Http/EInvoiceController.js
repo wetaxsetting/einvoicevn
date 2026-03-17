@@ -22133,7 +22133,7 @@ class EInvoiceController {
         FUNC: 'SendMailCSharp',
         CONTENT: e.message,
       });
-      console.log('SendMailCSharp  ', e.message);
+      console.log('SendMailCSharp  ', e);
 
       return response.status(409).json(Utils.responseByRule({success: false, message: e.message}));
     }

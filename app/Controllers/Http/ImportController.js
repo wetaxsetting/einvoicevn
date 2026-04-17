@@ -42,13 +42,14 @@ class ImportController {
         let buffer = result[0].FILE_CONTENT;
 
         let tmp_file = Helpers.tmpPath(file_name);
-
-        //excel load buffer bi loi nen phai save lai ra file temp
-        await fs.writeFileSync(tmp_file, buffer);
-        await imp.loadFile(tmp_file);
-
-        let res = await imp.importData(import_info, p_language, p_crt_by);
-        return response.send(Utils.response(true, 'success', res));
+        try {
+          await fs.promises.writeFile(tmp_file, buffer);
+          await imp.loadFile(tmp_file);
+          let res = await imp.importData(import_info, p_language, p_crt_by);
+          return response.send(Utils.response(true, 'success', res));
+        } finally {
+          fs.promises.unlink(tmp_file).catch(() => {});
+        }
       }
 
       return response.send(Utils.response(false, 'error', result));
@@ -70,7 +71,7 @@ class ImportController {
 
       let templateFile = Helpers.resourcesPath(template);
 
-      let isExists = await fs.existsSync(templateFile);
+      let isExists = await fs.promises.access(templateFile).then(() => true).catch(() => false);
 
       if (isExists) {
         Utils.Logger({LVL: 'error', MODULE: 'ImportController', FUNC: 'DownloadTemp', CONTENT: templateFile});

@@ -19,12 +19,16 @@ class JobScheduler {
 
   constructor() {
     try {
-      this.procedureJobs = JSON.parse(Env.get('SCHEDULE_PROCEDURE'));
-    } catch (e) {}
+      this.procedureJobs = JSON.parse(Env.get('SCHEDULE_PROCEDURE', '[]'));
+    } catch (e) {
+      Utils.Logger({LVL: 'error', MODULE: 'JobScheduler', FUNC: 'constructor', CONTENT: 'Invalid SCHEDULE_PROCEDURE env: ' + e.message});
+    }
 
     try {
-      this.functionJobs = JSON.parse(Env.get('SCHEDULE_FUNCTION'));
-    } catch (e) {}
+      this.functionJobs = JSON.parse(Env.get('SCHEDULE_FUNCTION', '[]'));
+    } catch (e) {
+      Utils.Logger({LVL: 'error', MODULE: 'JobScheduler', FUNC: 'constructor', CONTENT: 'Invalid SCHEDULE_FUNCTION env: ' + e.message});
+    }
   }
 
   start() {
@@ -49,7 +53,6 @@ class JobScheduler {
     } catch (e) {
       Utils.Logger({LVL: 'error', MODULE: 'JobScheduler', FUNC: 'start', CONTENT: e.message});
     }*/
-    console.log('this.procedureJobs  ', this.procedureJobs);
     try {
       if (this.procedureJobs && this.procedureJobs.length > 0) {
         for (let idx = 0; idx < this.procedureJobs.length; idx++) {
@@ -77,22 +80,13 @@ class JobScheduler {
       let res = await DBService.callProcCursor(job.function, params, 'ENG', 'system-scheduler', '');
       let einvoice = new EInvoiceController();
       if (job.type == '2') {
-        for (let i = 0; i < res.length; i++) {
-          await einvoice.jobCheckTradeCodeNorInvoice(res[i]);
-        }
+        await Promise.allSettled(res.map(r => einvoice.jobCheckTradeCodeNorInvoice(r)));
       } else if (job.type == '3') {
-        for (let i = 0; i < res.length; i++) {
-          await einvoice.jobCheckTradeCodePosInvoice(res[i]);
-        }
+        await Promise.allSettled(res.map(r => einvoice.jobCheckTradeCodePosInvoice(r)));
       } else if (job.type == '4') {
-        for (let i = 0; i < res.length; i++) {
-          await einvoice.jobCheckTradeCode04SSInvoice(res[i]);
-        }
-      } else
-      {
-        for (let i = 0; i < res.length; i++) {
-          await einvoice.jobCallBackDataToWeTax(res[i]);
-        }
+        await Promise.allSettled(res.map(r => einvoice.jobCheckTradeCode04SSInvoice(r)));
+      } else {
+        await Promise.allSettled(res.map(r => einvoice.jobCallBackDataToWeTax(r)));
       }
     } catch (e) {
       Utils.Logger({LVL: 'error', MODULE: 'JobScheduler', FUNC: 'Schedule_Procedure', CONTENT: e.message});

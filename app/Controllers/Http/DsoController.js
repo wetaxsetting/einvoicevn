@@ -18,6 +18,21 @@ const DB_CONNECTION = Env.get('DB_CONNECTION');
 const DBService = use('DBService');
 const oracledb = require('oracledb');
 const lineByLine = use('n-readlines');
+
+const ALLOWED_TABLES = new Set(Env.get('ALLOWED_TABLES', '').split(',').map(s => s.trim()).filter(Boolean));
+const ALLOWED_PROCS  = new Set(Env.get('ALLOWED_PROCS',  '').split(',').map(s => s.trim()).filter(Boolean));
+
+function assertTableAllowed(name) {
+  if (ALLOWED_TABLES.size > 0 && !ALLOWED_TABLES.has(name)) {
+    throw new Error(`Table '${name}' is not allowed`);
+  }
+}
+function assertProcAllowed(name) {
+  if (ALLOWED_PROCS.size > 0 && !ALLOWED_PROCS.has(name)) {
+    throw new Error(`Procedure '${name}' is not allowed`);
+  }
+}
+
 let _message_ids = [];
 let _user_last_called = [];
 const EiPosExcelHandlerAuto = use('App/Helpers/EiPosExcelHandlerAuto');
@@ -319,11 +334,12 @@ class DsoController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
+      assertProcAllowed(proc);
       let para1 = '',
         para_value = {};
       for (let i = 0; i < para.length; i++) {
         para1 += ':p_para' + (i + 1) + ', ';
-        eval(`para_value.p_para` + (i + 1) + `=para[i]`);
+        para_value[`p_para${i + 1}`] = para[i];
       }
       const result = await DBService.ExecuteSQLBlob(
         `BEGIN ${proc}(${para1} :p_language, :p_crt_by, :p_rtn_cur); END;`,
@@ -357,13 +373,14 @@ class DsoController {
       }
       let para1 = '',
         para_value = {};
+      assertProcAllowed(proc);
       for (let i = 0; i < para.length; i++) {
         let row = para[i];
         para1 = '';
         para_value = {};
         for (let j = 0; j < row.length; j++) {
           para1 += ':p_para' + (j + 1) + ', ';
-          eval(`para_value.p_para` + (j + 1) + `=row[j]`);
+          para_value[`p_para${j + 1}`] = row[j];
         }
         //console.log("p_para", para1)
         //console.log("para_value", para_value)
@@ -717,6 +734,7 @@ class DsoController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
+      assertTableAllowed(table_name);
       result = await DBService.ExecuteSQL(`select * from ${table_name} where pk=:pk`, {pk: pk}, p_crt_by, _db2);
       if (DB_CONNECTION == 'oracle') {
         if (result.rows.length > 0) {
@@ -753,6 +771,7 @@ class DsoController {
       if (user) {
         p_crt_by = user.USER_ID;
       }
+      assertTableAllowed(table_name);
       const result = await DBService.ExecuteSQL(`select * from ${table_name} where pk=:pk`, {pk: pk}, p_crt_by, _db2);
       if (DB_CONNECTION == 'oracle') {
         return response.send(result.rows);

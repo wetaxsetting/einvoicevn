@@ -95,9 +95,14 @@ class SendMailController {
         }
     }
     async wrapedSendMail(mailOptions, p_token_path, p_credential_file, attachfile1, attachfile2) {
-        return new Promise((resolve, reject) => {
-            const credentials = JSON.parse(fs.readFileSync(p_credential_file))
-            const tokens = JSON.parse(fs.readFileSync(p_token_path))
+        return new Promise(async (resolve, reject) => {
+            let credentials, tokens;
+            try {
+                credentials = JSON.parse(await fs.promises.readFile(p_credential_file, 'utf8'));
+                tokens = JSON.parse(await fs.promises.readFile(p_token_path, 'utf8'));
+            } catch (e) {
+                return reject(new Error('Failed to load mail credentials: ' + e.message));
+            }
             const auth = {
                     type: 'OAuth2',
                     user: mailOptions.from,

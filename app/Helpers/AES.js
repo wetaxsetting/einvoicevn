@@ -15,8 +15,8 @@ class AES {
     }
     async xmlDigitalSignatureVerifier(file_path) {
         try {
-            const xmlContent = fs.readFileSync(file_path, { encoding: 'utf8', flag: 'r' });
-            var xml = fs.readFileSync(file_path).toString()
+            const xmlContent = await fs.promises.readFile(file_path, { encoding: 'utf8' });
+            var xml = xmlContent;
 
             var doc = new dom().parseFromString(xml)
             //console.log(doc)
@@ -158,8 +158,8 @@ class AES {
 
     async xmlDigitalSignatureVerifierBillHaiPhongPort(file_path) {
         try {
-            const xmlContent = fs.readFileSync(file_path, { encoding: 'utf8', flag: 'r' });
-            var xml = fs.readFileSync(file_path).toString()
+            const xmlContent = await fs.promises.readFile(file_path, { encoding: 'utf8' });
+            var xml = xmlContent;
             var doc = new dom().parseFromString(xml)
             let cert = ''
             let signature = ''

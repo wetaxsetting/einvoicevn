@@ -795,7 +795,7 @@ class ReportHelper {
     this.templateFile = this.fileName + '_tmp_' + crt_by + this.extension;
     this.templateFile = Helpers.tmpPath(this.templateFile);
 
-    await fs.writeFileSync(this.templateFile, _tempBuffer);
+    await fs.promises.writeFile(this.templateFile, _tempBuffer);
   }
 
   getFileName() {
@@ -813,7 +813,7 @@ class ReportHelper {
   async writeFile() {
     //console.log('writeFile ', this.returnFile);
     if (this.reportType === 'word') {
-      await fs.writeFileSync(this.returnFile, this.docBuffer);
+      await fs.promises.writeFile(this.returnFile, this.docBuffer);
     } else if (this.reportType === 'excel') {
       await this.workbook.xlsx.writeFile(this.returnFile.replace(/\\/g, '/'));
     }
@@ -2185,7 +2185,7 @@ class ReportHelper {
     try {
       //img = path.resolve(path); // Helpers.dataPath(path);
       //console.log('img  ', img);
-      imageBuffer = await fs.readFileSync(path); //  Utils.readFile(img);
+      imageBuffer = await fs.promises.readFile(path);
     } catch (e) {
       Utils.Logger({LVL: 'error', MODULE: 'ReportController', FUNC: 'insertPathImage', CONTENT: e.message});
     }
@@ -2356,7 +2356,7 @@ class ReportHelper {
     this.buildWordDatas(datas, details, key);
 
     if (this.wordData) {
-      const template = fs.readFileSync(this.templateFile);
+      const template = await fs.promises.readFile(this.templateFile);
       this.wordData['header'] = header;
       this.docBuffer = await Word.createReport({
         template,

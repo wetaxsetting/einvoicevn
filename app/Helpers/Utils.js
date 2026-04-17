@@ -134,10 +134,9 @@ class Utils {
         (inputPath.lastIndexOf('.') > -1 ? inputPath.substring(0, inputPath.lastIndexOf('.')) : inputPath) + '.pdf',
       );
       if (isWin) {
-        const xlsxBuf = await fs.readFileSync(inputPath);
-        // Convert it to pdf format with undefined filter (see Libreoffice docs about filter)
+        const xlsxBuf = await fs.promises.readFile(inputPath);
         let pdfBuf = await libre.convertAsync(xlsxBuf, '.pdf', undefined);
-        await fs.writeFileSync(outputPath, pdfBuf);
+        await fs.promises.writeFile(outputPath, pdfBuf);
       } else {
         let pros = new Promise((resolve, reject) => {
           exec('unoconv -f pdf "' + inputPath + '"', function (error, stdout, stderr) {
@@ -291,11 +290,11 @@ class Utils {
     }
   }
   async readFile(file_path) {
-    return await fs.readFileSync(file_path);
+    return fs.promises.readFile(file_path);
   }
   async readDir(dir_path) {
     try {
-      return await fs.readdirSync(dir_path);
+      return await fs.promises.readdir(dir_path);
     } catch (e) {
       return [];
     }

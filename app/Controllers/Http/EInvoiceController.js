@@ -7731,6 +7731,8 @@ class EInvoiceController {
       };
       let req_key = [];
       const invoices = list_invoice;
+      console.log(`[weTaxConvertPosInvoiceToXML] START - invoices: ${invoices.length}`);
+      const t0 = Date.now();
       const valid = this.validateJsonInvalidPosInvoiceToXML(invoices);
       if (!valid.status) {
         return response
@@ -7748,21 +7750,22 @@ class EInvoiceController {
         );
       }
 
+      const tDB = Date.now();
+      const _invoiceNoCache = new Map();
       for (let i = 0; i < invoices.length; i++) {
-        const lastInvoiceNo = await DBService.callProcCursor(
-          "wt_sel_last_invoice_no",
-          [
-            invoices[i].seller_taxcode,
-            invoices[i].serial_no,
-            invoices[i].form_no,
-          ],
-          "ENG",
-          p_crt_by,
-          "N",
-        );
-        let last_invoice_no = lastInvoiceNo[0].INVOICE_NO;
-        const last_invoice_date = lastInvoiceNo[0].INVOICE_DATE;
-        const tomorrow_date = lastInvoiceNo[0].TOMORROW_DATE;
+        const _cacheKey = `${invoices[i].seller_taxcode}|${invoices[i].serial_no}|${invoices[i].form_no}`;
+        if (!_invoiceNoCache.has(_cacheKey)) {
+          const _res = await DBService.callProcCursor(
+            "wt_sel_last_invoice_no",
+            [invoices[i].seller_taxcode, invoices[i].serial_no, invoices[i].form_no],
+            "ENG", p_crt_by, "N",
+          );
+          _invoiceNoCache.set(_cacheKey, _res[0]);
+        }
+        const _cached = _invoiceNoCache.get(_cacheKey);
+        let last_invoice_no = _cached.INVOICE_NO;
+        const last_invoice_date = _cached.INVOICE_DATE;
+        const tomorrow_date = _cached.TOMORROW_DATE;
         if (isNaN(last_invoice_no)) {
           return response.status(409).json(
             Utils.responseByRule({
@@ -8417,7 +8420,7 @@ class EInvoiceController {
         xml_data: xmlRemoveLine,
         req_key: req_key,
       };
-      //console.log(' weTaxConvertPosInvoiceToXML  END ==================================================');
+      console.log(`[weTaxConvertPosInvoiceToXML] DONE - total: ${Date.now()-t0}ms, DB loop: ${Date.now()-tDB}ms, invoices: ${invoices.length}, DB calls: ${_invoiceNoCache.size}`);
 
       return response.status(200).json(
         Utils.responseByRule({
@@ -12699,11 +12702,14 @@ class EInvoiceController {
       let data_error = [];
       let trade_code = "";
 
+      console.log(`[weTaxAutoReportToTaxOffice] calling TVAN POST...`);
+      const tTVAN_auto = Date.now();
       const res = await Request.post(
         url,
         { base64XML: Buffer.from(invoice_xml_signed).toString("base64") },
         {
           agent,
+          timeout: 60000,
           headers: {
             Authorization:
               "Basic " +
@@ -12711,10 +12717,10 @@ class EInvoiceController {
           },
         },
       );
+      console.log(`[weTaxAutoReportToTaxOffice] TVAN POST done - ${Date.now()-tTVAN_auto}ms`);
 
       trade_code = res.data.maGDich;
-
-      //console.log('weTaxSendPosInvoiceToTaxOffice res.data: ', res.data);
+      console.log(`[weTaxAutoReportToTaxOffice] trade_code: ${trade_code}`);
 
       if (trade_code) {
         const para_value = {
@@ -12809,13 +12815,11 @@ class EInvoiceController {
       // console.log('weTaxSendPosInvoiceToTaxOffice   seller_tax_code ', seller_tax_code);
       // console.log('weTaxSendPosInvoiceToTaxOffice   sale_date ', sale_date);
       // console.log('weTaxSendPosInvoiceToTaxOffice   store_code ', store_code);
-      // console.log('weTaxSendPosInvoiceToTaxOffice   pos_no ', pos_no);
-      // console.log('weTaxSendPosInvoiceToTaxOffice   invoice_xml_signed ', invoice_xml_signed);
-      // console.log('weTaxSendPosInvoiceToTaxOffice   req_key ', req_key);
-      // console.log('weTaxSendPosInvoiceToTaxOffice   =========================== END =======================');
+      console.log(`[weTaxAutoReportToTaxOffice] START - seller: ${seller_tax_code}, sale_date: ${sale_date}, store: ${store_code}`);
+      const t0_auto = Date.now();
+      console.log(`[weTaxSendPosInvoiceToTaxOffice] START - seller: ${seller_tax_code}, sale_date: ${sale_date}, store: ${store_code}`);
+      const t0_send = Date.now();
 
-      // let json =  this.parseXmlToJson(invoice_xml_signed);
-      //console.log("weTaxSendPosInvoiceToTaxOffice BEGIN ================================   ");
       const data_json = {
         tax_serial_number,
         seller_tax_code,
@@ -12919,11 +12923,14 @@ class EInvoiceController {
         tenGDDTu = "",
         ord = "",
         soTBao = "";
+      console.log(`[weTaxSendPosInvoiceToTaxOffice] calling TVAN POST...`);
+      const tTVAN = Date.now();
       const res = await Request.post(
         url,
         { base64XML: Buffer.from(invoice_xml_signed).toString("base64") },
         {
           agent,
+          timeout: 60000,
           headers: {
             Authorization:
               "Basic " +
@@ -12931,11 +12938,10 @@ class EInvoiceController {
           },
         },
       );
+      console.log(`[weTaxSendPosInvoiceToTaxOffice] TVAN POST done - ${Date.now()-tTVAN}ms`);
 
-      //console.log('weTaxSendPosInvoiceToTaxOffice res ', res);
       trade_code = res.data.maGDich;
-
-      // console.log('weTaxSendPosInvoiceToTaxOffice trade_code   ', trade_code);
+      console.log(`[weTaxSendPosInvoiceToTaxOffice] trade_code: ${trade_code}`);
       if (trade_code) {
         const para_value = {
           tei_einvoice_ar_pk: check_data.PK,
@@ -12957,17 +12963,21 @@ class EInvoiceController {
           p_crt_by,
         );
       }
+      console.log(`[weTaxSendPosInvoiceToTaxOffice] sleep 5s waiting TVAN...`);
       await Utils._sleep(5);
+      console.log(`[weTaxSendPosInvoiceToTaxOffice] calling TVAN GET check...`);
+      const tCheck = Date.now();
 
       await Request.get(urlCheck + trade_code, {
         agent,
+        timeout: 60000,
         headers: {
           Authorization:
             "Basic " +
             Buffer.from(`${authUserName}:${authPassword}`).toString("base64"),
         },
       }).then(async (res) => {
-        ////console.log("weTaxSendPosInvoiceToTaxOffice res  ", res.data);
+        console.log(`[weTaxSendPosInvoiceToTaxOffice] TVAN GET done - ${Date.now()-tCheck}ms, items: ${res.data.length}`);
         if (res.data.length) {
           for (let j = 0; j < res.data.length; j++) {
             const items = res.data[j];

@@ -5,13 +5,13 @@ const { hooks } = require('@adonisjs/ignitor')
 hooks.after.httpServer(() => {
   use('App/Services/Nuxt')
 
-  const srv = use('Adonis/Src/Server').getInstance()
-  if (srv) {
-    srv.timeout = 300000         // 5 phút
-    srv.keepAliveTimeout = 310000
-    srv.headersTimeout = 320000
-    console.log('[server] timeout set to 300s')
-  }
+  // const srv = use('Adonis/Src/Server').getInstance()
+  // if (srv) {
+  //   srv.timeout = 300000         // 5 phút
+  //   srv.keepAliveTimeout = 310000
+  //   srv.headersTimeout = 320000
+  //   console.log('[server] timeout set to 300s')
+  // }
 })
 
 /**
